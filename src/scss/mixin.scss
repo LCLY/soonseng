@@ -1,0 +1,119 @@
+// mixin media query
+$break-small: 575px;
+$break-landscape: 480px;
+$break-tablet: 768px;
+$break-medium: 1200px;
+
+@mixin respond-to($media) {
+  @if $media == mobile {
+    @media only screen and (max-width: $break-small) {
+      @content;
+    }
+  } @else if $media == mobile-landscape {
+    @media only screen and (max-height: $break-landscape) {
+      @content;
+    }
+  } @else if $media == tablet {
+    @media only screen and (max-width: $break-tablet) {
+      @content;
+    }
+  } @else if $media == medium {
+    @media only screen and (min-width: $break-tablet) and (max-width: $break-medium) {
+      @content;
+    }
+  }
+}
+
+/* =============================================================== */
+// Create custom paddings and margin using classname
+/* paddings */
+@mixin padding-func($size) {
+  padding: $size * 1rem;
+}
+@mixin padding-top-func($size) {
+  padding-top: $size * 1rem;
+}
+@mixin padding-right-func($size) {
+  padding-right: $size * 1rem;
+}
+@mixin padding-bottom-func($size) {
+  padding-bottom: $size * 1rem;
+}
+@mixin padding-left-func($size) {
+  padding-left: $size * 1rem;
+}
+
+/* margins */
+@mixin margin-func($size) {
+  margin: $size * 1rem;
+}
+@mixin margin-top-func($size) {
+  margin-top: $size * 1rem;
+}
+@mixin margin-right-func($size) {
+  margin-right: $size * 1rem;
+}
+@mixin margin-bottom-func($size) {
+  margin-bottom: $size * 1rem;
+}
+@mixin margin-left-func($size) {
+  margin-left: $size * 1rem;
+}
+
+@for $i from 1 through 10 {
+  /* paddings */
+  .padding-#{$i} {
+    @include padding-func($i);
+  }
+  .padding_t-#{$i} {
+    @include padding-top-func($i);
+  }
+  .padding_r-#{$i} {
+    @include padding-right-func($i);
+  }
+  .padding_b-#{$i} {
+    @include padding-bottom-func($i);
+  }
+  .padding_l-#{$i} {
+    @include padding-left-func($i);
+  }
+
+  /* margins */
+  .margin-#{$i} {
+    @include margin-func($i);
+  }
+  .margin_t-#{$i} {
+    @include margin-top-func($i);
+  }
+  .margin_r-#{$i} {
+    @include margin-right-func($i);
+  }
+  .margin_b-#{$i} {
+    @include margin-bottom-func($i);
+  }
+  .margin_l-#{$i} {
+    @include margin-left-func($i);
+  }
+}
+
+/* =============================================================== */
+// creating shadow
+@mixin shadow-func($horizontal, $vertical, $blur, $spread, $color) {
+  box-shadow: $horizontal $vertical $blur $spread $color;
+}
+/* =============================================================== */
+
+// take in whatever attribute and manipulate its properties
+@mixin alpha-attribute($attribute, $color, $background) {
+  $percent: alpha($color) * 100%;
+  $opaque: opacify($color, 1);
+  $solid-color: mix($opaque, $background, $percent);
+  #{$attribute}: $solid-color;
+  #{$attribute}: $color;
+}
+/* =============================================================== */
+// darken color
+@mixin darkenColor($color, $percentage) {
+  background: darken($color, $percentage);
+}
+/* =============================================================== */

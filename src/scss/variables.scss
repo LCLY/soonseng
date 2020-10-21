@@ -1,0 +1,38 @@
+@import './mixin.scss';
+
+// Theme colors
+$primary-color-1: rgb(255, 0, 43);
+$secondary-color-1: rgb(141, 144, 147);
+$tertiary-color-1: rgb(240, 240, 236);
+
+// Status colors
+$warning-color-1: rgb(211, 43, 43);
+$warning-color-3: rgba(235, 64, 64, 0.904);
+$warning-color-2: rgb(185, 26, 26);
+
+$success-color-2: rgb(38, 228, 31);
+$success-color-3: rgba(96, 236, 138, 0.904);
+$success-color-1: rgb(31, 167, 72);
+$success-color-4: rgba(31, 168, 72, 0.904);
+
+$progress-color-3: rgba(223, 206, 56, 0.904);
+$progress-color-2: rgba(223, 184, 56, 0.904);
+$progress-color-1: rgba(218, 144, 49, 0.904);
+
+$star-rating: rgb(237, 240, 58);
+
+$facebook: #3b5998;
+$google: #d84b37;
+
+$translucent-grey: rgba(197, 197, 197, 0.637);
+
+// shadows
+$shadow: 0 0.1rem 0.5rem rgba(black, 0.15);
+$bottom-shadow: 0px 0.3rem 0.5rem rgba(black, 0.15);
+
+// font families
+$ubuntu: 'Ubuntu', sans-serif;
+$staatliches: 'Staatliches', cursive;
+
+// z-index
+$navbar: 10;
