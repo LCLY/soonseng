@@ -1,2 +1,1 @@
-# soonseng
-Sales pitch software
+Soon Seng's sales pitch software
