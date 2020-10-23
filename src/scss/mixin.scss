@@ -104,6 +104,8 @@ $break-medium: 1200px;
 /* =============================================================== */
 
 // take in whatever attribute and manipulate its properties
+// for $color we can do e.g.
+// @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
 @mixin alpha-attribute($attribute, $color, $background) {
   $percent: alpha($color) * 100%;
   $opaque: opacify($color, 1);

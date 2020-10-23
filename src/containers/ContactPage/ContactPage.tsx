@@ -1,20 +1,20 @@
 import React from 'react';
-import './HomePage.scss';
+import './ContactPage.scss';
 // component
 import NavbarComponent from '../../components/NavbarComponent/NavbarComponent';
 
 /**
- * Home page of the website
+ * Page to find contact information about the company
  * @return {*}
  * @category Pages
  */
-function HomePage() {
+function ContactPage() {
   return (
     <div>
-      <NavbarComponent activePage="home" />
-      HomePage
+      <NavbarComponent activePage="contact" />
+      Contact us
     </div>
   );
 }
 
-export default HomePage;
+export default ContactPage;

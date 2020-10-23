@@ -1,0 +1,100 @@
+@import '../../../scss//variables.scss';
+
+.sales {
+  &__outerdiv {
+    padding: 1rem;
+  }
+
+  /* =================================== */
+  // the 3 main sections
+  &__section {
+    padding: 2rem;
+    margin: 1rem 0;
+    background: #f3efef7a;
+    &-header {
+      font-size: 2rem;
+      font-family: $ubuntu;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid $translucent-grey;
+      margin-bottom: 2rem;
+    }
+
+    &-desc {
+      color: $secondary-color-2;
+      margin-bottom: 1rem;
+    }
+  }
+  /* =================================== */
+  // cards
+  &__card {
+    // div wrapping cards
+    &-div {
+      display: flex;
+      & > .active {
+        // if the card is in active state
+        // background-image: linear-gradient(to right bottom, $primary-color-3, $primary-color-3);
+        transform: translateY(0rem);
+        border: 2px solid white;
+        animation: cardClickedAnimate 0.3s ease forwards;
+
+        &:hover {
+          transition: none;
+          transform: translateY(0rem);
+          @include shadow-func(0rem, 0.2rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
+          background-position: left top;
+          border: 2px solid white;
+        }
+      }
+    }
+
+    // vehicle length card
+    &-length {
+      transition: all 0.3s ease;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      border: 2px solid $secondary-color-3;
+      padding: 3rem;
+      user-select: none;
+      background-size: 200% auto;
+      background-image: linear-gradient(to right bottom, $primary-color-1 50%, $primary-color-3);
+      @include shadow-func(0rem, 0.3rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
+
+      &:hover {
+        transition: all 0.3s ease;
+        transform: translateY(-0.5rem);
+        border: 2px solid $tertiary-color-2;
+        @include shadow-func(-0.2rem, 0.8rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
+        background-position: right center;
+      }
+      &:active {
+        transition: none;
+        transform: translateY(0rem);
+        @include shadow-func(0rem, 0.2rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
+        background-position: left top;
+        border: 2px solid white;
+      }
+    }
+  }
+}
+
+@keyframes cardClickedAnimate {
+  0% {
+    background-image: linear-gradient(to right bottom, $primary-color-1 50%, $primary-color-3);
+  }
+
+  50% {
+    background-image: linear-gradient(to left center, $primary-color-1 20%, $primary-color-3);
+  }
+  75% {
+    background-image: linear-gradient(to left center, $primary-color-1 5%, $primary-color-3);
+  }
+
+  100% {
+    background-image: linear-gradient(to top left, $primary-color-1 0%, $primary-color-3);
+    border: 2px solid white;
+  }
+}

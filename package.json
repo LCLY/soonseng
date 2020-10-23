@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "SoonSeng",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +9,7 @@
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.69",
     "@types/react": "^16.9.53",
+    "@types/react-bootstrap": "^0.32.24",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.6",
     "axios": "^0.20.0",
@@ -23,13 +24,14 @@
     "react-scripts": "3.4.4",
     "redux": "^4.0.5",
     "redux-saga": "^1.1.3",
-    "typescript": "^3.7.5"
+    "typescript": "^4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-docs": "typedoc --out docs src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "typedoc": "^0.19.2"
   }
 }

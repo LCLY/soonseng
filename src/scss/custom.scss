@@ -7,9 +7,8 @@ $theme-colors: (
   'tertiary': $tertiary-color-1,
   'facebook': #3b5998,
   'google': #d84b37 // 'info': tomato,
-  // 'danger': teal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+  // 'danger': teal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 );
-
 $font-size-base: 1.5rem;
 
 /* import bootstrap to set changes */
@@ -35,4 +34,9 @@ $font-size-base: 1.5rem;
 
 :disabled {
   cursor: not-allowed;
+}
+
+// Bootstrap navbar
+.navbar-dark .navbar-nav .nav-link {
+  color: rgb(255, 163, 163);
 }

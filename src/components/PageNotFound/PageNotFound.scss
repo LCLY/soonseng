@@ -6,43 +6,112 @@
   transform-style: preserve-3d;
 }
 
-.pagenotfound__main {
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  align-content: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-  padding: 12px;
-  background: #343434;
-  color: white;
-  font-size: 3rem;
-  font-family: 'brandon-grotesque', 'Brandon Grotesque', 'Source Sans Pro', 'Segoe UI', Frutiger, 'Frutiger Linotype',
-    'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  height: 100vh;
+.pagenotfound {
+  &__main {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    align-content: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding: 12px;
+    background: #343434;
+    color: white;
+    font-size: 3rem;
+    font-family: 'brandon-grotesque', 'Brandon Grotesque', 'Source Sans Pro', 'Segoe UI', Frutiger, 'Frutiger Linotype',
+      'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    height: 100vh;
 
-  @include respond-to(mobile) {
-    font-size: 1.5rem;
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+
+    & > div {
+      display: -webkit-box;
+      display: flex;
+      -webkit-box-align: center;
+      align-items: center;
+      align-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    & > div svg {
+      position: relative;
+      z-index: 1;
+    }
+    & > div svg polygon {
+      fill: #343434;
+    }
+    & > div span {
+      display: block;
+      position: relative;
+      z-index: 0;
+      padding: 0 12px;
+      line-height: 1.4;
+    }
+    & > div:first-child {
+      text-align: right;
+      z-index: 1;
+    }
+    & > div:first-child span:first-child {
+      opacity: 0;
+      -webkit-transform: translateX(100%);
+      transform: translateX(100%);
+      -webkit-animation: translateLeft 1000ms linear 1250ms forwards;
+      animation: translateLeft 1000ms linear 1250ms forwards;
+    }
+    & > div:first-child span:last-child {
+      opacity: 0;
+      -webkit-transform: translateX(100%);
+      transform: translateX(100%);
+      -webkit-animation: translateLeft 1000ms linear 1450ms forwards;
+      animation: translateLeft 1000ms linear 1450ms forwards;
+    }
+    & > div:first-child svg polygon {
+      -webkit-animation: removeFill 10ms ease-out 1600ms forwards;
+      animation: removeFill 10ms ease-out 1600ms forwards;
+    }
+    & > div:last-child {
+      z-index: 0;
+      margin-left: -50px;
+    }
+    & > div:last-child span:first-child {
+      opacity: 0;
+      -webkit-transform: translateX(-100%);
+      transform: translateX(-100%);
+      -webkit-animation: translateRight 1000ms linear 1650ms forwards;
+      animation: translateRight 1000ms linear 1650ms forwards;
+    }
+    & > div:last-child span:last-child {
+      opacity: 0;
+      -webkit-transform: translateX(-100%);
+      transform: translateX(-100%);
+      -webkit-animation: translateRight 1000ms linear 1850ms forwards;
+      animation: translateRight 1000ms linear 1850ms forwards;
+    }
   }
-}
 
-a {
-  display: block;
-  cursor: pointer;
-  -webkit-animation: pulseColor 1000ms linear 3100ms forwards;
-  animation: pulseColor 1000ms linear 3100ms forwards;
-  font-weight: 500;
-  color: white;
-}
-a:hover b,
-a:focus b {
-  color: #f04f54;
-}
-a:active b {
-  color: #43cb9d;
+  /* =================================== */
+  &__link {
+    display: block;
+    cursor: pointer;
+    -webkit-animation: pulseColor 1000ms linear 3100ms forwards;
+    animation: pulseColor 1000ms linear 3100ms forwards;
+    font-weight: 500;
+    color: white;
+
+    &:hover b,
+    &:focus b {
+      color: #f04f54;
+    }
+
+    &:active b {
+      color: white;
+    }
+  }
 }
 
 svg {
@@ -68,79 +137,6 @@ svg {
   stroke-dashoffset: 1649.099;
   -webkit-animation: drawStroke 1500ms ease-out 500ms forwards;
   animation: drawStroke 1500ms ease-out 500ms forwards;
-}
-
-main {
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  align-content: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-}
-main > div {
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  align-content: center;
-  position: relative;
-  overflow: hidden;
-}
-main > div svg {
-  position: relative;
-  z-index: 1;
-}
-main > div svg polygon {
-  fill: #343434;
-}
-main > div span {
-  display: block;
-  position: relative;
-  z-index: 0;
-  padding: 0 12px;
-  line-height: 1.4;
-}
-main > div:first-child {
-  text-align: right;
-  z-index: 1;
-}
-main > div:first-child span:first-child {
-  opacity: 0;
-  -webkit-transform: translateX(100%);
-  transform: translateX(100%);
-  -webkit-animation: translateLeft 1000ms linear 1250ms forwards;
-  animation: translateLeft 1000ms linear 1250ms forwards;
-}
-main > div:first-child span:last-child {
-  opacity: 0;
-  -webkit-transform: translateX(100%);
-  transform: translateX(100%);
-  -webkit-animation: translateLeft 1000ms linear 1450ms forwards;
-  animation: translateLeft 1000ms linear 1450ms forwards;
-}
-main > div:first-child svg polygon {
-  -webkit-animation: removeFill 10ms ease-out 1600ms forwards;
-  animation: removeFill 10ms ease-out 1600ms forwards;
-}
-main > div:last-child {
-  z-index: 0;
-  margin-left: -50px;
-}
-main > div:last-child span:first-child {
-  opacity: 0;
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
-  -webkit-animation: translateRight 1000ms linear 1650ms forwards;
-  animation: translateRight 1000ms linear 1650ms forwards;
-}
-main > div:last-child span:last-child {
-  opacity: 0;
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
-  -webkit-animation: translateRight 1000ms linear 1850ms forwards;
-  animation: translateRight 1000ms linear 1850ms forwards;
 }
 
 @-webkit-keyframes drawStroke {

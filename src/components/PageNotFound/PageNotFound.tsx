@@ -1,5 +1,11 @@
 import React from 'react';
 import './PageNotFound.scss';
+
+/**
+ * Error 404 page when user goes to an unknown route
+ * @return {*}
+ * @category Pages
+ */
 function PageNotFound() {
   return (
     <>
@@ -23,7 +29,7 @@ function PageNotFound() {
           <div>
             <span>sorry&nbsp;about&nbsp;that!</span>
             <span>
-              <a href="/">
+              <a className="pagenotfound__link" href="/">
                 <b>return&nbsp;home?</b>
               </a>
             </span>
