@@ -70,7 +70,9 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface"><a href="interfaces/ownprops.html" class="tsd-kind-icon">Own<wbr>Props</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/cardcomponentprops.html" class="tsd-kind-icon">Card<wbr>Component<wbr>Props</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/navbarcomponentprops.html" class="tsd-kind-icon">Navbar<wbr>Component<wbr>Props</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/salespageprops.html" class="tsd-kind-icon">Sales<wbr>Page<wbr>Props</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -82,6 +84,7 @@
 						<section class="tsd-index-section ">
 							<h3>Components Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function"><a href="globals.html#cardcomponent" class="tsd-kind-icon">Card<wbr>Component</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#navbarcomponent" class="tsd-kind-icon">Navbar<wbr>Component</a></li>
 							</ul>
 							<h3>Other Functions</h3>
@@ -109,10 +112,12 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="props" class="tsd-anchor"></a>
 					<h3>Props</h3>
-					<div class="tsd-signature tsd-kind-icon">Props<span class="tsd-signature-symbol">:</span> <a href="interfaces/ownprops.html" class="tsd-signature-type">OwnProps</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">RouteComponentProps</span></div>
+					<div class="tsd-signature tsd-kind-icon">Props<span class="tsd-signature-symbol">:</span> <a href="interfaces/salespageprops.html" class="tsd-signature-type">SalesPageProps</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in components/NavbarComponent/NavbarComponent.tsx:12</li>
+							<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/components/NavbarComponent/NavbarComponent.tsx#L12">components/NavbarComponent/NavbarComponent.tsx:12</a></li>
+							<li>Defined in components/CardComponent/CardComponent.tsx:24</li>
+							<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/containers/Product/SalesPage/SalesPage.tsx#L10">containers/Product/SalesPage/SalesPage.tsx:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -120,8 +125,60 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Components Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="cardcomponent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Card<wbr>Component</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">Card<wbr>Component<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>bodyIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>desc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>img_link<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>price<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>setBodyIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Dispatch</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">SetStateAction</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in components/CardComponent/CardComponent.tsx:33</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A customized card component where the image is on the left side
+									<br/><code>Props</code>: <a href="interfaces/cardcomponentprops.html">CardComponentProps</a></p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>bodyIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>desc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>img_link<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>price<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>setBodyIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Dispatch</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">SetStateAction</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>body<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>desc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>img_<wbr>link<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>price<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>set<wbr>Body<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Dispatch</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">SetStateAction</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="navbarcomponent" class="tsd-anchor"></a>
-					<h3>Navbar<wbr>Component</h3>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Navbar<wbr>Component</h3>
 					<ul class="tsd-signatures tsd-kind-function">
 						<li class="tsd-signature tsd-kind-icon">Navbar<wbr>Component<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>activePage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>history<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">History</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
@@ -129,7 +186,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in components/NavbarComponent/NavbarComponent.tsx:20</li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/components/NavbarComponent/NavbarComponent.tsx#L21">components/NavbarComponent/NavbarComponent.tsx:21</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -144,15 +201,9 @@
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter">
 											<h5>active<wbr>Page<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-											<div class="tsd-comment tsd-typography">
-												<p>optional: contains string of a page&#39;s name and it&#39;s used to determine whether the navlink is active or not</p>
-											</div>
 										</li>
 										<li class="tsd-parameter">
 											<h5>history<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">History</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h5>
-											<div class="tsd-comment tsd-typography">
-												<p>history from react-router-dom</p>
-											</div>
 										</li>
 									</ul>
 								</li>
@@ -174,7 +225,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/07524a2/src/App.tsx#L19">App.tsx:19</a></li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/App.tsx#L19">App.tsx:19</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -200,7 +251,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in containers/AboutPage/AboutPage.tsx:11</li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/containers/AboutPage/AboutPage.tsx#L11">containers/AboutPage/AboutPage.tsx:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -222,7 +273,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in containers/ContactPage/ContactPage.tsx:11</li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/containers/ContactPage/ContactPage.tsx#L11">containers/ContactPage/ContactPage.tsx:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -244,7 +295,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/07524a2/src/containers/HomePage/HomePage.tsx#L11">containers/HomePage/HomePage.tsx:11</a></li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/containers/HomePage/HomePage.tsx#L11">containers/HomePage/HomePage.tsx:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -266,7 +317,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/07524a2/src/components/PageNotFound/PageNotFound.tsx#L9">components/PageNotFound/PageNotFound.tsx:9</a></li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/components/PageNotFound/PageNotFound.tsx#L9">components/PageNotFound/PageNotFound.tsx:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -280,7 +331,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="salespage" class="tsd-anchor"></a>
-					<h3>Sales<wbr>Page</h3>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Sales<wbr>Page</h3>
 					<ul class="tsd-signatures tsd-kind-function">
 						<li class="tsd-signature tsd-kind-icon">Sales<wbr>Page<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
@@ -288,7 +339,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in containers/Product/SalesPage/SalesPage.tsx:11</li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/containers/Product/SalesPage/SalesPage.tsx#L16">containers/Product/SalesPage/SalesPage.tsx:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -313,7 +364,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/07524a2/src/shared/Utils.ts#L10">shared/Utils.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/LCLY/soonseng/blob/331c17a/src/shared/Utils.ts#L10">shared/Utils.ts:10</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -360,7 +411,13 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/ownprops.html" class="tsd-kind-icon">Own<wbr>Props</a>
+						<a href="interfaces/cardcomponentprops.html" class="tsd-kind-icon">Card<wbr>Component<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/navbarcomponentprops.html" class="tsd-kind-icon">Navbar<wbr>Component<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/salespageprops.html" class="tsd-kind-icon">Sales<wbr>Page<wbr>Props</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#props" class="tsd-kind-icon">Props</a>
@@ -370,6 +427,9 @@
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#app" class="tsd-kind-icon">App</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#cardcomponent" class="tsd-kind-icon">Card<wbr>Component</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#contactpage" class="tsd-kind-icon">Contact<wbr>Page</a>

@@ -4,12 +4,12 @@ import './NavbarComponent.scss';
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-interface OwnProps {
+interface NavbarComponentProps {
   /** Shows which active page it is currently */
   activePage?: string;
 }
 
-type Props = OwnProps & RouteComponentProps;
+type Props = NavbarComponentProps & RouteComponentProps;
 
 /**
  *  A navbar component containing links to other pages
@@ -17,7 +17,8 @@ type Props = OwnProps & RouteComponentProps;
  * @param history history from react-router-dom
  * @category Components
  */
-function NavbarComponent({ history, activePage }: Props) {
+
+const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   return (
     <div className="navbar__outerdiv">
       <Navbar className="navbar__div" bg="primary" variant="dark" expand="md">
@@ -31,11 +32,13 @@ function NavbarComponent({ history, activePage }: Props) {
               <div className={`navbar__link ${activePage === 'home' ? 'active' : ''}`}>
                 <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
               </div>
-              <NavDropdown className="navbar__link" title="Product" id="product-nav-dropdown">
-                <NavDropdown.Item onClick={() => history.push('/product/sales')}>Sales</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">Peniswire</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Spaceparts</NavDropdown.Item>
-              </NavDropdown>
+              <div className="navbar__link navbar__link--product">
+                <NavDropdown title="Product" id="product-nav-dropdown">
+                  <NavDropdown.Item onClick={() => history.push('/product/sales')}>Sales</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.2">Peniswire</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">Spaceparts</NavDropdown.Item>
+                </NavDropdown>
+              </div>
               <div className={`navbar__link ${activePage === 'about' ? 'active' : ''}`}>
                 <Nav.Link onClick={() => history.push('/about')}>About Us</Nav.Link>
               </div>
@@ -48,6 +51,6 @@ function NavbarComponent({ history, activePage }: Props) {
       </Navbar>
     </div>
   );
-}
+};
 
 export default withRouter(NavbarComponent);

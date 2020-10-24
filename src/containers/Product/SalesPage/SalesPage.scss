@@ -10,13 +10,15 @@
   &__section {
     padding: 2rem;
     margin: 1rem 0;
-    background: #f3efef7a;
+    background: #dde2eb4b;
     &-header {
-      font-size: 2rem;
+      font-size: 2.5rem;
+      font-weight: 500;
       font-family: $ubuntu;
       padding-bottom: 1rem;
       border-bottom: 1px solid $translucent-grey;
       margin-bottom: 2rem;
+      text-align: center;
     }
 
     &-desc {
@@ -25,30 +27,34 @@
     }
   }
   /* =================================== */
-  // cards
-  &__card {
+  // Length section
+  &__length {
+    /* ------------------*/
     // div wrapping cards
     &-div {
       display: flex;
       & > .active {
         // if the card is in active state
-        // background-image: linear-gradient(to right bottom, $primary-color-3, $primary-color-3);
+        background-image: linear-gradient(to right bottom, $primary-color-4, $primary-color-4);
         transform: translateY(0rem);
         border: 2px solid white;
-        animation: cardClickedAnimate 0.3s ease forwards;
+        pointer-events: none;
+        @include shadow-func(0rem, 0.15rem, 0.4rem, 0.1rem, rgba(44, 43, 43, 0.336));
 
         &:hover {
           transition: none;
           transform: translateY(0rem);
-          @include shadow-func(0rem, 0.2rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
+          @include shadow-func(0rem, 0.15rem, 0.4rem, 0.1rem, rgba(44, 43, 43, 0.336));
           background-position: left top;
           border: 2px solid white;
         }
       }
     }
 
+    /* --------------------*/
     // vehicle length card
-    &-length {
+    &-card {
+      position: relative;
       transition: all 0.3s ease;
       color: white;
       cursor: pointer;
@@ -57,7 +63,7 @@
       padding: 3rem;
       user-select: none;
       background-size: 200% auto;
-      background-image: linear-gradient(to right bottom, $primary-color-1 50%, $primary-color-3);
+      background-image: linear-gradient(to right bottom, $primary-color-2 50%, $primary-color-4);
       @include shadow-func(0rem, 0.3rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
       &:not(:last-child) {
         margin-right: 2rem;
@@ -73,28 +79,175 @@
       &:active {
         transition: none;
         transform: translateY(0rem);
+        background-image: linear-gradient(to right bottom, $primary-color-1 5%, $primary-color-4);
         @include shadow-func(0rem, 0.2rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
-        background-position: left top;
+        background-position: 100% 100%;
+        background-size: 2000%;
         border: 2px solid white;
       }
     }
   }
-}
 
-@keyframes cardClickedAnimate {
-  0% {
-    background-image: linear-gradient(to right bottom, $primary-color-1 50%, $primary-color-3);
+  /* =================================== */
+  // Body section
+  &__body {
+    /* ------------- */
+    // the div of the body section containing cards
+    &-div {
+      display: grid;
+      grid-template-rows: auto;
+      grid-template-columns: repeat(2, 1fr);
+      justify-content: center;
+      align-items: center;
+      grid-auto-rows: 3fr;
+      justify-items: center;
+      grid-gap: 2rem;
+    }
   }
 
-  50% {
-    background-image: linear-gradient(to left center, $primary-color-1 20%, $primary-color-3);
-  }
-  75% {
-    background-image: linear-gradient(to left center, $primary-color-1 5%, $primary-color-3);
+  // overlay on length card
+  &__overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    border-radius: 0.5rem;
+    z-index: 100;
+
+    & > .fa-check-circle {
+      color: rgb(18, 233, 18);
+      padding: 0.5rem;
+    }
   }
 
-  100% {
-    background-image: linear-gradient(to top left, $primary-color-1 0%, $primary-color-3);
-    border: 2px solid white;
+  /* =========================== */
+  // brand section
+  &__brand {
+    /* ------------------------ */
+    &-toggle {
+      // the accordion from bootstrap
+      background: $primary-color-3 !important;
+      color: white;
+      cursor: pointer;
+      font-size: 2rem;
+      padding: 1rem 2rem !important;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+      &:hover {
+        transition: all 0.5 ease;
+        background: $primary-color-4 !important;
+      }
+    }
+    /* ------------------------ */
+    // logo inside the clickable accordions
+    &-logo {
+      margin-left: 5rem;
+      background: white;
+      padding: 0.5rem;
+    }
+    /* ------------------------- */
+    // further into the catalog of vehicles provided by different brands
+    &-makes {
+      // the div
+      &-div {
+        border: 1px solid $translucent-grey;
+        height: 50rem;
+        display: flex;
+      }
+
+      /* -------------- */
+      // the picker for user to choose which vehicle to preview on the left
+      &-picker {
+        width: 40rem;
+        height: 100%;
+        border-right: 1px solid $translucent-grey;
+        overflow-y: auto;
+        overflow-x: hidden;
+        // change the look of the scrollbar
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+        &::-webkit-scrollbar-thumb {
+          border-radius: 6px;
+          background: $primary-color-4;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+          background: $primary-color-2;
+        }
+
+        /* targeting the active class */
+        & > .active {
+          transition: all 0.5s ease;
+          background: $primary-color-4 !important;
+          &:hover {
+            box-shadow: none;
+          }
+        }
+      }
+      /* -------------- */
+      // the viewer for user to choose which vehicle to view on the right
+      &-viewer {
+        height: 100%;
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+        &::-webkit-scrollbar-thumb {
+          border-radius: 6px;
+          background: $secondary-color-3;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+          background: $secondary-color-2;
+        }
+      }
+    }
+  }
+
+  /* ======================================= */
+  // general card
+  &__card {
+    /* ------------------------------------ */
+    // card for the picker on the left column
+    &-picker {
+      position: relative;
+      width: auto !important;
+      margin: 1rem;
+      color: white;
+      background: $primary-color-2 !important;
+      padding: 0.5rem;
+      cursor: pointer;
+
+      &:hover {
+        transition: all 0.5s ease;
+        background: $primary-color-4 !important;
+        @include shadow-func(0rem, 0.3rem, 0.7rem, 0.2rem, rgba(34, 33, 33, 0.534));
+      }
+      // the body wrapping the title
+      &-body {
+        padding: 1rem 0 0 0 !important;
+      }
+      // title of the card picker content
+      &-title {
+        text-align: center;
+        font-family: $opensans !important;
+        font-weight: 600 !important;
+      }
+    }
+
+    /* ------------------------------------ */
+    //  the card on the viewer side
+    &-viewer {
+      width: auto !important;
+      margin: 3rem 10rem 3rem 10rem;
+    }
   }
 }

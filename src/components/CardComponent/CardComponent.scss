@@ -1,0 +1,117 @@
+@import '../../scss/variables.scss';
+
+.card {
+  border-radius: 0.5rem !important;
+  /* =================== */
+  // outer div of the card
+  &__outerdiv {
+    position: relative;
+    & > .active {
+      &:hover {
+        @include shadow-func(0rem, 0rem, 0rem, 0rem, rgba(80, 75, 75, 0.233));
+        transform: translateY(0rem);
+        pointer-events: none;
+      }
+    }
+  }
+
+  &__div {
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    border: 1rem solid white !important;
+    &:hover {
+      @include shadow-func(0.1rem, 0.5rem, 1rem, 0.1rem, rgba(80, 75, 75, 0.233));
+      transform: translateY(-0.3rem);
+    }
+
+    &:active {
+      transition: none;
+      // @include shadow-func(0.1rem, 0.5rem, 1rem, 0.1rem, rgba(80, 75, 75, 0.233));
+      transform: translateY(0rem);
+    }
+  }
+
+  /* =================== */
+  // text box on the right
+  &__right {
+    width: 100%;
+  }
+
+  /* =================== */
+  // row containing image and desc
+  &__row {
+    width: 100% !important;
+  }
+
+  /* =================== */
+  // the img
+  &__img {
+    border-radius: 0.5rem 0 0 0.5rem;
+  }
+
+  /* =================== */
+  // the text inside the box on the right
+  &__text {
+    padding: 0 1rem;
+    height: 100%;
+  }
+
+  /* =================== */
+  // title of the card
+  &__title {
+    font-family: $roboto;
+    font-weight: 500;
+    margin-top: 1rem;
+  }
+
+  /* =================== */
+  // description of the card
+  &__desc {
+    font-family: $opensans;
+    font-size: 1.25rem;
+    &-dimension {
+      margin-bottom: 1rem;
+
+      // e.g. 15ft x 10ft x 20ft
+      &-number {
+        color: $primary-color-4;
+        // font-weight: bolder;
+      }
+    }
+  }
+
+  /* =================== */
+  // price of the card
+  &__price {
+    font-family: $roboto;
+    font-weight: 900;
+    color: $primary-color-3;
+    /* ----------- */
+    // div wrapping the price
+    &-div {
+      text-align: right;
+      border-top: 1px solid $translucent-grey;
+      padding-top: 1rem;
+      margin-top: auto;
+    }
+  }
+
+  &__overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    z-index: 50;
+    border-radius: 0.5rem;
+    & > .fa-check-circle {
+      color: rgb(18, 233, 18);
+      padding: 0.5rem;
+    }
+  }
+}

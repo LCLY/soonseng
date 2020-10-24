@@ -1,9 +1,10 @@
 @import './mixin.scss';
 
 // Theme colors
-$primary-color-1: rgb(255, 0, 43);
-$primary-color-2: rgb(224, 37, 68);
-$primary-color-3: rgb(167, 25, 49);
+$primary-color-1: rgb(238, 9, 47);
+$primary-color-2: rgb(201, 26, 56);
+$primary-color-3: #af0606;
+$primary-color-4: #830e0e;
 $secondary-color-1: rgb(44, 45, 46);
 $secondary-color-2: rgb(92, 88, 89);
 $secondary-color-3: rgb(141, 144, 147);
@@ -38,6 +39,8 @@ $bottom-shadow: 0px 0.3rem 0.5rem rgba(black, 0.15);
 
 // font families
 $ubuntu: 'Ubuntu', sans-serif;
+$roboto: 'Roboto', sans-serif;
+$opensans: 'Open Sans', sans-serif;
 
 // z-index
 $navbar: 10;

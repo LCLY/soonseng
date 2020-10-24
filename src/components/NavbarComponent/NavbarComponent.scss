@@ -3,7 +3,7 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv > .bg-primary {
-    background-image: linear-gradient(to right, $primary-color-1, rgb(129, 12, 32));
+    background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
   }
   &__div {
     padding: 2rem 3rem !important;
@@ -28,6 +28,20 @@
       background: $secondary-color-1;
       @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
       border-radius: 0.5rem;
+    }
+
+    @include respond-to(tablet) {
+      margin: 0.3rem 0;
+    }
+
+    /* --------------- */
+    // the product dropdown, need to add padding to the bottom of the dropdown
+    &--product {
+      & > .show {
+        @include respond-to(tablet) {
+          margin-bottom: 1rem;
+        }
+      }
     }
   }
 }
