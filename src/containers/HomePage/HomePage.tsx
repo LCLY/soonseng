@@ -8,6 +8,7 @@ import NavbarComponent from '../../components/NavbarComponent/NavbarComponent';
  * @return {*}
  * @category Pages
  */
+
 function HomePage() {
   return (
     <div>

@@ -18,7 +18,7 @@ html {
   // if content is less then pages still takes full view-port height
   // and footer will stick at the bottom of page
   // min-height: 100%;
-  // height: 0 !important;
+  // height: 100vh !important;
   // overflow-y: overlay; // a hack to prevent stuffs from moving around when scrollbar pops up
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import './NavbarComponent.scss';
 // 3rd party lib
-import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
+import { Navbar, Container, Nav /* NavDropdown */ } from 'react-bootstrap';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 interface NavbarComponentProps {
@@ -32,12 +32,15 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
               <div className={`navbar__link ${activePage === 'home' ? 'active' : ''}`}>
                 <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
               </div>
-              <div className="navbar__link navbar__link--product">
+              {/* <div className="navbar__link navbar__link--product">
                 <NavDropdown title="Product" id="product-nav-dropdown">
                   <NavDropdown.Item onClick={() => history.push('/product/sales')}>Sales</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">Peniswire</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">Spaceparts</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.2">Service</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">Spare parts</NavDropdown.Item>
                 </NavDropdown>
+              </div> */}
+              <div className={`navbar__link ${activePage === 'sales' ? 'active' : ''}`}>
+                <Nav.Link onClick={() => history.push('/sales')}>Sales</Nav.Link>
               </div>
               <div className={`navbar__link ${activePage === 'about' ? 'active' : ''}`}>
                 <Nav.Link onClick={() => history.push('/about')}>About Us</Nav.Link>

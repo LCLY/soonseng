@@ -45,3 +45,9 @@
     }
   }
 }
+
+.dropdown-menu {
+  & > a {
+    z-index: 1000 !important;
+  }
+}

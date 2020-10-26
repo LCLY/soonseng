@@ -1,11 +1,5 @@
 @import '../../scss/variables.scss';
 
-* {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-}
-
 .pagenotfound {
   &__main {
     display: -webkit-box;
