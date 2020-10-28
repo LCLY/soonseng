@@ -3,7 +3,7 @@ import './CardComponent.scss';
 // 3rd party lib
 import Lightbox from 'react-image-lightbox';
 import NumberFormat from 'react-number-format';
-import { img_placeholder_link } from '../../shared/global';
+import { img_placeholder_link } from 'src/shared/global';
 interface CardComponentProps {
   title: string;
   desc: string;

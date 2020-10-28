@@ -1,7 +1,7 @@
 import React from 'react';
 import './ContactPage.scss';
 // component
-import NavbarComponent from '../../components/NavbarComponent/NavbarComponent';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
 /**
  * Page to find contact information about the company

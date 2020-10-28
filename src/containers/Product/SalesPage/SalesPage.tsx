@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './SalesPage.scss';
-import { img_placeholder_link } from '../../../shared/global';
+import { img_placeholder_link } from 'src/shared/global';
 // dummy data
 import { dummyBrandArray, bodyCardArray } from './dummyData';
 
 // component
-import CardComponent from '../../../components/CardComponent/CardComponent';
-import NavbarComponent from '../../../components/NavbarComponent/NavbarComponent';
+import CardComponent from 'src/components/CardComponent/CardComponent';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
 // 3rd party lib
+import { connect } from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
 import { Container, Accordion, Button, Card } from 'react-bootstrap';
+import * as actions from 'src/store/actions/index';
 
 interface SalesPageProps {}
 
-type Props = SalesPageProps;
+type Props = SalesPageProps & StateProps & DispatchProps;
 /**
  * Sales page that provide functionality for user to choose vehicle parts
  *
@@ -23,7 +26,7 @@ type Props = SalesPageProps;
  * @return {*}
  * @category Pages
  */
-const SalesPage: React.FC<Props> = () => {
+const SalesPage: React.FC<Props> = ({ onGetBrandsHead }) => {
   /*################# state #################*/
   /**
    * Getting index of clicked vehicle length card to know which one is selected,
@@ -92,7 +95,9 @@ const SalesPage: React.FC<Props> = () => {
 
   /* ====================================================== */
   /* ############### useEffect ##################### */
-
+  useEffect(() => {
+    onGetBrandsHead();
+  }, [onGetBrandsHead]);
   /* ====================================================== */
   /* ====================================================== */
   /* ====================================================== */
@@ -326,4 +331,26 @@ const SalesPage: React.FC<Props> = () => {
   );
 };
 
-export default SalesPage;
+interface StateProps {
+  error: string;
+  loading: boolean;
+}
+
+const mapStateToProps = (state: any): StateProps => {
+  return {
+    error: state.sales.error,
+    loading: state.sales.loading,
+  };
+};
+
+interface DispatchProps {
+  onGetBrandsHead: typeof actions.getBrandsHead;
+}
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
+  return {
+    onGetBrandsHead: () => dispatch(actions.getBrandsHead()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SalesPage);

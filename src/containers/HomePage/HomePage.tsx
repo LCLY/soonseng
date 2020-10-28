@@ -1,7 +1,7 @@
 import React from 'react';
 import './HomePage.scss';
 // component
-import NavbarComponent from '../../components/NavbarComponent/NavbarComponent';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
 /**
  * Home page of the website

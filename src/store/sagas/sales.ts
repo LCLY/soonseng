@@ -1,4 +1,4 @@
-import { put /*, delay */, call } from 'redux-saga/effects';
+import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import axios from 'axios';
 import { AppActions } from '../types/index';
