@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './SalesPage.scss';
+// links
+import * as actions from 'src/store/actions/index';
 import { img_placeholder_link } from 'src/shared/global';
 // dummy data
 import { dummyBrandArray, bodyCardArray } from './dummyData';
@@ -11,13 +13,17 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 // 3rd party lib
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
 import { Container, Accordion, Button, Card } from 'react-bootstrap';
-import * as actions from 'src/store/actions/index';
+
+// Util
+import { TMapStateToProps } from 'src/store/types/index';
 
 interface SalesPageProps {}
 
-type Props = SalesPageProps & StateProps & DispatchProps;
+type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
+
 /**
  * Sales page that provide functionality for user to choose vehicle parts
  *
@@ -26,7 +32,7 @@ type Props = SalesPageProps & StateProps & DispatchProps;
  * @return {*}
  * @category Pages
  */
-const SalesPage: React.FC<Props> = ({ onGetBrandsHead }) => {
+const SalesPage: React.FC<Props> = ({ history, onGetBrandsHead }) => {
   /*################# state #################*/
   /**
    * Getting index of clicked vehicle length card to know which one is selected,
@@ -105,6 +111,11 @@ const SalesPage: React.FC<Props> = ({ onGetBrandsHead }) => {
     <>
       <NavbarComponent activePage="sales" />
       <Container>
+        <div className="sales__dashboard">
+          <Button variant="primary" onClick={() => history.push('/dashboard')}>
+            Go to Dashboard
+          </Button>
+        </div>
         <div className="sales__outerdiv">
           <section className="sales__section sales__section-length">
             <div className="sales__section-header">Length</div>
@@ -332,11 +343,11 @@ const SalesPage: React.FC<Props> = ({ onGetBrandsHead }) => {
 };
 
 interface StateProps {
-  error: string;
+  error: string | null;
   loading: boolean;
 }
 
-const mapStateToProps = (state: any): StateProps => {
+const mapStateToProps = (state: TMapStateToProps): StateProps => {
   return {
     error: state.sales.error,
     loading: state.sales.loading,
@@ -353,4 +364,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SalesPage);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SalesPage));
