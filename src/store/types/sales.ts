@@ -6,6 +6,7 @@ export interface SalesInitialState {
   readonly errorMessage: string | null;
   readonly successMessage: string | null;
   readonly brandObject: TBrandObject | null;
+  readonly wheelbaseObject: TWheelbaseObject | null;
 }
 
 // to further breakdown the state, use in mapStateToProps
@@ -63,9 +64,42 @@ export interface CreateBrandHeadFailedAction {
 }
 
 /* ============================================================== */
+// Create Wheelbase (Head)
+/* ============================================================== */
+export interface CreateWheelbaseHeadAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_HEAD;
+  title: string;
+  description: string;
+}
+export interface CreateWheelbaseHeadStartAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_START;
+}
+
+export type TWheelbaseObject = {
+  id: string;
+  title: string;
+  description: string;
+  value: number | null;
+  available: boolean;
+};
+
+export interface CreateWheelbaseHeadSucceedAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_SUCCEED;
+  wheelbaseObject: TWheelbaseObject;
+  successMessage: string;
+}
+export interface CreateWheelbaseHeadFailedAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
 export type SalesActionTypes =
+  /* ------------------------ */
+  | ClearSalesStateAction
+  /* ------------------------ */
   | GetBrandsHeadAction
   | GetBrandsHeadStartAction
   | GetBrandsHeadSucceedAction
@@ -76,4 +110,7 @@ export type SalesActionTypes =
   | CreateBrandHeadSucceedAction
   | CreateBrandHeadFailedAction
   /* ------------------------ */
-  | ClearSalesStateAction;
+  | CreateWheelbaseHeadAction
+  | CreateWheelbaseHeadStartAction
+  | CreateWheelbaseHeadSucceedAction
+  | CreateWheelbaseHeadFailedAction;
