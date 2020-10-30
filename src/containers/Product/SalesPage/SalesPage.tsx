@@ -343,14 +343,14 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrandsHead }) => {
 };
 
 interface StateProps {
-  error: string | null;
+  errorMessage: string | null;
   loading: boolean;
 }
 
 const mapStateToProps = (state: TMapStateToProps): StateProps => {
   return {
-    error: state.sales.error,
     loading: state.sales.loading,
+    errorMessage: state.sales.errorMessage,
   };
 };
 

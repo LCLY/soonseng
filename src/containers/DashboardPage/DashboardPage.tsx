@@ -1,21 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './DashboardPage.scss';
 /*components*/
+import OverlaySpinner from 'src/components/OverlaySpinner/OverlaySpinner';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
-import { Form, Nav, Col, Tab, Row, Button, Container } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
+import { Form, Nav, Col, Tab, Row, Button, Toast, Container } from 'react-bootstrap';
+/* Utils */
+import * as actions from 'src/store/actions/index';
+import { TBrandObject } from 'src/store/types/sales';
+import { TMapStateToProps } from 'src/store/types/index';
 
 interface DashboardPageProps {}
 
-type Props = DashboardPageProps;
+type Props = DashboardPageProps & StateProps & DispatchProps;
 
-const DashboardPage: React.FC<Props> = () => {
+/**
+ *
+ * The page where admin can add delete or update information
+ * @param {*} { brandObject, onCreateHeadBrand }
+ * @return {*}
+ * @category Pages
+ */
+const DashboardPage: React.FC<Props> = ({
+  loading,
+  brandObject,
+  errorMessage,
+  successMessage,
+  onClearSalesState,
+  onCreateHeadBrand,
+}) => {
   /* ================================================== */
-  /*  state */
+  // state
   /* ================================================== */
+  const [createBrand, setCreateBrand] = useState({ title: '', description: '' });
+  // Toast notification
+  const [showToast, setShowToast] = useState(false);
 
   /* ================================================== */
-  /*  component  */
+  // booleans
+  /* ================================================== */
+  //  If success message or error message exist
+  let successOrErrorMessageExist = successMessage || errorMessage;
+
+  console.log(brandObject);
+
+  /* ================================================== */
+  //  component
   /* ================================================== */
   let CreateComponent = (
     <>
@@ -28,25 +60,34 @@ const DashboardPage: React.FC<Props> = () => {
         <div className="dashboard__header">
           <h2>Create Brand - Head</h2>
         </div>
-        <Form>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onCreateHeadBrand(createBrand.title, createBrand.description);
+          }}
+        >
           <Form.Group className="dashboard__form-row" controlId="createBrandTitle">
             <Form.Label className="dashboard__form-text">Title</Form.Label>:
             <Form.Control
+              required
               type="text"
               className="dashboard__form-input"
               placeholder="Enter the title of the head brand here"
+              onChange={(e) => setCreateBrand({ ...createBrand, title: e.target.value })}
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBrandDesc">
             <Form.Label className="dashboard__form-text">Description</Form.Label>:
             <Form.Control
+              required
               type="text"
               className="dashboard__form-input"
               placeholder="Enter the description of the head brand here"
+              onChange={(e) => setCreateBrand({ ...createBrand, description: e.target.value })}
             />
           </Form.Group>
           <div className="dashboard__form-btn-div">
-            <Button variant="primary" className="dashboard__form-btn">
+            <Button disabled={loading} variant="primary" type="submit" className="dashboard__form-btn">
               Create Head Brand
             </Button>
           </div>
@@ -219,7 +260,6 @@ const DashboardPage: React.FC<Props> = () => {
           </Form.Group>
           <div className="dashboard__form-btn-div">
             <Button variant="primary" className="dashboard__form-btn">
-              {' '}
               Create Tail Body
             </Button>
           </div>
@@ -420,13 +460,55 @@ const DashboardPage: React.FC<Props> = () => {
 
   /* ================================================== */
   /*  useEffect  */
+  useEffect(() => {
+    if (successOrErrorMessageExist) {
+      // show the toast popup
+      setShowToast(true);
+      // after 2 seconds, hide the toast
+      // then call onClearStates to clear the error/success message
+      let timer = setTimeout(() => {
+        setShowToast(false);
+        onClearSalesState();
+        setCreateBrand({ ...createBrand, title: '', description: '' }); //empty the inputs
+      }, 2000);
+
+      return () => {
+        // prevent memory leak
+        clearTimeout(timer);
+      };
+    }
+  }, [createBrand, setShowToast, setCreateBrand, onClearSalesState, successOrErrorMessageExist]);
   /* ================================================== */
 
   /* ================================================== */
   /* ================================================== */
+  console.log(showToast);
   return (
     <>
+      {loading && <OverlaySpinner />}
       <NavbarComponent activePage="" />
+      {successOrErrorMessageExist && (
+        <div className="dashboard__toast-div">
+          <Toast className="dashboard__toast" show={showToast} onClose={() => setShowToast(false)}>
+            <Toast.Header className="dashboard__toast-header">
+              {errorMessage && (
+                <strong className="mr-auto">
+                  <span style={{ color: 'rgb(201, 26, 56)' }}>Error</span>
+                </strong>
+              )}
+              {successMessage && (
+                <strong className="mr-auto">
+                  <span style={{ color: 'rgb(31, 167, 72)' }}>Successful</span>
+                </strong>
+              )}
+            </Toast.Header>
+            <Toast.Body className="dashboard__toast-body">
+              {errorMessage}
+              {successMessage}
+            </Toast.Body>
+          </Toast>
+        </div>
+      )}
       <Container>
         <div className="dashboard__tab">
           <Tab.Container id="left-tabs-dashboard" defaultActiveKey="create">
@@ -462,4 +544,33 @@ const DashboardPage: React.FC<Props> = () => {
     </>
   );
 };
-export default DashboardPage;
+
+interface StateProps {
+  loading: boolean;
+  errorMessage: string | null;
+  successMessage: string | null;
+  brandObject: TBrandObject | null;
+}
+
+const mapStateToProps = (state: TMapStateToProps) => {
+  return {
+    loading: state.sales.loading,
+    brandObject: state.sales.brandObject,
+    errorMessage: state.sales.errorMessage,
+    successMessage: state.sales.successMessage,
+  };
+};
+
+interface DispatchProps {
+  onCreateHeadBrand: typeof actions.createBrandHead;
+  onClearSalesState: typeof actions.clearSalesState;
+}
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
+  return {
+    onClearSalesState: () => dispatch(actions.clearSalesState()),
+    onCreateHeadBrand: (title, description) => dispatch(actions.createBrandHead(title, description)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);

@@ -1,0 +1,40 @@
+.overlayspinner {
+  /* ===================== */
+  // the dark backdrop
+  /* ===================== */
+  &__backdrop {
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  /* ===================== */
+  // Spinner related identifier
+  /* ===================== */
+  &__spinner {
+    height: 3rem !important;
+    width: 3rem !important;
+
+    /* ----------------------- */
+    // div wrapping the spinner
+    /* ----------------------- */
+    &-div {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    /* ----------------------- */
+    // parent div of spinner
+    /* ----------------------- */
+    &-parent {
+      position: relative;
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

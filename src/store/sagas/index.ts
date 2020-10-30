@@ -3,8 +3,9 @@ import { takeEvery, all } from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
 import { SalesActionTypes } from '../types/sales';
 
-import { getBrandsHeadSaga } from './sales';
+import { getBrandsHeadSaga, createBrandHeadSaga } from './sales';
 
 export function* watchAuth() {
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_BRANDS_HEAD, getBrandsHeadSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_BRAND_HEAD, createBrandHeadSaga)]);
 }
