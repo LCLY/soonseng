@@ -57,9 +57,7 @@ export function* createBrandHeadSaga(action: AppActions) {
     };
   }
   try {
-    let response = yield axios.post(url, brand);
-
-    console.log(response);
+    let response = yield axios.post(url, { brand });
     yield put(actions.createBrandHeadSucceed(response.data.brand, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -71,6 +69,51 @@ export function* createBrandHeadSaga(action: AppActions) {
       console.log('error response status:', error.response.status);
       console.log('error response header:', error.response.headers);
       yield put(actions.createBrandHeadFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ================================================================== */
+//    Create wheelbase (head)
+/* ================================================================== */
+export function* createWheelbaseHeadSaga(action: AppActions) {
+  yield put(actions.createWheelbaseHeadStart());
+
+  let url = `https://ss-sales.herokuapp.com/api/v1/head/wheelbases`;
+
+  let wheelbase = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('title' in action && 'description' in action) {
+    wheelbase = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { wheelbase });
+    console.log(response);
+    yield put(actions.createWheelbaseHeadSucceed(response.data.wheelbase, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response header:', error.response.headers);
+      yield put(actions.createWheelbaseHeadFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

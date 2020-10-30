@@ -7,6 +7,7 @@ const initialState: SalesInitialState = {
   brandObject: null,
   errorMessage: null,
   successMessage: null,
+  wheelbaseObject: null,
 };
 
 /* ============================================================================================ */
@@ -43,6 +44,19 @@ const createBrandHeadFailed = (state: SalesInitialState, action: any) => {
 };
 
 /* ============================================================================================ */
+/* Create Wheelbase (head) */
+/* ============================================================================================ */
+const createWheelbaseHeadStart = (state: SalesInitialState, _action: any) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createWheelbaseHeadSucceed = (state: SalesInitialState, action: any) => {
+  return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
+};
+const createWheelbaseHeadFailed = (state: SalesInitialState, action: any) => {
+  return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+};
+
+/* ============================================================================================ */
 /* ============================================================================================ */
 
 const reducer = (state = initialState, action: SalesActionTypes) => {
@@ -66,6 +80,14 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
       return createBrandHeadSucceed(state, action);
     case actionTypes.CREATE_BRAND_HEAD_FAILED:
       return createBrandHeadFailed(state, action);
+
+    // Create wheelbase (head)
+    case actionTypes.CREATE_WHEELBASE_HEAD_START:
+      return createWheelbaseHeadStart(state, action);
+    case actionTypes.CREATE_WHEELBASE_HEAD_SUCCEED:
+      return createWheelbaseHeadSucceed(state, action);
+    case actionTypes.CREATE_WHEELBASE_HEAD_FAILED:
+      return createWheelbaseHeadFailed(state, action);
 
     default:
       return state;

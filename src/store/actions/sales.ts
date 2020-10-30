@@ -1,6 +1,6 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TBrandObject } from 'src/store/types/sales';
+import { TBrandObject, TWheelbaseObject } from 'src/store/types/sales';
 
 /* ============================================================================================ */
 // Clear Sales state
@@ -69,6 +69,36 @@ export const createBrandHeadSucceed = (brandObject: TBrandObject, successMessage
 export const createBrandHeadFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.CREATE_BRAND_HEAD_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/* ============================================================================================ */
+// Create Wheelbase (head)
+/* ============================================================================================ */
+export const createWheelbaseHead = (title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_WHEELBASE_HEAD,
+    title: title,
+    description: description,
+  };
+};
+
+export const createWheelbaseHeadStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_WHEELBASE_HEAD_START,
+  };
+};
+
+export const createWheelbaseHeadSucceed = (wheelbaseObject: TWheelbaseObject, successMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_WHEELBASE_HEAD_SUCCEED,
+    wheelbaseObject: wheelbaseObject,
+    successMessage: successMessage,
+  };
+};
+export const createWheelbaseHeadFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_WHEELBASE_HEAD_FAILED,
     errorMessage: errorMessage,
   };
 };
