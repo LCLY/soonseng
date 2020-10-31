@@ -9,6 +9,8 @@ import SalesPage from './containers/Product/SalesPage/SalesPage';
 import DashboardPage from './containers/DashboardPage/DashboardPage';
 // 3rd party lib
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-datetime/css/react-datetime.css';
+
 // interface OwnProps {}
 
 // type Props = OwnProps & StateProps;

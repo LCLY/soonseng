@@ -7,11 +7,12 @@ import DashboardCreate from './DashboardCreate/DashboardCreate';
 /*3rd party lib*/
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Nav, Col, Tab, Row, Toast, Container } from 'react-bootstrap';
+import { Nav, Col, Tab, Tabs, Row, Toast, Container } from 'react-bootstrap';
 /* Utils */
 import * as actions from 'src/store/actions/index';
-import { TBrandObject } from 'src/store/types/sales';
+import { TBrandObject, TMakeHeadSubmit } from 'src/store/types/sales';
 import { TMapStateToProps } from 'src/store/types/index';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 
 interface DashboardPageProps {}
 
@@ -29,6 +30,7 @@ const DashboardPage: React.FC<Props> = ({
   // brandObject,
   errorMessage,
   successMessage,
+  onCreateMakeHead,
   onClearSalesState,
   onCreateBrandHead,
   onCreateWheelbaseHead,
@@ -36,11 +38,52 @@ const DashboardPage: React.FC<Props> = ({
   /* ================================================== */
   // state
   /* ================================================== */
-  const [createBrand, setCreateBrand] = useState({ title: '', description: '' });
-  const [createWheelbase, setCreateWheelbase] = useState({ title: '', description: '' });
+  const { width } = useWindowDimensions();
+  const [tabActiveKey, setTabActiveKey] = useState<string | null>('create');
+  const [createBrand, setCreateBrand] = useState<{ title: string; description: string }>({
+    title: '',
+    description: '',
+  });
+  const [createWheelbase, setCreateWheelbase] = useState<{ title: string; description: string }>({
+    title: '',
+    description: '',
+  });
+  const [createMake, setCreateMake] = useState<TMakeHeadSubmit>({
+    gvw: '',
+    year: 0,
+    price: 0,
+    title: '',
+    length: '',
+    brand_id: 0,
+    engine_cap: '',
+    horsepower: '',
+    description: '',
+    wheelbase_id: 0,
+    transmission: '',
+  });
 
   // Toast notification
   const [showToast, setShowToast] = useState(false);
+
+  /* ================================================== */
+  // components
+  /* ================================================== */
+  let DashboardCreateComponent = (
+    <DashboardCreate
+      // create brand
+      createBrand={createBrand}
+      setCreateBrand={setCreateBrand}
+      onCreateBrandHead={onCreateBrandHead}
+      // create wheelbase
+      createWheelbase={createWheelbase}
+      setCreateWheelbase={setCreateWheelbase}
+      onCreateWheelbaseHead={onCreateWheelbaseHead}
+      // create make
+      createMake={createMake}
+      setCreateMake={setCreateMake}
+      onCreateMakeHead={onCreateMakeHead}
+    />
+  );
 
   /* ================================================== */
   // booleans
@@ -78,7 +121,7 @@ const DashboardPage: React.FC<Props> = ({
     successOrErrorMessageExist,
   ]);
   /* ================================================== */
-
+  console.log(tabActiveKey);
   /* ================================================== */
   /* ================================================== */
   return (
@@ -109,45 +152,57 @@ const DashboardPage: React.FC<Props> = ({
       )}
       <Container>
         <div className="dashboard__tab">
-          <Tab.Container id="left-tabs-dashboard" defaultActiveKey="create">
-            <Row>
-              <Col sm={3}>
-                <Nav variant="pills" className="flex-column">
-                  <Nav.Item>
-                    <Nav.Link eventKey="view">View</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="create">Create</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="update">Update</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="delete">Delete</Nav.Link>
-                  </Nav.Item>
-                </Nav>
-              </Col>
-              <Col sm={9}>
-                <Tab.Content>
-                  <Tab.Pane eventKey="view">View</Tab.Pane>
-                  <Tab.Pane eventKey="create">
-                    <DashboardCreate
-                      // create brand
-                      createBrand={createBrand}
-                      setCreateBrand={setCreateBrand}
-                      // create wheelbase
-                      onCreateBrandHead={onCreateBrandHead}
-                      createWheelbase={createWheelbase}
-                      setCreateWheelbase={setCreateWheelbase}
-                      onCreateWheelbaseHead={onCreateWheelbaseHead}
-                    />
-                  </Tab.Pane>
-                  <Tab.Pane eventKey="update">Update</Tab.Pane>
-                  <Tab.Pane eventKey="delete">Delete</Tab.Pane>
-                </Tab.Content>
-              </Col>
-            </Row>
-          </Tab.Container>
+          {width > 1200 ? (
+            <Tab.Container id="left-tabs-dashboard" activeKey={tabActiveKey}>
+              <Row>
+                <Col lg={3} sm={12} xs={12}>
+                  <Nav variant="pills" className="flex-column">
+                    <Nav.Item>
+                      <Nav.Link eventKey="view" onClick={() => setTabActiveKey('view')}>
+                        View
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="create" onClick={() => setTabActiveKey('create')}>
+                        Create
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="update" onClick={() => setTabActiveKey('update')}>
+                        Update
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="delete" onClick={() => setTabActiveKey('delete')}>
+                        Delete
+                      </Nav.Link>
+                    </Nav.Item>
+                  </Nav>
+                </Col>
+                <Col lg={9} sm={12} xs={12}>
+                  <Tab.Content>
+                    <Tab.Pane eventKey="view">View</Tab.Pane>
+                    <Tab.Pane eventKey="create">{DashboardCreateComponent}</Tab.Pane>
+                    <Tab.Pane eventKey="update">Update</Tab.Pane>
+                    <Tab.Pane eventKey="delete">Delete</Tab.Pane>
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
+          ) : (
+            <Tabs activeKey={tabActiveKey} id="uncontrolled-tab-example" onSelect={(k) => setTabActiveKey(k)}>
+              <Tab eventKey="view" title="View"></Tab>
+              <Tab eventKey="create" title="Create" onClick={() => setTabActiveKey('create')}>
+                {DashboardCreateComponent}
+              </Tab>
+              <Tab eventKey="update" title="Update" onClick={() => setTabActiveKey('update')}>
+                Update
+              </Tab>
+              <Tab eventKey="delete" title="Delete" onClick={() => setTabActiveKey('delete')}>
+                Delete
+              </Tab>
+            </Tabs>
+          )}
         </div>
       </Container>
     </>
@@ -172,6 +227,7 @@ const mapStateToProps = (state: TMapStateToProps) => {
 
 interface DispatchProps {
   onClearSalesState: typeof actions.clearSalesState;
+  onCreateMakeHead: typeof actions.createMakeHead;
   onCreateBrandHead: typeof actions.createBrandHead;
   onCreateWheelbaseHead: typeof actions.createWheelbaseHead;
 }
@@ -179,6 +235,7 @@ interface DispatchProps {
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
+    onCreateMakeHead: (createMakeSubmitData: TMakeHeadSubmit) => dispatch(actions.createMakeHead(createMakeSubmitData)),
     onCreateBrandHead: (title, description) => dispatch(actions.createBrandHead(title, description)),
     onCreateWheelbaseHead: (title, description) => dispatch(actions.createWheelbaseHead(title, description)),
   };

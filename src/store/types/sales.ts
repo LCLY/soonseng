@@ -5,6 +5,7 @@ export interface SalesInitialState {
   readonly loading: boolean;
   readonly errorMessage: string | null;
   readonly successMessage: string | null;
+  readonly makeObject: TMakeObject | null;
   readonly brandObject: TBrandObject | null;
   readonly wheelbaseObject: TWheelbaseObject | null;
 }
@@ -25,9 +26,12 @@ export interface ClearSalesStateAction {
 /* ============================================================== */
 // Get All Brands (Head)
 /* ============================================================== */
+
+/* Api call */
 export interface GetBrandsHeadAction {
   type: typeof actionTypes.GET_BRANDS_HEAD;
 }
+/* States */
 export interface GetBrandsHeadStartAction {
   type: typeof actionTypes.GET_BRANDS_HEAD_START;
 }
@@ -42,17 +46,20 @@ export interface GetBrandsHeadFailedAction {
 /* ============================================================== */
 // Create Brand (Head)
 /* ============================================================== */
+
+/* types */
+export type TBrandObject = { id: string; title: string; description: string; available: boolean };
+
+/*  Api call */
 export interface CreateBrandHeadAction {
   type: typeof actionTypes.CREATE_BRAND_HEAD;
   title: string;
   description: string;
 }
+/*  States */
 export interface CreateBrandHeadStartAction {
   type: typeof actionTypes.CREATE_BRAND_HEAD_START;
 }
-
-export type TBrandObject = { id: string; title: string; description: string; available: boolean };
-
 export interface CreateBrandHeadSucceedAction {
   type: typeof actionTypes.CREATE_BRAND_HEAD_SUCCEED;
   brandObject: TBrandObject;
@@ -66,15 +73,8 @@ export interface CreateBrandHeadFailedAction {
 /* ============================================================== */
 // Create Wheelbase (Head)
 /* ============================================================== */
-export interface CreateWheelbaseHeadAction {
-  type: typeof actionTypes.CREATE_WHEELBASE_HEAD;
-  title: string;
-  description: string;
-}
-export interface CreateWheelbaseHeadStartAction {
-  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_START;
-}
 
+/* types */
 export type TWheelbaseObject = {
   id: string;
   title: string;
@@ -83,6 +83,18 @@ export type TWheelbaseObject = {
   available: boolean;
 };
 
+/* Api call */
+export interface CreateWheelbaseHeadAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_HEAD;
+  title: string;
+  description: string;
+}
+
+/* States */
+export interface CreateWheelbaseHeadStartAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_START;
+}
+
 export interface CreateWheelbaseHeadSucceedAction {
   type: typeof actionTypes.CREATE_WHEELBASE_HEAD_SUCCEED;
   wheelbaseObject: TWheelbaseObject;
@@ -90,6 +102,62 @@ export interface CreateWheelbaseHeadSucceedAction {
 }
 export interface CreateWheelbaseHeadFailedAction {
   type: typeof actionTypes.CREATE_WHEELBASE_HEAD_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
+// Create Make (Head)
+/* ============================================================== */
+
+/* types */
+// Type of objects being submitted
+export type TMakeHeadSubmit = {
+  gvw: string;
+  year: number;
+  price: number;
+  title: string;
+  length: string;
+  brand_id: number;
+  engine_cap: string;
+  horsepower: string;
+  description: string;
+  wheelbase_id: number;
+  transmission: string;
+};
+
+// type of objects received on succees
+export type TMakeObject = {
+  id: number;
+  gvw: string;
+  year: string;
+  title: string;
+  price: number;
+  length: string;
+  brand_id: number;
+  available: boolean;
+  engine_cap: string;
+  horsepower: string;
+  description: string;
+  wheelbase_id: number;
+  transmission: string;
+};
+
+/*  Api call */
+export interface CreateMakeHeadAction {
+  type: typeof actionTypes.CREATE_MAKE_HEAD;
+  createMakeSubmitData: TMakeHeadSubmit;
+}
+/*  States */
+export interface CreateMakeHeadStartAction {
+  type: typeof actionTypes.CREATE_MAKE_HEAD_START;
+}
+export interface CreateMakeHeadSucceedAction {
+  type: typeof actionTypes.CREATE_MAKE_HEAD_SUCCEED;
+  makeObject: TMakeObject;
+  successMessage: string;
+}
+export interface CreateMakeHeadFailedAction {
+  type: typeof actionTypes.CREATE_MAKE_HEAD_FAILED;
   errorMessage: string;
 }
 
@@ -113,4 +181,9 @@ export type SalesActionTypes =
   | CreateWheelbaseHeadAction
   | CreateWheelbaseHeadStartAction
   | CreateWheelbaseHeadSucceedAction
-  | CreateWheelbaseHeadFailedAction;
+  | CreateWheelbaseHeadFailedAction
+  /* ------------------------ */
+  | CreateMakeHeadAction
+  | CreateMakeHeadStartAction
+  | CreateMakeHeadSucceedAction
+  | CreateMakeHeadFailedAction;

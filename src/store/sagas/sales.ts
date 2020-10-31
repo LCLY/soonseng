@@ -127,3 +127,57 @@ export function* createWheelbaseHeadSaga(action: AppActions) {
     }
   }
 }
+
+/* ================================================================== */
+//    Create make (head)
+/* ================================================================== */
+export function* createMakeHeadSaga(action: AppActions) {
+  yield put(actions.createMakeHeadStart());
+
+  let url = `https://ss-sales.herokuapp.com/api/v1/head/makes`;
+
+  let make = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('createMakeSubmitData' in action) {
+    make = {
+      gvw: action.createMakeSubmitData.gvw,
+      year: action.createMakeSubmitData.year,
+      price: action.createMakeSubmitData.price,
+      title: action.createMakeSubmitData.title,
+      length: action.createMakeSubmitData.length,
+      brand_id: action.createMakeSubmitData.brand_id,
+      engine_cap: action.createMakeSubmitData.engine_cap,
+      horsepower: action.createMakeSubmitData.horsepower,
+      description: action.createMakeSubmitData.description,
+      wheelbase_id: action.createMakeSubmitData.wheelbase_id,
+      transmission: action.createMakeSubmitData.transmission,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { make });
+    console.log(response);
+    yield put(actions.createMakeHeadSucceed(response.data.wheelbase, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response header:', error.response.headers);
+      yield put(actions.createMakeHeadFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}

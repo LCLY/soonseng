@@ -4,6 +4,7 @@ import { SalesActionTypes, SalesInitialState } from '../types/sales';
 
 const initialState: SalesInitialState = {
   loading: false,
+  makeObject: null,
   brandObject: null,
   errorMessage: null,
   successMessage: null,
@@ -57,6 +58,19 @@ const createWheelbaseHeadFailed = (state: SalesInitialState, action: any) => {
 };
 
 /* ============================================================================================ */
+/* Create Make (head) */
+/* ============================================================================================ */
+const createMakeHeadStart = (state: SalesInitialState, _action: any) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createMakeHeadSucceed = (state: SalesInitialState, action: any) => {
+  return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
+};
+const createMakeHeadFailed = (state: SalesInitialState, action: any) => {
+  return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+};
+
+/* ============================================================================================ */
 /* ============================================================================================ */
 
 const reducer = (state = initialState, action: SalesActionTypes) => {
@@ -88,6 +102,14 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
       return createWheelbaseHeadSucceed(state, action);
     case actionTypes.CREATE_WHEELBASE_HEAD_FAILED:
       return createWheelbaseHeadFailed(state, action);
+
+    // Create make (head)
+    case actionTypes.CREATE_MAKE_HEAD_START:
+      return createMakeHeadStart(state, action);
+    case actionTypes.CREATE_MAKE_HEAD_SUCCEED:
+      return createMakeHeadSucceed(state, action);
+    case actionTypes.CREATE_MAKE_HEAD_FAILED:
+      return createMakeHeadFailed(state, action);
 
     default:
       return state;
