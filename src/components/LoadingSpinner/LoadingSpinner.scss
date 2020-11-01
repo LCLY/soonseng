@@ -1,0 +1,16 @@
+/* spinner div */
+.spinner {
+  &__outerdiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20rem;
+  }
+
+  &__text {
+    margin-top: 1rem;
+    transform: translateX(0.5rem);
+    color: $primary-color-2;
+    font-family: 'Roboto', sans-serif;
+  }
+}

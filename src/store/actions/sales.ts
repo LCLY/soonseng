@@ -1,6 +1,6 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TBrandObject, TMakeHeadSubmit, TMakeObject, TWheelbaseObject } from 'src/store/types/sales';
+import { TBrandObject, TBrandsArray, TMakeHeadSubmit, TMakeObject, TWheelbaseObject } from 'src/store/types/sales';
 
 /* ============================================================================================ */
 // Clear Sales state
@@ -31,9 +31,10 @@ export const getBrandsHeadStart = (): AppActions => {
   };
 };
 
-export const getBrandsHeadSucceed = (): AppActions => {
+export const getBrandsHeadSucceed = (brandsArray: TBrandsArray[]): AppActions => {
   return {
     type: actionTypes.GET_BRANDS_HEAD_SUCCEED,
+    brandsArray: brandsArray,
   };
 };
 export const getBrandsHeadFailed = (errorMessage: string): AppActions => {

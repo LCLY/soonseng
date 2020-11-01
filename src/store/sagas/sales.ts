@@ -13,9 +13,7 @@ export function* getBrandsHeadSaga(_action: AppActions) {
 
   try {
     let response = yield axios.get(url);
-
-    console.log(response);
-    yield put(actions.getBrandsHeadSucceed());
+    yield put(actions.getBrandsHeadSucceed(response.data.brands));
   } catch (error) {
     if (error.response) {
       /*

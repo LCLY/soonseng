@@ -67,11 +67,12 @@
     /* ----------------- */
     &-append {
       width: 5rem;
-      // background: red;
       &-text {
         width: 100%;
         display: flex;
         justify-content: center;
+        background: $primary-color-4 !important;
+        color: white !important;
       }
     }
 

@@ -1,0 +1,7 @@
+.brand {
+  &__btn {
+    margin-bottom: 1rem;
+    padding: 0.5rem 2rem !important;
+    @include shadow-func(0, 0.2rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.425));
+  }
+}

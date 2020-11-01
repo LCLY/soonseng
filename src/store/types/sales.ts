@@ -6,6 +6,7 @@ export interface SalesInitialState {
   readonly errorMessage: string | null;
   readonly successMessage: string | null;
   readonly makeObject: TMakeObject | null;
+  readonly brandsArray: TBrandsArray[] | null;
   readonly brandObject: TBrandObject | null;
   readonly wheelbaseObject: TWheelbaseObject | null;
 }
@@ -26,6 +27,13 @@ export interface ClearSalesStateAction {
 /* ============================================================== */
 // Get All Brands (Head)
 /* ============================================================== */
+/* types */
+export type TBrandsArray = {
+  id: number;
+  title: string;
+  description: string | null;
+  available: boolean;
+};
 
 /* Api call */
 export interface GetBrandsHeadAction {
@@ -37,6 +45,7 @@ export interface GetBrandsHeadStartAction {
 }
 export interface GetBrandsHeadSucceedAction {
   type: typeof actionTypes.GET_BRANDS_HEAD_SUCCEED;
+  brandsArray: TBrandsArray[];
 }
 export interface GetBrandsHeadFailedAction {
   type: typeof actionTypes.GET_BRANDS_HEAD_FAILED;

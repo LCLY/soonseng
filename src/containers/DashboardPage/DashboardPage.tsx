@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './DashboardPage.scss';
 /*components*/
+import DashboardCreate from './DashboardCreate/DashboardCreate';
 import OverlaySpinner from 'src/components/OverlaySpinner/OverlaySpinner';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import DashboardCreate from './DashboardCreate/DashboardCreate';
+import DashboardSidebar from 'src/components/DashboardSidebar/DashboardSidebar';
 /*3rd party lib*/
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Nav, Col, Tab, Tabs, Row, Toast, Container } from 'react-bootstrap';
+import { Toast, Container } from 'react-bootstrap';
 /* Utils */
 import * as actions from 'src/store/actions/index';
 import { TBrandObject, TMakeHeadSubmit } from 'src/store/types/sales';
 import { TMapStateToProps } from 'src/store/types/index';
-import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+import { Layout } from 'antd';
+
+const { Content, Sider } = Layout;
 
 interface DashboardPageProps {}
 
@@ -38,8 +41,7 @@ const DashboardPage: React.FC<Props> = ({
   /* ================================================== */
   // state
   /* ================================================== */
-  const { width } = useWindowDimensions();
-  const [tabActiveKey, setTabActiveKey] = useState<string | null>('create');
+
   const [createBrand, setCreateBrand] = useState<{ title: string; description: string }>({
     title: '',
     description: '',
@@ -121,7 +123,7 @@ const DashboardPage: React.FC<Props> = ({
     successOrErrorMessageExist,
   ]);
   /* ================================================== */
-  console.log(tabActiveKey);
+
   /* ================================================== */
   /* ================================================== */
   return (
@@ -151,59 +153,22 @@ const DashboardPage: React.FC<Props> = ({
         </div>
       )}
       <Container>
-        <div className="dashboard__tab">
-          {width > 1200 ? (
-            <Tab.Container id="left-tabs-dashboard" activeKey={tabActiveKey}>
-              <Row>
-                <Col lg={3} sm={12} xs={12}>
-                  <Nav variant="pills" className="flex-column">
-                    <Nav.Item>
-                      <Nav.Link eventKey="view" onClick={() => setTabActiveKey('view')}>
-                        View
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                      <Nav.Link eventKey="create" onClick={() => setTabActiveKey('create')}>
-                        Create
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                      <Nav.Link eventKey="update" onClick={() => setTabActiveKey('update')}>
-                        Update
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                      <Nav.Link eventKey="delete" onClick={() => setTabActiveKey('delete')}>
-                        Delete
-                      </Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </Col>
-                <Col lg={9} sm={12} xs={12}>
-                  <Tab.Content>
-                    <Tab.Pane eventKey="view">View</Tab.Pane>
-                    <Tab.Pane eventKey="create">{DashboardCreateComponent}</Tab.Pane>
-                    <Tab.Pane eventKey="update">Update</Tab.Pane>
-                    <Tab.Pane eventKey="delete">Delete</Tab.Pane>
-                  </Tab.Content>
-                </Col>
-              </Row>
-            </Tab.Container>
-          ) : (
-            <Tabs activeKey={tabActiveKey} id="uncontrolled-tab-example" onSelect={(k) => setTabActiveKey(k)}>
-              <Tab eventKey="view" title="View"></Tab>
-              <Tab eventKey="create" title="Create" onClick={() => setTabActiveKey('create')}>
-                {DashboardCreateComponent}
-              </Tab>
-              <Tab eventKey="update" title="Update" onClick={() => setTabActiveKey('update')}>
-                Update
-              </Tab>
-              <Tab eventKey="delete" title="Delete" onClick={() => setTabActiveKey('delete')}>
-                Delete
-              </Tab>
-            </Tabs>
-          )}
-        </div>
+        <Layout>
+          <Sider theme="light" width={'auto'}>
+            <DashboardSidebar activeKey="brand" />
+          </Sider>
+          <Layout style={{ padding: '0 24px 24px', background: 'white' }}>
+            <Content
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+              }}
+            >
+              {DashboardCreateComponent}
+            </Content>
+          </Layout>
+        </Layout>
       </Container>
     </>
   );
