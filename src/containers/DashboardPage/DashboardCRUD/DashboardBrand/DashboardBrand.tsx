@@ -7,13 +7,13 @@ import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
+// import { Button } from 'react-bootstrap';
+import { Empty, Table, Form, Input, Button, Modal, notification } from 'antd';
 import { AnyAction, Dispatch } from 'redux';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 import { TBrandsArray } from 'src/store/types/sales';
-import { Empty, Table } from 'antd';
 import { components, convertHeader, getColumnSearchProps, setAntdResizableState } from 'src/shared/Utils';
 
 interface DashboardBrandProps {}
@@ -27,11 +27,21 @@ type BrandsState = {
 };
 type Props = DashboardBrandProps & StateProps & DispatchProps;
 
-const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
+const DashboardBrand: React.FC<Props> = ({
+  loading,
+  brandsArray,
+  successMessage,
+  errorMessage,
+  onGetBrands,
+  onCreateBrandHead,
+}) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
   const [brandsState, setBrandsState] = useState<BrandsState[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [form] = Form.useForm();
+
   let searchInput = null;
   // const { width } = useWindowDimensions(); //get width from window resize
   const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
@@ -54,6 +64,7 @@ const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
       dataIndex: 'title',
       width: 180,
       minWidth: 180,
+      ellipsis: true,
       sorter: (a: BrandsState, b: BrandsState) => a.title.localeCompare(b.title),
       ...getColumnSearchProps('title', 'Title'),
     },
@@ -78,6 +89,41 @@ const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
   // to send the required states to external handle filters functions
   // Allowing table to be able to filter and search
   setAntdResizableState(filterData, setFilterData, searchInput, columnsDefineHeader, setColumnsDefineHeader);
+  const onFinish = (values: { title: string; description: string }) => {
+    // setCreateBrand({ ...createBrand, title: values.title, description: values.description });
+    onCreateBrandHead(values.title, values.description);
+  };
+
+  /* ================================================== */
+  /*  Component  */
+  /* ================================================== */
+
+  /* ------------------- */
+  // Create Brand - Head
+  /* ------------------- */
+  let createBrandForm = (
+    <>
+      <Form form={form} name="basic" onFinish={onFinish}>
+        <Form.Item
+          className="brand__form-item"
+          label="Title"
+          name="title"
+          rules={[{ required: true, message: 'Input title here!' }]}
+        >
+          <Input placeholder="Type title here" />
+        </Form.Item>
+
+        <Form.Item
+          className="brand__form-item"
+          label="Description"
+          name="description"
+          rules={[{ required: true, message: 'Input description here!' }]}
+        >
+          <Input placeholder="Type description here" />
+        </Form.Item>
+      </Form>
+    </>
+  );
 
   /* ================================================== */
   /*  useEffect  */
@@ -109,10 +155,46 @@ const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
     setBrandsState(tempArray);
   }, [brandsArray]);
 
+  // success or error
+  useEffect(() => {
+    if (successMessage) {
+      notification['success']({
+        message: 'Success',
+        description: successMessage,
+      });
+      // close the modal if successful
+      setShowModal(false);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      notification['error']({
+        message: 'Failed',
+        duration: 2.5,
+        description: errorMessage,
+      });
+    }
+  }, [errorMessage]);
+
   /* ================================================== */
   /* ================================================== */
   return (
     <>
+      {/* =================== */}
+      {/*        Modal        */}
+      {/* =================== */}
+
+      <Modal
+        title="Create Brand"
+        visible={showModal}
+        onOk={form.submit}
+        confirmLoading={loading}
+        onCancel={() => setShowModal(false)}
+      >
+        {createBrandForm}
+      </Modal>
+
       <NavbarComponent activePage="" />
       <LayoutComponent activeKey="brand">
         <section className="">
@@ -126,7 +208,7 @@ const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
               <Empty style={{ marginTop: '5rem' }} />
             ) : (
               <section>
-                <Button variant="secondary" className="brand__btn">
+                <Button type="default" className="brand__btn" onClick={() => setShowModal(true)}>
                   Create New Brand
                 </Button>
                 <Table
@@ -151,18 +233,30 @@ const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
 };
 
 interface StateProps {
+  loading: boolean;
   brandsArray: TBrandsArray[] | null;
+  errorMessage: string | null;
+  successMessage: string | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   //type guard
   if ('sales' in state) {
-    return { brandsArray: state.sales.brandsArray };
+    return {
+      loading: state.sales.loading,
+      brandsArray: state.sales.brandsArray,
+      errorMessage: state.sales.errorMessage,
+      successMessage: state.sales.successMessage,
+    };
   }
 };
 interface DispatchProps {
   onGetBrands: typeof actions.getBrandsHead;
+  onCreateBrandHead: typeof actions.createBrandHead;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
-  return { onGetBrands: () => dispatch(actions.getBrandsHead()) };
+  return {
+    onGetBrands: () => dispatch(actions.getBrandsHead()),
+    onCreateBrandHead: (title, description) => dispatch(actions.createBrandHead(title, description)),
+  };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardBrand);

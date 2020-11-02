@@ -11,7 +11,7 @@ import { Dispatch, AnyAction } from 'redux';
 import { Toast, Container } from 'react-bootstrap';
 /* Utils */
 import * as actions from 'src/store/actions/index';
-import { TBrandObject, TMakeHeadSubmit } from 'src/store/types/sales';
+import { TMakeHeadSubmit } from 'src/store/types/sales';
 import { TMapStateToProps } from 'src/store/types/index';
 import { Layout } from 'antd';
 
@@ -24,13 +24,12 @@ type Props = DashboardPageProps & StateProps & DispatchProps;
 /**
  *
  * The page where admin can add delete or update information
- * @param {*} { brandObject, onCreateBrandHead }
+ * @param {*} {  onCreateBrandHead }
  * @return {*}
  * @category Pages
  */
 const DashboardPage: React.FC<Props> = ({
   loading,
-  // brandObject,
   errorMessage,
   successMessage,
   onCreateMakeHead,
@@ -178,13 +177,11 @@ interface StateProps {
   loading: boolean;
   errorMessage: string | null;
   successMessage: string | null;
-  brandObject: TBrandObject | null;
 }
 
 const mapStateToProps = (state: TMapStateToProps) => {
   return {
     loading: state.sales.loading,
-    brandObject: state.sales.brandObject,
     errorMessage: state.sales.errorMessage,
     successMessage: state.sales.successMessage,
   };

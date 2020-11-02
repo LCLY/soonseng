@@ -28,7 +28,6 @@ export const findByTestAttribute = (component, attribute) => {
 /* For AntD table resizable column */
 // https://ant.design/components/table/#header
 export const ResizableTitle = (props) => {
-  console.log('called resizable');
   const { onResize, width, minWidth, ...restProps } = props;
 
   if (!width) {
@@ -172,7 +171,6 @@ const handleResize = (index) => (e, { size }) => {
 
 // Change header to resizable
 export const convertHeader = () => {
-  console.log('convert header');
   if (columnsDefineHeader) {
     return columnsDefineHeader.map((col, index) => ({
       ...col,
