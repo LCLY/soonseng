@@ -90,11 +90,10 @@ const DashboardBrand: React.FC<Props> = ({
   // to send the required states to external handle filters functions
   // Allowing table to be able to filter and search
   setAntdResizableState(filterData, setFilterData, searchInput, columnsDefineHeader, setColumnsDefineHeader);
+
   const onFinish = (values: { title: string; description: string }) => {
-    // setCreateBrand({ ...createBrand, title: values.title, description: values.description });
     onCreateBrandHead(values.title, values.description);
   };
-
   /* ================================================== */
   /*  Component  */
   /* ================================================== */
@@ -162,12 +161,16 @@ const DashboardBrand: React.FC<Props> = ({
       notification['success']({
         message: 'Success',
         description: successMessage,
-        onClose: onClearSalesState,
+        onClose: () => {
+          onClearSalesState();
+        },
       });
+      // clear the inputs
+      form.resetFields();
       // close the modal if successful
       setShowModal(false);
     }
-  }, [successMessage, onClearSalesState]);
+  }, [form, successMessage, onClearSalesState]);
 
   useEffect(() => {
     if (errorMessage) {
