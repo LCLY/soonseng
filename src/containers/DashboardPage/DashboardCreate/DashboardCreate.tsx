@@ -2,7 +2,12 @@ import React from 'react';
 import './DashboardCreate.scss';
 /*components*/
 /*3rd party lib*/
-import { Form, Button } from 'react-bootstrap';
+import NumberFormat from 'react-number-format';
+import Datetime from 'react-datetime';
+import { TMakeHeadSubmit } from 'src/store/types/sales';
+import { Form, InputGroup, FormControl, Button } from 'react-bootstrap';
+import moment from 'moment';
+// import { Moment } from 'moment';
 
 interface DashboardCreateProps {
   // create brand
@@ -13,6 +18,10 @@ interface DashboardCreateProps {
   createWheelbase: { title: string; description: string };
   setCreateWheelbase: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
   onCreateWheelbaseHead: (title: string, description: string) => void;
+  // create make
+  createMake: TMakeHeadSubmit;
+  setCreateMake: React.Dispatch<React.SetStateAction<TMakeHeadSubmit>>;
+  onCreateMakeHead: (createMakeSubmitData: TMakeHeadSubmit) => void;
 }
 
 type Props = DashboardCreateProps;
@@ -26,7 +35,17 @@ const DashboardCreate: React.FC<Props> = ({
   createWheelbase,
   setCreateWheelbase,
   onCreateWheelbaseHead,
+  // create make
+  createMake,
+  setCreateMake,
+  onCreateMakeHead,
 }) => {
+  /* ============================== */
+  // Boolean
+  /* ============================== */
+  // If year is still in initial state, meaning year: 0
+  let yearNotYetInitialized = createMake.year === 0;
+
   return (
     <>
       {
@@ -45,7 +64,8 @@ const DashboardCreate: React.FC<Props> = ({
           }}
         >
           <Form.Group className="dashboard__form-row" controlId="createBrandTitle">
-            <Form.Label className="dashboard__form-text">Title</Form.Label>:
+            <Form.Label className="dashboard__form-text">Title</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               required
               type="text"
@@ -56,7 +76,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBrandDesc">
-            <Form.Label className="dashboard__form-text">Description</Form.Label>:
+            <Form.Label className="dashboard__form-text">Description</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               required
               type="text"
@@ -89,7 +110,8 @@ const DashboardCreate: React.FC<Props> = ({
           }}
         >
           <Form.Group className="dashboard__form-row" controlId="createWheelbaseTitle">
-            <Form.Label className="dashboard__form-text">Title</Form.Label>:
+            <Form.Label className="dashboard__form-text">Title</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               required
               type="text"
@@ -100,7 +122,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createWheelbaseDesc">
-            <Form.Label className="dashboard__form-text">Description</Form.Label>:
+            <Form.Label className="dashboard__form-text">Description</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               required
               type="text"
@@ -119,105 +142,201 @@ const DashboardCreate: React.FC<Props> = ({
       </section>
       {
         /* -------------------------- */
-        // Create Makes - Head
+        // Create Make - Head
         /* -------------------------- */
       }
       <section className="dashboard__section">
         <div className="dashboard__header">
-          <h2>Create Makes - Head</h2>
+          <h2>Create Make - Head</h2>
         </div>
-        <Form>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onCreateMakeHead(createMake);
+          }}
+        >
           <Form.Group className="dashboard__form-row" controlId="createMakesTitle">
-            <Form.Label className="dashboard__form-text">Title</Form.Label>:
+            <Form.Label className="dashboard__form-text">Title</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
+              required
               type="text"
+              value={createMake.title}
               className="dashboard__form-input"
               placeholder="Enter the title of the head make here"
+              onChange={(e) => setCreateMake({ ...createMake, title: e.target.value })}
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createMakesDesc">
-            <Form.Label className="dashboard__form-text">Description</Form.Label>:
+            <Form.Label className="dashboard__form-text">Description</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
+              required
               type="text"
+              value={createMake.description}
               className="dashboard__form-input"
               placeholder="Enter the description of the head make here"
+              onChange={(e) => setCreateMake({ ...createMake, description: e.target.value })}
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createMakeBrandId">
-            <Form.Label className="dashboard__form-text">Brand ID</Form.Label>:
+            <Form.Label className="dashboard__form-text">Brand ID</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
-              type="text"
+              custom
+              as="select"
               className="dashboard__form-input"
-              placeholder="Enter the brand id of the head make here"
-            />
+              value={createMake.brand_id}
+              onChange={(e) => setCreateMake({ ...createMake, brand_id: parseInt(e.target.value) })}
+            >
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </Form.Control>
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createMakesWheelbaseId">
-            <Form.Label className="dashboard__form-text">Wheelbase ID</Form.Label>:
+            <Form.Label className="dashboard__form-text">Wheelbase ID</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
-              type="text"
+              custom
+              as="select"
               className="dashboard__form-input"
-              placeholder="Enter the wheelbase ID of the head make here"
-            />
+              value={createMake.wheelbase_id}
+              onChange={(e) => setCreateMake({ ...createMake, wheelbase_id: parseInt(e.target.value) })}
+            >
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </Form.Control>
           </Form.Group>
-
           <Form.Group className="dashboard__form-row" controlId="createMakesEngineCap">
-            <Form.Label className="dashboard__form-text">Engine Cap</Form.Label>:
+            <Form.Label className="dashboard__form-text">Engine Cap</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
-              type="text"
+              required
+              type="number"
+              value={createMake.engine_cap}
               className="dashboard__form-input"
               placeholder="Enter the engine cap of the head make here"
+              onChange={(e) => setCreateMake({ ...createMake, engine_cap: e.target.value })}
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createMakesGvw">
-            <Form.Label className="dashboard__form-text">GVW</Form.Label>:
-            <Form.Control
-              type="text"
-              className="dashboard__form-input"
-              placeholder="Enter the gvw of the head make here"
-            />
+            <Form.Label className="dashboard__form-text">GVW</Form.Label> <div className="dashboard__form-colon">:</div>
+            <InputGroup>
+              <FormControl
+                required
+                type="number"
+                value={createMake.gvw}
+                className="dashboard__form-input"
+                placeholder="e.g. 5000"
+                aria-label="gvw weight"
+                aria-describedby="gvw weight"
+                onChange={(e) => setCreateMake({ ...createMake, gvw: e.target.value })}
+              />
+              <InputGroup.Append className="dashboard__form-append">
+                <InputGroup.Text className="dashboard__form-append-text" id="gvw-kg">
+                  kg
+                </InputGroup.Text>
+              </InputGroup.Append>
+            </InputGroup>
           </Form.Group>
+
           <Form.Group className="dashboard__form-row" controlId="createMakesHorsePower">
-            <Form.Label className="dashboard__form-text">Horsepower</Form.Label>:
-            <Form.Control
-              type="text"
-              className="dashboard__form-input"
-              placeholder="Enter the horsepower of the head make here"
-            />
+            <Form.Label className="dashboard__form-text">Horsepower</Form.Label>
+            <div className="dashboard__form-colon">:</div>
+            <InputGroup>
+              <FormControl
+                required
+                type="number"
+                value={createMake.horsepower}
+                className="dashboard__form-input"
+                placeholder="e.g. 428"
+                aria-label="horsepower"
+                aria-describedby="horsepower"
+                onChange={(e) => setCreateMake({ ...createMake, horsepower: e.target.value })}
+              />
+              <InputGroup.Append className="dashboard__form-append">
+                <InputGroup.Text className="dashboard__form-append-text" id="horsepower">
+                  hp
+                </InputGroup.Text>
+              </InputGroup.Append>
+            </InputGroup>
           </Form.Group>
+
           <Form.Group className="dashboard__form-row" controlId="createMakesLength">
-            <Form.Label className="dashboard__form-text">Length</Form.Label>:
-            <Form.Control
-              type="text"
-              className="dashboard__form-input"
-              placeholder="Enter the length of the head make here"
-            />
+            <Form.Label className="dashboard__form-text">Length</Form.Label>
+            <div className="dashboard__form-colon">:</div>
+            <InputGroup>
+              <FormControl
+                required
+                type="number"
+                value={createMake.length}
+                className="dashboard__form-input"
+                placeholder="e.g. 12"
+                aria-label="length"
+                aria-describedby="length"
+                onChange={(e) => setCreateMake({ ...createMake, length: e.target.value })}
+              />
+              <InputGroup.Append className="dashboard__form-append">
+                <InputGroup.Text className="dashboard__form-append-text" id="length">
+                  ft
+                </InputGroup.Text>
+              </InputGroup.Append>
+            </InputGroup>
           </Form.Group>
+
           <Form.Group className="dashboard__form-row" controlId="createMakesPrice">
-            <Form.Label className="dashboard__form-text">Price</Form.Label>:
-            <Form.Control
-              type="text"
-              className="dashboard__form-input"
-              placeholder="Enter the price of the head make here"
-            />
+            <Form.Label className="dashboard__form-text">Price</Form.Label>
+            <div className="dashboard__form-colon">:</div>
+            <InputGroup>
+              <InputGroup.Prepend className="dashboard__form-append">
+                <InputGroup.Text className="dashboard__form-append-text" id="price">
+                  RM
+                </InputGroup.Text>
+              </InputGroup.Prepend>
+              <NumberFormat
+                required
+                inputMode="numeric"
+                value={createMake.price}
+                thousandSeparator={true}
+                className="dashboard__form-input form-control"
+                placeholder="Enter the price of the head make here"
+                onChange={(e) => setCreateMake({ ...createMake, price: parseInt(e.target.value) })}
+              />
+            </InputGroup>
           </Form.Group>
+
           <Form.Group className="dashboard__form-row" controlId="createMakesTransmission">
-            <Form.Label className="dashboard__form-text">Transmission</Form.Label>:
+            <Form.Label className="dashboard__form-text">Transmission</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
+              required
               type="text"
               className="dashboard__form-input"
               placeholder="Enter the transmission of the head make here"
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createMakesYear">
-            <Form.Label className="dashboard__form-text">Year</Form.Label>:
-            <Form.Control
-              type="text"
+            <Form.Label className="dashboard__form-text">Year</Form.Label>
+            <div className="dashboard__form-colon">:</div>
+            <Datetime
+              dateFormat="YYYY"
               className="dashboard__form-input"
-              placeholder="Enter the year of the head make here"
+              timeFormat={false}
+              value={yearNotYetInitialized ? new Date() : createMake.year.toString()}
+              closeOnSelect={true}
+              onChange={(date) => {
+                setCreateMake({ ...createMake, year: moment(date).year() });
+              }}
             />
           </Form.Group>
           <div className="dashboard__form-btn-div">
-            <Button variant="primary" className="dashboard__form-btn">
+            <Button variant="primary" type="submit" className="dashboard__form-btn">
               Create Head Make
             </Button>
           </div>
@@ -234,7 +353,8 @@ const DashboardCreate: React.FC<Props> = ({
         </div>
         <Form>
           <Form.Group className="dashboard__form-row" controlId="createBodyTitle">
-            <Form.Label className="dashboard__form-text">Title</Form.Label>:
+            <Form.Label className="dashboard__form-text">Title</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -242,7 +362,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyDesc">
-            <Form.Label className="dashboard__form-text">Description</Form.Label>:
+            <Form.Label className="dashboard__form-text">Description</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -250,7 +371,7 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <div className="dashboard__form-btn-div">
-            <Button variant="primary" className="dashboard__form-btn">
+            <Button variant="primary" type="submit" className="dashboard__form-btn">
               Create Tail Body
             </Button>
           </div>
@@ -267,7 +388,8 @@ const DashboardCreate: React.FC<Props> = ({
         </div>
         <Form>
           <Form.Group className="dashboard__form-row" controlId="createLengthTitle">
-            <Form.Label className="dashboard__form-text">Title</Form.Label>:
+            <Form.Label className="dashboard__form-text">Title</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -275,7 +397,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createLengthDesc">
-            <Form.Label className="dashboard__form-text">Description</Form.Label>:
+            <Form.Label className="dashboard__form-text">Description</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -283,7 +406,7 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <div className="dashboard__form-btn-div">
-            <Button variant="primary" className="dashboard__form-btn">
+            <Button variant="primary" type="submit" className="dashboard__form-btn">
               Create Tail Length
             </Button>
           </div>
@@ -300,7 +423,8 @@ const DashboardCreate: React.FC<Props> = ({
         </div>
         <Form>
           <Form.Group className="dashboard__form-row" controlId="createAccTitle">
-            <Form.Label className="dashboard__form-text">Title</Form.Label>:
+            <Form.Label className="dashboard__form-text">Title</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -308,7 +432,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createAccDesc">
-            <Form.Label className="dashboard__form-text">Description</Form.Label>:
+            <Form.Label className="dashboard__form-text">Description</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -316,7 +441,7 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <div className="dashboard__form-btn-div">
-            <Button variant="primary" className="dashboard__form-btn">
+            <Button variant="primary" type="submit" className="dashboard__form-btn">
               Create Tail Accessory
             </Button>
           </div>
@@ -334,7 +459,8 @@ const DashboardCreate: React.FC<Props> = ({
         </div>
         <Form>
           <Form.Group className="dashboard__form-row" controlId="createBodyLengthBodyId">
-            <Form.Label className="dashboard__form-text">Body ID</Form.Label>:
+            <Form.Label className="dashboard__form-text">Body ID</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -342,7 +468,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyLengthLengthId">
-            <Form.Label className="dashboard__form-text">Length ID</Form.Label>:
+            <Form.Label className="dashboard__form-text">Length ID</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -350,7 +477,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyLengthDepth">
-            <Form.Label className="dashboard__form-text">Depth</Form.Label>:
+            <Form.Label className="dashboard__form-text">Depth</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -358,7 +486,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyLengthWidth">
-            <Form.Label className="dashboard__form-text">Width</Form.Label>:
+            <Form.Label className="dashboard__form-text">Width</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -366,7 +495,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyLengthHeight">
-            <Form.Label className="dashboard__form-text">Height</Form.Label>:
+            <Form.Label className="dashboard__form-text">Height</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -374,7 +504,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyLengthPrice">
-            <Form.Label className="dashboard__form-text">Price</Form.Label>:
+            <Form.Label className="dashboard__form-text">Price</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -382,7 +513,7 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <div className="dashboard__form-btn-div">
-            <Button variant="primary" className="dashboard__form-btn">
+            <Button variant="primary" type="submit" className="dashboard__form-btn">
               Create Tail Body length
             </Button>
           </div>
@@ -399,7 +530,8 @@ const DashboardCreate: React.FC<Props> = ({
         </div>
         <Form>
           <Form.Group className="dashboard__form-row" controlId="createBodyAccessoryTitle">
-            <Form.Label className="dashboard__form-text">Title</Form.Label>:
+            <Form.Label className="dashboard__form-text">Title</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -407,7 +539,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyAccessoryDesc">
-            <Form.Label className="dashboard__form-text">Description</Form.Label>:
+            <Form.Label className="dashboard__form-text">Description</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -415,7 +548,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyAccessoryBodyLengthId">
-            <Form.Label className="dashboard__form-text">Body Length ID</Form.Label>:
+            <Form.Label className="dashboard__form-text">Body Length ID</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -423,7 +557,8 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <Form.Group className="dashboard__form-row" controlId="createBodyAccessoryId">
-            <Form.Label className="dashboard__form-text">Accessory ID</Form.Label>:
+            <Form.Label className="dashboard__form-text">Accessory ID</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -432,7 +567,8 @@ const DashboardCreate: React.FC<Props> = ({
           </Form.Group>
 
           <Form.Group className="dashboard__form-row" controlId="createBodyAccessoryPrice">
-            <Form.Label className="dashboard__form-text">Price</Form.Label>:
+            <Form.Label className="dashboard__form-text">Price</Form.Label>
+            <div className="dashboard__form-colon">:</div>
             <Form.Control
               type="text"
               className="dashboard__form-input"
@@ -440,7 +576,7 @@ const DashboardCreate: React.FC<Props> = ({
             />
           </Form.Group>
           <div className="dashboard__form-btn-div">
-            <Button variant="primary" className="dashboard__form-btn">
+            <Button variant="primary" type="submit" className="dashboard__form-btn">
               Create Tail Body Accessory
             </Button>
           </div>

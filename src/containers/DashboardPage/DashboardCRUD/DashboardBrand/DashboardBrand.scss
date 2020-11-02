@@ -1,0 +1,52 @@
+.brand {
+  /* ============ */
+  // btn
+  /* ============ */
+  &__btn {
+    margin-bottom: 1rem;
+    padding: 0.5rem 2rem !important;
+    @include shadow-func(0, 0.2rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.425));
+  }
+
+  /* ============ */
+  // form
+  /* ============ */
+  &__form {
+    /* ---------- */
+    // the category item
+    /* ---------- */
+    &-item {
+      label {
+        width: 9rem;
+      }
+
+      .ant-form-item-label > label::after {
+        content: '' !important;
+      }
+
+      .ant-form-item-control-input:before {
+        content: ':' !important;
+        margin-right: 1rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-right: 0;
+        }
+      }
+
+      .ant-form-item-explain.ant-form-item-explain-error {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+      .ant-form-item-explain.ant-form-item-explain-success {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}

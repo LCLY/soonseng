@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './DashboardPage.scss';
 /*components*/
+import DashboardCreate from './DashboardCreate/DashboardCreate';
 import OverlaySpinner from 'src/components/OverlaySpinner/OverlaySpinner';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import DashboardCreate from './DashboardCreate/DashboardCreate';
+import DashboardSidebar from 'src/components/DashboardSidebar/DashboardSidebar';
 /*3rd party lib*/
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Nav, Col, Tab, Row, Toast, Container } from 'react-bootstrap';
+import { Toast, Container } from 'react-bootstrap';
 /* Utils */
 import * as actions from 'src/store/actions/index';
-import { TBrandObject } from 'src/store/types/sales';
+import { TMakeHeadSubmit } from 'src/store/types/sales';
 import { TMapStateToProps } from 'src/store/types/index';
+import { Layout } from 'antd';
+
+const { Content, Sider } = Layout;
 
 interface DashboardPageProps {}
 
@@ -20,15 +24,15 @@ type Props = DashboardPageProps & StateProps & DispatchProps;
 /**
  *
  * The page where admin can add delete or update information
- * @param {*} { brandObject, onCreateBrandHead }
+ * @param {*} {  onCreateBrandHead }
  * @return {*}
  * @category Pages
  */
 const DashboardPage: React.FC<Props> = ({
   loading,
-  // brandObject,
   errorMessage,
   successMessage,
+  onCreateMakeHead,
   onClearSalesState,
   onCreateBrandHead,
   onCreateWheelbaseHead,
@@ -36,11 +40,51 @@ const DashboardPage: React.FC<Props> = ({
   /* ================================================== */
   // state
   /* ================================================== */
-  const [createBrand, setCreateBrand] = useState({ title: '', description: '' });
-  const [createWheelbase, setCreateWheelbase] = useState({ title: '', description: '' });
+
+  const [createBrand, setCreateBrand] = useState<{ title: string; description: string }>({
+    title: '',
+    description: '',
+  });
+  const [createWheelbase, setCreateWheelbase] = useState<{ title: string; description: string }>({
+    title: '',
+    description: '',
+  });
+  const [createMake, setCreateMake] = useState<TMakeHeadSubmit>({
+    gvw: '',
+    year: 0,
+    price: 0,
+    title: '',
+    length: '',
+    brand_id: 0,
+    engine_cap: '',
+    horsepower: '',
+    description: '',
+    wheelbase_id: 0,
+    transmission: '',
+  });
 
   // Toast notification
   const [showToast, setShowToast] = useState(false);
+
+  /* ================================================== */
+  // components
+  /* ================================================== */
+  let DashboardCreateComponent = (
+    <DashboardCreate
+      // create brand
+      createBrand={createBrand}
+      setCreateBrand={setCreateBrand}
+      onCreateBrandHead={onCreateBrandHead}
+      // create wheelbase
+      createWheelbase={createWheelbase}
+      setCreateWheelbase={setCreateWheelbase}
+      onCreateWheelbaseHead={onCreateWheelbaseHead}
+      // create make
+      createMake={createMake}
+      setCreateMake={setCreateMake}
+      onCreateMakeHead={onCreateMakeHead}
+    />
+  );
 
   /* ================================================== */
   // booleans
@@ -108,47 +152,22 @@ const DashboardPage: React.FC<Props> = ({
         </div>
       )}
       <Container>
-        <div className="dashboard__tab">
-          <Tab.Container id="left-tabs-dashboard" defaultActiveKey="create">
-            <Row>
-              <Col sm={3}>
-                <Nav variant="pills" className="flex-column">
-                  <Nav.Item>
-                    <Nav.Link eventKey="view">View</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="create">Create</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="update">Update</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="delete">Delete</Nav.Link>
-                  </Nav.Item>
-                </Nav>
-              </Col>
-              <Col sm={9}>
-                <Tab.Content>
-                  <Tab.Pane eventKey="view">View</Tab.Pane>
-                  <Tab.Pane eventKey="create">
-                    <DashboardCreate
-                      // create brand
-                      createBrand={createBrand}
-                      setCreateBrand={setCreateBrand}
-                      // create wheelbase
-                      onCreateBrandHead={onCreateBrandHead}
-                      createWheelbase={createWheelbase}
-                      setCreateWheelbase={setCreateWheelbase}
-                      onCreateWheelbaseHead={onCreateWheelbaseHead}
-                    />
-                  </Tab.Pane>
-                  <Tab.Pane eventKey="update">Update</Tab.Pane>
-                  <Tab.Pane eventKey="delete">Delete</Tab.Pane>
-                </Tab.Content>
-              </Col>
-            </Row>
-          </Tab.Container>
-        </div>
+        <Layout>
+          <Sider theme="light" width={'auto'}>
+            <DashboardSidebar activeKey="brand" />
+          </Sider>
+          <Layout style={{ padding: '0 24px 24px', background: 'white' }}>
+            <Content
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+              }}
+            >
+              {DashboardCreateComponent}
+            </Content>
+          </Layout>
+        </Layout>
       </Container>
     </>
   );
@@ -158,13 +177,11 @@ interface StateProps {
   loading: boolean;
   errorMessage: string | null;
   successMessage: string | null;
-  brandObject: TBrandObject | null;
 }
 
 const mapStateToProps = (state: TMapStateToProps) => {
   return {
     loading: state.sales.loading,
-    brandObject: state.sales.brandObject,
     errorMessage: state.sales.errorMessage,
     successMessage: state.sales.successMessage,
   };
@@ -172,6 +189,7 @@ const mapStateToProps = (state: TMapStateToProps) => {
 
 interface DispatchProps {
   onClearSalesState: typeof actions.clearSalesState;
+  onCreateMakeHead: typeof actions.createMakeHead;
   onCreateBrandHead: typeof actions.createBrandHead;
   onCreateWheelbaseHead: typeof actions.createWheelbaseHead;
 }
@@ -179,6 +197,7 @@ interface DispatchProps {
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
+    onCreateMakeHead: (createMakeSubmitData: TMakeHeadSubmit) => dispatch(actions.createMakeHead(createMakeSubmitData)),
     onCreateBrandHead: (title, description) => dispatch(actions.createBrandHead(title, description)),
     onCreateWheelbaseHead: (title, description) => dispatch(actions.createWheelbaseHead(title, description)),
   };

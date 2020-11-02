@@ -17,4 +17,9 @@ export {
   createWheelbaseHeadStart,
   createWheelbaseHeadFailed,
   createWheelbaseHeadSucceed,
+  // Create Make (head)
+  createMakeHead,
+  createMakeHeadStart,
+  createMakeHeadFailed,
+  createMakeHeadSucceed,
 } from './sales';

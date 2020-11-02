@@ -1,0 +1,25 @@
+.layout {
+  /* =============================== */
+  // The container holding everything
+  /* =============================== */
+  &__container {
+    margin-top: 3rem;
+  }
+
+  /* =============================== */
+  // The inner layout holding the content
+  /* =============================== */
+  &__inner {
+    background: white !important;
+    padding: 0 2.4rem 2.4rem;
+  }
+
+  /* =============================== */
+  // The content
+  /* =============================== */
+  &__content {
+    padding: 0 2.4rem;
+    margin: 0;
+    min-height: calc(100vh - 13rem) !important;
+  }
+}

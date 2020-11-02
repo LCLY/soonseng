@@ -1,6 +1,6 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TBrandObject, TWheelbaseObject } from 'src/store/types/sales';
+import { TBrandObject, TBrandsArray, TMakeHeadSubmit, TMakeObject, TWheelbaseObject } from 'src/store/types/sales';
 
 /* ============================================================================================ */
 // Clear Sales state
@@ -31,9 +31,10 @@ export const getBrandsHeadStart = (): AppActions => {
   };
 };
 
-export const getBrandsHeadSucceed = (): AppActions => {
+export const getBrandsHeadSucceed = (brandsArray: TBrandsArray[]): AppActions => {
   return {
     type: actionTypes.GET_BRANDS_HEAD_SUCCEED,
+    brandsArray: brandsArray,
   };
 };
 export const getBrandsHeadFailed = (errorMessage: string): AppActions => {
@@ -99,6 +100,36 @@ export const createWheelbaseHeadSucceed = (wheelbaseObject: TWheelbaseObject, su
 export const createWheelbaseHeadFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.CREATE_WHEELBASE_HEAD_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+// Create Make (head)
+/* ============================================================================================ */
+export const createMakeHead = (createMakeSubmitData: TMakeHeadSubmit): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKE_HEAD,
+    createMakeSubmitData: createMakeSubmitData,
+  };
+};
+
+export const createMakeHeadStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKE_HEAD_START,
+  };
+};
+
+export const createMakeHeadSucceed = (makeObject: TMakeObject, successMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKE_HEAD_SUCCEED,
+    makeObject: makeObject,
+    successMessage: successMessage,
+  };
+};
+export const createMakeHeadFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKE_HEAD_FAILED,
     errorMessage: errorMessage,
   };
 };

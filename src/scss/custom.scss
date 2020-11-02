@@ -1,11 +1,11 @@
 /* make the customizations */
 $theme-colors: (
   'primary': $primary-color-1,
-  'secondary': $secondary-color-1,
+  'secondary': $secondary-color-3,
   'tertiary': $tertiary-color-1,
   'facebook': #3b5998,
   'google': #d84b37 // 'info': tomato,
-  // 'danger': teal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+  // 'danger': teal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 );
 $font-size-base: 1.5rem;
 
@@ -43,3 +43,99 @@ $font-size-base: 1.5rem;
 // .css-1bqbnod {
 //   position: absolute !important;
 // }
+
+/* AntD fix icon not align center */
+svg {
+  vertical-align: baseline !important;
+}
+
+/* ===================================== */
+/* AntD Table */
+/* ===================================== */
+
+.ant-table-thead tr th {
+  color: white !important;
+  background: $primary-color-2 !important;
+  white-space: nowrap;
+}
+
+.ant-table-tbody td {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// background of header column when hover
+.ant-table-thead th.ant-table-column-has-sorters:hover {
+  // background: $warning-color-2 !important;
+  background: darken($primary-color-2, 5%) !important;
+}
+// arrow icons when idle
+.ant-table-column-sorter-up,
+.ant-table-column-sorter-down {
+  color: $primary-color-4 !important;
+}
+
+// arrow icons when active
+.ant-table-column-sorter-up.active,
+.ant-table-column-sorter-down.active {
+  color: white !important;
+}
+
+// Search icon on ant table when not hovered
+.ant-table-filter-trigger-container-open .ant-table-filter-trigger,
+.ant-table-filter-trigger:hover {
+  color: white !important;
+}
+
+// when background of search icon is unfocused
+.ant-table-thead th.ant-table-column-has-sorters:hover .ant-table-filter-trigger-container {
+  color: white !important;
+  background: $primary-color-4 !important;
+}
+
+// background of search icon when hover on column
+.ant-table-filter-trigger-container-open,
+.ant-table-filter-trigger-container:hover,
+.ant-table-thead th.ant-table-column-has-sorters:hover .ant-table-filter-trigger-container:hover {
+  color: white !important;
+  background: darken($primary-color-4, 5%) !important;
+  // border: 1px solid $tertiary-color-2 !important;
+}
+
+/* For column resizable */
+.react-resizable {
+  position: relative;
+  background-clip: padding-box;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  right: -5px;
+  bottom: 0;
+  z-index: 10;
+  width: 10px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.ant-table-filter-trigger-container {
+  right: 1rem !important;
+  border-radius: 50% !important;
+  height: 3rem !important;
+  width: 3rem !important;
+  margin: auto 0 !important;
+}
+
+.ant-table {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+// Select dropdown
+.ant-select {
+  @include respond-to(mobile) {
+    // fill up the whole page width on mobile devices
+    width: 100% !important;
+  }
+}

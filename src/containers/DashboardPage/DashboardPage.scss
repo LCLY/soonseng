@@ -51,8 +51,29 @@
     // the input of the form
     /* -----------------*/
     &-input {
-      width: 10rem;
-      margin-left: 2rem;
+      width: 100%;
+      // margin-left: 2rem;
+    }
+
+    /* ---------------- */
+    // the ':' after the text
+    /* ---------------- */
+    &-colon {
+      margin-right: 2rem;
+    }
+
+    /* ----------------- */
+    // Append / prepend
+    /* ----------------- */
+    &-append {
+      width: 5rem;
+      &-text {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        background: $primary-color-4 !important;
+        color: white !important;
+      }
     }
 
     /* ------------------------- */
