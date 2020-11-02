@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './DashboardBrand.scss';
 /*components*/
+import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
-import LoadingSpinner from 'src/components/LoadingSpinner/LoadingSpinner';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
@@ -117,17 +117,18 @@ const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
       <LayoutComponent activeKey="brand">
         <section className="">
           <HeaderTitle>Brand (Head)</HeaderTitle>
-          <Button variant="secondary" className="brand__btn">
-            Create New Brand
-          </Button>
           {/* ================== */}
           {/*       Table        */}
           {/* ================== */}
+
           {brandsArray ? (
             brandsArray.length === 0 ? (
               <Empty style={{ marginTop: '5rem' }} />
             ) : (
               <section>
+                <Button variant="secondary" className="brand__btn">
+                  Create New Brand
+                </Button>
                 <Table
                   bordered
                   dataSource={brandsState}
@@ -139,7 +140,9 @@ const DashboardBrand: React.FC<Props> = ({ brandsArray, onGetBrands }) => {
               </section>
             )
           ) : (
-            <LoadingSpinner />
+            <div className="padding_t-5">
+              <Loading />
+            </div>
           )}
         </section>
       </LayoutComponent>

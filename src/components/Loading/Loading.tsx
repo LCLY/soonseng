@@ -1,22 +1,22 @@
 import React from 'react';
-import './LoadingSpinner.scss';
+import './Loading.scss';
 /*3rd party lib*/
-import { Spin } from 'antd';
+import Spinner from './LoadingIcons/Spinner/Spinner';
 
-interface LoadingSpinnerProps {}
+interface LoadingProps {}
 
-type Props = LoadingSpinnerProps;
+type Props = LoadingProps;
 
-const LoadingSpinner: React.FC<Props> = () => {
+const Loading: React.FC<Props> = () => {
   return (
     <div className="spinner__outerdiv">
       <div style={{ textAlign: 'center' }}>
         <div>
-          <Spin size="large" />
+          <Spinner />
         </div>
         <div className="spinner__text">Loading...</div>
       </div>
     </div>
   );
 };
-export default LoadingSpinner;
+export default Loading;
