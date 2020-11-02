@@ -33,6 +33,7 @@ const DashboardBrand: React.FC<Props> = ({
   successMessage,
   errorMessage,
   onGetBrands,
+  onClearSalesState,
   onCreateBrandHead,
 }) => {
   /* ================================================== */
@@ -161,11 +162,12 @@ const DashboardBrand: React.FC<Props> = ({
       notification['success']({
         message: 'Success',
         description: successMessage,
+        onClose: onClearSalesState,
       });
       // close the modal if successful
       setShowModal(false);
     }
-  }, [successMessage]);
+  }, [successMessage, onClearSalesState]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -175,7 +177,7 @@ const DashboardBrand: React.FC<Props> = ({
         description: errorMessage,
       });
     }
-  }, [errorMessage]);
+  }, [errorMessage, onClearSalesState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -251,11 +253,13 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
 };
 interface DispatchProps {
   onGetBrands: typeof actions.getBrandsHead;
+  onClearSalesState: typeof actions.clearSalesState;
   onCreateBrandHead: typeof actions.createBrandHead;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onGetBrands: () => dispatch(actions.getBrandsHead()),
+    onClearSalesState: () => dispatch(actions.clearSalesState()),
     onCreateBrandHead: (title, description) => dispatch(actions.createBrandHead(title, description)),
   };
 };
