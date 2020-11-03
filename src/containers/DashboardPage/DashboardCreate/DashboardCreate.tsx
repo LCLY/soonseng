@@ -4,24 +4,23 @@ import './DashboardCreate.scss';
 /*3rd party lib*/
 import NumberFormat from 'react-number-format';
 import Datetime from 'react-datetime';
-import { TMakeHeadSubmit } from 'src/store/types/sales';
+import { TMakeSubmitData } from 'src/store/types/sales';
 import { Form, InputGroup, FormControl, Button } from 'react-bootstrap';
 import moment from 'moment';
-// import { Moment } from 'moment';
 
 interface DashboardCreateProps {
   // create brand
   createBrand: { title: string; description: string };
   setCreateBrand: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
-  onCreateBrandHead: (title: string, description: string) => void;
+  onCreateBrand: (title: string, description: string) => void;
   // create wheelbase
   createWheelbase: { title: string; description: string };
   setCreateWheelbase: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
-  onCreateWheelbaseHead: (title: string, description: string) => void;
+  onCreateWheelbase: (title: string, description: string) => void;
   // create make
-  createMake: TMakeHeadSubmit;
-  setCreateMake: React.Dispatch<React.SetStateAction<TMakeHeadSubmit>>;
-  onCreateMakeHead: (createMakeSubmitData: TMakeHeadSubmit) => void;
+  createMake: TMakeSubmitData;
+  setCreateMake: React.Dispatch<React.SetStateAction<TMakeSubmitData>>;
+  onCreateMake: (createMakeSubmitData: TMakeSubmitData) => void;
 }
 
 type Props = DashboardCreateProps;
@@ -30,15 +29,15 @@ const DashboardCreate: React.FC<Props> = ({
   // create brand
   createBrand,
   setCreateBrand,
-  onCreateBrandHead,
+  onCreateBrand,
   // create wheelbase
   createWheelbase,
   setCreateWheelbase,
-  onCreateWheelbaseHead,
+  onCreateWheelbase,
   // create make
   createMake,
   setCreateMake,
-  onCreateMakeHead,
+  onCreateMake,
 }) => {
   /* ============================== */
   // Boolean
@@ -60,7 +59,7 @@ const DashboardCreate: React.FC<Props> = ({
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            onCreateBrandHead(createBrand.title, createBrand.description);
+            onCreateBrand(createBrand.title, createBrand.description);
           }}
         >
           <Form.Group className="dashboard__form-row" controlId="createBrandTitle">
@@ -106,7 +105,7 @@ const DashboardCreate: React.FC<Props> = ({
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            onCreateWheelbaseHead(createWheelbase.title, createWheelbase.description);
+            onCreateWheelbase(createWheelbase.title, createWheelbase.description);
           }}
         >
           <Form.Group className="dashboard__form-row" controlId="createWheelbaseTitle">
@@ -152,7 +151,7 @@ const DashboardCreate: React.FC<Props> = ({
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            onCreateMakeHead(createMake);
+            onCreateMake(createMake);
           }}
         >
           <Form.Group className="dashboard__form-row" controlId="createMakesTitle">

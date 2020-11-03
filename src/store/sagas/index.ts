@@ -3,11 +3,12 @@ import { takeEvery, all } from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
 import { SalesActionTypes } from '../types/sales';
 
-import { getBrandsHeadSaga, createBrandHeadSaga, createMakeHeadSaga, createWheelbaseHeadSaga } from './sales';
+import { getBrandsSaga, createBrandSaga, createMakeSaga, createWheelbaseSaga, getWheelbasesSaga } from './sales';
 
 export function* watchAuth() {
-  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_BRANDS_HEAD, getBrandsHeadSaga)]);
-  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_MAKE_HEAD, createMakeHeadSaga)]);
-  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_BRAND_HEAD, createBrandHeadSaga)]);
-  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_WHEELBASE_HEAD, createWheelbaseHeadSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_BRANDS, getBrandsSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_MAKE, createMakeSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_BRAND, createBrandSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_WHEELBASE, createWheelbaseSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_WHEELBASES, getWheelbasesSaga)]);
 }

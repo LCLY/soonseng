@@ -4,16 +4,20 @@ import axios from 'axios';
 import { AppActions } from '../types/index';
 
 /* ================================================================== */
-//    Get All brands (head)
+//    Brands (Head)
 /* ================================================================== */
-export function* getBrandsHeadSaga(_action: AppActions) {
-  yield put(actions.getBrandsHeadStart());
+
+/* ------------------------------- */
+//    Get All brands (Head)
+/* ------------------------------- */
+export function* getBrandsSaga(_action: AppActions) {
+  yield put(actions.getBrandsStart());
 
   let url = `https://ss-sales.herokuapp.com/api/v1/head/brands`;
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getBrandsHeadSucceed(response.data.brands));
+    yield put(actions.getBrandsSucceed(response.data.brands));
   } catch (error) {
     if (error.response) {
       /*
@@ -22,8 +26,8 @@ export function* getBrandsHeadSaga(_action: AppActions) {
        */
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
-      console.log('error response header:', error.response.headers);
-      yield put(actions.getBrandsHeadFailed(error.response.data.error));
+      console.log('error response er:', error.response.ers);
+      yield put(actions.getBrandsFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
@@ -38,11 +42,11 @@ export function* getBrandsHeadSaga(_action: AppActions) {
   }
 }
 
-/* ================================================================== */
-//    Create brand (head)
-/* ================================================================== */
-export function* createBrandHeadSaga(action: AppActions) {
-  yield put(actions.createBrandHeadStart());
+/* ------------------------------- */
+//    Create brand (Head)
+/* ------------------------------- */
+export function* createBrandSaga(action: AppActions) {
+  yield put(actions.createBrandStart());
 
   let url = `https://ss-sales.herokuapp.com/api/v1/head/brands`;
 
@@ -56,7 +60,7 @@ export function* createBrandHeadSaga(action: AppActions) {
   }
   try {
     let response = yield axios.post(url, { brand });
-    yield put(actions.createBrandHeadSucceed(response.data.brand, response.data.success));
+    yield put(actions.createBrandSucceed(response.data.brand, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -65,8 +69,8 @@ export function* createBrandHeadSaga(action: AppActions) {
        */
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
-      console.log('error response header:', error.response.headers);
-      yield put(actions.createBrandHeadFailed(error.response.data.error));
+      console.log('error response er:', error.response.ers);
+      yield put(actions.createBrandFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
@@ -82,10 +86,14 @@ export function* createBrandHeadSaga(action: AppActions) {
 }
 
 /* ================================================================== */
-//    Create wheelbase (head)
+/*    Wheelbase (head) */
 /* ================================================================== */
-export function* createWheelbaseHeadSaga(action: AppActions) {
-  yield put(actions.createWheelbaseHeadStart());
+
+/* ------------------------------- */
+//    Create wheelbase (Head)
+/* ------------------------------- */
+export function* createWheelbaseSaga(action: AppActions) {
+  yield put(actions.createWheelbaseStart());
 
   let url = `https://ss-sales.herokuapp.com/api/v1/head/wheelbases`;
 
@@ -101,7 +109,7 @@ export function* createWheelbaseHeadSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { wheelbase });
     console.log(response);
-    yield put(actions.createWheelbaseHeadSucceed(response.data.wheelbase, response.data.success));
+    yield put(actions.createWheelbaseSucceed(response.data.wheelbase, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -110,8 +118,44 @@ export function* createWheelbaseHeadSaga(action: AppActions) {
        */
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
-      console.log('error response header:', error.response.headers);
-      yield put(actions.createWheelbaseHeadFailed(error.response.data.error));
+      console.log('error response er:', error.response.ers);
+      yield put(actions.createWheelbaseFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Get wheelbases (Head)
+/* ------------------------------- */
+export function* getWheelbasesSaga(_action: AppActions) {
+  yield put(actions.getWheelbasesStart());
+
+  let url = `https://ss-sales.herokuapp.com/api/v1/head/wheelbases`;
+
+  try {
+    let response = yield axios.get(url);
+    console.log(response);
+    yield put(actions.getWheelbasesSucceed(response.data.wheelbases));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response er:', error.response.ers);
+      yield put(actions.getWheelbasesFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
@@ -127,10 +171,14 @@ export function* createWheelbaseHeadSaga(action: AppActions) {
 }
 
 /* ================================================================== */
-//    Create make (head)
+/*    Make (head) */
 /* ================================================================== */
-export function* createMakeHeadSaga(action: AppActions) {
-  yield put(actions.createMakeHeadStart());
+
+/* ------------------------------- */
+//    Create make (Head)
+/* ------------------------------- */
+export function* createMakeSaga(action: AppActions) {
+  yield put(actions.createMakeStart());
 
   let url = `https://ss-sales.herokuapp.com/api/v1/head/makes`;
 
@@ -155,7 +203,7 @@ export function* createMakeHeadSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { make });
     console.log(response);
-    yield put(actions.createMakeHeadSucceed(response.data.wheelbase, response.data.success));
+    yield put(actions.createMakeSucceed(response.data.wheelbase, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -164,8 +212,8 @@ export function* createMakeHeadSaga(action: AppActions) {
        */
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
-      console.log('error response header:', error.response.headers);
-      yield put(actions.createMakeHeadFailed(error.response.data.error));
+      console.log('error response er:', error.response.ers);
+      yield put(actions.createMakeFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

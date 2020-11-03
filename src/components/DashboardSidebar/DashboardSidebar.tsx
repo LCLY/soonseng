@@ -24,8 +24,8 @@ const DashboardSidebar: React.FC<Props> = ({ history, activeKey }) => {
     { key: 'body', title: 'Body', url: '/dashboard/body' },
     { key: 'length', title: 'Length', url: '/dashboard/length' },
     { key: 'accessory', title: 'Accessory', url: '/dashboard/accessory' },
-    { key: 'bodyLength', title: 'Body Length', url: '/dashboard/body_length' },
-    { key: 'bodyAccessory', title: 'Body Accessory', url: '/dashboard/body_accessory' },
+    { key: 'body_length', title: 'Body Length', url: '/dashboard/body_length' },
+    { key: 'body_accessory', title: 'Body Accessory', url: '/dashboard/body_accessory' },
   ];
 
   /* ================================================== */

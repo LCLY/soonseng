@@ -1,44 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import './DashboardBrand.scss';
+import './Wheelbase.scss';
 /*components*/
-import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
-import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
+import Loading from 'src/components/Loading/Loading';
 /*3rd party lib*/
 import { connect } from 'react-redux';
-// import { Button } from 'react-bootstrap';
-import { Empty, Table, Form, Input, Button, Modal, notification } from 'antd';
 import { AnyAction, Dispatch } from 'redux';
+import { Empty, Button, Table, Form, Input, Modal } from 'antd';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
-import { TBrandsArray } from 'src/store/types/sales';
+import { TWheelbaseReceivedObj } from 'src/store/types/sales';
 import { components, convertHeader, getColumnSearchProps, setAntdResizableState } from 'src/shared/Utils';
 
-interface DashboardBrandProps {}
+interface WheelbaseProps {}
 
-type BrandsState = {
+type Props = WheelbaseProps & StateProps & DispatchProps;
+type WheelbaseState = {
   key: number;
   id: number;
   title: string;
   description: string | null;
+  value: string | number | null;
   available: boolean;
 };
-type Props = DashboardBrandProps & StateProps & DispatchProps;
-
-const DashboardBrand: React.FC<Props> = ({
-  loading,
-  brandsArray,
-  successMessage,
-  errorMessage,
-  onGetBrands,
-  onCreateBrandHead,
-}) => {
+const Wheelbase: React.FC<Props> = ({ loading, wheelbasesArray, onGetWheelbases }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  const [brandsState, setBrandsState] = useState<BrandsState[]>([]);
+  const [wheelbaseState, setWheelbaseState] = useState<WheelbaseState[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [form] = Form.useForm();
 
@@ -50,23 +42,34 @@ const DashboardBrand: React.FC<Props> = ({
   const [columnsDefineHeader, setColumnsDefineHeader] = useState([
     {
       key: 'id',
-      title: 'Brand ID',
+      title: 'ID',
       dataIndex: 'id',
       ellipsis: true,
-      width: 180,
-      minWidth: 180,
-      sorter: (a: BrandsState, b: BrandsState) => a.id - b.id,
+      width: 75,
+      minWidth: 75,
+      sorter: (a: WheelbaseState, b: WheelbaseState) => a.id - b.id,
       ...getColumnSearchProps('id', 'Brand ID'),
     },
     {
       key: 'title',
       title: 'Title',
       dataIndex: 'title',
-      width: 180,
-      minWidth: 180,
+      width: 60,
+      minWidth: 60,
       ellipsis: true,
-      sorter: (a: BrandsState, b: BrandsState) => a.title.localeCompare(b.title),
+      sorter: (a: WheelbaseState, b: WheelbaseState) => a.title.localeCompare(b.title),
       ...getColumnSearchProps('title', 'Title'),
+    },
+    {
+      key: 'value',
+      title: 'Value',
+      dataIndex: 'value',
+      width: 60,
+      minWidth: 60,
+      ellipsis: true,
+      sorter: (a: WheelbaseState, b: WheelbaseState) =>
+        typeof a.value === 'number' && typeof b.value === 'number' && a.value - b.value,
+      ...getColumnSearchProps('value', 'Value'),
     },
     {
       key: 'description',
@@ -75,9 +78,11 @@ const DashboardBrand: React.FC<Props> = ({
       ellipsis: true,
       width: 180,
       minWidth: 180,
-      sorter: (a: BrandsState, b: BrandsState) => {
+      sorter: (a: WheelbaseState, b: WheelbaseState) => {
         // if both a and b are not null
-        a.description && b.description && a.description.localeCompare(b.description);
+        typeof a.description === 'string' &&
+          typeof b.description === 'string' &&
+          a.description.localeCompare(b.description);
       },
       ...getColumnSearchProps('description', 'Description'),
     },
@@ -89,19 +94,19 @@ const DashboardBrand: React.FC<Props> = ({
   // to send the required states to external handle filters functions
   // Allowing table to be able to filter and search
   setAntdResizableState(filterData, setFilterData, searchInput, columnsDefineHeader, setColumnsDefineHeader);
+
   const onFinish = (values: { title: string; description: string }) => {
-    // setCreateBrand({ ...createBrand, title: values.title, description: values.description });
-    onCreateBrandHead(values.title, values.description);
+    // onCreateBrand(values.title, values.description);
+    console.log(values);
   };
 
   /* ================================================== */
   /*  Component  */
   /* ================================================== */
-
   /* ------------------- */
-  // Create Brand - Head
+  // Create Wheelbase - Head
   /* ------------------- */
-  let createBrandForm = (
+  let createWheelbaseForm = (
     <>
       <Form form={form} name="basic" onFinish={onFinish}>
         <Form.Item
@@ -124,58 +129,41 @@ const DashboardBrand: React.FC<Props> = ({
       </Form>
     </>
   );
-
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
   useEffect(() => {
-    onGetBrands();
-  }, [onGetBrands]);
+    onGetWheelbases();
+  }, [onGetWheelbases]);
 
   // initialize the data array state
   useEffect(() => {
-    let tempArray: BrandsState[] = [];
+    let tempArray: WheelbaseState[] = [];
     // A function that stores desired keys and values into a tempArray
-    const storeValue = (brand: TBrandsArray, index: number) => {
+    const storeValue = (brand: TWheelbaseReceivedObj, index: number) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
-      tempArray.push({
-        key: index,
-        id: brand.id,
-        title: brand.title,
-        description: descriptionIsNullOrEmpty ? '-' : brand.description,
-        available: brand.available,
-      });
+      let valueIsNullOrEmpty = brand.value === null || brand.description === '';
+
+      // only push into the array when available value is true
+      if (brand.available) {
+        tempArray.push({
+          key: index,
+          id: brand.id,
+          title: brand.title,
+          value: valueIsNullOrEmpty ? '-' : brand.value,
+          description: descriptionIsNullOrEmpty ? '-' : brand.description,
+          available: brand.available,
+        });
+      }
     };
 
-    if (brandsArray) {
+    if (wheelbasesArray) {
       // Execute function "storeValue" for every array index
-      brandsArray.map(storeValue);
+      wheelbasesArray.map(storeValue);
     }
     // update the state with tempArray
-    setBrandsState(tempArray);
-  }, [brandsArray]);
-
-  // success or error
-  useEffect(() => {
-    if (successMessage) {
-      notification['success']({
-        message: 'Success',
-        description: successMessage,
-      });
-      // close the modal if successful
-      setShowModal(false);
-    }
-  }, [successMessage]);
-
-  useEffect(() => {
-    if (errorMessage) {
-      notification['error']({
-        message: 'Failed',
-        duration: 2.5,
-        description: errorMessage,
-      });
-    }
-  }, [errorMessage]);
+    setWheelbaseState(tempArray);
+  }, [wheelbasesArray]);
 
   /* ================================================== */
   /* ================================================== */
@@ -184,36 +172,33 @@ const DashboardBrand: React.FC<Props> = ({
       {/* =================== */}
       {/*        Modal        */}
       {/* =================== */}
-
       <Modal
-        title="Create Brand"
+        title="Create Wheelbase"
         visible={showModal}
         onOk={form.submit}
         confirmLoading={loading}
         onCancel={() => setShowModal(false)}
       >
-        {createBrandForm}
+        {createWheelbaseForm}
       </Modal>
-
       <NavbarComponent activePage="" />
-      <LayoutComponent activeKey="brand">
+      <LayoutComponent activeKey="wheelbase">
         <section className="">
-          <HeaderTitle>Brand (Head)</HeaderTitle>
+          <HeaderTitle>Wheelbase (Head)</HeaderTitle>
           {/* ================== */}
           {/*       Table        */}
           {/* ================== */}
-
-          {brandsArray ? (
-            brandsArray.length === 0 ? (
+          {wheelbasesArray ? (
+            wheelbasesArray.length === 0 ? (
               <Empty style={{ marginTop: '5rem' }} />
             ) : (
               <section>
                 <Button type="default" className="brand__btn" onClick={() => setShowModal(true)}>
-                  Create New Brand
+                  Create New Wheelbase
                 </Button>
                 <Table
                   bordered
-                  dataSource={brandsState}
+                  dataSource={wheelbaseState}
                   columns={convertHeader()}
                   components={components}
                   className="accountlisting__table"
@@ -231,32 +216,22 @@ const DashboardBrand: React.FC<Props> = ({
     </>
   );
 };
-
 interface StateProps {
   loading: boolean;
-  brandsArray: TBrandsArray[] | null;
-  errorMessage: string | null;
-  successMessage: string | null;
+  wheelbasesArray: TWheelbaseReceivedObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  //type guard
-  if ('sales' in state) {
-    return {
-      loading: state.sales.loading,
-      brandsArray: state.sales.brandsArray,
-      errorMessage: state.sales.errorMessage,
-      successMessage: state.sales.successMessage,
-    };
-  }
+  return {
+    loading: state.sales.loading,
+    wheelbasesArray: state.sales.wheelbasesArray,
+  };
 };
 interface DispatchProps {
-  onGetBrands: typeof actions.getBrandsHead;
-  onCreateBrandHead: typeof actions.createBrandHead;
+  onGetWheelbases: typeof actions.getWheelbases;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
-    onGetBrands: () => dispatch(actions.getBrandsHead()),
-    onCreateBrandHead: (title, description) => dispatch(actions.createBrandHead(title, description)),
+    onGetWheelbases: () => dispatch(actions.getWheelbases()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardBrand);
+export default connect(mapStateToProps, mapDispatchToProps)(Wheelbase);

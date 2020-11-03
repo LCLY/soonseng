@@ -5,10 +5,12 @@ export interface SalesInitialState {
   readonly loading: boolean;
   readonly errorMessage: string | null;
   readonly successMessage: string | null;
-  readonly makeObject: TMakeObject | null;
-  readonly brandsArray: TBrandsArray[] | null;
-  readonly brandObject: TBrandObject | null;
-  readonly wheelbaseObject: TWheelbaseObject | null;
+  readonly makeObj: TMakeReceivedObj | null;
+  readonly makesArray: TMakeReceivedObj[] | null;
+  readonly brandsArray: TBrandReceivedObj[] | null;
+  readonly brandObj: TBrandReceivedObj | null;
+  readonly wheelbaseObj: TWheelbaseReceivedObj | null;
+  readonly wheelbasesArray: TWheelbaseReceivedObj[] | null;
 }
 
 // to further breakdown the state, use in mapStateToProps
@@ -25,67 +27,68 @@ export interface ClearSalesStateAction {
 
 // All the actiontypes with their payload
 /* ============================================================== */
-// Get All Brands (Head)
+// Brand (Head)
 /* ============================================================== */
-/* types */
-export type TBrandsArray = {
-  id: number;
-  title: string;
-  description: string | null;
-  available: boolean;
-};
 
-/* Api call */
-export interface GetBrandsHeadAction {
-  type: typeof actionTypes.GET_BRANDS_HEAD;
-}
-/* States */
-export interface GetBrandsHeadStartAction {
-  type: typeof actionTypes.GET_BRANDS_HEAD_START;
-}
-export interface GetBrandsHeadSucceedAction {
-  type: typeof actionTypes.GET_BRANDS_HEAD_SUCCEED;
-  brandsArray: TBrandsArray[];
-}
-export interface GetBrandsHeadFailedAction {
-  type: typeof actionTypes.GET_BRANDS_HEAD_FAILED;
-  errorMessage: string;
-}
-
-/* ============================================================== */
-// Create Brand (Head)
-/* ============================================================== */
+/* --------------------------- */
+// Create Brands (Head)
+/* --------------------------- */
 
 /* types */
-export type TBrandObject = { id: string; title: string; description: string; available: boolean };
+export type TBrandReceivedObj = { id: number; title: string; description: string; available: boolean };
 
 /*  Api call */
-export interface CreateBrandHeadAction {
-  type: typeof actionTypes.CREATE_BRAND_HEAD;
+export interface CreateBrandAction {
+  type: typeof actionTypes.CREATE_BRAND;
   title: string;
   description: string;
 }
 /*  States */
-export interface CreateBrandHeadStartAction {
-  type: typeof actionTypes.CREATE_BRAND_HEAD_START;
+export interface CreateBrandStartAction {
+  type: typeof actionTypes.CREATE_BRAND_START;
 }
-export interface CreateBrandHeadSucceedAction {
-  type: typeof actionTypes.CREATE_BRAND_HEAD_SUCCEED;
-  brandObject: TBrandObject;
+export interface CreateBrandSucceedAction {
+  type: typeof actionTypes.CREATE_BRAND_SUCCEED;
+  brandObj: TBrandReceivedObj;
   successMessage: string;
 }
-export interface CreateBrandHeadFailedAction {
-  type: typeof actionTypes.CREATE_BRAND_HEAD_FAILED;
+export interface CreateBrandFailedAction {
+  type: typeof actionTypes.CREATE_BRAND_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Get All Brands (Head)
+/* --------------------------- */
+/* types */
+
+/* Api call */
+export interface GetBrandsAction {
+  type: typeof actionTypes.GET_BRANDS;
+}
+/* States */
+export interface GetBrandsStartAction {
+  type: typeof actionTypes.GET_BRANDS_START;
+}
+export interface GetBrandsSucceedAction {
+  type: typeof actionTypes.GET_BRANDS_SUCCEED;
+  brandsArray: TBrandReceivedObj[];
+}
+export interface GetBrandsFailedAction {
+  type: typeof actionTypes.GET_BRANDS_FAILED;
   errorMessage: string;
 }
 
 /* ============================================================== */
-// Create Wheelbase (Head)
+// Wheelbase (Head)
 /* ============================================================== */
 
+/* --------------------------- */
+// Create Wheelbase (Head)
+/* --------------------------- */
 /* types */
-export type TWheelbaseObject = {
-  id: string;
+export type TWheelbaseReceivedObj = {
+  id: number;
   title: string;
   description: string;
   value: number | null;
@@ -93,34 +96,59 @@ export type TWheelbaseObject = {
 };
 
 /* Api call */
-export interface CreateWheelbaseHeadAction {
-  type: typeof actionTypes.CREATE_WHEELBASE_HEAD;
+export interface CreateWheelbaseAction {
+  type: typeof actionTypes.CREATE_WHEELBASE;
   title: string;
   description: string;
 }
 
 /* States */
-export interface CreateWheelbaseHeadStartAction {
-  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_START;
+export interface CreateWheelbaseStartAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_START;
 }
 
-export interface CreateWheelbaseHeadSucceedAction {
-  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_SUCCEED;
-  wheelbaseObject: TWheelbaseObject;
+export interface CreateWheelbaseSucceedAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_SUCCEED;
+  wheelbaseObj: TWheelbaseReceivedObj;
   successMessage: string;
 }
-export interface CreateWheelbaseHeadFailedAction {
-  type: typeof actionTypes.CREATE_WHEELBASE_HEAD_FAILED;
+export interface CreateWheelbaseFailedAction {
+  type: typeof actionTypes.CREATE_WHEELBASE_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Get Wheelbases (Head)
+/* --------------------------- */
+/* Api call */
+export interface GetWheelbasesAction {
+  type: typeof actionTypes.GET_WHEELBASES;
+}
+
+/* States */
+export interface GetWheelbasesStartAction {
+  type: typeof actionTypes.GET_WHEELBASES_START;
+}
+
+export interface GetWheelbasesSucceedAction {
+  type: typeof actionTypes.GET_WHEELBASES_SUCCEED;
+  wheelbasesArray: TWheelbaseReceivedObj[];
+}
+export interface GetWheelbasesFailedAction {
+  type: typeof actionTypes.GET_WHEELBASES_FAILED;
   errorMessage: string;
 }
 
 /* ============================================================== */
-// Create Make (Head)
+//  Make (Head)
 /* ============================================================== */
 
+/* --------------------------- */
+// Create Make (Head)
+/* --------------------------- */
 /* types */
-// Type of objects being submitted
-export type TMakeHeadSubmit = {
+// Type of Objs being submitted
+export type TMakeSubmitData = {
   gvw: string;
   year: number;
   price: number;
@@ -134,8 +162,8 @@ export type TMakeHeadSubmit = {
   transmission: string;
 };
 
-// type of objects received on succees
-export type TMakeObject = {
+// type of Objs received on succees
+export type TMakeReceivedObj = {
   id: number;
   gvw: string;
   year: string;
@@ -152,21 +180,21 @@ export type TMakeObject = {
 };
 
 /*  Api call */
-export interface CreateMakeHeadAction {
-  type: typeof actionTypes.CREATE_MAKE_HEAD;
-  createMakeSubmitData: TMakeHeadSubmit;
+export interface CreateMakeAction {
+  type: typeof actionTypes.CREATE_MAKE;
+  createMakeSubmitData: TMakeSubmitData;
 }
 /*  States */
-export interface CreateMakeHeadStartAction {
-  type: typeof actionTypes.CREATE_MAKE_HEAD_START;
+export interface CreateMakeStartAction {
+  type: typeof actionTypes.CREATE_MAKE_START;
 }
-export interface CreateMakeHeadSucceedAction {
-  type: typeof actionTypes.CREATE_MAKE_HEAD_SUCCEED;
-  makeObject: TMakeObject;
+export interface CreateMakeSucceedAction {
+  type: typeof actionTypes.CREATE_MAKE_SUCCEED;
+  makeObj: TMakeReceivedObj;
   successMessage: string;
 }
-export interface CreateMakeHeadFailedAction {
-  type: typeof actionTypes.CREATE_MAKE_HEAD_FAILED;
+export interface CreateMakeFailedAction {
+  type: typeof actionTypes.CREATE_MAKE_FAILED;
   errorMessage: string;
 }
 
@@ -177,22 +205,27 @@ export type SalesActionTypes =
   /* ------------------------ */
   | ClearSalesStateAction
   /* ------------------------ */
-  | GetBrandsHeadAction
-  | GetBrandsHeadStartAction
-  | GetBrandsHeadSucceedAction
-  | GetBrandsHeadFailedAction
+  | GetBrandsAction
+  | GetBrandsStartAction
+  | GetBrandsSucceedAction
+  | GetBrandsFailedAction
   /* ------------------------ */
-  | CreateBrandHeadAction
-  | CreateBrandHeadStartAction
-  | CreateBrandHeadSucceedAction
-  | CreateBrandHeadFailedAction
+  | CreateBrandAction
+  | CreateBrandStartAction
+  | CreateBrandSucceedAction
+  | CreateBrandFailedAction
   /* ------------------------ */
-  | CreateWheelbaseHeadAction
-  | CreateWheelbaseHeadStartAction
-  | CreateWheelbaseHeadSucceedAction
-  | CreateWheelbaseHeadFailedAction
+  | CreateWheelbaseAction
+  | CreateWheelbaseStartAction
+  | CreateWheelbaseSucceedAction
+  | CreateWheelbaseFailedAction
   /* ------------------------ */
-  | CreateMakeHeadAction
-  | CreateMakeHeadStartAction
-  | CreateMakeHeadSucceedAction
-  | CreateMakeHeadFailedAction;
+  | GetWheelbasesAction
+  | GetWheelbasesStartAction
+  | GetWheelbasesSucceedAction
+  | GetWheelbasesFailedAction
+  /* ------------------------ */
+  | CreateMakeAction
+  | CreateMakeStartAction
+  | CreateMakeSucceedAction
+  | CreateMakeFailedAction;
