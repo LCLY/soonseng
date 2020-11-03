@@ -101,6 +101,7 @@ const CardComponent: React.FC<Props> = ({ bodyIndex, index, title, desc, images,
               <div className="card-block px-2" style={{ height: '100%' }}>
                 <div className="card__text">
                   <div>
+                    {/* Card title */}
                     <h4 className="card-title card__title">{title}</h4>
                     <p className="card-text card__desc">
                       This cargo is suitable for moving livestocks and common boxes. It's great for moving immigrants as

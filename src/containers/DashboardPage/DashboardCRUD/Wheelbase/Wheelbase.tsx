@@ -143,14 +143,18 @@ const Wheelbase: React.FC<Props> = ({ loading, wheelbasesArray, onGetWheelbases 
     const storeValue = (brand: TWheelbaseReceivedObj, index: number) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
       let valueIsNullOrEmpty = brand.value === null || brand.description === '';
-      tempArray.push({
-        key: index,
-        id: brand.id,
-        title: brand.title,
-        value: valueIsNullOrEmpty ? '-' : brand.value,
-        description: descriptionIsNullOrEmpty ? '-' : brand.description,
-        available: brand.available,
-      });
+
+      // only push into the array when available value is true
+      if (brand.available) {
+        tempArray.push({
+          key: index,
+          id: brand.id,
+          title: brand.title,
+          value: valueIsNullOrEmpty ? '-' : brand.value,
+          description: descriptionIsNullOrEmpty ? '-' : brand.description,
+          available: brand.available,
+        });
+      }
     };
 
     if (wheelbasesArray) {

@@ -135,16 +135,19 @@ const Brand: React.FC<Props> = ({
   // initialize the data array state
   useEffect(() => {
     let tempArray: BrandsState[] = [];
-    // A function that stores desired keys and values into a tempArray
+    /** A function that stores desired keys and values into a tempArray */
     const storeValue = (brand: TBrandReceivedObj, index: number) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
-      tempArray.push({
-        key: index,
-        id: brand.id,
-        title: brand.title,
-        description: descriptionIsNullOrEmpty ? '-' : brand.description,
-        available: brand.available,
-      });
+      // only render when available value is true
+      if (brand.available) {
+        tempArray.push({
+          key: index,
+          id: brand.id,
+          title: brand.title,
+          description: descriptionIsNullOrEmpty ? '-' : brand.description,
+          available: brand.available,
+        });
+      }
     };
 
     if (brandsArray) {
