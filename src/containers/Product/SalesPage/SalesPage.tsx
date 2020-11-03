@@ -32,7 +32,7 @@ type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
  * @return {*}
  * @category Pages
  */
-const SalesPage: React.FC<Props> = ({ history, onGetBrandsHead }) => {
+const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
   /*################# state #################*/
   /**
    * Getting index of clicked vehicle length card to know which one is selected,
@@ -102,8 +102,8 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrandsHead }) => {
   /* ====================================================== */
   /* ############### useEffect ##################### */
   useEffect(() => {
-    onGetBrandsHead();
-  }, [onGetBrandsHead]);
+    onGetBrands();
+  }, [onGetBrands]);
   /* ====================================================== */
   /* ====================================================== */
   /* ====================================================== */
@@ -355,12 +355,12 @@ const mapStateToProps = (state: TMapStateToProps): StateProps => {
 };
 
 interface DispatchProps {
-  onGetBrandsHead: typeof actions.getBrandsHead;
+  onGetBrands: typeof actions.getBrands;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
-    onGetBrandsHead: () => dispatch(actions.getBrandsHead()),
+    onGetBrands: () => dispatch(actions.getBrands()),
   };
 };
 

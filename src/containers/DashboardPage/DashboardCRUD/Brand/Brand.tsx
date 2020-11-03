@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './DashboardBrand.scss';
+import './Brand.scss';
 /*components*/
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
@@ -13,10 +13,10 @@ import { AnyAction, Dispatch } from 'redux';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
-import { TBrandsArray } from 'src/store/types/sales';
+import { TBrandReceivedObj } from 'src/store/types/sales';
 import { components, convertHeader, getColumnSearchProps, setAntdResizableState } from 'src/shared/Utils';
 
-interface DashboardBrandProps {}
+interface BrandProps {}
 
 type BrandsState = {
   key: number;
@@ -25,16 +25,16 @@ type BrandsState = {
   description: string | null;
   available: boolean;
 };
-type Props = DashboardBrandProps & StateProps & DispatchProps;
+type Props = BrandProps & StateProps & DispatchProps;
 
-const DashboardBrand: React.FC<Props> = ({
+const Brand: React.FC<Props> = ({
   loading,
   brandsArray,
   successMessage,
   errorMessage,
   onGetBrands,
+  onCreateBrand,
   onClearSalesState,
-  onCreateBrandHead,
 }) => {
   /* ================================================== */
   /*  state */
@@ -51,11 +51,11 @@ const DashboardBrand: React.FC<Props> = ({
   const [columnsDefineHeader, setColumnsDefineHeader] = useState([
     {
       key: 'id',
-      title: 'Brand ID',
+      title: 'ID',
       dataIndex: 'id',
       ellipsis: true,
-      width: 180,
-      minWidth: 180,
+      width: 40,
+      minWidth: 40,
       sorter: (a: BrandsState, b: BrandsState) => a.id - b.id,
       ...getColumnSearchProps('id', 'Brand ID'),
     },
@@ -63,8 +63,8 @@ const DashboardBrand: React.FC<Props> = ({
       key: 'title',
       title: 'Title',
       dataIndex: 'title',
-      width: 180,
-      minWidth: 180,
+      width: 60,
+      minWidth: 60,
       ellipsis: true,
       sorter: (a: BrandsState, b: BrandsState) => a.title.localeCompare(b.title),
       ...getColumnSearchProps('title', 'Title'),
@@ -92,7 +92,7 @@ const DashboardBrand: React.FC<Props> = ({
   setAntdResizableState(filterData, setFilterData, searchInput, columnsDefineHeader, setColumnsDefineHeader);
 
   const onFinish = (values: { title: string; description: string }) => {
-    onCreateBrandHead(values.title, values.description);
+    onCreateBrand(values.title, values.description);
   };
   /* ================================================== */
   /*  Component  */
@@ -136,7 +136,7 @@ const DashboardBrand: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: BrandsState[] = [];
     // A function that stores desired keys and values into a tempArray
-    const storeValue = (brand: TBrandsArray, index: number) => {
+    const storeValue = (brand: TBrandReceivedObj, index: number) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
       tempArray.push({
         key: index,
@@ -189,7 +189,6 @@ const DashboardBrand: React.FC<Props> = ({
       {/* =================== */}
       {/*        Modal        */}
       {/* =================== */}
-
       <Modal
         title="Create Brand"
         visible={showModal}
@@ -239,7 +238,7 @@ const DashboardBrand: React.FC<Props> = ({
 
 interface StateProps {
   loading: boolean;
-  brandsArray: TBrandsArray[] | null;
+  brandsArray: TBrandReceivedObj[] | null;
   errorMessage: string | null;
   successMessage: string | null;
 }
@@ -255,15 +254,15 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   }
 };
 interface DispatchProps {
-  onGetBrands: typeof actions.getBrandsHead;
+  onGetBrands: typeof actions.getBrands;
   onClearSalesState: typeof actions.clearSalesState;
-  onCreateBrandHead: typeof actions.createBrandHead;
+  onCreateBrand: typeof actions.createBrand;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
-    onGetBrands: () => dispatch(actions.getBrandsHead()),
+    onGetBrands: () => dispatch(actions.getBrands()),
     onClearSalesState: () => dispatch(actions.clearSalesState()),
-    onCreateBrandHead: (title, description) => dispatch(actions.createBrandHead(title, description)),
+    onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardBrand);
+export default connect(mapStateToProps, mapDispatchToProps)(Brand);

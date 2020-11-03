@@ -11,7 +11,7 @@ import { Dispatch, AnyAction } from 'redux';
 import { Toast, Container } from 'react-bootstrap';
 /* Utils */
 import * as actions from 'src/store/actions/index';
-import { TMakeHeadSubmit } from 'src/store/types/sales';
+import { TMakeSubmitData } from 'src/store/types/sales';
 import { TMapStateToProps } from 'src/store/types/index';
 import { Layout } from 'antd';
 
@@ -24,7 +24,7 @@ type Props = DashboardPageProps & StateProps & DispatchProps;
 /**
  *
  * The page where admin can add delete or update information
- * @param {*} {  onCreateBrandHead }
+ * @param {*} {  onCreateBrand }
  * @return {*}
  * @category Pages
  */
@@ -32,10 +32,10 @@ const DashboardPage: React.FC<Props> = ({
   loading,
   errorMessage,
   successMessage,
-  onCreateMakeHead,
+  onCreateMake,
   onClearSalesState,
-  onCreateBrandHead,
-  onCreateWheelbaseHead,
+  onCreateBrand,
+  onCreateWheelbase,
 }) => {
   /* ================================================== */
   // state
@@ -49,7 +49,7 @@ const DashboardPage: React.FC<Props> = ({
     title: '',
     description: '',
   });
-  const [createMake, setCreateMake] = useState<TMakeHeadSubmit>({
+  const [createMake, setCreateMake] = useState<TMakeSubmitData>({
     gvw: '',
     year: 0,
     price: 0,
@@ -74,15 +74,15 @@ const DashboardPage: React.FC<Props> = ({
       // create brand
       createBrand={createBrand}
       setCreateBrand={setCreateBrand}
-      onCreateBrandHead={onCreateBrandHead}
+      onCreateBrand={onCreateBrand}
       // create wheelbase
       createWheelbase={createWheelbase}
       setCreateWheelbase={setCreateWheelbase}
-      onCreateWheelbaseHead={onCreateWheelbaseHead}
+      onCreateWheelbase={onCreateWheelbase}
       // create make
       createMake={createMake}
       setCreateMake={setCreateMake}
-      onCreateMakeHead={onCreateMakeHead}
+      onCreateMake={onCreateMake}
     />
   );
 
@@ -189,17 +189,17 @@ const mapStateToProps = (state: TMapStateToProps) => {
 
 interface DispatchProps {
   onClearSalesState: typeof actions.clearSalesState;
-  onCreateMakeHead: typeof actions.createMakeHead;
-  onCreateBrandHead: typeof actions.createBrandHead;
-  onCreateWheelbaseHead: typeof actions.createWheelbaseHead;
+  onCreateMake: typeof actions.createMake;
+  onCreateBrand: typeof actions.createBrand;
+  onCreateWheelbase: typeof actions.createWheelbase;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
-    onCreateMakeHead: (createMakeSubmitData: TMakeHeadSubmit) => dispatch(actions.createMakeHead(createMakeSubmitData)),
-    onCreateBrandHead: (title, description) => dispatch(actions.createBrandHead(title, description)),
-    onCreateWheelbaseHead: (title, description) => dispatch(actions.createWheelbaseHead(title, description)),
+    onCreateMake: (createMakeSubmitData: TMakeSubmitData) => dispatch(actions.createMake(createMakeSubmitData)),
+    onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
+    onCreateWheelbase: (title, description) => dispatch(actions.createWheelbase(title, description)),
   };
 };
 

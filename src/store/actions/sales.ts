@@ -1,6 +1,6 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TBrandObject, TBrandsArray, TMakeHeadSubmit, TMakeObject, TWheelbaseObject } from 'src/store/types/sales';
+import { TBrandReceivedObj, TMakeSubmitData, TMakeReceivedObj, TWheelbaseReceivedObj } from 'src/store/types/sales';
 
 /* ============================================================================================ */
 // Clear Sales state
@@ -17,119 +17,160 @@ const clearSalesState = () => {
 };
 
 /* ============================================================================================ */
-// Get Brands (head)
+// Brand (head)
 /* ============================================================================================ */
-export const getBrandsHead = (): AppActions => {
+
+/* ----------------------------- */
+// Get Brands (head)
+/* ---------------------------- */
+export const getBrands = (): AppActions => {
   return {
-    type: actionTypes.GET_BRANDS_HEAD,
+    type: actionTypes.GET_BRANDS,
   };
 };
 
-export const getBrandsHeadStart = (): AppActions => {
+export const getBrandsStart = (): AppActions => {
   return {
-    type: actionTypes.GET_BRANDS_HEAD_START,
+    type: actionTypes.GET_BRANDS_START,
   };
 };
 
-export const getBrandsHeadSucceed = (brandsArray: TBrandsArray[]): AppActions => {
+export const getBrandsSucceed = (brandsArray: TBrandReceivedObj[]): AppActions => {
   return {
-    type: actionTypes.GET_BRANDS_HEAD_SUCCEED,
+    type: actionTypes.GET_BRANDS_SUCCEED,
     brandsArray: brandsArray,
   };
 };
-export const getBrandsHeadFailed = (errorMessage: string): AppActions => {
+export const getBrandsFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.GET_BRANDS_HEAD_FAILED,
+    type: actionTypes.GET_BRANDS_FAILED,
     errorMessage: errorMessage,
   };
 };
-/* ============================================================================================ */
+
+/* ------------------------------ */
 // Create Brand (head)
-/* ============================================================================================ */
-export const createBrandHead = (title: string, description: string): AppActions => {
+/* ------------------------------ */
+export const createBrand = (title: string, description: string): AppActions => {
   return {
-    type: actionTypes.CREATE_BRAND_HEAD,
+    type: actionTypes.CREATE_BRAND,
     title: title,
     description: description,
   };
 };
 
-export const createBrandHeadStart = (): AppActions => {
+export const createBrandStart = (): AppActions => {
   return {
-    type: actionTypes.CREATE_BRAND_HEAD_START,
+    type: actionTypes.CREATE_BRAND_START,
   };
 };
 
-export const createBrandHeadSucceed = (brandObject: TBrandObject, successMessage: string): AppActions => {
+export const createBrandSucceed = (brandObj: TBrandReceivedObj, successMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_BRAND_HEAD_SUCCEED,
-    brandObject: brandObject,
+    type: actionTypes.CREATE_BRAND_SUCCEED,
+    brandObj: brandObj,
     successMessage: successMessage,
   };
 };
-export const createBrandHeadFailed = (errorMessage: string): AppActions => {
+export const createBrandFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_BRAND_HEAD_FAILED,
+    type: actionTypes.CREATE_BRAND_FAILED,
     errorMessage: errorMessage,
   };
 };
 /* ============================================================================================ */
+/* Wheelbase (head) */
+/* ============================================================================================ */
+
+/* ------------------------ */
 // Create Wheelbase (head)
-/* ============================================================================================ */
-export const createWheelbaseHead = (title: string, description: string): AppActions => {
+/* ------------------------ */
+export const createWheelbase = (title: string, description: string): AppActions => {
   return {
-    type: actionTypes.CREATE_WHEELBASE_HEAD,
+    type: actionTypes.CREATE_WHEELBASE,
     title: title,
     description: description,
   };
 };
 
-export const createWheelbaseHeadStart = (): AppActions => {
+export const createWheelbaseStart = (): AppActions => {
   return {
-    type: actionTypes.CREATE_WHEELBASE_HEAD_START,
+    type: actionTypes.CREATE_WHEELBASE_START,
   };
 };
 
-export const createWheelbaseHeadSucceed = (wheelbaseObject: TWheelbaseObject, successMessage: string): AppActions => {
+export const createWheelbaseSucceed = (wheelbaseObj: TWheelbaseReceivedObj, successMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_WHEELBASE_HEAD_SUCCEED,
-    wheelbaseObject: wheelbaseObject,
+    type: actionTypes.CREATE_WHEELBASE_SUCCEED,
+    wheelbaseObj: wheelbaseObj,
     successMessage: successMessage,
   };
 };
-export const createWheelbaseHeadFailed = (errorMessage: string): AppActions => {
+export const createWheelbaseFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_WHEELBASE_HEAD_FAILED,
+    type: actionTypes.CREATE_WHEELBASE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------------ */
+// Get Wheelbases (head)
+/* ------------------------ */
+export const getWheelbases = (): AppActions => {
+  return {
+    type: actionTypes.GET_WHEELBASES,
+  };
+};
+
+export const getWheelbasesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_WHEELBASES_START,
+  };
+};
+
+export const getWheelbasesSucceed = (wheelbasesArray: TWheelbaseReceivedObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_WHEELBASES_SUCCEED,
+    wheelbasesArray: wheelbasesArray,
+  };
+};
+export const getWheelbasesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_WHEELBASES_FAILED,
     errorMessage: errorMessage,
   };
 };
 
 /* ============================================================================================ */
-// Create Make (head)
+// Make (head)
 /* ============================================================================================ */
-export const createMakeHead = (createMakeSubmitData: TMakeHeadSubmit): AppActions => {
+
+/* ------------------ */
+// Create Make (head)
+/* ------------------ */
+export const createMake = (createMakeSubmitData: TMakeSubmitData): AppActions => {
   return {
-    type: actionTypes.CREATE_MAKE_HEAD,
+    type: actionTypes.CREATE_MAKE,
     createMakeSubmitData: createMakeSubmitData,
   };
 };
 
-export const createMakeHeadStart = (): AppActions => {
+export const createMakeStart = (): AppActions => {
   return {
-    type: actionTypes.CREATE_MAKE_HEAD_START,
+    type: actionTypes.CREATE_MAKE_START,
   };
 };
 
-export const createMakeHeadSucceed = (makeObject: TMakeObject, successMessage: string): AppActions => {
+export const createMakeSucceed = (makeObj: TMakeReceivedObj, successMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_MAKE_HEAD_SUCCEED,
-    makeObject: makeObject,
+    type: actionTypes.CREATE_MAKE_SUCCEED,
+    makeObj: makeObj,
     successMessage: successMessage,
   };
 };
-export const createMakeHeadFailed = (errorMessage: string): AppActions => {
+export const createMakeFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_MAKE_HEAD_FAILED,
+    type: actionTypes.CREATE_MAKE_FAILED,
     errorMessage: errorMessage,
   };
 };

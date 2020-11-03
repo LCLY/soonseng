@@ -5,12 +5,18 @@ import { AppActions } from 'src/store/types';
 
 const initialState: SalesInitialState = {
   loading: false,
-  makeObject: null,
+  // makes
+  makeObj: null,
+  makesArray: null,
+  // brand
+  brandObj: null,
   brandsArray: null,
-  brandObject: null,
+  // wheel
+  wheelbaseObj: null,
+  wheelbasesArray: null,
+  // others
   errorMessage: null,
   successMessage: null,
-  wheelbaseObject: null,
 };
 
 /* ============================================================================================ */
@@ -21,68 +27,100 @@ const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
 };
 
 /* ============================================================================================ */
-/* Get all Brands (head) */
+/* Brand (head) */
 /* ============================================================================================ */
-const getBrandsHeadStart = (state: SalesInitialState, _action: AppActions) => {
+
+/* -------------------------- */
+/* Create Brand (head) */
+/* -------------------------- */
+const createBrandStart = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getBrandsHeadSucceed = (state: SalesInitialState, action: AppActions) => {
+const createBrandSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action) {
+    return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
+  }
+};
+const createBrandFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* -------------------------- */
+/* Get all Brands (head) */
+/* -------------------------- */
+const getBrandsStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getBrandsSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('brandsArray' in action) {
     return updateObject(state, { errorMessage: null, loading: false, brandsArray: action.brandsArray });
   }
 };
-const getBrandsHeadFailed = (state: SalesInitialState, action: AppActions) => {
+const getBrandsFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
 };
 
 /* ============================================================================================ */
-/* Create Brand (head) */
+/* Wheelbase (head) */
 /* ============================================================================================ */
-const createBrandHeadStart = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
-};
-const createBrandHeadSucceed = (state: SalesInitialState, action: AppActions) => {
-  if ('successMessage' in action) {
-    return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
-  }
-};
-const createBrandHeadFailed = (state: SalesInitialState, action: AppActions) => {
-  if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
-  }
-};
-
-/* ============================================================================================ */
+/* -------------------------- */
 /* Create Wheelbase (head) */
-/* ============================================================================================ */
-const createWheelbaseHeadStart = (state: SalesInitialState, _action: AppActions) => {
+/* -------------------------- */
+const createWheelbaseStart = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createWheelbaseHeadSucceed = (state: SalesInitialState, action: AppActions) => {
+const createWheelbaseSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('successMessage' in action) {
     return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
   }
 };
-const createWheelbaseHeadFailed = (state: SalesInitialState, action: AppActions) => {
+const createWheelbaseFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* -------------------------- */
+/* Get Wheelbases (head) */
+/* -------------------------- */
+const getWheelbasesStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getWheelbasesSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('wheelbasesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      wheelbasesArray: action.wheelbasesArray,
+    });
+  }
+};
+const getWheelbasesFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
 };
 
 /* ============================================================================================ */
-/* Create Make (head) */
+/* Make (head) */
 /* ============================================================================================ */
-const createMakeHeadStart = (state: SalesInitialState, _action: AppActions) => {
+
+/* -------------------------- */
+/* Create Make (head) */
+/* -------------------------- */
+const createMakeStart = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createMakeHeadSucceed = (state: SalesInitialState, action: AppActions) => {
+const createMakeSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('successMessage' in action) {
     return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
   }
 };
-const createMakeHeadFailed = (state: SalesInitialState, action: AppActions) => {
+const createMakeFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -97,37 +135,52 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
     case actionTypes.CLEAR_SALES_STATE:
       return clearSalesState(state, action);
 
+    /* =================================== */
+    // Brand (head)
+    /* =================================== */
     // Get all brands (head)
-    case actionTypes.GET_BRANDS_HEAD_START:
-      return getBrandsHeadStart(state, action);
-    case actionTypes.GET_BRANDS_HEAD_SUCCEED:
-      return getBrandsHeadSucceed(state, action);
-    case actionTypes.GET_BRANDS_HEAD_FAILED:
-      return getBrandsHeadFailed(state, action);
-
+    case actionTypes.GET_BRANDS_START:
+      return getBrandsStart(state, action);
+    case actionTypes.GET_BRANDS_SUCCEED:
+      return getBrandsSucceed(state, action);
+    case actionTypes.GET_BRANDS_FAILED:
+      return getBrandsFailed(state, action);
     // Create brand (head)
-    case actionTypes.CREATE_BRAND_HEAD_START:
-      return createBrandHeadStart(state, action);
-    case actionTypes.CREATE_BRAND_HEAD_SUCCEED:
-      return createBrandHeadSucceed(state, action);
-    case actionTypes.CREATE_BRAND_HEAD_FAILED:
-      return createBrandHeadFailed(state, action);
+    case actionTypes.CREATE_BRAND_START:
+      return createBrandStart(state, action);
+    case actionTypes.CREATE_BRAND_SUCCEED:
+      return createBrandSucceed(state, action);
+    case actionTypes.CREATE_BRAND_FAILED:
+      return createBrandFailed(state, action);
 
+    /* =================================== */
+    // Wheelbase (head)
+    /* =================================== */
     // Create wheelbase (head)
-    case actionTypes.CREATE_WHEELBASE_HEAD_START:
-      return createWheelbaseHeadStart(state, action);
-    case actionTypes.CREATE_WHEELBASE_HEAD_SUCCEED:
-      return createWheelbaseHeadSucceed(state, action);
-    case actionTypes.CREATE_WHEELBASE_HEAD_FAILED:
-      return createWheelbaseHeadFailed(state, action);
+    case actionTypes.CREATE_WHEELBASE_START:
+      return createWheelbaseStart(state, action);
+    case actionTypes.CREATE_WHEELBASE_SUCCEED:
+      return createWheelbaseSucceed(state, action);
+    case actionTypes.CREATE_WHEELBASE_FAILED:
+      return createWheelbaseFailed(state, action);
+    // Get wheelbase (head)
+    case actionTypes.GET_WHEELBASES_START:
+      return getWheelbasesStart(state, action);
+    case actionTypes.GET_WHEELBASES_SUCCEED:
+      return getWheelbasesSucceed(state, action);
+    case actionTypes.GET_WHEELBASES_FAILED:
+      return getWheelbasesFailed(state, action);
 
+    /* =================================== */
+    // Make (head)
+    /* =================================== */
     // Create make (head)
-    case actionTypes.CREATE_MAKE_HEAD_START:
-      return createMakeHeadStart(state, action);
-    case actionTypes.CREATE_MAKE_HEAD_SUCCEED:
-      return createMakeHeadSucceed(state, action);
-    case actionTypes.CREATE_MAKE_HEAD_FAILED:
-      return createMakeHeadFailed(state, action);
+    case actionTypes.CREATE_MAKE_START:
+      return createMakeStart(state, action);
+    case actionTypes.CREATE_MAKE_SUCCEED:
+      return createMakeSucceed(state, action);
+    case actionTypes.CREATE_MAKE_FAILED:
+      return createMakeFailed(state, action);
 
     default:
       return state;

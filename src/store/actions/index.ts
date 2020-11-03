@@ -2,24 +2,38 @@
 export {
   // Clear all sales state
   clearSalesState,
-  // Get all brands (head)
-  getBrandsHead,
-  getBrandsHeadStart,
-  getBrandsHeadSucceed,
-  getBrandsHeadFailed,
-  // Create brand (head)
-  createBrandHead,
-  createBrandHeadStart,
-  createBrandHeadFailed,
-  createBrandHeadSucceed,
-  // Create Wheelbase (head)
-  createWheelbaseHead,
-  createWheelbaseHeadStart,
-  createWheelbaseHeadFailed,
-  createWheelbaseHeadSucceed,
-  // Create Make (head)
-  createMakeHead,
-  createMakeHeadStart,
-  createMakeHeadFailed,
-  createMakeHeadSucceed,
+  /* =================== */
+  //   Brand
+  /* =================== */
+  // Get brands
+  getBrands,
+  getBrandsStart,
+  getBrandsSucceed,
+  getBrandsFailed,
+  // Create brand
+  createBrand,
+  createBrandStart,
+  createBrandFailed,
+  createBrandSucceed,
+  /* =================== */
+  //   Wheelbase
+  /* =================== */
+  // Create Wheelbase
+  createWheelbase,
+  createWheelbaseStart,
+  createWheelbaseFailed,
+  createWheelbaseSucceed,
+  // Get Wheelbases
+  getWheelbases,
+  getWheelbasesStart,
+  getWheelbasesFailed,
+  getWheelbasesSucceed,
+  /* =================== */
+  //   Make
+  /* =================== */
+  // Create Make
+  createMake,
+  createMakeStart,
+  createMakeFailed,
+  createMakeSucceed,
 } from './sales';
