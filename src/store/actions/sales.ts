@@ -65,16 +65,48 @@ export const createBrandStart = (): AppActions => {
   };
 };
 
-export const createBrandSucceed = (brandObj: TBrandReceivedObj, successMessage: string): AppActions => {
+export const createBrandSucceed = (brandsArray: TBrandReceivedObj[], successMessage: string): AppActions => {
   return {
     type: actionTypes.CREATE_BRAND_SUCCEED,
-    brandObj: brandObj,
+    brandsArray: brandsArray,
     successMessage: successMessage,
   };
 };
 export const createBrandFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.CREATE_BRAND_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------------------ */
+// Update Brand (head)
+/* ------------------------------ */
+export const updateBrand = (id: number, title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BRAND,
+    id: id,
+    title: title,
+    description: description,
+  };
+};
+
+export const updateBrandStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BRAND_START,
+  };
+};
+
+export const updateBrandSucceed = (brandsArray: TBrandReceivedObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BRAND_SUCCEED,
+    brandsArray: brandsArray,
+    successMessage: successMessage,
+  };
+};
+export const updateBrandFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BRAND_FAILED,
     errorMessage: errorMessage,
   };
 };
@@ -171,6 +203,34 @@ export const createMakeSucceed = (makeObj: TMakeReceivedObj, successMessage: str
 export const createMakeFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.CREATE_MAKE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Get Makes (head)
+/* ------------------ */
+export const getMakes = (): AppActions => {
+  return {
+    type: actionTypes.GET_MAKES,
+  };
+};
+
+export const getMakesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_MAKES_START,
+  };
+};
+
+export const getMakesSucceed = (makesArray: TMakeReceivedObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_MAKES_SUCCEED,
+    makesArray: makesArray,
+  };
+};
+export const getMakesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_MAKES_FAILED,
     errorMessage: errorMessage,
   };
 };

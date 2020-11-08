@@ -5,16 +5,21 @@ export {
   /* =================== */
   //   Brand
   /* =================== */
-  // Get brands
-  getBrands,
-  getBrandsStart,
-  getBrandsSucceed,
-  getBrandsFailed,
   // Create brand
   createBrand,
   createBrandStart,
   createBrandFailed,
   createBrandSucceed,
+  // Get brands
+  getBrands,
+  getBrandsStart,
+  getBrandsSucceed,
+  getBrandsFailed,
+  // Update brand
+  updateBrand,
+  updateBrandStart,
+  updateBrandSucceed,
+  updateBrandFailed,
   /* =================== */
   //   Wheelbase
   /* =================== */
@@ -36,4 +41,9 @@ export {
   createMakeStart,
   createMakeFailed,
   createMakeSucceed,
+  // Get Make
+  getMakes,
+  getMakesStart,
+  getMakesFailed,
+  getMakesSucceed,
 } from './sales';

@@ -11,7 +11,7 @@
 export const CLEAR_SALES_STATE = 'CLEAR_SALES_STATE';
 
 /* --------------------------------------------- */
-// Brands
+// Make - Brand
 /* --------------------------------------------- */
 // Getting all brands (head)
 export const GET_BRANDS = 'GET_BRANDS';
@@ -25,8 +25,14 @@ export const CREATE_BRAND_START = 'CREATE_BRAND_START';
 export const CREATE_BRAND_SUCCEED = 'CREATE_BRAND_SUCCEED';
 export const CREATE_BRAND_FAILED = 'CREATE_BRAND_FAILED';
 
+// Update brand (head)
+export const UPDATE_BRAND = 'UPDATE_BRAND';
+export const UPDATE_BRAND_START = 'UPDATE_BRAND_START';
+export const UPDATE_BRAND_SUCCEED = 'UPDATE_BRAND_SUCCEED';
+export const UPDATE_BRAND_FAILED = 'UPDATE_BRAND_FAILED';
+
 /* --------------------------------------------- */
-// Brands
+// Make - Wheelbase
 /* --------------------------------------------- */
 
 // Get all wheelbases (head)
@@ -41,8 +47,18 @@ export const CREATE_WHEELBASE_START = 'CREATE_WHEELBASE_START';
 export const CREATE_WHEELBASE_SUCCEED = 'CREATE_WHEELBASE_SUCCEED';
 export const CREATE_WHEELBASE_FAILED = 'CREATE_WHEELBASE_FAILED';
 
+/* --------------------------------------------- */
+// Make - Make
+/* --------------------------------------------- */
+
 // Create Make (head)
 export const CREATE_MAKE = 'CREATE_MAKE';
 export const CREATE_MAKE_START = 'CREATE_MAKE_START';
 export const CREATE_MAKE_SUCCEED = 'CREATE_MAKE_SUCCEED';
 export const CREATE_MAKE_FAILED = 'CREATE_MAKE_FAILED';
+
+// Get Make (head)
+export const GET_MAKES = 'GET_MAKES';
+export const GET_MAKES_START = 'GET_MAKES_START';
+export const GET_MAKES_SUCCEED = 'GET_MAKES_SUCCEED';
+export const GET_MAKES_FAILED = 'GET_MAKES_FAILED';

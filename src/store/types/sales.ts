@@ -49,7 +49,7 @@ export interface CreateBrandStartAction {
 }
 export interface CreateBrandSucceedAction {
   type: typeof actionTypes.CREATE_BRAND_SUCCEED;
-  brandObj: TBrandReceivedObj;
+  brandsArray: TBrandReceivedObj[];
   successMessage: string;
 }
 export interface CreateBrandFailedAction {
@@ -60,7 +60,31 @@ export interface CreateBrandFailedAction {
 /* --------------------------- */
 // Get All Brands (Head)
 /* --------------------------- */
-/* types */
+
+/* Api call */
+export interface UpdateBrandAction {
+  type: typeof actionTypes.UPDATE_BRAND;
+  id: number;
+  title: string;
+  description: string;
+}
+/* States */
+export interface UpdateBrandStartAction {
+  type: typeof actionTypes.UPDATE_BRAND_START;
+}
+export interface UpdateBrandSucceedAction {
+  type: typeof actionTypes.UPDATE_BRAND_SUCCEED;
+  brandsArray: TBrandReceivedObj[];
+  successMessage: string;
+}
+export interface UpdateBrandFailedAction {
+  type: typeof actionTypes.UPDATE_BRAND_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Update Brand (Head)
+/* --------------------------- */
 
 /* Api call */
 export interface GetBrandsAction {
@@ -150,15 +174,15 @@ export interface GetWheelbasesFailedAction {
 // Type of Objs being submitted
 export type TMakeSubmitData = {
   gvw: string;
-  year: number;
-  price: number;
+  year: string;
+  price: string;
   title: string;
   length: string;
-  brand_id: number;
+  brand_id: string;
   engine_cap: string;
   horsepower: string;
   description: string;
-  wheelbase_id: number;
+  wheelbase_id: string;
   transmission: string;
 };
 
@@ -170,13 +194,13 @@ export type TMakeReceivedObj = {
   title: string;
   price: number;
   length: string;
-  brand_id: number;
   available: boolean;
   engine_cap: string;
   horsepower: string;
   description: string;
-  wheelbase_id: number;
   transmission: string;
+  brand: TBrandReceivedObj;
+  wheelbase: TWheelbaseReceivedObj;
 };
 
 /*  Api call */
@@ -197,6 +221,26 @@ export interface CreateMakeFailedAction {
   type: typeof actionTypes.CREATE_MAKE_FAILED;
   errorMessage: string;
 }
+/* --------------------------- */
+// Get Makes (Head)
+/* --------------------------- */
+
+/*  Api call */
+export interface GetMakesAction {
+  type: typeof actionTypes.GET_MAKES;
+}
+/*  States */
+export interface GetMakesStartAction {
+  type: typeof actionTypes.GET_MAKES_START;
+}
+export interface GetMakesSucceedAction {
+  type: typeof actionTypes.GET_MAKES_SUCCEED;
+  makesArray: TMakeReceivedObj[];
+}
+export interface GetMakesFailedAction {
+  type: typeof actionTypes.GET_MAKES_FAILED;
+  errorMessage: string;
+}
 
 /* ============================================================== */
 // Combine and export all action types
@@ -215,6 +259,11 @@ export type SalesActionTypes =
   | CreateBrandSucceedAction
   | CreateBrandFailedAction
   /* ------------------------ */
+  | UpdateBrandAction
+  | UpdateBrandStartAction
+  | UpdateBrandSucceedAction
+  | UpdateBrandFailedAction
+  /* ------------------------ */
   | CreateWheelbaseAction
   | CreateWheelbaseStartAction
   | CreateWheelbaseSucceedAction
@@ -228,4 +277,9 @@ export type SalesActionTypes =
   | CreateMakeAction
   | CreateMakeStartAction
   | CreateMakeSucceedAction
-  | CreateMakeFailedAction;
+  | CreateMakeFailedAction
+  /* ------------------------ */
+  | GetMakesAction
+  | GetMakesStartAction
+  | GetMakesSucceedAction
+  | GetMakesFailedAction;

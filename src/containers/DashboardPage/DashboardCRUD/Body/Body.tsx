@@ -2,8 +2,6 @@ import React from 'react';
 import './Body.scss';
 /*components*/
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
-import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 /*3rd party lib*/
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
@@ -32,16 +30,13 @@ const Body: React.FC<Props> = () => {
   /* ================================================== */
   return (
     <>
-      {' '}
-      <NavbarComponent activePage="" />
-      <LayoutComponent activeKey="body">
-        <section className="">
-          <HeaderTitle>Body (Tail)</HeaderTitle>
-          {/* ================== */}
-          {/*       Table        */}
-          {/* ================== */}
-          TABLE HERE
-          {/* {brandsArray ? (
+      <section className="">
+        <HeaderTitle>Body (Tail)</HeaderTitle>
+        {/* ================== */}
+        {/*       Table        */}
+        {/* ================== */}
+        TABLE HERE
+        {/* {brandsArray ? (
         brandsArray.length === 0 ? (
           <Empty style={{ marginTop: '5rem' }} />
         ) : (
@@ -64,13 +59,12 @@ const Body: React.FC<Props> = () => {
           <Loading />
         </div>
       )} */}
-        </section>
-      </LayoutComponent>
+      </section>
     </>
   );
 };
 interface StateProps {
-  loading: boolean;
+  loading?: boolean;
 }
 const mapStateToProps = (state: any): StateProps | void => {
   return {

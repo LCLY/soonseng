@@ -1,0 +1,130 @@
+.make {
+  /* ============ */
+  // main sections
+  /* ============ */
+  &__section {
+    background: $section-grey;
+    padding: 1rem 2rem 2rem 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* =============== */
+  // header
+  /* =============== */
+  &__header {
+    /* ---------------- */
+    //  the div wrapping header and the button
+    /* ---------------- */
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    /* ---------------- */
+    //  the title of the header
+    /* ---------------- */
+    &-title {
+      font-family: $ubuntu;
+      font-size: 2.5rem;
+    }
+  }
+  &__brand {
+    /* ============ */
+    // btn
+    /* ============ */
+    &-btn {
+      padding: 0.5rem 2rem !important;
+      @include shadow-func(0, 0.2rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.425));
+
+      // edit button
+      &--edit {
+        color: #1890ff !important;
+        // border-color: rgb(153, 180, 219) !important;
+
+        &:hover {
+          color: darken(#1890ff, 10%) !important;
+        }
+
+        &:active {
+          transition: none;
+          color: #1890ff !important;
+        }
+      }
+    }
+  }
+
+  /* ============ */
+  // form
+  /* ============ */
+  &__form {
+    /* ---------- */
+    // the category item
+    /* ---------- */
+    &-item {
+      /* for create make overwrite label width */
+      &--make {
+        margin-bottom: 0.5rem !important;
+        & label {
+          width: 11rem !important;
+        }
+      }
+      label {
+        width: 9rem;
+      }
+
+      .ant-form-item-label > label::after {
+        content: '' !important;
+      }
+
+      .ant-form-item-control-input:before {
+        content: ':' !important;
+        margin-right: 1rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-right: 0;
+        }
+      }
+
+      .ant-form-item-explain.ant-form-item-explain-error {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+      .ant-form-item-explain.ant-form-item-explain-success {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+    }
+  }
+  /* ================================== */
+  // the details column under make
+  /* ================================== */
+  &__details {
+    /* ---------- */
+    // the category on the left
+    /* ---------- */
+    &-category {
+      color: $primary-color-3;
+      font-family: $opensans;
+    }
+    /* ------------------------------ */
+    // the left div of details
+    /* ------------------------------ */
+    &-left {
+      width: 11rem;
+    }
+
+    // the value column on the right
+    &-right {
+      margin-left: 1rem;
+      white-space: initial;
+      width: 17rem;
+    }
+  }
+}
