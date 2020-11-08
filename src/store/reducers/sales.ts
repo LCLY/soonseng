@@ -70,7 +70,7 @@ const getBrandsFailed = (state: SalesInitialState, action: AppActions) => {
 };
 
 /* -------------------------- */
-/* Get all Brands  */
+/* Update Brand  */
 /* -------------------------- */
 const updateBrandStart = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
@@ -101,8 +101,13 @@ const createWheelbaseStart = (state: SalesInitialState, _action: AppActions) => 
   return updateObject(state, { errorMessage: null, loading: true });
 };
 const createWheelbaseSucceed = (state: SalesInitialState, action: AppActions) => {
-  if ('successMessage' in action) {
-    return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
+  if ('successMessage' in action && 'wheelbasesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      wheelbasesArray: action.wheelbasesArray,
+      successMessage: action.successMessage,
+    });
   }
 };
 const createWheelbaseFailed = (state: SalesInitialState, action: AppActions) => {
@@ -132,6 +137,28 @@ const getWheelbasesFailed = (state: SalesInitialState, action: AppActions) => {
   }
 };
 
+/* -------------------------- */
+/* Update Wheelbase  */
+/* -------------------------- */
+const updateWheelbaseStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateWheelbaseSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('wheelbasesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      wheelbasesArray: action.wheelbasesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const updateWheelbaseFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
 /* ============================================================================================ */
 /* Make - Make (head) */
 /* ============================================================================================ */
@@ -139,15 +166,20 @@ const getWheelbasesFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Create Make  */
 /* -------------------------- */
-const createMakeStart = (state: SalesInitialState, _action: AppActions) => {
+const updateMakeStart = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createMakeSucceed = (state: SalesInitialState, action: AppActions) => {
-  if ('successMessage' in action) {
-    return updateObject(state, { errorMessage: null, loading: false, successMessage: action.successMessage });
+const updateMakeSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'makesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      makesArray: action.makesArray,
+      successMessage: action.successMessage,
+    });
   }
 };
-const createMakeFailed = (state: SalesInitialState, action: AppActions) => {
+const updateMakeFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -168,6 +200,28 @@ const getMakesSucceed = (state: SalesInitialState, action: AppActions) => {
   }
 };
 const getMakesFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* -------------------------- */
+/* Update Make  */
+/* -------------------------- */
+const createMakeStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createMakeSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'makesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      makesArray: action.makesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const createMakeFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -224,6 +278,13 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
       return getWheelbasesSucceed(state, action);
     case actionTypes.GET_WHEELBASES_FAILED:
       return getWheelbasesFailed(state, action);
+    // Update wheelbase (head)
+    case actionTypes.UPDATE_WHEELBASE_START:
+      return updateWheelbaseStart(state, action);
+    case actionTypes.UPDATE_WHEELBASE_SUCCEED:
+      return updateWheelbaseSucceed(state, action);
+    case actionTypes.UPDATE_WHEELBASE_FAILED:
+      return updateWheelbaseFailed(state, action);
 
     /* =================================== */
     // Make (head)
@@ -242,6 +303,13 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
       return getMakesSucceed(state, action);
     case actionTypes.GET_MAKES_FAILED:
       return getMakesFailed(state, action);
+    // Update make (head)
+    case actionTypes.UPDATE_MAKE_START:
+      return updateMakeStart(state, action);
+    case actionTypes.UPDATE_MAKE_SUCCEED:
+      return updateMakeSucceed(state, action);
+    case actionTypes.UPDATE_MAKE_FAILED:
+      return updateMakeFailed(state, action);
 
     default:
       return state;

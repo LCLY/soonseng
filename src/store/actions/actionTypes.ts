@@ -47,6 +47,12 @@ export const CREATE_WHEELBASE_START = 'CREATE_WHEELBASE_START';
 export const CREATE_WHEELBASE_SUCCEED = 'CREATE_WHEELBASE_SUCCEED';
 export const CREATE_WHEELBASE_FAILED = 'CREATE_WHEELBASE_FAILED';
 
+// Update Wheelbase (head)
+export const UPDATE_WHEELBASE = 'UPDATE_WHEELBASE';
+export const UPDATE_WHEELBASE_START = 'UPDATE_WHEELBASE_START';
+export const UPDATE_WHEELBASE_SUCCEED = 'UPDATE_WHEELBASE_SUCCEED';
+export const UPDATE_WHEELBASE_FAILED = 'UPDATE_WHEELBASE_FAILED';
+
 /* --------------------------------------------- */
 // Make - Make
 /* --------------------------------------------- */
@@ -62,3 +68,9 @@ export const GET_MAKES = 'GET_MAKES';
 export const GET_MAKES_START = 'GET_MAKES_START';
 export const GET_MAKES_SUCCEED = 'GET_MAKES_SUCCEED';
 export const GET_MAKES_FAILED = 'GET_MAKES_FAILED';
+
+// Update Make (head)
+export const UPDATE_MAKE = 'UPDATE_MAKE';
+export const UPDATE_MAKE_START = 'UPDATE_MAKE_START';
+export const UPDATE_MAKE_SUCCEED = 'UPDATE_MAKE_SUCCEED';
+export const UPDATE_MAKE_FAILED = 'UPDATE_MAKE_FAILED';

@@ -69,6 +69,14 @@
           width: 11rem !important;
         }
       }
+
+      // remove the colon from the inch form input
+      &--inch {
+        & .ant-form-item-control-input:before {
+          content: none !important;
+        }
+      }
+
       label {
         width: 9rem;
       }
@@ -77,6 +85,7 @@
         content: '' !important;
       }
 
+      // add colon before the form input
       .ant-form-item-control-input:before {
         content: ':' !important;
         margin-right: 1rem;
@@ -86,6 +95,7 @@
         }
       }
 
+      // push to right abit for error message
       .ant-form-item-explain.ant-form-item-explain-error {
         margin-left: 1.3rem;
         @include respond-to(mobile) {
@@ -93,6 +103,7 @@
           margin-left: 0;
         }
       }
+      // same thing applies to success message
       .ant-form-item-explain.ant-form-item-explain-success {
         margin-left: 1.3rem;
         @include respond-to(mobile) {

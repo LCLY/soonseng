@@ -11,9 +11,11 @@ import {
   // Wheelbase
   createWheelbaseSaga,
   getWheelbasesSaga,
+  updateWheelbaseSaga,
   // Make
   createMakeSaga,
   getMakesSaga,
+  updateMakeSaga,
 } from './sales';
 
 export function* watchAuth() {
@@ -24,7 +26,9 @@ export function* watchAuth() {
   // Wheelbase
   yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_WHEELBASE, createWheelbaseSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_WHEELBASES, getWheelbasesSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.UPDATE_WHEELBASE, updateWheelbaseSaga)]);
   // Make
   yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_MAKE, createMakeSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_MAKES, getMakesSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.UPDATE_MAKE, updateMakeSaga)]);
 }

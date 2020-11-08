@@ -10,10 +10,17 @@ import { Empty, Table, Form, Input, Button, Modal, notification, Select, DatePic
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
-import { TBrandReceivedObj, TMakeReceivedObj, TMakeSubmitData, TWheelbaseReceivedObj } from 'src/store/types/sales';
+import {
+  TReceivedBrandObj,
+  TReceivedMakeObj,
+  TCreateMakeData,
+  TUpdateMakeData,
+  TReceivedWheelbaseObj,
+} from 'src/store/types/sales';
 import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/shared/Utils';
 import Loading from 'src/components/Loading/Loading';
 import moment from 'moment';
+import { FormInstance } from 'antd/lib/form/hooks/useForm';
 
 const { Option } = Select;
 
@@ -47,7 +54,6 @@ type TMakeState = {
   available: boolean;
   engine_cap: string;
   horsepower: string;
-  description: string;
   transmission: string;
   makeBrandId: number;
   makeBrandTitle: string;
@@ -70,31 +76,37 @@ type TShowModal = {
 type Props = MakeProps & StateProps & DispatchProps;
 
 const Make: React.FC<Props> = ({
+  // Miscellaneous
   loading,
   errorMessage,
-  makesArray,
-  brandsArray,
   successMessage,
-  wheelbasesArray,
-  onGetMakes,
+  onClearSalesState,
+  // brand
+  brandsArray,
   onGetBrands,
-  onCreateMake,
   onCreateBrand,
   onUpdateBrand,
+  // wheelbase
+  wheelbasesArray,
   onGetWheelbases,
   onCreateWheelbase,
-  onClearSalesState,
+  onUpdateWheelbase,
+  // make
+  makesArray,
+  onGetMakes,
+  onCreateMake,
+  onUpdateMake,
 }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  const [form] = Form.useForm();
+
   const [createBrandForm] = Form.useForm();
   const [editBrandForm] = Form.useForm();
-  // const [createWheelbaseForm] = Form.useForm();
-  // const [editWheelbaseForm] = Form.useForm();
-  // const [createMakeForm] = Form.useForm();
-  // const [editMakeForm] = Form.useForm();
+  const [createWheelbaseForm] = Form.useForm();
+  const [editWheelbaseForm] = Form.useForm();
+  const [createMakeForm] = Form.useForm();
+  const [editMakeForm] = Form.useForm();
   // Table states
   const [makeState, setMakeState] = useState<TMakeState[]>([]);
   const [brandsState, setBrandState] = useState<TBrandState[]>([]);
@@ -170,12 +182,13 @@ const Make: React.FC<Props> = ({
               onClick={() => {
                 // show modal
                 setShowEditModal({ ...showEditModal, brand: true });
-                // update the form value
+                // update the form value using the 'name' attribute as target/key
                 // if brandDescription is '-' then change to empty string, else the real string
+                // remember to set this form on the Form component
                 editBrandForm.setFieldsValue({
-                  id: record.brandId,
-                  title: record.brandTitle,
-                  description: record.brandDescription === '-' ? '' : record.brandDescription,
+                  brandId: record.brandId,
+                  brandTitle: record.brandTitle,
+                  brandDescription: record.brandDescription === '-' ? '' : record.brandDescription,
                 });
               }}
             >
@@ -226,10 +239,26 @@ const Make: React.FC<Props> = ({
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, _record: TBrandState) => {
+      render: (_text: any, record: TWheelbaseState) => {
         return (
           <>
-            <Button className="make__brand-btn--edit" type="link">
+            <Button
+              className="make__brand-btn--edit"
+              type="link"
+              onClick={() => {
+                // show modal
+                setShowEditModal({ ...showEditModal, wheelbase: true });
+                let convertedToIntWheelbaseTitle = parseInt(record.wheelbaseTitle.replace('mm', ''));
+                // update the form value
+                // if wheelbaseDescription is '-' then change to empty string, else the real string
+                // remember to set this form on the Form component
+                editWheelbaseForm.setFieldsValue({
+                  wheelbaseId: record.wheelbaseId,
+                  wheelbaseTitle: convertedToIntWheelbaseTitle,
+                  wheelbaseDescription: record.wheelbaseDescription === '-' ? '' : record.wheelbaseDescription,
+                });
+              }}
+            >
               Edit
             </Button>
             <Button type="link" danger>
@@ -288,10 +317,54 @@ const Make: React.FC<Props> = ({
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, _record: TBrandState) => {
+      render: (_text: any, record: TMakeState) => {
         return (
           <>
-            <Button className="make__brand-btn--edit" type="link">
+            <Button
+              className="make__brand-btn--edit"
+              type="link"
+              onClick={() => {
+                // show modal
+                setShowEditModal({ ...showEditModal, make: true });
+                // update the form value using the 'name' attribute as target/key
+
+                // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
+                let extractedFeet = '';
+                let extractedInch = '';
+                let extractedHorsepower = '';
+                let extractedPrice = '';
+                let extractedGvw = '';
+                // they have to be legit strings after being splitted
+                if (record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] !== undefined) {
+                  extractedFeet = record.length.split(" '")[0]; //get the first index
+                  extractedInch = record.length.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
+                } else {
+                  // this can be removed after database is being cleared because it's guaranteed to have ft and inch after
+                  extractedFeet = record.length;
+                  extractedInch = record.length;
+                }
+
+                // replace units with empty strings
+                extractedHorsepower = record.horsepower.replace('hp', '');
+                extractedPrice = record.price.replace('RM', '');
+                extractedGvw = record.gvw.replace('kg', '');
+
+                // remember to set this form on the Form component
+                editMakeForm.setFieldsValue({
+                  makeId: record.makeId,
+                  gvw: extractedGvw,
+                  year: moment(record.year),
+                  price: extractedPrice,
+                  title: record.makeTitle,
+                  makeBrandId: record.makeBrandId,
+                  engine_cap: record.engine_cap,
+                  horsepower: extractedHorsepower,
+                  makeWheelbaseId: record.makeWheelbaseId,
+                  transmission: record.transmission,
+                  length: { feet: extractedFeet, inch: extractedInch },
+                });
+              }}
+            >
               Edit
             </Button>
             <Button type="link" danger>
@@ -307,60 +380,120 @@ const Make: React.FC<Props> = ({
   /*  methods  */
   /* ================================================== */
   /* Forms onFinish methods */
-  const onCreateBrandFinish = (values: { title: string; description: string }) => {
-    onCreateBrand(values.title, values.description);
+  // the keys "values" are from the form's 'name' attribute
+  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string }) => {
+    onCreateBrand(values.brandTitle, values.brandDescription);
   };
-  const onEditBrandFinish = (values: { id: number; title: string; description: string }) => {
-    onUpdateBrand(values.id, values.title, values.description);
+  const onEditBrandFinish = (values: { brandId: number; brandTitle: string; brandDescription: string }) => {
+    onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription);
   };
-  const onWheelbaseFinish = (values: { title: string; description: string }) => {
-    onCreateWheelbase(values.title, values.description);
+  const onCreateWheelbaseFinish = (values: { wheelbaseTitle: string; wheelbaseDescription: string }) => {
+    onCreateWheelbase(values.wheelbaseTitle, values.wheelbaseDescription);
   };
-  type makeFinishValues = {
+  const onEditWheelbaseFinish = (values: {
+    wheelbaseId: number;
+    wheelBaseTitle: string;
+    wheelbaseDescription: string;
+  }) => {
+    onUpdateWheelbase(values.wheelbaseId, values.wheelBaseTitle, values.wheelbaseDescription);
+  };
+  // Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
+  type TCreateMakeFinishValues = {
     gvw: string;
     year: string;
     price: string;
     title: string;
-    length: string;
     brand_id: string;
     engine_cap: string;
     horsepower: string;
     description: string;
     wheelbase_id: string;
     transmission: string;
+    length: { feet: string; inch: string };
   };
-  const onMakeFinish = (values: makeFinishValues) => {
+  type TUpdateMakeFinishValues = {
+    gvw: string;
+    year: string;
+    price: string;
+    title: string;
+    engine_cap: string;
+    horsepower: string;
+    description: string;
+    transmission: string;
+    makeId: number;
+    makeBrandId: string;
+    makeWheelbaseId: string;
+    length: { feet: string; inch: string };
+  };
+  const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
+    // combine the ft and inch
+    let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
     // package the object
-    let createMakeSubmitData: TMakeSubmitData = {
+    let createMakeData: TCreateMakeData = {
       gvw: values.gvw,
       title: values.title,
-      length: values.length,
+      length: concatLength,
       engine_cap: values.engine_cap,
       price: values.price.toString(),
       horsepower: values.horsepower,
-      description: values.description,
       transmission: values.transmission,
       brand_id: values.brand_id.toString(),
       wheelbase_id: values.wheelbase_id.toString(),
       year: moment(values.year).year().toString(), //convert to year
     };
-    onCreateMake(createMakeSubmitData);
+    onCreateMake(createMakeData);
+  };
+  const onEditMakeFinish = (values: TUpdateMakeFinishValues) => {
+    let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
+    // package the object
+    let updateMakeData: TUpdateMakeData = {
+      make_id: values.makeId,
+      gvw: values.gvw,
+      title: values.title,
+      length: concatLength,
+      engine_cap: values.engine_cap,
+      price: values.price.toString(),
+      horsepower: values.horsepower,
+      transmission: values.transmission,
+      brand_id: values.makeBrandId.toString(),
+      wheelbase_id: values.makeWheelbaseId.toString(),
+      year: moment(values.year).year().toString(), //convert to year
+    };
+    onUpdateMake(updateMakeData);
   };
 
+  /**
+   * For user to be able to press enter and submit the form
+   * @param {React.KeyboardEvent<HTMLFormElement>} e
+   * @param {FormInstance<any>} form form instance created at initialization using useForm
+   */
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, form: FormInstance<any>) => {
+    if (e.key === 'Enter') {
+      form.submit();
+    }
+  };
   /* ================================================== */
   /*  Components  */
   /* ================================================== */
 
+  /* ================================================ */
+  // Brand
+  /* ================================================ */
   /* ------------------- */
   // Create Brand Form
   /* ------------------- */
   let createBrandFormComponent = (
     <>
-      <Form form={createBrandForm} name="createBrand" onFinish={onCreateBrandFinish}>
+      <Form
+        form={createBrandForm}
+        name="createBrand"
+        onKeyDown={(e) => handleKeyDown(e, createBrandForm)}
+        onFinish={onCreateBrandFinish}
+      >
         <Form.Item
           className="make__form-item"
           label="Title"
-          name="title"
+          name="brandTitle"
           rules={[{ required: true, message: 'Input title here!' }]}
         >
           <Input placeholder="Type title here" />
@@ -369,13 +502,28 @@ const Make: React.FC<Props> = ({
         <Form.Item
           className="make__form-item"
           label="Description"
-          name="description"
+          name="brandDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
           <Input placeholder="Type description here" />
         </Form.Item>
       </Form>
     </>
+  );
+  /* ---------------------- */
+  // Create Brand Modal
+  /* ---------------------- */
+  let createBrandModal = (
+    <Modal
+      title="Create Brand"
+      visible={showCreateModal.brand}
+      onOk={createBrandForm.submit}
+      confirmLoading={loading}
+      onCancel={() => setShowCreateModal({ ...showCreateModal, brand: false })}
+    >
+      {/* the content within the modal */}
+      {createBrandFormComponent}
+    </Modal>
   );
 
   /* ------------------- */
@@ -383,11 +531,16 @@ const Make: React.FC<Props> = ({
   /* ------------------- */
   let editBrandFormComponent = (
     <>
-      <Form form={editBrandForm} name="editBrand" onFinish={onEditBrandFinish}>
+      <Form
+        form={editBrandForm}
+        name="editBrand"
+        onKeyDown={(e) => handleKeyDown(e, editBrandForm)}
+        onFinish={onEditBrandFinish}
+      >
         <Form.Item
           className="make__form-item"
           label="Title"
-          name="title"
+          name="brandTitle"
           rules={[{ required: true, message: 'Input title here!' }]}
         >
           <Input placeholder="Type title here" />
@@ -396,36 +549,67 @@ const Make: React.FC<Props> = ({
         <Form.Item
           className="make__form-item"
           label="Description"
-          name="description"
+          name="brandDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
           <Input placeholder="Type description here" />
         </Form.Item>
 
-        {/* Getting the id */}
+        {/* Getting the brand id */}
         <Form.Item
           className="make__form-item"
           label="id"
-          name="id"
+          name="brandId"
           hidden
-          rules={[{ required: true, message: 'Input description here!' }]}
+          rules={[{ required: true, message: 'Get brand id!' }]}
         >
-          <Input placeholder="Type id here" />
+          <Input />
         </Form.Item>
       </Form>
     </>
   );
 
+  /* ---------------------- */
+  // Edit Brand Modal
+  /* ---------------------- */
+  let editBrandModal = (
+    <Modal
+      title="Edit Brand"
+      visible={showEditModal.brand}
+      onOk={editBrandForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        // reset the brandObj value
+        setShowEditModal({
+          ...showEditModal,
+          brand: false,
+          brandObj: { brandId: -1, brandTitle: '', brandDescription: '' },
+        });
+      }}
+    >
+      {/* the content within the modal */}
+      {editBrandFormComponent}
+    </Modal>
+  );
+
+  /* ================================================ */
+  // Wheelbase
+  /* ================================================ */
   /* ----------------------- */
   // Create Wheelbase Form
   /* ----------------------- */
   let createWheelbaseFormComponent = (
     <>
-      <Form form={form} name="basic" onFinish={onWheelbaseFinish}>
+      <Form
+        form={createWheelbaseForm}
+        name="createWheelbase"
+        onKeyDown={(e) => handleKeyDown(e, createWheelbaseForm)}
+        onFinish={onCreateWheelbaseFinish}
+      >
         <Form.Item
           className="make__form-item"
           label="Title"
-          name="title"
+          name="wheelbaseTitle"
           rules={[{ required: true, message: 'Input title here!' }]}
         >
           <Input type="number" min={0} addonAfter={'mm'} placeholder="Type title here e.g. 3300" />
@@ -434,7 +618,7 @@ const Make: React.FC<Props> = ({
         <Form.Item
           className="make__form-item"
           label="Description"
-          name="description"
+          name="wheelbaseDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
           <Input placeholder="Type description here" />
@@ -442,12 +626,96 @@ const Make: React.FC<Props> = ({
       </Form>
     </>
   );
+
+  /* ---------------------- */
+  // Create Wheelbase Modal
+  /* ---------------------- */
+  let createWheelbaseModal = (
+    <Modal
+      title="Create Wheelbase"
+      visible={showCreateModal.wheelbase}
+      onOk={createWheelbaseForm.submit}
+      confirmLoading={loading}
+      onCancel={() => setShowCreateModal({ ...showCreateModal, wheelbase: false })}
+    >
+      {/* the content within the modal */}
+      {createWheelbaseFormComponent}
+    </Modal>
+  );
+
+  /* ----------------------- */
+  // Edit Wheelbase Form
+  /* ----------------------- */
+  let editWheelbaseFormComponent = (
+    <>
+      <Form
+        form={editWheelbaseForm}
+        name="editWheelbase"
+        onKeyDown={(e) => handleKeyDown(e, editWheelbaseForm)}
+        onFinish={onEditWheelbaseFinish}
+      >
+        <Form.Item
+          className="make__form-item"
+          label="Title"
+          name="wheelbaseTitle"
+          rules={[{ required: true, message: 'Input title here!' }]}
+        >
+          <Input type="number" min={0} addonAfter={'mm'} placeholder="Type title here e.g. 3300" />
+        </Form.Item>
+
+        <Form.Item
+          className="make__form-item"
+          label="Description"
+          name="wheelbaseDescription"
+          rules={[{ required: false, message: 'Input description here!' }]}
+        >
+          <Input placeholder="Type description here" />
+        </Form.Item>
+
+        {/* Getting the wheelbase id */}
+        <Form.Item
+          className="make__form-item"
+          label="id"
+          name="wheelbaseId"
+          hidden
+          rules={[{ required: true, message: 'Get wheelbase id!' }]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </>
+  );
+
+  /* ---------------------- */
+  // Edit Wheelbase Modal
+  /* ---------------------- */
+  let editWheelbaseModal = (
+    <Modal
+      title="Edit Wheelbase"
+      visible={showEditModal.wheelbase}
+      onOk={editWheelbaseForm.submit}
+      confirmLoading={loading}
+      onCancel={() => setShowEditModal({ ...showEditModal, wheelbase: false })}
+    >
+      {/* the content within the modal */}
+      {editWheelbaseFormComponent}
+    </Modal>
+  );
+
+  /* ================================================ */
+  // Make
+  /* ================================================ */
   /* ------------------- */
   // Create Make Form
   /* ------------------- */
   let createMakeFormComponent = (
     <>
-      <Form form={form} name="basic" onFinish={onMakeFinish}>
+      <Form
+        form={createMakeForm}
+        name="createMake"
+        onKeyDown={(e) => handleKeyDown(e, createMakeForm)}
+        onFinish={onCreateMakeFinish}
+      >
         {/* ------- title ------- */}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -494,7 +762,6 @@ const Make: React.FC<Props> = ({
             showSearch
             placeholder="Select a wheelbase"
             optionFilterProp="children"
-            onChange={(value) => console.log(value)}
             filterOption={(input, option) =>
               option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
@@ -511,15 +778,28 @@ const Make: React.FC<Props> = ({
         </Form.Item>
 
         {/* ------- Length ------- */}
-        <Form.Item
-          className="make__form-item make__form-item--make"
-          label="Length"
-          name="length"
-          rules={[{ required: true, message: 'Input length here!' }]}
-        >
-          <Input type="number" min={0} addonAfter={'ft'} placeholder="Type length here e.g. 17" />
-        </Form.Item>
+        <div className="flex">
+          <Form.Item
+            className="make__form-item make__form-item--make margin_r-1"
+            label="Length"
+            name={['length', 'feet']}
+            rules={[{ required: true, message: 'Input ft here!' }]}
+            style={{ width: '62%' }}
+          >
+            {/* ft */}
+            <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
+          </Form.Item>
 
+          <Form.Item
+            className="make__form-item--make make__form-item--inch"
+            name={['length', 'inch']}
+            rules={[{ required: true, message: 'Input inch here!' }]}
+            style={{ width: '38%' }}
+          >
+            {/* inch */}
+            <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
+          </Form.Item>
+        </div>
         {/* ------- Engine cap ------- */}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -547,11 +827,181 @@ const Make: React.FC<Props> = ({
           name="year"
           rules={[{ required: true, message: 'Select a year!' }]}
         >
-          <DatePicker
-            style={{ width: '100%' }}
-            // onChange={(date, dateString) => console.log(date, dateString)}
-            picker="year"
-          />
+          <DatePicker style={{ width: '100%' }} picker="year" />
+        </Form.Item>
+
+        {/* ------- Transmission ------- */}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Transmission"
+          name="transmission"
+          rules={[{ required: true, message: 'Input Transmission here!' }]}
+        >
+          <Input placeholder="Type transmission here e.g. MT" />
+        </Form.Item>
+
+        {/* ------- GVW ------- */}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="GVW"
+          name="gvw"
+          rules={[{ required: true, message: 'Input Gross Vehicle Weight here!' }]}
+        >
+          <Input type="number" min={0} addonAfter="kg" placeholder="Type Gross Vehicle Weight here e.g. 2000" />
+        </Form.Item>
+
+        {/* ------- Price ------- */}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Price"
+          name="price"
+          rules={[{ required: true, message: 'Input price here!' }]}
+        >
+          <Input type="number" min={0} addonBefore="RM" placeholder="Type price here e.g. 1500" />
+        </Form.Item>
+      </Form>
+    </>
+  );
+
+  /* ---------------------- */
+  // Create Make Modal
+  /* ---------------------- */
+  let createMakeModal = (
+    <Modal
+      title="Create Make"
+      visible={showCreateModal.make}
+      onOk={createMakeForm.submit}
+      confirmLoading={loading}
+      onCancel={() => setShowCreateModal({ ...showCreateModal, make: false })}
+    >
+      {/* the content within the modal */}
+      {createMakeFormComponent}
+    </Modal>
+  );
+
+  /* ---------------------- */
+  // Edit Make Form
+  /* ---------------------- */
+  let editMakeFormComponent = (
+    <>
+      <Form
+        form={editMakeForm}
+        name="editMake"
+        onKeyDown={(e) => handleKeyDown(e, editMakeForm)}
+        onFinish={onEditMakeFinish}
+      >
+        {/* ------- title ------- */}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Title"
+          name="title"
+          rules={[{ required: true, message: 'Input title here!' }]}
+        >
+          <Input placeholder="Type title here e.g. XZA200" />
+        </Form.Item>
+
+        {/* ------- Brand - value is brand id but display is brand name -------*/}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Brand"
+          name="makeBrandId"
+          rules={[{ required: true, message: 'Select Brand!' }]}
+        >
+          {/* only render if brandsArray is not null */}
+          <Select
+            showSearch
+            placeholder="Select a brand"
+            optionFilterProp="children"
+            filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
+            {brandsArray &&
+              brandsArray.map((brand, index) => {
+                return (
+                  <Option style={{ textTransform: 'capitalize' }} key={index} value={brand.id}>
+                    {brand.title}
+                  </Option>
+                );
+              })}
+          </Select>
+        </Form.Item>
+
+        {/* ------- Wheelbase - value is Wheelbase id but display is Wheelbase name  -------*/}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Wheelbase"
+          name="makeWheelbaseId"
+          rules={[{ required: true, message: 'Select wheelbase!' }]}
+        >
+          <Select
+            showSearch
+            placeholder="Select a wheelbase"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {wheelbasesArray &&
+              wheelbasesArray.map((wheelbase, index) => {
+                return (
+                  <Option style={{ textTransform: 'capitalize' }} key={index} value={wheelbase.id}>
+                    {wheelbase.title + 'mm'}
+                  </Option>
+                );
+              })}
+          </Select>
+        </Form.Item>
+
+        {/* ------- Length ------- */}
+        <div className="flex">
+          <Form.Item
+            className="make__form-item make__form-item--make margin_r-1"
+            label="Length"
+            name={['length', 'feet']}
+            rules={[{ required: true, message: 'Input ft here!' }]}
+            style={{ width: '62%' }}
+          >
+            {/* ft */}
+            <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
+          </Form.Item>
+
+          <Form.Item
+            className="make__form-item--make make__form-item--inch"
+            name={['length', 'inch']}
+            rules={[{ required: true, message: 'Input inch here!' }]}
+            style={{ width: '38%' }}
+          >
+            {/* inch */}
+            <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
+          </Form.Item>
+        </div>
+        {/* ------- Engine cap ------- */}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Engine Cap"
+          name="engine_cap"
+          rules={[{ required: true, message: 'Input Engine Cap here!' }]}
+        >
+          <Input type="number" min={0} placeholder="Type length here e.g. 115" />
+        </Form.Item>
+
+        {/* ------- Horsepower ------- */}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Horsepower"
+          name="horsepower"
+          rules={[{ required: true, message: 'Input Horsepower here!' }]}
+        >
+          <Input type="number" min={0} addonAfter={'hp'} placeholder="Type horsepower here e.g. 250" />
+        </Form.Item>
+
+        {/* ------- Year ------- */}
+        <Form.Item
+          className="make__form-item make__form-item--make"
+          label="Year"
+          name="year"
+          rules={[{ required: true, message: 'Select a year!' }]}
+        >
+          <DatePicker style={{ width: '100%' }} picker="year" />
         </Form.Item>
 
         {/* ------- Transmission ------- */}
@@ -584,78 +1034,34 @@ const Make: React.FC<Props> = ({
           <Input type="number" min={0} addonBefore="RM" placeholder="Type price here e.g. 1500" />
         </Form.Item>
 
-        {/* ------- Description ------- */}
+        {/* Getting the make id */}
         <Form.Item
-          className="make__form-item make__form-item--make"
-          label="Description"
-          name="description"
-          rules={[{ required: false, message: 'Input description here!' }]}
+          className="make__form-item"
+          label="id"
+          name="makeId"
+          hidden
+          rules={[{ required: true, message: 'Get make id!' }]}
         >
-          <Input placeholder="Type description here" />
+          <Input />
         </Form.Item>
       </Form>
     </>
   );
 
   /* ---------------------- */
-  // Create Brand Modal
+  // Edit Make Modal
   /* ---------------------- */
-  let createBrandModal = (
-    <Modal
-      title="Create Brand"
-      visible={showCreateModal.brand}
-      onOk={createBrandForm.submit}
-      confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, brand: false })}
-    >
-      {/* the content within the modal */}
-      {createBrandFormComponent}
-    </Modal>
-  );
-
-  let editBrandModal = (
-    <Modal
-      title="Edit Brand"
-      visible={showEditModal.brand}
-      onOk={editBrandForm.submit}
-      confirmLoading={loading}
-      onCancel={() => {
-        // reset the brandObj value
-        setShowEditModal({
-          ...showEditModal,
-          brand: false,
-          brandObj: { brandId: -1, brandTitle: '', brandDescription: '' },
-        });
-      }}
-    >
-      {/* the content within the modal */}
-      {editBrandFormComponent}
-    </Modal>
-  );
-
-  let createwheelbaseModal = (
-    <Modal
-      title="Create Wheelbase"
-      visible={showCreateModal.wheelbase}
-      onOk={form.submit}
-      confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, wheelbase: false })}
-    >
-      {/* the content within the modal */}
-      {createWheelbaseFormComponent}
-    </Modal>
-  );
-  let createMakeModal = (
+  let editMakeModal = (
     <Modal
       centered
-      title="Create Make"
-      visible={showCreateModal.make}
-      onOk={form.submit}
+      title="Edit Make"
+      visible={showEditModal.make}
+      onOk={editMakeForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, make: false })}
+      onCancel={() => setShowEditModal({ ...showEditModal, make: false })}
     >
       {/* the content within the modal */}
-      {createMakeFormComponent}
+      {editMakeFormComponent}
     </Modal>
   );
 
@@ -676,12 +1082,12 @@ const Make: React.FC<Props> = ({
   }, [onGetMakes]);
 
   /* -------------------------------------------- */
-  // initialize the state of data array for BRAND
+  // initialize/populate the state of data array for BRAND
   /* -------------------------------------------- */
   useEffect(() => {
     let tempArray: TBrandState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (brand: TBrandReceivedObj, index: number) => {
+    const storeValue = (brand: TReceivedBrandObj, index: number) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
       // only render when available value is true
       if (brand.available) {
@@ -705,12 +1111,12 @@ const Make: React.FC<Props> = ({
   }, [brandsArray]);
 
   /* -------------------------------------------------- */
-  // initialize the state of data array for WHEELBASES
+  // initialize/populate the state of data array for WHEELBASES
   /* -------------------------------------------------- */
   useEffect(() => {
     let tempArray: TWheelbaseState[] = [];
     // A function that stores desired keys and values into a tempArray
-    const storeValue = (wheelbase: TWheelbaseReceivedObj, index: number) => {
+    const storeValue = (wheelbase: TReceivedWheelbaseObj, index: number) => {
       let descriptionIsNullOrEmpty = wheelbase.description === null || wheelbase.description === '';
 
       // only push into the array when available value is true
@@ -735,17 +1141,15 @@ const Make: React.FC<Props> = ({
   }, [wheelbasesArray]);
 
   /* -------------------------------------------------- */
-  // initialize the state of data array for MAKES
+  // initialize/populate the state of data array for MAKES
   /* -------------------------------------------------- */
   useEffect(() => {
     let tempArray: TMakeState[] = [];
     // A function that stores desired keys and values into a tempArray
-    const storeValue = (make: TMakeReceivedObj, index: number) => {
-      let descriptionIsNullOrEmpty = make.description === null || make.description === '';
-
+    const storeValue = (make: TReceivedMakeObj, index: number) => {
       let detailsCombinedString = ''; //use this combined string so that filter can work
       // manipulate the strings first
-      let concatLength = make.length + 'ft';
+      let concatLength = make.length;
       let concatWheelbase = make.wheelbase.title + 'mm';
       let concatHorsePower = make.horsepower + 'hp';
       let concatGvw = make.gvw + 'kg';
@@ -762,17 +1166,12 @@ const Make: React.FC<Props> = ({
         make.transmission +
         make.year;
 
-      if (make.description !== null) {
-        // if description exist then add description into the string
-        detailsCombinedString += make.description;
-      }
-
       // check if undefined
       let makeGVW = make.gvw === undefined ? '-' : make.gvw + 'kg';
       let makeYear = make.year === undefined ? '-' : make.year;
       let makePrice = make.price === undefined ? '-' : 'RM' + make.price;
       let makeTitle = make.title === undefined ? '-' : make.title;
-      let makeLength = make.length === undefined ? '-' : make.length + 'ft';
+      let makeLength = make.length === undefined ? '-' : make.length;
       let makeEngineCap = make.engine_cap === undefined ? '-' : make.engine_cap;
       let makeHorsepower = make.horsepower === undefined ? '-' : make.horsepower + 'hp';
       let makeTransmission = make.transmission === undefined ? '-' : make.transmission;
@@ -799,7 +1198,6 @@ const Make: React.FC<Props> = ({
           makeBrandTitle: makeBrandTitle,
           makeWheelbaseId: make.wheelbase.id,
           makeWheelbaseTitle: makeWheelbaseTitle,
-          description: descriptionIsNullOrEmpty ? '-' : make.description,
         });
       }
     };
@@ -823,13 +1221,24 @@ const Make: React.FC<Props> = ({
       });
       // clear the successMessage object, set to null
       onClearSalesState();
-      // clear the inputs
+      // clear the form inputs using the form reference
       createBrandForm.resetFields();
-      form.resetFields();
+      createWheelbaseForm.resetFields();
+      createMakeForm.resetFields();
       // close all the modals if successful
       setShowCreateModal({ ...showCreateModal, brand: false, wheelbase: false, make: false });
+      setShowEditModal({ ...showEditModal, brand: false, wheelbase: false, make: false });
     }
-  }, [form, createBrandForm, showCreateModal, successMessage, onClearSalesState]);
+  }, [
+    showEditModal,
+    setShowEditModal,
+    createMakeForm,
+    createBrandForm,
+    createWheelbaseForm,
+    showCreateModal,
+    successMessage,
+    onClearSalesState,
+  ]);
 
   /* ------------------ */
   // error notification
@@ -853,8 +1262,10 @@ const Make: React.FC<Props> = ({
       {/* ================== */}
       {createBrandModal}
       {editBrandModal}
-      {createwheelbaseModal}
+      {createWheelbaseModal}
+      {editWheelbaseModal}
       {createMakeModal}
+      {editMakeModal}
 
       <section>
         <HeaderTitle>Make (Head)</HeaderTitle>
@@ -969,9 +1380,9 @@ interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
-  makesArray?: TMakeReceivedObj[] | null;
-  brandsArray?: TBrandReceivedObj[] | null;
-  wheelbasesArray?: TWheelbaseReceivedObj[] | null;
+  makesArray?: TReceivedMakeObj[] | null;
+  brandsArray?: TReceivedBrandObj[] | null;
+  wheelbasesArray?: TReceivedWheelbaseObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   return {
@@ -991,9 +1402,11 @@ interface DispatchProps {
   // Wheelbase
   onGetWheelbases: typeof actions.getWheelbases;
   onCreateWheelbase: typeof actions.createWheelbase;
+  onUpdateWheelbase: typeof actions.updateWheelbase;
   // Make
   onGetMakes: typeof actions.getMakes;
   onCreateMake: typeof actions.createMake;
+  onUpdateMake: typeof actions.updateMake;
   // Miscellaneous
   onClearSalesState: typeof actions.clearSalesState;
 }
@@ -1002,13 +1415,16 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     // Brand
     onGetBrands: () => dispatch(actions.getBrands()),
     onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
-    onUpdateBrand: (id, title, description) => dispatch(actions.updateBrand(id, title, description)),
+    onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
     // Wheelbase
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
     onCreateWheelbase: (title, description) => dispatch(actions.createWheelbase(title, description)),
+    onUpdateWheelbase: (wheelbase_id, title, description) =>
+      dispatch(actions.updateWheelbase(wheelbase_id, title, description)),
     // Make
     onGetMakes: () => dispatch(actions.getMakes()),
-    onCreateMake: (createMakeSubmitData) => dispatch(actions.createMake(createMakeSubmitData)),
+    onCreateMake: (createMakeData) => dispatch(actions.createMake(createMakeData)),
+    onUpdateMake: (updateMakeData) => dispatch(actions.updateMake(updateMakeData)),
     // Miscellaneous
     onClearSalesState: () => dispatch(actions.clearSalesState()),
   };

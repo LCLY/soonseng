@@ -93,8 +93,8 @@ export function* updateBrandSaga(action: AppActions) {
   yield put(actions.updateBrandStart());
 
   let url = '';
-  if ('id' in action) {
-    url = `https://ss-sales.herokuapp.com/api/v1/head/brands/${action.id}`;
+  if ('brand_id' in action) {
+    url = `https://ss-sales.herokuapp.com/api/v1/head/brands/${action.brand_id}`;
   }
 
   let brand = {};
@@ -155,8 +155,7 @@ export function* createWheelbaseSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { wheelbase });
-    console.log(response);
-    yield put(actions.createWheelbaseSucceed(response.data.wheelbase, response.data.success));
+    yield put(actions.createWheelbaseSucceed(response.data.wheelbases, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -215,6 +214,52 @@ export function* getWheelbasesSaga(_action: AppActions) {
     }
   }
 }
+/* ------------------------------- */
+//    Update wheelbase (Head)
+/* ------------------------------- */
+export function* updateWheelbaseSaga(action: AppActions) {
+  yield put(actions.updateWheelbaseStart());
+  let url = '';
+  if ('wheelbase_id' in action) {
+    url = `https://ss-sales.herokuapp.com/api/v1/head/wheelbases/${action.wheelbase_id}`;
+  }
+
+  let wheelbase = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('title' in action && 'description' in action) {
+    wheelbase = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { wheelbase });
+    console.log(response);
+    yield put(actions.updateWheelbaseSucceed(response.data.wheelbase, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.updateWheelbaseFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
 
 /* ================================================================== */
 /*    Make -  Make (head) */
@@ -230,26 +275,24 @@ export function* createMakeSaga(action: AppActions) {
 
   let make = {};
   // Type guard, check if the "key" exist in the action object
-  if ('createMakeSubmitData' in action) {
+  if ('createMakeData' in action) {
     make = {
-      gvw: action.createMakeSubmitData.gvw,
-      year: action.createMakeSubmitData.year,
-      price: action.createMakeSubmitData.price,
-      title: action.createMakeSubmitData.title,
-      length: action.createMakeSubmitData.length,
-      brand_id: action.createMakeSubmitData.brand_id,
-      engine_cap: action.createMakeSubmitData.engine_cap,
-      horsepowerror: action.createMakeSubmitData.horsepower,
-      description: action.createMakeSubmitData.description,
-      wheelbase_id: action.createMakeSubmitData.wheelbase_id,
-      transmission: action.createMakeSubmitData.transmission,
+      gvw: action.createMakeData.gvw,
+      year: action.createMakeData.year,
+      price: action.createMakeData.price,
+      title: action.createMakeData.title,
+      length: action.createMakeData.length,
+      brand_id: action.createMakeData.brand_id,
+      engine_cap: action.createMakeData.engine_cap,
+      horsepower: action.createMakeData.horsepower,
+      wheelbase_id: action.createMakeData.wheelbase_id,
+      transmission: action.createMakeData.transmission,
     };
   }
 
   try {
     let response = yield axios.post(url, { make });
-    console.log(response);
-    yield put(actions.createMakeSucceed(response.data.wheelbase, response.data.success));
+    yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -295,6 +338,59 @@ export function* getMakesSaga(_action: AppActions) {
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
       yield put(actions.getMakesFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+/* ------------------------------- */
+//    Update make (Head)
+/* ------------------------------- */
+export function* updateMakeSaga(action: AppActions) {
+  yield put(actions.updateMakeStart());
+
+  let url = '';
+
+  let make = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('updateMakeData' in action) {
+    url = `https://ss-sales.herokuapp.com/api/v1/head/makes/${action.updateMakeData.make_id}`;
+
+    make = {
+      gvw: action.updateMakeData.gvw,
+      year: action.updateMakeData.year,
+      price: action.updateMakeData.price,
+      title: action.updateMakeData.title,
+      length: action.updateMakeData.length,
+      brand_id: action.updateMakeData.brand_id,
+      engine_cap: action.updateMakeData.engine_cap,
+      horsepower: action.updateMakeData.horsepower,
+      wheelbase_id: action.updateMakeData.wheelbase_id,
+      transmission: action.updateMakeData.transmission,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { make });
+    yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.updateMakeFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

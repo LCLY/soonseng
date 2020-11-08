@@ -176,10 +176,6 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
           title: 'Price',
           dataIndex: 'price',
         },
-        {
-          title: 'Description',
-          dataIndex: 'description',
-        },
       ];
       highlightRender = (
         <>

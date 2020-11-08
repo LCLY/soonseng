@@ -33,6 +33,11 @@ export {
   getWheelbasesStart,
   getWheelbasesFailed,
   getWheelbasesSucceed,
+  // Get Wheelbases
+  updateWheelbase,
+  updateWheelbaseStart,
+  updateWheelbaseFailed,
+  updateWheelbaseSucceed,
   /* =================== */
   //   Make
   /* =================== */
@@ -46,4 +51,9 @@ export {
   getMakesStart,
   getMakesFailed,
   getMakesSucceed,
+  // Update Make
+  updateMake,
+  updateMakeStart,
+  updateMakeFailed,
+  updateMakeSucceed,
 } from './sales';
