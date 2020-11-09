@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './Make.scss';
 /*components*/
+import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 /*3rd party lib*/
+import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
-// import Highlighter from 'react-highlight-words';
-import { Empty, Table, Form, Input, Button, Modal, notification, Select, DatePicker } from 'antd';
+import { FormInstance } from 'antd/lib/form/hooks/useForm';
+import { Table, Form, Input, Button, Modal, notification, Select, DatePicker } from 'antd';
 /* Util */
-import * as actions from 'src/store/actions/index';
-import { TMapStateToProps } from 'src/store/types';
 import {
   TReceivedBrandObj,
   TReceivedMakeObj,
@@ -17,17 +18,17 @@ import {
   TUpdateMakeData,
   TReceivedWheelbaseObj,
 } from 'src/store/types/sales';
+import * as actions from 'src/store/actions/index';
+import { img_placeholder_link } from 'src/shared/global';
+import { TMapStateToProps } from 'src/store/types';
 import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/shared/Utils';
-import Loading from 'src/components/Loading/Loading';
-import moment from 'moment';
-import { FormInstance } from 'antd/lib/form/hooks/useForm';
 
 const { Option } = Select;
 
 interface MakeProps {}
 
 type TBrandState = {
-  key?: number;
+  key?: string;
   index?: number;
   brandId: number;
   brandTitle: string;
@@ -35,7 +36,7 @@ type TBrandState = {
   available?: boolean;
 };
 type TWheelbaseState = {
-  key?: number;
+  key?: string;
   index?: number;
   wheelbaseId: number;
   wheelbaseTitle: string;
@@ -43,7 +44,7 @@ type TWheelbaseState = {
   available?: boolean;
 };
 type TMakeState = {
-  key: number;
+  key: string;
   index: number;
   makeId: number;
   gvw: string;
@@ -65,12 +66,11 @@ type TMakeState = {
 
 type TShowModal = {
   make: boolean;
+  currentMakeId?: number; //id to track which specific object is currently being edited
   brand: boolean;
-  /** brand object for edit modal */
-  brandObj?: TBrandState;
+  currentBrandId?: number;
   wheelbase: boolean;
-  /** wheelbase object for edit modal */
-  wheelbaseObj?: TWheelbaseState;
+  currentWheelbaseId?: number;
 };
 
 type Props = MakeProps & StateProps & DispatchProps;
@@ -324,10 +324,7 @@ const Make: React.FC<Props> = ({
               className="make__brand-btn--edit"
               type="link"
               onClick={() => {
-                // show modal
-                setShowEditModal({ ...showEditModal, make: true });
                 // update the form value using the 'name' attribute as target/key
-
                 // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
                 let extractedFeet = '';
                 let extractedInch = '';
@@ -363,6 +360,9 @@ const Make: React.FC<Props> = ({
                   transmission: record.transmission,
                   length: { feet: extractedFeet, inch: extractedInch },
                 });
+
+                // show modal
+                setShowEditModal({ ...showEditModal, make: true, currentMakeId: record.makeId });
               }}
             >
               Edit
@@ -583,7 +583,6 @@ const Make: React.FC<Props> = ({
         setShowEditModal({
           ...showEditModal,
           brand: false,
-          brandObj: { brandId: -1, brandTitle: '', brandDescription: '' },
         });
       }}
     >
@@ -741,9 +740,9 @@ const Make: React.FC<Props> = ({
             filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {brandsArray &&
-              brandsArray.map((brand, index) => {
+              brandsArray.map((brand) => {
                 return (
-                  <Option style={{ textTransform: 'capitalize' }} key={index} value={brand.id}>
+                  <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={brand.id}>
                     {brand.title}
                   </Option>
                 );
@@ -767,9 +766,9 @@ const Make: React.FC<Props> = ({
             }
           >
             {wheelbasesArray &&
-              wheelbasesArray.map((wheelbase, index) => {
+              wheelbasesArray.map((wheelbase) => {
                 return (
-                  <Option style={{ textTransform: 'capitalize' }} key={index} value={wheelbase.id}>
+                  <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
                     {wheelbase.title + 'mm'}
                   </Option>
                 );
@@ -899,7 +898,6 @@ const Make: React.FC<Props> = ({
         >
           <Input placeholder="Type title here e.g. XZA200" />
         </Form.Item>
-
         {/* ------- Brand - value is brand id but display is brand name -------*/}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -915,16 +913,15 @@ const Make: React.FC<Props> = ({
             filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {brandsArray &&
-              brandsArray.map((brand, index) => {
+              brandsArray.map((brand) => {
                 return (
-                  <Option style={{ textTransform: 'capitalize' }} key={index} value={brand.id}>
+                  <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={brand.id}>
                     {brand.title}
                   </Option>
                 );
               })}
           </Select>
         </Form.Item>
-
         {/* ------- Wheelbase - value is Wheelbase id but display is Wheelbase name  -------*/}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -941,16 +938,15 @@ const Make: React.FC<Props> = ({
             }
           >
             {wheelbasesArray &&
-              wheelbasesArray.map((wheelbase, index) => {
+              wheelbasesArray.map((wheelbase) => {
                 return (
-                  <Option style={{ textTransform: 'capitalize' }} key={index} value={wheelbase.id}>
+                  <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
                     {wheelbase.title + 'mm'}
                   </Option>
                 );
               })}
           </Select>
         </Form.Item>
-
         {/* ------- Length ------- */}
         <div className="flex">
           <Form.Item
@@ -983,7 +979,6 @@ const Make: React.FC<Props> = ({
         >
           <Input type="number" min={0} placeholder="Type length here e.g. 115" />
         </Form.Item>
-
         {/* ------- Horsepower ------- */}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -993,7 +988,6 @@ const Make: React.FC<Props> = ({
         >
           <Input type="number" min={0} addonAfter={'hp'} placeholder="Type horsepower here e.g. 250" />
         </Form.Item>
-
         {/* ------- Year ------- */}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -1003,7 +997,6 @@ const Make: React.FC<Props> = ({
         >
           <DatePicker style={{ width: '100%' }} picker="year" />
         </Form.Item>
-
         {/* ------- Transmission ------- */}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -1013,7 +1006,6 @@ const Make: React.FC<Props> = ({
         >
           <Input placeholder="Type transmission here e.g. MT" />
         </Form.Item>
-
         {/* ------- GVW ------- */}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -1023,7 +1015,6 @@ const Make: React.FC<Props> = ({
         >
           <Input type="number" min={0} addonAfter="kg" placeholder="Type Gross Vehicle Weight here e.g. 2000" />
         </Form.Item>
-
         {/* ------- Price ------- */}
         <Form.Item
           className="make__form-item make__form-item--make"
@@ -1033,7 +1024,6 @@ const Make: React.FC<Props> = ({
         >
           <Input type="number" min={0} addonBefore="RM" placeholder="Type price here e.g. 1500" />
         </Form.Item>
-
         {/* Getting the make id */}
         <Form.Item
           className="make__form-item"
@@ -1044,6 +1034,39 @@ const Make: React.FC<Props> = ({
         >
           <Input />
         </Form.Item>
+
+        {/* Making use of the currentMakeId object, loop through the makeArray
+        and check if the value of id matches with the currentMakeId thats being selected */}
+        {makesArray &&
+          makesArray.map((make) => {
+            return (
+              <>
+                {/* only render when the id matches */}
+                {make['id'] === showEditModal.currentMakeId && (
+                  <div key={uuidv4()}>
+                    {make.images.map((image_url) => {
+                      return (
+                        <div
+                          key={uuidv4()}
+                          style={{
+                            height: '10rem',
+                            width: '10rem',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center',
+                            backgroundColor: 'rgb(197, 197, 191)',
+                            backgroundImage: `url(${image_url}), url(${img_placeholder_link})`,
+                          }}
+                        >
+                          test
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            );
+          })}
       </Form>
     </>
   );
@@ -1092,7 +1115,7 @@ const Make: React.FC<Props> = ({
       // only render when available value is true
       if (brand.available) {
         tempArray.push({
-          key: index,
+          key: uuidv4(),
           index: index + 1,
           brandId: brand.id,
           brandTitle: brand.title,
@@ -1122,7 +1145,7 @@ const Make: React.FC<Props> = ({
       // only push into the array when available value is true
       if (wheelbase.available) {
         tempArray.push({
-          key: index,
+          key: uuidv4(),
           index: index + 1,
           wheelbaseId: wheelbase.id,
           wheelbaseTitle: wheelbase.title + 'mm',
@@ -1181,7 +1204,7 @@ const Make: React.FC<Props> = ({
       // only push into the array when available value is true
       if (make.available) {
         tempArray.push({
-          key: index,
+          key: uuidv4(),
           index: index + 1,
           gvw: makeGVW,
           year: makeYear,
@@ -1275,97 +1298,87 @@ const Make: React.FC<Props> = ({
             {/* ====================== */}
             {/*     Brand Section      */}
             {/* ====================== */}
-            {brandsArray.length === 0 ? (
-              <Empty style={{ marginTop: '5rem' }} />
-            ) : (
-              <section className="make__section">
-                <div className="make__header-div ">
-                  <div className="make__header-title">Brands</div>
-                  <Button
-                    type="primary"
-                    className="make__brand-btn"
-                    onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
-                  >
-                    Create New Brand
-                  </Button>
-                </div>
-                {/* ------------------ */}
-                {/*    Brand Table     */}
-                {/* ------------------ */}
-                <Table
-                  bordered
-                  scroll={{ x: '89rem', y: 400 }}
-                  // components={components}
-                  dataSource={brandsState}
-                  columns={convertHeader(brandColumns, setBrandColumns)}
-                  pagination={false}
-                />
-              </section>
-            )}
+            <section className="make__section">
+              <div className="make__header-div ">
+                <div className="make__header-title">Brands</div>
+                <Button
+                  type="primary"
+                  className="make__brand-btn"
+                  onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
+                >
+                  Create New Brand
+                </Button>
+              </div>
+              {/* ------------------ */}
+              {/*    Brand Table     */}
+              {/* ------------------ */}
+              <Table
+                bordered
+                scroll={{ x: '89rem', y: 400 }}
+                // components={components}
+                dataSource={brandsState}
+                columns={convertHeader(brandColumns, setBrandColumns)}
+                pagination={false}
+              />
+            </section>
 
             {/* ====================== */}
             {/*   Wheelbases Section   */}
             {/* ====================== */}
-            {wheelbasesArray.length === 0 ? (
-              <Empty style={{ marginTop: '5rem' }} />
-            ) : (
-              <section className="make__section">
-                <div className="make__header-div ">
-                  <div className="make__header-title">Wheelbases</div>
-                  <Button
-                    type="primary"
-                    className="make__brand-btn"
-                    onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
-                  >
-                    Create New Wheelbase
-                  </Button>
-                </div>
 
-                {/* -------------------- */}
-                {/*   Wheelbase Table   */}
-                {/* -------------------- */}
-                <Table
-                  bordered
-                  scroll={{ x: '89rem', y: 300 }}
-                  // components={components}
-                  dataSource={wheelbaseState}
-                  columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
-                  pagination={false}
-                />
-              </section>
-            )}
+            <section className="make__section">
+              <div className="make__header-div ">
+                <div className="make__header-title">Wheelbases</div>
+                <Button
+                  type="primary"
+                  className="make__brand-btn"
+                  onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
+                >
+                  Create New Wheelbase
+                </Button>
+              </div>
+
+              {/* -------------------- */}
+              {/*   Wheelbase Table   */}
+              {/* -------------------- */}
+              <Table
+                bordered
+                scroll={{ x: '89rem', y: 300 }}
+                // components={components}
+                dataSource={wheelbaseState}
+                columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
+                pagination={false}
+              />
+            </section>
 
             {/* ====================== */}
             {/*      Makes Section     */}
             {/* ====================== */}
-            {wheelbasesArray.length === 0 ? (
-              <Empty style={{ marginTop: '5rem' }} />
-            ) : (
-              <section className="make__section">
-                <div className="make__header-div ">
-                  <div className="make__header-title">Makes</div>
-                  <Button
-                    type="primary"
-                    className="make__brand-btn"
-                    onClick={() => setShowCreateModal({ ...showCreateModal, make: true })}
-                  >
-                    Create New Make
-                  </Button>
-                </div>
 
-                {/* -------------------- */}
-                {/*     Make Table      */}
-                {/* -------------------- */}
-                <Table
-                  bordered
-                  scroll={{ x: '89rem', y: 600 }}
-                  // components={components}
-                  dataSource={makeState}
-                  columns={convertHeader(makeColumn, setMakeColumn)}
-                  pagination={false}
-                />
-              </section>
-            )}
+            <section className="make__section">
+              <div className="make__header-div ">
+                <div className="make__header-title">Makes</div>
+                <Button
+                  type="primary"
+                  className="make__brand-btn"
+                  onClick={() => setShowCreateModal({ ...showCreateModal, make: true })}
+                >
+                  Create New Make
+                </Button>
+              </div>
+
+              {/* -------------------- */}
+              {/*     Make Table      */}
+              {/* -------------------- */}
+              <Table
+                bordered
+                scroll={{ x: '89rem', y: 600 }}
+                // components={components}
+                dataSource={makeState}
+                columns={convertHeader(makeColumn, setMakeColumn)}
+                pagination={false}
+              />
+            </section>
           </>
         ) : (
           <div className="padding_t-5">

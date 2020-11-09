@@ -1,0 +1,13 @@
+steps:
+  - name: Set env to staging
+    if: endsWith(github.ref, '/develop')
+    run: |
+      echo "REACT_APP_API=https://ss-sales.herokuapp.com/api/v1" >> $GITHUB_ENV
+    env:
+      REACT_APP_API: https://ss-sales.herokuapp.com/api/v1
+  - name: Set env to production
+    if: endsWith(github.ref, '/master')
+    run: |
+      echo "REACT_APP_API=https://ss-sales.herokuapp.com/api/v1" >> $GITHUB_ENV
+    env:
+      REACT_APP_API: https://ss-sales.herokuapp.com/api/v1

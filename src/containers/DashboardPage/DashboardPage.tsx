@@ -46,18 +46,18 @@ const DashboardPage: React.FC<Props> = () => {
       <NavbarComponent activePage="" />
       <Container>
         <section className="dashboard__section">
-          <Tabs defaultActiveKey="1" tabPosition={width > 1200 ? 'left' : 'top'}>
-            <TabPane tab="Make" key="1" className="dashboard__tab">
+          <Tabs defaultActiveKey="make" tabPosition={width > 1200 ? 'left' : 'top'}>
+            <TabPane tab="Make" key="make" className="dashboard__tab">
               <LazyLoad placeholder={<div>Loading</div>}>
                 <Make />
               </LazyLoad>
             </TabPane>
-            <TabPane tab="Body" key="2" className="dashboard__tab">
+            <TabPane tab="Body" key="body" className="dashboard__tab">
               <LazyLoad placeholder={<div>Loading</div>}>
                 <Body />
               </LazyLoad>
             </TabPane>
-            <TabPane tab="Accessory" key="3" className="dashboard__tab">
+            <TabPane tab="Accessory" key="accessory" className="dashboard__tab">
               <LazyLoad placeholder={<div>Loading</div>}>
                 <Accessory />
               </LazyLoad>
