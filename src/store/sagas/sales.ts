@@ -13,7 +13,7 @@ import { AppActions } from '../types/index';
 export function* getBrandsSaga(_action: AppActions) {
   yield put(actions.getBrandsStart());
 
-  let url = `https://ss-sales.herokuapp.com/api/v1/head/brands`;
+  let url = process.env.REACT_APP_API + `/head/brands`;
 
   try {
     let response = yield axios.get(url);
@@ -48,7 +48,7 @@ export function* getBrandsSaga(_action: AppActions) {
 export function* createBrandSaga(action: AppActions) {
   yield put(actions.createBrandStart());
 
-  let url = `https://ss-sales.herokuapp.com/api/v1/head/brands`;
+  let url = process.env.REACT_APP_API + `/head/brands`;
 
   let brand = {};
   // Type guard, check if the "key" exist in the action object
@@ -94,7 +94,7 @@ export function* updateBrandSaga(action: AppActions) {
 
   let url = '';
   if ('brand_id' in action) {
-    url = `https://ss-sales.herokuapp.com/api/v1/head/brands/${action.brand_id}`;
+    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}`;
   }
 
   let brand = {};
@@ -142,7 +142,7 @@ export function* updateBrandSaga(action: AppActions) {
 export function* createWheelbaseSaga(action: AppActions) {
   yield put(actions.createWheelbaseStart());
 
-  let url = `https://ss-sales.herokuapp.com/api/v1/head/wheelbases`;
+  let url = process.env.REACT_APP_API + `/head/wheelbases`;
 
   let wheelbase = {};
   // Type guard, check if the "key" exist in the action object
@@ -186,7 +186,7 @@ export function* createWheelbaseSaga(action: AppActions) {
 export function* getWheelbasesSaga(_action: AppActions) {
   yield put(actions.getWheelbasesStart());
 
-  let url = `https://ss-sales.herokuapp.com/api/v1/head/wheelbases`;
+  let url = process.env.REACT_APP_API + `/head/wheelbases`;
 
   try {
     let response = yield axios.get(url);
@@ -221,7 +221,7 @@ export function* updateWheelbaseSaga(action: AppActions) {
   yield put(actions.updateWheelbaseStart());
   let url = '';
   if ('wheelbase_id' in action) {
-    url = `https://ss-sales.herokuapp.com/api/v1/head/wheelbases/${action.wheelbase_id}`;
+    url = process.env.REACT_APP_API + `/head/wheelbases/${action.wheelbase_id}`;
   }
 
   let wheelbase = {};
@@ -271,7 +271,7 @@ export function* updateWheelbaseSaga(action: AppActions) {
 export function* createMakeSaga(action: AppActions) {
   yield put(actions.createMakeStart());
 
-  let url = `https://ss-sales.herokuapp.com/api/v1/head/makes`;
+  let url = process.env.REACT_APP_API + `/head/makes`;
 
   let make = {};
   // Type guard, check if the "key" exist in the action object
@@ -323,7 +323,7 @@ export function* createMakeSaga(action: AppActions) {
 export function* getMakesSaga(_action: AppActions) {
   yield put(actions.getMakesStart());
 
-  let url = `https://ss-sales.herokuapp.com/api/v1/head/makes`;
+  let url = process.env.REACT_APP_API + `/head/makes`;
 
   try {
     let response = yield axios.get(url);
@@ -362,7 +362,7 @@ export function* updateMakeSaga(action: AppActions) {
   let make = {};
   // Type guard, check if the "key" exist in the action object
   if ('updateMakeData' in action) {
-    url = `https://ss-sales.herokuapp.com/api/v1/head/makes/${action.updateMakeData.make_id}`;
+    url = process.env.REACT_APP_API + `/head/makes/${action.updateMakeData.make_id}`;
 
     make = {
       gvw: action.updateMakeData.gvw,
