@@ -140,7 +140,7 @@ const Make: React.FC<Props> = ({
   /* Brand column initialization */
   const [brandColumns, setBrandColumns] = useState([
     {
-      key: 'index',
+      key: 'brandIndex',
       title: 'No.',
       dataIndex: 'index',
       ellipsis: true,
@@ -168,7 +168,7 @@ const Make: React.FC<Props> = ({
       ...getColumnSearchProps(brandSearchInput, 'brandDescription', 'Description'),
     },
     {
-      key: 'action',
+      key: 'brandAction',
       title: 'Action',
       dataIndex: 'action',
       fixed: 'right',
@@ -206,7 +206,7 @@ const Make: React.FC<Props> = ({
   /* Wheelbase column initialization */
   const [wheelbaseColumn, setWheelbaseColumn] = useState([
     {
-      key: 'index',
+      key: 'wheelbaseIndex',
       title: 'No.',
       dataIndex: 'index',
       ellipsis: true,
@@ -234,7 +234,7 @@ const Make: React.FC<Props> = ({
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseDescription', 'Description'),
     },
     {
-      key: 'action',
+      key: 'wheelbaseAction',
       title: 'Action',
       dataIndex: 'action',
       fixed: 'right',
@@ -273,7 +273,7 @@ const Make: React.FC<Props> = ({
   /* Make column initialization */
   const [makeColumn, setMakeColumn] = useState([
     {
-      key: 'index',
+      key: 'makeIndex',
       title: 'No.',
       dataIndex: 'index',
       ellipsis: true,
@@ -312,7 +312,7 @@ const Make: React.FC<Props> = ({
       ...getColumnSearchProps(makeSearchInput, 'makeDetails', 'Details'),
     },
     {
-      key: 'action',
+      key: 'makeAction',
       title: 'Action',
       dataIndex: 'action',
       fixed: 'right',
@@ -508,6 +508,18 @@ const Make: React.FC<Props> = ({
           <Input placeholder="Type description here" />
         </Form.Item>
 
+        <div className="profile__picture-button-div">
+          <input
+            type="file"
+            id="imageFiles"
+            className="hide__input"
+            accept="image/png, image/jpeg, image/jpg" //only accept image files
+            // onChange={(e) => fileChangedHandler(e)}
+          />
+          <label htmlFor="imageFiles" className="ant-btn ant-btn-primary profile__picture-button">
+            Upload
+          </label>
+        </div>
         <Button type="primary">Upload Image(s)</Button>
       </Form>
     </>
@@ -1042,10 +1054,10 @@ const Make: React.FC<Props> = ({
         {makesArray &&
           makesArray.map((make) => {
             return (
-              <>
+              <React.Fragment key={uuidv4()}>
                 {/* only render when the id matches */}
                 {make['id'] === showEditModal.currentMakeId && (
-                  <div key={uuidv4()}>
+                  <div>
                     {make.images.map((image_url) => {
                       return (
                         <div
@@ -1066,7 +1078,7 @@ const Make: React.FC<Props> = ({
                     })}
                   </div>
                 )}
-              </>
+              </React.Fragment>
             );
           })}
       </Form>
