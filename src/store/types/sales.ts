@@ -621,16 +621,17 @@ export type SalesActionTypes =
   /* ------------------------ */
   // Brand (Make Page)
   /* ------------------------ */
+  /* Get */
   | GetBrandsAction
   | GetBrandsStartAction
   | GetBrandsSucceedAction
   | GetBrandsFailedAction
-  /* ------------------------ */
+  /* Create */
   | CreateBrandAction
   | CreateBrandStartAction
   | CreateBrandSucceedAction
   | CreateBrandFailedAction
-  /* ------------------------ */
+  /* Update */
   | UpdateBrandAction
   | UpdateBrandStartAction
   | UpdateBrandSucceedAction
@@ -638,16 +639,17 @@ export type SalesActionTypes =
   /* ------------------------ */
   // Wheelbase (Make Page)
   /* ------------------------ */
+  /* Create */
   | CreateWheelbaseAction
   | CreateWheelbaseStartAction
   | CreateWheelbaseSucceedAction
   | CreateWheelbaseFailedAction
-  /* ------------------------ */
+  /* Get */
   | GetWheelbasesAction
   | GetWheelbasesStartAction
   | GetWheelbasesSucceedAction
   | GetWheelbasesFailedAction
-  /* ------------------------ */
+  /* Update */
   | UpdateWheelbaseAction
   | UpdateWheelbaseStartAction
   | UpdateWheelbaseSucceedAction
@@ -655,16 +657,17 @@ export type SalesActionTypes =
   /* ------------------------ */
   // Make (Make Page)
   /* ------------------------ */
+  /* Create */
   | CreateMakeAction
   | CreateMakeStartAction
   | CreateMakeSucceedAction
   | CreateMakeFailedAction
-  /* ------------------------ */
+  /* Get */
   | GetMakesAction
   | GetMakesStartAction
   | GetMakesSucceedAction
   | GetMakesFailedAction
-  /* ------------------------ */
+  /* Update */
   | UpdateMakeAction
   | UpdateMakeStartAction
   | UpdateMakeSucceedAction
@@ -674,16 +677,17 @@ export type SalesActionTypes =
   /* ------------------------ */
   // Body (Body Page)
   /* ------------------------ */
+  /* Create */
   | CreateBodyAction
   | CreateBodyStartAction
   | CreateBodySucceedAction
   | CreateBodyFailedAction
-  /* ------------------------ */
+  /* Get */
   | GetBodiesAction
   | GetBodiesStartAction
   | GetBodiesSucceedAction
   | GetBodiesFailedAction
-  /* ------------------------ */
+  /* Update */
   | UpdateBodyAction
   | UpdateBodyStartAction
   | UpdateBodySucceedAction
@@ -691,16 +695,17 @@ export type SalesActionTypes =
   /* ------------------------ */
   // Length (Body Page)
   /* ------------------------ */
+  /* Create */
   | CreateLengthAction
   | CreateLengthStartAction
   | CreateLengthSucceedAction
   | CreateLengthFailedAction
-  /* ------------------------ */
+  /* Get */
   | GetLengthsAction
   | GetLengthsStartAction
   | GetLengthsSucceedAction
   | GetLengthsFailedAction
-  /* ------------------------ */
+  /* Update */
   | UpdateLengthAction
   | UpdateLengthStartAction
   | UpdateLengthSucceedAction
@@ -708,16 +713,17 @@ export type SalesActionTypes =
   /* ------------------------ */
   // Body Length (Body Page)
   /* ------------------------ */
+  /* Create */
   | CreateBodyLengthAction
   | CreateBodyLengthStartAction
   | CreateBodyLengthSucceedAction
   | CreateBodyLengthFailedAction
-  /* ------------------------ */
+  /* Get */
   | GetBodyLengthsAction
   | GetBodyLengthsStartAction
   | GetBodyLengthsSucceedAction
   | GetBodyLengthsFailedAction
-  /* ------------------------ */
+  /* Update */
   | UpdateBodyLengthAction
   | UpdateBodyLengthStartAction
   | UpdateBodyLengthSucceedAction

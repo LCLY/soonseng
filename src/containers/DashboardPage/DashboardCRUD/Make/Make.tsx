@@ -27,7 +27,8 @@ const { Option } = Select;
 
 interface MakeProps {}
 
-type TBrandState = {
+// State for the table column definition
+type TBrandTableState = {
   key?: string;
   index?: number;
   brandId: number;
@@ -35,7 +36,8 @@ type TBrandState = {
   brandDescription: string;
   available?: boolean;
 };
-type TWheelbaseState = {
+// State for the table column definition
+type TWheelbaseTableState = {
   key?: string;
   index?: number;
   wheelbaseId: number;
@@ -43,7 +45,8 @@ type TWheelbaseState = {
   wheelbaseDescription: string;
   available?: boolean;
 };
-type TMakeState = {
+// State for the table column definition
+type TMakeTableState = {
   key: string;
   index: number;
   makeId: number;
@@ -66,7 +69,7 @@ type TMakeState = {
 
 type TShowModal = {
   make: boolean;
-  currentMakeId?: number; //id to track which specific object is currently being edited
+  currentMakeId?: number; //(for upload image) id to track which specific object is currently being edited
   brand: boolean;
   currentBrandId?: number;
   wheelbase: boolean;
@@ -100,7 +103,7 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-
+  // ref for forms
   const [createBrandForm] = Form.useForm();
   const [editBrandForm] = Form.useForm();
   const [createWheelbaseForm] = Form.useForm();
@@ -108,9 +111,18 @@ const Make: React.FC<Props> = ({
   const [createMakeForm] = Form.useForm();
   const [editMakeForm] = Form.useForm();
   // Table states
-  const [makeState, setMakeState] = useState<TMakeState[]>([]);
-  const [brandsState, setBrandState] = useState<TBrandState[]>([]);
-  const [wheelbaseState, setWheelbaseState] = useState<TWheelbaseState[]>([]);
+  const [makeTableState, seTMakeTableState] = useState<TMakeTableState[]>([]);
+  const [brandTableState, seTBrandTableState] = useState<TBrandTableState[]>([]);
+  const [wheelbaseTableState, seTWheelbaseTableState] = useState<TWheelbaseTableState[]>([]);
+
+  let brandSearchInput = null; //this is for filter on antd table
+  let wheelbaseSearchInput = null;
+  let makeSearchInput = null;
+
+  const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
+
+  setFilterReference(filterData, setFilterData);
+
   // Modal states
   const [showEditModal, setShowEditModal] = useState<TShowModal>({
     brand: false,
@@ -127,15 +139,7 @@ const Make: React.FC<Props> = ({
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
 
-  let brandSearchInput = null;
-  let wheelbaseSearchInput = null;
-  let makeSearchInput = null;
-
-  const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
-
-  setFilterReference(filterData, setFilterData);
-
-  // store header definition in state
+  // store table header definition in state
   /**
    * containing objects of arrays
    * brand[], wheelbases[], make[]
@@ -150,7 +154,8 @@ const Make: React.FC<Props> = ({
       ellipsis: true,
       width: '7rem',
       align: 'center',
-      sorter: (a: TBrandState, b: TBrandState) => a.index !== undefined && b.index !== undefined && a.index - b.index,
+      sorter: (a: TBrandTableState, b: TBrandTableState) =>
+        a.index !== undefined && b.index !== undefined && a.index - b.index,
     },
     {
       key: 'brandTitle',
@@ -158,7 +163,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'brandTitle',
       width: '15rem',
       ellipsis: true,
-      sorter: (a: TBrandState, b: TBrandState) => a.brandTitle.localeCompare(b.brandTitle),
+      sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandTitle.localeCompare(b.brandTitle),
       ...getColumnSearchProps(brandSearchInput, 'brandTitle', 'Title'),
     },
     {
@@ -167,7 +172,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'brandDescription',
       ellipsis: true,
       width: 'auto',
-      sorter: (a: TBrandState, b: TBrandState) => a.brandDescription.localeCompare(b.brandDescription),
+      sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandDescription.localeCompare(b.brandDescription),
 
       ...getColumnSearchProps(brandSearchInput, 'brandDescription', 'Description'),
     },
@@ -177,7 +182,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TBrandState) => {
+      render: (_text: any, record: TBrandTableState) => {
         return (
           <>
             <Button
@@ -216,7 +221,7 @@ const Make: React.FC<Props> = ({
       ellipsis: true,
       width: '7rem',
       align: 'center',
-      sorter: (a: TWheelbaseState, b: TWheelbaseState) =>
+      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) =>
         a.index !== undefined && b.index !== undefined && a.index - b.index,
     },
     {
@@ -225,7 +230,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'wheelbaseTitle',
       width: '15rem',
       ellipsis: true,
-      sorter: (a: TWheelbaseState, b: TWheelbaseState) => a.wheelbaseTitle.localeCompare(b.wheelbaseTitle),
+      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) => a.wheelbaseTitle.localeCompare(b.wheelbaseTitle),
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseTitle', 'Title'),
     },
     {
@@ -234,7 +239,8 @@ const Make: React.FC<Props> = ({
       dataIndex: 'wheelbaseDescription',
       ellipsis: true,
       width: 'auto',
-      sorter: (a: TWheelbaseState, b: TWheelbaseState) => a.wheelbaseDescription.localeCompare(b.wheelbaseDescription),
+      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) =>
+        a.wheelbaseDescription.localeCompare(b.wheelbaseDescription),
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseDescription', 'Description'),
     },
     {
@@ -243,7 +249,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TWheelbaseState) => {
+      render: (_text: any, record: TWheelbaseTableState) => {
         return (
           <>
             <Button
@@ -283,7 +289,7 @@ const Make: React.FC<Props> = ({
       ellipsis: true,
       width: '7rem',
       align: 'center',
-      sorter: (a: TMakeState, b: TMakeState) => a.index - b.index,
+      sorter: (a: TMakeTableState, b: TMakeTableState) => a.index - b.index,
     },
     {
       key: 'makeBrandTitle',
@@ -292,7 +298,7 @@ const Make: React.FC<Props> = ({
       ellipsis: true,
       width: '15rem',
       align: 'center',
-      sorter: (a: TMakeState, b: TMakeState) =>
+      sorter: (a: TMakeTableState, b: TMakeTableState) =>
         typeof a.makeBrandTitle === 'string' &&
         typeof b.makeBrandTitle === 'string' &&
         a.makeBrandTitle.localeCompare(b.makeBrandTitle),
@@ -304,7 +310,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'makeTitle',
       width: '15rem',
       ellipsis: true,
-      sorter: (a: TMakeState, b: TMakeState) => a.makeTitle.localeCompare(b.makeTitle),
+      sorter: (a: TMakeTableState, b: TMakeTableState) => a.makeTitle.localeCompare(b.makeTitle),
       ...getColumnSearchProps(makeSearchInput, 'makeTitle', 'Title'),
     },
     {
@@ -321,7 +327,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TMakeState) => {
+      render: (_text: any, record: TMakeTableState) => {
         return (
           <>
             <Button
@@ -482,9 +488,9 @@ const Make: React.FC<Props> = ({
    * @param {React.KeyboardEvent<HTMLFormElement>} e
    * @param {FormInstance<any>} form form instance created at initialization using useForm
    */
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, form: FormInstance<any>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, formRef: FormInstance<any>) => {
     if (e.key === 'Enter') {
-      form.submit();
+      formRef.submit();
     }
   };
 
@@ -510,12 +516,11 @@ const Make: React.FC<Props> = ({
   /*  Components  */
   /* ================================================== */
 
-  /* ================================================ */
+  /* ------------------------ */
   // Brand
-  /* ================================================ */
-  /* ------------------- */
-  // Create Brand Form
-  /* ------------------- */
+  /* ------------------------ */
+
+  /* Create Brand Form */
   let createBrandFormComponent = (
     <>
       <Form
@@ -601,9 +606,8 @@ const Make: React.FC<Props> = ({
       </Form>
     </>
   );
-  /* ---------------------- */
-  // Create Brand Modal
-  /* ---------------------- */
+
+  /* Create Brand Modal */
   let createBrandModal = (
     <Modal
       title="Create Brand"
@@ -620,9 +624,7 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ------------------- */
-  // Edit Brand Form
-  /* ------------------- */
+  /* Edit Brand Form */
   let editBrandFormComponent = (
     <>
       <Form
@@ -663,9 +665,7 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Edit Brand Modal
-  /* ---------------------- */
+  /* Edit Brand Modal */
   let editBrandModal = (
     <Modal
       title="Edit Brand"
@@ -685,12 +685,11 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ================================================ */
+  /* ----------------------------------------------- */
   // Wheelbase
-  /* ================================================ */
-  /* ----------------------- */
-  // Create Wheelbase Form
-  /* ----------------------- */
+  /* ----------------------------------------------- */
+
+  /* Create Wheelbase Form */
   let createWheelbaseFormComponent = (
     <>
       <Form
@@ -720,9 +719,7 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Create Wheelbase Modal
-  /* ---------------------- */
+  /* Create Wheelbase Modal */
   let createWheelbaseModal = (
     <Modal
       title="Create Wheelbase"
@@ -736,9 +733,7 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ----------------------- */
-  // Edit Wheelbase Form
-  /* ----------------------- */
+  /* Edit Wheelbase Form */
   let editWheelbaseFormComponent = (
     <>
       <Form
@@ -779,9 +774,7 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Edit Wheelbase Modal
-  /* ---------------------- */
+  /* Edit Wheelbase Modal */
   let editWheelbaseModal = (
     <Modal
       title="Edit Wheelbase"
@@ -795,12 +788,11 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ================================================ */
+  /* -------------------------------------------- */
   // Make
-  /* ================================================ */
-  /* ------------------- */
-  // Create Make Form
-  /* ------------------- */
+  /* -------------------------------------------- */
+
+  /*  Create Make Form */
   let createMakeFormComponent = (
     <>
       <Form
@@ -956,9 +948,7 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Create Make Modal
-  /* ---------------------- */
+  /* Create Make Modal */
   let createMakeModal = (
     <Modal
       title="Create Make"
@@ -972,9 +962,7 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ---------------------- */
-  // Edit Make Form
-  /* ---------------------- */
+  /* Edit Make Form */
   let editMakeFormComponent = (
     <>
       <Form
@@ -1165,9 +1153,7 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Edit Make Modal
-  /* ---------------------- */
+  /* Edit Make Modal */
   let editMakeModal = (
     <Modal
       centered
@@ -1198,11 +1184,11 @@ const Make: React.FC<Props> = ({
     onGetMakes();
   }, [onGetMakes]);
 
-  /* -------------------------------------------- */
+  /* ----------------------------------------------------- */
   // initialize/populate the state of data array for BRAND
-  /* -------------------------------------------- */
+  /* ----------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TBrandState[] = [];
+    let tempArray: TBrandTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
     const storeValue = (brand: TReceivedBrandObj, index: number) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
@@ -1224,14 +1210,14 @@ const Make: React.FC<Props> = ({
       brandsArray.map(storeValue);
     }
     // update the state with tempArray
-    setBrandState(tempArray);
+    seTBrandTableState(tempArray);
   }, [brandsArray]);
 
   /* -------------------------------------------------- */
   // initialize/populate the state of data array for WHEELBASES
   /* -------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TWheelbaseState[] = [];
+    let tempArray: TWheelbaseTableState[] = [];
     // A function that stores desired keys and values into a tempArray
     const storeValue = (wheelbase: TReceivedWheelbaseObj, index: number) => {
       let descriptionIsNullOrEmpty = wheelbase.description === null || wheelbase.description === '';
@@ -1254,14 +1240,14 @@ const Make: React.FC<Props> = ({
       wheelbasesArray.map(storeValue);
     }
     // update the state with tempArray
-    setWheelbaseState(tempArray);
+    seTWheelbaseTableState(tempArray);
   }, [wheelbasesArray]);
 
   /* -------------------------------------------------- */
   // initialize/populate the state of data array for MAKES
   /* -------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TMakeState[] = [];
+    let tempArray: TMakeTableState[] = [];
     // A function that stores desired keys and values into a tempArray
     const storeValue = (make: TReceivedMakeObj, index: number) => {
       let detailsCombinedString = ''; //use this combined string so that filter can work
@@ -1324,7 +1310,7 @@ const Make: React.FC<Props> = ({
       makesArray.map(storeValue);
     }
     // update the state with tempArray
-    setMakeState(tempArray);
+    seTMakeTableState(tempArray);
   }, [makesArray]);
 
   /* -------------------- */
@@ -1410,7 +1396,7 @@ const Make: React.FC<Props> = ({
                 bordered
                 scroll={{ x: '89rem', y: 400 }}
                 // components={components}
-                dataSource={brandsState}
+                dataSource={brandTableState}
                 columns={convertHeader(brandColumns, setBrandColumns)}
                 pagination={false}
               />
@@ -1439,7 +1425,7 @@ const Make: React.FC<Props> = ({
                 bordered
                 scroll={{ x: '89rem', y: 300 }}
                 // components={components}
-                dataSource={wheelbaseState}
+                dataSource={wheelbaseTableState}
                 columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
                 pagination={false}
               />
@@ -1468,7 +1454,7 @@ const Make: React.FC<Props> = ({
                 bordered
                 scroll={{ x: '89rem', y: 600 }}
                 // components={components}
-                dataSource={makeState}
+                dataSource={makeTableState}
                 columns={convertHeader(makeColumn, setMakeColumn)}
                 pagination={false}
               />
