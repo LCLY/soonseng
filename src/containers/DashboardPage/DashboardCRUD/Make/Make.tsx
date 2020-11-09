@@ -507,6 +507,8 @@ const Make: React.FC<Props> = ({
         >
           <Input placeholder="Type description here" />
         </Form.Item>
+
+        <Button type="primary">Upload Image(s)</Button>
       </Form>
     </>
   );
