@@ -5,12 +5,24 @@ export interface SalesInitialState {
   readonly loading: boolean;
   readonly errorMessage: string | null;
   readonly successMessage: string | null;
+  // make
   readonly makeObj: TReceivedMakeObj | null;
   readonly makesArray: TReceivedMakeObj[] | null;
+  // brand
   readonly brandsArray: TReceivedBrandObj[] | null;
   readonly brandObj: TReceivedBrandObj | null;
+  // wheelbase
   readonly wheelbaseObj: TReceivedWheelbaseObj | null;
   readonly wheelbasesArray: TReceivedWheelbaseObj[] | null;
+  // body
+  readonly bodyObj: TReceivedBodyObj | null;
+  readonly bodiesArray: TReceivedBodyObj[] | null;
+  // length
+  readonly lengthObj: TReceivedLengthObj | null;
+  readonly lengthsArray: TReceivedLengthObj[] | null;
+  // body length
+  readonly bodyLengthObj: TReceivedBodyLengthObj | null;
+  readonly bodyLengthsArray: TReceivedBodyLengthObj[] | null;
 }
 
 // to further breakdown the state, use in mapStateToProps
@@ -25,14 +37,37 @@ export interface ClearSalesStateAction {
   type: typeof actionTypes.CLEAR_SALES_STATE;
 }
 
-// All the actiontypes with their payload
 /* ============================================================== */
-// Brand (Head)
+// Upload Image(s)
 /* ============================================================== */
 
-/* --------------------------- */
-// Create Brands (Head)
-/* --------------------------- */
+/* Api call */
+export interface UploadImageAction {
+  type: typeof actionTypes.UPLOAD_IMAGE;
+  brandId: number;
+  model: string;
+  tag: string;
+  imageFile: FileList;
+}
+/* States */
+export interface UploadImageStartAction {
+  type: typeof actionTypes.UPLOAD_IMAGE_START;
+}
+export interface UploadImageSucceedAction {
+  type: typeof actionTypes.UPLOAD_IMAGE_SUCCEED;
+  successMessage: string;
+}
+export interface UploadImageFailedAction {
+  type: typeof actionTypes.UPLOAD_IMAGE_FAILED;
+  errorMessage: string;
+}
+
+/* ========================================================================================= */
+
+// All the actiontypes with their payload
+/* ============================================================== */
+// Brand (Make Page) (Head)
+/* ============================================================== */
 
 /* types */
 export type TReceivedBrandObj = {
@@ -42,11 +77,16 @@ export type TReceivedBrandObj = {
   available: boolean;
 };
 
+/* --------------------------- */
+// Create Brand (Head)
+/* --------------------------- */
 /*  Api call */
 export interface CreateBrandAction {
   type: typeof actionTypes.CREATE_BRAND;
   title: string;
   description: string;
+  tag?: string;
+  imageFiles?: FileList | null;
 }
 /*  States */
 export interface CreateBrandStartAction {
@@ -109,12 +149,9 @@ export interface GetBrandsFailedAction {
 }
 
 /* ============================================================== */
-// Wheelbase (Head)
+// Wheelbase (Make Page)(Head)
 /* ============================================================== */
 
-/* --------------------------- */
-// Create Wheelbase (Head)
-/* --------------------------- */
 /* types */
 export type TReceivedWheelbaseObj = {
   id: number;
@@ -123,6 +160,10 @@ export type TReceivedWheelbaseObj = {
   value: number | null;
   available: boolean;
 };
+
+/* --------------------------- */
+// Create Wheelbase (Head)
+/* --------------------------- */
 
 /* Api call */
 export interface CreateWheelbaseAction {
@@ -195,7 +236,7 @@ export interface UpdateWheelbaseFailedAction {
 }
 
 /* ============================================================== */
-//  Make (Head)
+//  Make (Make Page) (Head)
 /* ============================================================== */
 
 /* types */
@@ -309,6 +350,258 @@ export interface UpdateMakeFailedAction {
   errorMessage: string;
 }
 
+/* ========================================================================================= */
+
+/* ============================================================== */
+//  Body  (Body Page) (tail)
+/* ============================================================== */
+
+/* types */
+export type TReceivedBodyObj = {
+  id: number;
+  title: string;
+  description: string;
+  available: boolean;
+};
+
+/* --------------------------- */
+// Create Body (tail)
+/* --------------------------- */
+/*  Api call */
+export interface CreateBodyAction {
+  type: typeof actionTypes.CREATE_BODY;
+  title: string;
+  description: string;
+}
+/*  States */
+export interface CreateBodyStartAction {
+  type: typeof actionTypes.CREATE_BODY_START;
+}
+export interface CreateBodySucceedAction {
+  type: typeof actionTypes.CREATE_BODY_SUCCEED;
+  bodiesArray: TReceivedBodyObj[];
+  successMessage: string;
+}
+export interface CreateBodyFailedAction {
+  type: typeof actionTypes.CREATE_BODY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Update Body (Tail)
+/* --------------------------- */
+
+/* Api call */
+export interface UpdateBodyAction {
+  type: typeof actionTypes.UPDATE_BODY;
+  body_id: number;
+  title: string;
+  description: string;
+}
+/* States */
+export interface UpdateBodyStartAction {
+  type: typeof actionTypes.UPDATE_BODY_START;
+}
+export interface UpdateBodySucceedAction {
+  type: typeof actionTypes.UPDATE_BODY_SUCCEED;
+  bodiesArray: TReceivedBodyObj[];
+  successMessage: string;
+}
+export interface UpdateBodyFailedAction {
+  type: typeof actionTypes.UPDATE_BODY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Get All Bodies (tail)
+/* --------------------------- */
+
+/* Api call */
+export interface GetBodiesAction {
+  type: typeof actionTypes.GET_BODIES;
+}
+/* States */
+export interface GetBodiesStartAction {
+  type: typeof actionTypes.GET_BODIES_START;
+}
+export interface GetBodiesSucceedAction {
+  type: typeof actionTypes.GET_BODIES_SUCCEED;
+  bodiesArray: TReceivedBodyObj[];
+}
+export interface GetBodiesFailedAction {
+  type: typeof actionTypes.GET_BODIES_FAILED;
+  errorMessage: string;
+}
+/* ============================================================== */
+//  Length (Body Page) (tail)
+/* ============================================================== */
+// type
+export type TReceivedLengthObj = { id: number; title: string; description: string; available: boolean };
+
+/* --------------------------- */
+// Create Length (tail)
+/* --------------------------- */
+/*  Api call */
+export interface CreateLengthAction {
+  type: typeof actionTypes.CREATE_LENGTH;
+  title: string;
+  description: string;
+}
+/*  States */
+export interface CreateLengthStartAction {
+  type: typeof actionTypes.CREATE_LENGTH_START;
+}
+export interface CreateLengthSucceedAction {
+  type: typeof actionTypes.CREATE_LENGTH_SUCCEED;
+  lengthsArray: TReceivedLengthObj[];
+  successMessage: string;
+}
+export interface CreateLengthFailedAction {
+  type: typeof actionTypes.CREATE_LENGTH_FAILED;
+  errorMessage: string;
+}
+/* --------------------------- */
+// Get Lengths (tail)
+/* --------------------------- */
+export interface GetLengthsAction {
+  type: typeof actionTypes.GET_LENGTHS;
+}
+/*  States */
+export interface GetLengthsStartAction {
+  type: typeof actionTypes.GET_LENGTHS_START;
+}
+export interface GetLengthsSucceedAction {
+  type: typeof actionTypes.GET_LENGTHS_SUCCEED;
+  lengthsArray: TReceivedLengthObj[];
+}
+export interface GetLengthsFailedAction {
+  type: typeof actionTypes.GET_LENGTHS_FAILED;
+  errorMessage: string;
+}
+/* --------------------------- */
+// Update Length (tail)
+/* --------------------------- */
+export interface UpdateLengthAction {
+  type: typeof actionTypes.UPDATE_LENGTH;
+  length_id: number;
+  title: string;
+  description: string;
+}
+/*  States */
+export interface UpdateLengthStartAction {
+  type: typeof actionTypes.UPDATE_LENGTH_START;
+}
+export interface UpdateLengthSucceedAction {
+  type: typeof actionTypes.UPDATE_LENGTH_SUCCEED;
+  lengthsArray: TReceivedLengthObj[];
+  successMessage: string;
+}
+export interface UpdateLengthFailedAction {
+  type: typeof actionTypes.UPDATE_LENGTH_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
+// Body Length (Body Page) (tail)
+/* ============================================================== */
+/* types */
+// Body length data when creating
+export type TCreateBodyLengthData = {
+  body_id: number;
+  length_id: number;
+  depth: string;
+  width: string;
+  height: string;
+  price: number;
+};
+export type TUpdateBodyLengthData = {
+  body_length_id: number;
+  body_id: number;
+  length_id: number;
+  depth: string;
+  width: string;
+  height: string;
+  price: number;
+};
+// Received body length object when action success
+export type TReceivedBodyLengthObj = {
+  id: number;
+  length: TReceivedLengthObj;
+  body: TReceivedBodyObj;
+  depth: string;
+  width: string;
+  height: string;
+  price: number;
+  available: boolean;
+  images: string[];
+};
+
+/* --------------------------- */
+// Create Body Length (tail)
+/* --------------------------- */
+/*  Api call */
+export interface CreateBodyLengthAction {
+  type: typeof actionTypes.CREATE_BODYLENGTH;
+  createBodyLengthData: TCreateBodyLengthData;
+}
+/*  States */
+export interface CreateBodyLengthStartAction {
+  type: typeof actionTypes.CREATE_BODYLENGTH_START;
+}
+export interface CreateBodyLengthSucceedAction {
+  type: typeof actionTypes.CREATE_BODYLENGTH_SUCCEED;
+  bodyLengthsArray: TReceivedBodyLengthObj[];
+  successMessage: string;
+}
+export interface CreateBodyLengthFailedAction {
+  type: typeof actionTypes.CREATE_BODYLENGTH_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Update Body Length (Tail)
+/* --------------------------- */
+
+/* Api call */
+export interface UpdateBodyLengthAction {
+  type: typeof actionTypes.UPDATE_BODYLENGTH;
+  updateBodyLengthData: TUpdateBodyLengthData;
+}
+/* States */
+export interface UpdateBodyLengthStartAction {
+  type: typeof actionTypes.UPDATE_BODYLENGTH_START;
+}
+export interface UpdateBodyLengthSucceedAction {
+  type: typeof actionTypes.UPDATE_BODYLENGTH_SUCCEED;
+  bodyLengthsArray: TReceivedBodyLengthObj[];
+  successMessage: string;
+}
+export interface UpdateBodyLengthFailedAction {
+  type: typeof actionTypes.UPDATE_BODYLENGTH_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Get All Body Lengths (tail)
+/* --------------------------- */
+
+/* Api call */
+export interface GetBodyLengthsAction {
+  type: typeof actionTypes.GET_BODYLENGTHS;
+}
+/* States */
+export interface GetBodyLengthsStartAction {
+  type: typeof actionTypes.GET_BODYLENGTHS_START;
+}
+export interface GetBodyLengthsSucceedAction {
+  type: typeof actionTypes.GET_BODYLENGTHS_SUCCEED;
+  bodyLengthsArray: TReceivedBodyLengthObj[];
+}
+export interface GetBodyLengthsFailedAction {
+  type: typeof actionTypes.GET_BODYLENGTHS_FAILED;
+  errorMessage: string;
+}
+
 /* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
@@ -317,7 +610,16 @@ export type SalesActionTypes =
   /* ------------------------ */
   | ClearSalesStateAction
   /* ------------------------ */
-  // Brand
+  // Upload Image(s)
+  /* ------------------------ */
+  | UploadImageAction
+  | UploadImageStartAction
+  | UploadImageSucceedAction
+  | UploadImageFailedAction
+  /* ------------------------ */
+  /* ======================================================================= */
+  /* ------------------------ */
+  // Brand (Make Page)
   /* ------------------------ */
   | GetBrandsAction
   | GetBrandsStartAction
@@ -334,7 +636,7 @@ export type SalesActionTypes =
   | UpdateBrandSucceedAction
   | UpdateBrandFailedAction
   /* ------------------------ */
-  // Wheelbase
+  // Wheelbase (Make Page)
   /* ------------------------ */
   | CreateWheelbaseAction
   | CreateWheelbaseStartAction
@@ -351,7 +653,7 @@ export type SalesActionTypes =
   | UpdateWheelbaseSucceedAction
   | UpdateWheelbaseFailedAction
   /* ------------------------ */
-  // Make
+  // Make (Make Page)
   /* ------------------------ */
   | CreateMakeAction
   | CreateMakeStartAction
@@ -366,4 +668,57 @@ export type SalesActionTypes =
   | UpdateMakeAction
   | UpdateMakeStartAction
   | UpdateMakeSucceedAction
-  | UpdateMakeFailedAction;
+  | UpdateMakeFailedAction
+  /* ------------------------ */
+  /* ======================================================================= */
+  /* ------------------------ */
+  // Body (Body Page)
+  /* ------------------------ */
+  | CreateBodyAction
+  | CreateBodyStartAction
+  | CreateBodySucceedAction
+  | CreateBodyFailedAction
+  /* ------------------------ */
+  | GetBodiesAction
+  | GetBodiesStartAction
+  | GetBodiesSucceedAction
+  | GetBodiesFailedAction
+  /* ------------------------ */
+  | UpdateBodyAction
+  | UpdateBodyStartAction
+  | UpdateBodySucceedAction
+  | UpdateBodyFailedAction
+  /* ------------------------ */
+  // Length (Body Page)
+  /* ------------------------ */
+  | CreateLengthAction
+  | CreateLengthStartAction
+  | CreateLengthSucceedAction
+  | CreateLengthFailedAction
+  /* ------------------------ */
+  | GetLengthsAction
+  | GetLengthsStartAction
+  | GetLengthsSucceedAction
+  | GetLengthsFailedAction
+  /* ------------------------ */
+  | UpdateLengthAction
+  | UpdateLengthStartAction
+  | UpdateLengthSucceedAction
+  | UpdateLengthFailedAction
+  /* ------------------------ */
+  // Body Length (Body Page)
+  /* ------------------------ */
+  | CreateBodyLengthAction
+  | CreateBodyLengthStartAction
+  | CreateBodyLengthSucceedAction
+  | CreateBodyLengthFailedAction
+  /* ------------------------ */
+  | GetBodyLengthsAction
+  | GetBodyLengthsStartAction
+  | GetBodyLengthsSucceedAction
+  | GetBodyLengthsFailedAction
+  /* ------------------------ */
+  | UpdateBodyLengthAction
+  | UpdateBodyLengthStartAction
+  | UpdateBodyLengthSucceedAction
+  | UpdateBodyLengthFailedAction;

@@ -138,4 +138,40 @@
       width: 17rem;
     }
   }
+
+  /* ======================== */
+  // For preview images
+  /* ======================== */
+  &__preview {
+    display: flex;
+    overflow-x: auto;
+    position: relative;
+
+    // outerdiv
+    &-outerdiv {
+      margin-top: 2rem;
+    }
+
+    &-title {
+      &-div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+    }
+
+    /* ---------------------- */
+    // each image item
+    /* ---------------------- */
+    &-item {
+      width: 15rem;
+      min-width: 15rem;
+      height: 13rem;
+      border: 1px solid $primary-color-4;
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
+  }
 }

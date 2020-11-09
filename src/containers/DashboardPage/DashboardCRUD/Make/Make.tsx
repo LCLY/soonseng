@@ -123,6 +123,10 @@ const Make: React.FC<Props> = ({
     make: false,
   });
 
+  // Upload states
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+
   let brandSearchInput = null;
   let wheelbaseSearchInput = null;
   let makeSearchInput = null;
@@ -381,8 +385,15 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   /* Forms onFinish methods */
   // the keys "values" are from the form's 'name' attribute
-  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string }) => {
-    onCreateBrand(values.brandTitle, values.brandDescription);
+  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; brandImageTag: string }) => {
+    if (uploadSelectedFiles) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBrand(values.brandTitle, values.brandDescription, values.brandImageTag, uploadSelectedFiles);
+    } else {
+      // if not then just get the title and description
+      onCreateBrand(values.brandTitle, values.brandDescription);
+    }
   };
   const onEditBrandFinish = (values: { brandId: number; brandTitle: string; brandDescription: string }) => {
     onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription);
@@ -425,6 +436,8 @@ const Make: React.FC<Props> = ({
     makeWheelbaseId: string;
     length: { feet: string; inch: string };
   };
+
+  // Create Make
   const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
     // combine the ft and inch
     let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
@@ -441,8 +454,10 @@ const Make: React.FC<Props> = ({
       wheelbase_id: values.wheelbase_id.toString(),
       year: moment(values.year).year().toString(), //convert to year
     };
-    onCreateMake(createMakeData);
+    onCreateMake(createMakeData); //call create make api
   };
+
+  // Edit Make
   const onEditMakeFinish = (values: TUpdateMakeFinishValues) => {
     let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
     // package the object
@@ -472,6 +487,25 @@ const Make: React.FC<Props> = ({
       form.submit();
     }
   };
+
+  /**
+   * Trigger this function when user clicks on the upload button
+   * @param {React.ChangeEvent<HTMLInputElement>} e
+   */
+  const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadSelectedFiles(event.target.files);
+
+    //check if files exist
+    if (event.target.files) {
+      // if files exist, store them in an array and into the state of imagePreviewUrls
+      // convert the FileList object to array first and then iterate it
+      let filesTempArray: string[] = [];
+      // convert the files into string of localhost url
+      Array.from(event.target.files).forEach((file) => filesTempArray.push(URL.createObjectURL(file)));
+      setImagesPreviewUrls(filesTempArray);
+    }
+  };
+
   /* ================================================== */
   /*  Components  */
   /* ================================================== */
@@ -512,15 +546,58 @@ const Make: React.FC<Props> = ({
           <input
             type="file"
             id="imageFiles"
-            className="hide__input"
+            hidden
+            multiple
             accept="image/png, image/jpeg, image/jpg" //only accept image files
-            // onChange={(e) => fileChangedHandler(e)}
+            onChange={fileSelectedHandler}
           />
-          <label htmlFor="imageFiles" className="ant-btn ant-btn-primary profile__picture-button">
-            Upload
-          </label>
+          {/* <label htmlFor="imageFiles" className="ant-btn ant-btn-default profile__picture-button">
+            Select image(s) from device
+          </label> */}
         </div>
-        <Button type="primary">Upload Image(s)</Button>
+
+        {/* Only shows when images are selected */}
+        {imagesPreviewUrls.length !== 0 && (
+          <div className="make__preview-outerdiv">
+            <div className="make__preview-title-div">
+              <div className="make__preview-title">Image(s) Preview</div>
+              {/* ------- Select Image Tag -------*/}
+              <Form.Item
+                label="Tag"
+                name="brandImageTag"
+                rules={[{ required: true, message: 'Select a Tag!' }]}
+                style={{ marginBottom: '0' }}
+              >
+                {/* only render if brandsArray is not null */}
+                <Select placeholder="Select a tag">
+                  <Option style={{ textTransform: 'capitalize' }} value="Plan">
+                    Plan
+                  </Option>
+                  <Option style={{ textTransform: 'capitalize' }} value="Catalog">
+                    Catalog
+                  </Option>
+                </Select>
+              </Form.Item>
+            </div>
+            <div className="make__preview">
+              {imagesPreviewUrls.map((imagePreviewUrl) => {
+                return (
+                  <div
+                    className="make__preview-item"
+                    key={uuidv4()}
+                    style={{
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      backgroundColor: 'rgb(197, 197, 191)',
+                      backgroundImage: `url(${imagePreviewUrl}), url(${img_placeholder_link})`,
+                    }}
+                  ></div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </Form>
     </>
   );
@@ -533,7 +610,10 @@ const Make: React.FC<Props> = ({
       visible={showCreateModal.brand}
       onOk={createBrandForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, brand: false })}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, brand: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview urls array when cancel
+      }}
     >
       {/* the content within the modal */}
       {createBrandFormComponent}
@@ -1441,7 +1521,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     // Brand
     onGetBrands: () => dispatch(actions.getBrands()),
-    onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
+    onCreateBrand: (title, description, tag?, imageFiles?) =>
+      dispatch(actions.createBrand(title, description, tag, imageFiles)),
     onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
     // Wheelbase
     onGetWheelbases: () => dispatch(actions.getWheelbases()),

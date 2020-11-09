@@ -4,7 +4,52 @@ import axios from 'axios';
 import { AppActions } from '../types/index';
 
 /* ================================================================== */
-//    Make - Brands (Head)
+//    Upload Image(s)
+/* ================================================================== */
+
+export function* uploadImageSaga(_action: AppActions) {
+  yield put(actions.uploadImageStart());
+
+  let url = process.env.REACT_APP_API + `/upload/images`;
+  let config = yield {
+    headers: {
+      'Content-type': 'multipart/form-data',
+    },
+  };
+
+  let formData = new FormData();
+  // profile is the name of the key, it forms a new object of {profile: action.picture}
+  // formData.append('profile', action.picture);
+
+  try {
+    let response = yield axios.post(url, formData, config);
+    yield put(actions.uploadImageSucceed(response.data.brands));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.uploadImageFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ================================================================== */
+//    Make Page - Brands (Head)
 /* ================================================================== */
 
 /* ------------------------------- */
@@ -62,6 +107,8 @@ export function* createBrandSaga(action: AppActions) {
     let response = yield axios.post(url, { brand });
     // receive new updated brands array
     yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
+
+    // if imageFiles and image tag exist in action, then call the upload image API once succeed
   } catch (error) {
     if (error.response) {
       /*
@@ -133,7 +180,7 @@ export function* updateBrandSaga(action: AppActions) {
 }
 
 /* ================================================================== */
-/*    Make - Wheelbase (head) */
+/*     Make Page - Wheelbase (head) */
 /* ================================================================== */
 
 /* ------------------------------- */
@@ -262,7 +309,7 @@ export function* updateWheelbaseSaga(action: AppActions) {
 }
 
 /* ================================================================== */
-/*    Make -  Make (head) */
+/*     Make Page -  Make (head) */
 /* ================================================================== */
 
 /* ------------------------------- */
