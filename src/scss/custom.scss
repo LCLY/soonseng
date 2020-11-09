@@ -59,6 +59,19 @@ svg {
   white-space: nowrap;
 }
 
+.ant-table-tbody{
+  &::-webkit-scrollbar {
+    width: 10px !important;
+}
+&::-webkit-scrollbar-thumb {
+    background: $secondary-color-2 !important;
+    border-radius: 6px !important;
+}
+&::-webkit-scrollbar-thumb:hover {
+    background: $primary-color-2 !important;
+}
+}
+
 .ant-table-tbody td {
   overflow: hidden;
   white-space: nowrap;

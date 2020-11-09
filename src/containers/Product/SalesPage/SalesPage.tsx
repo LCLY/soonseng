@@ -112,7 +112,7 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
       <NavbarComponent activePage="sales" />
       <Container>
         <div className="sales__dashboard">
-          <Button variant="primary" onClick={() => history.push('/dashboard/brand')}>
+          <Button variant="primary" onClick={() => history.push('/dashboard')}>
             Go to Dashboard
           </Button>
         </div>

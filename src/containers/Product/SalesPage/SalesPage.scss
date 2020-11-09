@@ -80,6 +80,9 @@
       border-radius: 5px;
       border: 2px solid $secondary-color-3;
       padding: 3rem;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
       user-select: none;
       background-size: 200% auto;
       background-image: linear-gradient(to right bottom, $primary-color-2 50%, $primary-color-4);
@@ -259,6 +262,9 @@
       background: $primary-color-2 !important;
       padding: 0.5rem;
       cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
       user-select: none;
 
       &:hover {

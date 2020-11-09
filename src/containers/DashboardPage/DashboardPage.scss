@@ -3,122 +3,12 @@
   // section
   /* ================= */
   &__section {
-    background: $section-grey;
-    padding: 2rem 3rem 2rem 3rem;
-    margin-bottom: 2rem;
+    margin-top: 3rem;
   }
-  /* ==================== */
-  // header
-  /* ==================== */
-  &__header {
-    font-family: $ubuntu;
-    border-bottom: 1px solid $translucent-grey;
-    margin-bottom: 3rem;
-    padding-bottom: 1rem;
-    & > h2 {
-      font-size: 2.5rem;
-    }
-  }
-
-  /* ==================== */
-  // the multiple tabs
-  /* ==================== */
+  /* ================= */
+  // tab
+  /* ================= */
   &__tab {
-    margin-top: 2rem;
-  }
-
-  /* ================= */
-  // the form
-  /* ================= */
-  &__form {
-    /* --------------- */
-    // each row of the form
-    /* --------------- */
-    &-row {
-      display: flex;
-      align-items: center;
-    }
-
-    /* -----------------*/
-    // the text/title within the form
-    /* -----------------*/
-    &-text {
-      width: 13rem;
-      margin-right: 2rem;
-    }
-
-    /* -----------------*/
-    // the input of the form
-    /* -----------------*/
-    &-input {
-      width: 100%;
-      // margin-left: 2rem;
-    }
-
-    /* ---------------- */
-    // the ':' after the text
-    /* ---------------- */
-    &-colon {
-      margin-right: 2rem;
-    }
-
-    /* ----------------- */
-    // Append / prepend
-    /* ----------------- */
-    &-append {
-      width: 5rem;
-      &-text {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        background: $primary-color-4 !important;
-        color: white !important;
-      }
-    }
-
-    /* ------------------------- */
-    // the button within the form
-    /* ------------------------- */
-    &-btn {
-      padding: 0.5rem 2rem !important;
-      // the div wrapping the button
-      &-div {
-        margin-top: 2rem;
-        display: flex;
-        justify-content: flex-end;
-      }
-    }
-  }
-
-  /* ============================= */
-  // toast notification
-  /* ============================= */
-  &__toast {
-    min-width: 30rem;
-    /* ---------------- */
-    // div of the toast
-    /* ---------------- */
-    &-div {
-      position: fixed;
-      right: 1rem;
-      top: 8rem;
-      z-index: 100;
-    }
-    /* ---------------- */
-    // header of toast
-    /* ---------------- */
-    &-header {
-      font-size: 1.8rem;
-      padding: 0.5rem 1.5rem !important;
-      text-align: left !important;
-    }
-    /* ---------------- */
-    // body of toast
-    /* ---------------- */
-    &-body {
-      font-size: 1.5rem;
-      word-wrap: break-word;
-      padding: 1.5rem !important;
-    }
+    padding: 0 2rem 2rem 0;
   }
 }

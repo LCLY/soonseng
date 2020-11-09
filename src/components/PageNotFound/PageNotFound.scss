@@ -104,13 +104,13 @@
       color: white;
     }
   }
-}
 
-svg {
-  width: 60px;
-  height: auto;
-  @include respond-to(mobile) {
-    width: 50px;
+  &__svg {
+    width: 60px !important;
+    height: auto !important;
+    @include respond-to(mobile) {
+      width: 50px !important;
+    }
   }
 }
 
