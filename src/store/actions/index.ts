@@ -119,4 +119,41 @@ export {
   updateBodyLengthStart,
   updateBodyLengthFailed,
   updateBodyLengthSucceed,
+  /* =================== */
+  //  Body Accessory (Body Page)
+  /* =================== */
+  // Create Body Accessory
+  createBodyAccessory,
+  createBodyAccessoryStart,
+  createBodyAccessoryFailed,
+  createBodyAccessorySucceed,
+  // Get Body Accessories
+  getBodyAccessories,
+  getBodyAccessoriesStart,
+  getBodyAccessoriesFailed,
+  getBodyAccessoriesSucceed,
+  // Update Body Accessory
+  updateBodyAccessory,
+  updateBodyAccessoryStart,
+  updateBodyAccessoryFailed,
+  updateBodyAccessorySucceed,
+  /* ------------------------------------- */
+  /* =================== */
+  //  Accessory (Accessory Page)
+  /* =================== */
+  // Create Accessory
+  createAccessory,
+  createAccessoryStart,
+  createAccessoryFailed,
+  createAccessorySucceed,
+  // Get Accessories
+  getAccessories,
+  getAccessoriesStart,
+  getAccessoriesFailed,
+  getAccessoriesSucceed,
+  // Update Accessory
+  updateAccessory,
+  updateAccessoryStart,
+  updateAccessoryFailed,
+  updateAccessorySucceed,
 } from './sales';

@@ -23,6 +23,12 @@ export interface SalesInitialState {
   // body length
   readonly bodyLengthObj: TReceivedBodyLengthObj | null;
   readonly bodyLengthsArray: TReceivedBodyLengthObj[] | null;
+  // body accessory
+  readonly bodyAccessoryObj: TReceivedBodyAccessoryObj | null;
+  readonly bodyAccessoriesArray: TReceivedBodyAccessoryObj[] | null;
+  // accessory
+  readonly accessoryObj: TReceivedAccessoryObj | null;
+  readonly accessoriesArray: TReceivedAccessoryObj[] | null;
 }
 
 // to further breakdown the state, use in mapStateToProps
@@ -603,6 +609,182 @@ export interface GetBodyLengthsFailedAction {
 }
 
 /* ============================================================== */
+// Body Accessory (Body Page) (tail)
+/* ============================================================== */
+/* types */
+// Body length data when creating
+export type TCreateBodyAccessoryData = {
+  title: string;
+  description: string;
+  body_length_id: number;
+  accesory_id: number;
+  price: number;
+};
+export type TReceivedBodyAccessoryObj = {
+  id: number;
+  title: string;
+  accesory: TReceivedAccessoryObj;
+  body_length: TReceivedBodyLengthObj;
+  description: string;
+  price: number;
+  available: boolean;
+};
+export type TUpdateBodyAccessoryData = {
+  body_accessory_id: number;
+  title: string;
+  accesory_id: number;
+  body_length_id: number;
+  description: string;
+  price: number;
+};
+
+/* --------------------------- */
+// Create Body Accessory (tail)
+/* --------------------------- */
+/*  Api call */
+export interface CreateBodyAccessoryAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY;
+  createBodyAccessoryData: TCreateBodyAccessoryData;
+}
+/*  States */
+export interface CreateBodyAccessoryStartAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY_START;
+}
+export interface CreateBodyAccessorySucceedAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+  successMessage: string;
+}
+export interface CreateBodyAccessoryFailedAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Update Body Accessory (Tail)
+/* --------------------------- */
+
+/* Api call */
+export interface UpdateBodyAccessoryAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY;
+  updateBodyAccessoryData: TUpdateBodyAccessoryData;
+}
+/* States */
+export interface UpdateBodyAccessoryStartAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY_START;
+}
+export interface UpdateBodyAccessorySucceedAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+  successMessage: string;
+}
+export interface UpdateBodyAccessoryFailedAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Get All Body Lengths (tail)
+/* --------------------------- */
+
+/* Api call */
+export interface GetBodyAccessoriesAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES;
+}
+/* States */
+export interface GetBodyAccessoriesStartAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES_START;
+}
+export interface GetBodyAccessoriesSucceedAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+}
+export interface GetBodyAccessoriesFailedAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
+// Accessory (Accessory Page) (tail)
+/* ============================================================== */
+/* types */
+// Received accessory length object when action success
+export type TReceivedAccessoryObj = {
+  id: 1;
+  title: string;
+  description: string;
+  available: boolean;
+};
+
+/* --------------------------- */
+// Create Accessory (tail)
+/* --------------------------- */
+/*  Api call */
+export interface CreateAccessoryAction {
+  type: typeof actionTypes.CREATE_ACCESSORY;
+  title: string;
+  description: string;
+}
+/*  States */
+export interface CreateAccessoryStartAction {
+  type: typeof actionTypes.CREATE_ACCESSORY_START;
+}
+export interface CreateAccessorySucceedAction {
+  type: typeof actionTypes.CREATE_ACCESSORY_SUCCEED;
+  accessoriesArray: TReceivedAccessoryObj[];
+  successMessage: string;
+}
+export interface CreateAccessoryFailedAction {
+  type: typeof actionTypes.CREATE_ACCESSORY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Update Accessory (Tail)
+/* --------------------------- */
+
+/* Api call */
+export interface UpdateAccessoryAction {
+  type: typeof actionTypes.UPDATE_ACCESSORY;
+  id: number;
+  title: string;
+  description: string;
+}
+/* States */
+export interface UpdateAccessoryStartAction {
+  type: typeof actionTypes.UPDATE_ACCESSORY_START;
+}
+export interface UpdateAccessorySucceedAction {
+  type: typeof actionTypes.UPDATE_ACCESSORY_SUCCEED;
+  accessoriesArray: TReceivedAccessoryObj[];
+  successMessage: string;
+}
+export interface UpdateAccessoryFailedAction {
+  type: typeof actionTypes.UPDATE_ACCESSORY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Get All Accessories (tail)
+/* --------------------------- */
+/* Api call */
+export interface GetAccessoriesAction {
+  type: typeof actionTypes.GET_ACCESSORIES;
+}
+/* States */
+export interface GetAccessoriesStartAction {
+  type: typeof actionTypes.GET_ACCESSORIES_START;
+}
+export interface GetAccessoriesSucceedAction {
+  type: typeof actionTypes.GET_ACCESSORIES_SUCCEED;
+  accessoriesArray: TReceivedAccessoryObj[];
+}
+export interface GetAccessoriesFailedAction {
+  type: typeof actionTypes.GET_ACCESSORIES_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
 export type SalesActionTypes =
@@ -727,4 +909,41 @@ export type SalesActionTypes =
   | UpdateBodyLengthAction
   | UpdateBodyLengthStartAction
   | UpdateBodyLengthSucceedAction
-  | UpdateBodyLengthFailedAction;
+  | UpdateBodyLengthFailedAction
+  /* ------------------------ */
+  // Body Accessory (Body Page)
+  /* ------------------------ */
+  /* Create */
+  | CreateBodyAccessoryAction
+  | CreateBodyAccessoryStartAction
+  | CreateBodyAccessorySucceedAction
+  | CreateBodyAccessoryFailedAction
+  /* Get */
+  | GetBodyAccessoriesAction
+  | GetBodyAccessoriesStartAction
+  | GetBodyAccessoriesSucceedAction
+  | GetBodyAccessoriesFailedAction
+  /* Update */
+  | UpdateBodyAccessoryAction
+  | UpdateBodyAccessoryStartAction
+  | UpdateBodyAccessorySucceedAction
+  | UpdateBodyAccessoryFailedAction
+  /* ======================================================================= */
+  /* ------------------------ */
+  // Accessory (Accessory Page)
+  /* ------------------------ */
+  /* Create */
+  | CreateAccessoryAction
+  | CreateAccessoryStartAction
+  | CreateAccessorySucceedAction
+  | CreateAccessoryFailedAction
+  /* Get */
+  | GetAccessoriesAction
+  | GetAccessoriesStartAction
+  | GetAccessoriesSucceedAction
+  | GetAccessoriesFailedAction
+  /* Update */
+  | UpdateAccessoryAction
+  | UpdateAccessoryStartAction
+  | UpdateAccessorySucceedAction
+  | UpdateAccessoryFailedAction;

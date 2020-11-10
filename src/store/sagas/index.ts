@@ -30,6 +30,14 @@ import {
   createBodyLengthSaga,
   getBodyLengthsSaga,
   updateBodyLengthSaga,
+  // Body Accessory
+  createBodyAccessorySaga,
+  getBodyAccessoriesSaga,
+  updateBodyAccessorySaga,
+  // Accessory
+  createAccessorySaga,
+  getAccessoriesSaga,
+  updateAccessorySaga,
 } from './sales';
 
 export function* watchAuth() {
@@ -59,4 +67,12 @@ export function* watchAuth() {
   yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_BODYLENGTH, createBodyLengthSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_BODYLENGTHS, getBodyLengthsSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.UPDATE_BODYLENGTH, updateBodyLengthSaga)]);
+  // Body Accessory
+  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_BODYACCESSORY, createBodyAccessorySaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_BODYACCESSORIES, getBodyAccessoriesSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.UPDATE_BODYACCESSORY, updateBodyAccessorySaga)]);
+  // Accessory
+  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_ACCESSORY, createAccessorySaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_ACCESSORIES, getAccessoriesSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.UPDATE_ACCESSORY, updateAccessorySaga)]);
 }

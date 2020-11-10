@@ -845,3 +845,260 @@ export function* updateBodyLengthSaga(action: AppActions) {
     }
   }
 }
+/* ================================================================== */
+/*   Body Accessory (Body Page) (tail) */
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Create Body Accessory
+/* ------------------------------- */
+export function* createBodyAccessorySaga(action: AppActions) {
+  yield put(actions.createBodyAccessoryStart());
+
+  let url = process.env.REACT_APP_API + `/tail/body_accesory`;
+
+  let body_accesory = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('createBodyAccessoryData' in action) {
+    body_accesory = {
+      title: action.createBodyAccessoryData.title,
+      description: action.createBodyAccessoryData.description,
+      body_length_id: action.createBodyAccessoryData.body_length_id,
+      accesory_id: action.createBodyAccessoryData.accesory_id,
+      price: action.createBodyAccessoryData.price,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { body_accesory });
+    yield put(actions.createBodyAccessorySucceed(response.data.body_accesories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.createBodyAccessoryFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Get Body Accessories
+/* ------------------------------- */
+export function* getBodyAccessoriesSaga(_action: AppActions) {
+  yield put(actions.getBodyAccessoriesStart());
+
+  let url = process.env.REACT_APP_API + `/tail/body_accesory`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getBodyAccessoriesSucceed(response.data.body_accesories));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.getBodyAccessoriesFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Update Accessory
+/* ------------------------------- */
+export function* updateBodyAccessorySaga(action: AppActions) {
+  yield put(actions.updateBodyAccessoryStart());
+
+  let url = '';
+  let body_accesory = {};
+  if ('updateBodyAccessoryData' in action) {
+    url = process.env.REACT_APP_API + `/tail/body_accesory/${action.updateBodyAccessoryData.body_accessory_id}`;
+    body_accesory = {
+      title: action.updateBodyAccessoryData.title,
+      description: action.updateBodyAccessoryData.description,
+      body_length_id: action.updateBodyAccessoryData.body_length_id,
+      accesory_id: action.updateBodyAccessoryData.accesory_id,
+      price: action.updateBodyAccessoryData.price,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { body_accesory });
+    yield put(actions.updateBodyAccessorySucceed(response.data.body_lengths, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.updateBodyAccessoryFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ================================================================== */
+/*   Accessory (Accessory Page) (tail) */
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Create Accessory
+/* ------------------------------- */
+export function* createAccessorySaga(action: AppActions) {
+  yield put(actions.createAccessoryStart());
+
+  let url = process.env.REACT_APP_API + `/tail/accesories`;
+
+  let accesory = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('title' in action && 'description' in action) {
+    accesory = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { accesory });
+    yield put(actions.createAccessorySucceed(response.data.accesories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.createAccessoryFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Get Accessories
+/* ------------------------------- */
+export function* getAccessoriesSaga(_action: AppActions) {
+  yield put(actions.getAccessoriesStart());
+
+  let url = process.env.REACT_APP_API + `/tail/accesories`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getAccessoriesSucceed(response.data.accesories));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.getAccessoriesFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Update Accessory
+/* ------------------------------- */
+export function* updateAccessorySaga(action: AppActions) {
+  yield put(actions.updateAccessoryStart());
+
+  let url = '';
+  let accesory = {};
+  if ('id' in action && 'title' in action && 'description' in action) {
+    url = process.env.REACT_APP_API + `/tail/accesories/${action.id}`;
+    accesory = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { accesory });
+    yield put(actions.updateAccessorySucceed(response.data.accesories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.updateAccessoryFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}

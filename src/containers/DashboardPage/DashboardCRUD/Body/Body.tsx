@@ -8,12 +8,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { Button, Form, Input, Modal, Select, Table } from 'antd';
+import { Button, Empty, Form, Input, Modal, Select, Table, Tag } from 'antd';
 /* Util */
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
 import {
   TCreateBodyLengthData,
+  TReceivedAccessoryObj,
+  TReceivedBodyAccessoryObj,
   TReceivedBodyLengthObj,
   TReceivedBodyObj,
   TReceivedLengthObj,
@@ -49,8 +51,11 @@ type TBodyLengthTableState = {
   bodyLengthLengthTitle: string;
   bodyLengthBodyId: number;
   bodyLengthBodyTitle: string;
-  bodyLengthDimension: string;
+  bodyLengthWidth: string;
+  bodyLengthHeight: string;
+  bodyLengthDepth: string;
   bodyLengthPrice: string;
+  bodyLengthBodyAccessory: TReceivedBodyAccessoryObj[] | null;
   available?: boolean;
 };
 
@@ -72,11 +77,28 @@ type TUpdateBodyLengthForm = {
   bodyLengthPrice: number;
 };
 
+type TCreateBodyAccessoryForm = {
+  bodyAccessoryTitle: string; // length id
+  bodyAccessoryDescription: string; // body id
+  bodyAccessoryBodyLength: number; //body_length_id
+  bodyAccessoryAccessory: number; //accessory_id
+  bodyAccessoryPrice: number;
+};
+type TUpdateBodyAccessoryForm = {
+  bodyAccessoryId: number; // body_accessory id
+  bodyAccessoryTitle: string; // length id
+  bodyAccessoryDescription: string; // body id
+  bodyAccessoryBodyLength: number; //body_length_id
+  bodyAccessoryAccessory: number; //accessory_id
+  bodyAccessoryPrice: number;
+};
+
 type TShowModal = {
   body: boolean;
   currentBodyId?: number; //(for upload image) id to track which specific object is currently being edited
   length: boolean;
   body_length: boolean; //if got image add current Body length id as well
+  body_accessory: boolean; //if got image add current Body length id as well
 };
 
 type Props = BodyProps & StateProps & DispatchProps;
@@ -85,7 +107,6 @@ const Body: React.FC<Props> = ({
   // miscellaneous
   loading,
   successMessage,
-  onClearSalesState,
   // body
   bodiesArray,
   onGetBodies,
@@ -101,6 +122,14 @@ const Body: React.FC<Props> = ({
   onGetBodyLengths,
   onCreateBodyLength,
   onUpdateBodyLength,
+  // body accessory
+  bodyAccessoriesArray,
+  onGetBodyAccessories,
+  onCreateBodyAccessory,
+  onUpdateBodyAccessory,
+  // accessory
+  accessoriesArray,
+  onGetAccessories,
 }) => {
   /* ================================================== */
   /*  state */
@@ -115,13 +144,18 @@ const Body: React.FC<Props> = ({
   /* bodyLength */
   const [createBodyLengthForm] = Form.useForm();
   const [updateBodyLengthForm] = Form.useForm();
+  /* bodyAccessories */
+  const [createBodyAccessoryForm] = Form.useForm();
+  const [updateBodyAccessoryForm] = Form.useForm();
 
   // Table states
   const [bodyTableState, setBodyTableState] = useState<TBodyTableState[]>([]);
   const [lengthTableState, setLengthTableState] = useState<TLengthTableState[]>([]);
   const [bodyLengthTableState, setBodyLengthTableState] = useState<TBodyLengthTableState[]>([]);
+
   let bodySearchInput = null; //this is for filter on antd table
   let lengthSearchInput = null; //this is for filter on antd table
+  let bodyLengthSearchInput = null; //this is for filter on antd table
   const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
   setFilterReference(filterData, setFilterData);
 
@@ -130,11 +164,13 @@ const Body: React.FC<Props> = ({
     body: false,
     length: false,
     body_length: false,
+    body_accessory: false,
   });
-  const [showEditModal, setShowEditModal] = useState<TShowModal>({
+  const [showUpdateModal, setShowUpdateModal] = useState<TShowModal>({
     body: false,
     length: false,
     body_length: false,
+    body_accessory: false,
   });
 
   // store table header definition in state
@@ -188,7 +224,7 @@ const Body: React.FC<Props> = ({
               className="make__brand-btn--edit"
               onClick={() => {
                 // show modal
-                setShowEditModal({ ...showEditModal, body: true });
+                setShowUpdateModal({ ...showUpdateModal, body: true });
                 // update the form value using the 'name' attribute as target/key
                 // if bodyDescription is '-' then change to empty string, else the real string
                 // remember to set this form on the Form component
@@ -254,7 +290,7 @@ const Body: React.FC<Props> = ({
               className="make__brand-btn--edit"
               onClick={() => {
                 // show modal
-                setShowEditModal({ ...showEditModal, length: true });
+                setShowUpdateModal({ ...showUpdateModal, length: true });
                 // update the form value using the 'name' attribute as target/key
                 // if bodyDescription is '-' then change to empty string, else the real string
                 // remember to set this form on the Form component
@@ -304,24 +340,102 @@ const Body: React.FC<Props> = ({
         a.index !== undefined && b.index !== undefined && a.index - b.index,
     },
     {
+      key: 'bodyLengthBodyTitle',
+      title: 'Body',
+      dataIndex: 'bodyLengthBodyTitle',
+      ellipsis: true,
+      width: '13rem',
+      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
+        a.bodyLengthBodyTitle.localeCompare(b.bodyLengthBodyTitle),
+      ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthBodyTitle', 'Body'),
+    },
+    {
       key: 'bodyLengthDimension',
       title: 'Dimension',
       dataIndex: 'bodyLengthDimension',
       ellipsis: true,
-      width: 'auto',
-      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
-        a.bodyLengthDimension.localeCompare(b.bodyLengthDimension),
-      ...getColumnSearchProps(lengthSearchInput, 'bodyLengthDimension', 'Dimension'),
+      align: 'center',
+      width: '15rem',
+      render: (_text: any, record: TBodyLengthTableState) => {
+        return (
+          <>
+            <div className="body__tag-div">
+              <Tag className="body__tag" color="red">
+                <div className="body__tag-title">Width</div>
+                <div className="body__tag-values">
+                  <div className="body__tag-colon">:</div> <div>{record.bodyLengthWidth}</div>
+                </div>
+              </Tag>
+            </div>
+            <div className="body__tag-div">
+              <Tag className="body__tag" color="cyan">
+                <div className="body__tag-title">Height</div>
+                <div className="body__tag-values">
+                  <div className="body__tag-colon">:</div> <div>{record.bodyLengthHeight}</div>
+                </div>
+              </Tag>
+            </div>
+            <div className="body__tag-div">
+              <Tag className="body__tag" color="blue">
+                <div className="body__tag-title">Depth</div>
+                <div className="body__tag-values">
+                  <div className="body__tag-colon">:</div> <div>{record.bodyLengthDepth}</div>
+                </div>
+              </Tag>
+            </div>
+          </>
+        );
+      },
     },
     {
       key: 'bodyLengthPrice',
       title: 'Price',
       dataIndex: 'bodyLengthPrice',
       ellipsis: true,
-      width: 'auto',
+      width: '12rem',
       sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
         a.bodyLengthPrice.localeCompare(b.bodyLengthPrice),
-      ...getColumnSearchProps(lengthSearchInput, 'bodyLengthPrice', 'Price'),
+      ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthPrice', 'Price'),
+    },
+    {
+      key: 'bodyLengthAccessory',
+      title: 'Accessory',
+      dataIndex: 'bodyLengthAccessory',
+      ellipsis: true,
+      width: 'auto',
+      render: (_text: any, record: TBodyLengthTableState) => {
+        return (
+          <>
+            {record.bodyLengthBodyAccessory && (
+              <>
+                {record.bodyLengthBodyAccessory.length === 0 ? (
+                  <Empty />
+                ) : (
+                  record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
+                    if (bodyAccessory.available) {
+                      return (
+                        <div key={index}>
+                          <div>{bodyAccessory.title}</div>
+                          <div>{bodyAccessory.accesory.title}</div>
+                          <div>{bodyAccessory.body_length.length.title}</div>
+                          <div>{bodyAccessory.body_length.body.title}</div>
+                          <div>
+                            {bodyAccessory.body_length.width}W {bodyAccessory.body_length.height}H
+                            {bodyAccessory.body_length.depth}D
+                          </div>
+                          <div>{bodyAccessory.body_length.price}</div>
+                        </div>
+                      );
+                    }
+                    // if not available render nothing
+                    return <></>;
+                  })
+                )}
+              </>
+            )}
+          </>
+        );
+      },
     },
     {
       key: 'bodyLengthAction',
@@ -332,107 +446,78 @@ const Body: React.FC<Props> = ({
       render: (_text: any, record: TBodyLengthTableState) => {
         return (
           <>
-            <Button
-              type="link"
-              className="make__brand-btn--edit"
-              onClick={() => {
-                // show modal
-                setShowEditModal({ ...showEditModal, body_length: true });
-                /**
-                 * Check which dimension side it is and extract the value
-                 * @param {string} dimensionSide takes in W or H or D
-                 * @param {string} dimensionValueString the values
-                 * @return {*} return array of values
-                 * @category Helper functions
-                 * */
-                const extractFeetInch = (dimensionValueString: string, dimensionSide: string) => {
-                  let extractedWidthWithFeetAndInch = '';
-                  let extractedHeightWithFeetAndInch = '';
-                  let extractedDepthWithFeetAndInch = '';
-                  // they have to be legit strings after being splitted
-                  extractedWidthWithFeetAndInch = dimensionValueString.split(' × ')[0];
-                  extractedHeightWithFeetAndInch = dimensionValueString.split(' × ')[1];
-                  extractedDepthWithFeetAndInch = dimensionValueString.split(' × ')[2];
+            <div>
+              <Button
+                type="link"
+                className="make__brand-btn--edit"
+                onClick={() => {
+                  // show modal
+                  setShowUpdateModal({ ...showUpdateModal, body_length: true });
 
                   /**
                    *
                    *  Inner helper function to return feet only or feet with inch
                    * @param {string} extractedValue Value after width/height/depth is extracted
-                   * @return {*} return array of values
+                   * @return {*} return object of feet and inch
                    */
                   const checkInchExist = (extractedValue: string) => {
                     let extractedFeet = '';
                     let extractedInch = '';
+
                     // needa check if inch is undefined, only have feet in the string
                     let onlyInchUndefined =
                       extractedValue.split(" '")[0] !== undefined && extractedValue.split(" '")[1] === undefined;
 
+                    // needa check if inch is undefined, only have feet in the string
                     if (onlyInchUndefined) {
-                      extractedFeet = extractedValue.split(" '")[0]; //get the first index  (feet)
-                      // returns array with length 1 that only contains feet
-                      return [extractedFeet];
+                      extractedFeet = extractedValue.split(" '")[0]; //get the first index
+                    } else {
+                      extractedFeet = extractedValue.split(" '")[0]; //get the first index
+                      extractedInch = extractedValue.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
                     }
-                    // if both exist then return this
-                    extractedFeet = extractedValue.split(" '")[0]; //get the first index
-                    extractedInch = extractedValue.split(" '")[1].toString().trim(); //second index (inch) and remove empty space infront of the inch
-                    // returns array with length 2 that contains both feet and inch
-                    return [extractedFeet, extractedInch];
+
+                    return { feet: extractedFeet, inch: extractedInch };
                   };
 
-                  switch (dimensionSide) {
-                    case 'W':
-                      // substring to get rid of the last 3 characters
-                      return checkInchExist(
-                        extractedWidthWithFeetAndInch.substring(0, extractedWidthWithFeetAndInch.length - 3),
-                      );
+                  let formattedPrice = record.bodyLengthPrice.replace('RM', ''); //remove unit
 
-                    case 'H':
-                      return checkInchExist(
-                        extractedHeightWithFeetAndInch.substring(0, extractedHeightWithFeetAndInch.length - 3),
-                      );
-
-                    case 'D':
-                      return checkInchExist(
-                        extractedDepthWithFeetAndInch.substring(0, extractedDepthWithFeetAndInch.length - 3),
-                      );
-                  }
-                  // else return empty array
-                  return [];
-                };
-
-                let formattedPrice = record.bodyLengthPrice.replace('RM', ''); //remove unit
-                // split the dimensions
-
-                let widthExtractedFeet = '';
-                let widthExtractedInch = '';
-                widthExtractedFeet = extractFeetInch(record.bodyLengthDimension, 'W')[0];
-                widthExtractedInch = extractFeetInch(record.bodyLengthDimension, 'W')[1];
-                let heightExtractedFeet = '';
-                let heightExtractedInch = '';
-                heightExtractedFeet = extractFeetInch(record.bodyLengthDimension, 'H')[0];
-                heightExtractedInch = extractFeetInch(record.bodyLengthDimension, 'H')[1];
-                let depthExtractedFeet = '';
-                let depthExtractedInch = '';
-                depthExtractedFeet = extractFeetInch(record.bodyLengthDimension, 'D')[0];
-                depthExtractedInch = extractFeetInch(record.bodyLengthDimension, 'D')[1];
-
-                // update the form value using the 'name' attribute as target/key
-                updateBodyLengthForm.setFieldsValue({
-                  bodyLengthId: record.bodyLengthId,
-                  bodyLengthBody: record.bodyLengthBodyId, // body id
-                  bodyLengthLength: record.bodyLengthLengthId, // length id
-                  bodyLengthWidth: { feet: widthExtractedFeet, inch: widthExtractedInch },
-                  bodyLengthHeight: { feet: heightExtractedFeet, inch: heightExtractedInch },
-                  bodyLengthDepth: { feet: depthExtractedFeet, inch: depthExtractedInch },
-                  bodyLengthPrice: formattedPrice,
-                });
-              }}
-            >
-              Edit
-            </Button>
-            <Button disabled type="link" danger>
-              Delete
-            </Button>
+                  // update the form value using the 'name' attribute as target/key
+                  updateBodyLengthForm.setFieldsValue({
+                    bodyLengthId: record.bodyLengthId,
+                    bodyLengthBody: record.bodyLengthBodyId, // body id
+                    bodyLengthLength: record.bodyLengthLengthId, // length id
+                    bodyLengthWidth: {
+                      feet: checkInchExist(record.bodyLengthWidth).feet,
+                      inch: checkInchExist(record.bodyLengthWidth).inch,
+                    },
+                    bodyLengthHeight: {
+                      feet: checkInchExist(record.bodyLengthHeight).feet,
+                      inch: checkInchExist(record.bodyLengthHeight).inch,
+                    },
+                    bodyLengthDepth: {
+                      feet: checkInchExist(record.bodyLengthDepth).feet,
+                      inch: checkInchExist(record.bodyLengthDepth).inch,
+                    },
+                    bodyLengthPrice: formattedPrice,
+                  });
+                }}
+              >
+                Edit
+              </Button>
+              <Button disabled type="link" danger>
+                Delete
+              </Button>
+            </div>
+            <div>
+              <Button
+                type="default"
+                onClick={() => {
+                  setShowCreateModal({ ...showCreateModal, body_accessory: true });
+                }}
+              >
+                Create Accessory
+              </Button>
+            </div>
           </>
         );
       },
@@ -536,6 +621,29 @@ const Body: React.FC<Props> = ({
     onUpdateBodyLength(updateBodyLengthData);
   };
 
+  /* --------- BODY ACCESSORY ---------- */
+  const onCreateBodyAccessoryFinish = (values: TCreateBodyAccessoryForm) => {
+    let createBodyAccessoryData = {
+      title: values.bodyAccessoryTitle,
+      description: values.bodyAccessoryDescription,
+      body_length_id: values.bodyAccessoryBodyLength,
+      accesory_id: values.bodyAccessoryAccessory,
+      price: values.bodyAccessoryPrice,
+    };
+    onCreateBodyAccessory(createBodyAccessoryData);
+  };
+  const onUpdateBodyAccessoryFinish = (values: TUpdateBodyAccessoryForm) => {
+    let updateBodyAccessoryData = {
+      body_accessory_id: values.bodyAccessoryId,
+      title: values.bodyAccessoryTitle,
+      description: values.bodyAccessoryDescription,
+      body_length_id: values.bodyAccessoryBodyLength,
+      accesory_id: values.bodyAccessoryAccessory,
+      price: values.bodyAccessoryPrice,
+    };
+    onUpdateBodyAccessory(updateBodyAccessoryData);
+  };
+
   /* ================================================== */
   /*  Components  */
   /* ================================================== */
@@ -595,6 +703,7 @@ const Body: React.FC<Props> = ({
     </Modal>
   );
 
+  /* -------------------------------------- */
   /* Edit Body Form */
   let updateBodyFormComponent = (
     <>
@@ -621,16 +730,16 @@ const Body: React.FC<Props> = ({
   );
 
   /* Edit Body Modal */
-  let editBodyModal = (
+  let updateBodyModal = (
     <Modal
       title="Edit Body"
-      visible={showEditModal.body}
+      visible={showUpdateModal.body}
       onOk={updateBodyForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         // close edit body modal
-        setShowEditModal({
-          ...showEditModal,
+        setShowUpdateModal({
+          ...showUpdateModal,
           body: false,
         });
       }}
@@ -711,6 +820,7 @@ const Body: React.FC<Props> = ({
     </Modal>
   );
 
+  /* ----------------------------------------- */
   /* Edit Length Form */
   let updateLengthFormComponent = (
     <>
@@ -738,16 +848,16 @@ const Body: React.FC<Props> = ({
   );
 
   /* Edit Length Modal */
-  let editLengthModal = (
+  let updateLengthModal = (
     <Modal
       title="Edit Length"
-      visible={showEditModal.length}
+      visible={showUpdateModal.length}
       onOk={updateLengthForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         // close edit body modal
-        setShowEditModal({
-          ...showEditModal,
+        setShowUpdateModal({
+          ...showUpdateModal,
           length: false,
         });
       }}
@@ -892,6 +1002,7 @@ const Body: React.FC<Props> = ({
       </Form.Item>
     </>
   );
+
   /* Create Body Length Form */
   let createBodyLengthFormComponent = (
     <>
@@ -923,6 +1034,7 @@ const Body: React.FC<Props> = ({
     </Modal>
   );
 
+  /* ----------------------------------------- */
   /* Edit/Update Body Length Form */
   let updateBodyLengthFormComponent = (
     <>
@@ -949,22 +1061,191 @@ const Body: React.FC<Props> = ({
   );
 
   /* Edit Body Length Modal */
-  let editBodyLengthModal = (
+  let updateBodyLengthModal = (
     <Modal
       title="Edit Length"
-      visible={showEditModal.body_length}
+      visible={showUpdateModal.body_length}
       onOk={updateBodyLengthForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         // close edit body modal
-        setShowEditModal({
-          ...showEditModal,
+        setShowUpdateModal({
+          ...showUpdateModal,
           body_length: false,
         });
       }}
     >
       {/* the content within the modal */}
       {updateBodyLengthFormComponent}
+    </Modal>
+  );
+
+  /* ---------------------------- */
+  // Body Accessory
+  /* ---------------------------- */
+  /* Create Body Accessory Form Items */
+  let createBodyFormAccessoryItems = (
+    <>
+      <Form.Item
+        className="make__form-item "
+        label="Title"
+        name="bodyAccessoryTitle"
+        rules={[{ required: true, message: 'Input title here!' }]}
+      >
+        <Input placeholder="Type title here" />
+      </Form.Item>
+      <Form.Item
+        className="make__form-item "
+        label="Description"
+        name="bodyAccessoryDescription"
+        rules={[{ required: false, message: 'Input description here!' }]}
+      >
+        <Input placeholder="Type description here" />
+      </Form.Item>
+
+      {/* ------- Select Body Length - value is brand id but display is brand name -------*/}
+      <Form.Item
+        className="make__form-item body__bodyaccessory-form-item"
+        label="Body"
+        name="bodyAccessoryBodyLength"
+        rules={[{ required: true, message: 'Select a Body Length!' }]}
+      >
+        {/* only render if bodyLengthsArray is not null */}
+        <Select placeholder="Select a Body" className="body__bodyaccessory-select">
+          {bodyLengthsArray &&
+            bodyLengthsArray.map((bodyLength) => {
+              return (
+                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={bodyLength.id}>
+                  <div className="body__bodyaccessory-select-div">
+                    <Tag className="body__bodyaccessory-select-tag" color="red">
+                      <div className="body__bodyaccessory-select-title">Width</div>
+                      <div className="body__bodyaccessory-select-values">
+                        <div className="body__bodyaccessory-select-colon">:</div> <div>{bodyLength.width}</div>
+                      </div>
+                    </Tag>
+                    <Tag className="body__bodyaccessory-select-tag" color="cyan">
+                      <div className="body__bodyaccessory-select-title">Height</div>
+                      <div className="body__bodyaccessory-select-values">
+                        <div className="body__bodyaccessory-select-colon">:</div> <div>{bodyLength.height}</div>
+                      </div>
+                    </Tag>
+                    <Tag className="body__bodyaccessory-select-tag" color="blue">
+                      <div className="body__bodyaccessory-select-title">Depth</div>
+                      <div className="body__bodyaccessory-select-values">
+                        <div className="body__bodyaccessory-select-colon">:</div> <div>{bodyLength.depth}</div>
+                      </div>
+                    </Tag>
+                  </div>
+                </Option>
+              );
+            })}
+        </Select>
+      </Form.Item>
+
+      {/* ------- Select Accessory - value is brand id but display is brand name -------*/}
+      <Form.Item
+        className="make__form-item "
+        label="Accessory"
+        name="bodyAccessoryAccessory"
+        rules={[{ required: true, message: 'Select an Accessory!' }]}
+      >
+        {/* only render if accessoriesArray is not null */}
+        <Select
+          showSearch
+          placeholder="Select a Accessory"
+          optionFilterProp="children"
+          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {accessoriesArray &&
+            accessoriesArray.map((accessory) => {
+              return (
+                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={accessory.id}>
+                  {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
+                </Option>
+              );
+            })}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        className="make__form-item body__item"
+        label="Price"
+        name="bodyAccessoryPrice"
+        rules={[{ required: true, message: 'Input price here!' }]}
+      >
+        <Input type="number" min={0} addonBefore="RM" placeholder="Type price here" />
+      </Form.Item>
+    </>
+  );
+
+  /* Create Body Accessory Form */
+  let createBodyAccessoryFormComponent = (
+    <>
+      <Form
+        form={createBodyAccessoryForm}
+        name="createBodyAccessory"
+        onKeyDown={(e) => handleKeyDown(e, createBodyAccessoryForm)}
+        onFinish={onCreateBodyAccessoryFinish}
+      >
+        {createBodyFormAccessoryItems}
+      </Form>
+    </>
+  );
+
+  /* Create Body Accessory Modal */
+  let createBodyAccessoryModal = (
+    <Modal
+      title="Create Accessory"
+      visible={showCreateModal.body_accessory}
+      onOk={createBodyAccessoryForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, body_accessory: false }); //close modal on cancel
+      }}
+    >
+      {/* the content within the modal */}
+      {createBodyAccessoryFormComponent}
+    </Modal>
+  );
+
+  /* -------------------------------------------- */
+  /* Update Body Accessory Form */
+  let updateBodyAccessoryFormComponent = (
+    <>
+      <Form
+        form={updateBodyAccessoryForm}
+        name="updateBodyAccessory"
+        onKeyDown={(e) => handleKeyDown(e, createBodyForm)}
+        onFinish={onUpdateBodyAccessoryFinish}
+      >
+        {createBodyFormAccessoryItems}
+
+        {/* Getting the BODY ACCESSORY ID */}
+        <Form.Item
+          className="make__form-item"
+          label="id"
+          name="bodyAccessoryId"
+          hidden
+          rules={[{ required: true, message: 'Get body accessory id!' }]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </>
+  );
+
+  /* Update Body Accessory Modal */
+  let updateBodyAccessoryModal = (
+    <Modal
+      title="Edit Body Accessory"
+      visible={showUpdateModal.body_accessory}
+      onOk={updateBodyAccessoryForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        setShowCreateModal({ ...showUpdateModal, body_accessory: false }); //close modal on cancel
+      }}
+    >
+      {/* the content within the modal */}
+      {updateBodyAccessoryFormComponent}
     </Modal>
   );
 
@@ -985,8 +1266,19 @@ const Body: React.FC<Props> = ({
   }, [onGetLengths]);
 
   useEffect(() => {
+    if (!accessoriesArray) {
+      // only call if accessoriesArray is null
+      onGetAccessories();
+    }
+  }, [accessoriesArray, onGetAccessories]);
+
+  useEffect(() => {
     onGetBodyLengths();
   }, [onGetBodyLengths]);
+
+  useEffect(() => {
+    onGetBodyAccessories();
+  }, [onGetBodyAccessories]);
 
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for BODY
@@ -1056,10 +1348,8 @@ const Body: React.FC<Props> = ({
     /** A function that stores desired keys and values into a tempArray */
     const storeValue = (bodyLength: TReceivedBodyLengthObj, index: number) => {
       // only render when available value is true
-
-      let concatDimension = `${bodyLength.width}(W) × ${bodyLength.height}(H) × ${bodyLength.depth}(D)`;
       let concatPrice = `RM${bodyLength.price}`;
-      if (bodyLength.available) {
+      if (bodyLength.available && bodyAccessoriesArray) {
         tempArray.push({
           key: uuidv4(),
           index: index + 1,
@@ -1068,8 +1358,11 @@ const Body: React.FC<Props> = ({
           bodyLengthLengthTitle: bodyLength.length.title,
           bodyLengthBodyId: bodyLength.body.id,
           bodyLengthBodyTitle: bodyLength.body.title,
-          bodyLengthDimension: concatDimension,
+          bodyLengthWidth: bodyLength.width,
+          bodyLengthHeight: bodyLength.height,
+          bodyLengthDepth: bodyLength.depth,
           bodyLengthPrice: concatPrice,
+          bodyLengthBodyAccessory: bodyAccessoriesArray, //pass the whole array
           available: bodyLength.available,
         });
       }
@@ -1081,36 +1374,34 @@ const Body: React.FC<Props> = ({
     }
     // update the state with tempArray
     setBodyLengthTableState(tempArray);
-  }, [bodyLengthsArray]);
+  }, [bodyAccessoriesArray, bodyLengthsArray]);
 
   /* -------------------- */
   // success notification
   /* -------------------- */
   useEffect(() => {
     if (successMessage) {
-      // no need to call notification again because Make Page already calls it
-
-      // clear the successMessage object, set to null
-      onClearSalesState();
+      // no need to call notification and onClearSalesState again because Make Page already calls it
       // clear the form inputs using the form reference
       createBodyForm.resetFields();
       createLengthForm.resetFields();
       createBodyLengthForm.resetFields();
+      createBodyAccessoryForm.resetFields();
 
       // close all the modals if successful
-      setShowCreateModal({ ...showCreateModal, body: false, length: false, body_length: false });
-      setShowEditModal({ ...showEditModal, body: false, length: false, body_length: false });
+      setShowCreateModal({ ...showCreateModal, body: false, length: false, body_length: false, body_accessory: false });
+      setShowUpdateModal({ ...showUpdateModal, body: false, length: false, body_length: false, body_accessory: false });
     }
   }, [
     successMessage,
-    showEditModal,
+    showUpdateModal,
     showCreateModal,
     createBodyForm,
     createLengthForm,
     createBodyLengthForm,
-    setShowEditModal,
+    createBodyAccessoryForm,
+    setShowUpdateModal,
     setShowCreateModal,
-    onClearSalesState,
   ]);
 
   /* ================================================== */
@@ -1121,15 +1412,17 @@ const Body: React.FC<Props> = ({
       {/*       Modals       */}
       {/* ================== */}
       {createBodyModal}
-      {editBodyModal}
+      {updateBodyModal}
       {createLengthModal}
-      {editLengthModal}
+      {updateLengthModal}
       {createBodyLengthModal}
-      {editBodyLengthModal}
+      {updateBodyLengthModal}
+      {createBodyAccessoryModal}
+      {updateBodyAccessoryModal}
 
-      <section className="">
+      <section>
         <HeaderTitle>Body (Tail)</HeaderTitle>
-        {bodiesArray ? (
+        {bodiesArray && lengthsArray && bodyLengthsArray ? (
           <>
             {/* ===================================== */}
             {/*              Body Section             */}
@@ -1184,7 +1477,7 @@ const Body: React.FC<Props> = ({
             </section>
 
             {/* ===================================== */}
-            {/*             Body Length Section            */}
+            {/*         Body Length Section           */}
             {/* ===================================== */}
             <section className="make__section">
               <div className="make__header-div ">
@@ -1197,9 +1490,9 @@ const Body: React.FC<Props> = ({
                   Create Price
                 </Button>
               </div>
-              {/* ------------------ */}
-              {/*    Body Length Table     */}
-              {/* ------------------ */}
+              {/* ----------------------- */}
+              {/*    Body Length Table    */}
+              {/* ----------------------- */}
               <Table
                 bordered
                 scroll={{ x: '89rem', y: 400 }}
@@ -1223,15 +1516,19 @@ interface StateProps {
   successMessage?: string | null;
   bodiesArray?: TReceivedBodyObj[] | null;
   lengthsArray?: TReceivedLengthObj[] | null;
+  accessoriesArray?: TReceivedAccessoryObj[] | null;
   bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
+  bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   return {
     loading: state.sales.loading,
-    successMessage: state.sales.successMessage,
     bodiesArray: state.sales.bodiesArray,
     lengthsArray: state.sales.lengthsArray,
+    successMessage: state.sales.successMessage,
+    accessoriesArray: state.sales.accessoriesArray,
     bodyLengthsArray: state.sales.bodyLengthsArray,
+    bodyAccessoriesArray: state.sales.bodyAccessoriesArray,
   };
 };
 interface DispatchProps {
@@ -1247,8 +1544,12 @@ interface DispatchProps {
   onGetBodyLengths: typeof actions.getBodyLengths;
   onCreateBodyLength: typeof actions.createBodyLength;
   onUpdateBodyLength: typeof actions.updateBodyLength;
-  // Miscellaneous
-  onClearSalesState: typeof actions.clearSalesState;
+  // Body Accessory
+  onGetBodyAccessories: typeof actions.getBodyAccessories;
+  onCreateBodyAccessory: typeof actions.createBodyAccessory;
+  onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
+  // Accessory
+  onGetAccessories: typeof actions.getAccessories;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -1264,9 +1565,12 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetBodyLengths: () => dispatch(actions.getBodyLengths()),
     onCreateBodyLength: (createBodyLengthData) => dispatch(actions.createBodyLength(createBodyLengthData)),
     onUpdateBodyLength: (updateBodyLengthData) => dispatch(actions.updateBodyLength(updateBodyLengthData)),
-
-    // Miscellaneous
-    onClearSalesState: () => dispatch(actions.clearSalesState()),
+    // Body Length
+    onGetBodyAccessories: () => dispatch(actions.getBodyAccessories()),
+    onCreateBodyAccessory: (createBodyAccessoryData) => dispatch(actions.createBodyAccessory(createBodyAccessoryData)),
+    onUpdateBodyAccessory: (updateBodyAccessoryData) => dispatch(actions.updateBodyAccessory(updateBodyAccessoryData)),
+    // Accessory
+    onGetAccessories: () => dispatch(actions.getAccessories()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Body);

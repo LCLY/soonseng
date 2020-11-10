@@ -23,6 +23,12 @@ const initialState: SalesInitialState = {
   // body length
   bodyLengthObj: null,
   bodyLengthsArray: null,
+  // body accessory length
+  bodyAccessoryObj: null,
+  bodyAccessoriesArray: null,
+  // accessory
+  accessoryObj: null,
+  accessoriesArray: null,
   // others
   errorMessage: null,
   successMessage: null,
@@ -465,6 +471,142 @@ const updateBodyLengthFailed = (state: SalesInitialState, action: AppActions) =>
 };
 
 /* ============================================================================================ */
+/* Body Accessory (Body Page) (tail) */
+/* ============================================================================================ */
+/* -------------------------- */
+/* Create Body Accessory  */
+/* -------------------------- */
+const createBodyAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createBodyAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyAccessoriesArray: action.bodyAccessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const createBodyAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* -------------------------- */
+/* Get Body Accessories  */
+/* -------------------------- */
+const getBodyAccessoriesStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getBodyAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('bodyAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyAccessoriesArray: action.bodyAccessoriesArray,
+    });
+  }
+};
+const getBodyAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* -------------------------- */
+/* Update Body Accessory  */
+/* -------------------------- */
+const updateBodyAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateBodyAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyAccessoriesArray: action.bodyAccessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const updateBodyAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* ============================================================================================ */
+/* Accessory (Accessory Page) (tail) */
+/* ============================================================================================ */
+/* -------------------------- */
+/* Create Accessory  */
+/* -------------------------- */
+const createAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'accessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      accessoriesArray: action.accessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const createAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* -------------------------- */
+/* Get Accessories  */
+/* -------------------------- */
+const getAccessoriesStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('accessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      accessoriesArray: action.accessoriesArray,
+    });
+  }
+};
+const getAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* -------------------------- */
+/* Update Accessory  */
+/* -------------------------- */
+const updateAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'accessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      accessoriesArray: action.accessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const updateAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* ============================================================================================ */
 /* ============================================================================================ */
 
 const reducer = (state = initialState, action: SalesActionTypes) => {
@@ -631,6 +773,56 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
       return updateBodyLengthSucceed(state, action);
     case actionTypes.UPDATE_BODYLENGTH_FAILED:
       return updateBodyLengthFailed(state, action);
+
+    /* =================================== */
+    //  Body Accessory (Body Page)(tail)
+    /* =================================== */
+    // Get all Accessories (tail)
+    case actionTypes.GET_BODYACCESSORIES_START:
+      return getBodyAccessoriesStart(state, action);
+    case actionTypes.GET_BODYACCESSORIES_SUCCEED:
+      return getBodyAccessoriesSucceed(state, action);
+    case actionTypes.GET_BODYACCESSORIES_FAILED:
+      return getBodyAccessoriesFailed(state, action);
+    // Create body Accessory (tail)
+    case actionTypes.CREATE_BODYACCESSORY_START:
+      return createBodyAccessoryStart(state, action);
+    case actionTypes.CREATE_BODYACCESSORY_SUCCEED:
+      return createBodyAccessorySucceed(state, action);
+    case actionTypes.CREATE_BODYACCESSORY_FAILED:
+      return createBodyAccessoryFailed(state, action);
+    // Update body Accessory (tail)
+    case actionTypes.UPDATE_BODYACCESSORY_START:
+      return updateBodyAccessoryStart(state, action);
+    case actionTypes.UPDATE_BODYACCESSORY_SUCCEED:
+      return updateBodyAccessorySucceed(state, action);
+    case actionTypes.UPDATE_BODYACCESSORY_FAILED:
+      return updateBodyAccessoryFailed(state, action);
+
+    /* =================================== */
+    //  Accessory (Accessory Page)(tail)
+    /* =================================== */
+    // Get all accessories (tail)
+    case actionTypes.GET_ACCESSORIES_START:
+      return getAccessoriesStart(state, action);
+    case actionTypes.GET_ACCESSORIES_SUCCEED:
+      return getAccessoriesSucceed(state, action);
+    case actionTypes.GET_ACCESSORIES_FAILED:
+      return getAccessoriesFailed(state, action);
+    // Create accessory (tail)
+    case actionTypes.CREATE_ACCESSORY_START:
+      return createAccessoryStart(state, action);
+    case actionTypes.CREATE_ACCESSORY_SUCCEED:
+      return createAccessorySucceed(state, action);
+    case actionTypes.CREATE_ACCESSORY_FAILED:
+      return createAccessoryFailed(state, action);
+    // Update accessory (tail)
+    case actionTypes.UPDATE_ACCESSORY_START:
+      return updateAccessoryStart(state, action);
+    case actionTypes.UPDATE_ACCESSORY_SUCCEED:
+      return updateAccessorySucceed(state, action);
+    case actionTypes.UPDATE_ACCESSORY_FAILED:
+      return updateAccessoryFailed(state, action);
 
     default:
       return state;
