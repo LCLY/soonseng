@@ -1,0 +1,6 @@
+.body {
+  &__item {
+    // overwrite the margin bottom for form items in body
+    margin-bottom: 0.5rem !important;
+  }
+}

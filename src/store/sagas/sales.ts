@@ -510,8 +510,7 @@ export function* getBodiesSaga(_action: AppActions) {
 
   try {
     let response = yield axios.get(url);
-    // !!!!!!! change body back to bodies after fix
-    yield put(actions.getBodiesSucceed(response.data.body));
+    yield put(actions.getBodiesSucceed(response.data.bodies));
   } catch (error) {
     if (error.response) {
       /*
@@ -698,6 +697,141 @@ export function* updateLengthSaga(action: AppActions) {
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
       yield put(actions.updateLengthFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ================================================================== */
+/*   Body Length (Body Page) (tail) */
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Create Body Length
+/* ------------------------------- */
+export function* createBodyLengthSaga(action: AppActions) {
+  yield put(actions.createBodyLengthStart());
+
+  let url = process.env.REACT_APP_API + `/tail/body_length`;
+
+  let body_length = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('createBodyLengthData' in action) {
+    body_length = {
+      body_id: action.createBodyLengthData.body_id,
+      length_id: action.createBodyLengthData.length_id,
+      depth: action.createBodyLengthData.depth,
+      width: action.createBodyLengthData.width,
+      height: action.createBodyLengthData.height,
+      price: action.createBodyLengthData.price,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { body_length });
+    yield put(actions.createBodyLengthSucceed(response.data.body_lengths, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.createBodyLengthFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Get Body lengths
+/* ------------------------------- */
+export function* getBodyLengthsSaga(_action: AppActions) {
+  yield put(actions.getBodyLengthsStart());
+
+  let url = process.env.REACT_APP_API + `/tail/body_length`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getBodyLengthsSucceed(response.data.lengths));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.getBodyLengthsFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Update length
+/* ------------------------------- */
+export function* updateBodyLengthSaga(action: AppActions) {
+  yield put(actions.updateBodyLengthStart());
+
+  let url = '';
+  let body_length = {};
+  if ('updateBodyLengthData' in action) {
+    url = process.env.REACT_APP_API + `/tail/body_length/${action.updateBodyLengthData.body_length_id}`;
+
+    body_length = {
+      body_id: action.updateBodyLengthData.body_id,
+      length_id: action.updateBodyLengthData.length_id,
+      depth: action.updateBodyLengthData.depth,
+      width: action.updateBodyLengthData.width,
+      height: action.updateBodyLengthData.height,
+      price: action.updateBodyLengthData.price,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { body_length });
+    yield put(actions.updateBodyLengthSucceed(response.data.body_lengths, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.updateBodyLengthFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

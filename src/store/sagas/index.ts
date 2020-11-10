@@ -26,6 +26,10 @@ import {
   createLengthSaga,
   getLengthsSaga,
   updateLengthSaga,
+  // Body Length
+  createBodyLengthSaga,
+  getBodyLengthsSaga,
+  updateBodyLengthSaga,
 } from './sales';
 
 export function* watchAuth() {
@@ -51,4 +55,8 @@ export function* watchAuth() {
   yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_LENGTH, createLengthSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_LENGTHS, getLengthsSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.UPDATE_LENGTH, updateLengthSaga)]);
+  // Body Length
+  yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_BODYLENGTH, createBodyLengthSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_BODYLENGTHS, getBodyLengthsSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.UPDATE_BODYLENGTH, updateBodyLengthSaga)]);
 }

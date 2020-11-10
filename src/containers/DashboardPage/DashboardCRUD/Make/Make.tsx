@@ -203,7 +203,7 @@ const Make: React.FC<Props> = ({
             >
               Edit
             </Button>
-            <Button type="link" danger>
+            <Button disabled type="link" danger>
               Delete
             </Button>
           </>
@@ -271,7 +271,7 @@ const Make: React.FC<Props> = ({
             >
               Edit
             </Button>
-            <Button type="link" danger>
+            <Button disabled type="link" danger>
               Delete
             </Button>
           </>
@@ -341,14 +341,16 @@ const Make: React.FC<Props> = ({
                 let extractedHorsepower = '';
                 let extractedPrice = '';
                 let extractedGvw = '';
-                // they have to be legit strings after being splitted
-                if (record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] !== undefined) {
+
+                // needa check if inch is undefined, only have feet in the string
+                let onlyInchUndefined =
+                  record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] === undefined;
+
+                if (onlyInchUndefined) {
+                  extractedFeet = record.length.split(" '")[0]; //get the first index
+                } else {
                   extractedFeet = record.length.split(" '")[0]; //get the first index
                   extractedInch = record.length.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
-                } else {
-                  // this can be removed after database is being cleared because it's guaranteed to have ft and inch after
-                  extractedFeet = record.length;
-                  extractedInch = record.length;
                 }
 
                 // replace units with empty strings
@@ -377,7 +379,7 @@ const Make: React.FC<Props> = ({
             >
               Edit
             </Button>
-            <Button type="link" danger>
+            <Button disabled type="link" danger>
               Delete
             </Button>
           </>
@@ -389,6 +391,19 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
+  /**
+   * helper function for checking inch undefined
+   * @param {string} feet
+   * @param {string} inch
+   * @return {*} [feet '] if inch is undefined or [feet ' inch '' ] if inch exist
+   */
+  const formatFeetInch = (feet: string, inch: string) => {
+    if (inch === undefined) {
+      return feet + " ' ";
+    }
+    return feet + " ' " + inch + " '' ";
+  };
+
   /* Forms onFinish methods */
   // the keys "values" are from the form's 'name' attribute
   const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; brandImageTag: string }) => {
@@ -446,7 +461,7 @@ const Make: React.FC<Props> = ({
   // Create Make
   const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
     // combine the ft and inch
-    let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
+    let concatLength = formatFeetInch(values.length.feet, values.length.inch);
     // package the object
     let createMakeData: TCreateMakeData = {
       gvw: values.gvw,
@@ -465,7 +480,7 @@ const Make: React.FC<Props> = ({
 
   // Edit Make
   const onEditMakeFinish = (values: TUpdateMakeFinishValues) => {
-    let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
+    let concatLength = formatFeetInch(values.length.feet, values.length.inch);
     // package the object
     let updateMakeData: TUpdateMakeData = {
       make_id: values.makeId,
@@ -616,6 +631,7 @@ const Make: React.FC<Props> = ({
       confirmLoading={loading}
       onCancel={() => {
         setShowCreateModal({ ...showCreateModal, brand: false }); //close modal on cancel
+        createBrandForm.resetFields();
         setImagesPreviewUrls([]); //clear the image preview urls array when cancel
       }}
     >
@@ -726,7 +742,10 @@ const Make: React.FC<Props> = ({
       visible={showCreateModal.wheelbase}
       onOk={createWheelbaseForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, wheelbase: false })}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, wheelbase: false });
+        createWheelbaseForm.resetFields();
+      }}
     >
       {/* the content within the modal */}
       {createWheelbaseFormComponent}
@@ -878,7 +897,7 @@ const Make: React.FC<Props> = ({
           <Form.Item
             className="make__form-item--make make__form-item--inch"
             name={['length', 'inch']}
-            rules={[{ required: true, message: 'Input inch here!' }]}
+            rules={[{ required: false, message: 'Input inch here!' }]}
             style={{ width: '38%' }}
           >
             {/* inch */}
@@ -955,12 +974,55 @@ const Make: React.FC<Props> = ({
       visible={showCreateModal.make}
       onOk={createMakeForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, make: false })}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, make: false });
+        createMakeForm.resetFields();
+      }}
     >
       {/* the content within the modal */}
       {createMakeFormComponent}
     </Modal>
   );
+
+  /* Making use of the currentMakeId object, loop through the makeArray
+     and check if the value of id matches with the currentMakeId thats being selected */
+
+  let imageUpload = (
+    <>
+      {makesArray &&
+        makesArray.map((make) => {
+          return (
+            <React.Fragment key={uuidv4()}>
+              {/* only render when the id matches */}
+              {make['id'] === showEditModal.currentMakeId && (
+                <div>
+                  {/* {make.images.map((image_url) => {
+                    return (
+                      <div
+                        key={uuidv4()}
+                        style={{
+                          height: '10rem',
+                          width: '10rem',
+                          backgroundSize: 'cover',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'center',
+                          backgroundColor: 'rgb(197, 197, 191)',
+                          backgroundImage: `url(${image_url}), url(${img_placeholder_link})`,
+                        }}
+                      >
+                        test
+                      </div>
+                    );
+                  })} */}
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+    </>
+  );
+
+  console.log('IMAGE UPLOAD, IGNORE THIS CONSOLE LOG', imageUpload);
 
   /* Edit Make Form */
   let editMakeFormComponent = (
@@ -1117,38 +1179,8 @@ const Make: React.FC<Props> = ({
           <Input />
         </Form.Item>
 
-        {/* Making use of the currentMakeId object, loop through the makeArray
-        and check if the value of id matches with the currentMakeId thats being selected */}
-        {makesArray &&
-          makesArray.map((make) => {
-            return (
-              <React.Fragment key={uuidv4()}>
-                {/* only render when the id matches */}
-                {make['id'] === showEditModal.currentMakeId && (
-                  <div>
-                    {make.images.map((image_url) => {
-                      return (
-                        <div
-                          key={uuidv4()}
-                          style={{
-                            height: '10rem',
-                            width: '10rem',
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                            backgroundColor: 'rgb(197, 197, 191)',
-                            backgroundImage: `url(${image_url}), url(${img_placeholder_link})`,
-                          }}
-                        >
-                          test
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </React.Fragment>
-            );
-          })}
+        {/* put this back after image is done */}
+        {/* {imageUpload} */}
       </Form>
     </>
   );
