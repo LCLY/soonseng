@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { Button, Empty, Form, Input, Modal, Select, Table, Tag } from 'antd';
+import { Button, Empty, Form, Card, Input, Modal, Select, Table, Tag } from 'antd';
 /* Util */
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
@@ -56,6 +56,7 @@ type TBodyLengthTableState = {
   bodyLengthDepth: string;
   bodyLengthPrice: string;
   bodyLengthBodyAccessory: TReceivedBodyAccessoryObj[] | null;
+  bodyLengthBodyAccessoryArrayLength: number;
   available?: boolean;
 };
 
@@ -403,38 +404,73 @@ const Body: React.FC<Props> = ({
       dataIndex: 'bodyLengthAccessory',
       ellipsis: true,
       width: 'auto',
-      render: (_text: any, record: TBodyLengthTableState) => {
-        return (
+      render: (_value: any, row: TBodyLengthTableState, index: number) => {
+        let bodyAccessoryComponent = (
           <>
-            {record.bodyLengthBodyAccessory && (
+            {row.bodyLengthBodyAccessory && (
               <>
-                {record.bodyLengthBodyAccessory.length === 0 ? (
+                {row.bodyLengthBodyAccessory.length === 0 ? (
                   <Empty />
                 ) : (
-                  record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
-                    if (bodyAccessory.available) {
-                      return (
-                        <div key={index}>
-                          <div>{bodyAccessory.title}</div>
-                          <div>{bodyAccessory.accesory.title}</div>
-                          <div>{bodyAccessory.body_length.length.title}</div>
-                          <div>{bodyAccessory.body_length.body.title}</div>
-                          <div>
-                            {bodyAccessory.body_length.width}W {bodyAccessory.body_length.height}H
-                            {bodyAccessory.body_length.depth}D
-                          </div>
-                          <div>{bodyAccessory.body_length.price}</div>
-                        </div>
-                      );
-                    }
-                    // if not available render nothing
-                    return <></>;
-                  })
+                  <div className="bodyaccessory__table-outerdiv">
+                    {row.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
+                      if (bodyAccessory.available) {
+                        return (
+                          <Card
+                            className="bodyaccessory__table-card"
+                            title={<span className="bodyaccessory__table-card-title">{bodyAccessory.title}</span>}
+                            key={index}
+                            size="small"
+                            extra={<Button type="link">Edit</Button>}
+                            style={{ width: 'auto' }}
+                            headStyle={{ background: '#FFF2E8' }}
+                          >
+                            <div>Accessory: {bodyAccessory.accesory.title}</div>
+                            <div>Length: {bodyAccessory.body_length.length.title}</div>
+                            <div>Body: {bodyAccessory.body_length.body.title}</div>
+                            <div className="bodyaccessory__tag-outerdiv">
+                              <div className="body__tag-div">
+                                <Tag className="body__tag body__tag--bodyaccessory" color="red">
+                                  <div>{bodyAccessory.body_length.width}W</div>
+                                </Tag>
+                              </div>
+                              <div className="body__tag-div">
+                                <Tag className="body__tag body__tag--bodyaccessory" color="cyan">
+                                  <div>{bodyAccessory.body_length.height}H</div>
+                                </Tag>
+                              </div>
+                              <div className="body__tag-div">
+                                <Tag className="body__tag body__tag--bodyaccessory" color="blue">
+                                  <div> {bodyAccessory.body_length.depth}D</div>
+                                </Tag>
+                              </div>
+                            </div>
+                            <div>Price: {bodyAccessory.body_length.price}</div>
+                          </Card>
+                        );
+                      }
+                      // if not available render nothing
+                      return <></>;
+                    })}
+                  </div>
                 )}
               </>
             )}
           </>
         );
+
+        const obj = {
+          children: bodyAccessoryComponent,
+          props: {
+            rowSpan: 0,
+          },
+        };
+
+        if (index === 0) {
+          obj.props.rowSpan = row.bodyLengthBodyAccessoryArrayLength;
+        }
+
+        return obj;
       },
     },
     {
@@ -1105,34 +1141,34 @@ const Body: React.FC<Props> = ({
 
       {/* ------- Select Body Length - value is brand id but display is brand name -------*/}
       <Form.Item
-        className="make__form-item body__bodyaccessory-form-item"
+        className="make__form-item bodyaccessory__form-item"
         label="Body"
         name="bodyAccessoryBodyLength"
         rules={[{ required: true, message: 'Select a Body Length!' }]}
       >
         {/* only render if bodyLengthsArray is not null */}
-        <Select placeholder="Select a Body" className="body__bodyaccessory-select">
+        <Select placeholder="Select a Body" className="bodyaccessory__select">
           {bodyLengthsArray &&
             bodyLengthsArray.map((bodyLength) => {
               return (
                 <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={bodyLength.id}>
-                  <div className="body__bodyaccessory-select-div">
-                    <Tag className="body__bodyaccessory-select-tag" color="red">
-                      <div className="body__bodyaccessory-select-title">Width</div>
-                      <div className="body__bodyaccessory-select-values">
-                        <div className="body__bodyaccessory-select-colon">:</div> <div>{bodyLength.width}</div>
+                  <div className="bodyaccessory__select-div">
+                    <Tag className="bodyaccessory__select-tag" color="red">
+                      <div className="bodyaccessory__select-title">Width</div>
+                      <div className="bodyaccessory__select-values">
+                        <div className="bodyaccessory__select-colon">:</div> <div>{bodyLength.width}</div>
                       </div>
                     </Tag>
-                    <Tag className="body__bodyaccessory-select-tag" color="cyan">
-                      <div className="body__bodyaccessory-select-title">Height</div>
-                      <div className="body__bodyaccessory-select-values">
-                        <div className="body__bodyaccessory-select-colon">:</div> <div>{bodyLength.height}</div>
+                    <Tag className="bodyaccessory__select-tag" color="cyan">
+                      <div className="bodyaccessory__select-title">Height</div>
+                      <div className="bodyaccessory__select-values">
+                        <div className="bodyaccessory__select-colon">:</div> <div>{bodyLength.height}</div>
                       </div>
                     </Tag>
-                    <Tag className="body__bodyaccessory-select-tag" color="blue">
-                      <div className="body__bodyaccessory-select-title">Depth</div>
-                      <div className="body__bodyaccessory-select-values">
-                        <div className="body__bodyaccessory-select-colon">:</div> <div>{bodyLength.depth}</div>
+                    <Tag className="bodyaccessory__select-tag" color="blue">
+                      <div className="bodyaccessory__select-title">Depth</div>
+                      <div className="bodyaccessory__select-values">
+                        <div className="bodyaccessory__select-colon">:</div> <div>{bodyLength.depth}</div>
                       </div>
                     </Tag>
                   </div>
@@ -1150,21 +1186,17 @@ const Body: React.FC<Props> = ({
         rules={[{ required: true, message: 'Select an Accessory!' }]}
       >
         {/* only render if accessoriesArray is not null */}
-        <Select
-          showSearch
-          placeholder="Select a Accessory"
-          optionFilterProp="children"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {accessoriesArray &&
-            accessoriesArray.map((accessory) => {
+        {accessoriesArray && (
+          <Select placeholder="Select a Accessory">
+            {accessoriesArray.map((accessory) => {
               return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={accessory.id}>
+                <Option key={uuidv4()} value={accessory.id}>
                   {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
                 </Option>
               );
             })}
-        </Select>
+          </Select>
+        )}
       </Form.Item>
       <Form.Item
         className="make__form-item body__item"
@@ -1349,7 +1381,7 @@ const Body: React.FC<Props> = ({
     const storeValue = (bodyLength: TReceivedBodyLengthObj, index: number) => {
       // only render when available value is true
       let concatPrice = `RM${bodyLength.price}`;
-      if (bodyLength.available && bodyAccessoriesArray) {
+      if (bodyLength.available && bodyAccessoriesArray && bodyLengthsArray) {
         tempArray.push({
           key: uuidv4(),
           index: index + 1,
@@ -1363,6 +1395,7 @@ const Body: React.FC<Props> = ({
           bodyLengthDepth: bodyLength.depth,
           bodyLengthPrice: concatPrice,
           bodyLengthBodyAccessory: bodyAccessoriesArray, //pass the whole array
+          bodyLengthBodyAccessoryArrayLength: bodyLengthsArray.length, //pass in the array length for rowSpan
           available: bodyLength.available,
         });
       }
@@ -1495,7 +1528,7 @@ const Body: React.FC<Props> = ({
               {/* ----------------------- */}
               <Table
                 bordered
-                scroll={{ x: '89rem', y: 400 }}
+                scroll={{ x: '89rem', y: 600 }}
                 dataSource={bodyLengthTableState}
                 columns={convertHeader(bodyLengthColumns, setBodyLengthColumns)}
                 pagination={false}
