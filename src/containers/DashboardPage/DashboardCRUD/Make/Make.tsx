@@ -24,10 +24,12 @@ import { TMapStateToProps } from 'src/store/types';
 import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/shared/Utils';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 interface MakeProps {}
 
-type TBrandState = {
+// State for the table column definition
+type TBrandTableState = {
   key?: string;
   index?: number;
   brandId: number;
@@ -35,7 +37,8 @@ type TBrandState = {
   brandDescription: string;
   available?: boolean;
 };
-type TWheelbaseState = {
+// State for the table column definition
+type TWheelbaseTableState = {
   key?: string;
   index?: number;
   wheelbaseId: number;
@@ -43,7 +46,8 @@ type TWheelbaseState = {
   wheelbaseDescription: string;
   available?: boolean;
 };
-type TMakeState = {
+// State for the table column definition
+type TMakeTableState = {
   key: string;
   index: number;
   makeId: number;
@@ -66,7 +70,7 @@ type TMakeState = {
 
 type TShowModal = {
   make: boolean;
-  currentMakeId?: number; //id to track which specific object is currently being edited
+  currentMakeId?: number; //(for upload image) id to track which specific object is currently being edited
   brand: boolean;
   currentBrandId?: number;
   wheelbase: boolean;
@@ -100,7 +104,7 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-
+  // ref for forms
   const [createBrandForm] = Form.useForm();
   const [editBrandForm] = Form.useForm();
   const [createWheelbaseForm] = Form.useForm();
@@ -108,9 +112,18 @@ const Make: React.FC<Props> = ({
   const [createMakeForm] = Form.useForm();
   const [editMakeForm] = Form.useForm();
   // Table states
-  const [makeState, setMakeState] = useState<TMakeState[]>([]);
-  const [brandsState, setBrandState] = useState<TBrandState[]>([]);
-  const [wheelbaseState, setWheelbaseState] = useState<TWheelbaseState[]>([]);
+  const [makeTableState, seTMakeTableState] = useState<TMakeTableState[]>([]);
+  const [brandTableState, seTBrandTableState] = useState<TBrandTableState[]>([]);
+  const [wheelbaseTableState, seTWheelbaseTableState] = useState<TWheelbaseTableState[]>([]);
+
+  let brandSearchInput = null; //this is for filter on antd table
+  let wheelbaseSearchInput = null;
+  let makeSearchInput = null;
+
+  const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
+
+  setFilterReference(filterData, setFilterData);
+
   // Modal states
   const [showEditModal, setShowEditModal] = useState<TShowModal>({
     brand: false,
@@ -123,15 +136,11 @@ const Make: React.FC<Props> = ({
     make: false,
   });
 
-  let brandSearchInput = null;
-  let wheelbaseSearchInput = null;
-  let makeSearchInput = null;
+  // Upload states
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
 
-  const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
-
-  setFilterReference(filterData, setFilterData);
-
-  // store header definition in state
+  // store table header definition in state
   /**
    * containing objects of arrays
    * brand[], wheelbases[], make[]
@@ -140,21 +149,23 @@ const Make: React.FC<Props> = ({
   /* Brand column initialization */
   const [brandColumns, setBrandColumns] = useState([
     {
-      key: 'index',
+      key: 'brandIndex',
       title: 'No.',
       dataIndex: 'index',
       ellipsis: true,
       width: '7rem',
       align: 'center',
-      sorter: (a: TBrandState, b: TBrandState) => a.index !== undefined && b.index !== undefined && a.index - b.index,
+      sorter: (a: TBrandTableState, b: TBrandTableState) =>
+        a.index !== undefined && b.index !== undefined && a.index - b.index,
     },
     {
       key: 'brandTitle',
       title: 'Title',
       dataIndex: 'brandTitle',
+      className: 'body__table-header--title',
       width: '15rem',
       ellipsis: true,
-      sorter: (a: TBrandState, b: TBrandState) => a.brandTitle.localeCompare(b.brandTitle),
+      sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandTitle.localeCompare(b.brandTitle),
       ...getColumnSearchProps(brandSearchInput, 'brandTitle', 'Title'),
     },
     {
@@ -163,17 +174,17 @@ const Make: React.FC<Props> = ({
       dataIndex: 'brandDescription',
       ellipsis: true,
       width: 'auto',
-      sorter: (a: TBrandState, b: TBrandState) => a.brandDescription.localeCompare(b.brandDescription),
+      sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandDescription.localeCompare(b.brandDescription),
 
       ...getColumnSearchProps(brandSearchInput, 'brandDescription', 'Description'),
     },
     {
-      key: 'action',
+      key: 'brandAction',
       title: 'Action',
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TBrandState) => {
+      render: (_text: any, record: TBrandTableState) => {
         return (
           <>
             <Button
@@ -194,7 +205,7 @@ const Make: React.FC<Props> = ({
             >
               Edit
             </Button>
-            <Button type="link" danger>
+            <Button disabled type="link" danger>
               Delete
             </Button>
           </>
@@ -206,13 +217,13 @@ const Make: React.FC<Props> = ({
   /* Wheelbase column initialization */
   const [wheelbaseColumn, setWheelbaseColumn] = useState([
     {
-      key: 'index',
+      key: 'wheelbaseIndex',
       title: 'No.',
       dataIndex: 'index',
       ellipsis: true,
       width: '7rem',
       align: 'center',
-      sorter: (a: TWheelbaseState, b: TWheelbaseState) =>
+      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) =>
         a.index !== undefined && b.index !== undefined && a.index - b.index,
     },
     {
@@ -221,7 +232,7 @@ const Make: React.FC<Props> = ({
       dataIndex: 'wheelbaseTitle',
       width: '15rem',
       ellipsis: true,
-      sorter: (a: TWheelbaseState, b: TWheelbaseState) => a.wheelbaseTitle.localeCompare(b.wheelbaseTitle),
+      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) => a.wheelbaseTitle.localeCompare(b.wheelbaseTitle),
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseTitle', 'Title'),
     },
     {
@@ -230,16 +241,17 @@ const Make: React.FC<Props> = ({
       dataIndex: 'wheelbaseDescription',
       ellipsis: true,
       width: 'auto',
-      sorter: (a: TWheelbaseState, b: TWheelbaseState) => a.wheelbaseDescription.localeCompare(b.wheelbaseDescription),
+      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) =>
+        a.wheelbaseDescription.localeCompare(b.wheelbaseDescription),
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseDescription', 'Description'),
     },
     {
-      key: 'action',
+      key: 'wheelbaseAction',
       title: 'Action',
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TWheelbaseState) => {
+      render: (_text: any, record: TWheelbaseTableState) => {
         return (
           <>
             <Button
@@ -261,7 +273,7 @@ const Make: React.FC<Props> = ({
             >
               Edit
             </Button>
-            <Button type="link" danger>
+            <Button disabled type="link" danger>
               Delete
             </Button>
           </>
@@ -273,22 +285,23 @@ const Make: React.FC<Props> = ({
   /* Make column initialization */
   const [makeColumn, setMakeColumn] = useState([
     {
-      key: 'index',
+      key: 'makeIndex',
       title: 'No.',
       dataIndex: 'index',
       ellipsis: true,
       width: '7rem',
       align: 'center',
-      sorter: (a: TMakeState, b: TMakeState) => a.index - b.index,
+      sorter: (a: TMakeTableState, b: TMakeTableState) => a.index - b.index,
     },
     {
       key: 'makeBrandTitle',
       title: 'Brand',
       dataIndex: 'makeBrandTitle',
+      className: 'body__table-header--title',
       ellipsis: true,
       width: '15rem',
       align: 'center',
-      sorter: (a: TMakeState, b: TMakeState) =>
+      sorter: (a: TMakeTableState, b: TMakeTableState) =>
         typeof a.makeBrandTitle === 'string' &&
         typeof b.makeBrandTitle === 'string' &&
         a.makeBrandTitle.localeCompare(b.makeBrandTitle),
@@ -298,9 +311,11 @@ const Make: React.FC<Props> = ({
       key: 'makeTitle',
       title: 'Title',
       dataIndex: 'makeTitle',
+      className: 'body__table-header--title',
       width: '15rem',
+      align: 'center',
       ellipsis: true,
-      sorter: (a: TMakeState, b: TMakeState) => a.makeTitle.localeCompare(b.makeTitle),
+      sorter: (a: TMakeTableState, b: TMakeTableState) => a.makeTitle.localeCompare(b.makeTitle),
       ...getColumnSearchProps(makeSearchInput, 'makeTitle', 'Title'),
     },
     {
@@ -312,12 +327,12 @@ const Make: React.FC<Props> = ({
       ...getColumnSearchProps(makeSearchInput, 'makeDetails', 'Details'),
     },
     {
-      key: 'action',
+      key: 'makeAction',
       title: 'Action',
       dataIndex: 'action',
       fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TMakeState) => {
+      render: (_text: any, record: TMakeTableState) => {
         return (
           <>
             <Button
@@ -331,14 +346,16 @@ const Make: React.FC<Props> = ({
                 let extractedHorsepower = '';
                 let extractedPrice = '';
                 let extractedGvw = '';
-                // they have to be legit strings after being splitted
-                if (record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] !== undefined) {
+
+                // needa check if inch is undefined, only have feet in the string
+                let onlyInchUndefined =
+                  record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] === undefined;
+
+                if (onlyInchUndefined) {
+                  extractedFeet = record.length.split(" '")[0]; //get the first index
+                } else {
                   extractedFeet = record.length.split(" '")[0]; //get the first index
                   extractedInch = record.length.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
-                } else {
-                  // this can be removed after database is being cleared because it's guaranteed to have ft and inch after
-                  extractedFeet = record.length;
-                  extractedInch = record.length;
                 }
 
                 // replace units with empty strings
@@ -367,7 +384,7 @@ const Make: React.FC<Props> = ({
             >
               Edit
             </Button>
-            <Button type="link" danger>
+            <Button disabled type="link" danger>
               Delete
             </Button>
           </>
@@ -379,10 +396,30 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
+  /**
+   * helper function for checking inch undefined
+   * @param {string} feet
+   * @param {string} inch
+   * @return {*} [feet '] if inch is undefined or [feet ' inch '' ] if inch exist
+   */
+  const formatFeetInch = (feet: string, inch: string) => {
+    if (inch === undefined) {
+      return feet + " ' ";
+    }
+    return feet + " ' " + inch + " '' ";
+  };
+
   /* Forms onFinish methods */
   // the keys "values" are from the form's 'name' attribute
-  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string }) => {
-    onCreateBrand(values.brandTitle, values.brandDescription);
+  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; brandImageTag: string }) => {
+    if (uploadSelectedFiles) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBrand(values.brandTitle, values.brandDescription, values.brandImageTag, uploadSelectedFiles);
+    } else {
+      // if not then just get the title and description
+      onCreateBrand(values.brandTitle, values.brandDescription);
+    }
   };
   const onEditBrandFinish = (values: { brandId: number; brandTitle: string; brandDescription: string }) => {
     onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription);
@@ -425,9 +462,11 @@ const Make: React.FC<Props> = ({
     makeWheelbaseId: string;
     length: { feet: string; inch: string };
   };
+
+  // Create Make
   const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
     // combine the ft and inch
-    let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
+    let concatLength = formatFeetInch(values.length.feet, values.length.inch);
     // package the object
     let createMakeData: TCreateMakeData = {
       gvw: values.gvw,
@@ -441,10 +480,12 @@ const Make: React.FC<Props> = ({
       wheelbase_id: values.wheelbase_id.toString(),
       year: moment(values.year).year().toString(), //convert to year
     };
-    onCreateMake(createMakeData);
+    onCreateMake(createMakeData); //call create make api
   };
+
+  // Edit Make
   const onEditMakeFinish = (values: TUpdateMakeFinishValues) => {
-    let concatLength = values.length.feet + " ' " + values.length.inch + " '' ";
+    let concatLength = formatFeetInch(values.length.feet, values.length.inch);
     // package the object
     let updateMakeData: TUpdateMakeData = {
       make_id: values.makeId,
@@ -467,21 +508,39 @@ const Make: React.FC<Props> = ({
    * @param {React.KeyboardEvent<HTMLFormElement>} e
    * @param {FormInstance<any>} form form instance created at initialization using useForm
    */
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, form: FormInstance<any>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, formRef: FormInstance<any>) => {
     if (e.key === 'Enter') {
-      form.submit();
+      formRef.submit();
     }
   };
+
+  /**
+   * Trigger this function when user clicks on the upload button
+   * @param {React.ChangeEvent<HTMLInputElement>} e
+   */
+  const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadSelectedFiles(event.target.files);
+
+    //check if files exist
+    if (event.target.files) {
+      // if files exist, store them in an array and into the state of imagePreviewUrls
+      // convert the FileList object to array first and then iterate it
+      let filesTempArray: string[] = [];
+      // convert the files into string of localhost url
+      Array.from(event.target.files).forEach((file) => filesTempArray.push(URL.createObjectURL(file)));
+      setImagesPreviewUrls(filesTempArray);
+    }
+  };
+
   /* ================================================== */
   /*  Components  */
   /* ================================================== */
 
-  /* ================================================ */
+  /* ------------------------ */
   // Brand
-  /* ================================================ */
-  /* ------------------- */
-  // Create Brand Form
-  /* ------------------- */
+  /* ------------------------ */
+
+  /* Create Brand Form */
   let createBrandFormComponent = (
     <>
       <Form
@@ -505,32 +564,88 @@ const Make: React.FC<Props> = ({
           name="brandDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
 
-        <Button type="primary">Upload Image(s)</Button>
+        <div className="profile__picture-button-div">
+          <input
+            type="file"
+            id="imageFiles"
+            hidden
+            multiple
+            accept="image/png, image/jpeg, image/jpg" //only accept image files
+            onChange={fileSelectedHandler}
+          />
+          {/* <label htmlFor="imageFiles" className="ant-btn ant-btn-default profile__picture-button">
+            Select image(s) from device
+          </label> */}
+        </div>
+
+        {/* Only shows when images are selected */}
+        {imagesPreviewUrls.length !== 0 && (
+          <div className="make__preview-outerdiv">
+            <div className="make__preview-title-div">
+              <div className="make__preview-title">Image(s) Preview</div>
+              {/* ------- Select Image Tag -------*/}
+              <Form.Item
+                label="Tag"
+                name="brandImageTag"
+                rules={[{ required: true, message: 'Select a Tag!' }]}
+                style={{ marginBottom: '0' }}
+              >
+                {/* only render if brandsArray is not null */}
+                <Select placeholder="Select a tag">
+                  <Option style={{ textTransform: 'capitalize' }} value="Plan">
+                    Plan
+                  </Option>
+                  <Option style={{ textTransform: 'capitalize' }} value="Catalog">
+                    Catalog
+                  </Option>
+                </Select>
+              </Form.Item>
+            </div>
+            <div className="make__preview">
+              {imagesPreviewUrls.map((imagePreviewUrl) => {
+                return (
+                  <div
+                    className="make__preview-item"
+                    key={uuidv4()}
+                    style={{
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      backgroundColor: 'rgb(197, 197, 191)',
+                      backgroundImage: `url(${imagePreviewUrl}), url(${img_placeholder_link})`,
+                    }}
+                  ></div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </Form>
     </>
   );
-  /* ---------------------- */
-  // Create Brand Modal
-  /* ---------------------- */
+
+  /* Create Brand Modal */
   let createBrandModal = (
     <Modal
       title="Create Brand"
       visible={showCreateModal.brand}
       onOk={createBrandForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, brand: false })}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, brand: false }); //close modal on cancel
+        createBrandForm.resetFields();
+        setImagesPreviewUrls([]); //clear the image preview urls array when cancel
+      }}
     >
       {/* the content within the modal */}
       {createBrandFormComponent}
     </Modal>
   );
 
-  /* ------------------- */
-  // Edit Brand Form
-  /* ------------------- */
+  /* Edit Brand Form */
   let editBrandFormComponent = (
     <>
       <Form
@@ -554,7 +669,7 @@ const Make: React.FC<Props> = ({
           name="brandDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
 
         {/* Getting the brand id */}
@@ -571,9 +686,7 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Edit Brand Modal
-  /* ---------------------- */
+  /* Edit Brand Modal */
   let editBrandModal = (
     <Modal
       title="Edit Brand"
@@ -593,12 +706,11 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ================================================ */
+  /* ----------------------------------------------- */
   // Wheelbase
-  /* ================================================ */
-  /* ----------------------- */
-  // Create Wheelbase Form
-  /* ----------------------- */
+  /* ----------------------------------------------- */
+
+  /* Create Wheelbase Form */
   let createWheelbaseFormComponent = (
     <>
       <Form
@@ -622,31 +734,30 @@ const Make: React.FC<Props> = ({
           name="wheelbaseDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
       </Form>
     </>
   );
 
-  /* ---------------------- */
-  // Create Wheelbase Modal
-  /* ---------------------- */
+  /* Create Wheelbase Modal */
   let createWheelbaseModal = (
     <Modal
       title="Create Wheelbase"
       visible={showCreateModal.wheelbase}
       onOk={createWheelbaseForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, wheelbase: false })}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, wheelbase: false });
+        createWheelbaseForm.resetFields();
+      }}
     >
       {/* the content within the modal */}
       {createWheelbaseFormComponent}
     </Modal>
   );
 
-  /* ----------------------- */
-  // Edit Wheelbase Form
-  /* ----------------------- */
+  /* Edit Wheelbase Form */
   let editWheelbaseFormComponent = (
     <>
       <Form
@@ -670,7 +781,7 @@ const Make: React.FC<Props> = ({
           name="wheelbaseDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
 
         {/* Getting the wheelbase id */}
@@ -687,9 +798,7 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Edit Wheelbase Modal
-  /* ---------------------- */
+  /* Edit Wheelbase Modal */
   let editWheelbaseModal = (
     <Modal
       title="Edit Wheelbase"
@@ -703,12 +812,11 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ================================================ */
+  /* -------------------------------------------- */
   // Make
-  /* ================================================ */
-  /* ------------------- */
-  // Create Make Form
-  /* ------------------- */
+  /* -------------------------------------------- */
+
+  /*  Create Make Form */
   let createMakeFormComponent = (
     <>
       <Form
@@ -794,7 +902,7 @@ const Make: React.FC<Props> = ({
           <Form.Item
             className="make__form-item--make make__form-item--inch"
             name={['length', 'inch']}
-            rules={[{ required: true, message: 'Input inch here!' }]}
+            rules={[{ required: false, message: 'Input inch here!' }]}
             style={{ width: '38%' }}
           >
             {/* inch */}
@@ -864,25 +972,64 @@ const Make: React.FC<Props> = ({
     </>
   );
 
-  /* ---------------------- */
-  // Create Make Modal
-  /* ---------------------- */
+  /* Create Make Modal */
   let createMakeModal = (
     <Modal
       title="Create Make"
       visible={showCreateModal.make}
       onOk={createMakeForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowCreateModal({ ...showCreateModal, make: false })}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, make: false });
+        createMakeForm.resetFields();
+      }}
     >
       {/* the content within the modal */}
       {createMakeFormComponent}
     </Modal>
   );
 
-  /* ---------------------- */
-  // Edit Make Form
-  /* ---------------------- */
+  /* Making use of the currentMakeId object, loop through the makeArray
+     and check if the value of id matches with the currentMakeId thats being selected */
+
+  let imageUpload = (
+    <>
+      {makesArray &&
+        makesArray.map((make) => {
+          return (
+            <React.Fragment key={uuidv4()}>
+              {/* only render when the id matches */}
+              {make['id'] === showEditModal.currentMakeId && (
+                <div>
+                  {/* {make.images.map((image_url) => {
+                    return (
+                      <div
+                        key={uuidv4()}
+                        style={{
+                          height: '10rem',
+                          width: '10rem',
+                          backgroundSize: 'cover',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundPosition: 'center',
+                          backgroundColor: 'rgb(197, 197, 191)',
+                          backgroundImage: `url(${image_url}), url(${img_placeholder_link})`,
+                        }}
+                      >
+                        test
+                      </div>
+                    );
+                  })} */}
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+    </>
+  );
+
+  console.log('IMAGE UPLOAD, IGNORE THIS CONSOLE LOG', imageUpload);
+
+  /* Edit Make Form */
   let editMakeFormComponent = (
     <>
       <Form
@@ -1037,45 +1184,13 @@ const Make: React.FC<Props> = ({
           <Input />
         </Form.Item>
 
-        {/* Making use of the currentMakeId object, loop through the makeArray
-        and check if the value of id matches with the currentMakeId thats being selected */}
-        {makesArray &&
-          makesArray.map((make) => {
-            return (
-              <>
-                {/* only render when the id matches */}
-                {make['id'] === showEditModal.currentMakeId && (
-                  <div key={uuidv4()}>
-                    {make.images.map((image_url) => {
-                      return (
-                        <div
-                          key={uuidv4()}
-                          style={{
-                            height: '10rem',
-                            width: '10rem',
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                            backgroundColor: 'rgb(197, 197, 191)',
-                            backgroundImage: `url(${image_url}), url(${img_placeholder_link})`,
-                          }}
-                        >
-                          test
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </>
-            );
-          })}
+        {/* put this back after image is done */}
+        {/* {imageUpload} */}
       </Form>
     </>
   );
 
-  /* ---------------------- */
-  // Edit Make Modal
-  /* ---------------------- */
+  /* Edit Make Modal */
   let editMakeModal = (
     <Modal
       centered
@@ -1106,11 +1221,11 @@ const Make: React.FC<Props> = ({
     onGetMakes();
   }, [onGetMakes]);
 
-  /* -------------------------------------------- */
+  /* ----------------------------------------------------- */
   // initialize/populate the state of data array for BRAND
-  /* -------------------------------------------- */
+  /* ----------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TBrandState[] = [];
+    let tempArray: TBrandTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
     const storeValue = (brand: TReceivedBrandObj, index: number) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
@@ -1132,14 +1247,14 @@ const Make: React.FC<Props> = ({
       brandsArray.map(storeValue);
     }
     // update the state with tempArray
-    setBrandState(tempArray);
+    seTBrandTableState(tempArray);
   }, [brandsArray]);
 
   /* -------------------------------------------------- */
   // initialize/populate the state of data array for WHEELBASES
   /* -------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TWheelbaseState[] = [];
+    let tempArray: TWheelbaseTableState[] = [];
     // A function that stores desired keys and values into a tempArray
     const storeValue = (wheelbase: TReceivedWheelbaseObj, index: number) => {
       let descriptionIsNullOrEmpty = wheelbase.description === null || wheelbase.description === '';
@@ -1162,14 +1277,14 @@ const Make: React.FC<Props> = ({
       wheelbasesArray.map(storeValue);
     }
     // update the state with tempArray
-    setWheelbaseState(tempArray);
+    seTWheelbaseTableState(tempArray);
   }, [wheelbasesArray]);
 
   /* -------------------------------------------------- */
   // initialize/populate the state of data array for MAKES
   /* -------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TMakeState[] = [];
+    let tempArray: TMakeTableState[] = [];
     // A function that stores desired keys and values into a tempArray
     const storeValue = (make: TReceivedMakeObj, index: number) => {
       let detailsCombinedString = ''; //use this combined string so that filter can work
@@ -1232,7 +1347,7 @@ const Make: React.FC<Props> = ({
       makesArray.map(storeValue);
     }
     // update the state with tempArray
-    setMakeState(tempArray);
+    seTMakeTableState(tempArray);
   }, [makesArray]);
 
   /* -------------------- */
@@ -1316,9 +1431,10 @@ const Make: React.FC<Props> = ({
               {/* ------------------ */}
               <Table
                 bordered
+                className="make__table"
                 scroll={{ x: '89rem', y: 400 }}
                 // components={components}
-                dataSource={brandsState}
+                dataSource={brandTableState}
                 columns={convertHeader(brandColumns, setBrandColumns)}
                 pagination={false}
               />
@@ -1345,9 +1461,10 @@ const Make: React.FC<Props> = ({
               {/* -------------------- */}
               <Table
                 bordered
+                className="make__table"
                 scroll={{ x: '89rem', y: 300 }}
                 // components={components}
-                dataSource={wheelbaseState}
+                dataSource={wheelbaseTableState}
                 columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
                 pagination={false}
               />
@@ -1374,9 +1491,10 @@ const Make: React.FC<Props> = ({
               {/* -------------------- */}
               <Table
                 bordered
+                className="make__table"
                 scroll={{ x: '89rem', y: 600 }}
                 // components={components}
-                dataSource={makeState}
+                dataSource={makeTableState}
                 columns={convertHeader(makeColumn, setMakeColumn)}
                 pagination={false}
               />
@@ -1429,7 +1547,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     // Brand
     onGetBrands: () => dispatch(actions.getBrands()),
-    onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
+    onCreateBrand: (title, description, tag?, imageFiles?) =>
+      dispatch(actions.createBrand(title, description, tag, imageFiles)),
     onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
     // Wheelbase
     onGetWheelbases: () => dispatch(actions.getWheelbases()),

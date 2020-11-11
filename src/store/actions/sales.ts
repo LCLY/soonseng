@@ -6,6 +6,15 @@ import {
   TReceivedMakeObj,
   TReceivedWheelbaseObj,
   TUpdateMakeData,
+  TReceivedBodyObj,
+  TReceivedBodyLengthObj,
+  TCreateBodyLengthData,
+  TUpdateBodyLengthData,
+  TReceivedLengthObj,
+  TReceivedAccessoryObj,
+  TCreateBodyAccessoryData,
+  TReceivedBodyAccessoryObj,
+  TUpdateBodyAccessoryData,
 } from 'src/store/types/sales';
 
 /* ============================================================================================ */
@@ -23,7 +32,43 @@ const clearSalesState = () => {
 };
 
 /* ============================================================================================ */
-// Brand (head)
+// Upload Image(s)
+/* ============================================================================================ */
+export const uploadImage = (brandId: number, model: string, tag: string, imageFile: FileList): AppActions => {
+  return {
+    type: actionTypes.UPLOAD_IMAGE,
+    brandId: brandId,
+    model: model,
+    tag: tag,
+    imageFile: imageFile,
+  };
+};
+
+export const uploadImageStart = (): AppActions => {
+  return {
+    type: actionTypes.UPLOAD_IMAGE_START,
+  };
+};
+
+export const uploadImageSucceed = (successMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPLOAD_IMAGE_SUCCEED,
+    successMessage: successMessage,
+  };
+};
+export const uploadImageFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPLOAD_IMAGE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ******************************************************************************************** */
+/* ******************************************************************************************** */
+/* ******************************************************************************************** */
+
+/* ============================================================================================ */
+// Brand (Make Page) (head)
 /* ============================================================================================ */
 
 /* ----------------------------- */
@@ -57,11 +102,13 @@ export const getBrandsFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Create Brand (head)
 /* ------------------------------ */
-export const createBrand = (title: string, description: string): AppActions => {
+export const createBrand = (title: string, description: string, tag?: string, imageFiles?: FileList): AppActions => {
   return {
     type: actionTypes.CREATE_BRAND,
     title: title,
     description: description,
+    tag: tag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -117,7 +164,7 @@ export const updateBrandFailed = (errorMessage: string): AppActions => {
   };
 };
 /* ============================================================================================ */
-/* Wheelbase (head) */
+/* Wheelbase (Make Page) (head) */
 /* ============================================================================================ */
 
 /* ------------------------ */
@@ -218,7 +265,7 @@ export const updateWheelbaseFailed = (errorMessage: string): AppActions => {
 };
 
 /* ============================================================================================ */
-// Make (head)
+// Make (Make Page) (head)
 /* ============================================================================================ */
 
 /* ------------------ */
@@ -305,6 +352,497 @@ export const updateMakeSucceed = (makesArray: TReceivedMakeObj[], successMessage
 export const updateMakeFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ******************************************************************************************** */
+/* ******************************************************************************************** */
+/* ******************************************************************************************** */
+
+/* ============================================================================================ */
+// Body (Body Page)(tail)
+/* ============================================================================================ */
+
+/* ------------------ */
+// Create Body (tail)
+/* ------------------ */
+export const createBody = (title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODY,
+    title: title,
+    description: description,
+  };
+};
+
+export const createBodyStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODY_START,
+  };
+};
+
+export const createBodySucceed = (bodiesArray: TReceivedBodyObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODY_SUCCEED,
+    bodiesArray: bodiesArray,
+    successMessage: successMessage,
+  };
+};
+export const createBodyFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Get Bodies (tail)
+/* ------------------ */
+export const getBodies = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODIES,
+  };
+};
+
+export const getBodiesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODIES_START,
+  };
+};
+
+export const getBodiesSucceed = (bodiesArray: TReceivedBodyObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_BODIES_SUCCEED,
+    bodiesArray: bodiesArray,
+  };
+};
+export const getBodiesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_BODIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Update Body (tail)
+/* ------------------ */
+export const updateBody = (body_id: number, title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODY,
+    body_id: body_id,
+    title: title,
+    description: description,
+  };
+};
+
+export const updateBodyStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODY_START,
+  };
+};
+
+export const updateBodySucceed = (bodiesArray: TReceivedBodyObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODY_SUCCEED,
+    bodiesArray: bodiesArray,
+    successMessage: successMessage,
+  };
+};
+export const updateBodyFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+// Length (Body Page) (tail)
+/* ============================================================================================ */
+
+/* ------------------ */
+// Create Length (tail)
+/* ------------------ */
+export const createLength = (title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_LENGTH,
+    title: title,
+    description: description,
+  };
+};
+
+export const createLengthStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_LENGTH_START,
+  };
+};
+
+export const createLengthSucceed = (lengthsArray: TReceivedLengthObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_LENGTH_SUCCEED,
+    lengthsArray: lengthsArray,
+    successMessage: successMessage,
+  };
+};
+export const createLengthFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_LENGTH_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Get Lengths (tail)
+/* ------------------ */
+export const getLengths = (): AppActions => {
+  return {
+    type: actionTypes.GET_LENGTHS,
+  };
+};
+
+export const getLengthsStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_LENGTHS_START,
+  };
+};
+
+export const getLengthsSucceed = (lengthsArray: TReceivedLengthObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_LENGTHS_SUCCEED,
+    lengthsArray: lengthsArray,
+  };
+};
+export const getLengthsFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_LENGTHS_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Update Length (tail)
+/* ------------------ */
+export const updateLength = (length_id: number, title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_LENGTH,
+    length_id: length_id,
+    title: title,
+    description: description,
+  };
+};
+
+export const updateLengthStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_LENGTH_START,
+  };
+};
+
+export const updateLengthSucceed = (lengthsArray: TReceivedLengthObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_LENGTH_SUCCEED,
+    lengthsArray: lengthsArray,
+    successMessage: successMessage,
+  };
+};
+export const updateLengthFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_LENGTH_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+// Body Length (Body Page) (tail)
+/* ============================================================================================ */
+
+/* ------------------ */
+// Create Body Length (tail)
+/* ------------------ */
+export const createBodyLength = (createBodyLengthData: TCreateBodyLengthData): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYLENGTH,
+    createBodyLengthData: createBodyLengthData,
+  };
+};
+
+export const createBodyLengthStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYLENGTH_START,
+  };
+};
+
+export const createBodyLengthSucceed = (
+  bodyLengthsArray: TReceivedBodyLengthObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYLENGTH_SUCCEED,
+    bodyLengthsArray: bodyLengthsArray,
+    successMessage: successMessage,
+  };
+};
+export const createBodyLengthFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYLENGTH_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Get Body Lengths (tail)
+/* ------------------ */
+export const getBodyLengths = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODYLENGTHS,
+  };
+};
+
+export const getBodyLengthsStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODYLENGTHS_START,
+  };
+};
+
+export const getBodyLengthsSucceed = (bodyLengthsArray: TReceivedBodyLengthObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_BODYLENGTHS_SUCCEED,
+    bodyLengthsArray: bodyLengthsArray,
+  };
+};
+export const getBodyLengthsFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_BODYLENGTHS_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Update Body Length (tail)
+/* ------------------ */
+export const updateBodyLength = (updateBodyLengthData: TUpdateBodyLengthData): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYLENGTH,
+    updateBodyLengthData: updateBodyLengthData,
+  };
+};
+
+export const updateBodyLengthStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYLENGTH_START,
+  };
+};
+
+export const updateBodyLengthSucceed = (
+  bodyLengthsArray: TReceivedBodyLengthObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYLENGTH_SUCCEED,
+    bodyLengthsArray: bodyLengthsArray,
+    successMessage: successMessage,
+  };
+};
+export const updateBodyLengthFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYLENGTH_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+// Body Accessory (Body Page) (tail)
+/* ============================================================================================ */
+
+/* ------------------ */
+// Create Body Accessory (tail)
+/* ------------------ */
+export const createBodyAccessory = (createBodyAccessoryData: TCreateBodyAccessoryData): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYACCESSORY,
+    createBodyAccessoryData: createBodyAccessoryData,
+  };
+};
+
+export const createBodyAccessoryStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYACCESSORY_START,
+  };
+};
+
+export const createBodyAccessorySucceed = (
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYACCESSORY_SUCCEED,
+    bodyAccessoriesArray: bodyAccessoriesArray,
+    successMessage: successMessage,
+  };
+};
+export const createBodyAccessoryFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_BODYACCESSORY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Get Body Accessories (tail)
+/* ------------------ */
+export const getBodyAccessories = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODYACCESSORIES,
+  };
+};
+
+export const getBodyAccessoriesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODYACCESSORIES_START,
+  };
+};
+
+export const getBodyAccessoriesSucceed = (bodyAccessoriesArray: TReceivedBodyAccessoryObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_BODYACCESSORIES_SUCCEED,
+    bodyAccessoriesArray: bodyAccessoriesArray,
+  };
+};
+export const getBodyAccessoriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_BODYACCESSORIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Update Body Accessories (tail)
+/* ------------------ */
+export const updateBodyAccessory = (updateBodyAccessoryData: TUpdateBodyAccessoryData): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYACCESSORY,
+    updateBodyAccessoryData: updateBodyAccessoryData,
+  };
+};
+
+export const updateBodyAccessoryStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYACCESSORY_START,
+  };
+};
+
+export const updateBodyAccessorySucceed = (
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYACCESSORY_SUCCEED,
+    bodyAccessoriesArray: bodyAccessoriesArray,
+    successMessage: successMessage,
+  };
+};
+export const updateBodyAccessoryFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_BODYACCESSORY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+// Accessory (Accessory Page) (tail)
+/* ============================================================================================ */
+
+/* ------------------ */
+// Create Accessory (tail)
+/* ------------------ */
+export const createAccessory = (title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_ACCESSORY,
+    title: title,
+    description: description,
+  };
+};
+
+export const createAccessoryStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_ACCESSORY_START,
+  };
+};
+
+export const createAccessorySucceed = (
+  accessoriesArray: TReceivedAccessoryObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.CREATE_ACCESSORY_SUCCEED,
+    accessoriesArray: accessoriesArray,
+    successMessage: successMessage,
+  };
+};
+export const createAccessoryFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_ACCESSORY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Get Accessories (tail)
+/* ------------------ */
+export const getAccessories = (): AppActions => {
+  return {
+    type: actionTypes.GET_ACCESSORIES,
+  };
+};
+
+export const getAccessoriesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_ACCESSORIES_START,
+  };
+};
+
+export const getAccessoriesSucceed = (accessoriesArray: TReceivedAccessoryObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_ACCESSORIES_SUCCEED,
+    accessoriesArray: accessoriesArray,
+  };
+};
+export const getAccessoriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_ACCESSORIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Update Accessory (tail)
+/* ------------------ */
+export const updateAccessory = (id: number, title: string, description: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_ACCESSORY,
+    id: id,
+    title: title,
+    description: description,
+  };
+};
+
+export const updateAccessoryStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_ACCESSORY_START,
+  };
+};
+
+export const updateAccessorySucceed = (
+  accessoriesArray: TReceivedAccessoryObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.UPDATE_ACCESSORY_SUCCEED,
+    accessoriesArray: accessoriesArray,
+    successMessage: successMessage,
+  };
+};
+export const updateAccessoryFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_ACCESSORY_FAILED,
     errorMessage: errorMessage,
   };
 };
