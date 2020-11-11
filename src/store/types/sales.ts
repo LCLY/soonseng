@@ -614,10 +614,16 @@ export interface GetBodyLengthsFailedAction {
 /* types */
 // Body length data when creating
 export type TCreateBodyAccessoryData = {
-  title: string;
-  description: string;
   body_length_id: number;
   accesory_id: number;
+  description: string;
+  price: number;
+};
+export type TUpdateBodyAccessoryData = {
+  body_accessory_id: number;
+  accesory_id: number;
+  body_length_id: number;
+  description: string;
   price: number;
 };
 export type TReceivedBodyAccessoryObj = {
@@ -628,14 +634,6 @@ export type TReceivedBodyAccessoryObj = {
   description: string;
   price: number;
   available: boolean;
-};
-export type TUpdateBodyAccessoryData = {
-  body_accessory_id: number;
-  title: string;
-  accesory_id: number;
-  body_length_id: number;
-  description: string;
-  price: number;
 };
 
 /* --------------------------- */

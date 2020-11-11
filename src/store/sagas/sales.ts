@@ -861,7 +861,7 @@ export function* createBodyAccessorySaga(action: AppActions) {
   // Type guard, check if the "key" exist in the action object
   if ('createBodyAccessoryData' in action) {
     body_accesory = {
-      title: action.createBodyAccessoryData.title,
+      title: '',
       description: action.createBodyAccessoryData.description,
       body_length_id: action.createBodyAccessoryData.body_length_id,
       accesory_id: action.createBodyAccessoryData.accesory_id,
@@ -942,7 +942,7 @@ export function* updateBodyAccessorySaga(action: AppActions) {
   if ('updateBodyAccessoryData' in action) {
     url = process.env.REACT_APP_API + `/tail/body_accesory/${action.updateBodyAccessoryData.body_accessory_id}`;
     body_accesory = {
-      title: action.updateBodyAccessoryData.title,
+      title: '',
       description: action.updateBodyAccessoryData.description,
       body_length_id: action.updateBodyAccessoryData.body_length_id,
       accesory_id: action.updateBodyAccessoryData.accesory_id,

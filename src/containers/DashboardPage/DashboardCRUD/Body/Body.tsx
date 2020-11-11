@@ -8,7 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { Button, Empty, Form, Card, Input, Modal, Select, Table, Tag } from 'antd';
+import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
+import { Button, Empty, Form, Card, Input, Modal, Select, Table, Tag, Tooltip } from 'antd';
 /* Util */
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
@@ -24,6 +25,7 @@ import {
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 interface BodyProps {}
 
@@ -61,8 +63,8 @@ type TBodyLengthTableState = {
 };
 
 type TCreateBodyLengthForm = {
-  bodyLengthLength: number; // length id
-  bodyLengthBody: number; // body id
+  bodyLengthLengthId: number; // length id
+  bodyLengthBodyId: number; // body id
   bodyLengthWidth: { feet: string; inch: string };
   bodyLengthHeight: { feet: string; inch: string };
   bodyLengthDepth: { feet: string; inch: string };
@@ -70,8 +72,8 @@ type TCreateBodyLengthForm = {
 };
 type TUpdateBodyLengthForm = {
   bodyLengthId: number;
-  bodyLengthLength: number; // length id
-  bodyLengthBody: number; // body id
+  bodyLengthLengthId: number; // length id
+  bodyLengthBodyId: number; // body id
   bodyLengthWidth: { feet: string; inch: string };
   bodyLengthHeight: { feet: string; inch: string };
   bodyLengthDepth: { feet: string; inch: string };
@@ -79,18 +81,18 @@ type TUpdateBodyLengthForm = {
 };
 
 type TCreateBodyAccessoryForm = {
-  bodyAccessoryTitle: string; // length id
-  bodyAccessoryDescription: string; // body id
-  bodyAccessoryBodyLength: number; //body_length_id
-  bodyAccessoryAccessory: number; //accessory_id
+  bodyAccessoryTitle: string; //according to teckhong, probably dont want the title
+  bodyAccessoryDescription: string;
+  bodyLengthId: number; //body_length_id
+  accessoryId: number; //accessory_id
   bodyAccessoryPrice: number;
 };
 type TUpdateBodyAccessoryForm = {
   bodyAccessoryId: number; // body_accessory id
-  bodyAccessoryTitle: string; // length id
-  bodyAccessoryDescription: string; // body id
-  bodyAccessoryBodyLength: number; //body_length_id
-  bodyAccessoryAccessory: number; //accessory_id
+  bodyAccessoryTitle: string; //according to teckhong, probably dont want the title
+  bodyAccessoryDescription: string;
+  bodyLengthId: number; //body_length_id
+  accessoryId: number; //accessory_id
   bodyAccessoryPrice: number;
 };
 
@@ -197,6 +199,7 @@ const Body: React.FC<Props> = ({
       title: 'Title',
       dataIndex: 'bodyTitle',
       width: '15rem',
+      className: 'body__table-header--title',
       ellipsis: true,
       sorter: (a: TBodyTableState, b: TBodyTableState) => a.bodyTitle.localeCompare(b.bodyTitle),
       ...getColumnSearchProps(bodySearchInput, 'bodyTitle', 'Title'),
@@ -215,7 +218,7 @@ const Body: React.FC<Props> = ({
       key: 'bodyAction',
       title: 'Action',
       dataIndex: 'action',
-      fixed: 'right',
+      // fixed: 'right',
       width: '17rem',
       render: (_text: any, record: TBodyTableState) => {
         return (
@@ -281,7 +284,7 @@ const Body: React.FC<Props> = ({
       key: 'lengthAction',
       title: 'Action',
       dataIndex: 'action',
-      fixed: 'right',
+      // fixed: 'right',
       width: '17rem',
       render: (_text: any, record: TLengthTableState) => {
         return (
@@ -344,8 +347,9 @@ const Body: React.FC<Props> = ({
       key: 'bodyLengthBodyTitle',
       title: 'Body',
       dataIndex: 'bodyLengthBodyTitle',
+      className: 'body__table-header--title',
       ellipsis: true,
-      width: '13rem',
+      width: 'auto',
       sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
         a.bodyLengthBodyTitle.localeCompare(b.bodyLengthBodyTitle),
       ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthBodyTitle', 'Body'),
@@ -355,34 +359,35 @@ const Body: React.FC<Props> = ({
       title: 'Dimension',
       dataIndex: 'bodyLengthDimension',
       ellipsis: true,
-      align: 'center',
-      width: '15rem',
+      width: 'auto',
       render: (_text: any, record: TBodyLengthTableState) => {
         return (
           <>
-            <div className="body__tag-div">
-              <Tag className="body__tag" color="red">
-                <div className="body__tag-title">Width</div>
-                <div className="body__tag-values">
-                  <div className="body__tag-colon">:</div> <div>{record.bodyLengthWidth}</div>
-                </div>
-              </Tag>
-            </div>
-            <div className="body__tag-div">
-              <Tag className="body__tag" color="cyan">
-                <div className="body__tag-title">Height</div>
-                <div className="body__tag-values">
-                  <div className="body__tag-colon">:</div> <div>{record.bodyLengthHeight}</div>
-                </div>
-              </Tag>
-            </div>
-            <div className="body__tag-div">
-              <Tag className="body__tag" color="blue">
-                <div className="body__tag-title">Depth</div>
-                <div className="body__tag-values">
-                  <div className="body__tag-colon">:</div> <div>{record.bodyLengthDepth}</div>
-                </div>
-              </Tag>
+            <div className="body__tag-outerdiv">
+              <div className="body__tag-div">
+                <Tag className="body__tag" color="red">
+                  <div className="body__tag-title">Width</div>
+                  <div className="body__tag-values">
+                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthWidth}</div>
+                  </div>
+                </Tag>
+              </div>
+              <div className="body__tag-div">
+                <Tag className="body__tag" color="cyan">
+                  <div className="body__tag-title">Height</div>
+                  <div className="body__tag-values">
+                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthHeight}</div>
+                  </div>
+                </Tag>
+              </div>
+              <div className="body__tag-div">
+                <Tag className="body__tag" color="blue">
+                  <div className="body__tag-title">Depth</div>
+                  <div className="body__tag-values">
+                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthDepth}</div>
+                  </div>
+                </Tag>
+              </div>
             </div>
           </>
         );
@@ -393,91 +398,16 @@ const Body: React.FC<Props> = ({
       title: 'Price',
       dataIndex: 'bodyLengthPrice',
       ellipsis: true,
-      width: '12rem',
+      width: 'auto',
       sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
         a.bodyLengthPrice.localeCompare(b.bodyLengthPrice),
       ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthPrice', 'Price'),
     },
     {
-      key: 'bodyLengthAccessory',
-      title: 'Accessory',
-      dataIndex: 'bodyLengthAccessory',
-      ellipsis: true,
-      width: 'auto',
-      render: (_value: any, row: TBodyLengthTableState, index: number) => {
-        let bodyAccessoryComponent = (
-          <>
-            {row.bodyLengthBodyAccessory && (
-              <>
-                {row.bodyLengthBodyAccessory.length === 0 ? (
-                  <Empty />
-                ) : (
-                  <div className="bodyaccessory__table-outerdiv">
-                    {row.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
-                      if (bodyAccessory.available) {
-                        return (
-                          <Card
-                            className="bodyaccessory__table-card"
-                            title={<span className="bodyaccessory__table-card-title">{bodyAccessory.title}</span>}
-                            key={index}
-                            size="small"
-                            extra={<Button type="link">Edit</Button>}
-                            style={{ width: 'auto' }}
-                            headStyle={{ background: '#FFF2E8' }}
-                          >
-                            <div>Accessory: {bodyAccessory.accesory.title}</div>
-                            <div>Length: {bodyAccessory.body_length.length.title}</div>
-                            <div>Body: {bodyAccessory.body_length.body.title}</div>
-                            <div className="bodyaccessory__tag-outerdiv">
-                              <div className="body__tag-div">
-                                <Tag className="body__tag body__tag--bodyaccessory" color="red">
-                                  <div>{bodyAccessory.body_length.width}W</div>
-                                </Tag>
-                              </div>
-                              <div className="body__tag-div">
-                                <Tag className="body__tag body__tag--bodyaccessory" color="cyan">
-                                  <div>{bodyAccessory.body_length.height}H</div>
-                                </Tag>
-                              </div>
-                              <div className="body__tag-div">
-                                <Tag className="body__tag body__tag--bodyaccessory" color="blue">
-                                  <div> {bodyAccessory.body_length.depth}D</div>
-                                </Tag>
-                              </div>
-                            </div>
-                            <div>Price: {bodyAccessory.body_length.price}</div>
-                          </Card>
-                        );
-                      }
-                      // if not available render nothing
-                      return <></>;
-                    })}
-                  </div>
-                )}
-              </>
-            )}
-          </>
-        );
-
-        const obj = {
-          children: bodyAccessoryComponent,
-          props: {
-            rowSpan: 0,
-          },
-        };
-
-        if (index === 0) {
-          obj.props.rowSpan = row.bodyLengthBodyAccessoryArrayLength;
-        }
-
-        return obj;
-      },
-    },
-    {
       key: 'bodyLengthAction',
       title: 'Action',
       dataIndex: 'action',
-      fixed: 'right',
+      // fixed: 'right',
       width: '17rem',
       render: (_text: any, record: TBodyLengthTableState) => {
         return (
@@ -520,8 +450,8 @@ const Body: React.FC<Props> = ({
                   // update the form value using the 'name' attribute as target/key
                   updateBodyLengthForm.setFieldsValue({
                     bodyLengthId: record.bodyLengthId,
-                    bodyLengthBody: record.bodyLengthBodyId, // body id
-                    bodyLengthLength: record.bodyLengthLengthId, // length id
+                    bodyLengthBodyId: record.bodyLengthBodyId, // body id
+                    bodyLengthLengthId: record.bodyLengthLengthId, // length id
                     bodyLengthWidth: {
                       feet: checkInchExist(record.bodyLengthWidth).feet,
                       inch: checkInchExist(record.bodyLengthWidth).inch,
@@ -549,6 +479,8 @@ const Body: React.FC<Props> = ({
                 type="default"
                 onClick={() => {
                   setShowCreateModal({ ...showCreateModal, body_accessory: true });
+                  //  set the body length id
+                  createBodyAccessoryForm.setFieldsValue({ bodyLengthId: record.bodyLengthId });
                 }}
               >
                 Create Accessory
@@ -593,11 +525,16 @@ const Body: React.FC<Props> = ({
   // the keys "values" are from the form's 'name' attribute
   const onCreateBodyFinish = (values: { bodyTitle: string; bodyDescription: string }) => {
     // if not then just get the title and description
-    onCreateBody(values.bodyTitle, values.bodyDescription);
+    if (!loading) {
+      // prevent it from running multiple times
+      onCreateBody(values.bodyTitle, values.bodyDescription);
+    }
   };
   const onUpdateBodyFinish = (values: { bodyId: number; bodyTitle: string; bodyDescription: string }) => {
     // if not then just get the title and description
-    onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription);
+    if (!loading) {
+      onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription);
+    }
   };
 
   /* --------- LENGTH ---------- */
@@ -605,8 +542,9 @@ const Body: React.FC<Props> = ({
     let concatLength = '';
     // if inch has no input then only display length
     concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
-
-    onCreateLength(concatLength, values.lengthDescription);
+    if (!loading) {
+      onCreateLength(concatLength, values.lengthDescription);
+    }
   };
   const onUpdateLengthFinish = (values: {
     lengthId: number;
@@ -616,7 +554,9 @@ const Body: React.FC<Props> = ({
     let concatLength = '';
     // if inch has no input then only display length
     concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
-    onUpdateLength(values.lengthId, concatLength, values.lengthDescription);
+    if (!loading) {
+      onUpdateLength(values.lengthId, concatLength, values.lengthDescription);
+    }
   };
 
   /* --------- BODY LENGTH ---------- */
@@ -628,8 +568,8 @@ const Body: React.FC<Props> = ({
 
     // if inch has no input then only display length
     let createBodyLengthData: TCreateBodyLengthData = {
-      body_id: values.bodyLengthBody,
-      length_id: values.bodyLengthLength,
+      body_id: values.bodyLengthBodyId,
+      length_id: values.bodyLengthLengthId,
       width: concatWidth,
       height: concatHeight,
       depth: concatDepth,
@@ -646,8 +586,8 @@ const Body: React.FC<Props> = ({
 
     let updateBodyLengthData: TUpdateBodyLengthData = {
       body_length_id: values.bodyLengthId,
-      body_id: values.bodyLengthBody,
-      length_id: values.bodyLengthLength,
+      body_id: values.bodyLengthBodyId,
+      length_id: values.bodyLengthLengthId,
       width: concatWidth,
       height: concatHeight,
       depth: concatDepth,
@@ -659,23 +599,22 @@ const Body: React.FC<Props> = ({
 
   /* --------- BODY ACCESSORY ---------- */
   const onCreateBodyAccessoryFinish = (values: TCreateBodyAccessoryForm) => {
+    console.log(values.bodyLengthId);
     let createBodyAccessoryData = {
-      title: values.bodyAccessoryTitle,
-      description: values.bodyAccessoryDescription,
-      body_length_id: values.bodyAccessoryBodyLength,
-      accesory_id: values.bodyAccessoryAccessory,
+      body_length_id: values.bodyLengthId,
+      accesory_id: values.accessoryId,
       price: values.bodyAccessoryPrice,
+      description: values.bodyAccessoryDescription,
     };
     onCreateBodyAccessory(createBodyAccessoryData);
   };
   const onUpdateBodyAccessoryFinish = (values: TUpdateBodyAccessoryForm) => {
     let updateBodyAccessoryData = {
       body_accessory_id: values.bodyAccessoryId,
-      title: values.bodyAccessoryTitle,
-      description: values.bodyAccessoryDescription,
-      body_length_id: values.bodyAccessoryBodyLength,
-      accesory_id: values.bodyAccessoryAccessory,
+      body_length_id: values.bodyLengthId,
+      accesory_id: values.accessoryId,
       price: values.bodyAccessoryPrice,
+      description: values.bodyAccessoryDescription,
     };
     onUpdateBodyAccessory(updateBodyAccessoryData);
   };
@@ -704,7 +643,7 @@ const Body: React.FC<Props> = ({
         name="bodyDescription"
         rules={[{ required: false, message: 'Input description here!' }]}
       >
-        <Input placeholder="Type description here" />
+        <TextArea rows={3} placeholder="Type description here" />
       </Form.Item>
     </>
   );
@@ -788,8 +727,8 @@ const Body: React.FC<Props> = ({
   /* ---------------------------- */
   // Length
   /* ---------------------------- */
-  /* Create Length Form Items*/
-  let createLengthFormItems = (
+  /* Length Form Items*/
+  let lengthFormItems = (
     <>
       <div className="flex">
         <Form.Item
@@ -820,7 +759,7 @@ const Body: React.FC<Props> = ({
         name="lengthDescription"
         rules={[{ required: false, message: 'Input description here!' }]}
       >
-        <Input placeholder="Type description here" />
+        <TextArea rows={3} placeholder="Type description here" />
       </Form.Item>
     </>
   );
@@ -835,7 +774,7 @@ const Body: React.FC<Props> = ({
         onFinish={onCreateLengthFinish}
       >
         {/* reuse form items */}
-        {createLengthFormItems}
+        {lengthFormItems}
       </Form>
     </>
   );
@@ -867,7 +806,7 @@ const Body: React.FC<Props> = ({
         onFinish={onUpdateLengthFinish}
       >
         {/* reuse form items */}
-        {createLengthFormItems}
+        {lengthFormItems}
 
         {/* Getting the length id */}
         <Form.Item
@@ -906,14 +845,14 @@ const Body: React.FC<Props> = ({
   /* ---------------------------- */
   // Body Length
   /* ---------------------------- */
-  /* Create Body Length Form Items*/
-  let createBodyLengthFormItems = (
+  /* Body Length Form Items*/
+  let bodyLengthFormItems = (
     <>
       {/* ------- Length - value is brand id but display is brand name -------*/}
       <Form.Item
         className="make__form-item"
         label="Length"
-        name="bodyLengthLength"
+        name="bodyLengthLengthId"
         style={{ marginBottom: '0.8rem' }}
         rules={[{ required: true, message: 'Select a Length!' }]}
       >
@@ -938,7 +877,7 @@ const Body: React.FC<Props> = ({
       <Form.Item
         className="make__form-item"
         label="Body"
-        name="bodyLengthBody"
+        name="bodyLengthBodyId"
         rules={[{ required: true, message: 'Select a Body!' }]}
       >
         {/* only render if bodiesArray is not null */}
@@ -946,6 +885,7 @@ const Body: React.FC<Props> = ({
           showSearch
           placeholder="Select a Body"
           optionFilterProp="children"
+          className="body__select-updatebodylength"
           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {bodiesArray &&
@@ -1049,7 +989,7 @@ const Body: React.FC<Props> = ({
         onFinish={onCreateBodyLengthFinish}
       >
         {/* reuse the component */}
-        {createBodyLengthFormItems}
+        {bodyLengthFormItems}
       </Form>
     </>
   );
@@ -1057,7 +997,7 @@ const Body: React.FC<Props> = ({
   /* Create Body Length Modal */
   let createBodyLengthModal = (
     <Modal
-      title="Create Body Length"
+      title="Create Body Price"
       visible={showCreateModal.body_length}
       onOk={createBodyLengthForm.submit}
       confirmLoading={loading}
@@ -1081,7 +1021,7 @@ const Body: React.FC<Props> = ({
         onFinish={onUpdateBodyLengthFinish}
       >
         {/* reuse form items */}
-        {createBodyLengthFormItems}
+        {bodyLengthFormItems}
         {/* Getting the BODY LENGTH ID */}
         <Form.Item
           className="make__form-item"
@@ -1099,7 +1039,7 @@ const Body: React.FC<Props> = ({
   /* Edit Body Length Modal */
   let updateBodyLengthModal = (
     <Modal
-      title="Edit Length"
+      title="Edit Body Price"
       visible={showUpdateModal.body_length}
       onOk={updateBodyLengthForm.submit}
       confirmLoading={loading}
@@ -1119,75 +1059,19 @@ const Body: React.FC<Props> = ({
   /* ---------------------------- */
   // Body Accessory
   /* ---------------------------- */
-  /* Create Body Accessory Form Items */
-  let createBodyFormAccessoryItems = (
+  /* Body Accessory Form Items */
+  let bodyAccessoryFormItems = (
     <>
-      <Form.Item
-        className="make__form-item "
-        label="Title"
-        name="bodyAccessoryTitle"
-        rules={[{ required: true, message: 'Input title here!' }]}
-      >
-        <Input placeholder="Type title here" />
-      </Form.Item>
-      <Form.Item
-        className="make__form-item "
-        label="Description"
-        name="bodyAccessoryDescription"
-        rules={[{ required: false, message: 'Input description here!' }]}
-      >
-        <Input placeholder="Type description here" />
-      </Form.Item>
-
-      {/* ------- Select Body Length - value is brand id but display is brand name -------*/}
-      <Form.Item
-        className="make__form-item bodyaccessory__form-item"
-        label="Body"
-        name="bodyAccessoryBodyLength"
-        rules={[{ required: true, message: 'Select a Body Length!' }]}
-      >
-        {/* only render if bodyLengthsArray is not null */}
-        <Select placeholder="Select a Body" className="bodyaccessory__select">
-          {bodyLengthsArray &&
-            bodyLengthsArray.map((bodyLength) => {
-              return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={bodyLength.id}>
-                  <div className="bodyaccessory__select-div">
-                    <Tag className="bodyaccessory__select-tag" color="red">
-                      <div className="bodyaccessory__select-title">Width</div>
-                      <div className="bodyaccessory__select-values">
-                        <div className="bodyaccessory__select-colon">:</div> <div>{bodyLength.width}</div>
-                      </div>
-                    </Tag>
-                    <Tag className="bodyaccessory__select-tag" color="cyan">
-                      <div className="bodyaccessory__select-title">Height</div>
-                      <div className="bodyaccessory__select-values">
-                        <div className="bodyaccessory__select-colon">:</div> <div>{bodyLength.height}</div>
-                      </div>
-                    </Tag>
-                    <Tag className="bodyaccessory__select-tag" color="blue">
-                      <div className="bodyaccessory__select-title">Depth</div>
-                      <div className="bodyaccessory__select-values">
-                        <div className="bodyaccessory__select-colon">:</div> <div>{bodyLength.depth}</div>
-                      </div>
-                    </Tag>
-                  </div>
-                </Option>
-              );
-            })}
-        </Select>
-      </Form.Item>
-
-      {/* ------- Select Accessory - value is brand id but display is brand name -------*/}
+      {/* ------- Select Accessory - value is accessory id but display is accessory title -------*/}
       <Form.Item
         className="make__form-item "
         label="Accessory"
-        name="bodyAccessoryAccessory"
+        name="accessoryId"
         rules={[{ required: true, message: 'Select an Accessory!' }]}
       >
         {/* only render if accessoriesArray is not null */}
         {accessoriesArray && (
-          <Select placeholder="Select a Accessory">
+          <Select placeholder="Select an Accessory">
             {accessoriesArray.map((accessory) => {
               return (
                 <Option key={uuidv4()} value={accessory.id}>
@@ -1198,13 +1082,34 @@ const Body: React.FC<Props> = ({
           </Select>
         )}
       </Form.Item>
+
+      {/* Accessory price */}
       <Form.Item
-        className="make__form-item body__item"
+        className="make__form-item"
         label="Price"
         name="bodyAccessoryPrice"
         rules={[{ required: true, message: 'Input price here!' }]}
       >
         <Input type="number" min={0} addonBefore="RM" placeholder="Type price here" />
+      </Form.Item>
+
+      {/* Body accessory description */}
+      <Form.Item
+        className="make__form-item"
+        label="Description"
+        name="bodyAccessoryDescription"
+        rules={[{ required: false, message: 'Input description here!' }]}
+      >
+        <TextArea rows={3} />
+      </Form.Item>
+
+      <Form.Item
+        hidden
+        label="bodyLengthId"
+        name="bodyLengthId"
+        rules={[{ required: true, message: 'Input body length id!' }]}
+      >
+        <Input />
       </Form.Item>
     </>
   );
@@ -1218,7 +1123,7 @@ const Body: React.FC<Props> = ({
         onKeyDown={(e) => handleKeyDown(e, createBodyAccessoryForm)}
         onFinish={onCreateBodyAccessoryFinish}
       >
-        {createBodyFormAccessoryItems}
+        {bodyAccessoryFormItems}
       </Form>
     </>
   );
@@ -1246,10 +1151,10 @@ const Body: React.FC<Props> = ({
       <Form
         form={updateBodyAccessoryForm}
         name="updateBodyAccessory"
-        onKeyDown={(e) => handleKeyDown(e, createBodyForm)}
+        onKeyDown={(e) => handleKeyDown(e, updateBodyAccessoryForm)}
         onFinish={onUpdateBodyAccessoryFinish}
       >
-        {createBodyFormAccessoryItems}
+        {bodyAccessoryFormItems}
 
         {/* Getting the BODY ACCESSORY ID */}
         <Form.Item
@@ -1273,7 +1178,7 @@ const Body: React.FC<Props> = ({
       onOk={updateBodyAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
-        setShowCreateModal({ ...showUpdateModal, body_accessory: false }); //close modal on cancel
+        setShowUpdateModal({ ...showUpdateModal, body_accessory: false }); //close modal on cancel
       }}
     >
       {/* the content within the modal */}
@@ -1387,8 +1292,8 @@ const Body: React.FC<Props> = ({
           index: index + 1,
           bodyLengthId: bodyLength.id,
           bodyLengthLengthId: bodyLength.length.id,
-          bodyLengthLengthTitle: bodyLength.length.title,
           bodyLengthBodyId: bodyLength.body.id,
+          bodyLengthLengthTitle: bodyLength.length.title,
           bodyLengthBodyTitle: bodyLength.body.title,
           bodyLengthWidth: bodyLength.width,
           bodyLengthHeight: bodyLength.height,
@@ -1476,6 +1381,7 @@ const Body: React.FC<Props> = ({
               {/* ------------------ */}
               <Table
                 bordered
+                className="body__table"
                 scroll={{ x: '89rem', y: 400 }}
                 dataSource={bodyTableState}
                 columns={convertHeader(bodyColumns, setBodyColumns)}
@@ -1502,6 +1408,7 @@ const Body: React.FC<Props> = ({
               {/* ------------------ */}
               <Table
                 bordered
+                className="body__table"
                 scroll={{ x: '89rem', y: 400 }}
                 dataSource={lengthTableState}
                 columns={convertHeader(lengthColumns, setLengthColumns)}
@@ -1528,8 +1435,110 @@ const Body: React.FC<Props> = ({
               {/* ----------------------- */}
               <Table
                 bordered
+                className="body__table"
                 scroll={{ x: '89rem', y: 600 }}
                 dataSource={bodyLengthTableState}
+                expandable={{
+                  expandIcon: ({ expanded, onExpand, record }) =>
+                    expanded ? (
+                      <Tooltip title="Click to hide accessories">
+                        <MinusCircleTwoTone onClick={(e) => onExpand(record, e)} />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Click to view accessories">
+                        <PlusCircleTwoTone onClick={(e) => onExpand(record, e)} />
+                      </Tooltip>
+                    ),
+
+                  expandedRowRender: (record: TBodyLengthTableState) => (
+                    <>
+                      <div>
+                        Attachable accessories for this body:&nbsp;
+                        <span className="body__expand-available">
+                          {record.bodyLengthBodyAccessoryArrayLength} available
+                        </span>
+                      </div>
+                      <hr />
+                      <div className="body__expand-outerdiv">
+                        {record.bodyLengthBodyAccessory && (
+                          <>
+                            {/* if no accessory then show empty */}
+                            {record.bodyLengthBodyAccessoryArrayLength === 0 ? (
+                              <div className="body__expand-empty">
+                                <Empty />
+                              </div>
+                            ) : (
+                              record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
+                                if (bodyAccessory.available) {
+                                  return (
+                                    <Card
+                                      className="body__expand-card"
+                                      title={
+                                        <span className="body__expand-card-title">{bodyAccessory.accesory.title}</span>
+                                      }
+                                      key={index}
+                                      size="small"
+                                      style={{ width: 'auto' }}
+                                      headStyle={{ background: '#FFF2E8' }}
+                                    >
+                                      <div>
+                                        <div>
+                                          <span className="body__expand-card-category">Price</span>: RM
+                                          {bodyAccessory.price}
+                                        </div>
+                                        <div>
+                                          <span className="body__expand-card-category">Description</span>:&nbsp;
+                                          {bodyAccessory.description ? (
+                                            <>
+                                              <br />
+                                              <div className="body__expand-card-description">
+                                                {bodyAccessory.description}
+                                              </div>
+                                            </>
+                                          ) : (
+                                            ' - '
+                                          )}
+                                        </div>
+                                      </div>
+                                      <section className="body__expand-card-btn-section">
+                                        <hr style={{ margin: 0 }} />
+                                        <div className="body__expand-card-btn-div">
+                                          <Button
+                                            className="body__expand-card-btn-edit"
+                                            style={{ padding: 0 }}
+                                            type="link"
+                                            onClick={() => {
+                                              // show the update modal
+                                              setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
+                                              // fill in the updateBodyAccessoryform
+                                              updateBodyAccessoryForm.setFieldsValue({
+                                                bodyAccessoryId: bodyAccessory.id, //the id for update
+                                                accessoryId: bodyAccessory.accesory.id,
+                                                bodyAccessoryPrice: bodyAccessory.price,
+                                                bodyAccessoryDescription: bodyAccessory.description,
+                                                bodyLengthId: bodyAccessory.body_length.id,
+                                              });
+                                            }}
+                                          >
+                                            Edit
+                                          </Button>
+                                          <Button disabled type="link" danger style={{ padding: 0 }}>
+                                            Delete
+                                          </Button>
+                                        </div>
+                                      </section>
+                                    </Card>
+                                  );
+                                }
+                                return <></>;
+                              })
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </>
+                  ),
+                }}
                 columns={convertHeader(bodyLengthColumns, setBodyLengthColumns)}
                 pagination={false}
               />

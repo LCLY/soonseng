@@ -10,17 +10,25 @@
   // dimension tag
   /* ===================== */
   &__tag {
-    width: 100%;
     text-align: center !important;
     display: flex !important;
     align-items: top !important;
     padding-right: 0 !important;
     margin: 0 !important;
-
+    /* ----------------------------------------- */
+    /* the tags inside the table accessory column */
+    /* ------------------------------------------ */
     &--bodyaccessory {
       width: auto;
-      padding-right: 0.5rem !important;
-      margin-right: 1rem !important;
+      padding-right: 0.3rem !important;
+      margin-right: 0.4rem !important;
+    }
+    /* ---------------------------- */
+    // the outerdiv wrapping all tags
+    /* ---------------------------- */
+    &-outerdiv {
+      display: flex;
+      flex-wrap: wrap; //let display flex but wrapped to next line
     }
 
     /* -------------- */
@@ -29,6 +37,7 @@
     &-div {
       display: flex !important;
       margin-bottom: 0.2rem;
+      margin-right: 0.3rem;
     }
 
     /* --------------- */
@@ -37,7 +46,7 @@
     &-values {
       white-space: normal;
       display: flex;
-      width: 7rem;
+      padding-right: 0.5rem;
     }
     /* ------------------- */
     // the title: Width, Height, Depth
@@ -51,96 +60,138 @@
       margin-left: 0.1rem;
     }
   }
-}
 
-/* ===================== */
-// Body Accessory
-/* ===================== */
-.bodyaccessory {
-  /* ===================== */
-  // Create / update form
-  /* ===================== */
-  // targetting the selection form and align the tags in the center
-  &__form {
-    &-item {
-      & .ant-select-selection-item {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
+  /* ==================== */
+  // The Body table
+  /* ==================== */
+  // make the text go to next line instead of just overflow hidden and ellipsis
+  &__table {
+    .ant-table-cell {
+      white-space: normal !important;
+    }
+
+    /* --------------- */
+    // The header
+    /* --------------- */
+    &-header {
+      // for title
+      &--title {
+        text-transform: capitalize !important;
       }
     }
   }
-  /* ======================================= */
-  // dropdown for the width height depth tags
-  /* ======================================= */
-  &__select {
-    display: flex !important;
-    align-items: center !important;
-    // within the select dropdown
-    &-div {
-      display: flex;
-      justify-content: flex-start !important;
-    }
-    // the ':'
-    &-colon {
-      margin-left: 0.2rem;
-      margin-right: 0.2rem;
-    }
-    // the antd tag component
-    &-tag {
-      display: flex !important;
-      width: 33.33%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    // the numbers
-    &-values {
-      display: flex;
-    }
-  }
 
-  /* ======================== */
-  // Body accessory column in the table
-  /* ======================== */
-  &__table {
+  /* ======================= */
+  // the expand section
+  /* ======================= */
+  &__expand {
+    // outerdiv for the whole expand row
     &-outerdiv {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow-y: auto;
-      height: 70rem;
-
-      &::-webkit-scrollbar {
-        width: 7px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background: $primary-color-3;
-        border-radius: 6px;
-      }
-      &::-webkit-scrollbar-thumb:hover {
-        background: $primary-color-1;
-      }
+      overflow-x: auto;
+      padding-bottom: 1rem;
     }
-    &-card {
-      // background: red !important;
-      &:not(:last-child) {
-        margin-bottom: 1rem;
-      }
 
+    /* ----------------------------- */
+    // the available text
+    /* ----------------------------- */
+    &-available {
+      color: $primary-color-3;
+      font-family: $roboto;
+    }
+    /* ----------------------------- */
+    // the div for empty component
+    /* ----------------------------- */
+    &-empty {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    /* ----------------------------- */
+    // card for accessories
+    /* ----------------------------- */
+    &-card {
+      font-size: 1.2rem !important;
+      min-width: 20rem;
+      box-shadow: $bottom-shadow;
+      height: 17rem;
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
       &-title {
         text-transform: capitalize;
       }
+
+      // The categories e.g. price and description within the card
+      &-category {
+        color: $primary-color-3;
+      }
+      // The div of description
+      &-description {
+        height: 4rem;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+          width: 2.5px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: $primary-color-3;
+          border-radius: 6px;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+          background: $primary-color-1;
+        }
+      }
+      /* ----------------------------- */
+      // The two edit and delete buttons
+      /* ----------------------------- */
+      &-btn {
+        // the whole section wrapping the horizontal line and buttons
+        &-section {
+          position: absolute;
+          bottom: 0;
+          width: 87%;
+        }
+        // outerdiv for the two  buttons
+        &-div {
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+        }
+        // the edit link button
+        &-edit {
+          margin-right: 1rem;
+          color: #1890ff !important;
+          &:hover {
+            color: darken(#1890ff, 10%) !important;
+          }
+          &:active {
+            transition: none;
+            color: #1890ff !important;
+          }
+        }
+      }
+      /* ============================ */
+      // the body within the card
+      /* ============================ */
+      & .ant-card-body {
+        display: flex;
+        height: 13rem;
+        flex-direction: column;
+        position: relative;
+      }
     }
   }
 
-  /* ============================== */
-  //  Tag
-  /* ============================== */
-  &__tag {
-    &-outerdiv {
-      display: flex;
-      flex-wrap: wrap;
+  /* ===================== */
+  // The select dropdowns
+  /* ===================== */
+  &__select {
+    // target updatebodylength's dropdown
+    &-updatebodylength {
+      & .ant-select-selection-item {
+        width: 10rem !important;
+      }
     }
   }
 }

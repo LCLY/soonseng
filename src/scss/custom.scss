@@ -116,6 +116,25 @@ svg {
   // border: 1px solid $tertiary-color-2 !important;
 }
 
+// change the look of the scrollbar
+.ant-table-body {
+   &::-webkit-scrollbar {
+      width: 5px !important;
+   }
+   &::-webkit-scrollbar-thumb {
+      background: $secondary-color-3 !important;
+      border-radius: 10px !important;
+   }
+   &::-webkit-scrollbar-thumb:hover {
+      background: $secondary-color-1 !important;
+    }
+}
+
+// Text will go over to second line
+.ant-table-cell {
+    white-space: normal !important;
+}
+
 /* For column resizable */
 .react-resizable {
   position: relative;

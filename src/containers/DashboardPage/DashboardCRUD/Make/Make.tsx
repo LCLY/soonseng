@@ -24,6 +24,7 @@ import { TMapStateToProps } from 'src/store/types';
 import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/shared/Utils';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 interface MakeProps {}
 
@@ -161,6 +162,7 @@ const Make: React.FC<Props> = ({
       key: 'brandTitle',
       title: 'Title',
       dataIndex: 'brandTitle',
+      className: 'body__table-header--title',
       width: '15rem',
       ellipsis: true,
       sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandTitle.localeCompare(b.brandTitle),
@@ -295,6 +297,7 @@ const Make: React.FC<Props> = ({
       key: 'makeBrandTitle',
       title: 'Brand',
       dataIndex: 'makeBrandTitle',
+      className: 'body__table-header--title',
       ellipsis: true,
       width: '15rem',
       align: 'center',
@@ -308,7 +311,9 @@ const Make: React.FC<Props> = ({
       key: 'makeTitle',
       title: 'Title',
       dataIndex: 'makeTitle',
+      className: 'body__table-header--title',
       width: '15rem',
+      align: 'center',
       ellipsis: true,
       sorter: (a: TMakeTableState, b: TMakeTableState) => a.makeTitle.localeCompare(b.makeTitle),
       ...getColumnSearchProps(makeSearchInput, 'makeTitle', 'Title'),
@@ -559,7 +564,7 @@ const Make: React.FC<Props> = ({
           name="brandDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
 
         <div className="profile__picture-button-div">
@@ -664,7 +669,7 @@ const Make: React.FC<Props> = ({
           name="brandDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
 
         {/* Getting the brand id */}
@@ -729,7 +734,7 @@ const Make: React.FC<Props> = ({
           name="wheelbaseDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
       </Form>
     </>
@@ -776,7 +781,7 @@ const Make: React.FC<Props> = ({
           name="wheelbaseDescription"
           rules={[{ required: false, message: 'Input description here!' }]}
         >
-          <Input placeholder="Type description here" />
+          <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
 
         {/* Getting the wheelbase id */}
@@ -1426,6 +1431,7 @@ const Make: React.FC<Props> = ({
               {/* ------------------ */}
               <Table
                 bordered
+                className="make__table"
                 scroll={{ x: '89rem', y: 400 }}
                 // components={components}
                 dataSource={brandTableState}
@@ -1455,6 +1461,7 @@ const Make: React.FC<Props> = ({
               {/* -------------------- */}
               <Table
                 bordered
+                className="make__table"
                 scroll={{ x: '89rem', y: 300 }}
                 // components={components}
                 dataSource={wheelbaseTableState}
@@ -1484,6 +1491,7 @@ const Make: React.FC<Props> = ({
               {/* -------------------- */}
               <Table
                 bordered
+                className="make__table"
                 scroll={{ x: '89rem', y: 600 }}
                 // components={components}
                 dataSource={makeTableState}

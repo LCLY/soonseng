@@ -1,0 +1,19 @@
+.accessory {
+  &__expand {
+    &-div {
+      display: flex;
+    }
+
+    // the title on the left
+    &-title {
+      margin-right: 1rem;
+      color: $primary-color-3;
+    }
+
+    // the text on the right
+    &-text {
+      width: 70rem;
+      white-space: normal;
+    }
+  }
+}
