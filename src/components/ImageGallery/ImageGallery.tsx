@@ -14,6 +14,7 @@ interface ImageGalleryProps {
   setSelectAllChecked?: React.Dispatch<React.SetStateAction<boolean>>;
   images: TImageArrayObj[];
   setImages: React.Dispatch<React.SetStateAction<TImageArrayObj[]>>;
+  customClassName: string; //to determine classname whether for edit or normal mode
 }
 export type TImageArrayObj = {
   src: string;
@@ -32,6 +33,7 @@ const ImageGallery: React.FC<Props> = ({
   setImages,
   inEditMode,
   enableLightbox,
+  customClassName,
   selectAllChecked,
   setSelectAllChecked,
 }) => {
@@ -145,21 +147,23 @@ const ImageGallery: React.FC<Props> = ({
             {inEditMode && <> Selected images: {getSelectedImagesLength().toString()}</>}
           </div>
           <LazyLoad placeholder={<div>Loading...</div>}>
-            <Gallery
-              tagStyle={{
-                background: '#28292b9a',
-                color: 'white',
-                padding: '0.3rem 0.5rem',
-                borderRadius: '0.2rem',
-                bottom: '5rem',
-                borderColor: 'white',
-              }}
-              images={images}
-              onSelectImage={onSelectImage}
-              enableImageSelection={inEditMode}
-              enableLightbox={enableLightbox}
-              showLightboxThumbnails={true}
-            />
+            <div className={customClassName}>
+              <Gallery
+                tagStyle={{
+                  background: '#28292b9a',
+                  color: 'white',
+                  padding: '0.3rem 0.5rem',
+                  borderRadius: '0.2rem',
+                  bottom: '5rem',
+                  borderColor: 'white',
+                }}
+                images={images}
+                onSelectImage={onSelectImage}
+                enableImageSelection={inEditMode}
+                enableLightbox={enableLightbox}
+                showLightboxThumbnails={true}
+              />
+            </div>
           </LazyLoad>
         </div>
       </div>

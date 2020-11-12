@@ -1563,19 +1563,21 @@ const Make: React.FC<Props> = ({
                               // In edit mode, disabled light box
                               <ImageGallery
                                 images={images}
+                                inEditMode={true}
+                                enableLightbox={false}
                                 setImages={setImages}
                                 selectAllChecked={selectAllChecked}
                                 setSelectAllChecked={setSelectAllChecked}
-                                enableLightbox={false}
-                                inEditMode={true}
+                                customClassName="gallery__outerdiv--edit"
                               />
                             ) : (
                               // In normal mode, enable light box
                               <ImageGallery
                                 images={images}
-                                setImages={setImages}
-                                enableLightbox={true}
                                 inEditMode={false}
+                                enableLightbox={true}
+                                setImages={setImages}
+                                customClassName="gallery__outerdiv--normal"
                               />
                             )}
                           </>
