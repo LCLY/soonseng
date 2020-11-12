@@ -29,6 +29,9 @@ const initialState: SalesInitialState = {
   // accessory
   accessoryObj: null,
   accessoriesArray: null,
+  // images array
+  imagesArray: null,
+  imagesUploaded: false, //boolean to keep track of whether the image has uploaded successful
   // others
   errorMessage: null,
   successMessage: null,
@@ -38,7 +41,7 @@ const initialState: SalesInitialState = {
 // Clear Sales State - reset the states
 /* ============================================================================================ */
 const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { loading: false, errorMessage: null, successMessage: null });
+  return updateObject(state, { loading: false, errorMessage: null, successMessage: null, imagesUploaded: false });
 };
 
 /* ============================================================================================ */
@@ -46,21 +49,21 @@ const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
 /* ============================================================================================ */
 
 const uploadImageStart = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
+  return updateObject(state, { errorMessage: null, loading: true, imagesUploaded: false });
 };
 const uploadImageSucceed = (state: SalesInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'brandsArray' in action) {
+  if ('imagesArray' in action) {
     return updateObject(state, {
-      errorMessage: null,
       loading: false,
-      brandsArray: action.brandsArray,
-      successMessage: action.successMessage,
+      errorMessage: null,
+      imagesArray: action.imagesArray,
+      imagesUploaded: true,
     });
   }
 };
 const uploadImageFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false, imagesUploaded: false });
   }
 };
 

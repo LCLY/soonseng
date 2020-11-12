@@ -26,6 +26,7 @@ module.exports = {
           './src/scss/mixin.scss',
           './src/index.scss',
           './src/App.scss',
+          './src/scss/reactbootstrap.scss',
         ],
       },
     },

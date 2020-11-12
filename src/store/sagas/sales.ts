@@ -3,14 +3,19 @@ import * as actions from '../actions/index';
 import axios from 'axios';
 import { AppActions } from '../types/index';
 
+const UPLOAD_TO_MAKE = 'Make';
+
+// boolean to check whether image has been uploaded
+let imageIsUploaded = false;
+
 /* ================================================================== */
 //    Upload Image(s)
 /* ================================================================== */
 
-export function* uploadImageSaga(_action: AppActions) {
+export function* uploadImageSaga(action: AppActions) {
   yield put(actions.uploadImageStart());
 
-  let url = process.env.REACT_APP_API + `/upload/images`;
+  let url = process.env.REACT_APP_API + `/uploads`;
   let config = yield {
     headers: {
       'Content-type': 'multipart/form-data',
@@ -18,12 +23,23 @@ export function* uploadImageSaga(_action: AppActions) {
   };
 
   let formData = new FormData();
-  // profile is the name of the key, it forms a new object of {profile: action.picture}
-  // formData.append('profile', action.picture);
+  formData.append('upload_type', 'image'); //this is always fixed for this particular API because this will always be image instead of other file types
+
+  if ('model' in action && 'model_id' in action && 'imageFiles' in action && 'tag' in action) {
+    // "images[]" is the name of the key, it forms a new object of {images[]: the image files}
+    formData.append('model', action.model);
+    formData.append('model_id', action.model_id.toString());
+    formData.append('tag', action.tag);
+    // for each image, loop them out and append into the "images[]" array object
+    Array.from(action.imageFiles).forEach((file) => formData.append('images[]', file));
+  }
 
   try {
     let response = yield axios.post(url, formData, config);
-    yield put(actions.uploadImageSucceed(response.data.brands));
+    yield put(actions.uploadImageSucceed(response.data.images));
+    imageIsUploaded = true;
+
+    window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
       /*
@@ -107,8 +123,6 @@ export function* createBrandSaga(action: AppActions) {
     let response = yield axios.post(url, { brand });
     // receive new updated brands array
     yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
-
-    // if imageFiles and image tag exist in action, then call the upload image API once succeed
   } catch (error) {
     if (error.response) {
       /*
@@ -339,7 +353,24 @@ export function* createMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { make });
-    yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
+
+    if ('tag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.tag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.tag, action.imageFiles));
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -427,7 +458,24 @@ export function* updateMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { make });
-    yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
+
+    if ('tag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.tag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.tag, action.imageFiles));
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -773,7 +821,7 @@ export function* getBodyLengthsSaga(_action: AppActions) {
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getBodyLengthsSucceed(response.data.lengths));
+    yield put(actions.getBodyLengthsSucceed(response.data.body_lengths));
   } catch (error) {
     if (error.response) {
       /*
@@ -855,23 +903,23 @@ export function* updateBodyLengthSaga(action: AppActions) {
 export function* createBodyAccessorySaga(action: AppActions) {
   yield put(actions.createBodyAccessoryStart());
 
-  let url = process.env.REACT_APP_API + `/tail/body_accesory`;
+  let url = process.env.REACT_APP_API + `/tail/body_accessory`;
 
-  let body_accesory = {};
+  let body_accessory = {};
   // Type guard, check if the "key" exist in the action object
   if ('createBodyAccessoryData' in action) {
-    body_accesory = {
+    body_accessory = {
       title: '',
       description: action.createBodyAccessoryData.description,
       body_length_id: action.createBodyAccessoryData.body_length_id,
-      accesory_id: action.createBodyAccessoryData.accesory_id,
+      accessory_id: action.createBodyAccessoryData.accessory_id,
       price: action.createBodyAccessoryData.price,
     };
   }
 
   try {
-    let response = yield axios.post(url, { body_accesory });
-    yield put(actions.createBodyAccessorySucceed(response.data.body_accesories, response.data.success));
+    let response = yield axios.post(url, { body_accessory });
+    yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -902,11 +950,11 @@ export function* createBodyAccessorySaga(action: AppActions) {
 export function* getBodyAccessoriesSaga(_action: AppActions) {
   yield put(actions.getBodyAccessoriesStart());
 
-  let url = process.env.REACT_APP_API + `/tail/body_accesory`;
+  let url = process.env.REACT_APP_API + `/tail/body_accessory`;
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getBodyAccessoriesSucceed(response.data.body_accesories));
+    yield put(actions.getBodyAccessoriesSucceed(response.data.body_accessories));
   } catch (error) {
     if (error.response) {
       /*
@@ -938,21 +986,21 @@ export function* updateBodyAccessorySaga(action: AppActions) {
   yield put(actions.updateBodyAccessoryStart());
 
   let url = '';
-  let body_accesory = {};
+  let body_accessory = {};
   if ('updateBodyAccessoryData' in action) {
-    url = process.env.REACT_APP_API + `/tail/body_accesory/${action.updateBodyAccessoryData.body_accessory_id}`;
-    body_accesory = {
+    url = process.env.REACT_APP_API + `/tail/body_accessory/${action.updateBodyAccessoryData.body_accessory_id}`;
+    body_accessory = {
       title: '',
       description: action.updateBodyAccessoryData.description,
       body_length_id: action.updateBodyAccessoryData.body_length_id,
-      accesory_id: action.updateBodyAccessoryData.accesory_id,
+      accessory_id: action.updateBodyAccessoryData.accessory_id,
       price: action.updateBodyAccessoryData.price,
     };
   }
 
   try {
-    let response = yield axios.put(url, { body_accesory });
-    yield put(actions.updateBodyAccessorySucceed(response.data.body_lengths, response.data.success));
+    let response = yield axios.put(url, { body_accessory });
+    yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -987,20 +1035,20 @@ export function* updateBodyAccessorySaga(action: AppActions) {
 export function* createAccessorySaga(action: AppActions) {
   yield put(actions.createAccessoryStart());
 
-  let url = process.env.REACT_APP_API + `/tail/accesories`;
+  let url = process.env.REACT_APP_API + `/tail/accessories`;
 
-  let accesory = {};
+  let accessory = {};
   // Type guard, check if the "key" exist in the action object
   if ('title' in action && 'description' in action) {
-    accesory = {
+    accessory = {
       title: action.title,
       description: action.description,
     };
   }
 
   try {
-    let response = yield axios.post(url, { accesory });
-    yield put(actions.createAccessorySucceed(response.data.accesories, response.data.success));
+    let response = yield axios.post(url, { accessory });
+    yield put(actions.createAccessorySucceed(response.data.accessories, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
@@ -1031,11 +1079,11 @@ export function* createAccessorySaga(action: AppActions) {
 export function* getAccessoriesSaga(_action: AppActions) {
   yield put(actions.getAccessoriesStart());
 
-  let url = process.env.REACT_APP_API + `/tail/accesories`;
+  let url = process.env.REACT_APP_API + `/tail/accessories`;
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getAccessoriesSucceed(response.data.accesories));
+    yield put(actions.getAccessoriesSucceed(response.data.accessories));
   } catch (error) {
     if (error.response) {
       /*
@@ -1067,18 +1115,18 @@ export function* updateAccessorySaga(action: AppActions) {
   yield put(actions.updateAccessoryStart());
 
   let url = '';
-  let accesory = {};
+  let accessory = {};
   if ('id' in action && 'title' in action && 'description' in action) {
-    url = process.env.REACT_APP_API + `/tail/accesories/${action.id}`;
-    accesory = {
+    url = process.env.REACT_APP_API + `/tail/accessories/${action.id}`;
+    accessory = {
       title: action.title,
       description: action.description,
     };
   }
 
   try {
-    let response = yield axios.put(url, { accesory });
-    yield put(actions.updateAccessorySucceed(response.data.accesories, response.data.success));
+    let response = yield axios.put(url, { accessory });
+    yield put(actions.updateAccessorySucceed(response.data.accessories, response.data.success));
   } catch (error) {
     if (error.response) {
       /*

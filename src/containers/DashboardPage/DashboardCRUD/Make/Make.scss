@@ -162,10 +162,20 @@
     display: flex;
     overflow-x: auto;
     position: relative;
+    padding-bottom: 1rem;
+
+    /* ------------------- */
+    // The button and label for upload
+    /* ------------------- */
+    &-btn {
+      &-div {
+        margin-top: 1.5rem;
+      }
+    }
 
     // outerdiv
     &-outerdiv {
-      margin-top: 2rem;
+      margin-top: 1rem;
     }
 
     &-title {
@@ -189,5 +199,25 @@
         margin-right: 1rem;
       }
     }
+  }
+
+  /* ============================ */
+  // the images being displayed
+  /* ============================ */
+  &__images {
+    &-header {
+      // the div wrapping header and view all button
+      &-div {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  /* ====================================== */
+  // the available text for show images
+  /* ====================================== */
+  &__available {
+    color: $primary-color-3;
   }
 }

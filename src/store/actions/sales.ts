@@ -3,6 +3,7 @@ import * as actionTypes from './actionTypes';
 import {
   TReceivedBrandObj,
   TCreateMakeData,
+  TReceivedImageObj,
   TReceivedMakeObj,
   TReceivedWheelbaseObj,
   TUpdateMakeData,
@@ -34,13 +35,13 @@ const clearSalesState = () => {
 /* ============================================================================================ */
 // Upload Image(s)
 /* ============================================================================================ */
-export const uploadImage = (brandId: number, model: string, tag: string, imageFile: FileList): AppActions => {
+export const uploadImage = (model: string, model_id: number, tag: string, imageFiles: FileList): AppActions => {
   return {
     type: actionTypes.UPLOAD_IMAGE,
-    brandId: brandId,
     model: model,
+    model_id: model_id,
     tag: tag,
-    imageFile: imageFile,
+    imageFiles: imageFiles,
   };
 };
 
@@ -50,10 +51,10 @@ export const uploadImageStart = (): AppActions => {
   };
 };
 
-export const uploadImageSucceed = (successMessage: string): AppActions => {
+export const uploadImageSucceed = (imagesArray: TReceivedImageObj[]): AppActions => {
   return {
     type: actionTypes.UPLOAD_IMAGE_SUCCEED,
-    successMessage: successMessage,
+    imagesArray: imagesArray,
   };
 };
 export const uploadImageFailed = (errorMessage: string): AppActions => {
@@ -271,10 +272,16 @@ export const updateWheelbaseFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Create Make (head)
 /* ------------------ */
-export const createMake = (createMakeData: TCreateMakeData): AppActions => {
+export const createMake = (
+  createMakeData: TCreateMakeData,
+  tag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_MAKE,
     createMakeData: createMakeData,
+    tag: tag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -329,10 +336,16 @@ export const getMakesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Update Make (head)
 /* ------------------ */
-export const updateMake = (updateMakeData: TUpdateMakeData): AppActions => {
+export const updateMake = (
+  updateMakeData: TUpdateMakeData,
+  tag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKE,
     updateMakeData: updateMakeData,
+    tag: tag,
+    imageFiles: imageFiles,
   };
 };
 

@@ -1,0 +1,44 @@
+.imagegallery {
+  /* ======================= */
+  // The div wrapping the whole imagegallery
+  /* ======================= */
+  &__div {
+    display: block;
+    min-height: 1px;
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    overflow: auto;
+
+    & img {
+      object-fit: cover !important; //make image cover size
+    }
+  }
+  /* ======================= */
+  // The button in imagegallery
+  /* ======================= */
+  &__button {
+    background: $link-blue !important;
+    border-color: $link-blue-2 !important;
+    margin-right: 1rem;
+    padding-left: 1rem !important;
+    &:hover {
+      background: $link-blue-2 !important;
+    }
+
+    &:active {
+      transition: none;
+      background: $link-blue !important;
+    }
+
+    /* --------------------------------------- */
+    // the outerdiv wrapping the two buttons
+    /* --------------------------------------- */
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      padding-left: 0.3rem;
+      margin-bottom: 1rem;
+    }
+  }
+}

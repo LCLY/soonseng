@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
+import { ToolTwoTone } from '@ant-design/icons';
 import { Button, Empty, Form, Card, Input, Modal, Select, Table, Tag, Tooltip } from 'antd';
 /* Util */
 import { TMapStateToProps } from 'src/store/types';
@@ -599,10 +599,9 @@ const Body: React.FC<Props> = ({
 
   /* --------- BODY ACCESSORY ---------- */
   const onCreateBodyAccessoryFinish = (values: TCreateBodyAccessoryForm) => {
-    console.log(values.bodyLengthId);
     let createBodyAccessoryData = {
       body_length_id: values.bodyLengthId,
-      accesory_id: values.accessoryId,
+      accessory_id: values.accessoryId,
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
@@ -612,7 +611,7 @@ const Body: React.FC<Props> = ({
     let updateBodyAccessoryData = {
       body_accessory_id: values.bodyAccessoryId,
       body_length_id: values.bodyLengthId,
-      accesory_id: values.accessoryId,
+      accessory_id: values.accessoryId,
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
@@ -1286,7 +1285,7 @@ const Body: React.FC<Props> = ({
     const storeValue = (bodyLength: TReceivedBodyLengthObj, index: number) => {
       // only render when available value is true
       let concatPrice = `RM${bodyLength.price}`;
-      if (bodyLength.available && bodyAccessoriesArray && bodyLengthsArray) {
+      if (bodyLength.available && bodyLengthsArray) {
         tempArray.push({
           key: uuidv4(),
           index: index + 1,
@@ -1299,8 +1298,8 @@ const Body: React.FC<Props> = ({
           bodyLengthHeight: bodyLength.height,
           bodyLengthDepth: bodyLength.depth,
           bodyLengthPrice: concatPrice,
-          bodyLengthBodyAccessory: bodyAccessoriesArray, //pass the whole array
-          bodyLengthBodyAccessoryArrayLength: bodyLengthsArray.length, //pass in the array length for rowSpan
+          bodyLengthBodyAccessory: bodyLength.body_accessories, //pass the bodyaccessory array
+          bodyLengthBodyAccessoryArrayLength: bodyLength.body_accessories.length, //pass in the bodyaccessory array length for rowSpan
           available: bodyLength.available,
         });
       }
@@ -1427,7 +1426,7 @@ const Body: React.FC<Props> = ({
                   className="make__brand-btn"
                   onClick={() => setShowCreateModal({ ...showCreateModal, body_length: true })}
                 >
-                  Create Price
+                  Create Body Price
                 </Button>
               </div>
               {/* ----------------------- */}
@@ -1442,18 +1441,19 @@ const Body: React.FC<Props> = ({
                   expandIcon: ({ expanded, onExpand, record }) =>
                     expanded ? (
                       <Tooltip title="Click to hide accessories">
-                        <MinusCircleTwoTone onClick={(e) => onExpand(record, e)} />
+                        <ToolTwoTone onClick={(e) => onExpand(record, e)} />
                       </Tooltip>
                     ) : (
                       <Tooltip title="Click to view accessories">
-                        <PlusCircleTwoTone onClick={(e) => onExpand(record, e)} />
+                        <ToolTwoTone onClick={(e) => onExpand(record, e)} />
                       </Tooltip>
                     ),
 
                   expandedRowRender: (record: TBodyLengthTableState) => (
                     <>
                       <div>
-                        Attachable accessories for this body:&nbsp;
+                        Attachable accessories for&nbsp;
+                        <span style={{ textTransform: 'capitalize' }}>{record.bodyLengthBodyTitle}</span>:&nbsp;
                         <span className="body__expand-available">
                           {record.bodyLengthBodyAccessoryArrayLength} available
                         </span>
@@ -1474,7 +1474,7 @@ const Body: React.FC<Props> = ({
                                     <Card
                                       className="body__expand-card"
                                       title={
-                                        <span className="body__expand-card-title">{bodyAccessory.accesory.title}</span>
+                                        <span className="body__expand-card-title">{bodyAccessory.accessory.title}</span>
                                       }
                                       key={index}
                                       size="small"
@@ -1513,7 +1513,7 @@ const Body: React.FC<Props> = ({
                                               // fill in the updateBodyAccessoryform
                                               updateBodyAccessoryForm.setFieldsValue({
                                                 bodyAccessoryId: bodyAccessory.id, //the id for update
-                                                accessoryId: bodyAccessory.accesory.id,
+                                                accessoryId: bodyAccessory.accessory.id,
                                                 bodyAccessoryPrice: bodyAccessory.price,
                                                 bodyAccessoryDescription: bodyAccessory.description,
                                                 bodyLengthId: bodyAccessory.body_length.id,

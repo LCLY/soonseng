@@ -29,6 +29,9 @@ export interface SalesInitialState {
   // accessory
   readonly accessoryObj: TReceivedAccessoryObj | null;
   readonly accessoriesArray: TReceivedAccessoryObj[] | null;
+  // images array
+  readonly imagesUploaded: boolean;
+  readonly imagesArray: TReceivedImageObj[] | null;
 }
 
 // to further breakdown the state, use in mapStateToProps
@@ -46,14 +49,19 @@ export interface ClearSalesStateAction {
 /* ============================================================== */
 // Upload Image(s)
 /* ============================================================== */
-
+export type TReceivedImageObj = {
+  id: number;
+  filename: string;
+  tag: string;
+  url: string;
+};
 /* Api call */
 export interface UploadImageAction {
   type: typeof actionTypes.UPLOAD_IMAGE;
-  brandId: number;
-  model: string;
-  tag: string;
-  imageFile: FileList;
+  model: string; // to determine which model/table its targetting e.g. Brand, Make, Body Accessory
+  model_id: number; //the id of that model
+  tag: string; //tag for future filter use
+  imageFiles: FileList; //the upload images
 }
 /* States */
 export interface UploadImageStartAction {
@@ -61,7 +69,7 @@ export interface UploadImageStartAction {
 }
 export interface UploadImageSucceedAction {
   type: typeof actionTypes.UPLOAD_IMAGE_SUCCEED;
-  successMessage: string;
+  imagesArray: TReceivedImageObj[];
 }
 export interface UploadImageFailedAction {
   type: typeof actionTypes.UPLOAD_IMAGE_FAILED;
@@ -289,7 +297,7 @@ export type TReceivedMakeObj = {
   transmission: string;
   brand: TReceivedBrandObj;
   wheelbase: TReceivedWheelbaseObj;
-  images: string[];
+  images: TReceivedImageObj[];
 };
 
 /* --------------------------- */
@@ -299,6 +307,8 @@ export type TReceivedMakeObj = {
 export interface CreateMakeAction {
   type: typeof actionTypes.CREATE_MAKE;
   createMakeData: TCreateMakeData;
+  tag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateMakeStartAction {
@@ -341,6 +351,8 @@ export interface GetMakesFailedAction {
 export interface UpdateMakeAction {
   type: typeof actionTypes.UPDATE_MAKE;
   updateMakeData: TUpdateMakeData;
+  tag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface UpdateMakeStartAction {
@@ -540,6 +552,7 @@ export type TReceivedBodyLengthObj = {
   price: number;
   available: boolean;
   images: string[];
+  body_accessories: TReceivedBodyAccessoryObj[];
 };
 
 /* --------------------------- */
@@ -615,13 +628,13 @@ export interface GetBodyLengthsFailedAction {
 // Body length data when creating
 export type TCreateBodyAccessoryData = {
   body_length_id: number;
-  accesory_id: number;
+  accessory_id: number;
   description: string;
   price: number;
 };
 export type TUpdateBodyAccessoryData = {
   body_accessory_id: number;
-  accesory_id: number;
+  accessory_id: number;
   body_length_id: number;
   description: string;
   price: number;
@@ -629,7 +642,7 @@ export type TUpdateBodyAccessoryData = {
 export type TReceivedBodyAccessoryObj = {
   id: number;
   title: string;
-  accesory: TReceivedAccessoryObj;
+  accessory: TReceivedAccessoryObj;
   body_length: TReceivedBodyLengthObj;
   description: string;
   price: number;

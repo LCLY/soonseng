@@ -1,0 +1,14 @@
+/* make the customizations */
+$theme-colors: (
+  'primary': $primary-color-1,
+  'secondary': $secondary-color-3,
+  'tertiary': $tertiary-color-1,
+  'facebook': #3b5998,
+  'google': #d84b37 // 'info': tomato,
+  // 'danger': teal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+);
+$font-size-base: 1.5rem;
+
+/* import bootstrap to set changes */
+@import '~bootstrap/scss/bootstrap';
+

@@ -352,10 +352,9 @@ const Accessory: React.FC<Props> = ({
 
   /* --------- BODY ACCESSORY ---------- */
   const onCreateBodyAccessoryFinish = (values: TCreateBodyAccessoryForm) => {
-    console.log(values.bodyLengthId);
     let createBodyAccessoryData = {
       body_length_id: values.bodyLengthId,
-      accesory_id: values.accessoryId,
+      accessory_id: values.accessoryId,
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
@@ -365,7 +364,7 @@ const Accessory: React.FC<Props> = ({
     let updateBodyAccessoryData = {
       body_accessory_id: values.bodyAccessoryId,
       body_length_id: values.bodyLengthId,
-      accesory_id: values.accessoryId,
+      accessory_id: values.accessoryId,
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
@@ -719,10 +718,10 @@ const Accessory: React.FC<Props> = ({
           key: uuidv4(),
           index: index + 1,
           bodyAccessoryId: bodyAccessory.id,
-          accessoryId: bodyAccessory.accesory.id, //for update
+          accessoryId: bodyAccessory.accessory.id, //for update
           bodyLengthId: bodyAccessory.body_length.id, //for update
           bodyTitle: bodyAccessory.body_length.body.title, //body is wihtin the body length object
-          accessoryTitle: bodyAccessory.accesory.title,
+          accessoryTitle: bodyAccessory.accessory.title,
           bodyAccessoryPrice: 'RM' + bodyAccessory.price,
           bodyLengthWidth: bodyAccessory.body_length.width,
           bodyLengthHeight: bodyAccessory.body_length.height,
@@ -826,7 +825,7 @@ const Accessory: React.FC<Props> = ({
               {/* -------------------------- */}
               <Table
                 bordered
-                scroll={{ x: '89rem', y: 400 }}
+                scroll={{ x: '89rem', y: 600 }}
                 expandable={{
                   expandIcon: ({ expanded, onExpand, record }) =>
                     expanded ? (
