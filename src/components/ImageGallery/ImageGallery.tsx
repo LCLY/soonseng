@@ -4,7 +4,7 @@ import './ImageGallery.scss';
 /*3rd party lib*/
 import { Button } from 'antd';
 import Gallery from 'react-grid-gallery';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 
 interface ImageGalleryProps {
   inEditMode: boolean;
@@ -21,6 +21,7 @@ export type TImageArrayObj = {
   thumbnailHeight: number;
   isSelected: boolean;
   caption: string;
+  alt: string;
   tags: { value: string; title: string }[];
   nano: string; //the substitute image when ori image is still loading
 };
@@ -131,7 +132,7 @@ const ImageGallery: React.FC<Props> = ({
               </Button>
               {/* Disable delete when user hasnt select anything */}
               <Button danger disabled={getSelectedImagesLength() === 0} type="default">
-                Delete
+                <DeleteOutlined /> Delete
               </Button>
             </div>
           )}
@@ -165,22 +166,25 @@ const ImageGallery: React.FC<Props> = ({
                 showLightboxThumbnails={true}
               />
             ) : (
-              /* when NOT in edit mode, user cannot open lightbox */
-              <Gallery
-                margin={5}
-                tagStyle={{
-                  background: '#28292b9a',
-                  color: 'white',
-                  padding: '0.3rem 0.5rem',
-                  borderRadius: '0.2rem',
-                  bottom: '5rem',
-                  borderColor: 'white',
-                }}
-                images={images}
-                enableImageSelection={false} //prevent user from being able to select image
-                enableLightbox={true}
-                showLightboxThumbnails={true}
-              />
+              <>
+                Click on one of the images below to view at full size
+                {/*  when NOT in edit mode, user cannot open lightbox  */}
+                <Gallery
+                  margin={5}
+                  tagStyle={{
+                    background: '#28292b9a',
+                    color: 'white',
+                    padding: '0.3rem 0.5rem',
+                    borderRadius: '0.2rem',
+                    bottom: '5rem',
+                    borderColor: 'white',
+                  }}
+                  images={images}
+                  enableImageSelection={false} //prevent user from being able to select image
+                  enableLightbox={true}
+                  showLightboxThumbnails={true}
+                />
+              </>
             )}
           </div>
         </div>

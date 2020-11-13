@@ -171,3 +171,18 @@ svg {
     color: #1890ff !important;
   }
 }
+.blue-default-btn {
+  border-color: #1890ff !important;
+  outline-color: #1890ff !important;
+  color: #1890ff !important;
+  // border-color: rgb(153, 180, 219) !important;
+
+  &:hover {
+    color: lighten(#1890ff, 20%) !important;
+  }
+
+  &:active {
+    transition: none;
+    color: #1890ff !important;
+  }
+}

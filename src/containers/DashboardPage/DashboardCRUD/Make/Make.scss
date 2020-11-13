@@ -162,7 +162,8 @@
     display: flex;
     overflow-x: auto;
     position: relative;
-    padding-bottom: 1rem;
+    padding: 2rem;
+    background: $section-grey;
 
     /* ------------------- */
     // The button and label for upload
@@ -172,10 +173,11 @@
         margin-top: 1.5rem;
       }
     }
-
-    // outerdiv
-    &-outerdiv {
-      margin-top: 1rem;
+    /* ---------------------------- */
+    // innerdiv wrapping the badges
+    /* ---------------------------- */
+    &-innerdiv {
+      margin-right: 2rem !important;
     }
 
     &-title {
@@ -195,8 +197,24 @@
       min-width: 15rem;
       height: 13rem;
       border: 1px solid $primary-color-4;
-      &:not(:last-child) {
-        margin-right: 1rem;
+    }
+
+    /* -------------------- */
+    // the 'x' icon
+    /* -------------------- */
+    &-closeicon {
+      color: $primary-color-3 !important;
+      background: white;
+      border-radius: 50%;
+      font-size: 2rem;
+
+      &:hover {
+        cursor: pointer;
+        color: $primary-color-1 !important;
+      }
+
+      &:active {
+        color: $primary-color-3 !important;
       }
     }
   }

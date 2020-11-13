@@ -1,3 +1,4 @@
+// to ignore this whole file for typedoc
 // The name of action types
 
 /* ================================================================================== */

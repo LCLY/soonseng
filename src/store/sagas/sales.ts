@@ -4,8 +4,13 @@ import axios from 'axios';
 import { AppActions } from '../types/index';
 
 const UPLOAD_TO_MAKE = 'Make';
+const UPLOAD_TO_BRAND = 'Brand';
 
-// boolean to check whether image has been uploaded
+/**
+ * A boolean to check whether image has been uploaded
+ * only until image is uploaded then proceed with the succeed actions
+ * @type {boolean}
+ * */
 let imageIsUploaded = false;
 
 /* ================================================================== */
@@ -38,7 +43,6 @@ export function* uploadImageSaga(action: AppActions) {
     let response = yield axios.post(url, formData, config);
     yield put(actions.uploadImageSucceed(response.data.images));
     imageIsUploaded = true;
-
     window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
@@ -121,8 +125,26 @@ export function* createBrandSaga(action: AppActions) {
   }
   try {
     let response = yield axios.post(url, { brand });
-    // receive new updated brands array
-    yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
+
+    // Upload Image to model 'Make'
+    if ('tag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.tag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.tag, action.imageFiles));
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create brand succeed
+          yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
+          //reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        // receive new updated brands array
+        yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -354,6 +376,7 @@ export function* createMakeSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { make });
 
+    // Upload Image to model 'Make'
     if ('tag' in action && 'imageFiles' in action) {
       //  check if they are null or not
       if (action.tag && action.imageFiles) {

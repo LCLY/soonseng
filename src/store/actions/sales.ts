@@ -103,7 +103,12 @@ export const getBrandsFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Create Brand (head)
 /* ------------------------------ */
-export const createBrand = (title: string, description: string, tag?: string, imageFiles?: FileList): AppActions => {
+export const createBrand = (
+  title: string,
+  description: string,
+  tag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_BRAND,
     title: title,

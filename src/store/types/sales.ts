@@ -49,28 +49,37 @@ export interface ClearSalesStateAction {
 /* ============================================================== */
 // Upload Image(s)
 /* ============================================================== */
+
 export type TReceivedImageObj = {
   id: number;
   filename: string;
   tag: string;
   url: string;
 };
+
 /* Api call */
 export interface UploadImageAction {
   type: typeof actionTypes.UPLOAD_IMAGE;
-  model: string; // to determine which model/table its targetting e.g. Brand, Make, Body Accessory
-  model_id: number; //the id of that model
-  tag: string; //tag for future filter use
-  imageFiles: FileList; //the upload images
+  /** To determine which model/table its targetting e.g. Brand, Make, Body Accessory */
+  model: string;
+  /** The id of the specific model to choose to upload to */
+  model_id: number; //
+  /** Tag for future filter use */
+  tag: string;
+  /** The images prepare to be uploaded */
+  imageFiles: FileList;
 }
 /* States */
+
 export interface UploadImageStartAction {
   type: typeof actionTypes.UPLOAD_IMAGE_START;
 }
+
 export interface UploadImageSucceedAction {
   type: typeof actionTypes.UPLOAD_IMAGE_SUCCEED;
   imagesArray: TReceivedImageObj[];
 }
+
 export interface UploadImageFailedAction {
   type: typeof actionTypes.UPLOAD_IMAGE_FAILED;
   errorMessage: string;
@@ -99,8 +108,8 @@ export interface CreateBrandAction {
   type: typeof actionTypes.CREATE_BRAND;
   title: string;
   description: string;
-  tag?: string;
-  imageFiles?: FileList | null;
+  tag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateBrandStartAction {

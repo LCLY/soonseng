@@ -4,13 +4,20 @@ import './Make.scss';
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import ImageGallery from 'src/components/ImageGallery/ImageGallery';
+import PreviewUploadImage from 'src/components/PreviewUploadImage/PreviewUploadImage';
 /*3rd party lib*/
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { PlusCircleTwoTone, CloseCircleOutlined, MinusCircleTwoTone, EditOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  PlusCircleTwoTone,
+  UploadOutlined,
+  CloseCircleOutlined,
+  MinusCircleTwoTone,
+} from '@ant-design/icons';
 import { Table, Form, Input, Button, Modal, Tooltip, notification, Select, DatePicker, Empty } from 'antd';
 /* Util */
 import {
@@ -23,7 +30,6 @@ import {
 } from 'src/store/types/sales';
 import { TImageArrayObj } from 'src/components/ImageGallery/ImageGallery';
 import * as actions from 'src/store/actions/index';
-import { img_placeholder_link } from 'src/shared/global';
 import { TMapStateToProps } from 'src/store/types';
 import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/shared/Utils';
 
@@ -75,11 +81,8 @@ type TMakeTableState = {
 
 type TShowModal = {
   make: boolean;
-  currentMakeId?: number; //(for upload image) id to track which specific object is currently being edited
   brand: boolean;
-  currentBrandId?: number;
   wheelbase: boolean;
-  currentWheelbaseId?: number;
 };
 
 type Props = MakeProps & StateProps & DispatchProps;
@@ -365,47 +368,10 @@ const Make: React.FC<Props> = ({
               className="make__brand-btn--edit"
               type="link"
               onClick={() => {
-                // update the form value using the 'name' attribute as target/key
-                // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
-                let extractedFeet = '';
-                let extractedInch = '';
-                let extractedHorsepower = '';
-                let extractedPrice = '';
-                let extractedGvw = '';
-
-                // needa check if inch is undefined, only have feet in the string
-                let onlyInchUndefined =
-                  record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] === undefined;
-
-                if (onlyInchUndefined) {
-                  extractedFeet = record.length.split(" '")[0]; //get the first index
-                } else {
-                  extractedFeet = record.length.split(" '")[0]; //get the first index
-                  extractedInch = record.length.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
-                }
-
-                // replace units with empty strings
-                extractedHorsepower = record.horsepower.replace('hp', '');
-                extractedPrice = record.price.replace('RM', '');
-                extractedGvw = record.gvw.replace('kg', '');
-
-                // remember to set this form on the Form component
-                editMakeForm.setFieldsValue({
-                  makeId: record.makeId,
-                  makeBrandId: record.makeBrandId,
-                  makeWheelbaseId: record.makeWheelbaseId,
-                  gvw: extractedGvw,
-                  year: moment(record.year),
-                  price: extractedPrice,
-                  title: record.makeTitle,
-                  engine_cap: record.engine_cap,
-                  horsepower: extractedHorsepower,
-                  transmission: record.transmission,
-                  length: { feet: extractedFeet, inch: extractedInch },
-                });
-
+                // populate the editModalForm
+                onPopulateEditMakeModel(record);
                 // show modal
-                setShowEditModal({ ...showEditModal, make: true, currentMakeId: record.makeId });
+                setShowEditModal({ ...showEditModal, make: true });
               }}
             >
               Edit
@@ -497,11 +463,63 @@ const Make: React.FC<Props> = ({
     setImages(tempArray);
   };
 
+  /**
+   * This function takes in the record of the current row of the table
+   * and then reformat the important information and pass into the current modal / form
+   * @param {TMakeTableState} record
+   * @exports
+   * @memberof Make
+   */
+  const onPopulateEditMakeModel = (record: TMakeTableState) => {
+    // update the form value using the 'name' attribute as target/key
+    // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
+    let extractedFeet = '';
+    let extractedInch = '';
+    let extractedHorsepower = '';
+    let extractedPrice = '';
+    let extractedGvw = '';
+
+    // needa check if inch is undefined, only have feet in the string
+    let onlyInchUndefined = record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] === undefined;
+
+    if (onlyInchUndefined) {
+      extractedFeet = record.length.split(" '")[0]; //get the first index
+    } else {
+      extractedFeet = record.length.split(" '")[0]; //get the first index
+      extractedInch = record.length.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
+    }
+
+    // replace units with empty strings
+    extractedHorsepower = record.horsepower.replace('hp', '');
+    extractedPrice = record.price.replace('RM', '');
+    extractedGvw = record.gvw.replace('kg', '');
+
+    // remember to set this form on the Form component
+    editMakeForm.setFieldsValue({
+      makeId: record.makeId,
+      makeBrandId: record.makeBrandId,
+      makeWheelbaseId: record.makeWheelbaseId,
+      gvw: extractedGvw,
+      year: moment(record.year),
+      price: extractedPrice,
+      title: record.makeTitle,
+      engine_cap: record.engine_cap,
+      horsepower: extractedHorsepower,
+      transmission: record.transmission,
+      length: { feet: extractedFeet, inch: extractedInch },
+    });
+  };
+
   /* Forms onFinish methods */
   // the keys "values" are from the form's 'name' attribute
-  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string }) => {
-    // if not then just get the title and description
-    onCreateBrand(values.brandTitle, values.brandDescription);
+  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; imageTag: string }) => {
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBrand(values.brandTitle, values.brandDescription, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateBrand(values.brandTitle, values.brandDescription, null, null);
+    }
   };
   const onEditBrandFinish = (values: { brandId: number; brandTitle: string; brandDescription: string }) => {
     onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription);
@@ -614,96 +632,40 @@ const Make: React.FC<Props> = ({
     }
   };
 
-  /**
-   * Trigger this function when user clicks on the upload button
-   * @param {React.ChangeEvent<HTMLInputElement>} e
-   */
-  const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUploadSelectedFiles(event.target.files);
-
-    //check if files exist
-    if (event.target.files) {
-      // if files exist, store them in an array and into the state of imagePreviewUrls
-      // convert the FileList object to array first and then iterate it
-      let filesTempArray: string[] = [];
-      // convert the files into string of localhost url
-      Array.from(event.target.files).forEach((file) => filesTempArray.push(URL.createObjectURL(file)));
-      setImagesPreviewUrls(filesTempArray);
-    }
-  };
-
   /* ================================================== */
   /*  Components  */
   /* ================================================== */
-  /* ----------------------- */
-  // Upload images
-  /* ----------------------- */
-  let uploadImageComponent = (
-    <>
-      <div className="make__preview-btn-div">
-        <input
-          type="file"
-          id="imageFiles"
-          hidden
-          multiple
-          accept="image/png, image/jpeg, image/jpg" //only accept image files
-          onChange={fileSelectedHandler}
-        />
-        <label htmlFor="imageFiles" className="ant-btn ant-btn-default profile__picture-button">
-          Select image(s) from device
-        </label>
-      </div>
-      {/* Only shows when images are selected */}
-      {imagesPreviewUrls.length !== 0 && (
-        <div className="make__preview-outerdiv">
-          <div className="make__preview-title-div">
-            <div className="make__preview-title">Image(s) Preview</div>
-            {/* ------- Select Image Tag -------*/}
-            <Form.Item
-              label="Tag"
-              name="imageTag"
-              rules={[{ required: true, message: 'Select a Tag!' }]}
-              style={{ marginBottom: '0' }}
-            >
-              {/* only render if brandsArray is not null */}
-              <Select placeholder="Select a tag">
-                <Option style={{ textTransform: 'capitalize' }} value="Body Plan">
-                  Body Plan
-                </Option>
-                <Option style={{ textTransform: 'capitalize' }} value="Catalog">
-                  Catalog
-                </Option>
-                <Option style={{ textTransform: 'capitalize' }} value="Customer Photo">
-                  Customer Photo
-                </Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <div className="make__preview">
-            {imagesPreviewUrls.map((imagePreviewUrl) => {
-              return (
-                <div
-                  className="make__preview-item"
-                  key={uuidv4()}
-                  style={{
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    backgroundColor: 'rgb(197, 197, 191)',
-                    backgroundImage: `url(${imagePreviewUrl}), url(${img_placeholder_link})`,
-                  }}
-                ></div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </>
-  );
 
   /* ------------------------ */
   // Brand
   /* ------------------------ */
+
+  // Brand Form items
+  let brandFormItems = (
+    <>
+      <Form.Item
+        className="make__form-item"
+        label="Title"
+        name="brandTitle"
+        rules={[{ required: true, message: 'Input title here!' }]}
+      >
+        <Input placeholder="Type title here" />
+      </Form.Item>
+      <Form.Item
+        className="make__form-item"
+        label="Description"
+        name="brandDescription"
+        rules={[{ required: false, message: 'Input description here!' }]}
+      >
+        <TextArea rows={3} placeholder="Type description here" />
+      </Form.Item>
+      <PreviewUploadImage
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+      />
+    </>
+  );
 
   /* Create Brand Form */
   let createBrandFormComponent = (
@@ -714,23 +676,8 @@ const Make: React.FC<Props> = ({
         onKeyDown={(e) => handleKeyDown(e, createBrandForm)}
         onFinish={onCreateBrandFinish}
       >
-        <Form.Item
-          className="make__form-item"
-          label="Title"
-          name="brandTitle"
-          rules={[{ required: true, message: 'Input title here!' }]}
-        >
-          <Input placeholder="Type title here" />
-        </Form.Item>
-
-        <Form.Item
-          className="make__form-item"
-          label="Description"
-          name="brandDescription"
-          rules={[{ required: false, message: 'Input description here!' }]}
-        >
-          <TextArea rows={3} placeholder="Type description here" />
-        </Form.Item>
+        {/* The rest of the form items */}
+        {brandFormItems}
       </Form>
     </>
   );
@@ -762,24 +709,8 @@ const Make: React.FC<Props> = ({
         onKeyDown={(e) => handleKeyDown(e, editBrandForm)}
         onFinish={onEditBrandFinish}
       >
-        <Form.Item
-          className="make__form-item"
-          label="Title"
-          name="brandTitle"
-          rules={[{ required: true, message: 'Input title here!' }]}
-        >
-          <Input placeholder="Type title here" />
-        </Form.Item>
-
-        <Form.Item
-          className="make__form-item"
-          label="Description"
-          name="brandDescription"
-          rules={[{ required: false, message: 'Input description here!' }]}
-        >
-          <TextArea rows={3} placeholder="Type description here" />
-        </Form.Item>
-
+        {/* The rest of the form items */}
+        {brandFormItems}
         {/* Getting the brand id */}
         <Form.Item
           className="make__form-item"
@@ -1063,7 +994,11 @@ const Make: React.FC<Props> = ({
         <Input type="number" min={0} addonBefore="RM" placeholder="Type price here e.g. 1500" />
       </Form.Item>
       {/* The whole upload image component including buttons and image previews */}
-      {uploadImageComponent}{' '}
+      <PreviewUploadImage
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+      />
     </>
   );
 
@@ -1510,13 +1445,11 @@ const Make: React.FC<Props> = ({
                           <>
                             <div className="make__images-header-div">
                               <div className="flex-align-center">
-                                Images: <span className="make__available">{record.makeImages.length} result(s)</span>
+                                Images:&nbsp;
+                                <span className="make__available">{record.makeImages.length} result(s)</span>
                               </div>
                               <div>
                                 <Button
-                                  className="blue-link-btn"
-                                  type="link"
-                                  style={{ paddingRight: 0 }}
                                   onClick={() => {
                                     // this is to set boolean for specific row to be true
                                     // in this case e.g. make1: true or false
@@ -1535,10 +1468,26 @@ const Make: React.FC<Props> = ({
                                     <span>Cancel</span>
                                   ) : (
                                     <span>
-                                      Edit Image(s)&nbsp; <EditOutlined />
+                                      Delete Image(s)&nbsp; <DeleteOutlined />
                                     </span>
                                   )}
                                 </Button>
+
+                                {/* only show add images button when NOT in edit mode */}
+                                {!showEditImageGallery['make' + record.makeId] && (
+                                  <Button
+                                    style={{ marginLeft: '1rem' }}
+                                    className="blue-default-btn"
+                                    onClick={() => {
+                                      // populate the editModalForm
+                                      onPopulateEditMakeModel(record);
+                                      // open the edit modal
+                                      setShowEditModal({ ...showEditModal, make: true });
+                                    }}
+                                  >
+                                    Add Image(s) <UploadOutlined />
+                                  </Button>
+                                )}
 
                                 {/* Close button */}
                                 <Button
@@ -1642,7 +1591,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     // Brand
     onGetBrands: () => dispatch(actions.getBrands()),
-    onCreateBrand: (title, description, tag?, imageFiles?) =>
+    onCreateBrand: (title, description, tag, imageFiles) =>
       dispatch(actions.createBrand(title, description, tag, imageFiles)),
     onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
     // Wheelbase

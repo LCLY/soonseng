@@ -49,7 +49,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "generate-docs": "typedoc --out docs src"
+    "generate-docs": "typedoc --out docs --exclude \"**/*+(index).ts\" --exclude \"**/store/actions/*+(actionTypes|sales).ts\" --exclude \"**/store/reducers/*.ts\" src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -68,6 +68,7 @@
   },
   "devDependencies": {
     "craco-sass-resources-loader": "^1.1.0",
-    "typedoc": "^0.19.2"
+    "typedoc": "^0.19.2",
+    "typedoc-plugin-external-module-name": "^4.0.3"
   }
 }
