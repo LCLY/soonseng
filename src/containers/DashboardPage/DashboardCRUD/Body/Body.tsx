@@ -1440,11 +1440,11 @@ const Body: React.FC<Props> = ({
                 expandable={{
                   expandIcon: ({ expanded, onExpand, record }) =>
                     expanded ? (
-                      <Tooltip title="Click to hide accessories">
+                      <Tooltip trigger={['hover', 'click']} title="Click to hide accessories">
                         <ToolTwoTone onClick={(e) => onExpand(record, e)} />
                       </Tooltip>
                     ) : (
-                      <Tooltip title="Click to view accessories">
+                      <Tooltip trigger={['hover', 'click']} title="Click to view accessories">
                         <ToolTwoTone onClick={(e) => onExpand(record, e)} />
                       </Tooltip>
                     ),

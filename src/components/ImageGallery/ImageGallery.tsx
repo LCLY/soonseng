@@ -3,13 +3,11 @@ import './ImageGallery.scss';
 /*components*/
 /*3rd party lib*/
 import { Button } from 'antd';
-import LazyLoad from 'react-lazyload';
 import Gallery from 'react-grid-gallery';
 import { CheckCircleOutlined } from '@ant-design/icons';
 
 interface ImageGalleryProps {
   inEditMode: boolean;
-  enableLightbox: boolean;
   selectAllChecked?: boolean;
   setSelectAllChecked?: React.Dispatch<React.SetStateAction<boolean>>;
   images: TImageArrayObj[];
@@ -24,6 +22,7 @@ export type TImageArrayObj = {
   isSelected: boolean;
   caption: string;
   tags: { value: string; title: string }[];
+  nano: string; //the substitute image when ori image is still loading
 };
 
 type Props = ImageGalleryProps;
@@ -32,7 +31,6 @@ const ImageGallery: React.FC<Props> = ({
   images,
   setImages,
   inEditMode,
-  enableLightbox,
   customClassName,
   selectAllChecked,
   setSelectAllChecked,
@@ -70,7 +68,7 @@ const ImageGallery: React.FC<Props> = ({
    * @param {number} index
    * @param {*} _image
    */
-  const onSelectImage = (index: number, _image: any) => {
+  const onSelectImage = (index: number) => {
     var temp_images: TImageArrayObj[] = images.slice(); //copy the array, just like spread operator
     var img = temp_images[index];
     // if the image doesnt have isSelected property then add it on the fly
@@ -115,7 +113,6 @@ const ImageGallery: React.FC<Props> = ({
       for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = true;
     }
 
-    console.log('after: ', selectAllChecked);
     setImages(temp_images);
   };
 
@@ -146,9 +143,12 @@ const ImageGallery: React.FC<Props> = ({
           >
             {inEditMode && <> Selected images: {getSelectedImagesLength().toString()}</>}
           </div>
-          <LazyLoad placeholder={<div>Loading...</div>}>
-            <div className={customClassName}>
+
+          <div className={customClassName}>
+            {inEditMode ? (
+              /* when in edit mode, user can open lightbox */
               <Gallery
+                margin={5}
                 tagStyle={{
                   background: '#28292b9a',
                   color: 'white',
@@ -158,13 +158,31 @@ const ImageGallery: React.FC<Props> = ({
                   borderColor: 'white',
                 }}
                 images={images}
+                onClickThumbnail={onSelectImage}
                 onSelectImage={onSelectImage}
-                enableImageSelection={inEditMode}
-                enableLightbox={enableLightbox}
+                enableImageSelection={true} //allow user to select image and check the checkbox
+                enableLightbox={false} //hide lightbox
                 showLightboxThumbnails={true}
               />
-            </div>
-          </LazyLoad>
+            ) : (
+              /* when NOT in edit mode, user cannot open lightbox */
+              <Gallery
+                margin={5}
+                tagStyle={{
+                  background: '#28292b9a',
+                  color: 'white',
+                  padding: '0.3rem 0.5rem',
+                  borderRadius: '0.2rem',
+                  bottom: '5rem',
+                  borderColor: 'white',
+                }}
+                images={images}
+                enableImageSelection={false} //prevent user from being able to select image
+                enableLightbox={true}
+                showLightboxThumbnails={true}
+              />
+            )}
+          </div>
         </div>
       </div>
     </>

@@ -483,6 +483,8 @@ const Make: React.FC<Props> = ({
         thumbnail: image.url,
         thumbnailWidth: 320,
         thumbnailHeight: 212,
+        alt: image.filename,
+        nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
         isSelected: false,
         tags: [{ value: image.tag, title: image.tag }],
         caption: image.filename,
@@ -1507,7 +1509,7 @@ const Make: React.FC<Props> = ({
                         ) : (
                           <>
                             <div className="make__images-header-div">
-                              <div>
+                              <div className="flex-align-center">
                                 Images: <span className="make__available">{record.makeImages.length} result(s)</span>
                               </div>
                               <div>
@@ -1564,7 +1566,6 @@ const Make: React.FC<Props> = ({
                               <ImageGallery
                                 images={images}
                                 inEditMode={true}
-                                enableLightbox={false}
                                 setImages={setImages}
                                 selectAllChecked={selectAllChecked}
                                 setSelectAllChecked={setSelectAllChecked}
@@ -1575,7 +1576,6 @@ const Make: React.FC<Props> = ({
                               <ImageGallery
                                 images={images}
                                 inEditMode={false}
-                                enableLightbox={true}
                                 setImages={setImages}
                                 customClassName="gallery__outerdiv--normal"
                               />
