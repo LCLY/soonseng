@@ -85,6 +85,31 @@ export interface UploadImageFailedAction {
   errorMessage: string;
 }
 
+/* ============================================================== */
+// Delete Upload Image(s)
+/* ============================================================== */
+
+/* Api call */
+export interface DeleteImageAction {
+  type: typeof actionTypes.DELETE_UPLOAD_IMAGE;
+  /** Array of ids to send to backend */
+  ids: number[];
+}
+/* States */
+export interface DeleteImageStartAction {
+  type: typeof actionTypes.DELETE_UPLOAD_IMAGE_START;
+}
+
+export interface DeleteImageSucceedAction {
+  type: typeof actionTypes.DELETE_UPLOAD_IMAGE_SUCCEED;
+  imagesArray: TReceivedImageObj[];
+}
+
+export interface DeleteImageFailedAction {
+  type: typeof actionTypes.DELETE_UPLOAD_IMAGE_FAILED;
+  errorMessage: string;
+}
+
 /* ========================================================================================= */
 
 // All the actiontypes with their payload
@@ -673,6 +698,8 @@ export interface CreateBodyAccessoryStartAction {
 export interface CreateBodyAccessorySucceedAction {
   type: typeof actionTypes.CREATE_BODYACCESSORY_SUCCEED;
   bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+  /** Need this array so within the body lengths table, the body accessory can be updated smoothly */
+  bodyLengthsArray: TReceivedBodyLengthObj[];
   successMessage: string;
 }
 export interface CreateBodyAccessoryFailedAction {
@@ -818,6 +845,13 @@ export type SalesActionTypes =
   | UploadImageStartAction
   | UploadImageSucceedAction
   | UploadImageFailedAction
+  /* ------------------------ */
+  // Delete Image(s)
+  /* ------------------------ */
+  | DeleteImageAction
+  | DeleteImageStartAction
+  | DeleteImageSucceedAction
+  | DeleteImageFailedAction
   /* ------------------------ */
   /* ======================================================================= */
   /* ------------------------ */

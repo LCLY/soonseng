@@ -66,6 +66,27 @@ const uploadImageFailed = (state: SalesInitialState, action: AppActions) => {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false, imagesUploaded: false });
   }
 };
+/* ============================================================================================ */
+/*   Delete Image(s)
+/* ============================================================================================ */
+
+const deleteImageStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteImageSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('successMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const deleteImageFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
 
 /* ============================================================================================ */
 /* Brand (Make Page) (head) */
@@ -483,11 +504,12 @@ const createBodyAccessoryStart = (state: SalesInitialState, _action: AppActions)
   return updateObject(state, { errorMessage: null, loading: true });
 };
 const createBodyAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'bodyAccessoriesArray' in action) {
+  if ('successMessage' in action && 'bodyAccessoriesArray' in action && 'bodyLengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
       bodyAccessoriesArray: action.bodyAccessoriesArray,
+      bodyLengthsArray: action.bodyLengthsArray,
       successMessage: action.successMessage,
     });
   }
@@ -626,6 +648,15 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
       return uploadImageSucceed(state, action);
     case actionTypes.UPLOAD_IMAGE_FAILED:
       return uploadImageFailed(state, action);
+    /* =================================== */
+    // Delete Image(s)
+    /* =================================== */
+    case actionTypes.DELETE_UPLOAD_IMAGE_START:
+      return deleteImageStart(state, action);
+    case actionTypes.DELETE_UPLOAD_IMAGE_SUCCEED:
+      return deleteImageSucceed(state, action);
+    case actionTypes.DELETE_UPLOAD_IMAGE_FAILED:
+      return deleteImageFailed(state, action);
 
     /* =================================== */
     // Brand (Make Page) (head)

@@ -15,7 +15,8 @@ import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
-import { Container, Accordion, Button, Card } from 'react-bootstrap';
+import { Button } from 'antd';
+import { Container, Accordion, Card } from 'react-bootstrap';
 
 // Util
 import { TMapStateToProps } from 'src/store/types/index';
@@ -112,7 +113,7 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
       <NavbarComponent activePage="sales" />
       <Container>
         <div className="sales__dashboard">
-          <Button variant="primary" onClick={() => history.push('/dashboard')}>
+          <Button type="default" onClick={() => history.push('/dashboard/make')}>
             Go to Dashboard
           </Button>
         </div>
@@ -296,7 +297,7 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
                                       <Card.Title>{selectedMake.title}</Card.Title>
                                       <Card.Text>{selectedMake.desc}</Card.Text>
                                       <div className="card__price-div">
-                                        <Button variant="primary">Add to cart</Button>
+                                        <Button type="primary">Add to cart</Button>
                                         <p className="card-text card__price">
                                           RM
                                           <NumberFormat

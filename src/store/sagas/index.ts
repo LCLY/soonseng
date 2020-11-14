@@ -4,8 +4,9 @@ import * as actionTypes from '../actions/actionTypes';
 import { SalesActionTypes } from '../types/sales';
 
 import {
-  // Upload Image(s)
+  // Upload/Delete Image(s)
   uploadImageSaga,
+  deleteUploadImageSaga,
   // Brand
   createBrandSaga,
   getBrandsSaga,
@@ -43,6 +44,7 @@ import {
 export function* watchAuth() {
   // Upload Images
   yield all([takeEvery<SalesActionTypes>(actionTypes.UPLOAD_IMAGE, uploadImageSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.DELETE_UPLOAD_IMAGE, deleteUploadImageSaga)]);
   // Brand
   yield all([takeEvery<SalesActionTypes>(actionTypes.CREATE_BRAND, createBrandSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_BRANDS, getBrandsSaga)]);

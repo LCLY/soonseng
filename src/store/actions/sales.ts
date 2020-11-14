@@ -64,6 +64,35 @@ export const uploadImageFailed = (errorMessage: string): AppActions => {
   };
 };
 
+/* ============================================================================================ */
+// Delete Image(s)
+/* ============================================================================================ */
+export const deleteUploadImage = (ids: number[]): AppActions => {
+  return {
+    type: actionTypes.DELETE_UPLOAD_IMAGE,
+    ids: ids,
+  };
+};
+
+export const deleteUploadImageStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_UPLOAD_IMAGE_START,
+  };
+};
+
+export const deleteUploadImageSucceed = (imagesArray: TReceivedImageObj[]): AppActions => {
+  return {
+    type: actionTypes.DELETE_UPLOAD_IMAGE_SUCCEED,
+    imagesArray: imagesArray,
+  };
+};
+export const deleteUploadImageFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_UPLOAD_IMAGE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
 /* ******************************************************************************************** */
 /* ******************************************************************************************** */
 /* ******************************************************************************************** */
@@ -688,11 +717,13 @@ export const createBodyAccessoryStart = (): AppActions => {
 
 export const createBodyAccessorySucceed = (
   bodyAccessoriesArray: TReceivedBodyAccessoryObj[],
+  bodyLengthsArray: TReceivedBodyLengthObj[],
   successMessage: string,
 ): AppActions => {
   return {
     type: actionTypes.CREATE_BODYACCESSORY_SUCCEED,
     bodyAccessoriesArray: bodyAccessoriesArray,
+    bodyLengthsArray: bodyLengthsArray,
     successMessage: successMessage,
   };
 };

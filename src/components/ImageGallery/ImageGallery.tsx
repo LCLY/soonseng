@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ImageGallery.scss';
 /*components*/
 /*3rd party lib*/
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import Gallery from 'react-grid-gallery';
-import { CheckCircleOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 interface ImageGalleryProps {
+  loading?: boolean; //loading for button
   inEditMode: boolean;
   selectAllChecked?: boolean;
   setSelectAllChecked?: React.Dispatch<React.SetStateAction<boolean>>;
   images: TImageArrayObj[];
   setImages: React.Dispatch<React.SetStateAction<TImageArrayObj[]>>;
   customClassName: string; //to determine classname whether for edit or normal mode
+  onDeleteUploadImage?: (ids: number[]) => void;
 }
 export type TImageArrayObj = {
+  id: number;
   src: string;
   thumbnail: string;
   thumbnailWidth: number;
@@ -30,15 +33,18 @@ type Props = ImageGalleryProps;
 
 const ImageGallery: React.FC<Props> = ({
   images,
+  loading,
   setImages,
   inEditMode,
   customClassName,
   selectAllChecked,
   setSelectAllChecked,
+  onDeleteUploadImage,
 }) => {
   /* ================================================== */
-  /*  state */
+  /*  useState  */
   /* ================================================== */
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   /* ================================================== */
   /*  methods  */
@@ -117,10 +123,49 @@ const ImageGallery: React.FC<Props> = ({
     setImages(temp_images);
   };
 
+  /**
+   * Helper function to filter out selected objects and
+   * pass to backend api calls
+   */
+
+  const confirmDeleteUploadImage = () => {
+    // filter out the selected images
+    let filteredSelectedImages = images.filter((imgObj) => {
+      return imgObj.isSelected === true;
+    });
+
+    // extract the ids out from the filtered selected images
+    let idsArray: number[] = [];
+    filteredSelectedImages.forEach((imgObj) => {
+      idsArray.push(imgObj.id);
+    });
+
+    if (idsArray.length > 0 && onDeleteUploadImage) {
+      // pass in an array ids of the images that has value isSelected = true
+      onDeleteUploadImage(idsArray);
+    }
+  };
+
   /* ================================================== */
   /* ================================================== */
   return (
     <>
+      {/* Delete Modal */}
+      <Modal
+        title={
+          <>
+            <ExclamationCircleOutlined className="imagegallery__modal-icon" />
+            {getSelectedImagesLength() > 1 ? 'Delete Images' : 'Delete Image'}
+          </>
+        }
+        confirmLoading={loading}
+        visible={showDeleteModal}
+        okText="Yes, Delete"
+        onOk={() => confirmDeleteUploadImage()}
+        onCancel={() => setShowDeleteModal(false)}
+      >
+        Are you sure you want to delete {getSelectedImagesLength() > 1 ? 'these images?' : 'this image?'}
+      </Modal>
       <div>
         <div className="imagegallery__div">
           {/* Only show select all and delete when user is in edit mode */}
@@ -131,7 +176,12 @@ const ImageGallery: React.FC<Props> = ({
                 Select All
               </Button>
               {/* Disable delete when user hasnt select anything */}
-              <Button danger disabled={getSelectedImagesLength() === 0} type="default">
+              <Button
+                danger
+                disabled={getSelectedImagesLength() === 0}
+                type="default"
+                onClick={() => setShowDeleteModal(true)}
+              >
                 <DeleteOutlined /> Delete
               </Button>
             </div>
@@ -192,4 +242,5 @@ const ImageGallery: React.FC<Props> = ({
     </>
   );
 };
+
 export default ImageGallery;

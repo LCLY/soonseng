@@ -4,12 +4,14 @@ import './Make.scss';
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import ImageGallery from 'src/components/ImageGallery/ImageGallery';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import PreviewUploadImage from 'src/components/PreviewUploadImage/PreviewUploadImage';
 /*3rd party lib*/
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
+import { Container } from 'react-bootstrap';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import {
   DeleteOutlined,
@@ -18,7 +20,8 @@ import {
   CloseCircleOutlined,
   MinusCircleTwoTone,
 } from '@ant-design/icons';
-import { Table, Form, Input, Button, Modal, Tooltip, notification, Select, DatePicker, Empty } from 'antd';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { Table, Form, Input, Button, Modal, Tooltip, notification, Select, DatePicker, Empty, Tabs } from 'antd';
 /* Util */
 import {
   TReceivedMakeObj,
@@ -28,6 +31,7 @@ import {
   TReceivedImageObj,
   TReceivedWheelbaseObj,
 } from 'src/store/types/sales';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TImageArrayObj } from 'src/components/ImageGallery/ImageGallery';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
@@ -35,6 +39,7 @@ import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/sha
 
 const { Option } = Select;
 const { TextArea } = Input;
+const { TabPane } = Tabs;
 
 interface MakeProps {}
 
@@ -85,10 +90,11 @@ type TShowModal = {
   wheelbase: boolean;
 };
 
-type Props = MakeProps & StateProps & DispatchProps;
+type Props = MakeProps & StateProps & DispatchProps & RouteComponentProps;
 
 const Make: React.FC<Props> = ({
   // Miscellaneous
+  history,
   loading,
   errorMessage,
   successMessage,
@@ -110,6 +116,8 @@ const Make: React.FC<Props> = ({
   onUpdateMake,
   // image
   imagesUploaded,
+  // delete uploaded image
+  onDeleteUploadImage,
 }) => {
   /* ================================================== */
   /*  state */
@@ -121,6 +129,8 @@ const Make: React.FC<Props> = ({
   const [editWheelbaseForm] = Form.useForm();
   const [createMakeForm] = Form.useForm();
   const [editMakeForm] = Form.useForm();
+
+  const { width } = useWindowDimensions();
   // Table states
   const [makeTableState, setMakeTableState] = useState<TMakeTableState[]>([]);
   const [brandTableState, setBrandTableState] = useState<TBrandTableState[]>([]);
@@ -445,6 +455,7 @@ const Make: React.FC<Props> = ({
     // Populate the array state with every image and later pass to Image Gallery
     const storeValue = (image: TReceivedImageObj) => {
       let imageObject = {
+        id: image.id,
         src: image.url,
         thumbnail: image.url,
         thumbnailWidth: 320,
@@ -1239,6 +1250,7 @@ const Make: React.FC<Props> = ({
   /* -------------------- */
   useEffect(() => {
     if (successMessage) {
+      // show success notification
       notification['success']({
         message: 'Success',
         description: successMessage,
@@ -1282,7 +1294,7 @@ const Make: React.FC<Props> = ({
   /* --------------- */
   useEffect(() => {
     if (imagesUploaded) {
-      // if image is uploaded clear the state
+      // if image has been uploaded, clear the state
       onClearSalesState();
       setImagesPreviewUrls([]); //empty the array
     }
@@ -1302,252 +1314,287 @@ const Make: React.FC<Props> = ({
       {createMakeModal}
       {editMakeModal}
 
-      <section>
-        <HeaderTitle>Make (Head)</HeaderTitle>
+      <NavbarComponent activePage="" />
+      <Container>
+        <div className="make__tab-outerdiv">
+          <Tabs
+            animated={false}
+            onTabClick={(e) => {
+              // onclick check which key and go to that page
+              switch (e) {
+                case 'make':
+                  history.push('/dashboard/make');
+                  break;
+                case 'body':
+                  history.push('/dashboard/body');
+                  break;
+                case 'accessory':
+                  history.push('/dashboard/accessory');
+                  break;
+                default:
+                  history.push('/dashboard/make');
+                  break;
+              }
+            }}
+            activeKey="make"
+            tabPosition={width > 1200 ? 'left' : 'top'}
+          >
+            <TabPane tab="Make" key="make" className="dashboard__tab">
+              <section>
+                <HeaderTitle>Make (Head)</HeaderTitle>
 
-        {brandsArray && wheelbasesArray && makesArray ? (
-          <>
-            {/* ====================== */}
-            {/*     Brand Section      */}
-            {/* ====================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Brands</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
-                >
-                  Create New Brand
-                </Button>
-              </div>
-              {/* ------------------ */}
-              {/*    Brand Table     */}
-              {/* ------------------ */}
-              <Table
-                bordered
-                className="make__table"
-                scroll={{ x: '89rem', y: 400 }}
-                // components={components}
-                dataSource={brandTableState}
-                columns={convertHeader(brandColumns, setBrandColumns)}
-                pagination={false}
-              />
-            </section>
+                {brandsArray && wheelbasesArray && makesArray ? (
+                  <>
+                    {/* ====================== */}
+                    {/*     Brand Section      */}
+                    {/* ====================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Brands</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
+                        >
+                          Create New Brand
+                        </Button>
+                      </div>
+                      {/* ------------------ */}
+                      {/*    Brand Table     */}
+                      {/* ------------------ */}
+                      <Table
+                        bordered
+                        className="make__table"
+                        scroll={{ x: '89rem', y: 400 }}
+                        // components={components}
+                        dataSource={brandTableState}
+                        columns={convertHeader(brandColumns, setBrandColumns)}
+                        pagination={false}
+                      />
+                    </section>
 
-            {/* ====================== */}
-            {/*   Wheelbases Section   */}
-            {/* ====================== */}
+                    {/* ====================== */}
+                    {/*   Wheelbases Section   */}
+                    {/* ====================== */}
 
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Wheelbases</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
-                >
-                  Create New Wheelbase
-                </Button>
-              </div>
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Wheelbases</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
+                        >
+                          Create New Wheelbase
+                        </Button>
+                      </div>
 
-              {/* -------------------- */}
-              {/*   Wheelbase Table   */}
-              {/* -------------------- */}
-              <Table
-                bordered
-                className="make__table"
-                scroll={{ x: '89rem', y: 300 }}
-                // components={components}
-                dataSource={wheelbaseTableState}
-                columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
-                pagination={false}
-              />
-            </section>
+                      {/* -------------------- */}
+                      {/*   Wheelbase Table   */}
+                      {/* -------------------- */}
+                      <Table
+                        bordered
+                        className="make__table"
+                        scroll={{ x: '89rem', y: 300 }}
+                        // components={components}
+                        dataSource={wheelbaseTableState}
+                        columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
+                        pagination={false}
+                      />
+                    </section>
 
-            {/* ====================== */}
-            {/*      Makes Section     */}
-            {/* ====================== */}
+                    {/* ====================== */}
+                    {/*      Makes Section     */}
+                    {/* ====================== */}
 
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Makes</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, make: true })}
-                >
-                  Create New Make
-                </Button>
-              </div>
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Makes</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, make: true })}
+                        >
+                          Create New Make
+                        </Button>
+                      </div>
 
-              {/* -------------------- */}
-              {/*     Make Table      */}
-              {/* -------------------- */}
-              <Table
-                bordered
-                className="make__table"
-                scroll={{ x: '89rem', y: 600 }}
-                expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
-                onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
-                expandable={{
-                  expandIcon: ({ expanded, record }) =>
-                    expanded ? (
-                      <Tooltip trigger={['hover', 'click']} title="Click to hide images">
-                        <MinusCircleTwoTone
-                          onClick={() => {
-                            onTableRowExpand(expanded, record);
-                            // this function is passed to imageGallery
-                            //  it will simply uncheck everything
-                            onClearAll();
-                          }}
-                        />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip trigger={['hover', 'click']} title="Click to view images">
-                        <PlusCircleTwoTone
-                          onClick={() => {
-                            // this allow only 1 row to expand at a time
-                            onTableRowExpand(expanded, record);
-                            // this closes all the edit image gallery when user expand other row
-                            // clearing out all the booleans
-                            setShowEditImageGallery({});
-                            // this function is passed to imageGallery
-                            //  it will simply uncheck everything
-                            onClearAll();
-                            // populate image array state and pass to ImageGallery component
-                            onPopulateImagesArray(record.makeImages);
-                          }}
-                        />
-                      </Tooltip>
-                    ),
-                  expandedRowRender: (record: TMakeTableState) => {
-                    return (
-                      <>
-                        {record.makeImages.length === 0 ? (
-                          <>
-                            <div className="make__images-header-div">
-                              <div>
-                                Images: <span className="make__available">{record.makeImages.length} results</span>
-                              </div>
-                              <div>
-                                <Button type="link" disabled>
-                                  View all
-                                </Button>
-                              </div>
-                            </div>
-                            <hr />
-                            <div className="body__expand-empty">
-                              <Empty />
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="make__images-header-div">
-                              <div className="flex-align-center">
-                                Images:&nbsp;
-                                <span className="make__available">{record.makeImages.length} result(s)</span>
-                              </div>
-                              <div>
-                                <Button
+                      {/* -------------------- */}
+                      {/*     Make Table      */}
+                      {/* -------------------- */}
+                      <Table
+                        bordered
+                        className="make__table"
+                        scroll={{ x: '89rem', y: 600 }}
+                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                        expandable={{
+                          expandIcon: ({ expanded, record }) =>
+                            expanded ? (
+                              <Tooltip trigger={['hover', 'click']} title="Click to hide images">
+                                <MinusCircleTwoTone
                                   onClick={() => {
-                                    // this is to set boolean for specific row to be true
-                                    // in this case e.g. make1: true or false
-                                    // so only row of make id 1 will be becoming edit mode
-                                    setShowEditImageGallery({
-                                      ...showEditImageGallery,
-                                      ['make' + record.makeId]: !showEditImageGallery['make' + record.makeId],
-                                    });
+                                    onTableRowExpand(expanded, record);
                                     // this function is passed to imageGallery
                                     //  it will simply uncheck everything
                                     onClearAll();
                                   }}
-                                >
-                                  {/* if screen is showing image gallery, then it should cancel button, edit button otherwise  */}
-                                  {showEditImageGallery['make' + record.makeId] ? (
-                                    <span>Cancel</span>
-                                  ) : (
-                                    <span>
-                                      Delete Image(s)&nbsp; <DeleteOutlined />
-                                    </span>
-                                  )}
-                                </Button>
-
-                                {/* only show add images button when NOT in edit mode */}
-                                {!showEditImageGallery['make' + record.makeId] && (
-                                  <Button
-                                    style={{ marginLeft: '1rem' }}
-                                    className="blue-default-btn"
-                                    onClick={() => {
-                                      // populate the editModalForm
-                                      onPopulateEditMakeModel(record);
-                                      // open the edit modal
-                                      setShowEditModal({ ...showEditModal, make: true });
-                                    }}
-                                  >
-                                    Add Image(s) <UploadOutlined />
-                                  </Button>
-                                )}
-
-                                {/* Close button */}
-                                <Button
-                                  type="link"
-                                  danger
-                                  style={{ paddingRight: 0 }}
-                                  onClick={() => {
-                                    //empty the keys so nothing will be expanded
-                                    setExpandedRowKeys([]);
-                                    // this function is passed to imageGallery
-                                    //  it will simply uncheck everything
-                                    onClearAll();
-                                  }}
-                                >
-                                  Close
-                                  <CloseCircleOutlined />
-                                </Button>
-                              </div>
-                            </div>
-                            <hr />
-
-                            {/* only show image gallery when user clicks view all */}
-                            {showEditImageGallery['make' + record.makeId] ? (
-                              // In edit mode, disabled light box
-                              <ImageGallery
-                                images={images}
-                                inEditMode={true}
-                                setImages={setImages}
-                                selectAllChecked={selectAllChecked}
-                                setSelectAllChecked={setSelectAllChecked}
-                                customClassName="gallery__outerdiv--edit"
-                              />
+                                />
+                              </Tooltip>
                             ) : (
-                              // In normal mode, enable light box
-                              <ImageGallery
-                                images={images}
-                                inEditMode={false}
-                                setImages={setImages}
-                                customClassName="gallery__outerdiv--normal"
-                              />
-                            )}
-                          </>
-                        )}
-                      </>
-                    );
-                  },
-                }}
-                // components={components}
-                dataSource={makeTableState}
-                columns={convertHeader(makeColumn, setMakeColumn)}
-                pagination={false}
-              />
-            </section>
-          </>
-        ) : (
-          <div className="padding_t-5">
-            <Loading />
-          </div>
-        )}
-      </section>
+                              <Tooltip trigger={['hover', 'click']} title="Click to view images">
+                                <PlusCircleTwoTone
+                                  onClick={() => {
+                                    // this allow only 1 row to expand at a time
+                                    onTableRowExpand(expanded, record);
+                                    // this closes all the edit image gallery when user expand other row
+                                    // clearing out all the booleans
+                                    setShowEditImageGallery({});
+                                    // this function is passed to imageGallery
+                                    //  it will simply uncheck everything
+                                    onClearAll();
+                                    // populate image array state and pass to ImageGallery component
+                                    onPopulateImagesArray(record.makeImages);
+                                  }}
+                                />
+                              </Tooltip>
+                            ),
+                          expandedRowRender: (record: TMakeTableState) => {
+                            return (
+                              <>
+                                {record.makeImages.length === 0 ? (
+                                  <>
+                                    <div className="make__images-header-div">
+                                      <div>
+                                        Images:{' '}
+                                        <span className="make__available">{record.makeImages.length} results</span>
+                                      </div>
+                                      <div>
+                                        <Button type="link" disabled>
+                                          View all
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    <hr />
+                                    <div className="body__expand-empty">
+                                      <Empty />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className="make__images-header-div">
+                                      <div className="flex-align-center">
+                                        Images:&nbsp;
+                                        <span className="make__available">{record.makeImages.length} result(s)</span>
+                                      </div>
+                                      <div>
+                                        <Button
+                                          onClick={() => {
+                                            // this is to set boolean for specific row to be true
+                                            // in this case e.g. make1: true or false
+                                            // so only row of make id 1 will be becoming edit mode
+                                            setShowEditImageGallery({
+                                              ...showEditImageGallery,
+                                              ['make' + record.makeId]: !showEditImageGallery['make' + record.makeId],
+                                            });
+                                            // this function is passed to imageGallery
+                                            //  it will simply uncheck everything
+                                            onClearAll();
+                                          }}
+                                        >
+                                          {/* if screen is showing image gallery, then it should cancel button, edit button otherwise  */}
+                                          {showEditImageGallery['make' + record.makeId] ? (
+                                            <span>Cancel</span>
+                                          ) : (
+                                            <span>
+                                              Delete Image(s)&nbsp; <DeleteOutlined />
+                                            </span>
+                                          )}
+                                        </Button>
+
+                                        {/* only show add images button when NOT in edit mode */}
+                                        {!showEditImageGallery['make' + record.makeId] && (
+                                          <Button
+                                            style={{ marginLeft: '1rem' }}
+                                            className="blue-default-btn"
+                                            onClick={() => {
+                                              // populate the editModalForm
+                                              onPopulateEditMakeModel(record);
+                                              // open the edit modal
+                                              setShowEditModal({ ...showEditModal, make: true });
+                                            }}
+                                          >
+                                            Add Image(s) <UploadOutlined />
+                                          </Button>
+                                        )}
+
+                                        {/* Close button */}
+                                        <Button
+                                          type="link"
+                                          danger
+                                          style={{ paddingRight: 0 }}
+                                          onClick={() => {
+                                            //empty the keys so nothing will be expanded
+                                            setExpandedRowKeys([]);
+                                            // this function is passed to imageGallery
+                                            //  it will simply uncheck everything
+                                            onClearAll();
+                                          }}
+                                        >
+                                          Close
+                                          <CloseCircleOutlined />
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    <hr />
+
+                                    {/* only show image gallery when user clicks view all */}
+                                    {showEditImageGallery['make' + record.makeId] ? (
+                                      // In edit mode, disabled light box
+                                      <ImageGallery
+                                        loading={loading}
+                                        images={images}
+                                        inEditMode={true}
+                                        setImages={setImages}
+                                        selectAllChecked={selectAllChecked}
+                                        onDeleteUploadImage={onDeleteUploadImage}
+                                        setSelectAllChecked={setSelectAllChecked}
+                                        customClassName="gallery__outerdiv--edit"
+                                      />
+                                    ) : (
+                                      // In normal mode, enable light box
+                                      <ImageGallery
+                                        images={images}
+                                        inEditMode={false}
+                                        setImages={setImages}
+                                        customClassName="gallery__outerdiv--normal"
+                                      />
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            );
+                          },
+                        }}
+                        // components={components}
+                        dataSource={makeTableState}
+                        columns={convertHeader(makeColumn, setMakeColumn)}
+                        pagination={false}
+                      />
+                    </section>
+                  </>
+                ) : (
+                  <div className="padding_t-5">
+                    <Loading />
+                  </div>
+                )}
+              </section>
+            </TabPane>
+            <TabPane tab="Body" key="body" className="dashboard__tab"></TabPane>
+            <TabPane tab="Accessory" key="accessory" className="dashboard__tab"></TabPane>
+          </Tabs>
+        </div>
+      </Container>
     </>
   );
 };
@@ -1584,6 +1631,8 @@ interface DispatchProps {
   onGetMakes: typeof actions.getMakes;
   onCreateMake: typeof actions.createMake;
   onUpdateMake: typeof actions.updateMake;
+  // Images
+  onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
   onClearSalesState: typeof actions.clearSalesState;
 }
@@ -1605,8 +1654,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
     onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    // Image
+    onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous
     onClearSalesState: () => dispatch(actions.clearSalesState()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Make);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Make));

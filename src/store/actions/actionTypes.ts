@@ -17,6 +17,12 @@ export const UPLOAD_IMAGE_START = 'UPLOAD_IMAGE_START';
 export const UPLOAD_IMAGE_SUCCEED = 'UPLOAD_IMAGE_SUCCEED';
 export const UPLOAD_IMAGE_FAILED = 'UPLOAD_IMAGE_FAILED';
 
+// Delete Uploaded Image(s)
+export const DELETE_UPLOAD_IMAGE = 'DELETE_UPLOAD_IMAGE';
+export const DELETE_UPLOAD_IMAGE_START = 'DELETE_UPLOAD_IMAGE_START';
+export const DELETE_UPLOAD_IMAGE_SUCCEED = 'DELETE_UPLOAD_IMAGE_SUCCEED';
+export const DELETE_UPLOAD_IMAGE_FAILED = 'DELETE_UPLOAD_IMAGE_FAILED';
+
 /* ======================================================================================== */
 
 /* --------------------------------------------- */

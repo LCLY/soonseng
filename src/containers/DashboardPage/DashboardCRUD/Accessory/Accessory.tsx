@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import './Accessory.scss';
 /*components*/
+import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
+import { Container } from 'react-bootstrap';
+import { FormInstance } from 'antd/lib/form/hooks/useForm';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
-import { Button, Form, Input, Modal, Select, Table, Tag, Tooltip } from 'antd';
+import { Button, Form, Input, Modal, Select, Tabs, Table, Tag, Tooltip, notification } from 'antd';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedAccessoryObj, TReceivedBodyAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/sales';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
-import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import Loading from 'src/components/Loading/Loading';
 
 const { Option } = Select;
 const { TextArea } = Input;
+const { TabPane } = Tabs;
 
 interface AccessoryProps {}
 
@@ -67,11 +72,13 @@ type TShowModal = {
   body_accessory: boolean;
 };
 
-type Props = AccessoryProps & StateProps & DispatchProps;
+type Props = AccessoryProps & StateProps & DispatchProps & RouteComponentProps;
 
 const Accessory: React.FC<Props> = ({
   // miscellaneous
   loading,
+  history,
+  errorMessage,
   successMessage,
   // accessory
   accessoriesArray,
@@ -86,6 +93,8 @@ const Accessory: React.FC<Props> = ({
   onCreateBodyAccessory,
   onUpdateBodyAccessory,
   onGetBodyAccessories,
+  // clear states
+  onClearSalesState,
 }) => {
   /* ================================================== */
   /*  state */
@@ -97,6 +106,8 @@ const Accessory: React.FC<Props> = ({
 
   const [createBodyAccessoryForm] = Form.useForm();
   const [updateBodyAccessoryForm] = Form.useForm();
+
+  const { width } = useWindowDimensions();
 
   // Table States
   const [accessoryTableState, setAccessoryTableState] = useState<TAccessoryTableState[]>([]);
@@ -745,7 +756,13 @@ const Accessory: React.FC<Props> = ({
   /* -------------------- */
   useEffect(() => {
     if (successMessage) {
-      // no need to call notification and onClearSalesState again because Make Page already calls it
+      // show success notification
+      notification['success']({
+        message: 'Success',
+        description: successMessage,
+      });
+      //  clear the state so the notification will be hidden afterwards
+      onClearSalesState();
       // clear the form inputs using the form reference
       createAccessoryForm.resetFields();
       createBodyAccessoryForm.resetFields();
@@ -763,7 +780,21 @@ const Accessory: React.FC<Props> = ({
     createBodyAccessoryForm,
     setShowUpdateModal,
     setShowCreateModal,
+    onClearSalesState,
   ]);
+
+  /* ------------------ */
+  // error notification
+  /* ------------------ */
+  useEffect(() => {
+    if (errorMessage) {
+      notification['error']({
+        message: 'Failed',
+        duration: 2.5,
+        description: errorMessage,
+      });
+    }
+  }, [errorMessage, onClearSalesState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -777,93 +808,126 @@ const Accessory: React.FC<Props> = ({
       {createBodyAccessoryModal}
       {updateBodyAccessoryModal}
 
-      <section>
-        <HeaderTitle>Accessory (Tail)</HeaderTitle>
-        {accessoriesArray && bodyLengthsArray && bodyAccessoriesArray ? (
-          <>
-            {/* ===================================== */}
-            {/*           Accessory Section           */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Accessories</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, accessory: true })}
-                >
-                  Create New Accessory
-                </Button>
-              </div>
-              {/* ------------------ */}
-              {/*    Accessory Table     */}
-              {/* ------------------ */}
-              <Table
-                bordered
-                scroll={{ x: '89rem', y: 400 }}
-                dataSource={accessoryTableState}
-                columns={convertHeader(accessoryColumns, setAccessoryColumns)}
-                pagination={false}
-              />
-            </section>
-            {/* ===================================== */}
-            {/*           Body Accessory Section           */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Accessories Price</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, body_accessory: true })}
-                >
-                  Create Accessory Price
-                </Button>
-              </div>
-              {/* -------------------------- */}
-              {/*    Body Accessory Table    */}
-              {/* -------------------------- */}
-              <Table
-                bordered
-                scroll={{ x: '89rem', y: 600 }}
-                expandable={{
-                  expandIcon: ({ expanded, onExpand, record }) =>
-                    expanded ? (
-                      <Tooltip trigger={['hover', 'click']} title="Click to hide description">
-                        <MinusCircleTwoTone onClick={(e) => onExpand(record, e)} />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip trigger={['hover', 'click']} title="Click to view description">
-                        <PlusCircleTwoTone onClick={(e) => onExpand(record, e)} />
-                      </Tooltip>
-                    ),
-
-                  expandedRowRender: (record: TBodyAccessoryTableState) => (
-                    <>
-                      <div className="accessory__expand-div">
-                        <div className="accessory__expand-title">Description:</div>
-                        <div className="accessory__expand-text">{record.bodyAccessoryDescription}</div>
+      <NavbarComponent activePage="" />
+      <Container>
+        <div className="accessory__tab-outerdiv">
+          <Tabs
+            animated={false}
+            onTabClick={(e) => {
+              // onclick check which key and go to that page
+              switch (e) {
+                case 'make':
+                  history.push('/dashboard/make');
+                  break;
+                case 'body':
+                  history.push('/dashboard/body');
+                  break;
+                case 'accessory':
+                  history.push('/dashboard/accessory');
+                  break;
+                default:
+                  history.push('/dashboard/make');
+                  break;
+              }
+            }}
+            activeKey="accessory"
+            tabPosition={width > 1200 ? 'left' : 'top'}
+          >
+            <TabPane tab="Make" key="make" className="dashboard__tab"></TabPane>
+            <TabPane tab="Body" key="body" className="dashboard__tab"></TabPane>
+            <TabPane tab="Accessory" key="accessory" className="dashboard__tab">
+              <section>
+                <HeaderTitle>Accessory (Tail)</HeaderTitle>
+                {accessoriesArray && bodyLengthsArray && bodyAccessoriesArray ? (
+                  <>
+                    {/* ===================================== */}
+                    {/*           Accessory Section           */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Accessories</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, accessory: true })}
+                        >
+                          Create New Accessory
+                        </Button>
                       </div>
-                    </>
-                  ),
-                }}
-                dataSource={bodyAccessoryTableState}
-                columns={convertHeader(bodyAccessoryColumns, setBodyAccessoryColumns)}
-                pagination={false}
-              />
-            </section>
-          </>
-        ) : (
-          <div className="padding_t-5">
-            <Loading />
-          </div>
-        )}
-      </section>
+                      {/* ------------------ */}
+                      {/*    Accessory Table     */}
+                      {/* ------------------ */}
+                      <Table
+                        bordered
+                        scroll={{ x: '89rem', y: 400 }}
+                        dataSource={accessoryTableState}
+                        columns={convertHeader(accessoryColumns, setAccessoryColumns)}
+                        pagination={false}
+                      />
+                    </section>
+                    {/* ===================================== */}
+                    {/*           Body Accessory Section           */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Accessories Price</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, body_accessory: true })}
+                        >
+                          Create Accessory Price
+                        </Button>
+                      </div>
+                      {/* -------------------------- */}
+                      {/*    Body Accessory Table    */}
+                      {/* -------------------------- */}
+                      <Table
+                        bordered
+                        scroll={{ x: '89rem', y: 600 }}
+                        expandable={{
+                          expandIcon: ({ expanded, onExpand, record }) =>
+                            expanded ? (
+                              <Tooltip trigger={['hover', 'click']} title="Click to hide description">
+                                <MinusCircleTwoTone onClick={(e) => onExpand(record, e)} />
+                              </Tooltip>
+                            ) : (
+                              <Tooltip trigger={['hover', 'click']} title="Click to view description">
+                                <PlusCircleTwoTone onClick={(e) => onExpand(record, e)} />
+                              </Tooltip>
+                            ),
+
+                          expandedRowRender: (record: TBodyAccessoryTableState) => (
+                            <>
+                              <div className="accessory__expand-div">
+                                <div className="accessory__expand-title">Description:</div>
+                                <div className="accessory__expand-text">{record.bodyAccessoryDescription}</div>
+                              </div>
+                            </>
+                          ),
+                        }}
+                        dataSource={bodyAccessoryTableState}
+                        columns={convertHeader(bodyAccessoryColumns, setBodyAccessoryColumns)}
+                        pagination={false}
+                      />
+                    </section>
+                  </>
+                ) : (
+                  <div className="padding_t-5">
+                    <Loading />
+                  </div>
+                )}
+              </section>
+            </TabPane>
+          </Tabs>
+        </div>
+      </Container>
     </>
   );
 };
 interface StateProps {
   loading?: boolean;
+  errorMessage?: string | null;
   successMessage?: string | null;
   accessoriesArray?: TReceivedAccessoryObj[] | null;
   bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
@@ -872,6 +936,7 @@ interface StateProps {
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   return {
     loading: state.sales.loading,
+    errorMessage: state.sales.errorMessage,
     successMessage: state.sales.successMessage,
     bodyLengthsArray: state.sales.bodyLengthsArray,
     accessoriesArray: state.sales.accessoriesArray,
@@ -883,10 +948,14 @@ interface DispatchProps {
   onGetAccessories: typeof actions.getAccessories;
   onCreateAccessory: typeof actions.createAccessory;
   onUpdateAccessory: typeof actions.updateAccessory;
-  onGetBodyAccessories: typeof actions.getBodyAccessories;
+  // Body length
   onGetBodyLengths: typeof actions.getBodyLengths;
+  //  Body accessory
+  onGetBodyAccessories: typeof actions.getBodyAccessories;
   onCreateBodyAccessory: typeof actions.createBodyAccessory;
   onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
+  // Miscellaneous
+  onClearSalesState: typeof actions.clearSalesState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -900,6 +969,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetBodyAccessories: () => dispatch(actions.getBodyAccessories()),
     onCreateBodyAccessory: (createBodyAccessoryData) => dispatch(actions.createBodyAccessory(createBodyAccessoryData)),
     onUpdateBodyAccessory: (updateBodyAccessoryData) => dispatch(actions.updateBodyAccessory(updateBodyAccessoryData)),
+    // Miscellaneous
+    onClearSalesState: () => dispatch(actions.clearSalesState()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Accessory);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Accessory));

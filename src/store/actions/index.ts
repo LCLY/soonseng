@@ -3,12 +3,18 @@ export {
   // Clear all sales state
   clearSalesState,
   /* =================== */
-  //   Upload Image(s)
+  //   Image(s)
   /* =================== */
+  // Upload
   uploadImage,
   uploadImageStart,
   uploadImageFailed,
   uploadImageSucceed,
+  // Delete
+  deleteUploadImage,
+  deleteUploadImageStart,
+  deleteUploadImageFailed,
+  deleteUploadImageSucceed,
   /* --------------------------------------- */
   /* =================== */
   //  Brand (Make Page)

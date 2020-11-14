@@ -3,13 +3,16 @@ import './Body.scss';
 /*components*/
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
+import { Container } from 'react-bootstrap';
 import { AnyAction, Dispatch } from 'redux';
-import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { ToolTwoTone } from '@ant-design/icons';
-import { Button, Empty, Form, Card, Input, Modal, Select, Table, Tag, Tooltip } from 'antd';
+import { FormInstance } from 'antd/lib/form/hooks/useForm';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { Button, Empty, Tabs, Form, Card, Input, Modal, Select, Table, Tag, Tooltip, notification } from 'antd';
 /* Util */
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
@@ -22,10 +25,12 @@ import {
   TReceivedLengthObj,
   TUpdateBodyLengthData,
 } from 'src/store/types/sales';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
 const { Option } = Select;
 const { TextArea } = Input;
+const { TabPane } = Tabs;
 
 interface BodyProps {}
 
@@ -104,11 +109,13 @@ type TShowModal = {
   body_accessory: boolean; //if got image add current Body length id as well
 };
 
-type Props = BodyProps & StateProps & DispatchProps;
+type Props = BodyProps & StateProps & DispatchProps & RouteComponentProps;
 
 const Body: React.FC<Props> = ({
   // miscellaneous
   loading,
+  history,
+  errorMessage,
   successMessage,
   // body
   bodiesArray,
@@ -133,6 +140,8 @@ const Body: React.FC<Props> = ({
   // accessory
   accessoriesArray,
   onGetAccessories,
+  // clear states
+  onClearSalesState,
 }) => {
   /* ================================================== */
   /*  state */
@@ -150,6 +159,8 @@ const Body: React.FC<Props> = ({
   /* bodyAccessories */
   const [createBodyAccessoryForm] = Form.useForm();
   const [updateBodyAccessoryForm] = Form.useForm();
+
+  const { width } = useWindowDimensions();
 
   // Table states
   const [bodyTableState, setBodyTableState] = useState<TBodyTableState[]>([]);
@@ -1318,7 +1329,13 @@ const Body: React.FC<Props> = ({
   /* -------------------- */
   useEffect(() => {
     if (successMessage) {
-      // no need to call notification and onClearSalesState again because Make Page already calls it
+      // show success notification
+      notification['success']({
+        message: 'Success',
+        description: successMessage,
+      });
+      // clear the successMessage object, set to null
+      onClearSalesState();
       // clear the form inputs using the form reference
       createBodyForm.resetFields();
       createLengthForm.resetFields();
@@ -1337,9 +1354,23 @@ const Body: React.FC<Props> = ({
     createLengthForm,
     createBodyLengthForm,
     createBodyAccessoryForm,
+    onClearSalesState,
     setShowUpdateModal,
     setShowCreateModal,
   ]);
+
+  /* ------------------ */
+  // error notification
+  /* ------------------ */
+  useEffect(() => {
+    if (errorMessage) {
+      notification['error']({
+        message: 'Failed',
+        duration: 2.5,
+        description: errorMessage,
+      });
+    }
+  }, [errorMessage, onClearSalesState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -1357,204 +1388,239 @@ const Body: React.FC<Props> = ({
       {createBodyAccessoryModal}
       {updateBodyAccessoryModal}
 
-      <section>
-        <HeaderTitle>Body (Tail)</HeaderTitle>
-        {bodiesArray && lengthsArray && bodyLengthsArray ? (
-          <>
-            {/* ===================================== */}
-            {/*              Body Section             */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Bodies</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, body: true })}
-                >
-                  Create New Body
-                </Button>
-              </div>
-              {/* ------------------ */}
-              {/*    Body Table     */}
-              {/* ------------------ */}
-              <Table
-                bordered
-                className="body__table"
-                scroll={{ x: '89rem', y: 400 }}
-                dataSource={bodyTableState}
-                columns={convertHeader(bodyColumns, setBodyColumns)}
-                pagination={false}
-              />
-            </section>
-
-            {/* ===================================== */}
-            {/*             Length Section            */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Lengths</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
-                >
-                  Create New Length
-                </Button>
-              </div>
-              {/* ------------------ */}
-              {/*    Length Table     */}
-              {/* ------------------ */}
-              <Table
-                bordered
-                className="body__table"
-                scroll={{ x: '89rem', y: 400 }}
-                dataSource={lengthTableState}
-                columns={convertHeader(lengthColumns, setLengthColumns)}
-                pagination={false}
-              />
-            </section>
-
-            {/* ===================================== */}
-            {/*         Body Length Section           */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Body Price</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, body_length: true })}
-                >
-                  Create Body Price
-                </Button>
-              </div>
-              {/* ----------------------- */}
-              {/*    Body Length Table    */}
-              {/* ----------------------- */}
-              <Table
-                bordered
-                className="body__table"
-                scroll={{ x: '89rem', y: 600 }}
-                dataSource={bodyLengthTableState}
-                expandable={{
-                  expandIcon: ({ expanded, onExpand, record }) =>
-                    expanded ? (
-                      <Tooltip trigger={['hover', 'click']} title="Click to hide accessories">
-                        <ToolTwoTone onClick={(e) => onExpand(record, e)} />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip trigger={['hover', 'click']} title="Click to view accessories">
-                        <ToolTwoTone onClick={(e) => onExpand(record, e)} />
-                      </Tooltip>
-                    ),
-
-                  expandedRowRender: (record: TBodyLengthTableState) => (
-                    <>
-                      <div>
-                        Attachable accessories for&nbsp;
-                        <span style={{ textTransform: 'capitalize' }}>{record.bodyLengthBodyTitle}</span>:&nbsp;
-                        <span className="body__expand-available">
-                          {record.bodyLengthBodyAccessoryArrayLength} available
-                        </span>
+      <NavbarComponent activePage="" />
+      <Container>
+        <div className="body__tab-outerdiv">
+          <Tabs
+            animated={false}
+            onTabClick={(e) => {
+              // onclick check which key and go to that page
+              switch (e) {
+                case 'make':
+                  history.push('/dashboard/make');
+                  break;
+                case 'body':
+                  history.push('/dashboard/body');
+                  break;
+                case 'accessory':
+                  history.push('/dashboard/accessory');
+                  break;
+                default:
+                  history.push('/dashboard/make');
+                  break;
+              }
+            }}
+            activeKey="body"
+            tabPosition={width > 1200 ? 'left' : 'top'}
+          >
+            <TabPane tab="Make" key="make" className="dashboard__tab"></TabPane>
+            <TabPane tab="Body" key="body" className="dashboard__tab">
+              <section>
+                <HeaderTitle>Body (Tail)</HeaderTitle>
+                {bodiesArray && lengthsArray && bodyLengthsArray ? (
+                  <>
+                    {/* ===================================== */}
+                    {/*              Body Section             */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Bodies</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, body: true })}
+                        >
+                          Create New Body
+                        </Button>
                       </div>
-                      <hr />
-                      <div className="body__expand-outerdiv">
-                        {record.bodyLengthBodyAccessory && (
-                          <>
-                            {/* if no accessory then show empty */}
-                            {record.bodyLengthBodyAccessoryArrayLength === 0 ? (
-                              <div className="body__expand-empty">
-                                <Empty />
-                              </div>
+                      {/* ------------------ */}
+                      {/*    Body Table     */}
+                      {/* ------------------ */}
+                      <Table
+                        bordered
+                        className="body__table"
+                        scroll={{ x: '89rem', y: 400 }}
+                        dataSource={bodyTableState}
+                        columns={convertHeader(bodyColumns, setBodyColumns)}
+                        pagination={false}
+                      />
+                    </section>
+
+                    {/* ===================================== */}
+                    {/*             Length Section            */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Lengths</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
+                        >
+                          Create New Length
+                        </Button>
+                      </div>
+                      {/* ------------------ */}
+                      {/*    Length Table     */}
+                      {/* ------------------ */}
+                      <Table
+                        bordered
+                        className="body__table"
+                        scroll={{ x: '89rem', y: 400 }}
+                        dataSource={lengthTableState}
+                        columns={convertHeader(lengthColumns, setLengthColumns)}
+                        pagination={false}
+                      />
+                    </section>
+
+                    {/* ===================================== */}
+                    {/*         Body Length Section           */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Body Price</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, body_length: true })}
+                        >
+                          Create Body Price
+                        </Button>
+                      </div>
+                      {/* ----------------------- */}
+                      {/*    Body Length Table    */}
+                      {/* ----------------------- */}
+                      <Table
+                        bordered
+                        className="body__table"
+                        scroll={{ x: '89rem', y: 600 }}
+                        dataSource={bodyLengthTableState}
+                        expandable={{
+                          expandIcon: ({ expanded, onExpand, record }) =>
+                            expanded ? (
+                              <Tooltip trigger={['hover', 'click']} title="Click to hide accessories">
+                                <ToolTwoTone onClick={(e) => onExpand(record, e)} />
+                              </Tooltip>
                             ) : (
-                              record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
-                                if (bodyAccessory.available) {
-                                  return (
-                                    <Card
-                                      className="body__expand-card"
-                                      title={
-                                        <span className="body__expand-card-title">{bodyAccessory.accessory.title}</span>
-                                      }
-                                      key={index}
-                                      size="small"
-                                      style={{ width: 'auto' }}
-                                      headStyle={{ background: '#FFF2E8' }}
-                                    >
-                                      <div>
-                                        <div>
-                                          <span className="body__expand-card-category">Price</span>: RM
-                                          {bodyAccessory.price}
-                                        </div>
-                                        <div>
-                                          <span className="body__expand-card-category">Description</span>:&nbsp;
-                                          {bodyAccessory.description ? (
-                                            <>
-                                              <br />
-                                              <div className="body__expand-card-description">
-                                                {bodyAccessory.description}
-                                              </div>
-                                            </>
-                                          ) : (
-                                            ' - '
-                                          )}
-                                        </div>
+                              <Tooltip trigger={['hover', 'click']} title="Click to view accessories">
+                                <ToolTwoTone onClick={(e) => onExpand(record, e)} />
+                              </Tooltip>
+                            ),
+
+                          expandedRowRender: (record: TBodyLengthTableState) => (
+                            <>
+                              <div>
+                                Attachable accessories for&nbsp;
+                                <span style={{ textTransform: 'capitalize' }}>{record.bodyLengthBodyTitle}</span>:&nbsp;
+                                <span className="body__expand-available">
+                                  {record.bodyLengthBodyAccessoryArrayLength} available
+                                </span>
+                              </div>
+                              <hr />
+                              <div className="body__expand-outerdiv">
+                                {record.bodyLengthBodyAccessory && (
+                                  <>
+                                    {/* if no accessory then show empty */}
+                                    {record.bodyLengthBodyAccessoryArrayLength === 0 ? (
+                                      <div className="body__expand-empty">
+                                        <Empty />
                                       </div>
-                                      <section className="body__expand-card-btn-section">
-                                        <hr style={{ margin: 0 }} />
-                                        <div className="body__expand-card-btn-div">
-                                          <Button
-                                            className="body__expand-card-btn-edit"
-                                            style={{ padding: 0 }}
-                                            type="link"
-                                            onClick={() => {
-                                              // show the update modal
-                                              setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
-                                              // fill in the updateBodyAccessoryform
-                                              updateBodyAccessoryForm.setFieldsValue({
-                                                bodyAccessoryId: bodyAccessory.id, //the id for update
-                                                accessoryId: bodyAccessory.accessory.id,
-                                                bodyAccessoryPrice: bodyAccessory.price,
-                                                bodyAccessoryDescription: bodyAccessory.description,
-                                                bodyLengthId: bodyAccessory.body_length.id,
-                                              });
-                                            }}
-                                          >
-                                            Edit
-                                          </Button>
-                                          <Button disabled type="link" danger style={{ padding: 0 }}>
-                                            Delete
-                                          </Button>
-                                        </div>
-                                      </section>
-                                    </Card>
-                                  );
-                                }
-                                return <></>;
-                              })
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </>
-                  ),
-                }}
-                columns={convertHeader(bodyLengthColumns, setBodyLengthColumns)}
-                pagination={false}
-              />
-            </section>
-          </>
-        ) : (
-          <div className="padding_t-5">
-            <Loading />
-          </div>
-        )}
-      </section>
+                                    ) : (
+                                      record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
+                                        if (bodyAccessory.available) {
+                                          return (
+                                            <Card
+                                              className="body__expand-card"
+                                              title={
+                                                <span className="body__expand-card-title">
+                                                  {bodyAccessory.accessory.title}
+                                                </span>
+                                              }
+                                              key={index}
+                                              size="small"
+                                              style={{ width: 'auto' }}
+                                              headStyle={{ background: '#FFF2E8' }}
+                                            >
+                                              <div>
+                                                <div>
+                                                  <span className="body__expand-card-category">Price</span>: RM
+                                                  {bodyAccessory.price}
+                                                </div>
+                                                <div>
+                                                  <span className="body__expand-card-category">Description</span>:&nbsp;
+                                                  {bodyAccessory.description ? (
+                                                    <>
+                                                      <br />
+                                                      <div className="body__expand-card-description">
+                                                        {bodyAccessory.description}
+                                                      </div>
+                                                    </>
+                                                  ) : (
+                                                    ' - '
+                                                  )}
+                                                </div>
+                                              </div>
+                                              <section className="body__expand-card-btn-section">
+                                                <hr style={{ margin: 0 }} />
+                                                <div className="body__expand-card-btn-div">
+                                                  <Button
+                                                    className="body__expand-card-btn-edit"
+                                                    style={{ padding: 0 }}
+                                                    type="link"
+                                                    onClick={() => {
+                                                      // show the update modal
+                                                      setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
+                                                      // fill in the updateBodyAccessoryform
+                                                      updateBodyAccessoryForm.setFieldsValue({
+                                                        bodyAccessoryId: bodyAccessory.id, //the id for update
+                                                        accessoryId: bodyAccessory.accessory.id,
+                                                        bodyAccessoryPrice: bodyAccessory.price,
+                                                        bodyAccessoryDescription: bodyAccessory.description,
+                                                        bodyLengthId: bodyAccessory.body_length.id,
+                                                      });
+                                                    }}
+                                                  >
+                                                    Edit
+                                                  </Button>
+                                                  <Button disabled type="link" danger style={{ padding: 0 }}>
+                                                    Delete
+                                                  </Button>
+                                                </div>
+                                              </section>
+                                            </Card>
+                                          );
+                                        }
+                                        return <></>;
+                                      })
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            </>
+                          ),
+                        }}
+                        columns={convertHeader(bodyLengthColumns, setBodyLengthColumns)}
+                        pagination={false}
+                      />
+                    </section>
+                  </>
+                ) : (
+                  <div className="padding_t-5">
+                    <Loading />
+                  </div>
+                )}
+              </section>
+            </TabPane>
+            <TabPane tab="Accessory" key="accessory" className="dashboard__tab"></TabPane>
+          </Tabs>
+        </div>
+      </Container>
     </>
   );
 };
 interface StateProps {
   loading?: boolean;
+  errorMessage?: string | null;
   successMessage?: string | null;
   bodiesArray?: TReceivedBodyObj[] | null;
   lengthsArray?: TReceivedLengthObj[] | null;
@@ -1567,6 +1633,7 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
     loading: state.sales.loading,
     bodiesArray: state.sales.bodiesArray,
     lengthsArray: state.sales.lengthsArray,
+    errorMessage: state.sales.errorMessage,
     successMessage: state.sales.successMessage,
     accessoriesArray: state.sales.accessoriesArray,
     bodyLengthsArray: state.sales.bodyLengthsArray,
@@ -1592,6 +1659,8 @@ interface DispatchProps {
   onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
   // Accessory
   onGetAccessories: typeof actions.getAccessories;
+  // Miscellaneous
+  onClearSalesState: typeof actions.clearSalesState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -1613,6 +1682,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onUpdateBodyAccessory: (updateBodyAccessoryData) => dispatch(actions.updateBodyAccessory(updateBodyAccessoryData)),
     // Accessory
     onGetAccessories: () => dispatch(actions.getAccessories()),
+    // Miscellaneous
+    onClearSalesState: () => dispatch(actions.clearSalesState()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Body);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Body));

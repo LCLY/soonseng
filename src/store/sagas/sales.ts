@@ -69,6 +69,52 @@ export function* uploadImageSaga(action: AppActions) {
 }
 
 /* ================================================================== */
+//    Delete Image(s)
+/* ================================================================== */
+
+export function* deleteUploadImageSaga(action: AppActions) {
+  yield put(actions.deleteUploadImageStart());
+
+  let url = process.env.REACT_APP_API + `/uploads`;
+
+  let config = {};
+  if ('ids' in action) {
+    config = yield {
+      data: yield {
+        ids: action.ids,
+      },
+    };
+  }
+
+  try {
+    let response = yield axios.delete(url, config);
+    yield put(actions.deleteUploadImageSucceed(response.data.success));
+    window.location.reload(); //force refresh after image uploaded
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.deleteUploadImageFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ================================================================== */
 //   Brands (Make Page)(Head)
 /* ================================================================== */
 
@@ -942,7 +988,15 @@ export function* createBodyAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { body_accessory });
-    yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+    console.log(response);
+
+    yield put(
+      actions.createBodyAccessorySucceed(
+        response.data.body_accessories,
+        response.data.body_lengths,
+        response.data.success,
+      ),
+    );
   } catch (error) {
     if (error.response) {
       /*

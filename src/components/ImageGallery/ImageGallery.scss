@@ -41,6 +41,16 @@
       margin-bottom: 1rem;
     }
   }
+
+  /* ======================= */
+  // modal - delete modal
+  /* ======================= */
+  &__modal {
+    &-icon {
+      color: $primary-color-3 !important;
+      margin-right: 1rem;
+    }
+  }
 }
 
 .gallery {

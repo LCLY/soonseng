@@ -9,6 +9,9 @@ import PageNotFound from './components/PageNotFound/PageNotFound';
 import SalesPage from 'src/containers/Product/SalesPage/SalesPage';
 // Dashboard
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
+import Make from './containers/DashboardPage/DashboardCRUD/Make/Make';
+import Body from './containers/DashboardPage/DashboardCRUD/Body/Body';
+import Accessory from './containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
 // 3rd party lib
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datetime/css/react-datetime.css';
@@ -33,6 +36,9 @@ function App() {
       <Route exact path="/404" component={PageNotFound} />
       <Route exact path="/contact" component={ContactPage} />
       <Route exact path="/dashboard" component={DashboardPage} />
+      <Route exact path="/dashboard/make" component={Make} />
+      <Route exact path="/dashboard/body" component={Body} />
+      <Route exact path="/dashboard/accessory" component={Accessory} />
 
       {/* <Route exact path="/logout" component={Logout} /> */}
       <Redirect from="*" to="/404" />

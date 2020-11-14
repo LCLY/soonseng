@@ -1,4 +1,16 @@
 .accessory {
+  /* ================ */
+  // navigation tabs
+  /* ================ */
+  &__tab {
+    &-outerdiv {
+      margin-top: 3rem;
+    }
+  }
+
+  /* =================== */
+  // The expanded tab
+  /* =================== */
   &__expand {
     &-div {
       display: flex;
