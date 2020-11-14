@@ -80,10 +80,10 @@ export const deleteUploadImageStart = (): AppActions => {
   };
 };
 
-export const deleteUploadImageSucceed = (imagesArray: TReceivedImageObj[]): AppActions => {
+export const deleteUploadImageSucceed = (successMessage: string): AppActions => {
   return {
     type: actionTypes.DELETE_UPLOAD_IMAGE_SUCCEED,
-    imagesArray: imagesArray,
+    successMessage: successMessage,
   };
 };
 export const deleteUploadImageFailed = (errorMessage: string): AppActions => {
@@ -170,12 +170,20 @@ export const createBrandFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Update Brand (head)
 /* ------------------------------ */
-export const updateBrand = (brand_id: number, title: string, description: string): AppActions => {
+export const updateBrand = (
+  brand_id: number,
+  title: string,
+  description: string,
+  tag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_BRAND,
     brand_id: brand_id,
     title: title,
     description: description,
+    tag: tag, //for upload images
+    imageFiles: imageFiles, //for upload images
   };
 };
 

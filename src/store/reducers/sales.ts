@@ -70,10 +70,10 @@ const uploadImageFailed = (state: SalesInitialState, action: AppActions) => {
 /*   Delete Image(s)
 /* ============================================================================================ */
 
-const deleteImageStart = (state: SalesInitialState, _action: AppActions) => {
+const deleteUploadImageStart = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const deleteImageSucceed = (state: SalesInitialState, action: AppActions) => {
+const deleteUploadImageSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('successMessage' in action) {
     return updateObject(state, {
       loading: false,
@@ -82,7 +82,7 @@ const deleteImageSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const deleteImageFailed = (state: SalesInitialState, action: AppActions) => {
+const deleteUploadImageFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -652,11 +652,11 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
     // Delete Image(s)
     /* =================================== */
     case actionTypes.DELETE_UPLOAD_IMAGE_START:
-      return deleteImageStart(state, action);
+      return deleteUploadImageStart(state, action);
     case actionTypes.DELETE_UPLOAD_IMAGE_SUCCEED:
-      return deleteImageSucceed(state, action);
+      return deleteUploadImageSucceed(state, action);
     case actionTypes.DELETE_UPLOAD_IMAGE_FAILED:
-      return deleteImageFailed(state, action);
+      return deleteUploadImageFailed(state, action);
 
     /* =================================== */
     // Brand (Make Page) (head)

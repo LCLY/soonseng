@@ -77,6 +77,22 @@ export function* deleteUploadImageSaga(action: AppActions) {
 
   let url = process.env.REACT_APP_API + `/uploads`;
 
+  // let ids = {};
+
+  // if ('ids' in action) {
+  //   console.log(action.ids);
+  //   ids = {
+  //     ids: action.ids,
+  //   };
+  // }
+
+  // let data = {};
+  // if ('ids' in action) {
+  //   data = {
+  //     ids: action.ids,
+  //   };
+  // }
+
   let config = {};
   if ('ids' in action) {
     config = yield {
@@ -236,7 +252,25 @@ export function* updateBrandSaga(action: AppActions) {
   }
   try {
     let response = yield axios.put(url, { brand });
-    yield put(actions.updateBrandSucceed(response.data.brands, response.data.success));
+    // Upload Image to model 'Make'
+    if ('tag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.tag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.tag, action.imageFiles));
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create brand succeed
+          yield put(actions.updateBrandSucceed(response.data.brands, response.data.success));
+          //reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        // receive new updated brands array
+        yield put(actions.updateBrandSucceed(response.data.brands, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*

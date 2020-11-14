@@ -90,22 +90,22 @@ export interface UploadImageFailedAction {
 /* ============================================================== */
 
 /* Api call */
-export interface DeleteImageAction {
+export interface DeleteUploadImageAction {
   type: typeof actionTypes.DELETE_UPLOAD_IMAGE;
   /** Array of ids to send to backend */
   ids: number[];
 }
 /* States */
-export interface DeleteImageStartAction {
+export interface DeleteUploadImageStartAction {
   type: typeof actionTypes.DELETE_UPLOAD_IMAGE_START;
 }
 
-export interface DeleteImageSucceedAction {
+export interface DeleteUploadImageSucceedAction {
   type: typeof actionTypes.DELETE_UPLOAD_IMAGE_SUCCEED;
-  imagesArray: TReceivedImageObj[];
+  successMessage: string;
 }
 
-export interface DeleteImageFailedAction {
+export interface DeleteUploadImageFailedAction {
   type: typeof actionTypes.DELETE_UPLOAD_IMAGE_FAILED;
   errorMessage: string;
 }
@@ -123,6 +123,7 @@ export type TReceivedBrandObj = {
   title: string;
   description: string;
   available: boolean;
+  images: TReceivedImageObj[];
 };
 
 /* --------------------------- */
@@ -160,6 +161,8 @@ export interface UpdateBrandAction {
   brand_id: number;
   title: string;
   description: string;
+  tag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /* States */
 export interface UpdateBrandStartAction {
@@ -848,10 +851,10 @@ export type SalesActionTypes =
   /* ------------------------ */
   // Delete Image(s)
   /* ------------------------ */
-  | DeleteImageAction
-  | DeleteImageStartAction
-  | DeleteImageSucceedAction
-  | DeleteImageFailedAction
+  | DeleteUploadImageAction
+  | DeleteUploadImageStartAction
+  | DeleteUploadImageSucceedAction
+  | DeleteUploadImageFailedAction
   /* ------------------------ */
   /* ======================================================================= */
   /* ------------------------ */

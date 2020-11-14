@@ -51,6 +51,7 @@ type TBrandTableState = {
   brandTitle: string;
   brandDescription: string;
   available?: boolean;
+  brandImages: TReceivedImageObj[];
 };
 // State for the table column definition
 type TWheelbaseTableState = {
@@ -379,7 +380,7 @@ const Make: React.FC<Props> = ({
               type="link"
               onClick={() => {
                 // populate the editModalForm
-                onPopulateEditMakeModel(record);
+                onPopulateEditMakeModal(record);
                 // show modal
                 setShowEditModal({ ...showEditModal, make: true });
               }}
@@ -419,10 +420,11 @@ const Make: React.FC<Props> = ({
    * @param {*} record
    * @category Helper function
    */
-  const onTableRowExpand = (expanded: boolean, record: TMakeTableState) => {
+  const onTableRowExpand = (expanded: boolean, record: TMakeTableState | TBrandTableState) => {
     var keys = [];
-    if (!expanded) {
-      keys.push(record.key.toString()); // I have set my record.id as row key. Check the documentation for more details.
+    let key = record.key;
+    if (!expanded && key) {
+      keys.push(key.toString()); // I have set my record.id as row key. Check the documentation for more details.
     }
 
     setExpandedRowKeys(keys);
@@ -477,11 +479,11 @@ const Make: React.FC<Props> = ({
   /**
    * This function takes in the record of the current row of the table
    * and then reformat the important information and pass into the current modal / form
-   * @param {TMakeTableState} record
+   * @param {TMakeTableState | TBrandTableState} record
    * @exports
    * @memberof Make
    */
-  const onPopulateEditMakeModel = (record: TMakeTableState) => {
+  const onPopulateEditMakeModal = (record: TMakeTableState) => {
     // update the form value using the 'name' attribute as target/key
     // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
     let extractedFeet = '';
@@ -521,6 +523,19 @@ const Make: React.FC<Props> = ({
     });
   };
 
+  /**
+   * This function takes in the record of the current row of the table
+   * and then reformat the important information and pass into the current modal / form
+   * @param {TBrandTableState} record
+   */
+  const onPopulateEditBrandModal = (record: TBrandTableState) => {
+    editBrandForm.setFieldsValue({
+      brandId: record.brandId,
+      brandTitle: record.brandTitle,
+      brandDescription: record.brandDescription === '-' ? '' : record.brandDescription,
+    });
+  };
+
   /* Forms onFinish methods */
   // the keys "values" are from the form's 'name' attribute
   const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; imageTag: string }) => {
@@ -532,8 +547,19 @@ const Make: React.FC<Props> = ({
       onCreateBrand(values.brandTitle, values.brandDescription, null, null);
     }
   };
-  const onEditBrandFinish = (values: { brandId: number; brandTitle: string; brandDescription: string }) => {
-    onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription);
+  const onEditBrandFinish = (values: {
+    brandId: number;
+    brandTitle: string;
+    brandDescription: string;
+    imageTag: string;
+  }) => {
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription, null, null);
+    }
   };
   const onCreateWheelbaseFinish = (values: { wheelbaseTitle: string; wheelbaseDescription: string }) => {
     onCreateWheelbase(values.wheelbaseTitle, values.wheelbaseDescription);
@@ -641,6 +667,217 @@ const Make: React.FC<Props> = ({
     if (e.key === 'Enter') {
       formRef.submit();
     }
+  };
+
+  /**
+   *
+   * Helper function to render expand icons for different tables
+   * @param {boolean} expanded
+   * @param {(TBrandTableState | TMakeTableState)} record
+   * @return {*}
+   */
+  const onExpandIcon = (expanded: boolean, record: TBrandTableState | TMakeTableState) => {
+    let expandImageGalleryButton = null;
+    if ('brandImages' in record) {
+      expandImageGalleryButton = (
+        <PlusCircleTwoTone
+          style={{
+            opacity: record.brandImages.length === 0 ? 0.3 : 1,
+            pointerEvents: record.brandImages.length === 0 ? 'none' : 'auto',
+          }}
+          onClick={() => {
+            // this allow only 1 row to expand at a time
+            onTableRowExpand(expanded, record);
+            // this closes all the edit image gallery when user expand other row
+            // clearing out all the booleans
+            setShowEditImageGallery({});
+            // this function is passed to imageGallery
+            //  it will simply uncheck everything
+            onClearAll();
+            // populate image array state and pass to ImageGallery component
+            onPopulateImagesArray(record.brandImages);
+          }}
+        />
+      );
+    } else if ('makeImages' in record) {
+      expandImageGalleryButton = (
+        <PlusCircleTwoTone
+          style={{
+            opacity: record.makeImages.length === 0 ? 0.3 : 1,
+            pointerEvents: record.makeImages.length === 0 ? 'none' : 'auto',
+          }}
+          onClick={() => {
+            // this allow only 1 row to expand at a time
+            onTableRowExpand(expanded, record);
+            // this closes all the edit image gallery when user expand other row
+            // clearing out all the booleans
+            setShowEditImageGallery({});
+            // this function is passed to imageGallery
+            //  it will simply uncheck everything
+            onClearAll();
+            // populate image array state and pass to ImageGallery component
+            onPopulateImagesArray(record.makeImages);
+          }}
+        />
+      );
+    }
+
+    return (
+      <>
+        {expanded ? (
+          <Tooltip trigger={['hover', 'click']} title="Click to hide images">
+            <MinusCircleTwoTone
+              onClick={() => {
+                onTableRowExpand(expanded, record);
+                // this function is passed to imageGallery
+                //  it will simply uncheck everything
+                onClearAll();
+              }}
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip trigger={['hover', 'click']} title="Click to view images">
+            {expandImageGalleryButton}
+          </Tooltip>
+        )}
+      </>
+    );
+  };
+
+  const onExpandedRowRender = (record: TMakeTableState | TBrandTableState) => {
+    let imageArray: TReceivedImageObj[] = [];
+    let tableSpecificId: number = -1;
+    let tableIdentifier: string = '';
+
+    if ('makeImages' in record && 'makeId' in record) {
+      imageArray = record.makeImages;
+      tableSpecificId = record.makeId;
+      tableIdentifier = 'make';
+    } else if ('brandImages' in record && 'brandId' in record) {
+      imageArray = record.brandImages;
+      tableSpecificId = record.brandId;
+      tableIdentifier = 'make';
+    }
+
+    return (
+      <>
+        {imageArray.length === 0 ? (
+          <>
+            <div className="make__images-header-div">
+              <div>
+                Images:
+                <span className="make__available">{imageArray.length} results</span>
+              </div>
+              <div>
+                <Button type="link" disabled>
+                  View all
+                </Button>
+              </div>
+            </div>
+            <hr />
+            <div className="body__expand-empty">
+              <Empty />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="make__images-header-div">
+              <div className="flex-align-center">
+                Images:&nbsp;
+                <span className="make__available">{imageArray.length} result(s)</span>
+              </div>
+              <div>
+                <Button
+                  onClick={() => {
+                    // this is to set boolean for specific row to be true
+                    // in this case e.g. make1: true or false
+                    // so only row of make id 1 will be becoming edit mode
+                    setShowEditImageGallery({
+                      ...showEditImageGallery,
+                      [tableIdentifier + tableSpecificId]: !showEditImageGallery[tableIdentifier + tableSpecificId],
+                    });
+                    // this function is passed to imageGallery
+                    //  it will simply uncheck everything
+                    onClearAll();
+                  }}
+                >
+                  {/* if screen is showing image gallery, then it should cancel button, edit button otherwise  */}
+                  {showEditImageGallery[tableIdentifier + tableSpecificId] ? (
+                    <span>Cancel</span>
+                  ) : (
+                    <span>
+                      Delete Image(s)&nbsp; <DeleteOutlined />
+                    </span>
+                  )}
+                </Button>
+
+                {/* only show add images button when NOT in edit mode */}
+                {!showEditImageGallery[tableIdentifier + tableSpecificId] && (
+                  <Button
+                    style={{ marginLeft: '1rem' }}
+                    className="blue-default-btn"
+                    onClick={() => {
+                      if ('makeId' in record) {
+                        // populate the editMakeForm
+                        onPopulateEditMakeModal(record);
+                      } else if ('brandId' in record) {
+                        // populate the editBrandForm
+                        onPopulateEditBrandModal(record);
+                      }
+                      // open the edit modal
+                      setShowEditModal({ ...showEditModal, [tableIdentifier]: true });
+                    }}
+                  >
+                    Add Image(s) <UploadOutlined />
+                  </Button>
+                )}
+
+                {/* Close button */}
+                <Button
+                  type="link"
+                  danger
+                  style={{ paddingRight: 0 }}
+                  onClick={() => {
+                    //empty the keys so nothing will be expanded
+                    setExpandedRowKeys([]);
+                    // this function is passed to imageGallery
+                    //  it will simply uncheck everything
+                    onClearAll();
+                  }}
+                >
+                  Close
+                  <CloseCircleOutlined />
+                </Button>
+              </div>
+            </div>
+            <hr />
+
+            {/* only show image gallery when user clicks view all */}
+            {showEditImageGallery[tableIdentifier + tableSpecificId] ? (
+              // In edit mode, disabled light box
+              <ImageGallery
+                loading={loading}
+                images={images}
+                inEditMode={true}
+                setImages={setImages}
+                selectAllChecked={selectAllChecked}
+                onDeleteUploadImage={onDeleteUploadImage}
+                setSelectAllChecked={setSelectAllChecked}
+                customClassName="gallery__outerdiv--edit"
+              />
+            ) : (
+              // In normal mode, enable light box
+              <ImageGallery
+                images={images}
+                inEditMode={false}
+                setImages={setImages}
+                customClassName="gallery__outerdiv--normal"
+              />
+            )}
+          </>
+        )}
+      </>
+    );
   };
 
   /* ================================================== */
@@ -1091,6 +1328,7 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
+
   //  Calling get APIs
   useEffect(() => {
     onGetBrands();
@@ -1121,6 +1359,7 @@ const Make: React.FC<Props> = ({
           brandTitle: brand.title,
           brandDescription: descriptionIsNullOrEmpty ? '-' : brand.description,
           available: brand.available,
+          brandImages: brand.images, //store the whole array of images
         });
       }
     };
@@ -1366,6 +1605,12 @@ const Make: React.FC<Props> = ({
                         bordered
                         className="make__table"
                         scroll={{ x: '89rem', y: 400 }}
+                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                        expandable={{
+                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                          expandedRowRender: (record: TBrandTableState) => onExpandedRowRender(record),
+                        }}
                         // components={components}
                         dataSource={brandTableState}
                         columns={convertHeader(brandColumns, setBrandColumns)}
@@ -1429,152 +1674,8 @@ const Make: React.FC<Props> = ({
                         expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
                         onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
                         expandable={{
-                          expandIcon: ({ expanded, record }) =>
-                            expanded ? (
-                              <Tooltip trigger={['hover', 'click']} title="Click to hide images">
-                                <MinusCircleTwoTone
-                                  onClick={() => {
-                                    onTableRowExpand(expanded, record);
-                                    // this function is passed to imageGallery
-                                    //  it will simply uncheck everything
-                                    onClearAll();
-                                  }}
-                                />
-                              </Tooltip>
-                            ) : (
-                              <Tooltip trigger={['hover', 'click']} title="Click to view images">
-                                <PlusCircleTwoTone
-                                  onClick={() => {
-                                    // this allow only 1 row to expand at a time
-                                    onTableRowExpand(expanded, record);
-                                    // this closes all the edit image gallery when user expand other row
-                                    // clearing out all the booleans
-                                    setShowEditImageGallery({});
-                                    // this function is passed to imageGallery
-                                    //  it will simply uncheck everything
-                                    onClearAll();
-                                    // populate image array state and pass to ImageGallery component
-                                    onPopulateImagesArray(record.makeImages);
-                                  }}
-                                />
-                              </Tooltip>
-                            ),
-                          expandedRowRender: (record: TMakeTableState) => {
-                            return (
-                              <>
-                                {record.makeImages.length === 0 ? (
-                                  <>
-                                    <div className="make__images-header-div">
-                                      <div>
-                                        Images:{' '}
-                                        <span className="make__available">{record.makeImages.length} results</span>
-                                      </div>
-                                      <div>
-                                        <Button type="link" disabled>
-                                          View all
-                                        </Button>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div className="body__expand-empty">
-                                      <Empty />
-                                    </div>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div className="make__images-header-div">
-                                      <div className="flex-align-center">
-                                        Images:&nbsp;
-                                        <span className="make__available">{record.makeImages.length} result(s)</span>
-                                      </div>
-                                      <div>
-                                        <Button
-                                          onClick={() => {
-                                            // this is to set boolean for specific row to be true
-                                            // in this case e.g. make1: true or false
-                                            // so only row of make id 1 will be becoming edit mode
-                                            setShowEditImageGallery({
-                                              ...showEditImageGallery,
-                                              ['make' + record.makeId]: !showEditImageGallery['make' + record.makeId],
-                                            });
-                                            // this function is passed to imageGallery
-                                            //  it will simply uncheck everything
-                                            onClearAll();
-                                          }}
-                                        >
-                                          {/* if screen is showing image gallery, then it should cancel button, edit button otherwise  */}
-                                          {showEditImageGallery['make' + record.makeId] ? (
-                                            <span>Cancel</span>
-                                          ) : (
-                                            <span>
-                                              Delete Image(s)&nbsp; <DeleteOutlined />
-                                            </span>
-                                          )}
-                                        </Button>
-
-                                        {/* only show add images button when NOT in edit mode */}
-                                        {!showEditImageGallery['make' + record.makeId] && (
-                                          <Button
-                                            style={{ marginLeft: '1rem' }}
-                                            className="blue-default-btn"
-                                            onClick={() => {
-                                              // populate the editModalForm
-                                              onPopulateEditMakeModel(record);
-                                              // open the edit modal
-                                              setShowEditModal({ ...showEditModal, make: true });
-                                            }}
-                                          >
-                                            Add Image(s) <UploadOutlined />
-                                          </Button>
-                                        )}
-
-                                        {/* Close button */}
-                                        <Button
-                                          type="link"
-                                          danger
-                                          style={{ paddingRight: 0 }}
-                                          onClick={() => {
-                                            //empty the keys so nothing will be expanded
-                                            setExpandedRowKeys([]);
-                                            // this function is passed to imageGallery
-                                            //  it will simply uncheck everything
-                                            onClearAll();
-                                          }}
-                                        >
-                                          Close
-                                          <CloseCircleOutlined />
-                                        </Button>
-                                      </div>
-                                    </div>
-                                    <hr />
-
-                                    {/* only show image gallery when user clicks view all */}
-                                    {showEditImageGallery['make' + record.makeId] ? (
-                                      // In edit mode, disabled light box
-                                      <ImageGallery
-                                        loading={loading}
-                                        images={images}
-                                        inEditMode={true}
-                                        setImages={setImages}
-                                        selectAllChecked={selectAllChecked}
-                                        onDeleteUploadImage={onDeleteUploadImage}
-                                        setSelectAllChecked={setSelectAllChecked}
-                                        customClassName="gallery__outerdiv--edit"
-                                      />
-                                    ) : (
-                                      // In normal mode, enable light box
-                                      <ImageGallery
-                                        images={images}
-                                        inEditMode={false}
-                                        setImages={setImages}
-                                        customClassName="gallery__outerdiv--normal"
-                                      />
-                                    )}
-                                  </>
-                                )}
-                              </>
-                            );
-                          },
+                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                          expandedRowRender: (record: TMakeTableState) => onExpandedRowRender(record),
                         }}
                         // components={components}
                         dataSource={makeTableState}
@@ -1642,7 +1743,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetBrands: () => dispatch(actions.getBrands()),
     onCreateBrand: (title, description, tag, imageFiles) =>
       dispatch(actions.createBrand(title, description, tag, imageFiles)),
-    onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
+    onUpdateBrand: (brand_id, title, description, imageTag, imageFiles) =>
+      dispatch(actions.updateBrand(brand_id, title, description, imageTag, imageFiles)),
     // Wheelbase
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
     onCreateWheelbase: (title, description) => dispatch(actions.createWheelbase(title, description)),

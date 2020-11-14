@@ -111,9 +111,9 @@ const PreviewUploadImage: React.FC<Props> = ({ setUploadSelectedFiles, imagesPre
             </Form.Item>
           </div>
           <div className="make__preview">
-            {imagesPreviewUrls.map((imagePreviewUrl) => {
+            {imagesPreviewUrls.map((imagePreviewUrl, index) => {
               return (
-                <div className="make__preview-innerdiv">
+                <div key={index} className="make__preview-innerdiv">
                   <Badge
                     className="make__preview-closeicon-div"
                     count={
