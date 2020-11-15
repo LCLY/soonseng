@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import './ImageGallery.scss';
 /*components*/
 /*3rd party lib*/
-import { Button, Modal } from 'antd';
 import Gallery from 'react-grid-gallery';
+import { Button, Modal } from 'antd';
 import { CheckCircleOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 interface ImageGalleryProps {
@@ -11,12 +11,12 @@ interface ImageGalleryProps {
   inEditMode: boolean;
   selectAllChecked?: boolean;
   setSelectAllChecked?: React.Dispatch<React.SetStateAction<boolean>>;
-  images: TImageArrayObj[];
-  setImages: React.Dispatch<React.SetStateAction<TImageArrayObj[]>>;
+  galleryImages: TGalleryImageArrayObj[];
+  setGalleryImages: React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>;
   customClassName: string; //to determine classname whether for edit or normal mode
   onDeleteUploadImage?: (ids: number[]) => void;
 }
-export type TImageArrayObj = {
+export type TGalleryImageArrayObj = {
   id: number;
   src: string;
   thumbnail: string;
@@ -32,10 +32,10 @@ export type TImageArrayObj = {
 type Props = ImageGalleryProps;
 
 const ImageGallery: React.FC<Props> = ({
-  images,
   loading,
-  setImages,
   inEditMode,
+  galleryImages,
+  setGalleryImages,
   customClassName,
   selectAllChecked,
   setSelectAllChecked,
@@ -59,8 +59,8 @@ const ImageGallery: React.FC<Props> = ({
    * @param {*} images
    * @return {*}
    */
-  const allImagesSelected = (images: TImageArrayObj[]) => {
-    var f = images.filter(function (img: TImageArrayObj) {
+  const allImagesSelected = (images: TGalleryImageArrayObj[]) => {
+    var f = images.filter(function (img: TGalleryImageArrayObj) {
       return img.isSelected === true;
     });
     return f.length === images.length;
@@ -76,7 +76,7 @@ const ImageGallery: React.FC<Props> = ({
    * @param {*} _image
    */
   const onSelectImage = (index: number) => {
-    var temp_images: TImageArrayObj[] = images.slice(); //copy the array, just like spread operator
+    var temp_images: TGalleryImageArrayObj[] = galleryImages.slice(); //copy the array, just like spread operator
     var img = temp_images[index];
     // if the image doesnt have isSelected property then add it on the fly
     if (img.hasOwnProperty('isSelected')) img.isSelected = !img.isSelected;
@@ -91,7 +91,7 @@ const ImageGallery: React.FC<Props> = ({
       }
     }
 
-    setImages(temp_images);
+    setGalleryImages(temp_images);
   };
 
   /**
@@ -100,7 +100,7 @@ const ImageGallery: React.FC<Props> = ({
    */
   const getSelectedImagesLength = () => {
     var selected = [];
-    for (var i = 0; i < images.length; i++) if (images[i].isSelected === true) selected.push(i);
+    for (var i = 0; i < galleryImages.length; i++) if (galleryImages[i].isSelected === true) selected.push(i);
     return selected.length;
   };
 
@@ -113,14 +113,14 @@ const ImageGallery: React.FC<Props> = ({
       setSelectAllChecked(!selectAllChecked);
     }
     // copy the array
-    var temp_images: TImageArrayObj[] = images.slice();
+    var temp_images: TGalleryImageArrayObj[] = galleryImages.slice();
     if (selectAllChecked === true) {
       for (var i = 0; i < temp_images.length; i++) temp_images[i].isSelected = false;
     } else {
       for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = true;
     }
 
-    setImages(temp_images);
+    setGalleryImages(temp_images);
   };
 
   /**
@@ -130,7 +130,7 @@ const ImageGallery: React.FC<Props> = ({
 
   const confirmDeleteUploadImage = () => {
     // filter out the selected images
-    let filteredSelectedImages = images.filter((imgObj) => {
+    let filteredSelectedImages = galleryImages.filter((imgObj) => {
       return imgObj.isSelected === true;
     });
 
@@ -173,7 +173,7 @@ const ImageGallery: React.FC<Props> = ({
             <div className="imagegallery__button-outerdiv">
               <Button className="imagegallery__button" type="primary" onClick={() => onClickSelectAll()}>
                 <CheckCircleOutlined />
-                Select All
+                {selectAllChecked ? 'Unselect All' : 'Select All'}
               </Button>
               {/* Disable delete when user hasnt select anything */}
               <Button
@@ -208,7 +208,7 @@ const ImageGallery: React.FC<Props> = ({
                   bottom: '5rem',
                   borderColor: 'white',
                 }}
-                images={images}
+                images={galleryImages}
                 onClickThumbnail={onSelectImage}
                 onSelectImage={onSelectImage}
                 enableImageSelection={true} //allow user to select image and check the checkbox
@@ -229,7 +229,7 @@ const ImageGallery: React.FC<Props> = ({
                     bottom: '5rem',
                     borderColor: 'white',
                   }}
-                  images={images}
+                  images={galleryImages}
                   enableImageSelection={false} //prevent user from being able to select image
                   enableLightbox={true}
                   showLightboxThumbnails={true}

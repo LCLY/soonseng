@@ -5,6 +5,10 @@ import { AppActions } from '../types/index';
 
 const UPLOAD_TO_MAKE = 'Make';
 const UPLOAD_TO_BRAND = 'Brand';
+const UPLOAD_TO_BODY = 'Body';
+const UPLOAD_TO_BODY_LENGTH = 'BodyLength';
+const UPLOAD_TO_ACCESSORY = 'Accessory';
+const UPLOAD_TO_BODY_ACCESSORY = 'BodyAccessory';
 
 /**
  * A boolean to check whether image has been uploaded
@@ -30,11 +34,12 @@ export function* uploadImageSaga(action: AppActions) {
   let formData = new FormData();
   formData.append('upload_type', 'image'); //this is always fixed for this particular API because this will always be image instead of other file types
 
-  if ('model' in action && 'model_id' in action && 'imageFiles' in action && 'tag' in action) {
+  if ('model' in action && 'model_id' in action && 'imageFiles' in action && 'imageTag' in action) {
+    console.log(action.model, action.model_id, action.imageTag);
     // "images[]" is the name of the key, it forms a new object of {images[]: the image files}
     formData.append('model', action.model);
     formData.append('model_id', action.model_id.toString());
-    formData.append('tag', action.tag);
+    formData.append('tag', action.imageTag);
     // for each image, loop them out and append into the "images[]" array object
     Array.from(action.imageFiles).forEach((file) => formData.append('images[]', file));
   }
@@ -189,11 +194,11 @@ export function* createBrandSaga(action: AppActions) {
     let response = yield axios.post(url, { brand });
 
     // Upload Image to model 'Make'
-    if ('tag' in action && 'imageFiles' in action) {
+    if ('imageTag' in action && 'imageFiles' in action) {
       //  check if they are null or not
-      if (action.tag && action.imageFiles) {
+      if (action.imageTag && action.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.tag, action.imageFiles));
+        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.imageTag, action.imageFiles));
 
         if (imageIsUploaded) {
           //wait until upload image succeed then only declare create brand succeed
@@ -253,11 +258,11 @@ export function* updateBrandSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { brand });
     // Upload Image to model 'Make'
-    if ('tag' in action && 'imageFiles' in action) {
+    if ('imageTag' in action && 'imageFiles' in action) {
       //  check if they are null or not
-      if (action.tag && action.imageFiles) {
+      if (action.imageTag && action.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.tag, action.imageFiles));
+        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.imageTag, action.imageFiles));
 
         if (imageIsUploaded) {
           //wait until upload image succeed then only declare create brand succeed
@@ -457,11 +462,11 @@ export function* createMakeSaga(action: AppActions) {
     let response = yield axios.post(url, { make });
 
     // Upload Image to model 'Make'
-    if ('tag' in action && 'imageFiles' in action) {
+    if ('imageTag' in action && 'imageFiles' in action) {
       //  check if they are null or not
-      if (action.tag && action.imageFiles) {
+      if (action.imageTag && action.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.tag, action.imageFiles));
+        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.imageTag, action.imageFiles));
 
         if (imageIsUploaded) {
           //wait until upload image succeed then only declare create make succeed
@@ -562,11 +567,11 @@ export function* updateMakeSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { make });
 
-    if ('tag' in action && 'imageFiles' in action) {
+    if ('imageTag' in action && 'imageFiles' in action) {
       //  check if they are null or not
-      if (action.tag && action.imageFiles) {
+      if (action.imageTag && action.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.tag, action.imageFiles));
+        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.imageTag, action.imageFiles));
 
         if (imageIsUploaded) {
           //wait until upload image succeed then only declare create make succeed
@@ -626,7 +631,25 @@ export function* createBodySaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { body });
-    yield put(actions.createBodySucceed(response.data.bodies, response.data.success));
+    // Upload Image to model 'Make'
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(actions.uploadImage(UPLOAD_TO_BODY, response.data.updated.id, action.imageTag, action.imageFiles));
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.createBodySucceed(response.data.bodies, response.data.success));
+
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.createBodySucceed(response.data.bodies, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -708,7 +731,24 @@ export function* updateBodySaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { body });
-    yield put(actions.updateBodySucceed(response.data.bodies, response.data.success));
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        console.log(response.data.updated.id);
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(actions.uploadImage(UPLOAD_TO_BODY, response.data.updated.id, action.imageTag, action.imageFiles));
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.updateBodySucceed(response.data.bodies, response.data.success));
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.updateBodySucceed(response.data.bodies, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -889,7 +929,27 @@ export function* createBodyLengthSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { body_length });
-    yield put(actions.createBodyLengthSucceed(response.data.body_lengths, response.data.success));
+    // Upload Image to model 'BodyLength'
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(
+          actions.uploadImage(UPLOAD_TO_BODY_LENGTH, response.data.updated.id, action.imageTag, action.imageFiles),
+        );
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.createBodyLengthSucceed(response.data.body_lengths, response.data.success));
+
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.createBodyLengthSucceed(response.data.body_lengths, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -972,7 +1032,28 @@ export function* updateBodyLengthSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { body_length });
-    yield put(actions.updateBodyLengthSucceed(response.data.body_lengths, response.data.success));
+
+    // Upload Image to model 'BodyLength'
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(
+          actions.uploadImage(UPLOAD_TO_BODY_LENGTH, response.data.updated.id, action.imageTag, action.imageFiles),
+        );
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.updateBodyLengthSucceed(response.data.body_lengths, response.data.success));
+
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.updateBodyLengthSucceed(response.data.body_lengths, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -1022,15 +1103,38 @@ export function* createBodyAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { body_accessory });
-    console.log(response);
 
-    yield put(
-      actions.createBodyAccessorySucceed(
-        response.data.body_accessories,
-        response.data.body_lengths,
-        response.data.success,
-      ),
-    );
+    // Upload Image to model 'Accessory'
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(
+          actions.uploadImage(UPLOAD_TO_BODY_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
+        );
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(
+            actions.createBodyAccessorySucceed(
+              response.data.body_accessories,
+              response.data.body_lengths,
+              response.data.success,
+            ),
+          ); //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(
+          actions.createBodyAccessorySucceed(
+            response.data.body_accessories,
+            response.data.body_lengths,
+            response.data.success,
+          ),
+        );
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -1111,7 +1215,28 @@ export function* updateBodyAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { body_accessory });
-    yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+
+    // Upload Image to model 'Accessory'
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(
+          actions.uploadImage(UPLOAD_TO_BODY_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
+        );
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -1159,7 +1284,27 @@ export function* createAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { accessory });
-    yield put(actions.createAccessorySucceed(response.data.accessories, response.data.success));
+
+    // Upload Image to model 'Accessory'
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(
+          actions.uploadImage(UPLOAD_TO_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
+        );
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.createAccessorySucceed(response.data.accessories, response.data.success));
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.createAccessorySucceed(response.data.accessories, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*
@@ -1237,7 +1382,27 @@ export function* updateAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { accessory });
-    yield put(actions.updateAccessorySucceed(response.data.accessories, response.data.success));
+
+    // Upload Image to model 'Accessory'
+    if ('imageTag' in action && 'imageFiles' in action) {
+      //  check if they are null or not
+      if (action.imageTag && action.imageFiles) {
+        // retrieve the updated individual make id on success and then call Upload Image action
+        yield put(
+          actions.uploadImage(UPLOAD_TO_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
+        );
+
+        if (imageIsUploaded) {
+          //wait until upload image succeed then only declare create make succeed
+          yield put(actions.updateAccessorySucceed(response.data.accessories, response.data.success));
+          //  reset imageIsUploaded boolean
+          imageIsUploaded = false;
+        }
+      } else {
+        // if user is not uploading files, then straight give success
+        yield put(actions.updateAccessorySucceed(response.data.accessories, response.data.success));
+      }
+    }
   } catch (error) {
     if (error.response) {
       /*

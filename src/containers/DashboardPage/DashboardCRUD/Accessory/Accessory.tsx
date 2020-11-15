@@ -1,23 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactText } from 'react';
 import './Accessory.scss';
 /*components*/
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
+import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 /*3rd party lib*/
+import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { Container } from 'react-bootstrap';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { Button, Form, Input, Modal, Select, Tabs, Table, Tag, Tooltip, notification } from 'antd';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { TReceivedAccessoryObj, TReceivedBodyAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/sales';
+import {
+  TReceivedAccessoryObj,
+  TReceivedBodyAccessoryObj,
+  TReceivedBodyLengthObj,
+  TReceivedImageObj,
+} from 'src/store/types/sales';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
 const { Option } = Select;
@@ -33,6 +41,7 @@ type TAccessoryTableState = {
   accessoryTitle: string;
   accessoryDescription: string;
   available?: boolean;
+  accessoryImages: TReceivedImageObj[];
 };
 
 type TBodyAccessoryTableState = {
@@ -49,6 +58,7 @@ type TBodyAccessoryTableState = {
   bodyLengthHeight: string;
   bodyLengthDepth: string;
   available?: boolean;
+  bodyAccessoryImages: TReceivedImageObj[];
 };
 
 type TCreateBodyAccessoryForm = {
@@ -57,6 +67,7 @@ type TCreateBodyAccessoryForm = {
   bodyLengthId: number; //body_length_id
   accessoryId: number; //accessory_id
   bodyAccessoryPrice: number;
+  imageTag: string;
 };
 type TUpdateBodyAccessoryForm = {
   bodyAccessoryId: number; // body_accessory id
@@ -65,6 +76,7 @@ type TUpdateBodyAccessoryForm = {
   bodyLengthId: number; //body_length_id
   accessoryId: number; //accessory_id
   bodyAccessoryPrice: number;
+  imageTag: string;
 };
 
 type TShowModal = {
@@ -93,6 +105,8 @@ const Accessory: React.FC<Props> = ({
   onCreateBodyAccessory,
   onUpdateBodyAccessory,
   onGetBodyAccessories,
+  // delete upload iamge
+  onDeleteUploadImage,
   // clear states
   onClearSalesState,
 }) => {
@@ -118,6 +132,29 @@ const Accessory: React.FC<Props> = ({
 
   const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
   setFilterReference(filterData, setFilterData);
+
+  /* ------------------------ */
+  /*   Image related states   */
+  /* ------------------------ */
+  // Upload states
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  // state to store temporary images before user uploads
+  const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+
+  // edit image gallery
+
+  /**
+   * This state will be storing makeId as the key
+   * The boolean is to determine whether to show each individual image gallery
+   * e.g. make1: false
+   */
+  const [showEditImageGallery, setShowEditImageGallery] = useState<{ [key: string]: boolean }>({});
+  // To handle one row only expand at a time
+  const [expandedRowKeys, setExpandedRowKeys] = useState<ReactText[]>([]);
+  // this is to determine if all of the images are selected
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  // For populating images in image gallery
+  const [galleryImages, setGalleryImages] = useState<TGalleryImageArrayObj[]>([]);
 
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState<TShowModal>({
@@ -181,16 +218,10 @@ const Accessory: React.FC<Props> = ({
               type="link"
               className="make__brand-btn--edit"
               onClick={() => {
+                // populate the accessory modal
+                onPopulateAccessoryModal(record);
                 // show modal
                 setShowUpdateModal({ ...showUpdateModal, accessory: true });
-                // update the form value using the 'name' attribute as target/key
-                // if accessoryDescription is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-                updateAccessoryForm.setFieldsValue({
-                  accessoryId: record.accessoryId,
-                  accessoryTitle: record.accessoryTitle,
-                  accessoryDescription: record.accessoryDescription === '-' ? '' : record.accessoryDescription,
-                });
               }}
             >
               Edit
@@ -300,24 +331,10 @@ const Accessory: React.FC<Props> = ({
               type="link"
               className="make__brand-btn--edit"
               onClick={() => {
+                // populate body accessory modal
+                onPopulateBodyAccessoryModal(record);
                 // show modal
                 setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
-                // update the form value using the 'name' attribute as target/key
-                // if description is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-
-                // remove the unit
-                let formattedPrice = record.bodyAccessoryPrice.replace('RM', '');
-                // dont show '-' when populating the form
-                let descriptionExist = record.bodyAccessoryDescription === '-' ? '' : record.bodyAccessoryDescription;
-
-                updateBodyAccessoryForm.setFieldsValue({
-                  bodyAccessoryId: record.bodyAccessoryId, // body_accessory id
-                  bodyAccessoryDescription: descriptionExist,
-                  bodyAccessoryPrice: formattedPrice,
-                  bodyLengthId: record.bodyLengthId, //body_length_id
-                  accessoryId: record.accessoryId, //accessory_id
-                });
               }}
             >
               Edit
@@ -344,21 +361,84 @@ const Accessory: React.FC<Props> = ({
     }
   };
 
+  /**
+   * This function takes in the record of the current row of the table
+   * and then reformat the important information and pass into the current modal / form
+   * @param {*} record
+   */
+  const onPopulateAccessoryModal = (record: TAccessoryTableState) => {
+    // update the form value using the 'name' attribute as target/key
+    // if accessoryDescription is '-' then change to empty string, else the real string
+    // remember to set this form on the Form component
+    updateAccessoryForm.setFieldsValue({
+      accessoryId: record.accessoryId,
+      accessoryTitle: record.accessoryTitle,
+      accessoryDescription: record.accessoryDescription === '-' ? '' : record.accessoryDescription,
+    });
+  };
+
+  /**
+   * This function takes in the record of the current row of the table
+   * and then reformat the important information and pass into the current modal / form
+   * @param {*} record
+   */
+  const onPopulateBodyAccessoryModal = (record: TBodyAccessoryTableState) => {
+    // update the form value using the 'name' attribute as target/key
+    // if description is '-' then change to empty string, else the real string
+    // remember to set this form on the Form component
+
+    // remove the unit
+    let formattedPrice = record.bodyAccessoryPrice.replace('RM', '');
+    // dont show '-' when populating the form
+    let descriptionExist = record.bodyAccessoryDescription === '-' ? '' : record.bodyAccessoryDescription;
+
+    updateBodyAccessoryForm.setFieldsValue({
+      bodyAccessoryId: record.bodyAccessoryId, // body_accessory id
+      bodyAccessoryDescription: descriptionExist,
+      bodyAccessoryPrice: formattedPrice,
+      bodyLengthId: record.bodyLengthId, //body_length_id
+      accessoryId: record.accessoryId, //accessory_id
+    });
+  };
+
   /* Forms onFinish methods */
   /* --------- ACCESSORY ---------- */
 
   // the keys "values" are from the form's 'name' attribute
-  const onCreateAccessoryFinish = (values: { accessoryTitle: string; accessoryDescription: string }) => {
+  const onCreateAccessoryFinish = (values: {
+    accessoryTitle: string;
+    accessoryDescription: string;
+    imageTag: string;
+  }) => {
     // if not then just get the title and description
-    onCreateAccessory(values.accessoryTitle, values.accessoryDescription);
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateAccessory(values.accessoryTitle, values.accessoryDescription, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateAccessory(values.accessoryTitle, values.accessoryDescription, null, null);
+    }
   };
   const onUpdateAccessoryFinish = (values: {
     accessoryId: number;
     accessoryTitle: string;
     accessoryDescription: string;
+    imageTag: string;
   }) => {
-    // if not then just get the title and description
-    onUpdateAccessory(values.accessoryId, values.accessoryTitle, values.accessoryDescription);
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateAccessory(
+        values.accessoryId,
+        values.accessoryTitle,
+        values.accessoryDescription,
+        values.imageTag,
+        uploadSelectedFiles,
+      );
+    } else {
+      onUpdateAccessory(values.accessoryId, values.accessoryTitle, values.accessoryDescription, null, null);
+    }
   };
 
   /* --------- BODY ACCESSORY ---------- */
@@ -369,7 +449,14 @@ const Accessory: React.FC<Props> = ({
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
-    onCreateBodyAccessory(createBodyAccessoryData);
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBodyAccessory(createBodyAccessoryData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateBodyAccessory(createBodyAccessoryData, null, null);
+    }
   };
   const onUpdateBodyAccessoryFinish = (values: TUpdateBodyAccessoryForm) => {
     let updateBodyAccessoryData = {
@@ -379,14 +466,214 @@ const Accessory: React.FC<Props> = ({
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
-    onUpdateBodyAccessory(updateBodyAccessoryData);
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateBodyAccessory(updateBodyAccessoryData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateBodyAccessory(updateBodyAccessoryData, null, null);
+    }
+  };
+
+  /**
+   * helper function to clear all selected images in image gallery when user call it
+   * @category Helper function
+   */
+  const onClearAllSelectedImages = () => {
+    setSelectAllChecked(false);
+
+    var temp_images: any = galleryImages.slice();
+    if (selectAllChecked) {
+      for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = false;
+    }
+    setGalleryImages(temp_images);
+  };
+
+  /**
+   *
+   * This function takes in images array from make object and then populate the current state
+   * of setImage
+   * @param {TReceivedImageObj[]} recordImagesArray
+   * @category Helper function
+   */
+  const onPopulateImagesArray = (recordImagesArray: TReceivedImageObj[]) => {
+    let tempArray: TGalleryImageArrayObj[] = [];
+
+    // Populate the array state with every image and later pass to Image Gallery
+    const storeValue = (image: TReceivedImageObj) => {
+      let imageObject = {
+        id: image.id,
+        src: image.url,
+        thumbnail: image.url,
+        thumbnailWidth: 320,
+        thumbnailHeight: 212,
+        alt: image.filename,
+        nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
+        isSelected: false,
+        tags: [{ value: image.tag ? image.tag : ' - ', title: image.tag ? image.tag : ' - ' }],
+        caption: image.filename,
+      };
+
+      tempArray.push(imageObject);
+    };
+    recordImagesArray.map(storeValue);
+
+    setGalleryImages(tempArray);
+  };
+
+  /**
+   *
+   * helper function to only show 1 expanded row
+   * @param {*} expanded
+   * @param {*} record
+   * @category Helper function
+   */
+  const onTableRowExpand = (expanded: boolean, record: TAccessoryTableState | TBodyAccessoryTableState) => {
+    var keys = [];
+    let key = record.key;
+    if (!expanded && key) {
+      keys.push(key.toString()); // I have set my record.id as row key. Check the documentation for more details.
+    }
+
+    setExpandedRowKeys(keys);
+  };
+
+  /**
+   *
+   * Helper function to render expand icons for different tables
+   * @param {boolean} expanded
+   * @param {(TAccessoryTableState|TBodyAccessoryTableState)} record
+   * @return {*}
+   */
+  const onExpandIcon = (expanded: boolean, record: TAccessoryTableState | TBodyAccessoryTableState) => {
+    let expandImageGalleryButton = null;
+    let tooltipIconsText = { plusIcon: '', minusIcon: '' };
+
+    if ('accessoryImages' in record) {
+      expandImageGalleryButton = (
+        <PlusCircleTwoTone
+          style={{
+            opacity: record.accessoryImages.length === 0 ? 0.3 : 1,
+            pointerEvents: record.accessoryImages.length === 0 ? 'none' : 'auto',
+          }}
+          onClick={() => {
+            // this allow only 1 row to expand at a time
+            onTableRowExpand(expanded, record);
+            // this closes all the edit image gallery when user expand other row
+            // clearing out all the booleans
+            setShowEditImageGallery({});
+            // this function is passed to imageGallery
+            //  it will simply uncheck everything
+            onClearAllSelectedImages();
+            // populate image array state and pass to ImageGallery component
+            onPopulateImagesArray(record.accessoryImages);
+          }}
+        />
+      );
+      // when showing plus, text should be click to show, vice versa
+      tooltipIconsText.plusIcon = 'Click to show images';
+      tooltipIconsText.minusIcon = 'Click to hide images';
+    } else if ('bodyAccessoryImages' in record) {
+      expandImageGalleryButton = (
+        <PlusCircleTwoTone
+          style={{
+            opacity: record.bodyAccessoryImages.length === 0 && record.bodyAccessoryDescription === '' ? 0.3 : 1,
+            pointerEvents:
+              record.bodyAccessoryImages.length === 0 && record.bodyAccessoryDescription === '' ? 'none' : 'auto',
+          }}
+          onClick={() => {
+            // this allow only 1 row to expand at a time
+            onTableRowExpand(expanded, record);
+            // this closes all the edit image gallery when user expand other row
+            // clearing out all the booleans
+            setShowEditImageGallery({});
+            // this function is passed to imageGallery
+            //  it will simply uncheck everything
+            onClearAllSelectedImages();
+            // populate image array state and pass to ImageGallery component
+            onPopulateImagesArray(record.bodyAccessoryImages);
+          }}
+        />
+      );
+      // when showing plus, text should be click to show, vice versa
+      tooltipIconsText.plusIcon = 'Click to show images and description';
+      tooltipIconsText.minusIcon = 'Click to hide images and description';
+    }
+
+    return (
+      <>
+        {expanded ? (
+          <Tooltip trigger={['hover', 'click']} title={tooltipIconsText.minusIcon}>
+            <MinusCircleTwoTone
+              onClick={() => {
+                onTableRowExpand(expanded, record);
+                // this function is passed to imageGallery
+                //  it will simply uncheck everything
+                onClearAllSelectedImages();
+              }}
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip trigger={['hover', 'click']} title={tooltipIconsText.plusIcon}>
+            {expandImageGalleryButton}
+          </Tooltip>
+        )}
+      </>
+    );
+  };
+
+  const onExpandedRowRender = (record: TAccessoryTableState | TBodyAccessoryTableState) => {
+    let recordImageArray: TReceivedImageObj[] = [];
+    let tableSpecificId: number = -1;
+    let tableName: string = '';
+
+    if ('accessoryImages' in record && 'accessoryId' in record) {
+      tableName = 'accessory';
+      tableSpecificId = record.accessoryId;
+      recordImageArray = record.accessoryImages;
+    } else if ('bodyAccessoryImages' in record && 'bodyAccessoryId' in record) {
+      tableName = 'body_accessory'; //must be the same as the names in TShowModal
+      tableSpecificId = record.bodyAccessoryId;
+      recordImageArray = record.bodyAccessoryImages;
+    }
+
+    return (
+      <>
+        <TableImageViewer
+          record={record}
+          loading={loading}
+          tableName={tableName}
+          galleryImages={galleryImages}
+          showUpdateModal={showUpdateModal}
+          tableSpecificId={tableSpecificId}
+          setGalleryImages={setGalleryImages}
+          recordImageArray={recordImageArray}
+          selectAllChecked={selectAllChecked}
+          setSelectAllChecked={setSelectAllChecked}
+          onDeleteUploadImage={onDeleteUploadImage}
+          setShowUpdateModal={setShowUpdateModal}
+          setExpandedRowKeys={setExpandedRowKeys}
+          showEditImageGallery={showEditImageGallery}
+          setShowEditImageGallery={setShowEditImageGallery}
+          onClearAllSelectedImages={onClearAllSelectedImages}
+          onPopulateEditModal={(record) => {
+            if ('accessoryImages' in record && 'accessoryId' in record) {
+              onPopulateAccessoryModal(record);
+            } else if ('bodyAccessoryImages' in record && 'bodyAccessoryId' in record) {
+              onPopulateBodyAccessoryModal(record);
+            }
+          }}
+        />
+      </>
+    );
   };
 
   /* ================================================== */
   /*  Components  */
   /* ================================================== */
   /* Create Accessory Form Items */
-  let createAccessoryFormItems = (
+  let accessoryFormItems = (
     <>
       <Form.Item
         className="make__form-item"
@@ -404,6 +691,11 @@ const Accessory: React.FC<Props> = ({
       >
         <TextArea rows={3} placeholder="Type description here" />
       </Form.Item>
+      <PreviewUploadImage
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+      />
     </>
   );
 
@@ -416,7 +708,7 @@ const Accessory: React.FC<Props> = ({
         onKeyDown={(e) => handleKeyDown(e, createAccessoryForm)}
         onFinish={onCreateAccessoryFinish}
       >
-        {createAccessoryFormItems}
+        {accessoryFormItems}
       </Form>
     </>
   );
@@ -424,12 +716,15 @@ const Accessory: React.FC<Props> = ({
   /* Create Accessory Modal */
   let createAccessoryModal = (
     <Modal
+      centered
       title="Create Accessory"
       visible={showCreateModal.accessory}
       onOk={createAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createAccessoryForm.resetFields();
         setShowCreateModal({ ...showCreateModal, accessory: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -446,7 +741,7 @@ const Accessory: React.FC<Props> = ({
         onKeyDown={(e) => handleKeyDown(e, updateAccessoryForm)}
         onFinish={onUpdateAccessoryFinish}
       >
-        {createAccessoryFormItems}
+        {accessoryFormItems}
 
         {/* Getting the brand id */}
         <Form.Item
@@ -466,11 +761,13 @@ const Accessory: React.FC<Props> = ({
   let updateAccessoryModal = (
     <Modal
       title="Create Accessory"
+      centered
       visible={showUpdateModal.accessory}
       onOk={updateAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         setShowUpdateModal({ ...showUpdateModal, accessory: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -545,6 +842,11 @@ const Accessory: React.FC<Props> = ({
       >
         <TextArea rows={3} />
       </Form.Item>
+      <PreviewUploadImage
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+      />
     </>
   );
 
@@ -565,12 +867,15 @@ const Accessory: React.FC<Props> = ({
   /* Create Body Accessory Modal */
   let createBodyAccessoryModal = (
     <Modal
+      centered
       title="Create Accessory Price"
       visible={showCreateModal.body_accessory}
       onOk={createBodyAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createBodyAccessoryForm.resetFields();
         setShowCreateModal({ ...showCreateModal, body_accessory: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -647,6 +952,11 @@ const Accessory: React.FC<Props> = ({
         >
           <Input />
         </Form.Item>
+        <PreviewUploadImage
+          setUploadSelectedFiles={setUploadSelectedFiles}
+          imagesPreviewUrls={imagesPreviewUrls}
+          setImagesPreviewUrls={setImagesPreviewUrls}
+        />
       </Form>
     </>
   );
@@ -654,12 +964,14 @@ const Accessory: React.FC<Props> = ({
   /* Update Body Accessory Modal */
   let updateBodyAccessoryModal = (
     <Modal
+      centered
       title="Edit Body Accessory"
       visible={showUpdateModal.body_accessory}
       onOk={updateBodyAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         setShowUpdateModal({ ...showUpdateModal, body_accessory: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -703,6 +1015,7 @@ const Accessory: React.FC<Props> = ({
           accessoryTitle: accessory.title,
           accessoryDescription: descriptionIsNullOrEmpty ? '-' : accessory.description,
           available: accessory.available,
+          accessoryImages: accessory.images,
         });
       }
     };
@@ -739,6 +1052,7 @@ const Accessory: React.FC<Props> = ({
           bodyLengthDepth: bodyAccessory.body_length.depth,
           bodyAccessoryDescription: descriptionIsNullOrEmpty ? '-' : bodyAccessory.description,
           available: bodyAccessory.available,
+          bodyAccessoryImages: bodyAccessory.images,
         });
       }
     };
@@ -854,12 +1168,18 @@ const Accessory: React.FC<Props> = ({
                           Create New Accessory
                         </Button>
                       </div>
-                      {/* ------------------ */}
-                      {/*    Accessory Table     */}
-                      {/* ------------------ */}
+                      {/* --------------------- */}
+                      {/*    Accessory Table    */}
+                      {/* --------------------- */}
                       <Table
                         bordered
                         scroll={{ x: '89rem', y: 400 }}
+                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                        expandable={{
+                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                          expandedRowRender: (record: TAccessoryTableState) => onExpandedRowRender(record),
+                        }}
                         dataSource={accessoryTableState}
                         columns={convertHeader(accessoryColumns, setAccessoryColumns)}
                         pagination={false}
@@ -885,26 +1205,25 @@ const Accessory: React.FC<Props> = ({
                       <Table
                         bordered
                         scroll={{ x: '89rem', y: 600 }}
+                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
                         expandable={{
-                          expandIcon: ({ expanded, onExpand, record }) =>
-                            expanded ? (
-                              <Tooltip trigger={['hover', 'click']} title="Click to hide description">
-                                <MinusCircleTwoTone onClick={(e) => onExpand(record, e)} />
-                              </Tooltip>
-                            ) : (
-                              <Tooltip trigger={['hover', 'click']} title="Click to view description">
-                                <PlusCircleTwoTone onClick={(e) => onExpand(record, e)} />
-                              </Tooltip>
-                            ),
+                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                          expandedRowRender: (record: TBodyAccessoryTableState) => {
+                            let imageGallerycomponent = onExpandedRowRender(record);
 
-                          expandedRowRender: (record: TBodyAccessoryTableState) => (
-                            <>
-                              <div className="accessory__expand-div">
-                                <div className="accessory__expand-title">Description:</div>
-                                <div className="accessory__expand-text">{record.bodyAccessoryDescription}</div>
-                              </div>
-                            </>
-                          ),
+                            return (
+                              <>
+                                <div className="accessory__expand-div">
+                                  <div className="accessory__expand-title">Description:</div>
+                                  <div className="accessory__expand-text">{record.bodyAccessoryDescription}</div>
+                                </div>
+                                {/* only render horizontal line if there is any images */}
+                                {record.bodyAccessoryImages.length > 0 && <hr />}
+                                {imageGallerycomponent}
+                              </>
+                            );
+                          },
                         }}
                         dataSource={bodyAccessoryTableState}
                         columns={convertHeader(bodyAccessoryColumns, setBodyAccessoryColumns)}
@@ -927,6 +1246,7 @@ const Accessory: React.FC<Props> = ({
 };
 interface StateProps {
   loading?: boolean;
+  imagesUploaded?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
   accessoriesArray?: TReceivedAccessoryObj[] | null;
@@ -938,6 +1258,7 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
     loading: state.sales.loading,
     errorMessage: state.sales.errorMessage,
     successMessage: state.sales.successMessage,
+    imagesUploaded: state.sales.imagesUploaded,
     bodyLengthsArray: state.sales.bodyLengthsArray,
     accessoriesArray: state.sales.accessoriesArray,
     bodyAccessoriesArray: state.sales.bodyAccessoriesArray,
@@ -954,6 +1275,8 @@ interface DispatchProps {
   onGetBodyAccessories: typeof actions.getBodyAccessories;
   onCreateBodyAccessory: typeof actions.createBodyAccessory;
   onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
+  // Images
+  onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
   onClearSalesState: typeof actions.clearSalesState;
 }
@@ -961,14 +1284,20 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     //  accessory
     onGetAccessories: () => dispatch(actions.getAccessories()),
-    onCreateAccessory: (title, description) => dispatch(actions.createAccessory(title, description)),
-    onUpdateAccessory: (id, title, description) => dispatch(actions.updateAccessory(id, title, description)),
+    onCreateAccessory: (title, description, imageTag, imageFiles) =>
+      dispatch(actions.createAccessory(title, description, imageTag, imageFiles)),
+    onUpdateAccessory: (id, title, description, imageTag, imageFiles) =>
+      dispatch(actions.updateAccessory(id, title, description, imageTag, imageFiles)),
     // body length
     onGetBodyLengths: () => dispatch(actions.getBodyLengths()),
     // body accessory
     onGetBodyAccessories: () => dispatch(actions.getBodyAccessories()),
-    onCreateBodyAccessory: (createBodyAccessoryData) => dispatch(actions.createBodyAccessory(createBodyAccessoryData)),
-    onUpdateBodyAccessory: (updateBodyAccessoryData) => dispatch(actions.updateBodyAccessory(updateBodyAccessoryData)),
+    onCreateBodyAccessory: (createBodyAccessoryData, imageTag, imageFiles) =>
+      dispatch(actions.createBodyAccessory(createBodyAccessoryData, imageTag, imageFiles)),
+    onUpdateBodyAccessory: (updateBodyAccessoryData, imageTag, imageFiles) =>
+      dispatch(actions.updateBodyAccessory(updateBodyAccessoryData, imageTag, imageFiles)),
+    // Image
+    onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous
     onClearSalesState: () => dispatch(actions.clearSalesState()),
   };

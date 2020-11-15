@@ -3,25 +3,19 @@ import './Make.scss';
 /*components*/
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
-import ImageGallery from 'src/components/ImageGallery/ImageGallery';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import PreviewUploadImage from 'src/components/PreviewUploadImage/PreviewUploadImage';
+import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
+import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 /*3rd party lib*/
+import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { Container } from 'react-bootstrap';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import {
-  DeleteOutlined,
-  PlusCircleTwoTone,
-  UploadOutlined,
-  CloseCircleOutlined,
-  MinusCircleTwoTone,
-} from '@ant-design/icons';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Table, Form, Input, Button, Modal, Tooltip, notification, Select, DatePicker, Empty, Tabs } from 'antd';
+import { Table, Form, Input, Button, Modal, Tooltip, notification, Select, DatePicker, Tabs } from 'antd';
 /* Util */
 import {
   TReceivedMakeObj,
@@ -32,7 +26,7 @@ import {
   TReceivedWheelbaseObj,
 } from 'src/store/types/sales';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { TImageArrayObj } from 'src/components/ImageGallery/ImageGallery';
+import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/shared/Utils';
@@ -125,7 +119,7 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   // ref for forms
   const [createBrandForm] = Form.useForm();
-  const [editBrandForm] = Form.useForm();
+  const [updateBrandForm] = Form.useForm();
   const [createWheelbaseForm] = Form.useForm();
   const [editWheelbaseForm] = Form.useForm();
   const [createMakeForm] = Form.useForm();
@@ -146,7 +140,7 @@ const Make: React.FC<Props> = ({
   setFilterReference(filterData, setFilterData);
 
   // Modal states
-  const [showEditModal, setShowEditModal] = useState<TShowModal>({
+  const [showUpdateModal, setShowUpdateModal] = useState<TShowModal>({
     brand: false,
     wheelbase: false,
     make: false,
@@ -157,28 +151,28 @@ const Make: React.FC<Props> = ({
     make: false,
   });
 
+  /* ======================== */
+  /*   Image related states   */
+  /* ======================== */
   // Upload states
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  // state to store temporary images before user uploads
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
 
-  /* ======================== */
-  /*       EDIT GALLERY       */
-  /* ======================== */
+  // edit image gallery
 
   /**
    * This state will be storing makeId as the key
    * The boolean is to determine whether to show each individual image gallery
    * e.g. make1: false
-   * @type {*}
-   *
-   * */
+   */
   const [showEditImageGallery, setShowEditImageGallery] = useState<{ [key: string]: boolean }>({});
   // To handle one row only expand at a time
   const [expandedRowKeys, setExpandedRowKeys] = useState<ReactText[]>([]);
   // this is to determine if all of the images are selected
   const [selectAllChecked, setSelectAllChecked] = useState(false);
-  // For populating images
-  const [images, setImages] = useState<TImageArrayObj[]>([]);
+  // For populating image gallery images
+  const [galleryImages, setGalleryImages] = useState<TGalleryImageArrayObj[]>([]);
 
   // store table header definition in state
   /**
@@ -231,16 +225,10 @@ const Make: React.FC<Props> = ({
               type="link"
               className="make__brand-btn--edit"
               onClick={() => {
+                onPopulateupdateBrandModal(record);
+
                 // show modal
-                setShowEditModal({ ...showEditModal, brand: true });
-                // update the form value using the 'name' attribute as target/key
-                // if brandDescription is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-                editBrandForm.setFieldsValue({
-                  brandId: record.brandId,
-                  brandTitle: record.brandTitle,
-                  brandDescription: record.brandDescription === '-' ? '' : record.brandDescription,
-                });
+                setShowUpdateModal({ ...showUpdateModal, brand: true });
               }}
             >
               Edit
@@ -299,7 +287,7 @@ const Make: React.FC<Props> = ({
               type="link"
               onClick={() => {
                 // show modal
-                setShowEditModal({ ...showEditModal, wheelbase: true });
+                setShowUpdateModal({ ...showUpdateModal, wheelbase: true });
                 let convertedToIntWheelbaseTitle = parseInt(record.wheelbaseTitle.replace('mm', ''));
                 // update the form value
                 // if wheelbaseDescription is '-' then change to empty string, else the real string
@@ -382,7 +370,7 @@ const Make: React.FC<Props> = ({
                 // populate the editModalForm
                 onPopulateEditMakeModal(record);
                 // show modal
-                setShowEditModal({ ...showEditModal, make: true });
+                setShowUpdateModal({ ...showUpdateModal, make: true });
               }}
             >
               Edit
@@ -434,25 +422,25 @@ const Make: React.FC<Props> = ({
    * helper function to clear all selected images in image gallery when user call it
    * @category Helper function
    */
-  const onClearAll = () => {
+  const onClearAllSelectedImages = () => {
     setSelectAllChecked(false);
 
-    var temp_images: any = images.slice();
+    var temp_images: any = galleryImages.slice();
     if (selectAllChecked) {
       for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = false;
     }
-    setImages(temp_images);
+    setGalleryImages(temp_images);
   };
 
   /**
    *
    * This function takes in images array from make object and then populate the current state
    * of setImage
-   * @param {TReceivedImageObj[]} images
+   * @param {TReceivedImageObj[]} recordImagesArray
    * @category Helper function
    */
-  const onPopulateImagesArray = (images: TReceivedImageObj[]) => {
-    let tempArray: TImageArrayObj[] = [];
+  const onPopulateImagesArray = (recordImagesArray: TReceivedImageObj[]) => {
+    let tempArray: TGalleryImageArrayObj[] = [];
 
     // Populate the array state with every image and later pass to Image Gallery
     const storeValue = (image: TReceivedImageObj) => {
@@ -465,23 +453,21 @@ const Make: React.FC<Props> = ({
         alt: image.filename,
         nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
         isSelected: false,
-        tags: [{ value: image.tag, title: image.tag }],
+        tags: [{ value: image.tag ? image.tag : ' - ', title: image.tag ? image.tag : ' - ' }],
         caption: image.filename,
       };
 
       tempArray.push(imageObject);
     };
-    images.map(storeValue);
+    recordImagesArray.map(storeValue);
 
-    setImages(tempArray);
+    setGalleryImages(tempArray);
   };
 
   /**
    * This function takes in the record of the current row of the table
    * and then reformat the important information and pass into the current modal / form
-   * @param {TMakeTableState | TBrandTableState} record
-   * @exports
-   * @memberof Make
+   * @param {*} record
    */
   const onPopulateEditMakeModal = (record: TMakeTableState) => {
     // update the form value using the 'name' attribute as target/key
@@ -528,8 +514,11 @@ const Make: React.FC<Props> = ({
    * and then reformat the important information and pass into the current modal / form
    * @param {TBrandTableState} record
    */
-  const onPopulateEditBrandModal = (record: TBrandTableState) => {
-    editBrandForm.setFieldsValue({
+  const onPopulateupdateBrandModal = (record: TBrandTableState) => {
+    // update the form value using the 'name' attribute as target/key
+    // if brandDescription is '-' then change to empty string, else the real string
+    // remember to set this form on the Form component
+    updateBrandForm.setFieldsValue({
       brandId: record.brandId,
       brandTitle: record.brandTitle,
       brandDescription: record.brandDescription === '-' ? '' : record.brandDescription,
@@ -647,8 +636,6 @@ const Make: React.FC<Props> = ({
       year: moment(values.year).year().toString(), //convert to year
     };
 
-    console.log(updateMakeData);
-
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
       // if there are files being selected to be uploaded
       // then send the tag and image files to the api call
@@ -693,7 +680,7 @@ const Make: React.FC<Props> = ({
             setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            onClearAll();
+            onClearAllSelectedImages();
             // populate image array state and pass to ImageGallery component
             onPopulateImagesArray(record.brandImages);
           }}
@@ -714,7 +701,7 @@ const Make: React.FC<Props> = ({
             setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            onClearAll();
+            onClearAllSelectedImages();
             // populate image array state and pass to ImageGallery component
             onPopulateImagesArray(record.makeImages);
           }}
@@ -731,7 +718,7 @@ const Make: React.FC<Props> = ({
                 onTableRowExpand(expanded, record);
                 // this function is passed to imageGallery
                 //  it will simply uncheck everything
-                onClearAll();
+                onClearAllSelectedImages();
               }}
             />
           </Tooltip>
@@ -745,137 +732,47 @@ const Make: React.FC<Props> = ({
   };
 
   const onExpandedRowRender = (record: TMakeTableState | TBrandTableState) => {
-    let imageArray: TReceivedImageObj[] = [];
+    let tableName: string = ''; //the names have to come from TShowModal
     let tableSpecificId: number = -1;
-    let tableIdentifier: string = '';
+    let recordImageArray: TReceivedImageObj[] = [];
 
     if ('makeImages' in record && 'makeId' in record) {
-      imageArray = record.makeImages;
+      tableName = 'make';
+      recordImageArray = record.makeImages;
       tableSpecificId = record.makeId;
-      tableIdentifier = 'make';
     } else if ('brandImages' in record && 'brandId' in record) {
-      imageArray = record.brandImages;
+      tableName = 'brand';
+      recordImageArray = record.brandImages;
       tableSpecificId = record.brandId;
-      tableIdentifier = 'make';
     }
 
     return (
       <>
-        {imageArray.length === 0 ? (
-          <>
-            <div className="make__images-header-div">
-              <div>
-                Images:
-                <span className="make__available">{imageArray.length} results</span>
-              </div>
-              <div>
-                <Button type="link" disabled>
-                  View all
-                </Button>
-              </div>
-            </div>
-            <hr />
-            <div className="body__expand-empty">
-              <Empty />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="make__images-header-div">
-              <div className="flex-align-center">
-                Images:&nbsp;
-                <span className="make__available">{imageArray.length} result(s)</span>
-              </div>
-              <div>
-                <Button
-                  onClick={() => {
-                    // this is to set boolean for specific row to be true
-                    // in this case e.g. make1: true or false
-                    // so only row of make id 1 will be becoming edit mode
-                    setShowEditImageGallery({
-                      ...showEditImageGallery,
-                      [tableIdentifier + tableSpecificId]: !showEditImageGallery[tableIdentifier + tableSpecificId],
-                    });
-                    // this function is passed to imageGallery
-                    //  it will simply uncheck everything
-                    onClearAll();
-                  }}
-                >
-                  {/* if screen is showing image gallery, then it should cancel button, edit button otherwise  */}
-                  {showEditImageGallery[tableIdentifier + tableSpecificId] ? (
-                    <span>Cancel</span>
-                  ) : (
-                    <span>
-                      Delete Image(s)&nbsp; <DeleteOutlined />
-                    </span>
-                  )}
-                </Button>
-
-                {/* only show add images button when NOT in edit mode */}
-                {!showEditImageGallery[tableIdentifier + tableSpecificId] && (
-                  <Button
-                    style={{ marginLeft: '1rem' }}
-                    className="blue-default-btn"
-                    onClick={() => {
-                      if ('makeId' in record) {
-                        // populate the editMakeForm
-                        onPopulateEditMakeModal(record);
-                      } else if ('brandId' in record) {
-                        // populate the editBrandForm
-                        onPopulateEditBrandModal(record);
-                      }
-                      // open the edit modal
-                      setShowEditModal({ ...showEditModal, [tableIdentifier]: true });
-                    }}
-                  >
-                    Add Image(s) <UploadOutlined />
-                  </Button>
-                )}
-
-                {/* Close button */}
-                <Button
-                  type="link"
-                  danger
-                  style={{ paddingRight: 0 }}
-                  onClick={() => {
-                    //empty the keys so nothing will be expanded
-                    setExpandedRowKeys([]);
-                    // this function is passed to imageGallery
-                    //  it will simply uncheck everything
-                    onClearAll();
-                  }}
-                >
-                  Close
-                  <CloseCircleOutlined />
-                </Button>
-              </div>
-            </div>
-            <hr />
-
-            {/* only show image gallery when user clicks view all */}
-            {showEditImageGallery[tableIdentifier + tableSpecificId] ? (
-              // In edit mode, disabled light box
-              <ImageGallery
-                loading={loading}
-                images={images}
-                inEditMode={true}
-                setImages={setImages}
-                selectAllChecked={selectAllChecked}
-                onDeleteUploadImage={onDeleteUploadImage}
-                setSelectAllChecked={setSelectAllChecked}
-                customClassName="gallery__outerdiv--edit"
-              />
-            ) : (
-              // In normal mode, enable light box
-              <ImageGallery
-                images={images}
-                inEditMode={false}
-                setImages={setImages}
-                customClassName="gallery__outerdiv--normal"
-              />
-            )}
-          </>
-        )}
+        <TableImageViewer
+          record={record}
+          loading={loading}
+          tableName={tableName}
+          galleryImages={galleryImages}
+          showUpdateModal={showUpdateModal}
+          tableSpecificId={tableSpecificId}
+          setGalleryImages={setGalleryImages}
+          recordImageArray={recordImageArray}
+          selectAllChecked={selectAllChecked}
+          setSelectAllChecked={setSelectAllChecked}
+          onDeleteUploadImage={onDeleteUploadImage}
+          setShowUpdateModal={setShowUpdateModal}
+          setExpandedRowKeys={setExpandedRowKeys}
+          showEditImageGallery={showEditImageGallery}
+          setShowEditImageGallery={setShowEditImageGallery}
+          onClearAllSelectedImages={onClearAllSelectedImages}
+          onPopulateEditModal={(record) => {
+            if ('makeImages' in record && 'makeId' in record) {
+              onPopulateEditMakeModal(record);
+            } else if ('brandImages' in record && 'brandId' in record) {
+              onPopulateupdateBrandModal(record);
+            }
+          }}
+        />
       </>
     );
   };
@@ -933,13 +830,14 @@ const Make: React.FC<Props> = ({
   /* Create Brand Modal */
   let createBrandModal = (
     <Modal
+      centered
       title="Create Brand"
       visible={showCreateModal.brand}
       onOk={createBrandForm.submit}
       confirmLoading={loading}
       onCancel={() => {
-        setShowCreateModal({ ...showCreateModal, brand: false }); //close modal on cancel
         createBrandForm.resetFields();
+        setShowCreateModal({ ...showCreateModal, brand: false }); //close modal on cancel
         setImagesPreviewUrls([]); //clear the image preview urls array when cancel
       }}
     >
@@ -949,12 +847,12 @@ const Make: React.FC<Props> = ({
   );
 
   /* Edit Brand Form */
-  let editBrandFormComponent = (
+  let updateBrandFormComponent = (
     <>
       <Form
-        form={editBrandForm}
+        form={updateBrandForm}
         name="editBrand"
-        onKeyDown={(e) => handleKeyDown(e, editBrandForm)}
+        onKeyDown={(e) => handleKeyDown(e, updateBrandForm)}
         onFinish={onEditBrandFinish}
       >
         {/* The rest of the form items */}
@@ -974,22 +872,24 @@ const Make: React.FC<Props> = ({
   );
 
   /* Edit Brand Modal */
-  let editBrandModal = (
+  let updateBrandModal = (
     <Modal
+      centered
       title="Edit Brand"
-      visible={showEditModal.brand}
-      onOk={editBrandForm.submit}
+      visible={showUpdateModal.brand}
+      onOk={updateBrandForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         // reset the brandObj value
-        setShowEditModal({
-          ...showEditModal,
+        setShowUpdateModal({
+          ...showUpdateModal,
           brand: false,
         });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
-      {editBrandFormComponent}
+      {updateBrandFormComponent}
     </Modal>
   );
 
@@ -1030,6 +930,7 @@ const Make: React.FC<Props> = ({
   /* Create Wheelbase Modal */
   let createWheelbaseModal = (
     <Modal
+      centered
       title="Create Wheelbase"
       visible={showCreateModal.wheelbase}
       onOk={createWheelbaseForm.submit}
@@ -1089,10 +990,10 @@ const Make: React.FC<Props> = ({
   let editWheelbaseModal = (
     <Modal
       title="Edit Wheelbase"
-      visible={showEditModal.wheelbase}
+      visible={showUpdateModal.wheelbase}
       onOk={editWheelbaseForm.submit}
       confirmLoading={loading}
-      onCancel={() => setShowEditModal({ ...showEditModal, wheelbase: false })}
+      onCancel={() => setShowUpdateModal({ ...showUpdateModal, wheelbase: false })}
     >
       {/* the content within the modal */}
       {editWheelbaseFormComponent}
@@ -1274,7 +1175,7 @@ const Make: React.FC<Props> = ({
       confirmLoading={loading}
       onCancel={() => {
         setShowCreateModal({ ...showCreateModal, make: false });
-        setImagesPreviewUrls([]);
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
         createMakeForm.resetFields();
       }}
     >
@@ -1312,12 +1213,12 @@ const Make: React.FC<Props> = ({
     <Modal
       centered
       title="Edit Make"
-      visible={showEditModal.make}
+      visible={showUpdateModal.make}
       onOk={editMakeForm.submit}
       confirmLoading={loading}
       onCancel={() => {
-        setShowEditModal({ ...showEditModal, make: false });
-        setImagesPreviewUrls([]); //clear the image urls array
+        setShowUpdateModal({ ...showUpdateModal, make: false });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -1502,11 +1403,11 @@ const Make: React.FC<Props> = ({
       createMakeForm.resetFields();
       // close all the modals if successful
       setShowCreateModal({ ...showCreateModal, brand: false, wheelbase: false, make: false });
-      setShowEditModal({ ...showEditModal, brand: false, wheelbase: false, make: false });
+      setShowUpdateModal({ ...showUpdateModal, brand: false, wheelbase: false, make: false });
     }
   }, [
-    showEditModal,
-    setShowEditModal,
+    showUpdateModal,
+    setShowUpdateModal,
     createMakeForm,
     createBrandForm,
     createWheelbaseForm,
@@ -1547,7 +1448,7 @@ const Make: React.FC<Props> = ({
       {/*       Modals       */}
       {/* ================== */}
       {createBrandModal}
-      {editBrandModal}
+      {updateBrandModal}
       {createWheelbaseModal}
       {editWheelbaseModal}
       {createMakeModal}

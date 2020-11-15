@@ -1,30 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactText } from 'react';
 import './Body.scss';
 /*components*/
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
+import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 /*3rd party lib*/
+import {
+  Button,
+  Empty,
+  Carousel,
+  Tabs,
+  Form,
+  Card,
+  Input,
+  Modal,
+  Select,
+  Table,
+  Tag,
+  Tooltip,
+  notification,
+} from 'antd';
+import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Container } from 'react-bootstrap';
 import { AnyAction, Dispatch } from 'redux';
-import { ToolTwoTone } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Button, Empty, Tabs, Form, Card, Input, Modal, Select, Table, Tag, Tooltip, notification } from 'antd';
 /* Util */
-import { TMapStateToProps } from 'src/store/types';
-import * as actions from 'src/store/actions/index';
 import {
   TCreateBodyLengthData,
   TReceivedAccessoryObj,
   TReceivedBodyAccessoryObj,
   TReceivedBodyLengthObj,
   TReceivedBodyObj,
+  TReceivedImageObj,
   TReceivedLengthObj,
   TUpdateBodyLengthData,
 } from 'src/store/types/sales';
+import { TMapStateToProps } from 'src/store/types';
+import * as actions from 'src/store/actions/index';
+import { img_not_available_link } from 'src/shared/global';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
@@ -41,6 +60,7 @@ type TBodyTableState = {
   bodyTitle: string;
   bodyDescription: string;
   available?: boolean;
+  bodyImages: TReceivedImageObj[];
 };
 type TLengthTableState = {
   key?: string;
@@ -65,6 +85,7 @@ type TBodyLengthTableState = {
   bodyLengthBodyAccessory: TReceivedBodyAccessoryObj[] | null;
   bodyLengthBodyAccessoryArrayLength: number;
   available?: boolean;
+  bodyLengthImages: TReceivedImageObj[];
 };
 
 type TCreateBodyLengthForm = {
@@ -74,6 +95,7 @@ type TCreateBodyLengthForm = {
   bodyLengthHeight: { feet: string; inch: string };
   bodyLengthDepth: { feet: string; inch: string };
   bodyLengthPrice: number;
+  imageTag: string;
 };
 type TUpdateBodyLengthForm = {
   bodyLengthId: number;
@@ -83,6 +105,7 @@ type TUpdateBodyLengthForm = {
   bodyLengthHeight: { feet: string; inch: string };
   bodyLengthDepth: { feet: string; inch: string };
   bodyLengthPrice: number;
+  imageTag: string;
 };
 
 type TCreateBodyAccessoryForm = {
@@ -91,6 +114,7 @@ type TCreateBodyAccessoryForm = {
   bodyLengthId: number; //body_length_id
   accessoryId: number; //accessory_id
   bodyAccessoryPrice: number;
+  imageTag: string;
 };
 type TUpdateBodyAccessoryForm = {
   bodyAccessoryId: number; // body_accessory id
@@ -99,11 +123,11 @@ type TUpdateBodyAccessoryForm = {
   bodyLengthId: number; //body_length_id
   accessoryId: number; //accessory_id
   bodyAccessoryPrice: number;
+  imageTag: string;
 };
 
 type TShowModal = {
   body: boolean;
-  currentBodyId?: number; //(for upload image) id to track which specific object is currently being edited
   length: boolean;
   body_length: boolean; //if got image add current Body length id as well
   body_accessory: boolean; //if got image add current Body length id as well
@@ -140,6 +164,8 @@ const Body: React.FC<Props> = ({
   // accessory
   accessoriesArray,
   onGetAccessories,
+  // delete upload iamges
+  onDeleteUploadImage,
   // clear states
   onClearSalesState,
 }) => {
@@ -173,7 +199,32 @@ const Body: React.FC<Props> = ({
   const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
   setFilterReference(filterData, setFilterData);
 
+  /* ------------------------ */
+  /*   Image related states   */
+  /* ------------------------ */
+  // Upload states
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  // state to store temporary images before user uploads
+  const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+
+  // edit image gallery
+
+  /**
+   * This state will be storing makeId as the key
+   * The boolean is to determine whether to show each individual image gallery
+   * e.g. make1: false
+   */
+  const [showEditImageGallery, setShowEditImageGallery] = useState<{ [key: string]: boolean }>({});
+
+  // To handle one row only expand at a time
+  const [expandedRowKeys, setExpandedRowKeys] = useState<ReactText[]>([]);
+  // this is to determine if all of the images are selected
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  // For populating images
+  const [galleryImages, setGalleryImages] = useState<TGalleryImageArrayObj[]>([]);
+  /* ------------------------ */
   // Modal states
+  /* ------------------------ */
   const [showCreateModal, setShowCreateModal] = useState<TShowModal>({
     body: false,
     length: false,
@@ -238,16 +289,9 @@ const Body: React.FC<Props> = ({
               type="link"
               className="make__brand-btn--edit"
               onClick={() => {
+                onPopulateEditBodyModal(record);
                 // show modal
                 setShowUpdateModal({ ...showUpdateModal, body: true });
-                // update the form value using the 'name' attribute as target/key
-                // if bodyDescription is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-                updateBodyForm.setFieldsValue({
-                  bodyId: record.bodyId,
-                  bodyTitle: record.bodyTitle,
-                  bodyDescription: record.bodyDescription === '-' ? '' : record.bodyDescription,
-                });
               }}
             >
               Edit
@@ -428,55 +472,10 @@ const Body: React.FC<Props> = ({
                 type="link"
                 className="make__brand-btn--edit"
                 onClick={() => {
+                  // populate bodylength modal
+                  onPopulateEditBodyLengthModal(record);
                   // show modal
                   setShowUpdateModal({ ...showUpdateModal, body_length: true });
-
-                  /**
-                   *
-                   *  Inner helper function to return feet only or feet with inch
-                   * @param {string} extractedValue Value after width/height/depth is extracted
-                   * @return {*} return object of feet and inch
-                   */
-                  const checkInchExist = (extractedValue: string) => {
-                    let extractedFeet = '';
-                    let extractedInch = '';
-
-                    // needa check if inch is undefined, only have feet in the string
-                    let onlyInchUndefined =
-                      extractedValue.split(" '")[0] !== undefined && extractedValue.split(" '")[1] === undefined;
-
-                    // needa check if inch is undefined, only have feet in the string
-                    if (onlyInchUndefined) {
-                      extractedFeet = extractedValue.split(" '")[0]; //get the first index
-                    } else {
-                      extractedFeet = extractedValue.split(" '")[0]; //get the first index
-                      extractedInch = extractedValue.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
-                    }
-
-                    return { feet: extractedFeet, inch: extractedInch };
-                  };
-
-                  let formattedPrice = record.bodyLengthPrice.replace('RM', ''); //remove unit
-
-                  // update the form value using the 'name' attribute as target/key
-                  updateBodyLengthForm.setFieldsValue({
-                    bodyLengthId: record.bodyLengthId,
-                    bodyLengthBodyId: record.bodyLengthBodyId, // body id
-                    bodyLengthLengthId: record.bodyLengthLengthId, // length id
-                    bodyLengthWidth: {
-                      feet: checkInchExist(record.bodyLengthWidth).feet,
-                      inch: checkInchExist(record.bodyLengthWidth).inch,
-                    },
-                    bodyLengthHeight: {
-                      feet: checkInchExist(record.bodyLengthHeight).feet,
-                      inch: checkInchExist(record.bodyLengthHeight).inch,
-                    },
-                    bodyLengthDepth: {
-                      feet: checkInchExist(record.bodyLengthDepth).feet,
-                      inch: checkInchExist(record.bodyLengthDepth).inch,
-                    },
-                    bodyLengthPrice: formattedPrice,
-                  });
                 }}
               >
                 Edit
@@ -531,20 +530,294 @@ const Body: React.FC<Props> = ({
     }
   };
 
+  /**
+   * helper function to clear all selected images in image gallery when user call it
+   * @category Helper function
+   */
+  const onClearAllSelectedImages = () => {
+    setSelectAllChecked(false);
+
+    var temp_images: any = galleryImages.slice();
+    if (selectAllChecked) {
+      for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = false;
+    }
+    setGalleryImages(temp_images);
+  };
+
+  /**
+   *
+   * helper function to only show 1 expanded row
+   * @param {*} expanded
+   * @param {*} record
+   * @category Helper function
+   */
+  const onTableRowExpand = (expanded: boolean, record: TBodyTableState | TBodyLengthTableState) => {
+    var keys = [];
+    let key = record.key;
+    if (!expanded && key) {
+      keys.push(key.toString()); // I have set my record.id as row key. Check the documentation for more details.
+    }
+
+    setExpandedRowKeys(keys);
+  };
+
+  /**
+   *
+   * This function takes in images array from make object and then populate the current state
+   * of setImage
+   * @param {TReceivedImageObj[]} recordImagesArray
+   * @category Helper function
+   */
+  const onPopulateImagesArray = (recordImagesArray: TReceivedImageObj[]) => {
+    let tempArray: TGalleryImageArrayObj[] = [];
+
+    // Populate the array state with every image and later pass to Image Gallery
+    const storeValue = (image: TReceivedImageObj) => {
+      let imageObject = {
+        id: image.id,
+        src: image.url,
+        thumbnail: image.url,
+        thumbnailWidth: 320,
+        thumbnailHeight: 212,
+        alt: image.filename,
+        nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
+        isSelected: false,
+        tags: [{ value: image.tag ? image.tag : ' - ', title: image.tag ? image.tag : ' - ' }],
+        caption: image.filename,
+      };
+
+      tempArray.push(imageObject);
+    };
+    recordImagesArray.map(storeValue);
+
+    setGalleryImages(tempArray);
+  };
+
+  /**
+   *
+   * Helper function to render expand icons for different tables
+   * @param {boolean} expanded
+   * @param {(TBodyTableState|TBodyLengthTableState)} record
+   * @return {*}
+   */
+  const onExpandIcon = (expanded: boolean, record: TBodyTableState | TBodyLengthTableState) => {
+    let expandImageGalleryButton = null;
+    let tooltipIconsText = { plusIcon: '', minusIcon: '' };
+
+    if ('bodyImages' in record && 'bodyId' in record) {
+      expandImageGalleryButton = (
+        <PlusCircleTwoTone
+          style={{
+            opacity: record.bodyImages.length === 0 ? 0.3 : 1,
+            pointerEvents: record.bodyImages.length === 0 ? 'none' : 'auto',
+          }}
+          onClick={() => {
+            // this allow only 1 row to expand at a time
+            onTableRowExpand(expanded, record);
+            // this closes all the edit image gallery when user expand other row
+            // clearing out all the booleans
+            setShowEditImageGallery({});
+            // this function is passed to imageGallery
+            //  it will simply uncheck everything
+            onClearAllSelectedImages();
+            // populate image array state and pass to ImageGallery component
+            onPopulateImagesArray(record.bodyImages);
+          }}
+        />
+      );
+      // when showing plus, text should be click to show, vice versa
+      tooltipIconsText.plusIcon = 'Click to show images';
+      tooltipIconsText.minusIcon = 'Click to hide images';
+    } else if ('bodyLengthImages' in record && 'bodyLengthId' in record) {
+      expandImageGalleryButton = (
+        // Prevent user from clicking if both arrays lengths are 0
+        <PlusCircleTwoTone
+          style={{
+            opacity: record.bodyLengthImages.length === 0 && record.bodyLengthBodyAccessoryArrayLength === 0 ? 0.3 : 1,
+            pointerEvents:
+              record.bodyLengthImages.length === 0 && record.bodyLengthBodyAccessoryArrayLength === 0 ? 'none' : 'auto',
+          }}
+          onClick={() => {
+            // this allow only 1 row to expand at a time
+            onTableRowExpand(expanded, record);
+            // this closes all the edit image gallery when user expand other row
+            // clearing out all the booleans
+            setShowEditImageGallery({});
+            // this function is passed to imageGallery
+            //  it will simply uncheck everything
+            onClearAllSelectedImages();
+            // populate image array state and pass to ImageGallery component
+            onPopulateImagesArray(record.bodyLengthImages);
+          }}
+        />
+      );
+      // when showing plus, text should be click to show, vice versa
+      tooltipIconsText.plusIcon = 'Click to show images and attachable accessories';
+      tooltipIconsText.minusIcon = 'Click to hide images and attachable accessories';
+    }
+
+    return (
+      <>
+        {expanded ? (
+          <Tooltip trigger={['hover', 'click']} title={tooltipIconsText.minusIcon}>
+            <MinusCircleTwoTone
+              onClick={() => {
+                onTableRowExpand(expanded, record);
+                // this function is passed to imageGallery
+                //  it will simply uncheck everything
+                onClearAllSelectedImages();
+              }}
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip trigger={['hover', 'click']} title={tooltipIconsText.plusIcon}>
+            {expandImageGalleryButton}
+          </Tooltip>
+        )}
+      </>
+    );
+  };
+
+  const onExpandedRowRender = (record: TBodyTableState | TBodyLengthTableState) => {
+    let tableName: string = '';
+    let tableSpecificId: number = -1;
+    let recordImageArray: TReceivedImageObj[] = [];
+
+    if ('bodyImages' in record && 'bodyId' in record) {
+      recordImageArray = record.bodyImages;
+      tableSpecificId = record.bodyId;
+      tableName = 'body';
+    } else if ('bodyLengthImages' in record && 'bodyLengthId' in record) {
+      recordImageArray = record.bodyLengthImages;
+      tableSpecificId = record.bodyLengthId;
+      tableName = 'body_length';
+    }
+
+    return (
+      <>
+        <TableImageViewer
+          record={record}
+          loading={loading}
+          tableName={tableName}
+          galleryImages={galleryImages}
+          showUpdateModal={showUpdateModal}
+          tableSpecificId={tableSpecificId}
+          setGalleryImages={setGalleryImages}
+          recordImageArray={recordImageArray}
+          selectAllChecked={selectAllChecked}
+          setSelectAllChecked={setSelectAllChecked}
+          onDeleteUploadImage={onDeleteUploadImage}
+          setShowUpdateModal={setShowUpdateModal}
+          setExpandedRowKeys={setExpandedRowKeys}
+          showEditImageGallery={showEditImageGallery}
+          setShowEditImageGallery={setShowEditImageGallery}
+          onClearAllSelectedImages={onClearAllSelectedImages}
+          onPopulateEditModal={(record) => {
+            if ('bodyImages' in record && 'bodyId' in record) {
+              onPopulateEditBodyModal(record);
+            } else if ('bodyLengthImages' in record && 'bodyLengthId' in record) {
+              onPopulateEditBodyLengthModal(record);
+            }
+          }}
+        />
+      </>
+    );
+  };
+
+  /* helper functions to populate forms */
+  /**
+   * This function takes in the record of the current row of the table
+   * and then reformat the important information and pass into the current modal / form
+   * @param {TBodyTableState} record
+   */
+  const onPopulateEditBodyModal = (record: TBodyTableState) => {
+    // update the form value using the 'name' attribute as target/key
+    // if bodyDescription is '-' then change to empty string, else the real string
+    // remember to set this form on the Form component
+    updateBodyForm.setFieldsValue({
+      bodyId: record.bodyId,
+      bodyTitle: record.bodyTitle,
+      bodyDescription: record.bodyDescription === '-' ? '' : record.bodyDescription,
+    });
+  };
+
+  /**
+   * This function takes in the record of the current row of the table
+   * and then reformat the important information and pass into the current modal / form
+   * @param {TBodyLengthTableState} record
+   */
+  const onPopulateEditBodyLengthModal = (record: TBodyLengthTableState) => {
+    /**
+     *  Inner helper function to return feet only or feet with inch
+     * @param {string} extractedValue Value after width/height/depth is extracted
+     * @return {*} return object of feet and inch
+     */
+    const checkInchExist = (extractedValue: string) => {
+      let extractedFeet = '';
+      let extractedInch = '';
+
+      // needa check if inch is undefined, only have feet in the string
+      let onlyInchUndefined =
+        extractedValue.split(" '")[0] !== undefined && extractedValue.split(" '")[1] === undefined;
+
+      // needa check if inch is undefined, only have feet in the string
+      if (onlyInchUndefined) {
+        extractedFeet = extractedValue.split(" '")[0]; //get the first index
+      } else {
+        extractedFeet = extractedValue.split(" '")[0]; //get the first index
+        extractedInch = extractedValue.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
+      }
+
+      return { feet: extractedFeet, inch: extractedInch };
+    };
+
+    let formattedPrice = record.bodyLengthPrice.replace('RM', ''); //remove unit
+
+    // update the form value using the 'name' attribute as target/key
+    updateBodyLengthForm.setFieldsValue({
+      bodyLengthId: record.bodyLengthId,
+      bodyLengthBodyId: record.bodyLengthBodyId, // body id
+      bodyLengthLengthId: record.bodyLengthLengthId, // length id
+      bodyLengthWidth: {
+        feet: checkInchExist(record.bodyLengthWidth).feet,
+        inch: checkInchExist(record.bodyLengthWidth).inch,
+      },
+      bodyLengthHeight: {
+        feet: checkInchExist(record.bodyLengthHeight).feet,
+        inch: checkInchExist(record.bodyLengthHeight).inch,
+      },
+      bodyLengthDepth: {
+        feet: checkInchExist(record.bodyLengthDepth).feet,
+        inch: checkInchExist(record.bodyLengthDepth).inch,
+      },
+      bodyLengthPrice: formattedPrice,
+    });
+  };
+
   /* Forms onFinish methods */
   /* --------- BODY ---------- */
   // the keys "values" are from the form's 'name' attribute
-  const onCreateBodyFinish = (values: { bodyTitle: string; bodyDescription: string }) => {
-    // if not then just get the title and description
-    if (!loading) {
-      // prevent it from running multiple times
-      onCreateBody(values.bodyTitle, values.bodyDescription);
+  const onCreateBodyFinish = (values: { bodyTitle: string; bodyDescription: string; imageTag: string }) => {
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBody(values.bodyTitle, values.bodyDescription, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateBody(values.bodyTitle, values.bodyDescription, null, null);
     }
   };
-  const onUpdateBodyFinish = (values: { bodyId: number; bodyTitle: string; bodyDescription: string }) => {
-    // if not then just get the title and description
-    if (!loading) {
-      onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription);
+  const onUpdateBodyFinish = (values: {
+    bodyId: number;
+    bodyTitle: string;
+    bodyDescription: string;
+    imageTag: string;
+  }) => {
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription, null, null);
     }
   };
 
@@ -586,7 +859,14 @@ const Body: React.FC<Props> = ({
       depth: concatDepth,
       price: values.bodyLengthPrice,
     };
-    onCreateBodyLength(createBodyLengthData);
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBodyLength(createBodyLengthData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateBodyLength(createBodyLengthData, null, null);
+    }
   };
 
   const onUpdateBodyLengthFinish = (values: TUpdateBodyLengthForm) => {
@@ -605,7 +885,13 @@ const Body: React.FC<Props> = ({
       price: values.bodyLengthPrice,
     };
 
-    onUpdateBodyLength(updateBodyLengthData);
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateBodyLength(updateBodyLengthData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateBodyLength(updateBodyLengthData, null, null);
+    }
   };
 
   /* --------- BODY ACCESSORY ---------- */
@@ -616,7 +902,13 @@ const Body: React.FC<Props> = ({
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
-    onCreateBodyAccessory(createBodyAccessoryData);
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBodyAccessory(createBodyAccessoryData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateBodyAccessory(createBodyAccessoryData, null, null);
+    }
   };
   const onUpdateBodyAccessoryFinish = (values: TUpdateBodyAccessoryForm) => {
     let updateBodyAccessoryData = {
@@ -626,7 +918,13 @@ const Body: React.FC<Props> = ({
       price: values.bodyAccessoryPrice,
       description: values.bodyAccessoryDescription,
     };
-    onUpdateBodyAccessory(updateBodyAccessoryData);
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateBodyAccessory(updateBodyAccessoryData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateBodyAccessory(updateBodyAccessoryData, null, null);
+    }
   };
 
   /* ================================================== */
@@ -655,6 +953,11 @@ const Body: React.FC<Props> = ({
       >
         <TextArea rows={3} placeholder="Type description here" />
       </Form.Item>
+      <PreviewUploadImage
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+      />
     </>
   );
 
@@ -675,12 +978,15 @@ const Body: React.FC<Props> = ({
   /* Create Body Modal */
   let createBodyModal = (
     <Modal
+      centered
       title="Create Body"
       visible={showCreateModal.body}
       onOk={createBodyForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createBodyForm.resetFields();
         setShowCreateModal({ ...showCreateModal, body: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -717,6 +1023,7 @@ const Body: React.FC<Props> = ({
   /* Edit Body Modal */
   let updateBodyModal = (
     <Modal
+      centered
       title="Edit Body"
       visible={showUpdateModal.body}
       onOk={updateBodyForm.submit}
@@ -727,6 +1034,7 @@ const Body: React.FC<Props> = ({
           ...showUpdateModal,
           body: false,
         });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -792,11 +1100,13 @@ const Body: React.FC<Props> = ({
   /* Create Length Modal */
   let createLengthModal = (
     <Modal
+      centered
       title="Create Length"
       visible={showCreateModal.length}
       onOk={createLengthForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createLengthForm.resetFields();
         setShowCreateModal({ ...showCreateModal, length: false }); //close modal on cancel
       }}
     >
@@ -835,6 +1145,7 @@ const Body: React.FC<Props> = ({
   /* Edit Length Modal */
   let updateLengthModal = (
     <Modal
+      centered
       title="Edit Length"
       visible={showUpdateModal.length}
       onOk={updateLengthForm.submit}
@@ -986,6 +1297,11 @@ const Body: React.FC<Props> = ({
       >
         <Input type="number" min={0} addonBefore="RM" placeholder="Type price here" />
       </Form.Item>
+      <PreviewUploadImage
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+      />
     </>
   );
 
@@ -1007,12 +1323,15 @@ const Body: React.FC<Props> = ({
   /* Create Body Length Modal */
   let createBodyLengthModal = (
     <Modal
+      centered
       title="Create Body Price"
       visible={showCreateModal.body_length}
       onOk={createBodyLengthForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createBodyLengthForm.resetFields();
         setShowCreateModal({ ...showCreateModal, body_length: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -1049,6 +1368,7 @@ const Body: React.FC<Props> = ({
   /* Edit Body Length Modal */
   let updateBodyLengthModal = (
     <Modal
+      centered
       title="Edit Body Price"
       visible={showUpdateModal.body_length}
       onOk={updateBodyLengthForm.submit}
@@ -1059,6 +1379,7 @@ const Body: React.FC<Props> = ({
           ...showUpdateModal,
           body_length: false,
         });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -1141,12 +1462,15 @@ const Body: React.FC<Props> = ({
   /* Create Body Accessory Modal */
   let createBodyAccessoryModal = (
     <Modal
+      centered
       title="Create Accessory"
       visible={showCreateModal.body_accessory}
       onOk={createBodyAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createBodyAccessoryForm.resetFields();
         setShowCreateModal({ ...showCreateModal, body_accessory: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -1183,18 +1507,130 @@ const Body: React.FC<Props> = ({
   /* Update Body Accessory Modal */
   let updateBodyAccessoryModal = (
     <Modal
+      centered
       title="Edit Body Accessory"
       visible={showUpdateModal.body_accessory}
       onOk={updateBodyAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         setShowUpdateModal({ ...showUpdateModal, body_accessory: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
       {updateBodyAccessoryFormComponent}
     </Modal>
   );
+
+  /* =================================== */
+  /* Body accessory expanded component*/
+  /* =================================== */
+  const renderBodyAccessoryCardsComponent = (record: TBodyLengthTableState) => {
+    return (
+      <>
+        <div>
+          Attachable accessories for&nbsp;
+          <span style={{ textTransform: 'capitalize' }}>{record.bodyLengthBodyTitle}</span>:&nbsp;
+          <span className="body__expand-available">{record.bodyLengthBodyAccessoryArrayLength} available</span>
+        </div>
+        <hr />
+        <div className="body__expand-outerdiv">
+          {record.bodyLengthBodyAccessory && (
+            <>
+              {/* if no accessory then show empty */}
+              {record.bodyLengthBodyAccessoryArrayLength === 0 ? (
+                <div className="body__expand-empty">
+                  <Empty />
+                </div>
+              ) : (
+                record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
+                  if (bodyAccessory.available) {
+                    return (
+                      <Card
+                        className="body__expand-card"
+                        title={
+                          <div className="body__expand-card-title-div">
+                            <span className="body__expand-card-title">{bodyAccessory.accessory.title}</span>
+                            <Tag color="geekblue" style={{ marginRight: 0 }}>
+                              RM{bodyAccessory.price}
+                            </Tag>
+                          </div>
+                        }
+                        key={index}
+                        size="small"
+                        style={{ width: 'auto' }}
+                        headStyle={{ background: '#FFF2E8' }}
+                      >
+                        <Carousel autoplay>
+                          {/* render all images if array more than 0 else render 'image not available' image */}
+                          {bodyAccessory.images.length > 0 ? (
+                            bodyAccessory.images.map((image) => {
+                              return (
+                                <img
+                                  className="body__expand-card-img"
+                                  key={image.id}
+                                  alt={image.filename}
+                                  src={image.url}
+                                />
+                              );
+                            })
+                          ) : (
+                            <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
+                          )}
+                        </Carousel>
+                        <div className="body__expand-card-body">
+                          <div className="body__expand-card-description">
+                            <div className="body__expand-card-description-left">
+                              <span className="body__expand-card-category">Description</span>:&nbsp;
+                            </div>
+                            {bodyAccessory.description ? (
+                              <div className="body__expand-card-description-right">{bodyAccessory.description}</div>
+                            ) : (
+                              <div className="body__expand-card-description-right">-</div>
+                            )}
+                          </div>
+                          <section className="body__expand-card-btn-section">
+                            <hr style={{ margin: 0 }} />
+                            <div className="body__expand-card-btn-div">
+                              <div>
+                                <Button
+                                  className="body__expand-card-btn-edit"
+                                  style={{ padding: 0 }}
+                                  type="link"
+                                  onClick={() => {
+                                    // show the update modal
+                                    setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
+                                    // fill in the updateBodyAccessoryform
+                                    updateBodyAccessoryForm.setFieldsValue({
+                                      bodyAccessoryId: bodyAccessory.id, //the id for update
+                                      accessoryId: bodyAccessory.accessory.id,
+                                      bodyAccessoryPrice: bodyAccessory.price,
+                                      bodyAccessoryDescription: bodyAccessory.description,
+                                      bodyLengthId: bodyAccessory.body_length.id,
+                                    });
+                                  }}
+                                >
+                                  Edit
+                                </Button>
+                                <Button disabled type="link" danger style={{ padding: 0 }}>
+                                  Delete
+                                </Button>
+                              </div>
+                            </div>
+                          </section>
+                        </div>
+                      </Card>
+                    );
+                  }
+                  return <></>;
+                })
+              )}
+            </>
+          )}
+        </div>
+      </>
+    );
+  };
 
   /* ================================================== */
   /*  useEffect  */
@@ -1244,6 +1680,7 @@ const Body: React.FC<Props> = ({
           bodyTitle: body.title,
           bodyDescription: descriptionIsNullOrEmpty ? '-' : body.description,
           available: body.available,
+          bodyImages: body.images,
         });
       }
     };
@@ -1312,6 +1749,7 @@ const Body: React.FC<Props> = ({
           bodyLengthBodyAccessory: bodyLength.body_accessories, //pass the bodyaccessory array
           bodyLengthBodyAccessoryArrayLength: bodyLength.body_accessories.length, //pass in the bodyaccessory array length for rowSpan
           available: bodyLength.available,
+          bodyLengthImages: bodyLength.images,
         });
       }
     };
@@ -1441,6 +1879,12 @@ const Body: React.FC<Props> = ({
                         className="body__table"
                         scroll={{ x: '89rem', y: 400 }}
                         dataSource={bodyTableState}
+                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                        expandable={{
+                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                          expandedRowRender: (record: TBodyTableState) => onExpandedRowRender(record),
+                        }}
                         columns={convertHeader(bodyColumns, setBodyColumns)}
                         pagination={false}
                       />
@@ -1495,109 +1939,23 @@ const Body: React.FC<Props> = ({
                         className="body__table"
                         scroll={{ x: '89rem', y: 600 }}
                         dataSource={bodyLengthTableState}
+                        expandedRowKeys={expandedRowKeys}
+                        onExpand={onTableRowExpand}
                         expandable={{
-                          expandIcon: ({ expanded, onExpand, record }) =>
-                            expanded ? (
-                              <Tooltip trigger={['hover', 'click']} title="Click to hide accessories">
-                                <ToolTwoTone onClick={(e) => onExpand(record, e)} />
-                              </Tooltip>
-                            ) : (
-                              <Tooltip trigger={['hover', 'click']} title="Click to view accessories">
-                                <ToolTwoTone onClick={(e) => onExpand(record, e)} />
-                              </Tooltip>
-                            ),
+                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                          expandedRowRender: (record: TBodyLengthTableState) => {
+                            let bodyAccessoryCards = renderBodyAccessoryCardsComponent(record);
+                            let imageGalleryComponent = onExpandedRowRender(record);
 
-                          expandedRowRender: (record: TBodyLengthTableState) => (
-                            <>
-                              <div>
-                                Attachable accessories for&nbsp;
-                                <span style={{ textTransform: 'capitalize' }}>{record.bodyLengthBodyTitle}</span>:&nbsp;
-                                <span className="body__expand-available">
-                                  {record.bodyLengthBodyAccessoryArrayLength} available
-                                </span>
-                              </div>
-                              <hr />
-                              <div className="body__expand-outerdiv">
-                                {record.bodyLengthBodyAccessory && (
-                                  <>
-                                    {/* if no accessory then show empty */}
-                                    {record.bodyLengthBodyAccessoryArrayLength === 0 ? (
-                                      <div className="body__expand-empty">
-                                        <Empty />
-                                      </div>
-                                    ) : (
-                                      record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
-                                        if (bodyAccessory.available) {
-                                          return (
-                                            <Card
-                                              className="body__expand-card"
-                                              title={
-                                                <span className="body__expand-card-title">
-                                                  {bodyAccessory.accessory.title}
-                                                </span>
-                                              }
-                                              key={index}
-                                              size="small"
-                                              style={{ width: 'auto' }}
-                                              headStyle={{ background: '#FFF2E8' }}
-                                            >
-                                              <div>
-                                                <div>
-                                                  <span className="body__expand-card-category">Price</span>: RM
-                                                  {bodyAccessory.price}
-                                                </div>
-                                                <div>
-                                                  <span className="body__expand-card-category">Description</span>:&nbsp;
-                                                  {bodyAccessory.description ? (
-                                                    <>
-                                                      <br />
-                                                      <div className="body__expand-card-description">
-                                                        {bodyAccessory.description}
-                                                      </div>
-                                                    </>
-                                                  ) : (
-                                                    ' - '
-                                                  )}
-                                                </div>
-                                              </div>
-                                              <section className="body__expand-card-btn-section">
-                                                <hr style={{ margin: 0 }} />
-                                                <div className="body__expand-card-btn-div">
-                                                  <Button
-                                                    className="body__expand-card-btn-edit"
-                                                    style={{ padding: 0 }}
-                                                    type="link"
-                                                    onClick={() => {
-                                                      // show the update modal
-                                                      setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
-                                                      // fill in the updateBodyAccessoryform
-                                                      updateBodyAccessoryForm.setFieldsValue({
-                                                        bodyAccessoryId: bodyAccessory.id, //the id for update
-                                                        accessoryId: bodyAccessory.accessory.id,
-                                                        bodyAccessoryPrice: bodyAccessory.price,
-                                                        bodyAccessoryDescription: bodyAccessory.description,
-                                                        bodyLengthId: bodyAccessory.body_length.id,
-                                                      });
-                                                    }}
-                                                  >
-                                                    Edit
-                                                  </Button>
-                                                  <Button disabled type="link" danger style={{ padding: 0 }}>
-                                                    Delete
-                                                  </Button>
-                                                </div>
-                                              </section>
-                                            </Card>
-                                          );
-                                        }
-                                        return <></>;
-                                      })
-                                    )}
-                                  </>
-                                )}
-                              </div>
-                            </>
-                          ),
+                            return (
+                              <>
+                                <div style={{ marginBottom: record.bodyLengthImages.length > 0 ? '2rem' : 'none' }}>
+                                  {bodyAccessoryCards}
+                                </div>
+                                {imageGalleryComponent}
+                              </>
+                            );
+                          },
                         }}
                         columns={convertHeader(bodyLengthColumns, setBodyLengthColumns)}
                         pagination={false}
@@ -1620,6 +1978,7 @@ const Body: React.FC<Props> = ({
 };
 interface StateProps {
   loading?: boolean;
+  imagesUploaded?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
   bodiesArray?: TReceivedBodyObj[] | null;
@@ -1634,6 +1993,7 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
     bodiesArray: state.sales.bodiesArray,
     lengthsArray: state.sales.lengthsArray,
     errorMessage: state.sales.errorMessage,
+    imagesUploaded: state.sales.imagesUploaded,
     successMessage: state.sales.successMessage,
     accessoriesArray: state.sales.accessoriesArray,
     bodyLengthsArray: state.sales.bodyLengthsArray,
@@ -1659,6 +2019,8 @@ interface DispatchProps {
   onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
   // Accessory
   onGetAccessories: typeof actions.getAccessories;
+  // Images
+  onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
   onClearSalesState: typeof actions.clearSalesState;
 }
@@ -1666,22 +2028,30 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     // Body
     onGetBodies: () => dispatch(actions.getBodies()),
-    onCreateBody: (title, description) => dispatch(actions.createBody(title, description)),
-    onUpdateBody: (id, title, description) => dispatch(actions.updateBody(id, title, description)),
+    onCreateBody: (title, description, imageTag, imageFiles) =>
+      dispatch(actions.createBody(title, description, imageTag, imageFiles)),
+    onUpdateBody: (id, title, description, imageTag, imageFiles) =>
+      dispatch(actions.updateBody(id, title, description, imageTag, imageFiles)),
     // Length
     onGetLengths: () => dispatch(actions.getLengths()),
     onCreateLength: (title, description) => dispatch(actions.createLength(title, description)),
     onUpdateLength: (id, title, description) => dispatch(actions.updateLength(id, title, description)),
     // Body Length
     onGetBodyLengths: () => dispatch(actions.getBodyLengths()),
-    onCreateBodyLength: (createBodyLengthData) => dispatch(actions.createBodyLength(createBodyLengthData)),
-    onUpdateBodyLength: (updateBodyLengthData) => dispatch(actions.updateBodyLength(updateBodyLengthData)),
+    onCreateBodyLength: (createBodyLengthData, imageTag, imageFiles) =>
+      dispatch(actions.createBodyLength(createBodyLengthData, imageTag, imageFiles)),
+    onUpdateBodyLength: (updateBodyLengthData, imageTag, imageFiles) =>
+      dispatch(actions.updateBodyLength(updateBodyLengthData, imageTag, imageFiles)),
     // Body Length
     onGetBodyAccessories: () => dispatch(actions.getBodyAccessories()),
-    onCreateBodyAccessory: (createBodyAccessoryData) => dispatch(actions.createBodyAccessory(createBodyAccessoryData)),
-    onUpdateBodyAccessory: (updateBodyAccessoryData) => dispatch(actions.updateBodyAccessory(updateBodyAccessoryData)),
+    onCreateBodyAccessory: (createBodyAccessoryData, imageTag, imageFiles) =>
+      dispatch(actions.createBodyAccessory(createBodyAccessoryData, imageTag, imageFiles)),
+    onUpdateBodyAccessory: (updateBodyAccessoryData, imageTag, imageFiles) =>
+      dispatch(actions.updateBodyAccessory(updateBodyAccessoryData, imageTag, imageFiles)),
     // Accessory
     onGetAccessories: () => dispatch(actions.getAccessories()),
+    // Image
+    onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous
     onClearSalesState: () => dispatch(actions.clearSalesState()),
   };

@@ -227,24 +227,4 @@
       }
     }
   }
-
-  /* ============================ */
-  // the images being displayed
-  /* ============================ */
-  &__images {
-    &-header {
-      // the div wrapping header and view all button
-      &-div {
-        display: flex;
-        justify-content: space-between;
-      }
-    }
-  }
-
-  /* ====================================== */
-  // the available text for show images
-  /* ====================================== */
-  &__available {
-    color: $primary-color-3;
-  }
 }

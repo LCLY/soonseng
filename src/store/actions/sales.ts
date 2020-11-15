@@ -35,12 +35,12 @@ const clearSalesState = () => {
 /* ============================================================================================ */
 // Upload Image(s)
 /* ============================================================================================ */
-export const uploadImage = (model: string, model_id: number, tag: string, imageFiles: FileList): AppActions => {
+export const uploadImage = (model: string, model_id: number, imageTag: string, imageFiles: FileList): AppActions => {
   return {
     type: actionTypes.UPLOAD_IMAGE,
     model: model,
     model_id: model_id,
-    tag: tag,
+    imageTag: imageTag,
     imageFiles: imageFiles,
   };
 };
@@ -135,14 +135,14 @@ export const getBrandsFailed = (errorMessage: string): AppActions => {
 export const createBrand = (
   title: string,
   description: string,
-  tag: string | null,
+  imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
     type: actionTypes.CREATE_BRAND,
     title: title,
     description: description,
-    tag: tag,
+    imageTag: imageTag,
     imageFiles: imageFiles,
   };
 };
@@ -174,7 +174,7 @@ export const updateBrand = (
   brand_id: number,
   title: string,
   description: string,
-  tag: string | null,
+  imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
@@ -182,7 +182,7 @@ export const updateBrand = (
     brand_id: brand_id,
     title: title,
     description: description,
-    tag: tag, //for upload images
+    imageTag: imageTag, //for upload images
     imageFiles: imageFiles, //for upload images
   };
 };
@@ -316,13 +316,13 @@ export const updateWheelbaseFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 export const createMake = (
   createMakeData: TCreateMakeData,
-  tag: string | null,
+  imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
     type: actionTypes.CREATE_MAKE,
     createMakeData: createMakeData,
-    tag: tag,
+    imageTag: imageTag,
     imageFiles: imageFiles,
   };
 };
@@ -380,13 +380,13 @@ export const getMakesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 export const updateMake = (
   updateMakeData: TUpdateMakeData,
-  tag: string | null,
+  imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKE,
     updateMakeData: updateMakeData,
-    tag: tag,
+    imageTag: imageTag,
     imageFiles: imageFiles,
   };
 };
@@ -422,11 +422,18 @@ export const updateMakeFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Create Body (tail)
 /* ------------------ */
-export const createBody = (title: string, description: string): AppActions => {
+export const createBody = (
+  title: string,
+  description: string,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_BODY,
     title: title,
     description: description,
+    imageTag: imageTag, //for upload images
+    imageFiles: imageFiles, //for upload images
   };
 };
 
@@ -481,12 +488,20 @@ export const getBodiesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Update Body (tail)
 /* ------------------ */
-export const updateBody = (body_id: number, title: string, description: string): AppActions => {
+export const updateBody = (
+  body_id: number,
+  title: string,
+  description: string,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_BODY,
     body_id: body_id,
     title: title,
     description: description,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -612,10 +627,16 @@ export const updateLengthFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Create Body Length (tail)
 /* ------------------ */
-export const createBodyLength = (createBodyLengthData: TCreateBodyLengthData): AppActions => {
+export const createBodyLength = (
+  createBodyLengthData: TCreateBodyLengthData,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_BODYLENGTH,
     createBodyLengthData: createBodyLengthData,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -673,10 +694,16 @@ export const getBodyLengthsFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Update Body Length (tail)
 /* ------------------ */
-export const updateBodyLength = (updateBodyLengthData: TUpdateBodyLengthData): AppActions => {
+export const updateBodyLength = (
+  updateBodyLengthData: TUpdateBodyLengthData,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_BODYLENGTH,
     updateBodyLengthData: updateBodyLengthData,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -710,10 +737,16 @@ export const updateBodyLengthFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Create Body Accessory (tail)
 /* ------------------ */
-export const createBodyAccessory = (createBodyAccessoryData: TCreateBodyAccessoryData): AppActions => {
+export const createBodyAccessory = (
+  createBodyAccessoryData: TCreateBodyAccessoryData,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_BODYACCESSORY,
     createBodyAccessoryData: createBodyAccessoryData,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -773,10 +806,16 @@ export const getBodyAccessoriesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Update Body Accessories (tail)
 /* ------------------ */
-export const updateBodyAccessory = (updateBodyAccessoryData: TUpdateBodyAccessoryData): AppActions => {
+export const updateBodyAccessory = (
+  updateBodyAccessoryData: TUpdateBodyAccessoryData,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_BODYACCESSORY,
     updateBodyAccessoryData: updateBodyAccessoryData,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -810,11 +849,18 @@ export const updateBodyAccessoryFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Create Accessory (tail)
 /* ------------------ */
-export const createAccessory = (title: string, description: string): AppActions => {
+export const createAccessory = (
+  title: string,
+  description: string,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_ACCESSORY,
     title: title,
     description: description,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -872,12 +918,20 @@ export const getAccessoriesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Update Accessory (tail)
 /* ------------------ */
-export const updateAccessory = (id: number, title: string, description: string): AppActions => {
+export const updateAccessory = (
+  id: number,
+  title: string,
+  description: string,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_ACCESSORY,
     id: id,
     title: title,
     description: description,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 

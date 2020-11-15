@@ -65,7 +65,7 @@ export interface UploadImageAction {
   /** The id of the specific model to choose to upload to */
   model_id: number; //
   /** Tag for future filter use */
-  tag: string;
+  imageTag: string;
   /** The images prepare to be uploaded */
   imageFiles: FileList;
 }
@@ -134,7 +134,7 @@ export interface CreateBrandAction {
   type: typeof actionTypes.CREATE_BRAND;
   title: string;
   description: string;
-  tag: string | null; //for upload images
+  imageTag: string | null; //for upload images
   imageFiles: FileList | null; //for upload images
 }
 /*  States */
@@ -161,7 +161,7 @@ export interface UpdateBrandAction {
   brand_id: number;
   title: string;
   description: string;
-  tag: string | null; //for upload images
+  imageTag: string | null; //for upload images
   imageFiles: FileList | null; //for upload images
 }
 /* States */
@@ -344,7 +344,7 @@ export type TReceivedMakeObj = {
 export interface CreateMakeAction {
   type: typeof actionTypes.CREATE_MAKE;
   createMakeData: TCreateMakeData;
-  tag: string | null; //for upload images
+  imageTag: string | null; //for upload images
   imageFiles: FileList | null; //for upload images
 }
 /*  States */
@@ -388,7 +388,7 @@ export interface GetMakesFailedAction {
 export interface UpdateMakeAction {
   type: typeof actionTypes.UPDATE_MAKE;
   updateMakeData: TUpdateMakeData;
-  tag: string | null; //for upload images
+  imageTag: string | null; //for upload images
   imageFiles: FileList | null; //for upload images
 }
 /*  States */
@@ -417,6 +417,7 @@ export type TReceivedBodyObj = {
   title: string;
   description: string;
   available: boolean;
+  images: TReceivedImageObj[];
 };
 
 /* --------------------------- */
@@ -427,6 +428,8 @@ export interface CreateBodyAction {
   type: typeof actionTypes.CREATE_BODY;
   title: string;
   description: string;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateBodyStartAction {
@@ -452,6 +455,8 @@ export interface UpdateBodyAction {
   body_id: number;
   title: string;
   description: string;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /* States */
 export interface UpdateBodyStartAction {
@@ -588,7 +593,7 @@ export type TReceivedBodyLengthObj = {
   height: string;
   price: number;
   available: boolean;
-  images: string[];
+  images: TReceivedImageObj[];
   body_accessories: TReceivedBodyAccessoryObj[];
 };
 
@@ -599,6 +604,8 @@ export type TReceivedBodyLengthObj = {
 export interface CreateBodyLengthAction {
   type: typeof actionTypes.CREATE_BODYLENGTH;
   createBodyLengthData: TCreateBodyLengthData;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateBodyLengthStartAction {
@@ -622,6 +629,8 @@ export interface CreateBodyLengthFailedAction {
 export interface UpdateBodyLengthAction {
   type: typeof actionTypes.UPDATE_BODYLENGTH;
   updateBodyLengthData: TUpdateBodyLengthData;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /* States */
 export interface UpdateBodyLengthStartAction {
@@ -684,6 +693,7 @@ export type TReceivedBodyAccessoryObj = {
   description: string;
   price: number;
   available: boolean;
+  images: TReceivedImageObj[];
 };
 
 /* --------------------------- */
@@ -693,6 +703,8 @@ export type TReceivedBodyAccessoryObj = {
 export interface CreateBodyAccessoryAction {
   type: typeof actionTypes.CREATE_BODYACCESSORY;
   createBodyAccessoryData: TCreateBodyAccessoryData;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateBodyAccessoryStartAction {
@@ -718,6 +730,8 @@ export interface CreateBodyAccessoryFailedAction {
 export interface UpdateBodyAccessoryAction {
   type: typeof actionTypes.UPDATE_BODYACCESSORY;
   updateBodyAccessoryData: TUpdateBodyAccessoryData;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /* States */
 export interface UpdateBodyAccessoryStartAction {
@@ -764,6 +778,7 @@ export type TReceivedAccessoryObj = {
   title: string;
   description: string;
   available: boolean;
+  images: TReceivedImageObj[];
 };
 
 /* --------------------------- */
@@ -774,6 +789,8 @@ export interface CreateAccessoryAction {
   type: typeof actionTypes.CREATE_ACCESSORY;
   title: string;
   description: string;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateAccessoryStartAction {
@@ -799,6 +816,8 @@ export interface UpdateAccessoryAction {
   id: number;
   title: string;
   description: string;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
 }
 /* States */
 export interface UpdateAccessoryStartAction {

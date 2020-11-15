@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Badge, Form, Select } from 'antd';
 import { CloseCircleFilled } from '@ant-design/icons';
 /* Util */
-import { img_loading } from 'src/shared/global';
+import { img_loading_link } from 'src/shared/global';
 
 const { Option } = Select;
 interface PreviewUploadImageProps {
@@ -131,7 +131,7 @@ const PreviewUploadImage: React.FC<Props> = ({ setUploadSelectedFiles, imagesPre
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
                         backgroundColor: 'rgb(197, 197, 191)',
-                        backgroundImage: `url(${imagePreviewUrl}), url(${img_loading})`,
+                        backgroundImage: `url(${imagePreviewUrl}), url(${img_loading_link})`,
                       }}
                     ></div>
                   </Badge>

@@ -1,0 +1,32 @@
+.tableviewer {
+  /* ============================ */
+  // the images being displayed
+  /* ============================ */
+  &__images {
+    &-header {
+      &-div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  /* ====================================== */
+  // the available text for show images
+  /* ====================================== */
+  &__results {
+    color: $primary-color-3;
+  }
+
+  /* ================================= */
+  // the div for empty component
+  /* ================================= */
+  &__expand {
+    &-empty {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}

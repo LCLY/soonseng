@@ -120,14 +120,38 @@
     /* ----------------------------- */
     &-card {
       font-size: 1.2rem !important;
-      min-width: 20rem;
+      min-width: 25rem;
+      max-width: 25rem;
       box-shadow: $bottom-shadow;
-      height: 17rem;
+      height: 24.5rem;
       &:not(:last-child) {
         margin-right: 1rem;
       }
+      /* the title of the card */
       &-title {
         text-transform: capitalize;
+        font-size: 1.4rem;
+        font-family: $firesans;
+        color: $primary-color-4;
+        // div of the title
+        &-div {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+
+      // the images within the carousel and card
+      &-img {
+        object-fit: cover !important;
+        width: 100%;
+        height: 12rem;
+      }
+      // the body of the card
+      &-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
       }
 
       // The categories e.g. price and description within the card
@@ -136,18 +160,25 @@
       }
       // The div of description
       &-description {
-        height: 4rem;
-        overflow-y: auto;
-
-        &::-webkit-scrollbar {
-          width: 2.5px;
-        }
-        &::-webkit-scrollbar-thumb {
-          background: $primary-color-3;
-          border-radius: 6px;
-        }
-        &::-webkit-scrollbar-thumb:hover {
-          background: $primary-color-1;
+        display: flex;
+        padding: 0.5rem;
+        /* ----------------------------- */
+        // the right column of description
+        /* ------------------------------- */
+        &-right {
+          height: 4rem;
+          overflow-y: auto;
+          width: 100%;
+          &::-webkit-scrollbar {
+            width: 2.5px;
+          }
+          &::-webkit-scrollbar-thumb {
+            background: $primary-color-3;
+            border-radius: 6px;
+          }
+          &::-webkit-scrollbar-thumb:hover {
+            background: $primary-color-1;
+          }
         }
       }
       /* ----------------------------- */
@@ -156,14 +187,14 @@
       &-btn {
         // the whole section wrapping the horizontal line and buttons
         &-section {
-          position: absolute;
-          bottom: 0;
-          width: 87%;
+          margin-top: auto;
+          width: 100%;
         }
         // outerdiv for the two  buttons
         &-div {
           width: 100%;
           display: flex;
+          align-items: center;
           justify-content: flex-end;
         }
         // the edit link button
@@ -184,9 +215,21 @@
       /* ============================ */
       & .ant-card-body {
         display: flex;
-        height: 13rem;
+        height: 19.5rem;
         flex-direction: column;
         position: relative;
+        padding: 0.5rem 0.5rem 0 0.5rem !important;
+      }
+
+      /* ========================== */
+      // div of the card title
+      /* ========================== */
+      & .ant-card-head-title {
+        padding: 0.5rem 0 !important;
+      }
+
+      &.ant-card-small > .ant-card-head {
+        min-height: auto;
       }
     }
   }
