@@ -23,6 +23,7 @@ import {
   Tooltip,
   notification,
 } from 'antd';
+import LazyLoad from 'react-lazyload';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -43,8 +44,8 @@ import {
 } from 'src/store/types/sales';
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
-import { img_not_available_link } from 'src/shared/global';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+import { img_not_available_link, img_loading_link } from 'src/shared/global';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
 const { Option } = Select;
@@ -1500,6 +1501,11 @@ const Body: React.FC<Props> = ({
         >
           <Input />
         </Form.Item>
+        <PreviewUploadImage
+          setUploadSelectedFiles={setUploadSelectedFiles}
+          imagesPreviewUrls={imagesPreviewUrls}
+          setImagesPreviewUrls={setImagesPreviewUrls}
+        />
       </Form>
     </>
   );
@@ -1566,12 +1572,18 @@ const Body: React.FC<Props> = ({
                           {bodyAccessory.images.length > 0 ? (
                             bodyAccessory.images.map((image) => {
                               return (
-                                <img
-                                  className="body__expand-card-img"
-                                  key={image.id}
-                                  alt={image.filename}
-                                  src={image.url}
-                                />
+                                <LazyLoad
+                                  placeholder={
+                                    <img className="body__expand-card-img" alt="loading" src={img_loading_link} />
+                                  }
+                                >
+                                  <img
+                                    className="body__expand-card-img"
+                                    key={image.id}
+                                    alt={image.filename}
+                                    src={image.url}
+                                  />
+                                </LazyLoad>
                               );
                             })
                           ) : (
