@@ -2,7 +2,7 @@ import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
-import 'src/components/ImageRelated/LightboxComponent/node_modules/react-image-lightbox/style.css';
+import 'react-image-lightbox/style.css';
 // 3rd party lib
 import { BrowserRouter } from 'react-router-dom';
 
