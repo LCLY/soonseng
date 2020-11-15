@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 
 // initialState for reducers
-export interface SalesInitialState {
+export interface DashboardInitialState {
   readonly loading: boolean;
   readonly errorMessage: string | null;
   readonly successMessage: string | null;
@@ -35,15 +35,15 @@ export interface SalesInitialState {
 }
 
 // to further breakdown the state, use in mapStateToProps
-export interface ISalesMapStateToProps {
-  readonly sales: SalesInitialState;
+export interface IDashboardMapStateToProps {
+  readonly dashboard: DashboardInitialState;
 }
 
 /* ============================================================== */
-// Clear all the sales state
+// Clear all the dashboard state
 /* ============================================================== */
-export interface ClearSalesStateAction {
-  type: typeof actionTypes.CLEAR_SALES_STATE;
+export interface ClearDashboardStateAction {
+  type: typeof actionTypes.CLEAR_DASHBOARD_STATE;
 }
 
 /* ============================================================== */
@@ -856,10 +856,10 @@ export interface GetAccessoriesFailedAction {
 /* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
-export type SalesActionTypes =
+export type DashboardActionTypes =
   // Miscellaneous
   /* ------------------------ */
-  | ClearSalesStateAction
+  | ClearDashboardStateAction
   /* ------------------------ */
   // Upload Image(s)
   /* ------------------------ */

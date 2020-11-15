@@ -25,7 +25,7 @@ import {
   TReceivedBodyAccessoryObj,
   TReceivedBodyLengthObj,
   TReceivedImageObj,
-} from 'src/store/types/sales';
+} from 'src/store/types/dashboard';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
 const { Option } = Select;
@@ -108,7 +108,7 @@ const Accessory: React.FC<Props> = ({
   // delete upload iamge
   onDeleteUploadImage,
   // clear states
-  onClearSalesState,
+  onClearDashboardState,
 }) => {
   /* ================================================== */
   /*  state */
@@ -1076,7 +1076,7 @@ const Accessory: React.FC<Props> = ({
         description: successMessage,
       });
       //  clear the state so the notification will be hidden afterwards
-      onClearSalesState();
+      onClearDashboardState();
       // clear the form inputs using the form reference
       createAccessoryForm.resetFields();
       createBodyAccessoryForm.resetFields();
@@ -1094,7 +1094,7 @@ const Accessory: React.FC<Props> = ({
     createBodyAccessoryForm,
     setShowUpdateModal,
     setShowCreateModal,
-    onClearSalesState,
+    onClearDashboardState,
   ]);
 
   /* ------------------ */
@@ -1108,7 +1108,7 @@ const Accessory: React.FC<Props> = ({
         description: errorMessage,
       });
     }
-  }, [errorMessage, onClearSalesState]);
+  }, [errorMessage, onClearDashboardState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -1255,13 +1255,13 @@ interface StateProps {
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   return {
-    loading: state.sales.loading,
-    errorMessage: state.sales.errorMessage,
-    successMessage: state.sales.successMessage,
-    imagesUploaded: state.sales.imagesUploaded,
-    bodyLengthsArray: state.sales.bodyLengthsArray,
-    accessoriesArray: state.sales.accessoriesArray,
-    bodyAccessoriesArray: state.sales.bodyAccessoriesArray,
+    loading: state.dashboard.loading,
+    errorMessage: state.dashboard.errorMessage,
+    successMessage: state.dashboard.successMessage,
+    imagesUploaded: state.dashboard.imagesUploaded,
+    bodyLengthsArray: state.dashboard.bodyLengthsArray,
+    accessoriesArray: state.dashboard.accessoriesArray,
+    bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
   };
 };
 interface DispatchProps {
@@ -1278,7 +1278,7 @@ interface DispatchProps {
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
-  onClearSalesState: typeof actions.clearSalesState;
+  onClearDashboardState: typeof actions.clearDashboardState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -1299,7 +1299,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous
-    onClearSalesState: () => dispatch(actions.clearSalesState()),
+    onClearDashboardState: () => dispatch(actions.clearDashboardState()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Accessory));

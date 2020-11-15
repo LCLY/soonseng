@@ -24,7 +24,7 @@ import {
   TReceivedBrandObj,
   TReceivedImageObj,
   TReceivedWheelbaseObj,
-} from 'src/store/types/sales';
+} from 'src/store/types/dashboard';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 import * as actions from 'src/store/actions/index';
@@ -93,7 +93,7 @@ const Make: React.FC<Props> = ({
   loading,
   errorMessage,
   successMessage,
-  onClearSalesState,
+  onClearDashboardState,
   // brand
   brandsArray,
   onGetBrands,
@@ -1396,7 +1396,7 @@ const Make: React.FC<Props> = ({
         description: successMessage,
       });
       // clear the successMessage object, set to null
-      onClearSalesState();
+      onClearDashboardState();
       // clear the form inputs using the form reference
       createBrandForm.resetFields();
       createWheelbaseForm.resetFields();
@@ -1413,7 +1413,7 @@ const Make: React.FC<Props> = ({
     createWheelbaseForm,
     showCreateModal,
     successMessage,
-    onClearSalesState,
+    onClearDashboardState,
   ]);
 
   /* ------------------ */
@@ -1427,7 +1427,7 @@ const Make: React.FC<Props> = ({
         description: errorMessage,
       });
     }
-  }, [errorMessage, onClearSalesState]);
+  }, [errorMessage, onClearDashboardState]);
 
   /* --------------- */
   // Image Uploaded
@@ -1435,10 +1435,10 @@ const Make: React.FC<Props> = ({
   useEffect(() => {
     if (imagesUploaded) {
       // if image has been uploaded, clear the state
-      onClearSalesState();
+      onClearDashboardState();
       setImagesPreviewUrls([]); //empty the array
     }
-  }, [imagesUploaded, onClearSalesState, setImagesPreviewUrls]);
+  }, [imagesUploaded, onClearDashboardState, setImagesPreviewUrls]);
 
   /* ================================================== */
   /* ================================================== */
@@ -1611,13 +1611,13 @@ interface StateProps {
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   return {
-    loading: state.sales.loading,
-    makesArray: state.sales.makesArray,
-    brandsArray: state.sales.brandsArray,
-    errorMessage: state.sales.errorMessage,
-    imagesUploaded: state.sales.imagesUploaded,
-    successMessage: state.sales.successMessage,
-    wheelbasesArray: state.sales.wheelbasesArray,
+    loading: state.dashboard.loading,
+    makesArray: state.dashboard.makesArray,
+    brandsArray: state.dashboard.brandsArray,
+    errorMessage: state.dashboard.errorMessage,
+    imagesUploaded: state.dashboard.imagesUploaded,
+    successMessage: state.dashboard.successMessage,
+    wheelbasesArray: state.dashboard.wheelbasesArray,
   };
 };
 interface DispatchProps {
@@ -1636,7 +1636,7 @@ interface DispatchProps {
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
-  onClearSalesState: typeof actions.clearSalesState;
+  onClearDashboardState: typeof actions.clearDashboardState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -1660,7 +1660,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous
-    onClearSalesState: () => dispatch(actions.clearSalesState()),
+    onClearDashboardState: () => dispatch(actions.clearDashboardState()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Make));

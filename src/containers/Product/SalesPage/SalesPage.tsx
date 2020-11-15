@@ -350,8 +350,8 @@ interface StateProps {
 
 const mapStateToProps = (state: TMapStateToProps): StateProps => {
   return {
-    loading: state.sales.loading,
-    errorMessage: state.sales.errorMessage,
+    loading: state.dashboard.loading,
+    errorMessage: state.dashboard.errorMessage,
   };
 };
 

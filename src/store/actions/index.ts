@@ -1,7 +1,7 @@
 // export all the actions
 export {
-  // Clear all sales state
-  clearSalesState,
+  // Clear all dashboard state
+  clearDashboardState,
   /* =================== */
   //   Image(s)
   /* =================== */
@@ -162,4 +162,4 @@ export {
   updateAccessoryStart,
   updateAccessoryFailed,
   updateAccessorySucceed,
-} from './sales';
+} from './dashboard';

@@ -1,9 +1,9 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 import { updateObject } from 'src/shared/Utils';
-import { SalesActionTypes, SalesInitialState } from 'src/store/types/sales';
+import { DashboardActionTypes, DashboardInitialState } from 'src/store/types/dashboard';
 import { AppActions } from 'src/store/types';
 
-const initialState: SalesInitialState = {
+const initialState: DashboardInitialState = {
   loading: false,
   // makes
   makeObj: null,
@@ -38,9 +38,9 @@ const initialState: SalesInitialState = {
 };
 
 /* ============================================================================================ */
-// Clear Sales State - reset the states
+// Clear Dashboard State - reset the states
 /* ============================================================================================ */
-const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
+const clearDashboardState = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { loading: false, errorMessage: null, successMessage: null, imagesUploaded: false });
 };
 
@@ -48,10 +48,10 @@ const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
 /*   Upload Image(s)
 /* ============================================================================================ */
 
-const uploadImageStart = (state: SalesInitialState, _action: AppActions) => {
+const uploadImageStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true, imagesUploaded: false });
 };
-const uploadImageSucceed = (state: SalesInitialState, action: AppActions) => {
+const uploadImageSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('imagesArray' in action) {
     return updateObject(state, {
       loading: false,
@@ -61,7 +61,7 @@ const uploadImageSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const uploadImageFailed = (state: SalesInitialState, action: AppActions) => {
+const uploadImageFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false, imagesUploaded: false });
   }
@@ -70,10 +70,10 @@ const uploadImageFailed = (state: SalesInitialState, action: AppActions) => {
 /*   Delete Image(s)
 /* ============================================================================================ */
 
-const deleteUploadImageStart = (state: SalesInitialState, _action: AppActions) => {
+const deleteUploadImageStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const deleteUploadImageSucceed = (state: SalesInitialState, action: AppActions) => {
+const deleteUploadImageSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action) {
     return updateObject(state, {
       loading: false,
@@ -82,7 +82,7 @@ const deleteUploadImageSucceed = (state: SalesInitialState, action: AppActions) 
     });
   }
 };
-const deleteUploadImageFailed = (state: SalesInitialState, action: AppActions) => {
+const deleteUploadImageFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -95,10 +95,10 @@ const deleteUploadImageFailed = (state: SalesInitialState, action: AppActions) =
 /* -------------------------- */
 /* Create Brand */
 /* -------------------------- */
-const createBrandStart = (state: SalesInitialState, _action: AppActions) => {
+const createBrandStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createBrandSucceed = (state: SalesInitialState, action: AppActions) => {
+const createBrandSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'brandsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -108,7 +108,7 @@ const createBrandSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const createBrandFailed = (state: SalesInitialState, action: AppActions) => {
+const createBrandFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -117,15 +117,15 @@ const createBrandFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Get all Brands  */
 /* -------------------------- */
-const getBrandsStart = (state: SalesInitialState, _action: AppActions) => {
+const getBrandsStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getBrandsSucceed = (state: SalesInitialState, action: AppActions) => {
+const getBrandsSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('brandsArray' in action) {
     return updateObject(state, { errorMessage: null, loading: false, brandsArray: action.brandsArray });
   }
 };
-const getBrandsFailed = (state: SalesInitialState, action: AppActions) => {
+const getBrandsFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -134,10 +134,10 @@ const getBrandsFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Update Brand  */
 /* -------------------------- */
-const updateBrandStart = (state: SalesInitialState, _action: AppActions) => {
+const updateBrandStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateBrandSucceed = (state: SalesInitialState, action: AppActions) => {
+const updateBrandSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('brandsArray' in action && 'successMessage' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -147,7 +147,7 @@ const updateBrandSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const updateBrandFailed = (state: SalesInitialState, action: AppActions) => {
+const updateBrandFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -159,10 +159,10 @@ const updateBrandFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Create Wheelbase */
 /* -------------------------- */
-const createWheelbaseStart = (state: SalesInitialState, _action: AppActions) => {
+const createWheelbaseStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createWheelbaseSucceed = (state: SalesInitialState, action: AppActions) => {
+const createWheelbaseSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'wheelbasesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -172,7 +172,7 @@ const createWheelbaseSucceed = (state: SalesInitialState, action: AppActions) =>
     });
   }
 };
-const createWheelbaseFailed = (state: SalesInitialState, action: AppActions) => {
+const createWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -181,10 +181,10 @@ const createWheelbaseFailed = (state: SalesInitialState, action: AppActions) => 
 /* -------------------------- */
 /* Get Wheelbases */
 /* -------------------------- */
-const getWheelbasesStart = (state: SalesInitialState, _action: AppActions) => {
+const getWheelbasesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getWheelbasesSucceed = (state: SalesInitialState, action: AppActions) => {
+const getWheelbasesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('wheelbasesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -193,7 +193,7 @@ const getWheelbasesSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const getWheelbasesFailed = (state: SalesInitialState, action: AppActions) => {
+const getWheelbasesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -202,10 +202,10 @@ const getWheelbasesFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Update Wheelbase  */
 /* -------------------------- */
-const updateWheelbaseStart = (state: SalesInitialState, _action: AppActions) => {
+const updateWheelbaseStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateWheelbaseSucceed = (state: SalesInitialState, action: AppActions) => {
+const updateWheelbaseSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('wheelbasesArray' in action && 'successMessage' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -215,7 +215,7 @@ const updateWheelbaseSucceed = (state: SalesInitialState, action: AppActions) =>
     });
   }
 };
-const updateWheelbaseFailed = (state: SalesInitialState, action: AppActions) => {
+const updateWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -228,10 +228,10 @@ const updateWheelbaseFailed = (state: SalesInitialState, action: AppActions) => 
 /* -------------------------- */
 /* Get Makes  */
 /* -------------------------- */
-const getMakesStart = (state: SalesInitialState, _action: AppActions) => {
+const getMakesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getMakesSucceed = (state: SalesInitialState, action: AppActions) => {
+const getMakesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('makesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -240,7 +240,7 @@ const getMakesSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const getMakesFailed = (state: SalesInitialState, action: AppActions) => {
+const getMakesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -249,10 +249,10 @@ const getMakesFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Create Make  */
 /* -------------------------- */
-const createMakeStart = (state: SalesInitialState, _action: AppActions) => {
+const createMakeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createMakeSucceed = (state: SalesInitialState, action: AppActions) => {
+const createMakeSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'makesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -262,7 +262,7 @@ const createMakeSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const createMakeFailed = (state: SalesInitialState, action: AppActions) => {
+const createMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -271,10 +271,10 @@ const createMakeFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Update Make  */
 /* -------------------------- */
-const updateMakeStart = (state: SalesInitialState, _action: AppActions) => {
+const updateMakeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateMakeSucceed = (state: SalesInitialState, action: AppActions) => {
+const updateMakeSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'makesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -284,7 +284,7 @@ const updateMakeSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const updateMakeFailed = (state: SalesInitialState, action: AppActions) => {
+const updateMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -297,10 +297,10 @@ const updateMakeFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Create Body  */
 /* -------------------------- */
-const createBodyStart = (state: SalesInitialState, _action: AppActions) => {
+const createBodyStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createBodySucceed = (state: SalesInitialState, action: AppActions) => {
+const createBodySucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'bodiesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -310,7 +310,7 @@ const createBodySucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const createBodyFailed = (state: SalesInitialState, action: AppActions) => {
+const createBodyFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -318,10 +318,10 @@ const createBodyFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Get Bodies  */
 /* -------------------------- */
-const getBodiesStart = (state: SalesInitialState, _action: AppActions) => {
+const getBodiesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getBodiesSucceed = (state: SalesInitialState, action: AppActions) => {
+const getBodiesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('bodiesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -330,7 +330,7 @@ const getBodiesSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const getBodiesFailed = (state: SalesInitialState, action: AppActions) => {
+const getBodiesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -339,10 +339,10 @@ const getBodiesFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Update Body  */
 /* -------------------------- */
-const updateBodyStart = (state: SalesInitialState, _action: AppActions) => {
+const updateBodyStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateBodySucceed = (state: SalesInitialState, action: AppActions) => {
+const updateBodySucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'bodiesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -352,7 +352,7 @@ const updateBodySucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const updateBodyFailed = (state: SalesInitialState, action: AppActions) => {
+const updateBodyFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -365,10 +365,10 @@ const updateBodyFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Create Length  */
 /* -------------------------- */
-const createLengthStart = (state: SalesInitialState, _action: AppActions) => {
+const createLengthStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createLengthSucceed = (state: SalesInitialState, action: AppActions) => {
+const createLengthSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'lengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -378,7 +378,7 @@ const createLengthSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const createLengthFailed = (state: SalesInitialState, action: AppActions) => {
+const createLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -386,10 +386,10 @@ const createLengthFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Get Lengths  */
 /* -------------------------- */
-const getLengthsStart = (state: SalesInitialState, _action: AppActions) => {
+const getLengthsStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getLengthsSucceed = (state: SalesInitialState, action: AppActions) => {
+const getLengthsSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('lengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -398,7 +398,7 @@ const getLengthsSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const getLengthsFailed = (state: SalesInitialState, action: AppActions) => {
+const getLengthsFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -407,10 +407,10 @@ const getLengthsFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Update Length  */
 /* -------------------------- */
-const updateLengthStart = (state: SalesInitialState, _action: AppActions) => {
+const updateLengthStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateLengthSucceed = (state: SalesInitialState, action: AppActions) => {
+const updateLengthSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'lengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -420,7 +420,7 @@ const updateLengthSucceed = (state: SalesInitialState, action: AppActions) => {
     });
   }
 };
-const updateLengthFailed = (state: SalesInitialState, action: AppActions) => {
+const updateLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -432,10 +432,10 @@ const updateLengthFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Create Body Length  */
 /* -------------------------- */
-const createBodyLengthStart = (state: SalesInitialState, _action: AppActions) => {
+const createBodyLengthStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createBodyLengthSucceed = (state: SalesInitialState, action: AppActions) => {
+const createBodyLengthSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'bodyLengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -445,7 +445,7 @@ const createBodyLengthSucceed = (state: SalesInitialState, action: AppActions) =
     });
   }
 };
-const createBodyLengthFailed = (state: SalesInitialState, action: AppActions) => {
+const createBodyLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -454,10 +454,10 @@ const createBodyLengthFailed = (state: SalesInitialState, action: AppActions) =>
 /* -------------------------- */
 /* Get Body Lengths  */
 /* -------------------------- */
-const getBodyLengthsStart = (state: SalesInitialState, _action: AppActions) => {
+const getBodyLengthsStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getBodyLengthsSucceed = (state: SalesInitialState, action: AppActions) => {
+const getBodyLengthsSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('bodyLengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -466,7 +466,7 @@ const getBodyLengthsSucceed = (state: SalesInitialState, action: AppActions) => 
     });
   }
 };
-const getBodyLengthsFailed = (state: SalesInitialState, action: AppActions) => {
+const getBodyLengthsFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -475,10 +475,10 @@ const getBodyLengthsFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Update Body Length  */
 /* -------------------------- */
-const updateBodyLengthStart = (state: SalesInitialState, _action: AppActions) => {
+const updateBodyLengthStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateBodyLengthSucceed = (state: SalesInitialState, action: AppActions) => {
+const updateBodyLengthSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'bodyLengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -488,7 +488,7 @@ const updateBodyLengthSucceed = (state: SalesInitialState, action: AppActions) =
     });
   }
 };
-const updateBodyLengthFailed = (state: SalesInitialState, action: AppActions) => {
+const updateBodyLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -500,10 +500,10 @@ const updateBodyLengthFailed = (state: SalesInitialState, action: AppActions) =>
 /* -------------------------- */
 /* Create Body Accessory  */
 /* -------------------------- */
-const createBodyAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+const createBodyAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createBodyAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+const createBodyAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'bodyAccessoriesArray' in action && 'bodyLengthsArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -514,7 +514,7 @@ const createBodyAccessorySucceed = (state: SalesInitialState, action: AppActions
     });
   }
 };
-const createBodyAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+const createBodyAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -523,10 +523,10 @@ const createBodyAccessoryFailed = (state: SalesInitialState, action: AppActions)
 /* -------------------------- */
 /* Get Body Accessories  */
 /* -------------------------- */
-const getBodyAccessoriesStart = (state: SalesInitialState, _action: AppActions) => {
+const getBodyAccessoriesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getBodyAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
+const getBodyAccessoriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('bodyAccessoriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -535,7 +535,7 @@ const getBodyAccessoriesSucceed = (state: SalesInitialState, action: AppActions)
     });
   }
 };
-const getBodyAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
+const getBodyAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -544,10 +544,10 @@ const getBodyAccessoriesFailed = (state: SalesInitialState, action: AppActions) 
 /* -------------------------- */
 /* Update Body Accessory  */
 /* -------------------------- */
-const updateBodyAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+const updateBodyAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateBodyAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+const updateBodyAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'bodyAccessoriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -557,7 +557,7 @@ const updateBodyAccessorySucceed = (state: SalesInitialState, action: AppActions
     });
   }
 };
-const updateBodyAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+const updateBodyAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -569,10 +569,10 @@ const updateBodyAccessoryFailed = (state: SalesInitialState, action: AppActions)
 /* -------------------------- */
 /* Create Accessory  */
 /* -------------------------- */
-const createAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+const createAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+const createAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'accessoriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -582,7 +582,7 @@ const createAccessorySucceed = (state: SalesInitialState, action: AppActions) =>
     });
   }
 };
-const createAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+const createAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -591,10 +591,10 @@ const createAccessoryFailed = (state: SalesInitialState, action: AppActions) => 
 /* -------------------------- */
 /* Get Accessories  */
 /* -------------------------- */
-const getAccessoriesStart = (state: SalesInitialState, _action: AppActions) => {
+const getAccessoriesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
+const getAccessoriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('accessoriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -603,7 +603,7 @@ const getAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => 
     });
   }
 };
-const getAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
+const getAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -612,10 +612,10 @@ const getAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
 /* -------------------------- */
 /* Update Accessory  */
 /* -------------------------- */
-const updateAccessoryStart = (state: SalesInitialState, _action: AppActions) => {
+const updateAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateAccessorySucceed = (state: SalesInitialState, action: AppActions) => {
+const updateAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'accessoriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -625,7 +625,7 @@ const updateAccessorySucceed = (state: SalesInitialState, action: AppActions) =>
     });
   }
 };
-const updateAccessoryFailed = (state: SalesInitialState, action: AppActions) => {
+const updateAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -634,11 +634,11 @@ const updateAccessoryFailed = (state: SalesInitialState, action: AppActions) => 
 /* ============================================================================================ */
 /* ============================================================================================ */
 
-const reducer = (state = initialState, action: SalesActionTypes) => {
+const reducer = (state = initialState, action: DashboardActionTypes) => {
   switch (action.type) {
-    // Clear Sales State
-    case actionTypes.CLEAR_SALES_STATE:
-      return clearSalesState(state, action);
+    // Clear Dashboard State
+    case actionTypes.CLEAR_DASHBOARD_STATE:
+      return clearDashboardState(state, action);
     /* =================================== */
     // Upload Image(s)
     /* =================================== */

@@ -41,7 +41,7 @@ import {
   TReceivedImageObj,
   TReceivedLengthObj,
   TUpdateBodyLengthData,
-} from 'src/store/types/sales';
+} from 'src/store/types/dashboard';
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
@@ -168,7 +168,7 @@ const Body: React.FC<Props> = ({
   // delete upload iamges
   onDeleteUploadImage,
   // clear states
-  onClearSalesState,
+  onClearDashboardState,
 }) => {
   /* ================================================== */
   /*  state */
@@ -1785,7 +1785,7 @@ const Body: React.FC<Props> = ({
         description: successMessage,
       });
       // clear the successMessage object, set to null
-      onClearSalesState();
+      onClearDashboardState();
       // clear the form inputs using the form reference
       createBodyForm.resetFields();
       createLengthForm.resetFields();
@@ -1804,7 +1804,7 @@ const Body: React.FC<Props> = ({
     createLengthForm,
     createBodyLengthForm,
     createBodyAccessoryForm,
-    onClearSalesState,
+    onClearDashboardState,
     setShowUpdateModal,
     setShowCreateModal,
   ]);
@@ -1820,7 +1820,7 @@ const Body: React.FC<Props> = ({
         description: errorMessage,
       });
     }
-  }, [errorMessage, onClearSalesState]);
+  }, [errorMessage, onClearDashboardState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -2001,15 +2001,15 @@ interface StateProps {
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   return {
-    loading: state.sales.loading,
-    bodiesArray: state.sales.bodiesArray,
-    lengthsArray: state.sales.lengthsArray,
-    errorMessage: state.sales.errorMessage,
-    imagesUploaded: state.sales.imagesUploaded,
-    successMessage: state.sales.successMessage,
-    accessoriesArray: state.sales.accessoriesArray,
-    bodyLengthsArray: state.sales.bodyLengthsArray,
-    bodyAccessoriesArray: state.sales.bodyAccessoriesArray,
+    loading: state.dashboard.loading,
+    bodiesArray: state.dashboard.bodiesArray,
+    lengthsArray: state.dashboard.lengthsArray,
+    errorMessage: state.dashboard.errorMessage,
+    imagesUploaded: state.dashboard.imagesUploaded,
+    successMessage: state.dashboard.successMessage,
+    accessoriesArray: state.dashboard.accessoriesArray,
+    bodyLengthsArray: state.dashboard.bodyLengthsArray,
+    bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
   };
 };
 interface DispatchProps {
@@ -2034,7 +2034,7 @@ interface DispatchProps {
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
-  onClearSalesState: typeof actions.clearSalesState;
+  onClearDashboardState: typeof actions.clearDashboardState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -2065,7 +2065,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous
-    onClearSalesState: () => dispatch(actions.clearSalesState()),
+    onClearDashboardState: () => dispatch(actions.clearDashboardState()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Body));

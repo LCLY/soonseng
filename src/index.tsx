@@ -18,7 +18,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 
 // reducers
-import salesReducer from 'src/store/reducers/sales';
+import dashboardReducer from 'src/store/reducers/dashboard';
 
 // enable browser redux extension tool
 const composeEnhancers =
@@ -35,7 +35,7 @@ const persistConfig = {
 
 // combine all reducers
 const rootReducer = combineReducers({
-  sales: salesReducer,
+  dashboard: dashboardReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

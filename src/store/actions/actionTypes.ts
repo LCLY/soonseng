@@ -6,10 +6,10 @@
 /* ================================================================================== */
 
 /* ================================================================================== */
-/*                                       Sales                                        */
+/*                                      Dashboard                                     */
 /* ================================================================================== */
-// Clear Sales state
-export const CLEAR_SALES_STATE = 'CLEAR_SALES_STATE';
+// Clear Dashboard state
+export const CLEAR_DASHBOARD_STATE = 'CLEAR_DASHBOARD_STATE';
 
 // Upload Image(s)
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';

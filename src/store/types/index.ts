@@ -1,7 +1,7 @@
-import { SalesActionTypes, ISalesMapStateToProps } from './sales';
+import { DashboardActionTypes, IDashboardMapStateToProps } from './dashboard';
 
 // Export all action types under one AppActions type var
-export type AppActions = SalesActionTypes;
+export type AppActions = DashboardActionTypes;
 
 // For mapstatetoprops
-export type TMapStateToProps = ISalesMapStateToProps;
+export type TMapStateToProps = IDashboardMapStateToProps;

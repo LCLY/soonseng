@@ -16,19 +16,19 @@ import {
   TCreateBodyAccessoryData,
   TReceivedBodyAccessoryObj,
   TUpdateBodyAccessoryData,
-} from 'src/store/types/sales';
+} from 'src/store/types/dashboard';
 
 /* ============================================================================================ */
-// Clear Sales state
+// Clear Dashboard state
 /* ============================================================================================ */
 export /**
  *
  * To clear or reset all states in reducer
  * @return {*}
  */
-const clearSalesState = () => {
+const clearDashboardState = () => {
   return {
-    type: actionTypes.CLEAR_SALES_STATE,
+    type: actionTypes.CLEAR_DASHBOARD_STATE,
   };
 };
 
