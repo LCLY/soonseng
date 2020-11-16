@@ -4,6 +4,8 @@ import './Body.scss';
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import CustomContainer from 'src/components/CustomContainer/CustomContainer';
+import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
@@ -12,10 +14,10 @@ import {
   Button,
   Empty,
   Carousel,
-  Tabs,
   Form,
   Card,
   Input,
+  Layout,
   Modal,
   Select,
   Table,
@@ -27,10 +29,8 @@ import LazyLoad from 'react-lazyload';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
-import { Container } from 'react-bootstrap';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { RouteComponentProps, withRouter } from 'react-router';
 /* Util */
 import {
   TCreateBodyLengthData,
@@ -44,13 +44,12 @@ import {
 } from 'src/store/types/dashboard';
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
-import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { img_not_available_link, img_loading_link } from 'src/shared/global';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
 const { Option } = Select;
 const { TextArea } = Input;
-const { TabPane } = Tabs;
 
 interface BodyProps {}
 
@@ -134,12 +133,11 @@ type TShowModal = {
   body_accessory: boolean; //if got image add current Body length id as well
 };
 
-type Props = BodyProps & StateProps & DispatchProps & RouteComponentProps;
+type Props = BodyProps & StateProps & DispatchProps;
 
 const Body: React.FC<Props> = ({
   // miscellaneous
   loading,
-  history,
   errorMessage,
   successMessage,
   // body
@@ -187,7 +185,7 @@ const Body: React.FC<Props> = ({
   const [createBodyAccessoryForm] = Form.useForm();
   const [updateBodyAccessoryForm] = Form.useForm();
 
-  const { width } = useWindowDimensions();
+  // const { width } = useWindowDimensions();
 
   // Table states
   const [bodyTableState, setBodyTableState] = useState<TBodyTableState[]>([]);
@@ -1838,35 +1836,13 @@ const Body: React.FC<Props> = ({
       {createBodyAccessoryModal}
       {updateBodyAccessoryModal}
 
-      <NavbarComponent activePage="" />
-      <Container>
-        <div className="body__tab-outerdiv">
-          <Tabs
-            animated={false}
-            onTabClick={(e) => {
-              // onclick check which key and go to that page
-              switch (e) {
-                case 'make':
-                  history.push('/dashboard/make');
-                  break;
-                case 'body':
-                  history.push('/dashboard/body');
-                  break;
-                case 'accessory':
-                  history.push('/dashboard/accessory');
-                  break;
-                default:
-                  history.push('/dashboard/make');
-                  break;
-              }
-            }}
-            activeKey="body"
-            tabPosition={width > 1200 ? 'left' : 'top'}
-          >
-            <TabPane tab="Make" key="make" className="dashboard__tab"></TabPane>
-            <TabPane tab="Body" key="body" className="dashboard__tab">
+      <Layout>
+        <NavbarComponent activePage="" />
+        <LayoutComponent activeKey="body">
+         <CustomContainer>
+            <div className="body__tab-outerdiv">
               <section>
-                <HeaderTitle>Body (Tail)</HeaderTitle>
+                <HeaderTitle>Body</HeaderTitle>
                 {bodiesArray && lengthsArray && bodyLengthsArray ? (
                   <>
                     {/* ===================================== */}
@@ -1980,11 +1956,10 @@ const Body: React.FC<Props> = ({
                   </div>
                 )}
               </section>
-            </TabPane>
-            <TabPane tab="Accessory" key="accessory" className="dashboard__tab"></TabPane>
-          </Tabs>
-        </div>
-      </Container>
+            </div>
+            </CustomContainer>
+        </LayoutComponent>
+      </Layout>
     </>
   );
 };
@@ -2070,4 +2045,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Body));
+export default connect(mapStateToProps, mapDispatchToProps)(Body);

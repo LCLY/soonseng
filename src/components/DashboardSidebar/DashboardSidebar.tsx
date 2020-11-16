@@ -27,7 +27,13 @@ const DashboardSidebar: React.FC<Props> = ({ history, activeKey }) => {
   /* ================================================== */
   return (
     <>
-      <Menu style={{ width: 256 }} defaultSelectedKeys={['brand']} selectedKeys={[activeKey]} mode="inline">
+      <Menu
+        className="dashboard__menu-div"
+        style={{ width: 256 }}
+        defaultSelectedKeys={['brand']}
+        selectedKeys={[activeKey]}
+        mode="inline"
+      >
         {menuItemArray.map((item, index) => {
           return (
             <React.Fragment key={index}>

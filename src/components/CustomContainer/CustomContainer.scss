@@ -1,0 +1,13 @@
+.customcontainer {
+  &__div {
+    margin: 0 5rem;
+    // display: flex;
+
+    @include respond-to(tablet) {
+      margin: 0 1rem;
+    }
+    @include respond-to(mobile) {
+      margin: 0 1rem;
+    }
+  }
+}

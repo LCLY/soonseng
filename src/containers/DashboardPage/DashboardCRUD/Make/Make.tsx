@@ -4,6 +4,8 @@ import './Make.scss';
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
+import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 /*3rd party lib*/
@@ -12,10 +14,9 @@ import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
-import { Container } from 'react-bootstrap';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { Table, Form, Input, Button, Modal, Tooltip, notification, Select, DatePicker, Tabs } from 'antd';
+
+import { Table, Form, Input, Layout, Button, Modal, Tooltip, notification, Select, DatePicker } from 'antd';
 /* Util */
 import {
   TReceivedMakeObj,
@@ -25,7 +26,7 @@ import {
   TReceivedImageObj,
   TReceivedWheelbaseObj,
 } from 'src/store/types/dashboard';
-import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
@@ -33,7 +34,6 @@ import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/sha
 
 const { Option } = Select;
 const { TextArea } = Input;
-const { TabPane } = Tabs;
 
 interface MakeProps {}
 
@@ -85,11 +85,11 @@ type TShowModal = {
   wheelbase: boolean;
 };
 
-type Props = MakeProps & StateProps & DispatchProps & RouteComponentProps;
+type Props = MakeProps & StateProps & DispatchProps;
 
 const Make: React.FC<Props> = ({
   // Miscellaneous
-  history,
+
   loading,
   errorMessage,
   successMessage,
@@ -125,7 +125,7 @@ const Make: React.FC<Props> = ({
   const [createMakeForm] = Form.useForm();
   const [editMakeForm] = Form.useForm();
 
-  const { width } = useWindowDimensions();
+  // const { width } = useWindowDimensions();
   // Table states
   const [makeTableState, setMakeTableState] = useState<TMakeTableState[]>([]);
   const [brandTableState, setBrandTableState] = useState<TBrandTableState[]>([]);
@@ -1454,34 +1454,13 @@ const Make: React.FC<Props> = ({
       {createMakeModal}
       {editMakeModal}
 
-      <NavbarComponent activePage="" />
-      <Container>
-        <div className="make__tab-outerdiv">
-          <Tabs
-            animated={false}
-            onTabClick={(e) => {
-              // onclick check which key and go to that page
-              switch (e) {
-                case 'make':
-                  history.push('/dashboard/make');
-                  break;
-                case 'body':
-                  history.push('/dashboard/body');
-                  break;
-                case 'accessory':
-                  history.push('/dashboard/accessory');
-                  break;
-                default:
-                  history.push('/dashboard/make');
-                  break;
-              }
-            }}
-            activeKey="make"
-            tabPosition={width > 1200 ? 'left' : 'top'}
-          >
-            <TabPane tab="Make" key="make" className="dashboard__tab">
+      <Layout>
+        <NavbarComponent activePage="" />
+        <LayoutComponent activeKey="make">
+          <CustomContainer>
+            <div className="make__tab-outerdiv">
               <section>
-                <HeaderTitle>Make (Head)</HeaderTitle>
+                <HeaderTitle>Make</HeaderTitle>
 
                 {brandsArray && wheelbasesArray && makesArray ? (
                   <>
@@ -1591,12 +1570,10 @@ const Make: React.FC<Props> = ({
                   </div>
                 )}
               </section>
-            </TabPane>
-            <TabPane tab="Body" key="body" className="dashboard__tab"></TabPane>
-            <TabPane tab="Accessory" key="accessory" className="dashboard__tab"></TabPane>
-          </Tabs>
-        </div>
-      </Container>
+            </div>
+          </CustomContainer>
+        </LayoutComponent>
+      </Layout>
     </>
   );
 };
@@ -1666,4 +1643,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Make));
+export default connect(mapStateToProps, mapDispatchToProps)(Make);

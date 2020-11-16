@@ -4,22 +4,22 @@ import './Accessory.scss';
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import CustomContainer from 'src/components/CustomContainer/CustomContainer';
+import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 /*3rd party lib*/
-import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
-import { Container } from 'react-bootstrap';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { Button, Form, Input, Modal, Select, Tabs, Table, Tag, Tooltip, notification } from 'antd';
+import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
+import { Button, Form, Input, Modal, Layout, Select, Table, Tag, Tooltip, notification } from 'antd';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
-import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import {
   TReceivedAccessoryObj,
   TReceivedBodyAccessoryObj,
@@ -30,7 +30,6 @@ import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/sha
 
 const { Option } = Select;
 const { TextArea } = Input;
-const { TabPane } = Tabs;
 
 interface AccessoryProps {}
 
@@ -84,12 +83,11 @@ type TShowModal = {
   body_accessory: boolean;
 };
 
-type Props = AccessoryProps & StateProps & DispatchProps & RouteComponentProps;
+type Props = AccessoryProps & StateProps & DispatchProps;
 
 const Accessory: React.FC<Props> = ({
   // miscellaneous
   loading,
-  history,
   errorMessage,
   successMessage,
   // accessory
@@ -121,7 +119,7 @@ const Accessory: React.FC<Props> = ({
   const [createBodyAccessoryForm] = Form.useForm();
   const [updateBodyAccessoryForm] = Form.useForm();
 
-  const { width } = useWindowDimensions();
+  // const { width } = useWindowDimensions();
 
   // Table States
   const [accessoryTableState, setAccessoryTableState] = useState<TAccessoryTableState[]>([]);
@@ -1122,36 +1120,13 @@ const Accessory: React.FC<Props> = ({
       {createBodyAccessoryModal}
       {updateBodyAccessoryModal}
 
-      <NavbarComponent activePage="" />
-      <Container>
-        <div className="accessory__tab-outerdiv">
-          <Tabs
-            animated={false}
-            onTabClick={(e) => {
-              // onclick check which key and go to that page
-              switch (e) {
-                case 'make':
-                  history.push('/dashboard/make');
-                  break;
-                case 'body':
-                  history.push('/dashboard/body');
-                  break;
-                case 'accessory':
-                  history.push('/dashboard/accessory');
-                  break;
-                default:
-                  history.push('/dashboard/make');
-                  break;
-              }
-            }}
-            activeKey="accessory"
-            tabPosition={width > 1200 ? 'left' : 'top'}
-          >
-            <TabPane tab="Make" key="make" className="dashboard__tab"></TabPane>
-            <TabPane tab="Body" key="body" className="dashboard__tab"></TabPane>
-            <TabPane tab="Accessory" key="accessory" className="dashboard__tab">
+      <Layout>
+        <NavbarComponent activePage="" />
+        <LayoutComponent activeKey="accessory">
+          <CustomContainer>
+            <div className="accessory__tab-outerdiv">
               <section>
-                <HeaderTitle>Accessory (Tail)</HeaderTitle>
+                <HeaderTitle>Accessory</HeaderTitle>
                 {accessoriesArray && bodyLengthsArray && bodyAccessoriesArray ? (
                   <>
                     {/* ===================================== */}
@@ -1213,7 +1188,7 @@ const Accessory: React.FC<Props> = ({
                             let imageGallerycomponent = onExpandedRowRender(record);
 
                             return (
-                              <>
+                              <div>
                                 <div className="accessory__expand-div">
                                   <div className="accessory__expand-title">Description:</div>
                                   <div className="accessory__expand-text">{record.bodyAccessoryDescription}</div>
@@ -1221,7 +1196,7 @@ const Accessory: React.FC<Props> = ({
                                 {/* only render horizontal line if there is any images */}
                                 {record.bodyAccessoryImages.length > 0 && <hr />}
                                 {imageGallerycomponent}
-                              </>
+                              </div>
                             );
                           },
                         }}
@@ -1237,10 +1212,10 @@ const Accessory: React.FC<Props> = ({
                   </div>
                 )}
               </section>
-            </TabPane>
-          </Tabs>
-        </div>
-      </Container>
+            </div>
+          </CustomContainer>
+        </LayoutComponent>
+      </Layout>
     </>
   );
 };
@@ -1304,4 +1279,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Accessory));
+export default connect(mapStateToProps, mapDispatchToProps)(Accessory);
