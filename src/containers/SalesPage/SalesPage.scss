@@ -45,6 +45,17 @@
       }
     }
   }
+
+  /* ===================== */
+  // Loading component
+  /* ===================== */
+  &__loading {
+    &_div {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
   /* =================================== */
   // Length section
   &__length {

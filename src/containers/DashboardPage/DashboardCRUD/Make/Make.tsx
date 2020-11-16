@@ -1610,16 +1610,19 @@ interface StateProps {
   wheelbasesArray?: TReceivedWheelbaseObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  return {
-    loading: state.dashboard.loading,
-    makesArray: state.dashboard.makesArray,
-    brandsArray: state.dashboard.brandsArray,
-    errorMessage: state.dashboard.errorMessage,
-    imagesUploaded: state.dashboard.imagesUploaded,
-    successMessage: state.dashboard.successMessage,
-    wheelbasesArray: state.dashboard.wheelbasesArray,
-  };
+  if ('dashboard' in state) {
+    return {
+      loading: state.dashboard.loading,
+      makesArray: state.dashboard.makesArray,
+      brandsArray: state.dashboard.brandsArray,
+      errorMessage: state.dashboard.errorMessage,
+      imagesUploaded: state.dashboard.imagesUploaded,
+      successMessage: state.dashboard.successMessage,
+      wheelbasesArray: state.dashboard.wheelbasesArray,
+    };
+  }
 };
+
 interface DispatchProps {
   // Brand
   onGetBrands: typeof actions.getBrands;

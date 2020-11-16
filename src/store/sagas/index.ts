@@ -2,6 +2,7 @@ import { takeEvery, all } from 'redux-saga/effects';
 //allow us to listen to certain actions and do something when they occur
 import * as actionTypes from '../actions/actionTypes';
 import { DashboardActionTypes } from '../types/dashboard';
+import { SalesActionTypes } from '../types/sales';
 
 import {
   // Upload/Delete Image(s)
@@ -41,7 +42,19 @@ import {
   updateAccessorySaga,
 } from './dashboard';
 
-export function* watchAuth() {
+import {
+  // Get sales lengths
+  getSalesLengthsSaga,
+  // Get sales bodies
+  getSalesBodiesSaga,
+} from './sales';
+
+export function* watchSales() {
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_LENGTHS, getSalesLengthsSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODIES, getSalesBodiesSaga)]);
+}
+
+export function* watchDashboard() {
   // Upload Images
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPLOAD_IMAGE, uploadImageSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_UPLOAD_IMAGE, deleteUploadImageSaga)]);

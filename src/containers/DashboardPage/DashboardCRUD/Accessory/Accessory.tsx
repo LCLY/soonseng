@@ -209,7 +209,7 @@ const Accessory: React.FC<Props> = ({
       key: 'bodyAction',
       title: 'Action',
       dataIndex: 'action',
-      fixed: 'right',
+      // fixed: 'right',
       width: '17rem',
       render: (_text: any, record: TAccessoryTableState) => {
         return (
@@ -322,7 +322,7 @@ const Accessory: React.FC<Props> = ({
       key: 'bodyAction',
       title: 'Action',
       dataIndex: 'action',
-      fixed: 'right',
+      // fixed: 'right',
       width: '17rem',
       render: (_text: any, record: TBodyAccessoryTableState) => {
         return (
@@ -1254,15 +1254,17 @@ interface StateProps {
   bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  return {
-    loading: state.dashboard.loading,
-    errorMessage: state.dashboard.errorMessage,
-    successMessage: state.dashboard.successMessage,
-    imagesUploaded: state.dashboard.imagesUploaded,
-    bodyLengthsArray: state.dashboard.bodyLengthsArray,
-    accessoriesArray: state.dashboard.accessoriesArray,
-    bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
-  };
+  if ('dashboard' in state) {
+    return {
+      loading: state.dashboard.loading,
+      errorMessage: state.dashboard.errorMessage,
+      successMessage: state.dashboard.successMessage,
+      imagesUploaded: state.dashboard.imagesUploaded,
+      bodyLengthsArray: state.dashboard.bodyLengthsArray,
+      accessoriesArray: state.dashboard.accessoriesArray,
+      bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
+    };
+  }
 };
 interface DispatchProps {
   // Accessory

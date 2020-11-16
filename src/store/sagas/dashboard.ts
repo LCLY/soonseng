@@ -1,7 +1,7 @@
 import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
-import axios from 'axios';
 import { AppActions } from '../types/index';
+import axios from 'axios';
 
 const UPLOAD_TO_MAKE = 'Make';
 const UPLOAD_TO_BRAND = 'Brand';

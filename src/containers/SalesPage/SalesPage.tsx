@@ -4,9 +4,10 @@ import './SalesPage.scss';
 import * as actions from 'src/store/actions/index';
 import { img_placeholder_link } from 'src/shared/global';
 // dummy data
-import { dummyBrandArray, bodyCardArray } from './dummyData';
+import { dummyBrandArray } from './dummyData';
 
 // component
+import Loading from 'src/components/Loading/Loading';
 import CardComponent from 'src/components/CardComponent/CardComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
@@ -15,26 +16,58 @@ import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
-import { Button } from 'antd';
+import { Button, Skeleton } from 'antd';
 import { Container, Accordion, Card } from 'react-bootstrap';
 
 // Util
 import { TMapStateToProps } from 'src/store/types/index';
+import { TReceivedBodyLengthObj, TReceivedLengthObj } from 'src/store/types/dashboard';
 
 interface SalesPageProps {}
 
 type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
 
+/* --------------------------------------- */
+/**  This is for when user clicks on a preview and it shows the content of the clicked card */
+type selectedMakeProps = {
+  title: string;
+  price: number;
+  desc: string;
+  img_link: string;
+};
+
+/* --------------------------------------- */
+type makesProps = {
+  title: string;
+  price: number;
+  desc: string;
+  /** The image link of the vehicles provided by different brands */
+  img_link: string;
+};
+
+type brandProps = {
+  name: string;
+  /** The image link to logo of brands */
+  logo_link: string;
+  /** An array of makes */
+  makes: makesProps[];
+};
+
 /**
  * Sales page that provide functionality for user to choose vehicle parts
- *
- * @method setLengthIndex - Getting index of clicked vehicle length card to know which one is selected,
- * set to null because initially nothing is being selected
  * @return {*}
  * @category Pages
  */
-const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
-  /*################# state #################*/
+const SalesPage: React.FC<Props> = ({
+  history,
+  lengthsArray,
+  bodyLengthsArray,
+  onGetSalesBodies,
+  onGetSalesLengths,
+}) => {
+  /* ================================================ */
+  //                    state
+  /* ================================================ */
   /**
    * Getting index of clicked vehicle length card to know which one is selected,
    * set to null because initially nothing is being selected   *
@@ -50,61 +83,34 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
       'Isuzu Some quick example text to build on the card title and make up the bulk of the cards content.Some quick example text to build on the card title and make up the bulk of the cards content.',
   });
 
-  /* =================================================================================== */
-  /*############### boolean states ###############*/
-
+  /* ===================================== */
+  //             boolean states
+  /* ===================================== */
   // when user has selected a length, it's a number type instead of null
   const lengthIndexIsNumber = typeof lengthIndex === 'number';
 
-  /* =================================================================================== */
-  /*################# data #################*/
-
-  // length of vehicle
-  let vehicleLengthArray: number[] = [15, 17, 21, 25];
-
-  /* --------------------------------------- */
-  /**  This is for when user clicks on a preview and it shows the content of the clicked card */
-  type selectedMakeProps = {
-    title: string;
-    price: number;
-    desc: string;
-    img_link: string;
-  };
-
-  /* --------------------------------------- */
-  type cardProps = {
-    title: string;
-    desc: string;
-    price: string;
-    img_link: string;
-    images: string[];
-  };
-  let cardComponentArray: cardProps[] = bodyCardArray;
-
-  /* --------------------------------------- */
-  type makesProps = {
-    title: string;
-    price: number;
-    desc: string;
-    /** The image link of the vehicles provided by different brands */
-    img_link: string;
-  };
-
-  type brandProps = {
-    name: string;
-    /** The image link to logo of brands */
-    logo_link: string;
-    /** An array of makes */
-    makes: makesProps[];
-  };
+  /* ========================= */
+  //        data
+  /* ========================= */
 
   let brandArray: brandProps[] = dummyBrandArray;
 
-  /* ====================================================== */
-  /* ############### useEffect ##################### */
+  /* =========================== */
+  /*         useEffect           */
+  /* =========================== */
   useEffect(() => {
-    onGetBrands();
-  }, [onGetBrands]);
+    onGetSalesLengths();
+  }, [onGetSalesLengths]);
+
+  useEffect(() => {
+    if (lengthIndex !== null) {
+      if (lengthsArray) {
+        console.log(lengthsArray[lengthIndex].id);
+        onGetSalesBodies(lengthsArray[lengthIndex].id);
+      }
+    }
+  }, [onGetSalesBodies, lengthsArray, lengthIndex]);
+
   /* ====================================================== */
   /* ====================================================== */
   /* ====================================================== */
@@ -125,34 +131,44 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
               {typeof lengthIndex === 'number' && (
                 <>
                   &nbsp;:&nbsp;
-                  <span className="sales__section-result">{vehicleLengthArray[lengthIndex]}ft</span>
+                  <span className="sales__section-result">{lengthsArray && lengthsArray[lengthIndex].title}</span>
                 </>
               )}
             </div>
             <div className="sales__length-div">
-              {vehicleLengthArray.map((vehicleLength, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={`sales__length-card ${lengthIndex === index ? 'active' : ''}`}
-                    onClick={() => {
-                      //  if length index has a number
-                      if (lengthIndexIsNumber && lengthIndex === index) {
-                        // if the current index is the same as selected index
-                        // reset the selection
-                        setLengthIndex(null);
-                      } else {
-                        setLengthIndex(index);
-                      }
-                    }}
-                  >
-                    <div className="sales__overlay" style={{ display: lengthIndex === index ? 'flex' : 'none' }}>
-                      <i className="fas fa-check-circle"></i>
-                    </div>
-                    {vehicleLength}ft
-                  </div>
-                );
-              })}
+              {lengthsArray ? (
+                <>
+                  {lengthsArray.map((vehicleLength, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className={`sales__length-card ${lengthIndex === index ? 'active' : ''}`}
+                        onClick={() => {
+                          //  if length index has a number
+                          if (lengthIndexIsNumber && lengthIndex === index) {
+                            // if the current index is the same as selected index
+                            // reset the selection
+                            setLengthIndex(null);
+                          } else {
+                            setLengthIndex(index);
+                          }
+                        }}
+                      >
+                        <div className="sales__overlay" style={{ display: lengthIndex === index ? 'flex' : 'none' }}>
+                          <i className="fas fa-check-circle"></i>
+                        </div>
+                        {vehicleLength.title}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  <Skeleton.Button className="margin_l-1" active={true} size="large" shape="square" />
+                  <Skeleton.Button className="margin_l-1" active={true} size="large" shape="square" />
+                  <Skeleton.Button className="margin_l-1" active={true} size="large" shape="square" />
+                </>
+              )}
             </div>
           </section>
 
@@ -164,27 +180,38 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
                 Choose the material type of the cargo body
                 {typeof bodyIndex === 'number' && (
                   <>
-                    &nbsp;:<span className="sales__section-result"> {cardComponentArray[bodyIndex].title}</span>
+                    &nbsp;:
+                    <span className="sales__section-result">
+                      {bodyLengthsArray && bodyLengthsArray[bodyIndex].body.title}
+                    </span>
                   </>
                 )}
               </div>
-              <div className="sales__body-div">
-                {cardComponentArray.map((card, index) => {
-                  return (
-                    <CardComponent
-                      key={index}
-                      index={index}
-                      title={card.title}
-                      desc={card.desc}
-                      price={card.price}
-                      img_link={card.img_link}
-                      images={card.images}
-                      bodyIndex={bodyIndex}
-                      setBodyIndex={setBodyIndex}
-                    />
-                  );
-                })}
-              </div>
+              {bodyLengthsArray ? (
+                <>
+                  <div className="sales__body-div">
+                    {bodyLengthsArray.map((bodyLength, index) => {
+                      return (
+                        <CardComponent
+                          key={index}
+                          index={index}
+                          title={bodyLength.body.title}
+                          desc={bodyLength.body.description}
+                          price={bodyLength.price.toString()}
+                          img_link={bodyLength.images[0].url}
+                          images={bodyLength.images}
+                          bodyIndex={bodyIndex}
+                          setBodyIndex={setBodyIndex}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="sales__loading-div">
+                  <Loading />
+                </div>
+              )}
             </section>
           ) : (
             // if length is not chosen
@@ -344,24 +371,32 @@ const SalesPage: React.FC<Props> = ({ history, onGetBrands }) => {
 };
 
 interface StateProps {
-  errorMessage: string | null;
-  loading: boolean;
+  loading?: boolean;
+  errorMessage?: string | null;
+  lengthsArray?: TReceivedLengthObj[] | null;
+  bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
 }
 
-const mapStateToProps = (state: TMapStateToProps): StateProps => {
-  return {
-    loading: state.dashboard.loading,
-    errorMessage: state.dashboard.errorMessage,
-  };
+const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
+  if ('sales' in state) {
+    return {
+      loading: state.sales.loading,
+      errorMessage: state.sales.errorMessage,
+      lengthsArray: state.sales.lengthsArray,
+      bodyLengthsArray: state.sales.bodyLengthsArray,
+    };
+  }
 };
 
 interface DispatchProps {
-  onGetBrands: typeof actions.getBrands;
+  onGetSalesLengths: typeof actions.getSalesLengths;
+  onGetSalesBodies: typeof actions.getSalesBodies;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
-    onGetBrands: () => dispatch(actions.getBrands()),
+    onGetSalesLengths: () => dispatch(actions.getSalesLengths()),
+    onGetSalesBodies: (length_id) => dispatch(actions.getSalesBodies(length_id)),
   };
 };
 

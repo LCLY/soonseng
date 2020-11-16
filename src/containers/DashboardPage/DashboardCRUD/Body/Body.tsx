@@ -2000,17 +2000,19 @@ interface StateProps {
   bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  return {
-    loading: state.dashboard.loading,
-    bodiesArray: state.dashboard.bodiesArray,
-    lengthsArray: state.dashboard.lengthsArray,
-    errorMessage: state.dashboard.errorMessage,
-    imagesUploaded: state.dashboard.imagesUploaded,
-    successMessage: state.dashboard.successMessage,
-    accessoriesArray: state.dashboard.accessoriesArray,
-    bodyLengthsArray: state.dashboard.bodyLengthsArray,
-    bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
-  };
+  if ('dashboard' in state) {
+    return {
+      loading: state.dashboard.loading,
+      bodiesArray: state.dashboard.bodiesArray,
+      lengthsArray: state.dashboard.lengthsArray,
+      errorMessage: state.dashboard.errorMessage,
+      imagesUploaded: state.dashboard.imagesUploaded,
+      successMessage: state.dashboard.successMessage,
+      accessoriesArray: state.dashboard.accessoriesArray,
+      bodyLengthsArray: state.dashboard.bodyLengthsArray,
+      bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
+    };
+  }
 };
 interface DispatchProps {
   // Body

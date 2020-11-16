@@ -10,7 +10,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { watchAuth } from './store/sagas/index';
+import { watchDashboard, watchSales } from './store/sagas/index';
 
 // redux-persist
 import storage from 'redux-persist/lib/storage';
@@ -19,6 +19,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 // reducers
 import dashboardReducer from 'src/store/reducers/dashboard';
+import salesReducer from 'src/store/reducers/sales';
 
 // enable browser redux extension tool
 const composeEnhancers =
@@ -36,6 +37,7 @@ const persistConfig = {
 // combine all reducers
 const rootReducer = combineReducers({
   dashboard: dashboardReducer,
+  sales: salesReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
@@ -49,7 +51,8 @@ const store = createStore(pReducer, composeEnhancers(applyMiddleware(sagaMiddlew
 
 const persistor = persistStore(store);
 
-sagaMiddleware.run(watchAuth);
+sagaMiddleware.run(watchDashboard);
+sagaMiddleware.run(watchSales);
 
 /**
  * @ignore

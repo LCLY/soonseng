@@ -163,3 +163,16 @@ export {
   updateAccessoryFailed,
   updateAccessorySucceed,
 } from './dashboard';
+
+export {
+  // get sales lengths
+  getSalesLengths,
+  getSalesLengthsStart,
+  getSalesLengthsSucceed,
+  getSalesLengthsFailed,
+  // get sales bodies
+  getSalesBodies,
+  getSalesBodiesFailed,
+  getSalesBodiesStart,
+  getSalesBodiesSucceed,
+} from './sales';

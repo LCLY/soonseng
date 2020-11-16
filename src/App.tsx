@@ -6,7 +6,7 @@ import Homepage from 'src/containers/HomePage/HomePage';
 import AboutPage from 'src/containers/AboutPage/AboutPage';
 import ContactPage from 'src/containers/ContactPage/ContactPage';
 import PageNotFound from './components/PageNotFound/PageNotFound';
-import SalesPage from 'src/containers/Product/SalesPage/SalesPage';
+import SalesPage from 'src/containers/SalesPage/SalesPage';
 // Dashboard
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
 import Make from './containers/DashboardPage/DashboardCRUD/Make/Make';
@@ -33,7 +33,6 @@ function App() {
       <Route exact path="/" component={Homepage} />
       <Route exact path="/about" component={AboutPage} />
       <Route exact path="/sales" component={SalesPage} />
-      <Route exact path="/404" component={PageNotFound} />
       <Route exact path="/contact" component={ContactPage} />
       <Route exact path="/dashboard" component={DashboardPage} />
       <Route exact path="/dashboard/make" component={Make} />
@@ -41,6 +40,7 @@ function App() {
       <Route exact path="/dashboard/accessory" component={Accessory} />
 
       {/* <Route exact path="/logout" component={Logout} /> */}
+      <Route exact path="/404" component={PageNotFound} />
       <Redirect from="*" to="/404" />
     </Switch>
   );

@@ -6,7 +6,7 @@ import ImageGallery, { TGalleryImageArrayObj } from '../ImageGallery/ImageGaller
 import { Button } from 'antd';
 import { DeleteOutlined, UploadOutlined, CloseCircleOutlined } from '@ant-design/icons';
 /* Util */
-import { DashboardActionTypes, TReceivedImageObj } from 'src/store/types/dashboard';
+import { TReceivedImageObj } from 'src/store/types/dashboard';
 
 interface TableImageViewerProps {
   /** record from each model's table */
@@ -22,7 +22,7 @@ interface TableImageViewerProps {
   selectAllChecked: boolean;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   /** api call to delete upload image by passing in array of ids */
-  onDeleteUploadImage: (ids: number[]) => DashboardActionTypes;
+  onDeleteUploadImage: (ids: number[]) => void;
   onClearAllSelectedImages: () => void;
   /** to populate any edit/update modal when user clicks on upload image button */
   onPopulateEditModal: (record: any) => void;

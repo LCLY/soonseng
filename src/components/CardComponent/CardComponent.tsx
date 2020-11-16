@@ -4,6 +4,7 @@ import './CardComponent.scss';
 import Lightbox from 'react-image-lightbox';
 import NumberFormat from 'react-number-format';
 import { img_placeholder_link } from 'src/shared/global';
+import { TReceivedImageObj } from 'src/store/types/dashboard';
 interface CardComponentProps {
   title: string;
   desc: string;
@@ -11,7 +12,7 @@ interface CardComponentProps {
   /** the image link for the card image  */
   img_link: string;
   /** array of image links string for lightbox*/
-  images: string[];
+  images: TReceivedImageObj[];
   /** The original index of the mapped out component(s) */
   index: number;
   /**
@@ -46,9 +47,9 @@ const CardComponent: React.FC<Props> = ({ bodyIndex, index, title, desc, images,
       {isOpen && (
         <Lightbox
           // reactModalProps={{ appElement: 'div' }}
-          mainSrc={images[photoIndex]}
-          nextSrc={images[(photoIndex + 1) % images.length]}
-          prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+          mainSrc={images[photoIndex].url}
+          nextSrc={images[(photoIndex + 1) % images.length].url}
+          prevSrc={images[(photoIndex + images.length - 1) % images.length].url}
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() => setPhotoIndex((photoIndex + images.length - 1) % images.length)}
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % images.length)}
