@@ -1330,16 +1330,27 @@ const Make: React.FC<Props> = ({
         make.year;
 
       // check if undefined
-      let makeGVW = make.gvw === undefined ? '-' : make.gvw + 'kg';
-      let makeYear = make.year === undefined ? '-' : make.year;
-      let makePrice = make.price === undefined ? '-' : 'RM' + make.price;
-      let makeTitle = make.title === undefined ? '-' : make.title;
-      let makeLength = make.length === undefined ? '-' : make.length;
-      let makeEngineCap = make.engine_cap === undefined ? '-' : make.engine_cap;
-      let makeHorsepower = make.horsepower === undefined ? '-' : make.horsepower + 'hp';
-      let makeTransmission = make.transmission === undefined ? '-' : make.transmission;
-      let makeBrandTitle = make.brand.title === undefined ? '-' : make.brand.title;
-      let makeWheelbaseTitle = make.wheelbase.title === undefined ? '-' : make.wheelbase.title + 'mm';
+      let makeGVW = make.gvw === undefined || make.gvw === null || make.gvw === '' ? '-' : make.gvw + 'kg';
+      let makeYear = make.year === undefined || make.year === null || make.year === '' ? '-' : make.year;
+      let makePrice = make.price === undefined || make.price === null ? '-' : 'RM' + make.price;
+      let makeTitle = make.title === undefined || make.title === null || make.title === '' ? '-' : make.title;
+      let makeLength = make.length === undefined || make.length === null || make.length === '' ? '-' : make.length;
+      let makeEngineCap =
+        make.engine_cap === undefined || make.engine_cap === null || make.engine_cap === '' ? '-' : make.engine_cap;
+      let makeHorsepower =
+        make.horsepower === undefined || make.horsepower === null || make.horsepower === ''
+          ? '-'
+          : make.horsepower + 'hp';
+      let makeTransmission =
+        make.transmission === undefined || make.transmission === null || make.transmission === ''
+          ? '-'
+          : make.transmission;
+      let makeBrandTitle =
+        make.brand.title === undefined || make.brand.title === null || make.brand.title === '' ? '-' : make.brand.title;
+      let makeWheelbaseTitle =
+        make.wheelbase.title === undefined || make.wheelbase.title === null || make.wheelbase.title === ''
+          ? '-'
+          : make.wheelbase.title + 'mm';
 
       // only push into the array when available value is true
       if (make.available) {
