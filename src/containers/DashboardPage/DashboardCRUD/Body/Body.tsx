@@ -1565,29 +1565,35 @@ const Body: React.FC<Props> = ({
                         style={{ width: 'auto' }}
                         headStyle={{ background: '#FFF2E8' }}
                       >
-                        <Carousel autoplay>
-                          {/* render all images if array more than 0 else render 'image not available' image */}
-                          {bodyAccessory.images.length > 0 ? (
-                            bodyAccessory.images.map((image) => {
-                              return (
-                                <LazyLoad
-                                  placeholder={
-                                    <img className="body__expand-card-img" alt="loading" src={img_loading_link} />
-                                  }
-                                >
-                                  <img
-                                    className="body__expand-card-img"
-                                    key={image.id}
-                                    alt={image.filename}
-                                    src={image.url}
-                                  />
-                                </LazyLoad>
-                              );
-                            })
-                          ) : (
-                            <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
-                          )}
-                        </Carousel>
+                        {bodyAccessory.images ? (
+                          <>
+                            <Carousel autoplay>
+                              {/* render all images if array more than 0 else render 'image not available' image */}
+                              {bodyAccessory.images.length > 0 ? (
+                                bodyAccessory.images.map((image) => {
+                                  return (
+                                    <LazyLoad
+                                      placeholder={
+                                        <img className="body__expand-card-img" alt="loading" src={img_loading_link} />
+                                      }
+                                    >
+                                      <img
+                                        className="body__expand-card-img"
+                                        key={image.id}
+                                        alt={image.filename}
+                                        src={image.url}
+                                      />
+                                    </LazyLoad>
+                                  );
+                                })
+                              ) : (
+                                <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
+                              )}
+                            </Carousel>
+                          </>
+                        ) : (
+                          <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
+                        )}
                         <div className="body__expand-card-body">
                           <div className="body__expand-card-description">
                             <div className="body__expand-card-description-left">
@@ -1839,7 +1845,7 @@ const Body: React.FC<Props> = ({
       <Layout>
         <NavbarComponent activePage="" />
         <LayoutComponent activeKey="body">
-         <CustomContainer>
+          <CustomContainer>
             <div className="body__tab-outerdiv">
               <section>
                 <HeaderTitle>Body</HeaderTitle>
@@ -1957,7 +1963,7 @@ const Body: React.FC<Props> = ({
                 )}
               </section>
             </div>
-            </CustomContainer>
+          </CustomContainer>
         </LayoutComponent>
       </Layout>
     </>

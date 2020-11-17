@@ -4,7 +4,6 @@ import './DashboardPage.scss';
 /*3rd party lib*/
 import { Tabs } from 'antd';
 import LazyLoad from 'react-lazyload';
-import { Container } from 'react-bootstrap';
 /* Utils */
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 /*components*/
@@ -33,8 +32,7 @@ const DashboardPage: React.FC<Props> = () => {
 
   return (
     <>
-      <NavbarComponent activePage="" />
-      <Container>
+      <NavbarComponent activePage="" />     
         <section className="dashboard__section">
           <Tabs defaultActiveKey="make" tabPosition={width > 1200 ? 'left' : 'top'}>
             <TabPane tab="Make" key="make" className="dashboard__tab">
@@ -54,7 +52,7 @@ const DashboardPage: React.FC<Props> = () => {
             </TabPane>
           </Tabs>
         </section>
-      </Container>
+     
     </>
   );
 };

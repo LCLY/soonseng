@@ -25,6 +25,15 @@ body {
   font-family: 'Helvetica Neue', sans-serif !important;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $primary-color-2;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: $primary-color-2;
+  }
 }
 
 .flex {
@@ -52,5 +61,3 @@ body {
 .text-center {
   text-align: center;
 }
-
-

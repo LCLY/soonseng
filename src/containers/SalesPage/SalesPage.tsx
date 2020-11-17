@@ -8,6 +8,7 @@ import { dummyBrandArray } from './dummyData';
 
 // component
 import Loading from 'src/components/Loading/Loading';
+import Container from 'src/components/CustomContainer/CustomContainer';
 import CardComponent from 'src/components/CardComponent/CardComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
@@ -17,7 +18,7 @@ import { Dispatch, AnyAction } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
 import { Button, Skeleton } from 'antd';
-import { Container, Accordion, Card } from 'react-bootstrap';
+import { Accordion, Card } from 'react-bootstrap';
 
 // Util
 import { TMapStateToProps } from 'src/store/types/index';

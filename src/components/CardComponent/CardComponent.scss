@@ -128,14 +128,14 @@
   /* =================== */
   // title of the card
   &__title {
-    font-family: $roboto;
+    font-family: $font-roboto;
     font-weight: 500;
   }
 
   /* =================== */
   // description of the card
   &__desc {
-    font-family: $opensans;
+    font-family: $font-opensans;
     font-size: 1.25rem;
 
     /* ------------------- */
@@ -155,7 +155,7 @@
   /* =================== */
   // price of the card
   &__price {
-    font-family: $roboto;
+    font-family: $font-roboto;
     font-weight: 900;
     color: $primary-color-3;
     /* ----------- */

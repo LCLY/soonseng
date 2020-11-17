@@ -689,11 +689,13 @@ const Accessory: React.FC<Props> = ({
       >
         <TextArea rows={3} placeholder="Type description here" />
       </Form.Item>
-      <PreviewUploadImage
+      {/* disable upload image feature */}
+
+      {/* <PreviewUploadImage
         setUploadSelectedFiles={setUploadSelectedFiles}
         imagesPreviewUrls={imagesPreviewUrls}
         setImagesPreviewUrls={setImagesPreviewUrls}
-      />
+      /> */}
     </>
   );
 

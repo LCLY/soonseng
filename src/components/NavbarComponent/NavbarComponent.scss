@@ -1,22 +1,45 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv > .bg-primary {
-    background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
+    // background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
   }
-  &__div {
-    padding: 2rem 10rem !important;
-    @include respond-to(tablet) {
-      padding: 2rem 3rem !important;
-    }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16)) !important;
   }
 
   &__logo {
-    margin-right: 2rem !important;
+    cursor: pointer;
+    width: 15rem;
+    border-radius: 0.5rem;
+    margin-right: 3rem !important;
+    object-fit: cover;
+
+    &:hover {
+      transition: all 0.3s ease;
+      // background: rgb(228, 228, 228);
+    }
+    &:active {
+      transition: none;
+      // background: rgb(255, 255, 255);
+    }
+  }
+
+  &__item {
+    background: $primary-color-3;
+    &-menu {
+      & .ant-menu-item-selected {
+        background: $primary-color-4 !important;
+      }
+    }
   }
 
   &__wrapper {
     & > .active {
-      background: $secondary-color-1;
+      // the background when the nav items is active
+      // background: $secondary-color-1;
       border-radius: 0.5rem;
     }
   }
@@ -26,8 +49,8 @@
     margin: 0 0.4rem;
     &:hover {
       transition: all 0.5s ease;
-      background: $secondary-color-1;
-      @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
+      // background: $secondary-color-1;
+      // @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
       border-radius: 0.5rem;
     }
 

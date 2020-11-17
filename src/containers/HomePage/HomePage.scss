@@ -1,0 +1,226 @@
+.homepage {
+  /* ======================================= */
+  // Main sections in homepage
+  /* ======================================= */
+  &__section {
+    /* feature section */
+    &-feature {
+      padding: 5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* intro section */
+    &-intro {
+      display: flex;
+      align-items: center;
+      background-image: linear-gradient(to right, black 50%, $primary-color-4);
+      padding: 5rem;
+    }
+  }
+
+  /* ============================= */
+  // The dark overlay over the background image
+  /* ============================= */
+  &__overlay {
+    &-parent {
+      position: relative;
+    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.562);
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  /* =============================== */
+  // Biggest title of the page
+  /* =============================== */
+  &__title {
+    font-family: $font-bowlby;
+    color: white;
+    font-size: 10rem;
+  }
+
+  /* ================================== */
+  // The second title underneath the h1 title
+  /* ================================== */
+  &__subtitle {
+    color: rgb(206, 206, 206);
+    font-size: 5rem;
+    font-family: $font-ubuntu;
+
+    &--2 {
+      color: rgb(206, 206, 206);
+      font-size: 3rem;
+      font-family: $font-firesans;
+    }
+  }
+
+  /* ========================= */
+  // the background image
+  /* ========================= */
+  &__background {
+    &-image {
+      height: 70rem;
+      // background: url('https://s29755.pcdn.co/wp-content/uploads/2019/08/2019_Top_Five_Class_5-Mack.jpg');
+      background: url('https://media3.giphy.com/media/xUOxeYatzejqwawi4w/200.gif');
+      // background: url('https://media3.giphy.com/media/xUOxf7BGcnKPNCA5kQ/giphy.gif');
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    &-video {
+      height: 70rem;
+    }
+  }
+
+  /* ================================== */
+  // The features
+  /* ================================== */
+  &__feature {
+    /* ------------------------------------ */
+    // The div of each of the feature
+    /* ------------------------------------ */
+    &-div {
+      display: flex;
+      align-items: center;
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
+    }
+    /* ------------------------------------ */
+    // The icon within those features div
+    /* ------------------------------------ */
+    &-icon {
+      font-size: 5rem;
+      color: $primary-color-3;
+      // the div of the icons
+      &-div {
+        // width: 8rem;
+        margin-right: 3rem;
+      }
+    }
+    /* ------------------------------------ */
+    // The text within those features div
+    /* ------------------------------------ */
+    &-text {
+      width: 30rem;
+    }
+    /* ------------------------------------ */
+    // The title within those features div
+    /* ------------------------------------ */
+    &-title {
+      // font-weight: bolder;
+      font-family: $font-ubuntu;
+      font-size: 1.7rem;
+    }
+  }
+
+  /* ============================= */
+  // Intro of the homepage
+  /* ============================= */
+  &__intro {
+    &-img {
+      // parent div of the images
+      &-parent {
+        position: relative;
+        width: 50%;
+      }
+
+      // the non transparent truck image
+      &--ori {
+        z-index: 0;
+        height: 100%;
+        width: 100%;
+        &-div {
+          height: 100%;
+          width: 100%;
+        }
+      }
+
+      // the transparent truck image
+      &--transparent {
+        &-div {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          z-index: 2;
+          box-shadow: 0 2rem 8rem 5rem black inset;
+          &:hover {
+            & + .homepage__intro-img-overlay {
+              opacity: 1;
+            }
+          }
+        }
+        width: 115%;
+        height: 115%;
+        overflow: hidden;
+
+        &:hover {
+          // transform: scale(1.08);
+          & + .homepage__intro-img-overlay {
+            opacity: 1;
+          }
+        }
+      }
+
+      // create overlay effect when user hover
+      &-overlay {
+        transition: all 0.5s ease;
+        position: absolute;
+        opacity: 0;
+        background: rgba(0, 0, 0, 0.342);
+        height: 100%;
+        width: 100%;
+        z-index: 1;
+      }
+    }
+
+    &-title {
+      color: white;
+      font-size: 4rem;
+      font-family: $font-ubuntu;
+    }
+    // the text in the intro section
+    &-text {
+      &-outerdiv {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        padding-left: 5rem;
+        overflow-x: hidden;
+      }
+      color: rgb(185, 185, 185);
+      line-height: 2.5rem;
+      font-size: 1.5rem;
+      font-family: $font-opensans;
+    }
+  }
+}
+
+// .testanimate {
+//   animation-name: example;
+//   animation-duration: 2s;
+// }
+
+// /* The animation code */
+// @keyframes example {
+//   from {
+//     transform: translateX(100%);
+//   }
+//   to {
+//     transform: translateX(0%);
+//   }
+// }
