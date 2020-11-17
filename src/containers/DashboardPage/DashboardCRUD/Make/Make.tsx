@@ -197,7 +197,7 @@ const Make: React.FC<Props> = ({
       title: 'Title',
       dataIndex: 'brandTitle',
       className: 'body__table-header--title',
-      width: '15rem',
+      width: '20rem',
       ellipsis: true,
       sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandTitle.localeCompare(b.brandTitle),
       ...getColumnSearchProps(brandSearchInput, 'brandTitle', 'Title'),
@@ -258,7 +258,7 @@ const Make: React.FC<Props> = ({
       key: 'wheelbaseTitle',
       title: 'Title',
       dataIndex: 'wheelbaseTitle',
-      width: '15rem',
+      width: '25rem',
       ellipsis: true,
       sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) => a.wheelbaseTitle.localeCompare(b.wheelbaseTitle),
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseTitle', 'Title'),
@@ -340,7 +340,7 @@ const Make: React.FC<Props> = ({
       title: 'Title',
       dataIndex: 'makeTitle',
       className: 'body__table-header--title',
-      width: '15rem',
+      width: '20rem',
       // align: 'center',
       ellipsis: true,
       sorter: (a: TMakeTableState, b: TMakeTableState) => a.makeTitle.localeCompare(b.makeTitle),
@@ -1330,27 +1330,17 @@ const Make: React.FC<Props> = ({
         make.year;
 
       // check if undefined
-      let makeGVW = make.gvw === undefined || make.gvw === null || make.gvw === '' ? '-' : make.gvw + 'kg';
-      let makeYear = make.year === undefined || make.year === null || make.year === '' ? '-' : make.year;
-      let makePrice = make.price === undefined || make.price === null ? '-' : 'RM' + make.price;
-      let makeTitle = make.title === undefined || make.title === null || make.title === '' ? '-' : make.title;
-      let makeLength = make.length === undefined || make.length === null || make.length === '' ? '-' : make.length;
-      let makeEngineCap =
-        make.engine_cap === undefined || make.engine_cap === null || make.engine_cap === '' ? '-' : make.engine_cap;
-      let makeHorsepower =
-        make.horsepower === undefined || make.horsepower === null || make.horsepower === ''
-          ? '-'
-          : make.horsepower + 'hp';
-      let makeTransmission =
-        make.transmission === undefined || make.transmission === null || make.transmission === ''
-          ? '-'
-          : make.transmission;
-      let makeBrandTitle =
-        make.brand.title === undefined || make.brand.title === null || make.brand.title === '' ? '-' : make.brand.title;
+      let makeGVW = make.gvw === undefined || make.gvw === null ? '' : make.gvw + 'kg';
+      let makeYear = make.year === undefined || make.year === null ? '' : make.year;
+      let makePrice = make.price === undefined || make.price === null ? '' : 'RM' + make.price;
+      let makeTitle = make.title === undefined || make.title === null ? '' : make.title;
+      let makeLength = make.length === undefined || make.length === null ? '' : make.length;
+      let makeEngineCap = make.engine_cap === undefined || make.engine_cap === null ? '' : make.engine_cap;
+      let makeHorsepower = make.horsepower === undefined || make.horsepower === null ? '' : make.horsepower + 'hp';
+      let makeTransmission = make.transmission === undefined || make.transmission === null ? '' : make.transmission;
+      let makeBrandTitle = make.brand.title === undefined || make.brand.title === null ? '' : make.brand.title;
       let makeWheelbaseTitle =
-        make.wheelbase.title === undefined || make.wheelbase.title === null || make.wheelbase.title === ''
-          ? '-'
-          : make.wheelbase.title + 'mm';
+        make.wheelbase.title === undefined || make.wheelbase.title === null ? '' : make.wheelbase.title + 'mm';
 
       // only push into the array when available value is true
       if (make.available) {

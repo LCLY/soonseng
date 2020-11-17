@@ -4,7 +4,10 @@
     background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
   }
   &__div {
-    padding: 2rem 3rem !important;
+    padding: 2rem 10rem !important;
+    @include respond-to(tablet) {
+      padding: 2rem 3rem !important;
+    }
   }
 
   &__logo {

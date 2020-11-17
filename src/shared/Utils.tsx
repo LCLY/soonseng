@@ -189,7 +189,7 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
                   </div>
                   :
                   <div className="make__details-right">
-                    {record[detail.dataIndex] && filterData ? (
+                    {record[detail.dataIndex] && record[detail.dataIndex] !== '' && filterData ? (
                       <Highlighter
                         highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
                         searchWords={[filterData.searchText]}

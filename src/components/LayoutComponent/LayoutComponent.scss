@@ -21,10 +21,71 @@
     @include respond-to(mobile) {
       display: none;
     }
-  }
-  &__sider {
     @include respond-to(tablet) {
       display: none;
+    }
+
+    /*================================= */
+    // Sidebar mobile versio
+    /*================================= */
+    &--mobile {
+      display: none;
+      height: 100vh !important;
+      @include respond-to(mobile) {
+        display: block;
+      }
+      @include respond-to(tablet) {
+        display: block;
+      }
+
+      // the logo
+      &-logo {
+        text-align: center;
+        background: $primary-color-2;
+        color: white;
+        padding: 2rem;
+      }
+
+      // most outerparent wrapping everything up
+      &-outerparent {
+        display: none; //hide on desktop
+        position: fixed;
+        top: 0;
+        transition: all 0.5s ease;
+        z-index: 1000;
+        // show on smaller screen
+        @include respond-to(mobile) {
+          display: block;
+        }
+        @include respond-to(tablet) {
+          display: block;
+        }
+      }
+      // parent div thats wrapping the arrow and sidebar
+      &-parent {
+        position: relative;
+      }
+      // the small tiny arrow on the left
+      &-arrow {
+        width: auto;
+        color: white;
+        cursor: pointer;
+        position: fixed;
+        padding: 1rem 0.5rem 1rem 0.5rem;
+        border-top-right-radius: 5px;
+        background: $primary-color-1;
+        border-bottom-right-radius: 5px;
+        top: 50%;
+        left: 100%;
+        transform: translateY(-50%);
+        z-index: 1000;
+        &:hover {
+          background: $primary-color-3;
+        }
+        &:active {
+          background: $primary-color-1;
+        }
+      }
     }
   }
 }

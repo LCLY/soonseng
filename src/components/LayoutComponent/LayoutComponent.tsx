@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './LayoutComponent.scss';
 /*components*/
-import DashboardSidebar from '../DashboardSidebar/DashboardSidebar';
+import Backdrop from 'src/components/Backdrop/Backdrop';
+import DashboardSidebar from 'src/components/DashboardSidebar/DashboardSidebar';
 /*3rd party lib*/
 import { Layout } from 'antd';
 
@@ -22,15 +23,43 @@ type Props = LayoutComponentProps;
  * @return {*}
  */
 const LayoutComponent: React.FC<Props> = ({ children, activeKey }) => {
+  const [showSidebar, setShowSidebar] = useState<boolean>(false);
+
   return (
-    <Layout>
-      <Sider theme="light" width={'auto'} className="layout__sider">
-        <DashboardSidebar activeKey={activeKey} />
-      </Sider>
-      <Layout className="layout__inner">
-        <Content className="layout__content">{children}</Content>
+    <>
+      <Layout>
+        <Sider theme="light" width={'auto'} className="layout__sider">
+          <DashboardSidebar activeKey={activeKey} />
+        </Sider>
+        <Backdrop show={showSidebar} clicked={() => setShowSidebar(false)} />
+
+        <div
+          className="layout__sider--mobile-outerparent"
+          style={{
+            transform: showSidebar ? 'translateX(0%)' : 'translateX(-100%)',
+          }}
+        >
+          <div className="layout__sider--mobile-parent">
+            <div className="layout__sider--mobile-arrow" onClick={() => setShowSidebar(!showSidebar)}>
+              <i
+                className={`fas fa-caret-right`}
+                style={{
+                  transform: showSidebar ? 'translateX(-0.2rem) rotate(180deg)' : 'translateX(0)',
+                  transition: 'all 0.5s ease',
+                }}
+              ></i>
+            </div>
+            <Sider theme="light" width={'auto'} className="layout__sider--mobile">
+              <div className="layout__sider--mobile-logo">LOGO</div>
+              <DashboardSidebar activeKey={activeKey} />
+            </Sider>
+          </div>
+        </div>
+        <Layout className="layout__inner">
+          <Content className="layout__content">{children}</Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </>
   );
 };
 export default LayoutComponent;
