@@ -5,8 +5,10 @@ import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 // image
 import transparent_background_truck_img from 'src/img/truck.png';
+import transparent_green_hino from 'src/img/greenhino.png';
 // 3rd party lib
 import { TweenMax, Linear } from 'gsap';
+import { Parallax } from 'react-scroll-parallax';
 import ScrollAnimation from 'react-animate-on-scroll';
 /**
  * Home page of the website
@@ -54,45 +56,53 @@ function HomePage() {
       </section>
 
       <Container>
+        {' '}
         <section className="homepage__section-feature">
-          <ScrollAnimation animateIn="fadeIn">
-            <div className="homepage__feature-div">
-              <div className="homepage__feature-icon-div">
-                <i className="homepage__feature-icon fas fa-clock"></i>
-              </div>
-              <div className="homepage__feature-text">
-                <div className="homepage__feature-title">
-                  This thing will save a lot of your time, no joke, I promise you, its good
+          <div className="homepage__feature-outerdiv">
+            <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
+              <div className="homepage__feature-div">
+                <div className="homepage__feature-icon-div">
+                  <i className="homepage__feature-icon fas fa-clock"></i>
+                </div>
+                <div className="homepage__feature-text">
+                  <div className="homepage__feature-title">
+                    This thing will save a lot of your time, no joke, I promise you, its good
+                  </div>
                 </div>
               </div>
-            </div>
-          </ScrollAnimation>
-          <ScrollAnimation animateIn="fadeIn">
-            <div className="homepage__feature-div">
-              <div className="homepage__feature-icon-div">
-                <i className="homepage__feature-icon fas fa-dollar-sign"></i>
-              </div>
-              <div className="homepage__feature-text">
-                <div className="homepage__feature-title">
-                  When you save time, you save money, think about that just for a sec
+            </ScrollAnimation>
+          </div>
+          <div className="homepage__feature-outerdiv">
+            <ScrollAnimation animateOnce={true} animateIn="fadeInDown">
+              <div className="homepage__feature-div">
+                <div className="homepage__feature-icon-div">
+                  <i className="homepage__feature-icon fas fa-dollar-sign"></i>
+                </div>
+                <div className="homepage__feature-text">
+                  <div className="homepage__feature-title">
+                    When you save time, you save money, think about that just for a sec
+                  </div>
                 </div>
               </div>
-            </div>
-          </ScrollAnimation>
-          <ScrollAnimation animateIn="fadeIn">
-            <div className="homepage__feature-div">
-              <div className="homepage__feature-icon-div">
-                <i className="homepage__feature-icon fas fa-truck-pickup"></i>
-              </div>
-              <div className="homepage__feature-text">
-                <div className="homepage__feature-title">
-                  We have the best stuffs in the market, we don't play play, seriously
+            </ScrollAnimation>
+          </div>
+          <div className="homepage__feature-outerdiv">
+            <ScrollAnimation animateOnce={true} animateIn="fadeInRight">
+              <div className="homepage__feature-div">
+                <div className="homepage__feature-icon-div">
+                  <i className="homepage__feature-icon fas fa-truck-pickup"></i>
+                </div>
+                <div className="homepage__feature-text">
+                  <div className="homepage__feature-title">
+                    We have the best stuffs in the market, we don't play play, seriously
+                  </div>
                 </div>
               </div>
-            </div>
-          </ScrollAnimation>
+            </ScrollAnimation>
+          </div>
         </section>
       </Container>
+
       <section className="homepage__section-intro">
         <div className="homepage__intro-img-parent">
           <div className="homepage__intro-img--transparent-div">
@@ -117,7 +127,7 @@ function HomePage() {
           </div>
         </div>
         <div className="homepage__intro-text-outerdiv">
-          <ScrollAnimation animateIn="bounceInRight">
+          <ScrollAnimation animateOnce={true} animateIn="bounceInRight">
             <div className="homepage__intro-title margin_b-2">Load and Roll</div>
             <div className="homepage__intro-text">
               At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
@@ -133,17 +143,35 @@ function HomePage() {
         </div>
       </section>
 
-      <section>
-        <div> More stuffs</div>
-        <div>
+      <section className="homepage__section-third">
+        <div className="homepage__third-left">
+          <div className="homepage__third-title">So Many Trucks To Choose</div>
+          <div className="homepage__third-subtitle">Don't even know where to start</div>
+          <div className="homepage__third-text">
+            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
+            atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
+            sunt in culpa qui officia deserunt.
+            <br />
+            <br />
+            Mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+            Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
+          </div>
+        </div>
+        <div className="homepage__third-right">
+          <Parallax className="homepage__third-img-div" x={['150px', '-0px']} tagOuter="figure">
+            <img className="homepage__third-img" alt="green hino" src={transparent_green_hino} />
+          </Parallax>
+        </div>
+      </section>
+      <section className="homepage__section-third">
+        <div className="homepage__third-text">
           At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
           atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
-          sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum
-          facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil
-          impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor
-          repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
-          voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus,
-          ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat
+          sunt in culpa qui officia deserunt.
+          <br />
+          <br />
+          Mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam
+          libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
         </div>
       </section>
     </div>

@@ -8,6 +8,15 @@
       padding: 5rem;
       display: flex;
       justify-content: space-between;
+      overflow-x: hidden;
+
+      @include respond-to(tablet) {
+        flex-direction: column;
+        padding: 5rem 1rem;
+      }
+      @include respond-to(medium) {
+        padding: 5rem 0;
+      }
     }
 
     /* intro section */
@@ -16,6 +25,34 @@
       align-items: center;
       background-image: linear-gradient(to right, black 50%, $primary-color-4);
       padding: 5rem;
+      @include respond-to(mobile) {
+        background-image: linear-gradient(to bottom, black 50%, $primary-color-4);
+        flex-direction: column;
+      }
+      @include respond-to(tablet) {
+        background-image: linear-gradient(to bottom, black 50%, $primary-color-4);
+        flex-direction: column;
+      }
+      @include respond-to(medium) {
+        background-image: linear-gradient(to bottom, black 50%, $primary-color-4);
+        flex-direction: column;
+      }
+    }
+
+    &-third {
+      display: flex;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 5rem;
+      @include respond-to(mobile) {
+        flex-direction: column;
+      }
+      @include respond-to(tablet) {
+        flex-direction: column;
+      }
+      @include respond-to(medium) {
+        flex-direction: column;
+      }
     }
   }
 
@@ -49,6 +86,10 @@
     font-family: $font-bowlby;
     color: white;
     font-size: 10rem;
+
+    @include respond-to(tablet) {
+      font-size: 7rem;
+    }
   }
 
   /* ================================== */
@@ -58,11 +99,17 @@
     color: rgb(206, 206, 206);
     font-size: 5rem;
     font-family: $font-ubuntu;
+    @include respond-to(tablet) {
+      font-size: 3rem;
+    }
 
     &--2 {
       color: rgb(206, 206, 206);
       font-size: 3rem;
       font-family: $font-firesans;
+      @include respond-to(tablet) {
+        font-size: 2rem;
+      }
     }
   }
 
@@ -71,7 +118,7 @@
   /* ========================= */
   &__background {
     &-image {
-      height: 70rem;
+      height: 100vh;
       // background: url('https://s29755.pcdn.co/wp-content/uploads/2019/08/2019_Top_Five_Class_5-Mack.jpg');
       background: url('https://media3.giphy.com/media/xUOxeYatzejqwawi4w/200.gif');
       // background: url('https://media3.giphy.com/media/xUOxf7BGcnKPNCA5kQ/giphy.gif');
@@ -79,10 +126,6 @@
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
-    }
-
-    &-video {
-      height: 70rem;
     }
   }
 
@@ -96,10 +139,18 @@
     &-div {
       display: flex;
       align-items: center;
+
+      margin-right: 2rem;
+    }
+    &-outerdiv {
+      padding: 2rem 0;
       &:not(:last-child) {
-        margin-right: 2rem;
+        @include respond-to(tablet) {
+          border-bottom: 1px solid $translucent-grey;
+        }
       }
     }
+
     /* ------------------------------------ */
     // The icon within those features div
     /* ------------------------------------ */
@@ -108,7 +159,8 @@
       color: $primary-color-3;
       // the div of the icons
       &-div {
-        // width: 8rem;
+        width: 8rem;
+        text-align: center;
         margin-right: 3rem;
       }
     }
@@ -116,7 +168,7 @@
     // The text within those features div
     /* ------------------------------------ */
     &-text {
-      width: 30rem;
+      // width: 30rem;
     }
     /* ------------------------------------ */
     // The title within those features div
@@ -137,6 +189,15 @@
       &-parent {
         position: relative;
         width: 50%;
+        @include respond-to(mobile) {
+          width: 100%;
+        }
+        @include respond-to(tablet) {
+          width: 100%;
+        }
+        @include respond-to(medium) {
+          width: 100%;
+        }
       }
 
       // the non transparent truck image
@@ -156,6 +217,7 @@
           position: absolute;
           height: 100%;
           width: 100%;
+          overflow: hidden;
           z-index: 2;
           box-shadow: 0 2rem 8rem 5rem black inset;
           &:hover {
@@ -167,6 +229,7 @@
         width: 115%;
         height: 115%;
         overflow: hidden;
+        object-fit: cover;
 
         &:hover {
           // transform: scale(1.08);
@@ -201,6 +264,18 @@
         width: 50%;
         padding-left: 5rem;
         overflow-x: hidden;
+        @include respond-to(mobile) {
+          width: 100%;
+          padding-left: 0rem;
+        }
+        @include respond-to(tablet) {
+          width: 100%;
+          padding-left: 0rem;
+        }
+        @include respond-to(medium) {
+          width: 100%;
+          padding-left: 0rem;
+        }
       }
       color: rgb(185, 185, 185);
       line-height: 2.5rem;
@@ -208,19 +283,71 @@
       font-family: $font-opensans;
     }
   }
+
+  /* ========================= */
+  // the third section
+  /* ========================= */
+  &__third {
+    &-title {
+      font-size: 4rem;
+      font-family: $font-bebasneue;
+    }
+    &-subtitle {
+      font-size: 2.5rem;
+      font-family: $font-opensans;
+      margin-bottom: 1rem;
+    }
+    &-text {
+      font-size: 1.7rem;
+    }
+    // left column
+    &-left {
+      width: 55%;
+      @include respond-to(mobile) {
+        width: 100%;
+      }
+      @include respond-to(tablet) {
+        width: 100%;
+      }
+      @include respond-to(medium) {
+        width: 100%;
+      }
+    }
+    // right column
+    &-right {
+      width: 45%;
+      display: flex;
+      justify-content: center;
+      @include respond-to(mobile) {
+        width: 100%;
+      }
+      @include respond-to(tablet) {
+        width: 100%;
+      }
+      @include respond-to(medium) {
+        width: 100%;
+      }
+    }
+
+    &-img {
+      // width: 50rem;
+      // height: 35rem;
+      width: 100%;
+      height: 100%;
+      padding: 5rem;
+      // object-fit: cover;
+      @include respond-to(mobile) {
+        width: 100%;
+        padding: 0rem;
+      }
+      @include respond-to(tablet) {
+        width: 100%;
+        padding: 0rem;
+      }
+      @include respond-to(medium) {
+        width: 100%;
+        padding: 0rem;
+      }
+    }
+  }
 }
-
-// .testanimate {
-//   animation-name: example;
-//   animation-duration: 2s;
-// }
-
-// /* The animation code */
-// @keyframes example {
-//   from {
-//     transform: translateX(100%);
-//   }
-//   to {
-//     transform: translateX(0%);
-//   }
-// }

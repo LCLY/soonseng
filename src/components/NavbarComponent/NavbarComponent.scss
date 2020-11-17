@@ -8,6 +8,12 @@
     display: flex;
     align-items: center;
     background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16)) !important;
+    @include respond-to(tablet) {
+      background-image: linear-gradient(to right, $primary-color-3 80%, rgb(66, 5, 16)) !important;
+    }
+    @include respond-to(mobile) {
+      background-image: linear-gradient(to right, $primary-color-3 80%, rgb(66, 5, 16)) !important;
+    }
   }
 
   &__logo {

@@ -5,7 +5,7 @@ import './index.scss';
 import 'react-image-lightbox/style.css';
 // 3rd party lib
 import { BrowserRouter } from 'react-router-dom';
-
+import { ParallaxProvider } from 'react-scroll-parallax';
 // redux
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
@@ -59,11 +59,13 @@ sagaMiddleware.run(watchSales);
  */
 const app = (
   <Provider store={store}>
-    <BrowserRouter>
-      <PersistGate loading={null} persistor={persistor}>
-        <App />
-      </PersistGate>
-    </BrowserRouter>
+    <ParallaxProvider>
+      <BrowserRouter>
+        <PersistGate loading={null} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </BrowserRouter>
+    </ParallaxProvider>
   </Provider>
 );
 
