@@ -191,7 +191,7 @@
       display: flex;
       justify-content: center;
 
-      @include respond-to(tablet) {
+      @include respond-to(mobile) {
         flex-direction: column;
       }
       @include respond-to(tablet) {
@@ -203,13 +203,16 @@
       display: flex;
       justify-content: center;
       padding: 0 15rem;
-      @include respond-to(tablet) {
+      @include respond-to(mobile) {
         flex-direction: column;
         padding: 0;
       }
       @include respond-to(tablet) {
         flex-direction: column;
         padding: 0;
+      }
+      @include respond-to(medium) {
+        padding: 0 5rem;
       }
     }
 
