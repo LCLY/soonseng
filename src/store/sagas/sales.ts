@@ -13,7 +13,7 @@ import axios from 'axios';
 export function* getSalesLengthsSaga(_action: AppActions) {
   yield put(actions.getSalesLengthsStart());
 
-  let url = process.env.REACT_APP_API + `/tail/lengths`;
+  let url = process.env.REACT_APP_API + `/pages/length`;
 
   try {
     let response = yield axios.get(url);
