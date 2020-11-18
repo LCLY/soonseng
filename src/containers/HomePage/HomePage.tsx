@@ -10,6 +10,7 @@ import transparent_green_hino from 'src/img/greenhino.png';
 import { TweenMax, Linear } from 'gsap';
 import { Parallax } from 'react-scroll-parallax';
 import ScrollAnimation from 'react-animate-on-scroll';
+import { Button } from 'antd';
 /**
  * Home page of the website
  * @return {*}
@@ -34,6 +35,15 @@ function HomePage() {
     });
   }, []);
 
+  useEffect(() => {
+    gsap.to('.homepage__button', {
+      x: '0',
+      opacity: 1,
+      duration: 0.5,
+      stagger: { amount: 0.35, ease: 'none' },
+    });
+  }, []);
+
   const scaleup = () => {
     TweenMax.to(imageElement, 1, { scale: 1.03 });
   };
@@ -47,16 +57,52 @@ function HomePage() {
       <section className="homepage__overlay-parent">
         <div className="homepage__overlay">
           <div className="homepage__title-div">
-            <h1 className="homepage__title">SOON SENG</h1>
-            <div className="homepage__subtitle">Makes your life easier</div>
-            <div className="homepage__subtitle--2">Build your truck</div>
+            <h1 className="homepage__title">
+              SOON SENG MOTORS
+              <br />
+              ENTERPRISE (1988)
+            </h1>
+            <div className="homepage__button-outerdiv">
+              <div className="homepage__button-div">
+                <Button className="homepage__button" type="default">
+                  Sales
+                </Button>
+                <div className="homepage__button-description">Some short description about sales</div>
+              </div>
+              <div className="homepage__button-div">
+                <Button className="homepage__button" type="default">
+                  Service
+                </Button>
+                <div className="homepage__button-description">Some short description about service</div>
+              </div>
+              <div className="homepage__button-div">
+                <Button className="homepage__button" type="default">
+                  Sparepart
+                </Button>
+                <div className="homepage__button-description">Some short description about sparepart</div>
+              </div>
+              <div className="homepage__button-div">
+                <Button className="homepage__button" type="default">
+                  Insurance
+                </Button>
+                <div className="homepage__button-description">Some short description about insurance</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="homepage__background-image"></div>
+        <div className="homepage__background-outerdiv">
+          {/* <div className="homepage__background-image"></div> */}
+          <Parallax className="homepage__third-img-div" x={['-100px', '100px']} tagOuter="figure">
+            <img
+              className="homepage__background-parallax"
+              src="https://s29755.pcdn.co/wp-content/uploads/2019/08/2019_Top_Five_Class_5-Mack.jpg"
+              alt="logo"
+            />
+          </Parallax>
+        </div>
       </section>
 
       <Container>
-        {' '}
         <section className="homepage__section-feature">
           <div className="homepage__feature-outerdiv">
             <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
@@ -117,14 +163,14 @@ function HomePage() {
               alt="transparent truck"
             />
           </div>
-          <div className="homepage__intro-img-overlay"></div>
-          <div className="homepage__intro-img--ori-div">
+          {/* <div className="homepage__intro-img-overlay"></div> */}
+          {/* <div className="homepage__intro-img--ori-div">
             <img
               className="homepage__intro-img--ori"
               alt="trucklogo"
               src="https://www.daimler.com/bilder/innovation/autonomes-fahren/future-truck-2025/14c1049-42-klein-w1024xh512-cutout.jpg"
             />
-          </div>
+          </div> */}
         </div>
         <div className="homepage__intro-text-outerdiv">
           <ScrollAnimation animateOnce={true} animateIn="bounceInRight">
@@ -133,6 +179,11 @@ function HomePage() {
               At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
               atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
               sunt in culpa
+              <br />
+              <br />
+              Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
+              placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
+              et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates.
               <br />
               <br />
               Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime

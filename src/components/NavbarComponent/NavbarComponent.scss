@@ -7,6 +7,10 @@
   &__header {
     display: flex;
     align-items: center;
+    height: 10rem !important;
+    // padding: 5rem !important;
+    // padding-top: 3rem !important;
+    // padding-bottom: 3rem !important;
     background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16)) !important;
     @include respond-to(tablet) {
       background-image: linear-gradient(to right, $primary-color-3 80%, rgb(66, 5, 16)) !important;
@@ -35,6 +39,8 @@
 
   &__item {
     background: $primary-color-3;
+    padding: 1.8rem 4rem 1.8rem 4rem !important;
+
     &-menu {
       & .ant-menu-item-selected {
         background: $primary-color-4 !important;
