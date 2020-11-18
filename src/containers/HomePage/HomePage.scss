@@ -39,6 +39,11 @@
       // }
     }
 
+    &-motto {
+      overflow-x: hidden;
+      padding: 10rem 5rem;
+    }
+
     &-third {
       display: flex;
       align-items: center;
@@ -259,11 +264,9 @@
 
         // transparent DIV
         &-div {
-          backface-visibility: hidden !important;
-
-          // position: absolute;
           height: 100%;
           width: 100%;
+          transform: scale(1.3);
           overflow: hidden;
           z-index: 2;
           background: $primary-color-3;
@@ -275,6 +278,7 @@
           }
         }
 
+        object-position: 60% 100% !important;
         overflow: hidden;
         object-fit: cover;
 
@@ -328,6 +332,38 @@
       line-height: 2.5rem;
       font-size: 1.5rem;
       font-family: $font-opensans;
+    }
+  }
+
+  /* ========================= */
+  // the motto section
+  /* ========================= */
+  &__motto {
+    // title of motto
+    &-title {
+      text-align: center;
+      font-family: $font-anton;
+      font-size: 4rem;
+      color: $primary-color-3;
+    }
+
+    // card of motto
+    &-card {
+    }
+
+    // top portion
+    &-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      margin-top: 2rem;
+    }
+
+    // bottom portion
+    &-bottom {
+      display: flex;
+      justify-content: space-around;
+      padding: 0 13rem;
     }
   }
 
