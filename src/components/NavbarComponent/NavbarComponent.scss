@@ -1,23 +1,11 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv > .bg-primary {
-    // background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
+    background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
   }
 
-  &__header {
-    display: flex;
-    align-items: center;
-    height: 10rem !important;
-    // padding: 5rem !important;
-    // padding-top: 3rem !important;
-    // padding-bottom: 3rem !important;
-    background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16)) !important;
-    @include respond-to(tablet) {
-      background-image: linear-gradient(to right, $primary-color-3 80%, rgb(66, 5, 16)) !important;
-    }
-    @include respond-to(mobile) {
-      background-image: linear-gradient(to right, $primary-color-3 80%, rgb(66, 5, 16)) !important;
-    }
+  &__div {
+    padding: 2rem 5rem !important;
   }
 
   &__logo {
