@@ -3,11 +3,13 @@
   // Main sections in homepage
   /* ======================================= */
   &__section {
+    /* ----------------------- */
     /* feature section */
+    /* ----------------------- */
     &-feature {
       padding: 15rem 5rem;
-      display: flex;
-      justify-content: space-between;
+      // display: flex;
+      // justify-content: space-between;
       overflow-x: hidden;
 
       @include respond-to(tablet) {
@@ -18,8 +20,9 @@
         padding: 5rem 0;
       }
     }
-
+    /* ----------------------- */
     /* intro section */
+    /* ----------------------- */
     &-intro {
       display: flex;
       align-items: center;
@@ -39,11 +42,9 @@
       // }
     }
 
-    &-motto {
-      overflow-x: hidden;
-      padding: 10rem 5rem;
-    }
-
+    /* ----------------------- */
+    // Third section
+    /* ----------------------- */
     &-third {
       display: flex;
       align-items: center;
@@ -183,12 +184,51 @@
     &-div {
       display: flex;
       align-items: center;
-
       margin-right: 2rem;
     }
+
+    &-top {
+      display: flex;
+      justify-content: center;
+
+      @include respond-to(tablet) {
+        flex-direction: column;
+      }
+      @include respond-to(tablet) {
+        flex-direction: column;
+      }
+    }
+
+    &-bottom {
+      display: flex;
+      justify-content: center;
+      padding: 0 15rem;
+      @include respond-to(tablet) {
+        flex-direction: column;
+        padding: 0;
+      }
+      @include respond-to(tablet) {
+        flex-direction: column;
+        padding: 0;
+      }
+    }
+
     &-outerdiv {
       padding: 2rem 0;
       &:not(:last-child) {
+        @include respond-to(mobile) {
+          border-bottom: 1px solid $translucent-grey;
+        }
+        @include respond-to(tablet) {
+          border-bottom: 1px solid $translucent-grey;
+        }
+      }
+
+      // wont work on efficiency row using lastchild
+      &--efficiency {
+        @include respond-to(mobile) {
+          border-bottom: 1px solid $translucent-grey;
+        }
         @include respond-to(tablet) {
           border-bottom: 1px solid $translucent-grey;
         }
@@ -208,17 +248,12 @@
         margin-right: 3rem;
       }
     }
-    /* ------------------------------------ */
-    // The text within those features div
-    /* ------------------------------------ */
-    &-text {
-      // width: 30rem;
-    }
+
     /* ------------------------------------ */
     // The title within those features div
     /* ------------------------------------ */
     &-title {
-      // font-weight: bolder;
+      font-weight: bolder;
       font-family: $font-ubuntu;
       font-size: 1.7rem;
     }
@@ -332,38 +367,6 @@
       line-height: 2.5rem;
       font-size: 1.5rem;
       font-family: $font-opensans;
-    }
-  }
-
-  /* ========================= */
-  // the motto section
-  /* ========================= */
-  &__motto {
-    // title of motto
-    &-title {
-      text-align: center;
-      font-family: $font-anton;
-      font-size: 4rem;
-      color: $primary-color-3;
-    }
-
-    // card of motto
-    &-card {
-    }
-
-    // top portion
-    &-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 2rem;
-      margin-top: 2rem;
-    }
-
-    // bottom portion
-    &-bottom {
-      display: flex;
-      justify-content: space-around;
-      padding: 0 13rem;
     }
   }
 
