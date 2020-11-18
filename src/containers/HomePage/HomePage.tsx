@@ -37,11 +37,19 @@ function HomePage() {
   // }, []);
 
   useEffect(() => {
-    gsap.to('.homepage__button', {
+    gsap.to('.homepage__first-button', {
       x: '0',
       opacity: 1,
       duration: 0.5,
-      stagger: { amount: 0.35, ease: 'none' },
+      stagger: { each: 0.04, ease: 'none' },
+    });
+  }, []);
+
+  useEffect(() => {
+    gsap.to('.homepage__first-parallelogram', {
+      x: '0',
+      opacity: 1,
+      duration: 0.5,
     });
   }, []);
 
@@ -55,39 +63,40 @@ function HomePage() {
   return (
     <div>
       <NavbarComponent activePage="home" />
-      <section className="homepage__overlay-parent">
-        <div className="homepage__overlay">
-          <div className="homepage__title-div">
-            <h1 className="homepage__title">
+      <section className="homepage__section-first-parent">
+        <div className="homepage__section-first">
+          <div className="homepage__first-title-div">
+            <h1 className="homepage__first-title">
               SOON SENG MOTORS
               <br />
               ENTERPRISE (1988)
             </h1>
-            <div className="homepage__button-outerdiv">
-              <div className="homepage__button-div">
-                <Button className="homepage__button" type="default">
-                  Sales
-                </Button>
-                <div className="homepage__button-description">Some short description about sales</div>
-              </div>
-              <div className="homepage__button-div">
-                <Button className="homepage__button" type="default">
-                  Service
-                </Button>
-                <div className="homepage__button-description">Some short description about service</div>
-              </div>
-              <div className="homepage__button-div">
-                <Button className="homepage__button" type="default">
-                  Sparepart
-                </Button>
-                <div className="homepage__button-description">Some short description about sparepart</div>
-              </div>
-              <div className="homepage__button-div">
-                <Button className="homepage__button" type="default">
-                  Insurance
-                </Button>
-                <div className="homepage__button-description">Some short description about insurance</div>
-              </div>
+            <div className="homepage__first-parallelogram"></div>
+          </div>
+          <div className="homepage__first-button-outerdiv">
+            <div className="homepage__first-button-div">
+              <Button className="homepage__first-button" type="default">
+                Sales
+              </Button>
+              <div className="homepage__first-button-description">Some short description about sales</div>
+            </div>
+            <div className="homepage__first-button-div">
+              <Button className="homepage__first-button" type="default">
+                Service
+              </Button>
+              <div className="homepage__first-button-description">Some short description about service</div>
+            </div>
+            <div className="homepage__first-button-div">
+              <Button className="homepage__first-button" type="default">
+                Sparepart
+              </Button>
+              <div className="homepage__first-button-description">Some short description about sparepart</div>
+            </div>
+            <div className="homepage__first-button-div">
+              <Button className="homepage__first-button" type="default">
+                Insurance
+              </Button>
+              <div className="homepage__first-button-description">Some short description about insurance</div>
             </div>
           </div>
         </div>
