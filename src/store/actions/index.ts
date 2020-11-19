@@ -165,6 +165,8 @@ export {
 } from './dashboard';
 
 export {
+  // clear sales state
+  clearSalesState,
   // get sales lengths
   getSalesLengths,
   getSalesLengthsStart,
@@ -175,4 +177,9 @@ export {
   getSalesBodyLengthsFailed,
   getSalesBodyLengthsStart,
   getSalesBodyLengthsSucceed,
+  // get sales Body accessories
+  getSalesBodyAccessories,
+  getSalesBodyAccessoriesFailed,
+  getSalesBodyAccessoriesStart,
+  getSalesBodyAccessoriesSucceed,
 } from './sales';

@@ -11,9 +11,19 @@ const initialState: SalesInitialState = {
   // body
   bodyLengthObj: null,
   bodyLengthsArray: null,
+  // accessories
+  bodyAccessoryObj: null,
+  bodyAccessoriesArray: null,
   // others
   errorMessage: null,
   successMessage: null,
+};
+
+/* -------------------------- */
+/* Get all sales Lengths  */
+/* -------------------------- */
+const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: false, successMessage: null, bodyLengthsArray: null });
 };
 
 /* -------------------------- */
@@ -50,8 +60,34 @@ const getSalesBodyLengthsFailed = (state: SalesInitialState, action: AppActions)
   }
 };
 
+/* -------------------------- */
+/* Get all Body Accessories  */
+/* -------------------------- */
+const getSalesBodyAccessoriesStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getSalesBodyAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('bodyAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyAccessoriesArray: action.bodyAccessoriesArray,
+    });
+  }
+};
+const getSalesBodyAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
 const reducer = (state = initialState, action: SalesActionTypes) => {
   switch (action.type) {
+    /* =================================== */
+    //  Clear state
+    /* =================================== */
+    case actionTypes.CLEAR_SALES_STATE:
+      return clearSalesState(state, action);
     /* =================================== */
     //  Lengths
     /* =================================== */
@@ -72,6 +108,16 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
       return getSalesBodyLengthsSucceed(state, action);
     case actionTypes.GET_SALES_BODYLENGTHS_FAILED:
       return getSalesBodyLengthsFailed(state, action);
+    /* =================================== */
+    //  Accessories
+    /* =================================== */
+    // Get all accessories
+    case actionTypes.GET_SALES_BODYACCESSORIES_START:
+      return getSalesBodyAccessoriesStart(state, action);
+    case actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED:
+      return getSalesBodyAccessoriesSucceed(state, action);
+    case actionTypes.GET_SALES_BODYACCESSORIES_FAILED:
+      return getSalesBodyAccessoriesFailed(state, action);
 
     default:
       return state;

@@ -98,14 +98,7 @@ function HomePage() {
           </div>
         </div>
         <div className="homepage__background-outerdiv">
-          {/* <div className="homepage__background-image"></div> */}
-          <Parallax className="homepage__third-img-div" x={['-10px', '100px']} tagOuter="figure">
-            <img
-              className="homepage__background-parallax"
-              src="https://s29755.pcdn.co/wp-content/uploads/2019/08/2019_Top_Five_Class_5-Mack.jpg"
-              alt="logo"
-            />
-          </Parallax>
+          <div className="homepage__background-image"></div>
         </div>
       </section>
 

@@ -1,29 +1,32 @@
 import React, { useState } from 'react';
 import './CardComponent.scss';
 // 3rd party lib
+import { Tag } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import NumberFormat from 'react-number-format';
-import { img_placeholder_link } from 'src/shared/global';
-import { TReceivedImageObj } from 'src/store/types/dashboard';
+// Util
+import { img_not_available_link } from 'src/shared/global';
+import { TReceivedBodyLengthObj } from 'src/store/types/dashboard';
+
 interface CardComponentProps {
-  title: string;
-  desc: string;
-  price: string;
-  /** the image link for the card image  */
-  img_link: string;
-  /** array of image links string for lightbox*/
-  images: TReceivedImageObj[];
-  /** The original index of the mapped out component(s) */
-  index: number;
   /**
    * The clicked/selected index of the body card. We are using "bodyIndex" to check if it matches with the original "index" of the card. If it is, we set the css class to active
    * ```javascript
    *  <div className={`card card__div ${bodyIndex === index ? 'active' : ''}`} onClick={() => setBodyIndex(bodyIndex)}>
    * ```
    * */
-
   bodyIndex: number | null;
   setBodyIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  /** The original index of the mapped out component(s) */
+  index: number;
+  /** the whole body length object  */
+  bodyLengthObj: TReceivedBodyLengthObj;
+  /** The current step for the steps component  */
+  currentStep: number;
+  /** Setting the current step for the steps component  */
+  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  /** API call to get sales accessories with body_length_id  */
+  onGetSalesBodyAccessories: (body_length_id: number) => void;
 }
 
 type Props = CardComponentProps;
@@ -35,12 +38,24 @@ type Props = CardComponentProps;
  * @category Components
  */
 
-const CardComponent: React.FC<Props> = ({ bodyIndex, index, title, desc, images, price, img_link, setBodyIndex }) => {
+const CardComponent: React.FC<Props> = ({
+  index,
+  bodyIndex,
+  bodyLengthObj,
+  setBodyIndex,
+  currentStep,
+  setCurrentStep,
+  onGetSalesBodyAccessories,
+}) => {
   const [isHover, setIsHover] = useState(false);
   // isOpen to
   const [isOpen, setIsOpen] = useState(false);
   // photoindex to keep track of which image it's showing right now
   const [photoIndex, setPhotoIndex] = useState(0);
+
+  const images = bodyLengthObj.images;
+
+  let img_link = bodyLengthObj.images.length > 0 ? bodyLengthObj.images[0].url : img_not_available_link;
 
   return (
     <>
@@ -56,6 +71,7 @@ const CardComponent: React.FC<Props> = ({ bodyIndex, index, title, desc, images,
         />
       )}
       <div className="card__outerdiv">
+        {/* make card float and show shadow when hover */}
         <div
           className={`card card__div ${bodyIndex === index ? 'active' : ''}`}
           style={{
@@ -64,26 +80,17 @@ const CardComponent: React.FC<Props> = ({ bodyIndex, index, title, desc, images,
               bodyIndex === index ? 'none' : isHover ? '0.1rem 0.5rem 1rem 0.1rem rgba(80, 75, 75, 0.233)' : 'none',
           }}
         >
-          <div className="card__overlay" style={{ display: bodyIndex === index ? 'flex' : 'none' }}>
+          <div className="card__highlight" style={{ display: bodyIndex === index ? 'flex' : 'none' }}>
             <i className="fas fa-check-circle"></i>
           </div>
           <div className="row no-gutters card__row">
-            <div
-              className="col card__img"
-              style={{
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                backgroundColor: 'rgb(197, 197, 191)',
-                backgroundImage: `url(${img_link}), url(${img_placeholder_link})`,
-              }}
-              onClick={() => setIsOpen(true)}
-            >
-              <div className="card__img-button">
+            <div className="card__img-parent" style={{ pointerEvents: images.length === 0 ? 'none' : 'auto' }}>
+              {/* The image of the card */}
+              <img className="card__img" alt={img_link} src={img_link} />
+              <div className="card__img-button" onClick={() => setIsOpen(true)}>
                 <i className="fas fa-images"></i>
               </div>
             </div>
-
             <div
               className="col card__right"
               onMouseEnter={() => setIsHover(true)}
@@ -96,6 +103,8 @@ const CardComponent: React.FC<Props> = ({ bodyIndex, index, title, desc, images,
                   setBodyIndex(null);
                 } else {
                   setBodyIndex(index);
+                  onGetSalesBodyAccessories(bodyLengthObj.id);
+                  setCurrentStep(currentStep + 1);
                 }
               }}
             >
@@ -103,22 +112,50 @@ const CardComponent: React.FC<Props> = ({ bodyIndex, index, title, desc, images,
                 <div className="card__text">
                   <div>
                     {/* Card title */}
-                    <h4 className="card-title card__title">{title}</h4>
-                    <p className="card-text card__desc">
-                      This cargo is suitable for moving livestocks and common boxes. It's great for moving immigrants as
-                      well.
-                    </p>
+                    <h4 className="card-title card__title">{bodyLengthObj.body.title}</h4>
+                    <p className="card-text card__desc">{bodyLengthObj.body.description}</p>
                   </div>
                   <section className="card__desc-bottom">
                     <div className="card__desc-dimension">
-                      <span style={{ fontSize: '1.35rem' }}>Dimension:</span>&nbsp;
-                      <span className="card__desc-dimension-number">{desc}</span>
+                      <div>
+                        <span style={{ fontSize: '1.35rem' }}>Dimension:</span>&nbsp;
+                      </div>
+                      <div>
+                        <span className="card__desc-dimension-number">
+                          <div className="card__tag-outerdiv">
+                            <div className="card__tag-div">
+                              <Tag className="card__tag" color="red">
+                                <div className="card__tag-title">Width</div>
+                                <div className="card__tag-values">
+                                  <div className="card__tag-colon">:</div> <div> {bodyLengthObj.width}</div>
+                                </div>
+                              </Tag>
+                            </div>
+                            <div className="card__tag-div">
+                              <Tag className="card__tag" color="cyan">
+                                <div className="card__tag-title">Height</div>
+                                <div className="card__tag-values">
+                                  <div className="card__tag-colon">:</div> <div> {bodyLengthObj.height}</div>
+                                </div>
+                              </Tag>
+                            </div>
+                            <div className="card__tag-div">
+                              <Tag className="card__tag" color="blue">
+                                <div className="card__tag-title">Depth</div>
+                                <div className="card__tag-values">
+                                  <div className="card__tag-colon">:</div> <div> {bodyLengthObj.depth}</div>
+                                </div>
+                              </Tag>
+                            </div>
+                          </div>
+                        </span>
+                      </div>
                     </div>
                     <div className="card__price-div">
                       <div></div>
                       <p className="card-text card__price">
                         RM
-                        <NumberFormat value={price} displayType={'text'} thousandSeparator={true} />
+                        <NumberFormat value={bodyLengthObj.price} displayType={'text'} thousandSeparator={true} />
                       </p>
                     </div>
                   </section>

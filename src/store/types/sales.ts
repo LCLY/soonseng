@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { TReceivedBodyLengthObj, TReceivedLengthObj } from './dashboard';
+import { TReceivedBodyAccessoryObj, TReceivedBodyLengthObj, TReceivedLengthObj } from './dashboard';
 
 // initialState for reducers
 export interface SalesInitialState {
@@ -12,11 +12,21 @@ export interface SalesInitialState {
   // body
   readonly bodyLengthObj: TReceivedBodyLengthObj | null;
   readonly bodyLengthsArray: TReceivedBodyLengthObj[] | null;
+  // accessory
+  readonly bodyAccessoryObj: TReceivedBodyAccessoryObj | null;
+  readonly bodyAccessoriesArray: TReceivedBodyAccessoryObj[] | null;
 }
 
 // to further breakdown the state, use in mapStateToProps
 export interface ISalesMapStateToProps {
   readonly sales: SalesInitialState;
+}
+
+/* ============================================================== */
+// Clear all the sales state
+/* ============================================================== */
+export interface ClearSalesStateAction {
+  type: typeof actionTypes.CLEAR_SALES_STATE;
 }
 
 /* ============================================================== */
@@ -60,10 +70,33 @@ export interface GetSalesBodyLengthsFailedAction {
   errorMessage: string;
 }
 
+/* ------------------ */
+// Get Accessories
+/* ------------------ */
+export interface GetSalesBodyAccessoriesAction {
+  type: typeof actionTypes.GET_SALES_BODYACCESSORIES;
+  body_length_id: number;
+}
+export interface GetSalesBodyAccessoriesStartAction {
+  type: typeof actionTypes.GET_SALES_BODYACCESSORIES_START;
+}
+export interface GetSalesBodyAccessoriesSucceedAction {
+  type: typeof actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+}
+export interface GetSalesBodyAccessoriesFailedAction {
+  type: typeof actionTypes.GET_SALES_BODYACCESSORIES_FAILED;
+  errorMessage: string;
+}
+
 /* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
 export type SalesActionTypes =
+  /* -------------------------- */
+  // Clear sales state
+  /* -------------------------- */
+  | ClearSalesStateAction
   /* ------------------------ */
   // Lengths
   /* ------------------------ */
@@ -77,4 +110,11 @@ export type SalesActionTypes =
   | GetSalesBodyLengthsAction
   | GetSalesBodyLengthsStartAction
   | GetSalesBodyLengthsSucceedAction
-  | GetSalesBodyLengthsFailedAction;
+  | GetSalesBodyLengthsFailedAction
+  /* ------------------------- */
+  // Accessories
+  /* ------------------------- */
+  | GetSalesBodyAccessoriesAction
+  | GetSalesBodyAccessoriesStartAction
+  | GetSalesBodyAccessoriesSucceedAction
+  | GetSalesBodyAccessoriesFailedAction;

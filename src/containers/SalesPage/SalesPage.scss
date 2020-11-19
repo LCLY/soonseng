@@ -1,6 +1,6 @@
 .sales {
   &__outerdiv {
-    padding: 1rem;
+    margin-top: 5rem;
   }
 
   /* =================================== */
@@ -35,6 +35,7 @@
       color: $primary-color-3;
       font-family: $font-ubuntu;
       font-weight: bolder;
+      text-transform: capitalize;
     }
 
     // the body of the sales section
@@ -63,6 +64,10 @@
     // div wrapping cards
     &-div {
       display: flex;
+      overflow: auto;
+      padding-top: 1rem;
+      padding-bottom: 2rem;
+
       & > .active {
         // if the card is in active state
         background-image: linear-gradient(to right bottom, $primary-color-4, $primary-color-4);
@@ -87,6 +92,7 @@
       position: relative;
       transition: all 0.3s ease;
       color: white;
+      white-space: nowrap;
       cursor: pointer;
       border-radius: 5px;
       border: 2px solid $secondary-color-3;
@@ -300,6 +306,61 @@
     &-viewer {
       width: auto !important;
       margin: 3rem 10rem 3rem 10rem;
+    }
+
+    /* ===================== */
+    // dimension tag
+    /* ===================== */
+    &-tag {
+      text-align: center !important;
+      display: flex !important;
+      align-items: top !important;
+      padding-right: 0 !important;
+      margin: 0 !important;
+      /* ----------------------------------------- */
+      /* the tags inside the table accessory column */
+      /* ------------------------------------------ */
+      &--bodyaccessory {
+        width: auto;
+        padding-right: 0.3rem !important;
+        margin-right: 0.4rem !important;
+      }
+      /* ---------------------------- */
+      // the outerdiv wrapping all tags
+      /* ---------------------------- */
+      &-outerdiv {
+        display: flex;
+        flex-wrap: wrap; //let display flex but wrapped to next line
+      }
+
+      /* -------------- */
+      //  div wrapping tag
+      /* -------------- */
+      &-div {
+        display: flex !important;
+        margin-bottom: 0.2rem;
+        margin-right: 0.3rem;
+      }
+
+      /* --------------- */
+      // values of W x H x D
+      /* --------------- */
+      &-values {
+        white-space: normal;
+        display: flex;
+        padding-right: 0.5rem;
+      }
+      /* ------------------- */
+      // the title: Width, Height, Depth
+      /* ------------------- */
+      &-title {
+        width: 3.6rem;
+      }
+
+      &-colon {
+        margin-right: 0.3rem;
+        margin-left: 0.1rem;
+      }
     }
   }
 

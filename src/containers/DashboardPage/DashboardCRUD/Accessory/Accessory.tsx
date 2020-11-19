@@ -409,7 +409,6 @@ const Accessory: React.FC<Props> = ({
     imageTag: string;
   }) => {
     // if not then just get the title and description
-
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
       // if there are files being selected to be uploaded
       // then send the tag and image files to the api call
@@ -418,6 +417,7 @@ const Accessory: React.FC<Props> = ({
       onCreateAccessory(values.accessoryTitle, values.accessoryDescription, null, null);
     }
   };
+
   const onUpdateAccessoryFinish = (values: {
     accessoryId: number;
     accessoryTitle: string;
@@ -456,6 +456,7 @@ const Accessory: React.FC<Props> = ({
       onCreateBodyAccessory(createBodyAccessoryData, null, null);
     }
   };
+
   const onUpdateBodyAccessoryFinish = (values: TUpdateBodyAccessoryForm) => {
     let updateBodyAccessoryData = {
       body_accessory_id: values.bodyAccessoryId,

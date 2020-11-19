@@ -99,13 +99,8 @@
       background-repeat: no-repeat;
       background-size: cover;
     }
-    &-parallax {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      transform: scale(1.2);
-    }
 
+    /* outerdiv wrapping the background image */
     &-outerdiv {
       // width: 100vw;
       height: 100vh;
@@ -153,7 +148,7 @@
         }
       }
       &:focus {
-        background: $primary-color-3 !important;
+        background: rgba($primary-color-3, 0.3) !important;
         border: 1px solid white !important;
       }
 

@@ -12,7 +12,7 @@ import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/
 /*3rd party lib*/
 import {
   Button,
-  Empty,
+  // Empty,
   Carousel,
   Form,
   Card,
@@ -403,10 +403,21 @@ const Body: React.FC<Props> = ({
       dataIndex: 'bodyLengthBodyTitle',
       className: 'body__table-header--title',
       ellipsis: true,
-      width: 'auto',
+      width: '15rem',
       sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
         a.bodyLengthBodyTitle.localeCompare(b.bodyLengthBodyTitle),
       ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthBodyTitle', 'Body'),
+    },
+    {
+      key: 'bodyLengthLengthTitle',
+      title: 'Length',
+      dataIndex: 'bodyLengthLengthTitle',
+      className: 'body__table-header--title',
+      ellipsis: true,
+      width: '15rem',
+      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
+        a.bodyLengthLengthTitle.localeCompare(b.bodyLengthLengthTitle),
+      ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthLengthTitle', 'Body'),
     },
     {
       key: 'bodyLengthDimension',
@@ -512,7 +523,7 @@ const Body: React.FC<Props> = ({
    * @return {*} feet + ' or feet + ' + inch ''
    */
   const formatFeetInch = (feet: string, inch: string) => {
-    if (inch === undefined) {
+    if (inch === undefined || inch === '') {
       return feet + " ' ";
     }
     return feet + " ' " + inch + " '' ";
@@ -1532,115 +1543,119 @@ const Body: React.FC<Props> = ({
   const renderBodyAccessoryCardsComponent = (record: TBodyLengthTableState) => {
     return (
       <>
-        <div>
-          Attachable accessories for&nbsp;
-          <span style={{ textTransform: 'capitalize' }}>{record.bodyLengthBodyTitle}</span>:&nbsp;
-          <span className="body__expand-available">{record.bodyLengthBodyAccessoryArrayLength} available</span>
-        </div>
-        <hr />
+        {record.bodyLengthBodyAccessoryArrayLength > 0 && (
+          //  only show this when length of body accesosry array is greater than 0
+          <>
+            <div>
+              Attachable accessories for&nbsp;
+              <span style={{ textTransform: 'capitalize' }}>{record.bodyLengthBodyTitle}</span>:&nbsp;
+              <span className="body__expand-available">{record.bodyLengthBodyAccessoryArrayLength} available</span>
+            </div>
+            <hr />
+          </>
+        )}
         <div className="body__expand-outerdiv">
           {record.bodyLengthBodyAccessory && (
             <>
               {/* if no accessory then show empty */}
-              {record.bodyLengthBodyAccessoryArrayLength === 0 ? (
-                <div className="body__expand-empty">
-                  <Empty />
-                </div>
-              ) : (
-                record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
-                  if (bodyAccessory.available) {
-                    return (
-                      <Card
-                        className="body__expand-card"
-                        title={
-                          <div className="body__expand-card-title-div">
-                            <span className="body__expand-card-title">{bodyAccessory.accessory.title}</span>
-                            <Tag color="geekblue" style={{ marginRight: 0 }}>
-                              RM{bodyAccessory.price}
-                            </Tag>
-                          </div>
-                        }
-                        key={index}
-                        size="small"
-                        style={{ width: 'auto' }}
-                        headStyle={{ background: '#FFF2E8' }}
-                      >
-                        {bodyAccessory.images ? (
-                          <>
-                            <Carousel autoplay>
-                              {/* render all images if array more than 0 else render 'image not available' image */}
-                              {bodyAccessory.images.length > 0 ? (
-                                bodyAccessory.images.map((image) => {
-                                  return (
-                                    <LazyLoad
-                                      placeholder={
-                                        <img className="body__expand-card-img" alt="loading" src={img_loading_link} />
-                                      }
-                                    >
-                                      <img
-                                        className="body__expand-card-img"
-                                        key={image.id}
-                                        alt={image.filename}
-                                        src={image.url}
-                                      />
-                                    </LazyLoad>
-                                  );
-                                })
-                              ) : (
-                                <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
-                              )}
-                            </Carousel>
-                          </>
-                        ) : (
-                          <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
-                        )}
-                        <div className="body__expand-card-body">
-                          <div className="body__expand-card-description">
-                            <div className="body__expand-card-description-left">
-                              <span className="body__expand-card-category">Description</span>:&nbsp;
+              {record.bodyLengthBodyAccessoryArrayLength === 0
+                ? // <div className="body__expand-empty">
+                  //   <Empty />
+                  // </div>
+                  null
+                : record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
+                    if (bodyAccessory.available) {
+                      return (
+                        <Card
+                          className="body__expand-card"
+                          title={
+                            <div className="body__expand-card-title-div">
+                              <span className="body__expand-card-title">{bodyAccessory.accessory.title}</span>
+                              <Tag color="geekblue" style={{ marginRight: 0 }}>
+                                RM{bodyAccessory.price}
+                              </Tag>
                             </div>
-                            {bodyAccessory.description ? (
-                              <div className="body__expand-card-description-right">{bodyAccessory.description}</div>
-                            ) : (
-                              <div className="body__expand-card-description-right">-</div>
-                            )}
-                          </div>
-                          <section className="body__expand-card-btn-section">
-                            <hr style={{ margin: 0 }} />
-                            <div className="body__expand-card-btn-div">
-                              <div>
-                                <Button
-                                  className="body__expand-card-btn-edit"
-                                  style={{ padding: 0 }}
-                                  type="link"
-                                  onClick={() => {
-                                    // show the update modal
-                                    setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
-                                    // fill in the updateBodyAccessoryform
-                                    updateBodyAccessoryForm.setFieldsValue({
-                                      bodyAccessoryId: bodyAccessory.id, //the id for update
-                                      accessoryId: bodyAccessory.accessory.id,
-                                      bodyAccessoryPrice: bodyAccessory.price,
-                                      bodyAccessoryDescription: bodyAccessory.description,
-                                      bodyLengthId: bodyAccessory.body_length.id,
-                                    });
-                                  }}
-                                >
-                                  Edit
-                                </Button>
-                                <Button disabled type="link" danger style={{ padding: 0 }}>
-                                  Delete
-                                </Button>
+                          }
+                          key={index}
+                          size="small"
+                          style={{ width: 'auto' }}
+                          headStyle={{ background: '#FFF2E8' }}
+                        >
+                          {bodyAccessory.images ? (
+                            <>
+                              <Carousel autoplay>
+                                {/* render all images if array more than 0 else render 'image not available' image */}
+                                {bodyAccessory.images.length > 0 ? (
+                                  bodyAccessory.images.map((image) => {
+                                    return (
+                                      <LazyLoad
+                                        placeholder={
+                                          <img className="body__expand-card-img" alt="loading" src={img_loading_link} />
+                                        }
+                                      >
+                                        <img
+                                          className="body__expand-card-img"
+                                          key={image.id}
+                                          alt={image.filename}
+                                          src={image.url}
+                                        />
+                                      </LazyLoad>
+                                    );
+                                  })
+                                ) : (
+                                  <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
+                                )}
+                              </Carousel>
+                            </>
+                          ) : (
+                            <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
+                          )}
+                          <div className="body__expand-card-body">
+                            <div className="body__expand-card-description">
+                              <div className="body__expand-card-description-left">
+                                <span className="body__expand-card-category">Description</span>:&nbsp;
                               </div>
+                              {bodyAccessory.description ? (
+                                <div className="body__expand-card-description-right">{bodyAccessory.description}</div>
+                              ) : (
+                                <div className="body__expand-card-description-right">-</div>
+                              )}
                             </div>
-                          </section>
-                        </div>
-                      </Card>
-                    );
-                  }
-                  return <></>;
-                })
-              )}
+                            <section className="body__expand-card-btn-section">
+                              <hr style={{ margin: 0 }} />
+                              <div className="body__expand-card-btn-div">
+                                <div>
+                                  <Button
+                                    className="body__expand-card-btn-edit"
+                                    style={{ padding: 0 }}
+                                    type="link"
+                                    onClick={() => {
+                                      // show the update modal
+                                      setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
+                                      // fill in the updateBodyAccessoryform
+                                      updateBodyAccessoryForm.setFieldsValue({
+                                        bodyAccessoryId: bodyAccessory.id, //the id for update
+                                        accessoryId: bodyAccessory.accessory.id,
+                                        bodyAccessoryPrice: bodyAccessory.price,
+                                        bodyAccessoryDescription: bodyAccessory.description,
+                                        bodyLengthId: bodyAccessory.body_length.id,
+                                      });
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button disabled type="link" danger style={{ padding: 0 }}>
+                                    Delete
+                                  </Button>
+                                </div>
+                              </div>
+                            </section>
+                          </div>
+                        </Card>
+                      );
+                    }
+                    return <></>;
+                  })}
             </>
           )}
         </div>
@@ -1718,13 +1733,20 @@ const Body: React.FC<Props> = ({
     /** A function that stores desired keys and values into a tempArray */
     const storeValue = (length: TReceivedLengthObj, index: number) => {
       let descriptionIsNullOrEmpty = length.description === null || length.description === '';
-      // only render when available value is true
+      let formattedLength = '';
+      if (!length.title.includes("'")) {
+        formattedLength = length.title + " ' ";
+      } else {
+        formattedLength = length.title;
+      }
+
       if (length.available) {
+        // only render when available value is true
         tempArray.push({
           key: uuidv4(),
           index: index + 1,
           lengthId: length.id,
-          lengthTitle: length.title,
+          lengthTitle: formattedLength,
           lengthDescription: descriptionIsNullOrEmpty ? '-' : length.description,
           available: length.available,
         });
@@ -1749,6 +1771,13 @@ const Body: React.FC<Props> = ({
     const storeValue = (bodyLength: TReceivedBodyLengthObj, index: number) => {
       // only render when available value is true
       let concatPrice = `RM${bodyLength.price}`;
+      let formattedLength = '';
+      if (!bodyLength.length.title.includes("'")) {
+        formattedLength = bodyLength.length.title + " ' ";
+      } else {
+        formattedLength = bodyLength.length.title;
+      }
+
       if (bodyLength.available && bodyLengthsArray) {
         tempArray.push({
           key: uuidv4(),
@@ -1756,7 +1785,7 @@ const Body: React.FC<Props> = ({
           bodyLengthId: bodyLength.id,
           bodyLengthLengthId: bodyLength.length.id,
           bodyLengthBodyId: bodyLength.body.id,
-          bodyLengthLengthTitle: bodyLength.length.title,
+          bodyLengthLengthTitle: formattedLength,
           bodyLengthBodyTitle: bodyLength.body.title,
           bodyLengthWidth: bodyLength.width,
           bodyLengthHeight: bodyLength.height,

@@ -4,6 +4,9 @@
 /* ================================================================================== */
 /*                                       Sales                                        */
 /* ================================================================================== */
+// Clear Sales State
+export const CLEAR_SALES_STATE = 'CLEAR_SALES_STATE';
+
 // Get Lengths in sales page
 export const GET_SALES_LENGTHS = 'GET_SALES_LENGTHS';
 export const GET_SALES_LENGTHS_START = 'GET_SALES_LENGTHS_START';
@@ -15,6 +18,12 @@ export const GET_SALES_BODYLENGTHS = 'GET_SALES_BODYLENGTHS';
 export const GET_SALES_BODYLENGTHS_START = 'GET_SALES_BODYLENGTHS_START';
 export const GET_SALES_BODYLENGTHS_SUCCEED = 'GET_SALES_BODYLENGTHS_SUCCEED';
 export const GET_SALES_BODYLENGTHS_FAILED = 'GET_SALES_BODYLENGTHS_FAILED';
+
+// Get Body accessories through body length in sales page
+export const GET_SALES_BODYACCESSORIES = 'GET_SALES_BODYACCESSORIES';
+export const GET_SALES_BODYACCESSORIES_START = 'GET_SALES_BODYACCESSORIES_START';
+export const GET_SALES_BODYACCESSORIES_SUCCEED = 'GET_SALES_BODYACCESSORIES_SUCCEED';
+export const GET_SALES_BODYACCESSORIES_FAILED = 'GET_SALES_BODYACCESSORIES_FAILED';
 
 /* ================================================================================== */
 /*                                      Dashboard                                     */

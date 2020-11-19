@@ -57,7 +57,7 @@ export function* getSalesBodyLengthsSaga(action: AppActions) {
   }
 
   try {
-    let response = yield axios.get(url, { params: choice });
+    let response = yield axios.post(url, { choice });
     yield put(actions.getSalesBodyLengthsSucceed(response.data.body_lengths));
   } catch (error) {
     if (error.response) {
@@ -69,6 +69,47 @@ export function* getSalesBodyLengthsSaga(action: AppActions) {
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
       yield put(actions.getSalesBodyLengthsFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+/* ------------------------------- */
+//    Get All Accessories
+/* ------------------------------- */
+export function* getSalesBodyAccessoriesSaga(action: AppActions) {
+  // get accessories through body length
+  yield put(actions.getSalesBodyAccessoriesStart());
+  let url = process.env.REACT_APP_API + `/pages/accessories_for_body`;
+
+  let choice = {};
+  if ('body_length_id' in action) {
+    choice = {
+      body_length_id: action.body_length_id,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { choice });
+    yield put(actions.getSalesBodyAccessoriesSucceed(response.data.body_accessories));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.getSalesBodyAccessoriesFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
