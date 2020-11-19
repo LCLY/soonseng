@@ -171,8 +171,8 @@ export {
   getSalesLengthsSucceed,
   getSalesLengthsFailed,
   // get sales bodies
-  getSalesBodies,
-  getSalesBodiesFailed,
-  getSalesBodiesStart,
-  getSalesBodiesSucceed,
+  getSalesBodyLengths,
+  getSalesBodyLengthsFailed,
+  getSalesBodyLengthsStart,
+  getSalesBodyLengthsSucceed,
 } from './sales';

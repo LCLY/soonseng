@@ -10,11 +10,11 @@ export const GET_SALES_LENGTHS_START = 'GET_SALES_LENGTHS_START';
 export const GET_SALES_LENGTHS_SUCCEED = 'GET_SALES_LENGTHS_SUCCEED';
 export const GET_SALES_LENGTHS_FAILED = 'GET_SALES_LENGTHS_FAILED';
 
-// Get Bodies in sales page
-export const GET_SALES_BODIES = 'GET_SALES_BODIES';
-export const GET_SALES_BODIES_START = 'GET_SALES_BODIES_START';
-export const GET_SALES_BODIES_SUCCEED = 'GET_SALES_BODIES_SUCCEED';
-export const GET_SALES_BODIES_FAILED = 'GET_SALES_BODIES_FAILED';
+// Get Body lengths in sales page
+export const GET_SALES_BODYLENGTHS = 'GET_SALES_BODYLENGTHS';
+export const GET_SALES_BODYLENGTHS_START = 'GET_SALES_BODYLENGTHS_START';
+export const GET_SALES_BODYLENGTHS_SUCCEED = 'GET_SALES_BODYLENGTHS_SUCCEED';
+export const GET_SALES_BODYLENGTHS_FAILED = 'GET_SALES_BODYLENGTHS_FAILED';
 
 /* ================================================================================== */
 /*                                      Dashboard                                     */

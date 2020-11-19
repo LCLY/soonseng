@@ -45,16 +45,20 @@ export function* getSalesLengthsSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Get All Bodies
 /* ------------------------------- */
-export function* getSalesBodiesSaga(action: AppActions) {
-  yield put(actions.getSalesBodiesStart());
-  let url = '';
+export function* getSalesBodyLengthsSaga(action: AppActions) {
+  yield put(actions.getSalesBodyLengthsStart());
+  let url = process.env.REACT_APP_API + `/pages/bodylength_through_length`;
+
+  let choice = {};
   if ('length_id' in action) {
-    url = process.env.REACT_APP_API + `/pages/lengths/${action.length_id}/body`;
+    choice = {
+      length_id: action.length_id,
+    };
   }
 
   try {
-    let response = yield axios.get(url);
-    yield put(actions.getSalesBodiesSucceed(response.data.body_lengths));
+    let response = yield axios.get(url, { params: choice });
+    yield put(actions.getSalesBodyLengthsSucceed(response.data.body_lengths));
   } catch (error) {
     if (error.response) {
       /*
@@ -64,7 +68,7 @@ export function* getSalesBodiesSaga(action: AppActions) {
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
-      yield put(actions.getSalesBodiesFailed(error.response.data.error));
+      yield put(actions.getSalesBodyLengthsFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

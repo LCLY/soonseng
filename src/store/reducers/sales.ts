@@ -34,17 +34,17 @@ const getSalesLengthsFailed = (state: SalesInitialState, action: AppActions) => 
 };
 
 /* -------------------------- */
-/* Get all sales Lengths  */
+/* Get all sales body Lengths  */
 /* -------------------------- */
-const getSalesBodiesStart = (state: SalesInitialState, _action: AppActions) => {
+const getSalesBodyLengthsStart = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getSalesBodiesSucceed = (state: SalesInitialState, action: AppActions) => {
+const getSalesBodyLengthsSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('bodyLengthsArray' in action) {
     return updateObject(state, { errorMessage: null, loading: false, bodyLengthsArray: action.bodyLengthsArray });
   }
 };
-const getSalesBodiesFailed = (state: SalesInitialState, action: AppActions) => {
+const getSalesBodyLengthsFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -66,12 +66,12 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
     //  Bodies
     /* =================================== */
     // Get all bodies
-    case actionTypes.GET_SALES_BODIES_START:
-      return getSalesBodiesStart(state, action);
-    case actionTypes.GET_SALES_BODIES_SUCCEED:
-      return getSalesBodiesSucceed(state, action);
-    case actionTypes.GET_SALES_BODIES_FAILED:
-      return getSalesBodiesFailed(state, action);
+    case actionTypes.GET_SALES_BODYLENGTHS_START:
+      return getSalesBodyLengthsStart(state, action);
+    case actionTypes.GET_SALES_BODYLENGTHS_SUCCEED:
+      return getSalesBodyLengthsSucceed(state, action);
+    case actionTypes.GET_SALES_BODYLENGTHS_FAILED:
+      return getSalesBodyLengthsFailed(state, action);
 
     default:
       return state;

@@ -44,19 +44,19 @@ export interface GetSalesLengthsFailedAction {
 /* ------------------ */
 // Get Bodies
 /* ------------------ */
-export interface GetSalesBodiesAction {
-  type: typeof actionTypes.GET_SALES_BODIES;
+export interface GetSalesBodyLengthsAction {
+  type: typeof actionTypes.GET_SALES_BODYLENGTHS;
   length_id: number;
 }
-export interface GetSalesBodiesStartAction {
-  type: typeof actionTypes.GET_SALES_BODIES_START;
+export interface GetSalesBodyLengthsStartAction {
+  type: typeof actionTypes.GET_SALES_BODYLENGTHS_START;
 }
-export interface GetSalesBodiesSucceedAction {
-  type: typeof actionTypes.GET_SALES_BODIES_SUCCEED;
+export interface GetSalesBodyLengthsSucceedAction {
+  type: typeof actionTypes.GET_SALES_BODYLENGTHS_SUCCEED;
   bodyLengthsArray: TReceivedBodyLengthObj[];
 }
-export interface GetSalesBodiesFailedAction {
-  type: typeof actionTypes.GET_SALES_BODIES_FAILED;
+export interface GetSalesBodyLengthsFailedAction {
+  type: typeof actionTypes.GET_SALES_BODYLENGTHS_FAILED;
   errorMessage: string;
 }
 
@@ -74,7 +74,7 @@ export type SalesActionTypes =
   /* ------------------------- */
   // Bodies
   /* ------------------------- */
-  | GetSalesBodiesAction
-  | GetSalesBodiesStartAction
-  | GetSalesBodiesSucceedAction
-  | GetSalesBodiesFailedAction;
+  | GetSalesBodyLengthsAction
+  | GetSalesBodyLengthsStartAction
+  | GetSalesBodyLengthsSucceedAction
+  | GetSalesBodyLengthsFailedAction;

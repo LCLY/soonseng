@@ -217,7 +217,9 @@
         flex-direction: column;
       }
     }
-
+    /* ------------------------------------------- */
+    // The bottom part of features
+    /* ------------------------------------------- */
     &-bottom {
       display: flex;
       justify-content: center;
@@ -231,28 +233,54 @@
         padding: 0;
       }
       @include respond-to(medium) {
-        padding: 0 5rem;
+        padding: 0;
       }
     }
 
+    /* ------------------------------------------------------------------------------------- */
+    // outerdiv wrapping each of the feature div together with the scrollanimation component
+    /* ------------------------------------------------------------------------------------- */
     &-outerdiv {
       padding: 2rem 0;
+      width: 33.33%;
       &:not(:last-child) {
         @include respond-to(mobile) {
           border-bottom: 1px solid $translucent-grey;
+          width: 100%;
         }
         @include respond-to(tablet) {
           border-bottom: 1px solid $translucent-grey;
+          width: 100%;
         }
       }
-
-      // wont work on efficiency row using lastchild
+      // border bottom wont work on efficiency row using lastchild
       &--efficiency {
         @include respond-to(mobile) {
           border-bottom: 1px solid $translucent-grey;
+          width: 100%;
         }
         @include respond-to(tablet) {
           border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+      }
+
+      // only change the width of the bottom feature outerdivs
+      &--bottom {
+        width: 45%;
+        @include respond-to(mobile) {
+          width: 100%;
+        }
+        @include respond-to(tablet) {
+          width: 100%;
+        }
+        &:not(:last-child) {
+          @include respond-to(mobile) {
+            border-bottom: 1px solid $translucent-grey;
+          }
+          @include respond-to(tablet) {
+            border-bottom: 1px solid $translucent-grey;
+          }
         }
       }
     }

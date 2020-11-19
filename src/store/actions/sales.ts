@@ -35,30 +35,30 @@ export const getSalesLengthsFailed = (errorMessage: string): AppActions => {
 };
 
 /* ----------------------------- */
-// Get Bodies
+// Get Body Lengths
 /* ---------------------------- */
-export const getSalesBodies = (length_id: number): AppActions => {
+export const getSalesBodyLengths = (length_id: number): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODIES,
+    type: actionTypes.GET_SALES_BODYLENGTHS,
     length_id: length_id,
   };
 };
 
-export const getSalesBodiesStart = (): AppActions => {
+export const getSalesBodyLengthsStart = (): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODIES_START,
+    type: actionTypes.GET_SALES_BODYLENGTHS_START,
   };
 };
 
-export const getSalesBodiesSucceed = (bodyLengthsArray: TReceivedBodyLengthObj[]): AppActions => {
+export const getSalesBodyLengthsSucceed = (bodyLengthsArray: TReceivedBodyLengthObj[]): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODIES_SUCCEED,
+    type: actionTypes.GET_SALES_BODYLENGTHS_SUCCEED,
     bodyLengthsArray: bodyLengthsArray,
   };
 };
-export const getSalesBodiesFailed = (errorMessage: string): AppActions => {
+export const getSalesBodyLengthsFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODIES_FAILED,
+    type: actionTypes.GET_SALES_BODYLENGTHS_FAILED,
     errorMessage: errorMessage,
   };
 };

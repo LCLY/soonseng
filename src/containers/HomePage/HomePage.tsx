@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './HomePage.scss';
 // component
 import Container from 'src/components/CustomContainer/CustomContainer';
@@ -8,7 +8,6 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import transparent_green_hino from 'src/img/greenhino.png';
 // 3rd party lib
 import gsap from 'gsap';
-// import { TweenMax, Linear } from 'gsap';
 import { Parallax } from 'react-scroll-parallax';
 import ScrollAnimation from 'react-animate-on-scroll';
 import { Button } from 'antd';
@@ -19,29 +18,13 @@ import { Button } from 'antd';
  * @category Pages
  */
 function HomePage() {
-  // let imageElement = useRef(null);
-
-  // useEffect(() => {
-  //   TweenMax.from(imageElement, 8, {
-  //     repeat: -1,
-  //     yoyo: true,
-  //     transform: 'translateX(-3rem) translateY(-2.5rem)',
-  //     ease: Linear.easeInOut,
-  //   });
-  //   TweenMax.to(imageElement, 8, {
-  //     repeat: -1,
-  //     yoyo: true,
-  //     transform: 'translateX(-6rem) translateY(-1rem)',
-  //     ease: Linear.easeInOut,
-  //   });
-  // }, []);
+  const [animationIsMoving, setAnimationIsMoving] = useState(false);
 
   useEffect(() => {
     gsap.to('.homepage__first-button', {
       x: '0',
       opacity: 1,
-      duration: 0.5,
-      stagger: { each: 0.04, ease: 'none' },
+      stagger: { amount: 0.25, ease: 'none' },
     });
   }, []);
 
@@ -53,12 +36,26 @@ function HomePage() {
     });
   }, []);
 
-  // const scaleup = () => {
-  //   TweenMax.to(imageElement, 1, { scale: 1.03 });
-  // };
-  // const scaledown = () => {
-  //   TweenMax.to(imageElement, 1, { scale: 1 });
-  // };
+  const vroom = () => {
+    // set bool to true when animation is going on
+    setAnimationIsMoving(true);
+    gsap.to('#truckicon', {
+      x: '1000px',
+      duration: 2,
+      onComplete: resetvroom,
+    });
+  };
+  const resetvroom = () => {
+    gsap.set('#truckicon', {
+      x: '-500px',
+    });
+    // once reset is done, user can hover to animate again
+    gsap.to('#truckicon', {
+      x: '0',
+      duration: 1.5,
+      onComplete: () => setAnimationIsMoving(false),
+    });
+  };
 
   return (
     <div>
@@ -161,11 +158,18 @@ function HomePage() {
           </div>
 
           <div className="homepage__feature-bottom">
-            <div className="homepage__feature-outerdiv">
+            <div className="homepage__feature-outerdiv homepage__feature-outerdiv--bottom">
               <ScrollAnimation animateOnce={true} delay={0.2} animateIn="animate__fadeInBottomLeft">
                 <div className="homepage__feature-div">
-                  <div className="homepage__feature-icon-div">
-                    <i className="homepage__feature-icon fas fa-truck-moving"></i>
+                  <div
+                    className="homepage__feature-icon-div"
+                    onMouseEnter={() => {
+                      if (!animationIsMoving) {
+                        vroom();
+                      }
+                    }}
+                  >
+                    <i style={{ zIndex: 10 }} id="truckicon" className="homepage__feature-icon fas fa-truck-moving"></i>
                   </div>
                   <div className="homepage__feature-text">
                     <div className="homepage__feature-title">Comfort</div>
@@ -176,7 +180,7 @@ function HomePage() {
                 </div>
               </ScrollAnimation>
             </div>
-            <div className="homepage__feature-outerdiv">
+            <div className="homepage__feature-outerdiv homepage__feature-outerdiv--bottom">
               <ScrollAnimation animateOnce={true} delay={0.4} animateIn="animate__fadeInBottomRight">
                 <div className="homepage__feature-div">
                   <div className="homepage__feature-icon-div">

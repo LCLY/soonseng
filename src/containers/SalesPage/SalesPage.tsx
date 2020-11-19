@@ -63,7 +63,7 @@ const SalesPage: React.FC<Props> = ({
   history,
   lengthsArray,
   bodyLengthsArray,
-  onGetSalesBodies,
+  onGetSalesBodyLengths,
   onGetSalesLengths,
 }) => {
   /* ================================================ */
@@ -107,10 +107,10 @@ const SalesPage: React.FC<Props> = ({
     if (lengthIndex !== null) {
       if (lengthsArray) {
         console.log(lengthsArray[lengthIndex].id);
-        onGetSalesBodies(lengthsArray[lengthIndex].id);
+        onGetSalesBodyLengths(lengthsArray[lengthIndex].id);
       }
     }
-  }, [onGetSalesBodies, lengthsArray, lengthIndex]);
+  }, [onGetSalesBodyLengths, lengthsArray, lengthIndex]);
 
   /* ====================================================== */
   /* ====================================================== */
@@ -391,13 +391,13 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
 
 interface DispatchProps {
   onGetSalesLengths: typeof actions.getSalesLengths;
-  onGetSalesBodies: typeof actions.getSalesBodies;
+  onGetSalesBodyLengths: typeof actions.getSalesBodyLengths;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onGetSalesLengths: () => dispatch(actions.getSalesLengths()),
-    onGetSalesBodies: (length_id) => dispatch(actions.getSalesBodies(length_id)),
+    onGetSalesBodyLengths: (length_id) => dispatch(actions.getSalesBodyLengths(length_id)),
   };
 };
 
