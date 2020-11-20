@@ -25,6 +25,12 @@ export const GET_SALES_BODYACCESSORIES_START = 'GET_SALES_BODYACCESSORIES_START'
 export const GET_SALES_BODYACCESSORIES_SUCCEED = 'GET_SALES_BODYACCESSORIES_SUCCEED';
 export const GET_SALES_BODYACCESSORIES_FAILED = 'GET_SALES_BODYACCESSORIES_FAILED';
 
+// Get Makes through length and tyre count
+export const GET_SALES_MAKES = 'GET_SALES_MAKES';
+export const GET_SALES_MAKES_START = 'GET_SALES_MAKES_START';
+export const GET_SALES_MAKES_SUCCEED = 'GET_SALES_MAKES_SUCCEED';
+export const GET_SALES_MAKES_FAILED = 'GET_SALES_MAKES_FAILED';
+
 /* ================================================================================== */
 /*                                      Dashboard                                     */
 /* ================================================================================== */

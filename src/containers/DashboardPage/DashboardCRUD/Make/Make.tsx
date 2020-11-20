@@ -65,7 +65,7 @@ type TMakeTableState = {
   year: string;
   makeTitle: string;
   price: string;
-  length: string;
+  makeLength: string;
   available: boolean;
   engine_cap: string;
   horsepower: string;
@@ -225,7 +225,7 @@ const Make: React.FC<Props> = ({
               type="link"
               className="make__brand-btn--edit"
               onClick={() => {
-                onPopulateupdateBrandModal(record);
+                onPopulateUpdateBrandModal(record);
 
                 // show modal
                 setShowUpdateModal({ ...showUpdateModal, brand: true });
@@ -478,14 +478,24 @@ const Make: React.FC<Props> = ({
     let extractedPrice = '';
     let extractedGvw = '';
 
-    // needa check if inch is undefined, only have feet in the string
-    let onlyInchUndefined = record.length.split(" '")[0] !== undefined && record.length.split(" '")[1] === undefined;
+    // console.log(record.makeLength);
+    // only goes in when the string has a ' character in it
+    if (parseInt(record.makeLength) > 0) {
+      // needa check if inch is undefined, only have feet in the string
+      // let onlyInchUndefined =
+      //   record.makeLength.split(" '")[0] !== undefined && record.makeLength.split(" '")[1] === undefined;
 
-    if (onlyInchUndefined) {
-      extractedFeet = record.length.split(" '")[0]; //get the first index
+      // if (onlyInchUndefined) {
+      //   extractedFeet = record.makeLength.split(" '")[0]; //get the first index
+      // } else {
+      //   extractedFeet = record.makeLength.split(" '")[0]; //get the first index
+      //   extractedInch = record.makeLength.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
+      // }
+      extractedFeet = record.makeLength.toString(); //get the first index
+      extractedInch = '';
     } else {
-      extractedFeet = record.length.split(" '")[0]; //get the first index
-      extractedInch = record.length.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
+      extractedFeet = ''; //get the first index
+      extractedInch = '';
     }
 
     // replace units with empty strings
@@ -514,7 +524,7 @@ const Make: React.FC<Props> = ({
    * and then reformat the important information and pass into the current modal / form
    * @param {TBrandTableState} record
    */
-  const onPopulateupdateBrandModal = (record: TBrandTableState) => {
+  const onPopulateUpdateBrandModal = (record: TBrandTableState) => {
     // update the form value using the 'name' attribute as target/key
     // if brandDescription is '-' then change to empty string, else the real string
     // remember to set this form on the Form component
@@ -769,7 +779,7 @@ const Make: React.FC<Props> = ({
             if ('makeImages' in record && 'makeId' in record) {
               onPopulateEditMakeModal(record);
             } else if ('brandImages' in record && 'brandId' in record) {
-              onPopulateupdateBrandModal(record);
+              onPopulateUpdateBrandModal(record);
             }
           }}
         />
@@ -1330,13 +1340,16 @@ const Make: React.FC<Props> = ({
         make.year;
 
       // check if undefined
-      let makeGVW = make.gvw === undefined || make.gvw === null ? '' : make.gvw + 'kg';
-      let makeYear = make.year === undefined || make.year === null ? '' : make.year;
-      let makePrice = make.price === undefined || make.price === null ? '' : 'RM' + make.price;
+      let makeGVW = make.gvw === undefined || make.gvw === null || make.gvw === '' ? '' : make.gvw + 'kg';
+      let makeYear = make.year === undefined || make.year === null ? moment().year().toString() : make.year;
+      let makePrice = make.price === undefined || make.price === null || make.price === 0 ? '' : 'RM' + make.price;
       let makeTitle = make.title === undefined || make.title === null ? '' : make.title;
       let makeLength = make.length === undefined || make.length === null ? '' : make.length;
       let makeEngineCap = make.engine_cap === undefined || make.engine_cap === null ? '' : make.engine_cap;
-      let makeHorsepower = make.horsepower === undefined || make.horsepower === null ? '' : make.horsepower + 'hp';
+      let makeHorsepower =
+        make.horsepower === undefined || make.horsepower === null || make.horsepower === ''
+          ? ''
+          : make.horsepower + 'hp';
       let makeTransmission = make.transmission === undefined || make.transmission === null ? '' : make.transmission;
       let makeBrandTitle = make.brand.title === undefined || make.brand.title === null ? '' : make.brand.title;
       let makeWheelbaseTitle =
@@ -1351,7 +1364,7 @@ const Make: React.FC<Props> = ({
           year: makeYear,
           makeId: make.id,
           price: makePrice,
-          length: makeLength,
+          makeLength: makeLength.toString(),
           makeTitle: makeTitle,
           available: make.available,
           engine_cap: makeEngineCap,

@@ -173,99 +173,6 @@
     }
   }
 
-  /* =========================== */
-  // brand section
-  &__brand {
-    /* ------------------------ */
-    &-toggle {
-      // the accordion from bootstrap
-      background: $primary-color-3 !important;
-      color: white;
-      cursor: pointer;
-      font-size: 2rem;
-      padding: 1rem 2rem !important;
-      display: flex;
-      align-items: center;
-      width: 100%;
-      justify-content: space-between;
-      &:hover {
-        transition: all 0.5 ease;
-        background: $primary-color-4 !important;
-      }
-    }
-    /* ------------------------ */
-    // logo inside the clickable accordions
-    &-logo {
-      margin-left: 5rem;
-      background: white;
-      padding: 0.5rem;
-    }
-    /* ------------------------- */
-    // further into the catalog of vehicles provided by different brands
-    &-makes {
-      // the div
-      &-div {
-        border: 1px solid $translucent-grey;
-        height: 50rem;
-        display: flex;
-      }
-
-      /* -------------- */
-      // the picker for user to choose which vehicle to preview on the left
-      &-picker {
-        width: 40rem;
-        height: 100%;
-        border-right: 1px solid $translucent-grey;
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-color: $secondary-color-3 $translucent-grey;
-        scrollbar-width: thin;
-        &::-webkit-scrollbar {
-          width: 8px;
-        }
-        &::-webkit-scrollbar-thumb {
-          border-radius: 6px;
-          background: $secondary-color-3;
-        }
-        &::-webkit-scrollbar-thumb:hover {
-          background: $secondary-color-2;
-        }
-
-        /* targeting the active class */
-        & > .active {
-          transition: all 0.5s ease;
-          background: $primary-color-1 !important;
-
-          &:hover {
-            box-shadow: none;
-            background: $primary-color-1 !important;
-          }
-        }
-      }
-      /* -------------- */
-      // the viewer for user to choose which vehicle to view on the right
-      &-viewer {
-        height: 100%;
-        width: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-color: $primary-color-4 $translucent-grey;
-        scrollbar-width: thin;
-        // change the look of the scrollbar
-        &::-webkit-scrollbar {
-          width: 8px;
-        }
-        &::-webkit-scrollbar-thumb {
-          border-radius: 6px;
-          background: $primary-color-4;
-        }
-        &::-webkit-scrollbar-thumb:hover {
-          background: $primary-color-2;
-        }
-      }
-    }
-  }
-
   /* ======================================= */
   // general card
   &__card {
@@ -397,5 +304,112 @@
     display: flex;
     justify-content: flex-start;
     margin-top: 3rem;
+  }
+
+  // The collapsible panels
+  &__panel {
+    & .ant-collapse-header {
+      color: white !important;
+      background: $primary-color-3 !important;
+    }
+
+    // the divider for the series title
+    &-divider {
+      padding: 0 1rem;
+
+      &-title {
+        color: rgba($secondary-color-3, 0.6);
+        font-weight: bolder;
+      }
+    }
+
+    /* ------------------------ */
+    &-toggle {
+      // the accordion from bootstrap
+      background: $primary-color-3 !important;
+      color: white;
+      cursor: pointer;
+      font-size: 2rem;
+      padding: 1rem 2rem !important;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+      &:hover {
+        transition: all 0.5 ease;
+        background: $primary-color-4 !important;
+      }
+    }
+    /* ------------------------ */
+    // logo inside the clickable accordions
+    &-logo {
+      margin-left: 5rem;
+      background: white;
+      padding: 0.5rem;
+    }
+    /* ------------------------- */
+    // further into the catalog of vehicles provided by different brands
+    &-makes {
+      // the div
+      &-div {
+        border: 1px solid $translucent-grey;
+        height: 50rem;
+        display: flex;
+      }
+
+      /* -------------- */
+      // the picker for user to choose which vehicle to preview on the left
+      &-picker {
+        width: 40rem;
+        height: 100%;
+        border-right: 1px solid $translucent-grey;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-color: $secondary-color-3 $translucent-grey;
+        scrollbar-width: thin;
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+        &::-webkit-scrollbar-thumb {
+          border-radius: 6px;
+          background: $secondary-color-3;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+          background: $secondary-color-2;
+        }
+
+        /* targeting the active class */
+        & > .active {
+          transition: all 0.5s ease;
+          background: $primary-color-1 !important;
+
+          &:hover {
+            box-shadow: none;
+            background: $primary-color-1 !important;
+          }
+        }
+      }
+      /* -------------- */
+      // the viewer for user to choose which vehicle to view on the right
+      &-viewer {
+        height: 100%;
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-color: $primary-color-4 $translucent-grey;
+        scrollbar-width: thin;
+        // change the look of the scrollbar
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+        &::-webkit-scrollbar-thumb {
+          border-radius: 6px;
+          background: $primary-color-4;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+          background: $primary-color-2;
+        }
+      }
+    }
   }
 }

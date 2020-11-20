@@ -182,4 +182,9 @@ export {
   getSalesBodyAccessoriesFailed,
   getSalesBodyAccessoriesStart,
   getSalesBodyAccessoriesSucceed,
+  // get sales makes
+  getSalesMakes,
+  getSalesMakesFailed,
+  getSalesMakesStart,
+  getSalesMakesSucceed,
 } from './sales';

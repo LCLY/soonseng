@@ -49,9 +49,12 @@ import {
   getSalesBodyLengthsSaga,
   // Get sales accessories
   getSalesBodyAccessoriesSaga,
+  // Get sales Makes
+  getSalesMakesSaga,
 } from './sales';
 
 export function* watchSales() {
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_MAKES, getSalesMakesSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_LENGTHS, getSalesLengthsSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODYLENGTHS, getSalesBodyLengthsSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODYACCESSORIES, getSalesBodyAccessoriesSaga)]);

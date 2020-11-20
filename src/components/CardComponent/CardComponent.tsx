@@ -21,10 +21,6 @@ interface CardComponentProps {
   index: number;
   /** the whole body length object  */
   bodyLengthObj: TReceivedBodyLengthObj;
-  /** The current step for the steps component  */
-  currentStep: number;
-  /** Setting the current step for the steps component  */
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   /** API call to get sales accessories with body_length_id  */
   onGetSalesBodyAccessories: (body_length_id: number) => void;
 }
@@ -43,8 +39,6 @@ const CardComponent: React.FC<Props> = ({
   bodyIndex,
   bodyLengthObj,
   setBodyIndex,
-  currentStep,
-  setCurrentStep,
   onGetSalesBodyAccessories,
 }) => {
   const [isHover, setIsHover] = useState(false);
@@ -104,7 +98,6 @@ const CardComponent: React.FC<Props> = ({
                 } else {
                   setBodyIndex(index);
                   onGetSalesBodyAccessories(bodyLengthObj.id);
-                  setCurrentStep(currentStep + 1);
                 }
               }}
             >

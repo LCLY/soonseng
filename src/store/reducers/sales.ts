@@ -14,32 +14,53 @@ const initialState: SalesInitialState = {
   // accessories
   bodyAccessoryObj: null,
   bodyAccessoriesArray: null,
+  // brands/makes
+  salesBrandObj: null,
+  salesBrandsArray: null,
   // others
   errorMessage: null,
   successMessage: null,
+  getSalesLengthsSucceed: null,
+  getSalesBodyLengthsSucceed: null,
+  getSalesBodyAccessoriesSucceed: null,
+  getSalesMakesSucceed: null,
 };
 
 /* -------------------------- */
 /* Get all sales Lengths  */
 /* -------------------------- */
 const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: false, successMessage: null, bodyLengthsArray: null });
+  return updateObject(state, {
+    errorMessage: null,
+    loading: false,
+    successMessage: null,
+    // bodyLengthsArray: null,
+    getSalesLengthsSucceed: null,
+    getSalesBodyLengthsSucceed: null,
+    getSalesBodyAccessoriesSucceed: null,
+    getSalesMakesSucceed: null,
+  });
 };
 
 /* -------------------------- */
 /* Get all sales Lengths  */
 /* -------------------------- */
 const getSalesLengthsStart = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
+  return updateObject(state, { errorMessage: null, loading: true, getSalesLengthsSucceed: null });
 };
 const getSalesLengthsSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('lengthsArray' in action) {
-    return updateObject(state, { errorMessage: null, loading: false, lengthsArray: action.lengthsArray });
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      getSalesLengthsSucceed: true,
+      lengthsArray: action.lengthsArray,
+    });
   }
 };
 const getSalesLengthsFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false, getSalesLengthsSucceed: false });
   }
 };
 
@@ -47,16 +68,25 @@ const getSalesLengthsFailed = (state: SalesInitialState, action: AppActions) => 
 /* Get all sales body Lengths  */
 /* -------------------------- */
 const getSalesBodyLengthsStart = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
+  return updateObject(state, { errorMessage: null, loading: true, getSalesBodyLengthsSucceed: null });
 };
 const getSalesBodyLengthsSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('bodyLengthsArray' in action) {
-    return updateObject(state, { errorMessage: null, loading: false, bodyLengthsArray: action.bodyLengthsArray });
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      getSalesBodyLengthsSucceed: true,
+      bodyLengthsArray: action.bodyLengthsArray,
+    });
   }
 };
 const getSalesBodyLengthsFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+    return updateObject(state, {
+      errorMessage: action.errorMessage,
+      loading: false,
+      getSalesBodyLengthsSucceed: false,
+    });
   }
 };
 
@@ -64,7 +94,7 @@ const getSalesBodyLengthsFailed = (state: SalesInitialState, action: AppActions)
 /* Get all Body Accessories  */
 /* -------------------------- */
 const getSalesBodyAccessoriesStart = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
+  return updateObject(state, { errorMessage: null, loading: true, getSalesBodyAccessoriesSucceed: null });
 };
 const getSalesBodyAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
   if ('bodyAccessoriesArray' in action) {
@@ -72,12 +102,43 @@ const getSalesBodyAccessoriesSucceed = (state: SalesInitialState, action: AppAct
       errorMessage: null,
       loading: false,
       bodyAccessoriesArray: action.bodyAccessoriesArray,
+      getSalesBodyAccessoriesSucceed: true,
     });
   }
 };
 const getSalesBodyAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+    return updateObject(state, {
+      errorMessage: action.errorMessage,
+      loading: false,
+      getSalesBodyAccessoriesSucceed: false,
+    });
+  }
+};
+
+/* -------------------------- */
+/* Get all Makes  */
+/* -------------------------- */
+const getSalesMakesStart = (state: SalesInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true, getSalesMakesSucceed: null });
+};
+const getSalesMakesSucceed = (state: SalesInitialState, action: AppActions) => {
+  if ('salesBrandsArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      getSalesMakesSucceed: true,
+      salesBrandsArray: action.salesBrandsArray,
+    });
+  }
+};
+const getSalesMakesFailed = (state: SalesInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      errorMessage: action.errorMessage,
+      loading: false,
+      getSalesMakesSucceed: false,
+    });
   }
 };
 
@@ -109,15 +170,25 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
     case actionTypes.GET_SALES_BODYLENGTHS_FAILED:
       return getSalesBodyLengthsFailed(state, action);
     /* =================================== */
-    //  Accessories
+    //  Body Accessories
     /* =================================== */
-    // Get all accessories
+    // Get all body accessories
     case actionTypes.GET_SALES_BODYACCESSORIES_START:
       return getSalesBodyAccessoriesStart(state, action);
     case actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED:
       return getSalesBodyAccessoriesSucceed(state, action);
     case actionTypes.GET_SALES_BODYACCESSORIES_FAILED:
       return getSalesBodyAccessoriesFailed(state, action);
+    /* =================================== */
+    //  Makes
+    /* =================================== */
+    // Get all makes
+    case actionTypes.GET_SALES_MAKES_START:
+      return getSalesMakesStart(state, action);
+    case actionTypes.GET_SALES_MAKES_SUCCEED:
+      return getSalesMakesSucceed(state, action);
+    case actionTypes.GET_SALES_MAKES_FAILED:
+      return getSalesMakesFailed(state, action);
 
     default:
       return state;

@@ -3,8 +3,6 @@ import './SalesPage.scss';
 // links
 import * as actions from 'src/store/actions/index';
 import { img_placeholder_link } from 'src/shared/global';
-// dummy data
-import { dummyBrandArray } from './dummyData';
 
 // component
 import Loading from 'src/components/Loading/Loading';
@@ -13,47 +11,27 @@ import CardComponent from 'src/components/CardComponent/CardComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
 // 3rd party lib
+import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { Accordion, Card } from 'react-bootstrap';
-import { Button, Skeleton, Steps, message } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Card } from 'react-bootstrap';
+import { Button, Skeleton, Steps, Collapse, message, Divider } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 // Util
 import { TMapStateToProps } from 'src/store/types/index';
+import { img_not_available_link } from 'src/shared/global';
+import { TReceivedSalesMakeSeriesObj, TReceivedSalesMakesObj } from 'src/store/types/sales';
 import { TReceivedBodyAccessoryObj, TReceivedBodyLengthObj, TReceivedLengthObj } from 'src/store/types/dashboard';
+
 const { Step } = Steps;
+const { Panel } = Collapse;
 
 interface SalesPageProps {}
 
 type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
-
-/* --------------------------------------- */
-/**  This is for when user clicks on a preview and it shows the content of the clicked card */
-type selectedMakeProps = {
-  title: string;
-  price: number;
-  desc: string;
-  img_link: string;
-};
-
-/* --------------------------------------- */
-type makesProps = {
-  title: string;
-  price: number;
-  desc: string;
-  /** The image link of the vehicles provided by different brands */
-  img_link: string;
-};
-
-type brandProps = {
-  name: string;
-  /** The image link to logo of brands */
-  logo_link: string;
-  /** An array of makes */
-  makes: makesProps[];
-};
 
 /**
  * Sales page that provide functionality for user to choose vehicle parts
@@ -62,13 +40,20 @@ type brandProps = {
  */
 const SalesPage: React.FC<Props> = ({
   history,
+  loading,
+  salesBrandsArray,
   lengthsArray,
   bodyLengthsArray,
   bodyAccessoriesArray,
   onClearSalesState,
+  onGetSalesMakes,
   onGetSalesLengths,
   onGetSalesBodyLengths,
   onGetSalesBodyAccessories,
+  // getSalesLengthsSucceed,
+  getSalesMakesSucceed,
+  getSalesBodyLengthsSucceed,
+  getSalesBodyAccessoriesSucceed,
 }) => {
   /* ================================================ */
   //                    state
@@ -82,13 +67,7 @@ const SalesPage: React.FC<Props> = ({
   const [bodyAccessoryIndex, setBodyAccessoryIndex] = useState<number | null>(null);
   const [tyreIndex, setTyreIndex] = useState<number | null>(null);
   const [makeIndex, setMakeIndex] = useState<number | null>(null);
-  const [selectedMake, setSelectedMake] = useState<selectedMakeProps | null>({
-    title: 'Isuzu 1',
-    price: 150000,
-    img_link: 'https://nicholastrucksales.com/wp-content/uploads/2019/01/post10.jpg',
-    desc:
-      'Isuzu Some quick example text to build on the card title and make up the bulk of the cards content.Some quick example text to build on the card title and make up the bulk of the cards content.',
-  });
+  const [selectedMake, setSelectedMake] = useState<TReceivedSalesMakeSeriesObj | null>(null);
 
   /** Current Steps of the antd steps component */
   const [currentStep, setCurrentStep] = useState(0);
@@ -102,10 +81,11 @@ const SalesPage: React.FC<Props> = ({
   const tyreIndexIsNumber = typeof tyreIndex === 'number';
 
   /* ========================= */
-  //        data
+  //        method
   /* ========================= */
-
-  let brandArray: brandProps[] = dummyBrandArray;
+  function callback(key: any) {
+    console.log(key);
+  }
 
   /* =========================== */
   /*         components          */
@@ -132,7 +112,7 @@ const SalesPage: React.FC<Props> = ({
             {lengthsArray.map((vehicleLength, index) => {
               return (
                 <div
-                  key={index}
+                  key={uuidv4()}
                   className={`sales__length-card ${lengthIndex === index ? 'active' : ''}`}
                   onClick={() => {
                     //  if length index has a number
@@ -144,8 +124,6 @@ const SalesPage: React.FC<Props> = ({
                       setLengthIndex(index);
                       // clear state first before calling this api
                       onClearSalesState();
-                      // when user clicks on a length, user proceed to the next step
-                      setCurrentStep(currentStep + 1);
                       // Then call the body lengths API
                       onGetSalesBodyLengths(lengthsArray[index].id);
                     }
@@ -196,13 +174,11 @@ const SalesPage: React.FC<Props> = ({
                 {bodyLengthsArray.map((bodyLength, index) => {
                   return (
                     <CardComponent
-                      key={index}
+                      key={uuidv4()}
                       index={index}
                       bodyIndex={bodyIndex}
                       bodyLengthObj={bodyLength}
                       setBodyIndex={setBodyIndex}
-                      currentStep={currentStep}
-                      setCurrentStep={setCurrentStep}
                       onGetSalesBodyAccessories={onGetSalesBodyAccessories}
                     />
                   );
@@ -226,9 +202,116 @@ const SalesPage: React.FC<Props> = ({
       )}
     </>
   );
+  /* ------------------------------- */
+  // Body Accessories
+  /* ------------------------------- */
+  let bodyAccessorySection = (
+    <>
+      <section className="sales__section sales__section-bodyaccessory">
+        <div className="sales__section-header">Accessory</div>
+        <div className="sales__section-desc">
+          Choose the right accessory for the cargo body
+          {typeof bodyAccessoryIndex === 'number' && (
+            <>
+              &nbsp;:&nbsp;
+              <span className="sales__section-result">
+                {bodyAccessoriesArray &&
+                  bodyAccessoriesArray.length > 0 &&
+                  bodyAccessoriesArray[bodyAccessoryIndex].title}
+              </span>
+            </>
+          )}
+        </div>
+
+        {bodyAccessoriesArray ? (
+          bodyAccessoriesArray.map((bodyAccessory, index) => {
+            return (
+              <div
+                key={uuidv4()}
+                className={`sales__length-card ${bodyAccessoryIndex === index ? 'active' : ''}`}
+                onClick={() => {
+                  //  if length index has a number
+                  if (bodyAccessoryIndexIsNumber && bodyAccessoryIndex === index) {
+                    // if the current index is the same as selected index
+                    // reset the selection
+                    setBodyAccessoryIndex(null);
+                  } else {
+                    setBodyAccessoryIndex(index);
+                    // clear state first before calling this api
+                    onClearSalesState();
+                    // Then call the body lengths API
+                    onGetSalesBodyLengths(bodyAccessoriesArray[index].id);
+                  }
+                }}
+              >
+                <div className="sales__overlay" style={{ display: bodyAccessoryIndex === index ? 'flex' : 'none' }}>
+                  <i className="fas fa-check-circle"></i>
+                </div>
+                {bodyAccessory.accessory.title}
+              </div>
+            );
+          })
+        ) : (
+          <div className="sales__loading-div">
+            <Loading />
+          </div>
+        )}
+      </section>
+    </>
+  );
+
+  let tyreType = [4, 6, 10];
+  let tyreSection = (
+    <>
+      <section className="sales__section sales__section-bodyaccessory">
+        <div className="sales__section-header">Tyre</div>
+        <div className="sales__section-desc">
+          Choose the tyre count for the cargo body
+          {typeof bodyAccessoryIndex === 'number' && (
+            <>
+              &nbsp;:&nbsp;
+              <span className="sales__section-result">
+                {bodyAccessoriesArray &&
+                  bodyAccessoriesArray.length > 0 &&
+                  bodyAccessoriesArray[bodyAccessoryIndex].title}
+              </span>
+            </>
+          )}
+        </div>
+
+        {tyreType.map((tyre, index) => {
+          return (
+            <div
+              key={uuidv4()}
+              className={`sales__length-card ${tyreIndex === index ? 'active' : ''}`}
+              onClick={() => {
+                //  if tyre index has a number
+                if (tyreIndexIsNumber && tyreIndex === index) {
+                  // if the current index is the same as selected index
+                  // reset the selection
+                  setTyreIndex(null);
+                } else {
+                  setTyreIndex(index);
+                  // get sales makes using length id and tyre count
+                  if (lengthsArray && typeof lengthIndex === 'number') {
+                    onGetSalesMakes(lengthsArray[lengthIndex].id, tyreType[index]);
+                  }
+                }
+              }}
+            >
+              <div className="sales__overlay" style={{ display: tyreIndex === index ? 'flex' : 'none' }}>
+                <i className="fas fa-check-circle"></i>
+              </div>
+              {tyre}
+            </div>
+          );
+        })}
+      </section>
+    </>
+  );
 
   /* ------------------ */
-  // Brand
+  // Brand/Make
   /* ------------------ */
   let brandSection = (
     <>
@@ -236,18 +319,142 @@ const SalesPage: React.FC<Props> = ({
         <section className="sales__section sales__section-brand">
           <div className="sales__section-header">Brand</div>
           <div className="sales__section-desc">Choose a brand that you prefer</div>
+          <Collapse accordion defaultActiveKey={['1']} onChange={callback}>
+            {salesBrandsArray &&
+              salesBrandsArray.map((brand, index) => {
+                // brand here is an object of brand containing values of series array
+                // {["HINO"]: TSalesMakeSeries[]}
+                //  To extract the array out, we have to do this
+                const brandName = Object.keys(brand)[index];
+                return (
+                  <React.Fragment key={uuidv4()}>
+                    <Panel className="sales__panel" header={brandName} key="1">
+                      {/* Groups of different series  */}
+                      {brand[brandName].map((series, index) => {
+                        // same things goes to series
+                        // series here is an object of series containing array of its object
+                        // {['300 SERIES']: TSalesMakeSeries[]}
+                        const seriesName = Object.keys(series)[index];
+                        return (
+                          <div>
+                            {/* The left column for user to preview and select */}
+                            <div className="sales__panel-makes-div">
+                              <div className="sales__panel-makes-picker">
+                                {/* Show the series title at the top of the left column cards */}
+                                <div className="sales__panel-divider">
+                                  <Divider orientation="center">
+                                    <span className="sales__panel-divider-title">{seriesName}</span>
+                                  </Divider>
+                                </div>
+                                {/* loop the makes array */}
+                                {series[seriesName].map((make, index) => {
+                                  return (
+                                    <Card
+                                      key={uuidv4()}
+                                      className={`sales__card-picker ${makeIndex === index ? 'active' : ''}`}
+                                      onClick={() => {
+                                        // if makeIndex has a number and not null
+                                        // if the current index is the same as selected makeIndex
+                                        if (typeof makeIndex === 'number' && makeIndex === index) {
+                                          // reset the selection
+                                          setSelectedMake(null); //set content to null
+                                          setMakeIndex(null); //remove the selected index
+                                        } else {
+                                          setSelectedMake(make); //select the content of the preview card
+                                          setMakeIndex(index); //setting the selected index of make
+                                        }
+                                      }}
+                                    >
+                                      <div
+                                        className="sales__overlay"
+                                        style={{ display: makeIndex === index ? 'flex' : 'none' }}
+                                      >
+                                        <i className="fas fa-eye"></i>
+                                      </div>
+                                      <Card.Img
+                                        variant="top"
+                                        src={make.images.length > 0 ? make.images[0].url : img_not_available_link}
+                                        onError={(e: React.ChangeEvent<HTMLImageElement>) => {
+                                          if (e.target.src !== make.images[0].url) {
+                                            e.target.onerror = null;
+                                            e.target.src = img_placeholder_link;
+                                          }
+                                        }}
+                                      />
+                                      <Card.Body className="sales__card-picker-body">
+                                        <Card.Title className="sales__card-picker-title">{make.title}</Card.Title>
+                                      </Card.Body>
+                                    </Card>
+                                  );
+                                })}
+                              </div>
 
-          <Accordion defaultActiveKey="0">
+                              {/* The right column for user to view */}
+                              <div className="sales__panel-makes-viewer">
+                                {/* if selectedMake and makeIndex is not null */}
+                                {selectedMake !== null && typeof makeIndex === 'number' ? (
+                                  <Card className="sales__card-viewer">
+                                    <Card.Img
+                                      variant="top"
+                                      src={
+                                        selectedMake.images.length > 0
+                                          ? selectedMake.images[0].url
+                                          : img_not_available_link
+                                      }
+                                      onError={(e: React.ChangeEvent<HTMLImageElement>) => {
+                                        if (e.target.src !== selectedMake.images[0].url) {
+                                          e.target.onerror = null;
+                                          e.target.src = img_placeholder_link;
+                                        }
+                                      }}
+                                    />
+                                    <Card.Body>
+                                      <Card.Title>{selectedMake.title}</Card.Title>
+                                      <Card.Text>{selectedMake.engine_cap}</Card.Text>
+                                      <div className="card__price-div">
+                                        <Button type="primary">Add to cart</Button>
+                                        <p className="card-text card__price">
+                                          RM
+                                          <NumberFormat
+                                            value={selectedMake.price}
+                                            displayType={'text'}
+                                            thousandSeparator={true}
+                                          />
+                                        </p>
+                                      </div>
+                                    </Card.Body>
+                                  </Card>
+                                ) : (
+                                  /* if selectedMake and makeIndex is  null */
+                                  <div className="sales__nothing">
+                                    <div className="sales__nothing-innerdiv">
+                                      <i className="fas fa-truck"></i>
+                                      <div>Choose an item on the left to view it's details </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </Panel>
+                  </React.Fragment>
+                );
+              })}
+          </Collapse>
+
+          {/* <Accordion defaultActiveKey="0">
             {brandArray.map((brand, index) => {
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={uuidv4()}>
                   <Card>
                     <Accordion.Toggle
                       onClick={() => {
                         setSelectedMake(null); // reset the content
                         setMakeIndex(null); //reset the index when user click the accordion
                       }}
-                      className="sales__brand-toggle"
+                      className="sales__panel-toggle"
                       as={Card.Header}
                       eventKey={`${index}`}
                     >
@@ -263,19 +470,17 @@ const SalesPage: React.FC<Props> = ({
                             e.target.src = img_placeholder_link;
                           }
                         }}
-                        className="sales__brand-logo"
+                        className="sales__panel-logo"
                       />
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey={`${index}`}>
                       <Card.Body>
-                        {/* The left column for user to preview and select */}
-                        <div className="sales__brand-makes-div">
-                          <div className="sales__brand-makes-picker">
-                            {/* loop the makes array */}
+                        <div className="sales__panel-makes-div">
+                          <div className="sales__panel-makes-picker">                           
                             {brand.makes.map((make, index) => {
                               return (
                                 <Card
-                                  key={index}
+                                  key={uuidv4()}
                                   className={`sales__card-picker ${makeIndex === index ? 'active' : ''}`}
                                   onClick={() => {
                                     // if makeIndex has a number and not null
@@ -314,9 +519,9 @@ const SalesPage: React.FC<Props> = ({
                             })}
                           </div>
 
-                          {/* The right column for user to view */}
-                          <div className="sales__brand-makes-viewer">
-                            {/* if selectedMake and makeIndex is not null */}
+                      
+                          <div className="sales__panel-makes-viewer">
+                          
                             {selectedMake !== null && typeof makeIndex === 'number' ? (
                               <Card className="sales__card-viewer">
                                 <Card.Img
@@ -345,8 +550,7 @@ const SalesPage: React.FC<Props> = ({
                                   </div>
                                 </Card.Body>
                               </Card>
-                            ) : (
-                              /* if selectedMake and makeIndex is  null */
+                            ) : (                         
                               <div className="sales__nothing">
                                 <div className="sales__nothing-innerdiv">
                                   <i className="fas fa-truck"></i>
@@ -362,7 +566,7 @@ const SalesPage: React.FC<Props> = ({
                 </React.Fragment>
               );
             })}
-          </Accordion>
+          </Accordion> */}
         </section>
       ) : (
         // if length is not chosen
@@ -376,139 +580,16 @@ const SalesPage: React.FC<Props> = ({
     </>
   );
 
-  /* ------------------------------- */
-  // Body Accessories
-  /* ------------------------------- */
-  let bodyAccessorySection = (
-    <>
-      <section className="sales__section sales__section-bodyaccessory">
-        <div className="sales__section-header">Accessory</div>
-        <div className="sales__section-desc">
-          Choose the right accessory for the cargo body
-          {typeof bodyAccessoryIndex === 'number' && (
-            <>
-              &nbsp;:&nbsp;
-              <span className="sales__section-result">
-                {bodyAccessoriesArray &&
-                  bodyAccessoriesArray.length > 0 &&
-                  bodyAccessoriesArray[bodyAccessoryIndex].title}
-              </span>
-            </>
-          )}
-        </div>
-
-        {bodyAccessoriesArray ? (
-          bodyAccessoriesArray.map((bodyAccessory, index) => {
-            return (
-              <div
-                key={index}
-                className={`sales__length-card ${bodyAccessoryIndex === index ? 'active' : ''}`}
-                onClick={() => {
-                  //  if length index has a number
-                  if (bodyAccessoryIndexIsNumber && bodyAccessoryIndex === index) {
-                    // if the current index is the same as selected index
-                    // reset the selection
-                    setBodyAccessoryIndex(null);
-                  } else {
-                    setBodyAccessoryIndex(index);
-                    // clear state first before calling this api
-                    // onClearSalesState();
-                    // when user clicks on a length, user proceed to the next step
-                    setCurrentStep(currentStep + 1);
-                    // Then call the body lengths API
-                    // onGetSalesBodyLengths(bodyAccessoriesArray[index].id);
-                  }
-                }}
-              >
-                <div className="sales__overlay" style={{ display: bodyAccessoryIndex === index ? 'flex' : 'none' }}>
-                  <i className="fas fa-check-circle"></i>
-                </div>
-                {bodyAccessory.accessory.title}
-              </div>
-            );
-          })
-        ) : (
-          <div className="sales__loading-div">
-            <Loading />
-          </div>
-        )}
-      </section>
-    </>
-  );
-
-  let tyreType = [4, 6, 10, 12];
-  let tyreSection = (
-    <>
-      <section className="sales__section sales__section-bodyaccessory">
-        <div className="sales__section-header">Accessory</div>
-        <div className="sales__section-desc">
-          Choose the right accessory for the cargo body
-          {typeof bodyAccessoryIndex === 'number' && (
-            <>
-              &nbsp;:&nbsp;
-              <span className="sales__section-result">
-                {bodyAccessoriesArray &&
-                  bodyAccessoriesArray.length > 0 &&
-                  bodyAccessoriesArray[bodyAccessoryIndex].title}
-              </span>
-            </>
-          )}
-        </div>
-
-        {tyreType.map((tyre, index) => {
-          return (
-            <div
-              key={index}
-              className={`sales__length-card ${tyreIndex === index ? 'active' : ''}`}
-              onClick={() => {
-                //  if tyre index has a number
-                if (tyreIndexIsNumber && tyreIndex === index) {
-                  // if the current index is the same as selected index
-                  // reset the selection
-                  setTyreIndex(null);
-                } else {
-                  setTyreIndex(index);
-                  // clear state first before calling this api
-                  // onClearSalesState();
-                  // when user clicks on a length, user proceed to the next step
-                  setCurrentStep(currentStep + 1);
-                  // Then call the body lengths API
-                  // onGetSalesBodyLengths(bodyAccessoriesArray[index].id);
-                }
-              }}
-            >
-              <div className="sales__overlay" style={{ display: tyreIndex === index ? 'flex' : 'none' }}>
-                <i className="fas fa-check-circle"></i>
-              </div>
-              {tyre}
-            </div>
-          );
-        })}
-      </section>
-    </>
-  );
-
   const steps = [
     {
+      step: 1,
       title: 'Length',
       content: lengthSection,
     },
-    {
-      title: 'Body',
-      content: bodyLengthSection,
-    },
-    {
-      title: 'Accessory',
-      content: bodyAccessorySection,
-    },
-    {
-      title: 'Tyre',
-      content: tyreSection,
-    },
-    {
-      title: 'Brand',
-      content: brandSection,
-    },
+    { step: 2, title: 'Body', content: bodyLengthSection },
+    { step: 3, title: 'Accessory', content: bodyAccessorySection },
+    { step: 4, title: 'Tyre', content: tyreSection },
+    { step: 5, title: 'Brand', content: brandSection },
   ];
 
   const next = () => {
@@ -525,6 +606,21 @@ const SalesPage: React.FC<Props> = ({
   useEffect(() => {
     onGetSalesLengths();
   }, [onGetSalesLengths]);
+
+  useEffect(() => {
+    // when user clicks on a length and the body length returns succeed, user proceed to the next step
+    if (getSalesBodyLengthsSucceed || getSalesBodyAccessoriesSucceed || getSalesMakesSucceed) {
+      setCurrentStep(currentStep + 1);
+      // then clear the state
+      onClearSalesState();
+    }
+  }, [
+    currentStep,
+    onClearSalesState,
+    getSalesMakesSucceed,
+    getSalesBodyLengthsSucceed,
+    getSalesBodyAccessoriesSucceed,
+  ]);
 
   /* ====================================================== */
   /* ====================================================== */
@@ -550,6 +646,7 @@ const SalesPage: React.FC<Props> = ({
               {steps.map((item) => (
                 <Step
                   key={item.title}
+                  icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
                   title={
                     <>
                       <div>{item.title}</div>
@@ -607,9 +704,16 @@ const SalesPage: React.FC<Props> = ({
 interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
+  // Arrays
   lengthsArray?: TReceivedLengthObj[] | null;
   bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
+  salesBrandsArray?: TReceivedSalesMakesObj[] | null;
   bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
+  // Bool for get api
+  getSalesMakesSucceed?: boolean | null;
+  getSalesLengthsSucceed?: boolean | null;
+  getSalesBodyLengthsSucceed?: boolean | null;
+  getSalesBodyAccessoriesSucceed?: boolean | null;
 }
 
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
@@ -617,15 +721,21 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
     return {
       loading: state.sales.loading,
       errorMessage: state.sales.errorMessage,
+      salesBrandsArray: state.sales.salesBrandsArray,
       lengthsArray: state.sales.lengthsArray,
       bodyLengthsArray: state.sales.bodyLengthsArray,
       bodyAccessoriesArray: state.sales.bodyAccessoriesArray,
+      getSalesMakesSucceed: state.sales.getSalesMakesSucceed,
+      getSalesLengthsSucceed: state.sales.getSalesLengthsSucceed,
+      getSalesBodyLengthsSucceed: state.sales.getSalesBodyLengthsSucceed,
+      getSalesBodyAccessoriesSucceed: state.sales.getSalesBodyAccessoriesSucceed,
     };
   }
 };
 
 interface DispatchProps {
   onClearSalesState: typeof actions.clearSalesState;
+  onGetSalesMakes: typeof actions.getSalesMakes;
   onGetSalesLengths: typeof actions.getSalesLengths;
   onGetSalesBodyLengths: typeof actions.getSalesBodyLengths;
   onGetSalesBodyAccessories: typeof actions.getSalesBodyAccessories;
@@ -635,6 +745,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
     onGetSalesLengths: () => dispatch(actions.getSalesLengths()),
+    onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
     onGetSalesBodyLengths: (length_id) => dispatch(actions.getSalesBodyLengths(length_id)),
     onGetSalesBodyAccessories: (body_length_id) => dispatch(actions.getSalesBodyAccessories(body_length_id)),
   };

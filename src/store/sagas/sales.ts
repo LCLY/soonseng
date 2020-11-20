@@ -83,7 +83,7 @@ export function* getSalesBodyLengthsSaga(action: AppActions) {
   }
 }
 /* ------------------------------- */
-//    Get All Accessories
+//    Get All Body Accessories
 /* ------------------------------- */
 export function* getSalesBodyAccessoriesSaga(action: AppActions) {
   // get accessories through body length
@@ -110,6 +110,49 @@ export function* getSalesBodyAccessoriesSaga(action: AppActions) {
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
       yield put(actions.getSalesBodyAccessoriesFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Get All Makes
+/* ------------------------------- */
+export function* getSalesMakesSaga(action: AppActions) {
+  // get accessories through body length
+  yield put(actions.getSalesMakesStart());
+  let url = process.env.REACT_APP_API + `/pages/makes_for_body`;
+
+  let choice = {};
+  if ('length_id' in action && 'tire' in action) {
+    choice = {
+      length_id: action.length_id,
+      tire: action.tire,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { choice });
+    yield put(actions.getSalesMakesSucceed(response.data.brands));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.getSalesMakesFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

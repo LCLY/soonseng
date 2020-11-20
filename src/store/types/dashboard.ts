@@ -327,7 +327,7 @@ export type TReceivedMakeObj = {
   year: string;
   title: string;
   price: number;
-  length: string;
+  length: number;
   available: boolean;
   engine_cap: string;
   horsepower: string;
