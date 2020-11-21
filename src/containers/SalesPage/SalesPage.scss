@@ -1,6 +1,10 @@
 .sales {
   &__outerdiv {
-    margin-top: 5rem;
+  }
+
+  // div wrapping the steps and the content
+  &__innerdiv {
+    display: flex;
   }
 
   /* =================================== */
@@ -8,27 +12,34 @@
   &__section {
     padding: 2rem;
     margin: 1rem 0;
-    background: #dde2eb4b;
+    width: 100%;
+    // background: #dde2eb4b;
 
     &-header {
-      font-size: 2.5rem;
-      font-weight: 500;
-      font-family: $font-ubuntu;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid $translucent-grey;
-      margin-bottom: 2rem;
+      font-size: 3rem;
+      font-family: $font-bebasneue;
       text-align: center;
     }
 
+    // the innerdiv wrapping the description on the left and choices on the right
+    &-innerdiv {
+      display: flex;
+    }
+
+    // the blueprint image
+    &-img {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      width: 40rem;
+      height: 30rem;
+      object-fit: cover;
+    }
+
+    // the description box
     &-desc {
       color: $secondary-color-2;
       margin-bottom: 1rem;
-
-      // disabled description
-      &--disabled {
-        font-size: 1.5rem;
-        text-align: center;
-      }
+      width: 50rem;
     }
 
     &-result {
@@ -59,70 +70,82 @@
   }
   /* =================================== */
   // Length section
+  /* =================================== */
   &__length {
     /* ------------------*/
-    // div wrapping cards
-    &-div {
+    // outerdiv wrapping everything including cards
+    /* ------------------*/
+    &-outerdiv {
       display: flex;
+      flex-direction: column;
       overflow: auto;
-      padding-top: 1rem;
-      padding-bottom: 2rem;
+      padding: 2rem;
+      border-radius: 5px;
+      margin-left: 5rem;
+      width: 60rem;
+      background: rgba(233, 234, 240, 0.219);
 
-      & > .active {
+      /* --------------------- */
+      // Active length cards
+      /* --------------------- */
+      & .active {
         // if the card is in active state
-        background-image: linear-gradient(to right bottom, $primary-color-4, $primary-color-4);
-        transform: translateY(0rem);
-        border: 2px solid white;
-        // pointer-events: none;
-        @include shadow-func(0rem, 0.15rem, 0.4rem, 0.1rem, rgba(44, 43, 43, 0.336));
-
+        border: 1px solid $primary-color-2;
+        background: #fef9f6;
+        // if card is active, when hover, shouldnt have any changes
         &:hover {
-          transition: none;
-          transform: translateY(0rem);
-          @include shadow-func(0rem, 0.15rem, 0.4rem, 0.1rem, rgba(44, 43, 43, 0.336));
-          background-position: left top;
-          border: 2px solid white;
+          border: 1px solid $primary-color-2;
+          background: #fef9f6;
         }
       }
     }
+    /* ---------------------- */
+    // div wrapping the small cards
+    /* ---------------------- */
+    &-div {
+      display: grid;
+      grid-template-rows: auto;
+      grid-template-columns: repeat(3, 1fr);
+      justify-content: center;
+      grid-auto-rows: 3fr;
+      grid-gap: 0.5rem;
+    }
 
     /* --------------------*/
-    // vehicle length card
+    // body length card
+    /* --------------------*/
     &-card {
-      position: relative;
       transition: all 0.3s ease;
-      color: white;
+      position: relative;
       white-space: nowrap;
       cursor: pointer;
-      border-radius: 5px;
-      border: 2px solid $secondary-color-3;
-      padding: 3rem;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      border-radius: 2px;
+      background: white;
+      text-align: center;
+      padding: 1rem 5rem;
+      margin-right: 1rem;
       user-select: none;
-      background-size: 200% auto;
-      background-image: linear-gradient(to right bottom, $primary-color-2 50%, $primary-color-4);
-      @include shadow-func(0rem, 0.3rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
-      &:not(:last-child) {
-        margin-right: 2rem;
-      }
-
+      border: 1px solid $translucent-grey;
       &:hover {
-        transition: all 0.3s ease;
-        transform: translateY(-0.5rem);
-        border: 2px solid $tertiary-color-2;
-        @include shadow-func(-0.2rem, 0.8rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
-        background-position: right center;
+        background: rgba(230, 230, 230, 0.295);
       }
-      &:active {
-        transition: none;
-        transform: translateY(0rem);
-        background-image: linear-gradient(to right bottom, $primary-color-1 5%, $primary-color-4);
-        @include shadow-func(0rem, 0.2rem, 0.7rem, 0.2rem, rgba(44, 43, 43, 0.336));
-        background-position: 100% 100%;
-        background-size: 2000%;
-        border: 2px solid white;
+      &:focus {
+        background: blue;
+      }
+    }
+
+    /* ------------------------- */
+    // The buttons within the length section
+    /* ------------------------- */
+    &-btn {
+      padding: 0.5rem 2.5rem !important;
+
+      /* --------------------------- */
+      // the div wrapping the button
+      /* --------------------------- */
+      &-div {
+        margin-top: auto;
+        align-self: flex-end;
       }
     }
   }
@@ -302,13 +325,15 @@
 
   &__dashboard {
     display: flex;
-    justify-content: flex-start;
-    margin-top: 3rem;
+    justify-content: flex-end;
+    margin-left: 5rem;
+    // margin-top: 3rem;
   }
 
   // The collapsible panels
   &__panel {
     & .ant-collapse-header {
+      font-size: 2rem;
       color: white !important;
       background: $primary-color-3 !important;
     }
@@ -410,6 +435,25 @@
           background: $primary-color-2;
         }
       }
+    }
+  }
+
+  // The steps showing progress
+  &__steps {
+    &-div {
+      margin-top: 10rem;
+      position: fixed;
+      border: 1px solid $translucent-grey;
+      border-radius: 5px;
+      padding: 2rem 1rem 0 1rem;
+      margin-left: 2rem;
+    }
+
+    &-content {
+      width: 100%;
+      display: flex;
+      margin-left: 20rem;
+      justify-content: center;
     }
   }
 }

@@ -1124,7 +1124,7 @@ const Accessory: React.FC<Props> = ({
       {updateBodyAccessoryModal}
 
       <Layout>
-        <NavbarComponent activePage="" />
+        <NavbarComponent activePage="dashboard" />
         <LayoutComponent activeKey="accessory">
           <CustomContainer>
             <div className="accessory__tab-outerdiv">

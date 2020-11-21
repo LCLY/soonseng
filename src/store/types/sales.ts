@@ -4,7 +4,6 @@ import {
   TReceivedBodyLengthObj,
   TReceivedBrandObj,
   TReceivedImageObj,
-  TReceivedLengthObj,
   TReceivedWheelbaseObj,
 } from './dashboard';
 
@@ -14,8 +13,7 @@ export interface SalesInitialState {
   readonly errorMessage: string | null;
   readonly successMessage: string | null;
   // length
-  readonly lengthObj: TReceivedLengthObj | null;
-  readonly lengthsArray: TReceivedLengthObj[] | null;
+  readonly lengthsCategoriesArray: TReceivedSalesLengthCategoryObj[] | null;
   // body
   readonly bodyLengthObj: TReceivedBodyLengthObj | null;
   readonly bodyLengthsArray: TReceivedBodyLengthObj[] | null;
@@ -52,6 +50,19 @@ export interface ClearSalesStateAction {
 /* ------------------ */
 // Get Lengths
 /* ------------------ */
+// Types
+// array of length objs
+export type TReceivedSalesLengthObj = {
+  id: number;
+  title: string;
+  description: string;
+};
+
+export type TReceivedSalesLengthCategoryObj = {
+  title: string;
+  lengths: TReceivedSalesLengthObj[];
+};
+
 export interface GetSalesLengthsAction {
   type: typeof actionTypes.GET_SALES_LENGTHS;
 }
@@ -60,7 +71,7 @@ export interface GetSalesLengthsStartAction {
 }
 export interface GetSalesLengthsSucceedAction {
   type: typeof actionTypes.GET_SALES_LENGTHS_SUCCEED;
-  lengthsArray: TReceivedLengthObj[];
+  lengthsCategoriesArray: TReceivedSalesLengthCategoryObj[];
 }
 export interface GetSalesLengthsFailedAction {
   type: typeof actionTypes.GET_SALES_LENGTHS_FAILED;

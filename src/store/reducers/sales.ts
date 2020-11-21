@@ -6,8 +6,7 @@ import { AppActions } from 'src/store/types';
 const initialState: SalesInitialState = {
   loading: false,
   // length
-  lengthObj: null,
-  lengthsArray: null,
+  lengthsCategoriesArray: null,
   // body
   bodyLengthObj: null,
   bodyLengthsArray: null,
@@ -49,12 +48,12 @@ const getSalesLengthsStart = (state: SalesInitialState, _action: AppActions) => 
   return updateObject(state, { errorMessage: null, loading: true, getSalesLengthsSucceed: null });
 };
 const getSalesLengthsSucceed = (state: SalesInitialState, action: AppActions) => {
-  if ('lengthsArray' in action) {
+  if ('lengthsCategoriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
       getSalesLengthsSucceed: true,
-      lengthsArray: action.lengthsArray,
+      lengthsCategoriesArray: action.lengthsCategoriesArray,
     });
   }
 };

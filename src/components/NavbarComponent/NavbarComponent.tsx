@@ -44,6 +44,14 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
             <div className={`navbar__link ${activePage === 'contact' ? 'active' : ''}`}>
               <Nav.Link onClick={() => history.push('/contact')}>CONTACT</Nav.Link>
             </div>
+            <div className={`navbar__link ${activePage === 'dashboard' ? 'active' : ''}`}>
+              <Nav.Link onClick={() => history.push('/dashboard/make')}>DASHBOARD</Nav.Link>
+            </div>
+            {/* <div className="sales__dashboard">
+              <Button type="default" onClick={() => history.push('/dashboard/make')}>
+                Go to Dashboard
+              </Button>
+            </div> */}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

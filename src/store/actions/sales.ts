@@ -1,5 +1,5 @@
-import { TReceivedBodyAccessoryObj, TReceivedBodyLengthObj, TReceivedLengthObj } from '../types/dashboard';
-import { TReceivedSalesMakesObj } from '../types/sales';
+import { TReceivedBodyAccessoryObj, TReceivedBodyLengthObj } from '../types/dashboard';
+import { TReceivedSalesMakesObj, TReceivedSalesLengthCategoryObj } from '../types/sales';
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
 
@@ -31,10 +31,10 @@ export const getSalesLengthsStart = (): AppActions => {
   };
 };
 
-export const getSalesLengthsSucceed = (lengthsArray: TReceivedLengthObj[]): AppActions => {
+export const getSalesLengthsSucceed = (lengthsCategoriesArray: TReceivedSalesLengthCategoryObj[]): AppActions => {
   return {
     type: actionTypes.GET_SALES_LENGTHS_SUCCEED,
-    lengthsArray: lengthsArray,
+    lengthsCategoriesArray: lengthsCategoriesArray,
   };
 };
 export const getSalesLengthsFailed = (errorMessage: string): AppActions => {

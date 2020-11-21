@@ -1469,7 +1469,7 @@ const Make: React.FC<Props> = ({
       {editMakeModal}
 
       <Layout>
-        <NavbarComponent activePage="" />
+        <NavbarComponent activePage="dashboard" />
         <LayoutComponent activeKey="make">
           <CustomContainer>
             <div className="make__tab-outerdiv">

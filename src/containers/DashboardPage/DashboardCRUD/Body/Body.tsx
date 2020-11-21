@@ -1872,7 +1872,7 @@ const Body: React.FC<Props> = ({
       {updateBodyAccessoryModal}
 
       <Layout>
-        <NavbarComponent activePage="" />
+        <NavbarComponent activePage="dashboard" />
         <LayoutComponent activeKey="body">
           <CustomContainer>
             <div className="body__tab-outerdiv">

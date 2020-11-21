@@ -13,11 +13,11 @@ import axios from 'axios';
 export function* getSalesLengthsSaga(_action: AppActions) {
   yield put(actions.getSalesLengthsStart());
 
-  let url = process.env.REACT_APP_API + `/pages/length`;
+  let url = process.env.REACT_APP_API + `/pages/sales/length`;
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getSalesLengthsSucceed(response.data.lengths));
+    yield put(actions.getSalesLengthsSucceed(response.data.length_categories));
   } catch (error) {
     if (error.response) {
       /*
@@ -47,7 +47,7 @@ export function* getSalesLengthsSaga(_action: AppActions) {
 /* ------------------------------- */
 export function* getSalesBodyLengthsSaga(action: AppActions) {
   yield put(actions.getSalesBodyLengthsStart());
-  let url = process.env.REACT_APP_API + `/pages/bodylength_through_length`;
+  let url = process.env.REACT_APP_API + `/pages/sales/bodylength_through_length`;
 
   let choice = {};
   if ('length_id' in action) {
@@ -88,7 +88,7 @@ export function* getSalesBodyLengthsSaga(action: AppActions) {
 export function* getSalesBodyAccessoriesSaga(action: AppActions) {
   // get accessories through body length
   yield put(actions.getSalesBodyAccessoriesStart());
-  let url = process.env.REACT_APP_API + `/pages/accessories_for_body`;
+  let url = process.env.REACT_APP_API + `/pages/sales/accessories_for_body`;
 
   let choice = {};
   if ('body_length_id' in action) {
@@ -130,7 +130,7 @@ export function* getSalesBodyAccessoriesSaga(action: AppActions) {
 export function* getSalesMakesSaga(action: AppActions) {
   // get accessories through body length
   yield put(actions.getSalesMakesStart());
-  let url = process.env.REACT_APP_API + `/pages/makes_for_body`;
+  let url = process.env.REACT_APP_API + `/pages/sales/makes_for_body`;
 
   let choice = {};
   if ('length_id' in action && 'tire' in action) {
