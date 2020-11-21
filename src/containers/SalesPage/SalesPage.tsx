@@ -836,6 +836,8 @@ const SalesPage: React.FC<Props> = ({
                     <div className="sales__steps-title">
                       <div>{item.title}</div>
                       <>
+                        {/* Tyre */}
+                        {currentTyre && item.title === 'Tyre' && <Tag color="magenta">{currentTyre}</Tag>}
                         {/* Length */}
                         {currentLength && item.title === 'Length' && <Tag color="red">{currentLength.title}</Tag>}
                         {/* Body Length */}
@@ -846,9 +848,6 @@ const SalesPage: React.FC<Props> = ({
                         {currentBodyAccessory && item.title === 'Accessory' && (
                           <Tag color="cyan">{currentBodyAccessory.title}</Tag>
                         )}
-                        {/* {typeof tyreIndex === 'number' && item.title === 'Tyre' && (
-                          <div className="sales__section-result">{tyreType[tyreIndex]}</div>
-                        )} */}
                       </>
                     </div>
                   }
