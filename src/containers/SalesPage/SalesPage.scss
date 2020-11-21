@@ -1,5 +1,10 @@
 .sales {
-  &__outerdiv {
+  /* =================== */
+  // skeleton for loading
+  /* =================== */
+  &__skeleton {
+    width: 100% !important;
+    padding: 0.5rem 1rem;
   }
 
   // div wrapping the steps and the content
@@ -33,13 +38,19 @@
       width: 40rem;
       height: 30rem;
       object-fit: cover;
+      &-unavailabletext {
+        color: rgba(0, 0, 0, 0.479);
+        font-family: $font-firesans;
+        font-size: 1.3rem;
+      }
     }
 
     // the description box
     &-desc {
       color: $secondary-color-2;
       margin-bottom: 1rem;
-      width: 50rem;
+      margin-right: 2rem;
+      width: 45rem;
     }
 
     &-result {
@@ -47,14 +58,6 @@
       font-family: $font-ubuntu;
       font-weight: bolder;
       text-transform: capitalize;
-    }
-
-    // the body of the sales section
-    &-body {
-      // in disabled mode
-      &--disabled {
-        opacity: 0.5;
-      }
     }
   }
 
@@ -78,12 +81,8 @@
     &-outerdiv {
       display: flex;
       flex-direction: column;
-      overflow: auto;
-      padding: 2rem;
-      border-radius: 5px;
-      margin-left: 5rem;
       width: 60rem;
-      background: rgba(233, 234, 240, 0.219);
+      border-radius: 5px;
 
       /* --------------------- */
       // Active length cards
@@ -99,6 +98,14 @@
         }
       }
     }
+    /* ------------------------------------------ */
+    // the innerdiv wrapping all the small buttons
+    /* ------------------------------------------ */
+    &-innerdiv {
+      padding: 2rem 2rem 5rem 2rem;
+      border-radius: 5px;
+      background: rgba(233, 234, 240, 0.219);
+    }
     /* ---------------------- */
     // div wrapping the small cards
     /* ---------------------- */
@@ -109,6 +116,12 @@
       justify-content: center;
       grid-auto-rows: 3fr;
       grid-gap: 0.5rem;
+    }
+
+    // The MCV, LCV, HCV
+    &-category {
+      font-family: $font-opensans;
+      color: rgba(0, 0, 0, 0.623) !important;
     }
 
     /* --------------------*/
@@ -138,24 +151,29 @@
     // The buttons within the length section
     /* ------------------------- */
     &-btn {
+      margin-top: 2rem;
       padding: 0.5rem 2.5rem !important;
 
       /* --------------------------- */
       // the div wrapping the button
       /* --------------------------- */
       &-div {
-        margin-top: auto;
-        align-self: flex-end;
+        display: flex;
+        justify-content: flex-end;
       }
     }
   }
 
   /* =================================== */
   // Body section
+  /* =================================== */
   &__body {
-    /* ------------- */
+    /* --------------------------------------------- */
     // the div of the body section containing cards
+    /* --------------------------------------------- */
+
     &-div {
+      margin-top: 2rem;
       display: grid;
       grid-template-rows: auto;
       grid-template-columns: repeat(2, 1fr);
@@ -164,6 +182,83 @@
       grid-auto-rows: 3fr;
       justify-items: center;
       grid-gap: 2rem;
+    }
+
+    /* --------------------------------------------- */
+    // the div to ask user to select to preview images
+    /* --------------------------------------------- */
+    &-preview {
+      border: 1px solid $translucent-grey;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      width: 40rem;
+      height: 30rem;
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: $section-grey;
+
+      &-title {
+        font-family: $font-firesans;
+      }
+
+      &-icon {
+        text-align: center;
+        font-size: 10rem;
+        color: rgba($secondary-color-3, 0.7);
+      }
+    }
+
+    /* ------------------------------------------ */
+    // the details when user clicks on a body
+    /* ------------------------------------------ */
+    &-details {
+      // the most outerdiv of the details
+      &-outerdiv {
+        margin-top: 1rem;
+        background: white;
+        padding: 1rem 2rem;
+        border: 1px solid $translucent-grey;
+      }
+      &-title {
+        font-family: $font-opensans;
+        // font-size: 2rem !important;
+        color: rgba(0, 0, 0, 0.397) !important;
+      }
+      /* each row of the details */
+      &-row {
+        display: flex;
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+        // left part of the row
+        &-left {
+          width: 10rem;
+          font-family: $font-firesans;
+          color: rgba(0, 0, 0, 0.514);
+        }
+      }
+      &-price {
+        font-size: 1.5rem;
+        font-weight: bolder;
+        color: $primary-color-4;
+        font-family: $font-opensans;
+      }
+
+      // the description for accessory
+      &-accdesc {
+        color: rgba(0, 0, 0, 0.397);
+        font-family: $font-firesans;
+      }
+    }
+
+    &-btn {
+      &-addtocart {
+        display: flex;
+        padding-bottom: 1rem;
+        justify-content: flex-end;
+      }
     }
   }
 
@@ -447,6 +542,14 @@
       border-radius: 5px;
       padding: 2rem 1rem 0 1rem;
       margin-left: 2rem;
+    }
+
+    // the title showing which step user is at
+    &-title {
+      margin-bottom: 2rem;
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
     }
 
     &-content {

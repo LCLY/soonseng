@@ -19,9 +19,10 @@ export const clearSalesState = (): AppActions => {
 /* ----------------------------- */
 // Get Lengths
 /* ---------------------------- */
-export const getSalesLengths = (): AppActions => {
+export const getSalesLengths = (tire: number): AppActions => {
   return {
     type: actionTypes.GET_SALES_LENGTHS,
+    tire: tire,
   };
 };
 

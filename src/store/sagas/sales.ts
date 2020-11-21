@@ -10,13 +10,23 @@ import axios from 'axios';
 /* ------------------------------- */
 //    Get All Lengths
 /* ------------------------------- */
-export function* getSalesLengthsSaga(_action: AppActions) {
+export function* getSalesLengthsSaga(action: AppActions) {
   yield put(actions.getSalesLengthsStart());
 
-  let url = process.env.REACT_APP_API + `/pages/sales/length`;
+  let url = process.env.REACT_APP_API + `/pages/sales/get_length_through_tire`;
 
+  let choice = {};
+
+  if ('tire' in action) {
+    choice = {
+      tire: action.tire,
+    };
+  }
+
+  console.log(choice);
   try {
-    let response = yield axios.get(url);
+    let response = yield axios.post(url, { choice });
+    console.log(response);
     yield put(actions.getSalesLengthsSucceed(response.data.length_categories));
   } catch (error) {
     if (error.response) {

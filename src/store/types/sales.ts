@@ -65,6 +65,7 @@ export type TReceivedSalesLengthCategoryObj = {
 
 export interface GetSalesLengthsAction {
   type: typeof actionTypes.GET_SALES_LENGTHS;
+  tire: number;
 }
 export interface GetSalesLengthsStartAction {
   type: typeof actionTypes.GET_SALES_LENGTHS_START;

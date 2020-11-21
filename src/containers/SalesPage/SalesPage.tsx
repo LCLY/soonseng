@@ -5,26 +5,25 @@ import * as actions from 'src/store/actions/index';
 import { img_placeholder_link } from 'src/shared/global';
 
 // component
-import Loading from 'src/components/Loading/Loading';
-// import Container from 'src/components/CustomContainer/CustomContainer';
-import CardComponent from 'src/components/CardComponent/CardComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 
 // 3rd party lib
 import { v4 as uuidv4 } from 'uuid';
+import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { LoadingOutlined } from '@ant-design/icons';
-import { Card } from 'react-bootstrap';
-import { Button, Skeleton, Steps, Tag, Collapse, message, Divider } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { LoadingOutlined, PictureFilled } from '@ant-design/icons';
+import { Button, Skeleton, Steps, Tag, Collapse, Divider } from 'antd';
 
 // Util
 import { TMapStateToProps } from 'src/store/types/index';
 import { img_not_available_link } from 'src/shared/global';
 import {
   TReceivedSalesMakesObj,
+  TReceivedSalesLengthObj,
   TReceivedSalesMakeSeriesObj,
   TReceivedSalesLengthCategoryObj,
 } from 'src/store/types/sales';
@@ -53,8 +52,9 @@ const SalesPage: React.FC<Props> = ({
   onGetSalesLengths,
   onGetSalesBodyLengths,
   onGetSalesBodyAccessories,
-  // getSalesLengthsSucceed,
+  // boolean
   getSalesMakesSucceed,
+  getSalesLengthsSucceed,
   getSalesBodyLengthsSucceed,
   getSalesBodyAccessoriesSucceed,
 }) => {
@@ -66,10 +66,12 @@ const SalesPage: React.FC<Props> = ({
    * set to null because initially nothing is being selected   *
    */
 
-  const [currentLength, setCurrentLength] = useState<{ id: number; value: string } | null>(null);
-  const [bodyIndex, setBodyIndex] = useState<number | null>(null);
-  const [bodyAccessoryIndex, setBodyAccessoryIndex] = useState<number | null>(null);
-  const [tyreIndex, setTyreIndex] = useState<number | null>(null);
+  const [currentTyre, setCurrentTyre] = useState<number | null>(null);
+  const [currentLength, setCurrentLength] = useState<TReceivedSalesLengthObj | null>(null);
+  const [currentBodyLength, setCurrentBodyLength] = useState<TReceivedBodyLengthObj | null>(null);
+  const [currentBodyAccessory, setCurrentBodyAccessory] = useState<TReceivedBodyAccessoryObj | null>(null);
+
+  // const [tyreIndex, setTyreIndex] = useState<number | null>(null);
   const [makeIndex, setMakeIndex] = useState<number | null>(null);
   const [selectedMake, setSelectedMake] = useState<TReceivedSalesMakeSeriesObj | null>(null);
 
@@ -77,12 +79,14 @@ const SalesPage: React.FC<Props> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [totalSteps, setTotalSteps] = useState(0);
 
-  /* ===================================== */
-  //             boolean states
-  /* ===================================== */
-  // when user has selected a length, it's a number type instead of null
-  const tyreIndexIsNumber = typeof tyreIndex === 'number';
-  const bodyAccessoryIndexIsNumber = typeof bodyAccessoryIndex === 'number';
+  /* Lightbox for body */
+  // whether the lightbox is opened
+  const [isBodyLightboxOpen, setIsBodyLightboxOpen] = useState(false);
+  // photoindex to keep track of which image it's showing right now
+  const [bodyPhotoIndex, setBodyPhotoIndex] = useState(0);
+  /* Lightbox for body accessory */
+  const [isBodyAccessoryLightboxOpen, setIsBodyAccessoryLightboxOpen] = useState(false);
+  const [bodyAccessoryPhotoIndex, setBodyAccessoryPhotoIndex] = useState(0);
 
   /* ========================= */
   //        method
@@ -109,24 +113,25 @@ const SalesPage: React.FC<Props> = ({
   // Lengths
   /* -------------------- */
   let lengthSection = (
-    <section className="sales__section sales__section-length">
+    <section className="sales__section">
       <Divider orientation="left">
         <div className="sales__section-header">Length </div>
       </Divider>
 
       <section className="sales__section-innerdiv">
+        {/* Description on the left */}
         <div className="sales__section-desc">
           Decide on the length of your cargo body, the length of the cargo body is measured from this side to that side.
           <p>Add more description here if you like.</p>
           <div className="margin_t-1 margin_b-1">There are three categories:</div>
           <div>
-            <span>LCV</span> - Low Cringe Vehicle
+            <span>LCV</span> - Low Commercial Vehicle
           </div>
           <div>
-            <span>MCV</span> - Medium Cringe Vehicle
+            <span>MCV</span> - Medium Commercial Vehicle
           </div>
           <div>
-            <span>HCV</span> - High Cringe Vehicle
+            <span>HCV</span> - High Commercial Vehicle
           </div>
           <img
             className="sales__section-img"
@@ -135,57 +140,73 @@ const SalesPage: React.FC<Props> = ({
           />
           <div>A blueprint pic or illustration above would be cool</div>
         </div>
+
+        {/* Selections on the right */}
         <div className="sales__length-outerdiv">
-          <div>
-            Select the length of the cargo body (ft)
-            {currentLength?.value && (
+          <div className="sales__length-innerdiv">
+            <div>
+              Select the length of the cargo body (ft)
+              {currentLength && (
+                <>
+                  :&nbsp;<span className="sales__section-result">{currentLength.title}</span>
+                </>
+              )}
+            </div>
+
+            {lengthsCategoriesArray ? (
               <>
-                :&nbsp;<span className="sales__section-result margin_l-1">{currentLength.value}</span>
+                {lengthsCategoriesArray.map((category) => {
+                  return (
+                    <>
+                      {/* Only render the non empty object */}
+                      {Object.keys(category).length !== 0 && (
+                        <div key={uuidv4()}>
+                          <div>
+                            <Divider orientation="left" className="sales__length-category">
+                              {category.title}
+                            </Divider>
+                          </div>
+                          <div className="sales__length-div">
+                            {category.lengths.map((lengthObj) => {
+                              return (
+                                <div
+                                  className={`sales__length-card ${currentLength?.id === lengthObj.id ? 'active' : ''}`}
+                                  onClick={() => {
+                                    //  if currentLength has an id
+                                    if (currentLength?.id === lengthObj.id) {
+                                      // reset the selection
+                                      setCurrentLength(null);
+                                    } else {
+                                      setCurrentLength(lengthObj);
+                                    }
+                                  }}
+                                >
+                                  {lengthObj.title}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <div className="sales__length-div margin_t-4 margin_b-2">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                  ))}
+                </div>
+                <div className="sales__length-div">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                  ))}
+                </div>
               </>
             )}
           </div>
-          {lengthsCategoriesArray ? (
-            <>
-              {lengthsCategoriesArray.map((category) => {
-                return (
-                  <>
-                    {/* Only render the non empty object */}
-                    {Object.keys(category).length !== 0 && (
-                      <div key={uuidv4()}>
-                        <div>
-                          <Divider orientation="left">{category.title}</Divider>
-                        </div>
-                        <div className="sales__length-div">
-                          {category.lengths.map((length) => {
-                            return (
-                              <div
-                                className={`sales__length-card ${currentLength?.id === length.id ? 'active' : ''}`}
-                                onClick={() => {
-                                  //  if currentLength has an id
-                                  if (currentLength?.id === length.id) {
-                                    // reset the selection
-                                    setCurrentLength(null);
-                                  } else {
-                                    setCurrentLength({ id: length.id, value: length.title });
-                                    // clear state first before calling this api
-                                    // onClearSalesState();
-                                  }
-                                }}
-                              >
-                                {length.title}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                );
-              })}
-            </>
-          ) : (
-            <Skeleton />
-          )}
           <div className="sales__length-btn-div">
             {currentStep < totalSteps - 1 && (
               <Button
@@ -198,9 +219,10 @@ const SalesPage: React.FC<Props> = ({
                   }
                 }}
                 className="sales__length-btn"
+                loading={loading}
                 disabled={currentLength === null ? true : false}
               >
-                Proceed
+                Next
               </Button>
             )}
           </div>
@@ -215,41 +237,167 @@ const SalesPage: React.FC<Props> = ({
   let bodyLengthSection = (
     <>
       {/*  only show if length is selected */}
-      <section className="sales__section sales__section-body">
-        <div className="sales__section-header">Body</div>
-        <div className="sales__section-desc">
-          Choose the material type of the cargo body
-          {typeof bodyIndex === 'number' && (
-            <>
-              &nbsp;:&nbsp;
-              <span className="sales__section-result">
-                {bodyLengthsArray && bodyLengthsArray.length > 0 && bodyLengthsArray[bodyIndex].body.title}
-              </span>
-            </>
-          )}
-        </div>
-        {bodyLengthsArray ? (
-          <>
-            <div className="sales__body-div">
-              {bodyLengthsArray.map((bodyLength, index) => {
-                return (
-                  <CardComponent
-                    key={uuidv4()}
-                    index={index}
-                    bodyIndex={bodyIndex}
-                    bodyLengthObj={bodyLength}
-                    setBodyIndex={setBodyIndex}
-                    onGetSalesBodyAccessories={onGetSalesBodyAccessories}
+      <section className="sales__section">
+        <Divider orientation="left">
+          <div className="sales__section-header">Body </div>
+        </Divider>
+        <section className="sales__section-innerdiv">
+          {/* Description */}
+          <div className="sales__section-desc">
+            Decide on the type of the cargo body, material decides the capabilities of the vehicle. There are a few of
+            main body types in the market.
+            <p>Add more description here if you like.</p>
+            {currentBodyLength ? (
+              <>
+                {/* if there is no image then show image not available */}
+                {currentBodyLength.images.length > 0 ? (
+                  <LightboxComponent
+                    images={currentBodyLength?.images}
+                    photoIndex={bodyPhotoIndex}
+                    isOpen={isBodyLightboxOpen}
+                    setPhotoIndex={setBodyPhotoIndex}
+                    setIsOpen={setIsBodyLightboxOpen}
                   />
-                );
-              })}
-            </div>
-          </>
-        ) : (
-          <div className="sales__loading-div">
-            <Loading />
+                ) : (
+                  <div>
+                    <img className="sales__section-img" src={img_not_available_link} alt="no result" />
+                    <div className="sales__section-img-unavailabletext"> No image is provided for this body</div>
+                  </div>
+                )}
+              </>
+            ) : (
+              // if nothing has been picked yet then show this
+              <div className="sales__body-preview">
+                <div>
+                  <div className="sales__body-preview-icon">
+                    <PictureFilled />
+                  </div>
+                  <div className="sales__body-preview-title">Choose a body to preview image(s)</div>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Selections on the right */}
+          <div className="sales__length-outerdiv">
+            <div className="sales__length-innerdiv">
+              <div>
+                Select the material type of the cargo body
+                {currentBodyLength && (
+                  <>
+                    :&nbsp;<span className="sales__section-result">{currentBodyLength.body.title}</span>
+                  </>
+                )}
+              </div>
+              {currentBodyLength && (
+                <div className="sales__body-details-outerdiv">
+                  <div className="sales__body-details-title">
+                    <Divider orientation="left" className="sales__body-details-title">
+                      Details
+                    </Divider>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Title</div>
+                    <div>{currentBodyLength?.body.title}</div>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Description</div>
+                    <div>{currentBodyLength?.body.description}</div>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Dimension</div>
+                    <div className="sales__body-details-tag">
+                      <Tag className="flex" color="red">
+                        <div>Width:&nbsp;</div>
+                        <div>
+                          <div>{currentBodyLength?.width}</div>
+                        </div>
+                      </Tag>
+                    </div>
+                    <div>
+                      <Tag className="flex" color="cyan">
+                        <div>Height:&nbsp;</div>
+                        <div>
+                          <div>{currentBodyLength?.depth}</div>
+                        </div>
+                      </Tag>
+                    </div>
+                    <div>
+                      <Tag className="flex" color="blue">
+                        <div>Depth:&nbsp;</div>
+                        <div>
+                          <div>{currentBodyLength?.height}</div>
+                        </div>
+                      </Tag>
+                    </div>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Price</div>
+                    <p className="sales__body-details-price">
+                      RM
+                      <NumberFormat value={currentBodyLength?.price} displayType={'text'} thousandSeparator={true} />
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {bodyLengthsArray ? (
+                <>
+                  <div className="sales__body-div">
+                    {bodyLengthsArray.map((bodyLength) => {
+                      return (
+                        <div className="sales__length-div">
+                          <div
+                            className={`sales__length-card ${currentBodyLength?.id === bodyLength.id ? 'active' : ''}`}
+                            onClick={() => {
+                              //  if currentLength has an id
+                              if (currentBodyLength?.id === bodyLength.id) {
+                                // reset the selection
+                                setCurrentBodyLength(null);
+                              } else {
+                                setCurrentBodyLength(bodyLength);
+                              }
+                            }}
+                          >
+                            {bodyLength.body.title}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="sales__length-div margin_t-4 margin_b-2">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="sales__length-btn-div">
+              <Button className="sales__length-btn margin_r-1" onClick={() => prev()}>
+                Back
+              </Button>
+              {currentStep < totalSteps - 1 && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    // Then call the body lengths API
+                    if (currentBodyLength === null) return;
+                    if (currentBodyLength.id) {
+                      onGetSalesBodyAccessories(currentBodyLength.id);
+                    }
+                  }}
+                  className="sales__length-btn"
+                  loading={loading}
+                  disabled={currentBodyLength === null ? true : false}
+                >
+                  Next
+                </Button>
+              )}
+            </div>
+          </div>
+        </section>
       </section>
     </>
   );
@@ -258,105 +406,229 @@ const SalesPage: React.FC<Props> = ({
   /* ------------------------------- */
   let bodyAccessorySection = (
     <>
-      <section className="sales__section sales__section-bodyaccessory">
-        <div className="sales__section-header">Accessory</div>
-        <div className="sales__section-desc">
-          Choose the right accessory for the cargo body
-          {typeof bodyAccessoryIndex === 'number' && (
-            <>
-              &nbsp;:&nbsp;
-              <span className="sales__section-result">
-                {bodyAccessoriesArray &&
-                  bodyAccessoriesArray.length > 0 &&
-                  bodyAccessoriesArray[bodyAccessoryIndex].title}
-              </span>
-            </>
-          )}
-        </div>
-
-        {bodyAccessoriesArray ? (
-          bodyAccessoriesArray.map((bodyAccessory, index) => {
-            return (
-              <div
-                key={uuidv4()}
-                className={`sales__length-card ${bodyAccessoryIndex === index ? 'active' : ''}`}
-                onClick={() => {
-                  //  if length index has a number
-                  if (bodyAccessoryIndexIsNumber && bodyAccessoryIndex === index) {
-                    // if the current index is the same as selected index
-                    // reset the selection
-                    setBodyAccessoryIndex(null);
-                  } else {
-                    setBodyAccessoryIndex(index);
-                    // clear state first before calling this api
-                    onClearSalesState();
-                    // Then call the body lengths API
-                    onGetSalesBodyLengths(bodyAccessoriesArray[index].id);
-                  }
-                }}
-              >
-                <div className="sales__overlay" style={{ display: bodyAccessoryIndex === index ? 'flex' : 'none' }}>
-                  <i className="fas fa-check-circle"></i>
+      {/*  only show if length is selected */}
+      <section className="sales__section sales__section-body">
+        <Divider orientation="left">
+          <div className="sales__section-header">Accessory </div>
+        </Divider>
+        <section className="sales__section-innerdiv">
+          {/* Description */}
+          <div className="sales__section-desc">
+            After choosing the body type, you need to decide on the accessory that you want on your cargo body.
+            Depending on the different functionalities you are looking for you need different kinds of accessories
+            <p>Add more description here if you like.</p>
+            {currentBodyAccessory ? (
+              <>
+                {/* if there is no image then show image not available */}
+                {currentBodyAccessory.images.length > 0 ? (
+                  <LightboxComponent
+                    images={currentBodyAccessory?.images}
+                    photoIndex={bodyAccessoryPhotoIndex}
+                    isOpen={isBodyAccessoryLightboxOpen}
+                    setPhotoIndex={setBodyAccessoryPhotoIndex}
+                    setIsOpen={setIsBodyAccessoryLightboxOpen}
+                  />
+                ) : (
+                  <div>
+                    <img className="sales__section-img" src={img_not_available_link} alt="no result" />
+                    <div className="sales__section-img-unavailabletext"> No image is provided for this accessory</div>
+                  </div>
+                )}
+              </>
+            ) : (
+              // if nothing has been picked yet then show this
+              <div className="sales__body-preview">
+                <div>
+                  <div className="sales__body-preview-icon">
+                    <PictureFilled />
+                  </div>
+                  <div className="sales__body-preview-title">Choose an accessory to preview image(s)</div>
                 </div>
-                {bodyAccessory.accessory.title}
               </div>
-            );
-          })
-        ) : (
-          <div className="sales__loading-div">
-            <Loading />
+            )}
           </div>
-        )}
+
+          {/* Selections on the right */}
+          <div className="sales__length-outerdiv">
+            <div className="sales__length-innerdiv">
+              <div>
+                Select the accessory for the cargo body
+                {currentBodyAccessory && (
+                  <>
+                    :&nbsp;<span className="sales__section-result">{currentBodyAccessory.title}</span>
+                  </>
+                )}
+              </div>
+              {currentBodyAccessory && (
+                <div className="sales__body-details-outerdiv">
+                  <div className="sales__body-details-title">
+                    <Divider orientation="left" className="sales__body-details-title">
+                      Details
+                    </Divider>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Title</div>
+                    <div>{currentBodyAccessory?.title}</div>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Description</div>
+                    <div>{currentBodyAccessory?.description}</div>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Category</div>
+                    <div>
+                      {currentBodyAccessory?.accessory.title}&nbsp;
+                      <span className="sales__body-details-accdesc">
+                        ({currentBodyAccessory.accessory.description})
+                      </span>
+                    </div>
+                  </div>
+                  <div className="sales__body-details-row">
+                    <div className="sales__body-details-row-left">Price</div>
+                    <p className="sales__body-details-price">
+                      RM
+                      <NumberFormat value={currentBodyAccessory?.price} displayType={'text'} thousandSeparator={true} />
+                    </p>
+                  </div>
+                  <div className="sales__body-btn-addtocart">
+                    <Button type="primary">Add to cart</Button>
+                  </div>
+                </div>
+              )}
+
+              {bodyAccessoriesArray ? (
+                <>
+                  <div className="sales__body-div">
+                    {bodyAccessoriesArray.map((bodyAccessory) => {
+                      return (
+                        <div className="sales__length-div">
+                          <div
+                            className={`sales__length-card ${
+                              currentBodyAccessory?.id === bodyAccessory.id ? 'active' : ''
+                            }`}
+                            onClick={() => {
+                              //  if currentLength has an id
+                              if (currentBodyAccessory?.id === bodyAccessory.id) {
+                                // reset the selection
+                                setCurrentBodyAccessory(null);
+                              } else {
+                                setCurrentBodyAccessory(bodyAccessory);
+                                // clear state first before calling this api
+                                // onClearSalesState();
+                              }
+                            }}
+                          >
+                            {bodyAccessory.title}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="sales__length-div margin_t-4 margin_b-2">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="sales__length-btn-div">
+              <Button className="sales__length-btn margin_r-1" onClick={() => prev()}>
+                Back
+              </Button>
+              {currentStep < totalSteps - 1 && (
+                <Button type="primary" onClick={() => next()} className="sales__length-btn">
+                  Next
+                </Button>
+              )}
+            </div>
+          </div>
+        </section>
       </section>
     </>
   );
 
-  let tyreType = [4, 6, 10];
+  let tyreCountArray = [4, 6];
   let tyreSection = (
     <>
-      <section className="sales__section sales__section-bodyaccessory">
-        <div className="sales__section-header">Tyre</div>
-        <div className="sales__section-desc">
-          Choose the tyre count for the cargo body
-          {typeof bodyAccessoryIndex === 'number' && (
-            <>
-              &nbsp;:&nbsp;
-              <span className="sales__section-result">
-                {bodyAccessoriesArray &&
-                  bodyAccessoriesArray.length > 0 &&
-                  bodyAccessoriesArray[bodyAccessoryIndex].title}
-              </span>
-            </>
-          )}
-        </div>
+      <section className="sales__section">
+        <Divider orientation="left">
+          <div className="sales__section-header">Tyre </div>
+        </Divider>
 
-        {tyreType.map((tyre, index) => {
-          return (
-            <div
-              key={uuidv4()}
-              className={`sales__length-card ${tyreIndex === index ? 'active' : ''}`}
-              onClick={() => {
-                //  if tyre index has a number
-                if (tyreIndexIsNumber && tyreIndex === index) {
-                  // if the current index is the same as selected index
-                  // reset the selection
-                  setTyreIndex(null);
-                } else {
-                  setTyreIndex(index);
-                  // get sales makes using length id and tyre count
-                  // if (lengthsArray && typeof lengthIndex === 'number') {
-                  //   onGetSalesMakes(lengthsArray[lengthIndex].id, tyreType[index]);
-                  // }
-                }
-              }}
-            >
-              <div className="sales__overlay" style={{ display: tyreIndex === index ? 'flex' : 'none' }}>
-                <i className="fas fa-check-circle"></i>
+        <section className="sales__section-innerdiv">
+          {/* Description on the left */}
+          <div className="sales__section-desc">
+            Let's start this exciting adventure off with selection of tires count. The length of the truck is decided on
+            the number of the tires it has.
+            <p>Add more description here if you like.</p>
+            <img
+              className="sales__section-img"
+              src="https://getoutlines.com/blueprints/car/mercedes-benz/mercedes-benz-actros-gritter-2006.gif"
+              alt="tire count"
+            />
+            <div>A blueprint pic or illustration above would be cool</div>
+          </div>
+
+          {/* Selections on the right */}
+          <div className="sales__length-outerdiv">
+            <div className="sales__length-innerdiv">
+              <div>
+                Select the tires count the cargo body (ft)
+                {currentLength && (
+                  <>
+                    :&nbsp;<span className="sales__section-result">{currentLength.title}</span>
+                  </>
+                )}
               </div>
-              {tyre}
+
+              <div className="sales__body-div">
+                <>
+                  <div className="sales__length-div">
+                    {tyreCountArray.map((tyre) => {
+                      return (
+                        <div
+                          key={uuidv4()}
+                          className={`sales__length-card ${currentTyre === tyre ? 'active' : ''}`}
+                          onClick={() => {
+                            if (currentTyre === tyre) {
+                              // reset the selection
+                              setCurrentTyre(null);
+                            } else {
+                              setCurrentTyre(tyre);
+                            }
+                          }}
+                        >
+                          {tyre}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              </div>
             </div>
-          );
-        })}
+            <div className="sales__length-btn-div">
+              {currentStep < totalSteps - 1 && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    // Then call the body lengths API
+                    if (currentTyre === null) return;
+                    if (currentTyre) {
+                      onGetSalesLengths(currentTyre);
+                    }
+                  }}
+                  className="sales__length-btn"
+                  loading={loading}
+                  disabled={currentTyre === null ? true : false}
+                >
+                  Next
+                </Button>
+              )}
+            </div>
+          </div>
+        </section>
       </section>
     </>
   );
@@ -498,23 +770,20 @@ const SalesPage: React.FC<Props> = ({
   );
 
   const steps = [
+    { step: 1, title: 'Tyre', content: tyreSection },
     {
-      step: 1,
+      step: 2,
       title: 'Length',
       content: lengthSection,
     },
-    { step: 2, title: 'Body', content: bodyLengthSection },
-    { step: 3, title: 'Accessory', content: bodyAccessorySection },
-    { step: 4, title: 'Tyre', content: tyreSection },
+    { step: 3, title: 'Body', content: bodyLengthSection },
+    { step: 4, title: 'Accessory', content: bodyAccessorySection },
     { step: 5, title: 'Brand', content: brandSection },
   ];
 
   /* =========================== */
   /*         useEffect           */
   /* =========================== */
-  useEffect(() => {
-    onGetSalesLengths();
-  }, [onGetSalesLengths]);
 
   useEffect(() => {
     setTotalSteps(steps.length);
@@ -522,7 +791,12 @@ const SalesPage: React.FC<Props> = ({
 
   useEffect(() => {
     // when user clicks on a length and the body length returns succeed, user proceed to the next step
-    if (getSalesBodyLengthsSucceed || getSalesBodyAccessoriesSucceed || getSalesMakesSucceed) {
+    if (
+      getSalesMakesSucceed ||
+      getSalesLengthsSucceed ||
+      getSalesBodyLengthsSucceed ||
+      getSalesBodyAccessoriesSucceed
+    ) {
       setCurrentStep(currentStep + 1);
       // then clear the state
       onClearSalesState();
@@ -531,6 +805,7 @@ const SalesPage: React.FC<Props> = ({
     currentStep,
     onClearSalesState,
     getSalesMakesSucceed,
+    getSalesLengthsSucceed,
     getSalesBodyLengthsSucceed,
     getSalesBodyAccessoriesSucceed,
   ]);
@@ -558,30 +833,24 @@ const SalesPage: React.FC<Props> = ({
                   key={item.title}
                   icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
                   title={
-                    <>
+                    <div className="sales__steps-title">
                       <div>{item.title}</div>
                       <>
-                        {currentLength?.value && item.title === 'Length' && (
-                          <Tag color="red">{currentLength.value}</Tag>
-                          //  <div className="sales__section-result">{currentLength.value}</div>
+                        {/* Length */}
+                        {currentLength && item.title === 'Length' && <Tag color="red">{currentLength.title}</Tag>}
+                        {/* Body Length */}
+                        {currentBodyLength && item.title === 'Body' && (
+                          <Tag color="volcano">{currentBodyLength.body.title}</Tag>
                         )}
-                        {typeof bodyIndex === 'number' && item.title === 'Body' && (
-                          <div className="sales__section-result">
-                            {bodyLengthsArray && bodyLengthsArray.length > 0 && bodyLengthsArray[bodyIndex].body.title}
-                          </div>
+                        {/* Body Accessory */}
+                        {currentBodyAccessory && item.title === 'Accessory' && (
+                          <Tag color="cyan">{currentBodyAccessory.title}</Tag>
                         )}
-                        {typeof bodyAccessoryIndex === 'number' && item.title === 'Accessory' && (
-                          <div className="sales__section-result">
-                            {bodyAccessoriesArray &&
-                              bodyAccessoriesArray.length > 0 &&
-                              bodyAccessoriesArray[bodyAccessoryIndex].accessory.title}
-                          </div>
-                        )}
-                        {typeof tyreIndex === 'number' && item.title === 'Tyre' && (
+                        {/* {typeof tyreIndex === 'number' && item.title === 'Tyre' && (
                           <div className="sales__section-result">{tyreType[tyreIndex]}</div>
-                        )}
+                        )} */}
                       </>
-                    </>
+                    </div>
                   }
                 />
               ))}
@@ -591,24 +860,6 @@ const SalesPage: React.FC<Props> = ({
           <div className="sales__steps-content">
             <div>{steps[currentStep].content}</div>
           </div>
-        </div>
-
-        <div className="steps-action">
-          {currentStep < steps.length - 1 && (
-            <Button type="primary" onClick={() => next()}>
-              Next
-            </Button>
-          )}
-          {currentStep === steps.length - 1 && (
-            <Button type="primary" onClick={() => message.success('Processing complete!')}>
-              Done
-            </Button>
-          )}
-          {currentStep > 0 && (
-            <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-              Previous
-            </Button>
-          )}
         </div>
       </div>
     </>
@@ -659,7 +910,7 @@ interface DispatchProps {
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
-    onGetSalesLengths: () => dispatch(actions.getSalesLengths()),
+    onGetSalesLengths: (tire) => dispatch(actions.getSalesLengths(tire)),
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
     onGetSalesBodyLengths: (length_id) => dispatch(actions.getSalesBodyLengths(length_id)),
     onGetSalesBodyAccessories: (body_length_id) => dispatch(actions.getSalesBodyAccessories(body_length_id)),
