@@ -23,10 +23,8 @@ export function* getSalesLengthsSaga(action: AppActions) {
     };
   }
 
-  console.log(choice);
   try {
     let response = yield axios.post(url, { choice });
-    console.log(response);
     yield put(actions.getSalesLengthsSucceed(response.data.length_categories));
   } catch (error) {
     if (error.response) {

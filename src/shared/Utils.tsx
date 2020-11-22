@@ -25,6 +25,18 @@ export const findByTestAttribute = (component: any, attribute: string) => {
   return wrapper;
 };
 
+/**  For converting thousand separators back into numbers */
+export const unformatString = (string: string) => {
+  var parts = string.toLocaleString().match(/(\D+)/g);
+  var unformatted = string;
+  if (parts) {
+    unformatted = unformatted.split(parts[0]).join('');
+    unformatted = unformatted.split(parts[1]).join('.');
+  }
+
+  return parseFloat(unformatted);
+};
+
 /* For AntD table resizable column */
 // https://ant.design/components/table/#header
 
@@ -145,7 +157,7 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
       let makeDetailsRecordArray: { title: string; dataIndex: string }[] = [
         {
           title: 'Length',
-          dataIndex: 'length',
+          dataIndex: 'makeLength',
         },
         {
           title: 'Wheelbase',
@@ -171,6 +183,30 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
         {
           title: 'Year',
           dataIndex: 'year',
+        },
+        {
+          title: 'Abs',
+          dataIndex: 'makeAbs',
+        },
+        {
+          title: 'Torque',
+          dataIndex: 'makeTorque',
+        },
+        {
+          title: 'Tire',
+          dataIndex: 'makeTire',
+        },
+        {
+          title: 'Config',
+          dataIndex: 'makeConfig',
+        },
+        {
+          title: 'Series',
+          dataIndex: 'makeSeries',
+        },
+        {
+          title: 'Emission',
+          dataIndex: 'makeEmission',
         },
         {
           title: 'Price',

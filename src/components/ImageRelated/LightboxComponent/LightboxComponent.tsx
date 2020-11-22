@@ -16,6 +16,7 @@ type Props = LightboxComponentProps;
 const LightboxComponent: React.FC<Props> = ({ images, photoIndex, isOpen, setPhotoIndex, setIsOpen }) => {
   const [imageUrlsArray, setImageUrlsArray] = useState<string[]>([]);
 
+  console.log(imageUrlsArray);
   // convert image objects array to image array with only urls
   useEffect(() => {
     let tempArray: string[] = [];

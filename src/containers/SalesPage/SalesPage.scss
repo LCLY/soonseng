@@ -387,6 +387,19 @@
         margin-left: 0.1rem;
       }
     }
+
+    /* ------------------------------------------- */
+    // card that shows when user selected an option
+    /* ------------------------------------------- */
+    &-selected {
+      width: 100% !important;
+      margin-bottom: 2rem !important;
+      & .ant-card-head {
+        font-family: $font-firesans;
+        color: rgba(0, 0, 0, 0.534);
+        background: rgba(187, 194, 212, 0.308) !important;
+      }
+    }
   }
 
   /* ========================= */

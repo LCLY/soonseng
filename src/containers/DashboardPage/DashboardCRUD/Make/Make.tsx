@@ -30,7 +30,7 @@ import {
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
-import { setFilterReference, convertHeader, getColumnSearchProps } from 'src/shared/Utils';
+import { setFilterReference, convertHeader, unformatString, getColumnSearchProps } from 'src/shared/Utils';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -74,6 +74,12 @@ type TMakeTableState = {
   makeBrandTitle: string;
   makeWheelbaseId: number;
   makeWheelbaseTitle: string;
+  makeAbs: string;
+  makeTorque: string;
+  makeTire: string;
+  makeConfig: string;
+  makeSeries: string;
+  makeEmission: string;
   /** a long combined string for filter usage */
   makeDetails: string;
   makeImages: TReceivedImageObj[];
@@ -480,27 +486,22 @@ const Make: React.FC<Props> = ({
 
     // console.log(record.makeLength);
     // only goes in when the string has a ' character in it
-    if (parseInt(record.makeLength) > 0) {
-      // needa check if inch is undefined, only have feet in the string
-      // let onlyInchUndefined =
-      //   record.makeLength.split(" '")[0] !== undefined && record.makeLength.split(" '")[1] === undefined;
 
-      // if (onlyInchUndefined) {
-      //   extractedFeet = record.makeLength.split(" '")[0]; //get the first index
-      // } else {
-      //   extractedFeet = record.makeLength.split(" '")[0]; //get the first index
-      //   extractedInch = record.makeLength.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
-      // }
-      extractedFeet = record.makeLength.toString(); //get the first index
-      extractedInch = '';
+    // needa check if inch is undefined, only have feet in the string
+    let onlyInchUndefined =
+      record.makeLength.split(" '")[0] !== undefined && record.makeLength.split(" '")[1] === undefined;
+
+    if (onlyInchUndefined) {
+      extractedFeet = record.makeLength.split("'")[0]; //get the first index
     } else {
-      extractedFeet = ''; //get the first index
-      extractedInch = '';
+      extractedFeet = record.makeLength.split("'")[0]; //get the first index
+      extractedInch = record.makeLength.split("'")[1].toString().trim(); //second index and remove empty space infront of the inch
     }
 
     // replace units with empty strings
     extractedHorsepower = record.horsepower.replace('hp', '');
     extractedPrice = record.price.replace('RM', '');
+    extractedPrice = unformatString(extractedPrice).toString();
     extractedGvw = record.gvw.replace('kg', '');
 
     // remember to set this form on the Form component
@@ -516,6 +517,12 @@ const Make: React.FC<Props> = ({
       horsepower: extractedHorsepower,
       transmission: record.transmission,
       length: { feet: extractedFeet, inch: extractedInch },
+      makeAbs: record.makeAbs,
+      makeTorque: record.makeTorque,
+      makeTire: record.makeTire,
+      makeConfig: record.makeConfig,
+      makeSeries: record.makeSeries,
+      makeEmission: record.makeEmission,
     });
   };
 
@@ -1141,7 +1148,61 @@ const Make: React.FC<Props> = ({
         name="gvw"
         rules={[{ required: true, message: 'Input Gross Vehicle Weight here!' }]}
       >
-        <Input type="number" min={0} addonAfter="kg" placeholder="Type Gross Vehicle Weight here e.g. 2000" />
+        <Input addonAfter="kg" placeholder="Type Gross Vehicle Weight here e.g. 2t" />
+      </Form.Item>
+      {/* ------- ABS ------- */}
+      <Form.Item
+        className="make__form-item make__form-item--make"
+        label="Abs"
+        name="makeAbs"
+        rules={[{ required: false, message: 'Input ABS here!' }]}
+      >
+        <Input placeholder="Type ABS here" />
+      </Form.Item>
+      {/* ------- Torque ------- */}
+      <Form.Item
+        className="make__form-item make__form-item--make"
+        label="Torque"
+        name="makeTorque"
+        rules={[{ required: false, message: 'Input torque here!' }]}
+      >
+        <Input placeholder="Type torque here" />
+      </Form.Item>
+      {/* ------- Tire ------- */}
+      <Form.Item
+        className="make__form-item make__form-item--make"
+        label="Tyre"
+        name="makeTire"
+        rules={[{ required: false, message: 'Input tire count here!' }]}
+      >
+        <Input type="number" placeholder="Type tire count here" />
+      </Form.Item>
+      {/* ------- Config ------- */}
+      <Form.Item
+        className="make__form-item make__form-item--make"
+        label="Config"
+        name="makeConfig"
+        rules={[{ required: false, message: 'Input config here!' }]}
+      >
+        <Input type="number" placeholder="Type config here" />
+      </Form.Item>
+      {/* ------- Series ------- */}
+      <Form.Item
+        className="make__form-item make__form-item--make"
+        label="Series"
+        name="makeSeries"
+        rules={[{ required: false, message: 'Input Series here!' }]}
+      >
+        <Input type="number" placeholder="Type Series here" />
+      </Form.Item>
+      {/* ------- Emission ------- */}
+      <Form.Item
+        className="make__form-item make__form-item--make"
+        label="Emission"
+        name="makeEmission"
+        rules={[{ required: false, message: 'Input Emission here!' }]}
+      >
+        <Input type="number" placeholder="Type Emission here" />
       </Form.Item>
       {/* ------- Price ------- */}
       <Form.Item
@@ -1337,14 +1398,21 @@ const Make: React.FC<Props> = ({
         concatPrice +
         make.engine_cap +
         make.transmission +
-        make.year;
+        make.year +
+        make.abs +
+        make.torque +
+        make.tire +
+        make.config +
+        make.series +
+        make.emission;
 
       // check if undefined
       let makeGVW = make.gvw === undefined || make.gvw === null || make.gvw === '' ? '' : make.gvw + 'kg';
       let makeYear = make.year === undefined || make.year === null ? moment().year().toString() : make.year;
-      let makePrice = make.price === undefined || make.price === null || make.price === 0 ? '' : 'RM' + make.price;
+      let makePrice =
+        make.price === undefined || make.price === null || make.price === 0 ? '' : 'RM' + make.price.toLocaleString();
       let makeTitle = make.title === undefined || make.title === null ? '' : make.title;
-      let makeLength = make.length === undefined || make.length === null ? '' : make.length;
+      let makeLength = make.length === undefined || make.length === null ? '' : make.length + "'";
       let makeEngineCap = make.engine_cap === undefined || make.engine_cap === null ? '' : make.engine_cap;
       let makeHorsepower =
         make.horsepower === undefined || make.horsepower === null || make.horsepower === ''
@@ -1354,6 +1422,12 @@ const Make: React.FC<Props> = ({
       let makeBrandTitle = make.brand.title === undefined || make.brand.title === null ? '' : make.brand.title;
       let makeWheelbaseTitle =
         make.wheelbase.title === undefined || make.wheelbase.title === null ? '' : make.wheelbase.title + 'mm';
+      let makeAbs = make.abs === undefined || make.abs === null ? '' : make.abs;
+      let makeTorque = make.torque === undefined || make.torque === null ? '' : make.torque;
+      let makeTire = make.tire === undefined || make.tire === null ? '' : make.tire;
+      let makeConfig = make.config === undefined || make.config === null ? '' : make.config;
+      let makeEmission = make.emission === undefined || make.emission === null ? '' : make.emission;
+      let makeSeries = make.series === undefined || make.series === null ? '' : make.series;
 
       // only push into the array when available value is true
       if (make.available) {
@@ -1376,6 +1450,12 @@ const Make: React.FC<Props> = ({
           makeWheelbaseId: make.wheelbase.id,
           makeWheelbaseTitle: makeWheelbaseTitle,
           makeImages: make.images, //the whole array of images
+          makeAbs: makeAbs,
+          makeTorque: makeTorque,
+          makeTire: makeTire.toString(),
+          makeConfig: makeConfig,
+          makeSeries: makeSeries,
+          makeEmission: makeEmission,
         });
       }
     };
