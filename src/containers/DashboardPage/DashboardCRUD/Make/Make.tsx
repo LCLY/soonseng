@@ -1082,6 +1082,15 @@ const Make: React.FC<Props> = ({
             })}
         </Select>
       </Form.Item>
+      {/* ------- Tire ------- */}
+      <Form.Item
+        className="make__form-item make__form-item--make"
+        label="Tyre"
+        name="makeTire"
+        rules={[{ required: true, message: 'Input tyre count here!' }]}
+      >
+        <Input type="number" placeholder="Type tyre count here" />
+      </Form.Item>
       {/* ------- Length ------- */}
       <div className="flex">
         <Form.Item
@@ -1168,15 +1177,7 @@ const Make: React.FC<Props> = ({
       >
         <Input placeholder="Type torque here" />
       </Form.Item>
-      {/* ------- Tire ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Tyre"
-        name="makeTire"
-        rules={[{ required: false, message: 'Input tire count here!' }]}
-      >
-        <Input type="number" placeholder="Type tire count here" />
-      </Form.Item>
+
       {/* ------- Config ------- */}
       <Form.Item
         className="make__form-item make__form-item--make"

@@ -24,6 +24,7 @@ import {
   Tag,
   Tooltip,
   notification,
+  Checkbox,
 } from 'antd';
 import LazyLoad from 'react-lazyload';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
@@ -47,6 +48,7 @@ import * as actions from 'src/store/actions/index';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { img_not_available_link, img_loading_link } from 'src/shared/global';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -67,7 +69,7 @@ type TLengthTableState = {
   index?: number;
   lengthId: number; //for update
   lengthTitle: string;
-  lengthDescription: string;
+  lengthDescription: CheckboxValueType[] | string;
   available?: boolean;
 };
 type TBodyLengthTableState = {
@@ -284,20 +286,34 @@ const Body: React.FC<Props> = ({
       render: (_text: any, record: TBodyTableState) => {
         return (
           <>
-            <Button
-              type="link"
-              className="make__brand-btn--edit"
-              onClick={() => {
-                onPopulateEditBodyModal(record);
-                // show modal
-                setShowUpdateModal({ ...showUpdateModal, body: true });
-              }}
-            >
-              Edit
-            </Button>
-            <Button disabled type="link" danger>
-              Delete
-            </Button>
+            <div>
+              <Button
+                type="link"
+                className="make__brand-btn--edit"
+                onClick={() => {
+                  onPopulateEditBodyModal(record);
+                  // show modal
+                  setShowUpdateModal({ ...showUpdateModal, body: true });
+                }}
+              >
+                Edit
+              </Button>
+              <Button disabled type="link" danger>
+                Delete
+              </Button>
+            </div>
+            <div>
+              <Button
+                type="default"
+                onClick={() => {
+                  setShowCreateModal({ ...showCreateModal, body_accessory: true });
+                  //  set the body length id
+                  // createBodyAccessoryForm.setFieldsValue({ bodyLengthId: record.bodyLengthId });
+                }}
+              >
+                Create Accessory
+              </Button>
+            </div>
           </>
         );
       },
@@ -326,13 +342,45 @@ const Body: React.FC<Props> = ({
     },
     {
       key: 'lengthDescription',
-      title: 'Description',
+      title: 'Categories',
       dataIndex: 'lengthDescription',
       ellipsis: true,
       width: 'auto',
-      sorter: (a: TLengthTableState, b: TLengthTableState) => a.lengthDescription.localeCompare(b.lengthDescription),
-
-      ...getColumnSearchProps(lengthSearchInput, 'lengthDescription', 'Description'),
+      render: (_text: any, record: TLengthTableState) => (
+        <>
+          {typeof record.lengthDescription === 'string'
+            ? record.lengthDescription
+            : record.lengthDescription.map((category, index) => {
+                /** check categories and assign respective tag colors  */
+                const setRespectiveColors = (category: CheckboxValueType) => {
+                  let color = '';
+                  switch (category) {
+                    case 'LCV':
+                      color = 'orange';
+                      break;
+                    case 'MCV':
+                      color = 'green';
+                      break;
+                    case 'HCV':
+                      color = 'cyan';
+                      break;
+                    default:
+                      color = 'magenta';
+                  }
+                  return color;
+                };
+                return (
+                  <>
+                    {category !== '' && (
+                      <Tag key={index} color={setRespectiveColors(category)}>
+                        {category}
+                      </Tag>
+                    )}
+                  </>
+                );
+              })}
+        </>
+      ),
     },
     {
       key: 'lengthAction',
@@ -358,13 +406,13 @@ const Body: React.FC<Props> = ({
 
                 // needa check if inch is undefined, only have feet in the string
                 let onlyInchUndefined =
-                  record.lengthTitle.split(" '")[0] !== undefined && record.lengthTitle.split(" '")[1] === undefined;
+                  record.lengthTitle.split("'")[0] !== undefined && record.lengthTitle.split(" '")[1] === undefined;
 
                 if (onlyInchUndefined) {
-                  extractedFeet = record.lengthTitle.split(" '")[0]; //get the first index  (feet)
+                  extractedFeet = record.lengthTitle.split("'")[0]; //get the first index  (feet)
                 } else {
-                  extractedFeet = record.lengthTitle.split(" '")[0]; //get the first index
-                  extractedInch = record.lengthTitle.split(" '")[1].toString().trim(); //second index (inch) and remove empty space infront of the inch
+                  extractedFeet = record.lengthTitle.split("'")[0]; //get the first index
+                  extractedInch = record.lengthTitle.split("'")[1].toString().trim(); //second index (inch) and remove empty space infront of the inch
                 }
 
                 updateLengthForm.setFieldsValue({
@@ -524,9 +572,9 @@ const Body: React.FC<Props> = ({
    */
   const formatFeetInch = (feet: string, inch: string) => {
     if (inch === undefined || inch === '') {
-      return feet + " ' ";
+      return feet + "'";
     }
-    return feet + " ' " + inch + " '' ";
+    return feet + "' " + inch + "''";
   };
 
   /**
@@ -767,15 +815,14 @@ const Body: React.FC<Props> = ({
       let extractedInch = '';
 
       // needa check if inch is undefined, only have feet in the string
-      let onlyInchUndefined =
-        extractedValue.split(" '")[0] !== undefined && extractedValue.split(" '")[1] === undefined;
+      let onlyInchUndefined = extractedValue.split("'")[0] !== undefined && extractedValue.split("'")[1] === undefined;
 
       // needa check if inch is undefined, only have feet in the string
       if (onlyInchUndefined) {
-        extractedFeet = extractedValue.split(" '")[0]; //get the first index
+        extractedFeet = extractedValue.split("'")[0]; //get the first index
       } else {
-        extractedFeet = extractedValue.split(" '")[0]; //get the first index
-        extractedInch = extractedValue.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
+        extractedFeet = extractedValue.split("'")[0]; //get the first index
+        extractedInch = extractedValue.split("'")[1].toString().trim(); //second index and remove empty space infront of the inch
       }
 
       return { feet: extractedFeet, inch: extractedInch };
@@ -831,25 +878,51 @@ const Body: React.FC<Props> = ({
     }
   };
 
+  /**
+   *
+   * Concat categories into strings
+   * @param {CheckboxValueType[]} checkboxValuesArray
+   * @return {string} e.g. "LCV,MCV,HCV"
+   */
+  const concatCategories = (checkboxValuesArray: CheckboxValueType[]) => {
+    let concatCategories = '';
+    checkboxValuesArray.forEach((category) => (concatCategories += `${category},`));
+    return concatCategories;
+  };
+
+  /**
+   *
+   * Convert a plain string into an array of strings
+   * @param {string} categoriesString
+   * @return {string[]} ["LCV","HCV","MCV"]
+   */
+  const convertCategoriesToCheckboxValuesType = (categoriesString: string) => {
+    return categoriesString.split(',');
+  };
+
   /* --------- LENGTH ---------- */
-  const onCreateLengthFinish = (values: { lengthTitle: { feet: string; inch: string }; lengthDescription: string }) => {
+  const onCreateLengthFinish = (values: {
+    lengthTitle: { feet: string; inch: string };
+    lengthDescription: CheckboxValueType[];
+  }) => {
     let concatLength = '';
+    console.log(concatCategories(values.lengthDescription));
     // if inch has no input then only display length
     concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
     if (!loading) {
-      onCreateLength(concatLength, values.lengthDescription);
+      onCreateLength(concatLength, concatCategories(values.lengthDescription));
     }
   };
   const onUpdateLengthFinish = (values: {
     lengthId: number;
-    lengthDescription: string;
+    lengthDescription: CheckboxValueType[];
     lengthTitle: { feet: string; inch: string };
   }) => {
     let concatLength = '';
     // if inch has no input then only display length
     concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
     if (!loading) {
-      onUpdateLength(values.lengthId, concatLength, values.lengthDescription);
+      onUpdateLength(values.lengthId, concatLength, concatCategories(values.lengthDescription));
     }
   };
 
@@ -1055,6 +1128,12 @@ const Body: React.FC<Props> = ({
   /* ---------------------------- */
   // Length
   /* ---------------------------- */
+
+  const lengthCategoryOptions = ['LCV', 'MCV', 'HCV'];
+  // const onLengthCategoryChange = (checkedValues: CheckboxValueType[]) => {
+  //   // console.log('checked = ', checkedValues);
+  // };
+
   /* Length Form Items*/
   let lengthFormItems = (
     <>
@@ -1081,13 +1160,8 @@ const Body: React.FC<Props> = ({
         </Form.Item>
       </div>
 
-      <Form.Item
-        className="make__form-item"
-        label="Description"
-        name="lengthDescription"
-        rules={[{ required: false, message: 'Input description here!' }]}
-      >
-        <TextArea rows={3} placeholder="Type description here" />
+      <Form.Item className="make__form-item" label="Categories" name="lengthDescription">
+        <Checkbox.Group options={lengthCategoryOptions} />
       </Form.Item>
     </>
   );
@@ -1735,7 +1809,7 @@ const Body: React.FC<Props> = ({
       let descriptionIsNullOrEmpty = length.description === null || length.description === '';
       let formattedLength = '';
       if (!length.title.includes("'")) {
-        formattedLength = length.title + " ' ";
+        formattedLength = length.title + "'";
       } else {
         formattedLength = length.title;
       }
@@ -1747,7 +1821,7 @@ const Body: React.FC<Props> = ({
           index: index + 1,
           lengthId: length.id,
           lengthTitle: formattedLength,
-          lengthDescription: descriptionIsNullOrEmpty ? '-' : length.description,
+          lengthDescription: descriptionIsNullOrEmpty ? '-' : convertCategoriesToCheckboxValuesType(length.description),
           available: length.available,
         });
       }
@@ -1773,7 +1847,7 @@ const Body: React.FC<Props> = ({
       let concatPrice = `RM${bodyLength.price}`;
       let formattedLength = '';
       if (!bodyLength.length.title.includes("'")) {
-        formattedLength = bodyLength.length.title + " ' ";
+        formattedLength = bodyLength.length.title + "'";
       } else {
         formattedLength = bodyLength.length.title;
       }
