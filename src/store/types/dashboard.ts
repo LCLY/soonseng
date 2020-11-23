@@ -760,6 +760,7 @@ export interface UpdateBodyAccessoryFailedAction {
 /* Api call */
 export interface GetBodyAccessoriesAction {
   type: typeof actionTypes.GET_BODYACCESSORIES;
+  body_id: number;
 }
 /* States */
 export interface GetBodyAccessoriesStartAction {
@@ -782,8 +783,12 @@ export interface GetBodyAccessoriesFailedAction {
 export type TReceivedAccessoryObj = {
   id: 1;
   title: string;
+  price: number;
+  general: boolean;
   description: string;
+  dimension_associated: boolean;
   available: boolean;
+
   images: TReceivedImageObj[];
 };
 

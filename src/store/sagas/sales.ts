@@ -55,7 +55,7 @@ export function* getSalesLengthsSaga(action: AppActions) {
 /* ------------------------------- */
 export function* getSalesBodyLengthsSaga(action: AppActions) {
   yield put(actions.getSalesBodyLengthsStart());
-  let url = process.env.REACT_APP_API + `/pages/sales/bodylength_through_length`;
+  let url = process.env.REACT_APP_API + `/pages/sales/get_bodylength_through_length`;
 
   let choice = {};
   if ('length_id' in action) {
@@ -96,7 +96,7 @@ export function* getSalesBodyLengthsSaga(action: AppActions) {
 export function* getSalesBodyAccessoriesSaga(action: AppActions) {
   // get accessories through body length
   yield put(actions.getSalesBodyAccessoriesStart());
-  let url = process.env.REACT_APP_API + `/pages/sales/accessories_for_body`;
+  let url = process.env.REACT_APP_API + `/pages/sales/get_accessories_for_bodylength`;
 
   let choice = {};
   if ('body_length_id' in action) {
@@ -107,7 +107,9 @@ export function* getSalesBodyAccessoriesSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { choice });
-    yield put(actions.getSalesBodyAccessoriesSucceed(response.data.body_accessories));
+    yield put(
+      actions.getSalesBodyAccessoriesSucceed(response.data.general, response.data.dimension, response.data.body),
+    );
   } catch (error) {
     if (error.response) {
       /*

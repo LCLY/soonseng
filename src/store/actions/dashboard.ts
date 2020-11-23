@@ -777,9 +777,10 @@ export const createBodyAccessoryFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Get Body Accessories (tail)
 /* ------------------ */
-export const getBodyAccessories = (): AppActions => {
+export const getBodyAccessories = (body_id: number): AppActions => {
   return {
     type: actionTypes.GET_BODYACCESSORIES,
+    body_id: body_id,
   };
 };
 

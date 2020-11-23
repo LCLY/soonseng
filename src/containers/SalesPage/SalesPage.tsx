@@ -28,8 +28,7 @@ import {
   TReceivedSalesMakeSeriesObj,
   TReceivedSalesLengthCategoryObj,
 } from 'src/store/types/sales';
-import { TReceivedBodyAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/dashboard';
-
+import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/dashboard';
 const { Step } = Steps;
 const { Panel } = Collapse;
 
@@ -46,8 +45,10 @@ const SalesPage: React.FC<Props> = ({
   loading,
   salesBrandsArray,
   bodyLengthsArray,
-  bodyAccessoriesArray,
   lengthsCategoriesArray,
+  generalAccessoriesArray,
+  bodyRelatedAccessoriesArray,
+  dimensionRelatedAccessoriesArray,
   onClearSalesState,
   onGetSalesMakes,
   onGetSalesLengths,
@@ -70,7 +71,7 @@ const SalesPage: React.FC<Props> = ({
   const [currentTyre, setCurrentTyre] = useState<number | null>(null);
   const [currentLength, setCurrentLength] = useState<TReceivedSalesLengthObj | null>(null);
   const [currentBodyLength, setCurrentBodyLength] = useState<TReceivedBodyLengthObj | null>(null);
-  const [currentBodyAccessory, setCurrentBodyAccessory] = useState<TReceivedBodyAccessoryObj | null>(null);
+  const [currentBodyAccessory, setCurrentBodyAccessory] = useState<TReceivedAccessoryObj | null>(null);
 
   // const [tyreIndex, setTyreIndex] = useState<number | null>(null);
   const [makeIndex, setMakeIndex] = useState<number | null>(null);
@@ -102,7 +103,7 @@ const SalesPage: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    gsap.from('.sales__card-selected', {
+    gsap.from('.sales__selectarea-card', {
       y: '-100px',
       duration: 0.5,
     });
@@ -145,70 +146,72 @@ const SalesPage: React.FC<Props> = ({
         </div>
 
         {/* Selections on the right */}
-        <div className="sales__length-outerdiv">
+        <div className="sales__selectarea-outerdiv">
           {currentLength && (
-            <Card className="sales__card-selected" size="small" title="Selected body length" style={{ width: 300 }}>
-              <div className="sales__body-details-row">
-                <div className="sales__body-details-row-left"> Body Length</div>
+            <Card className="sales__selectarea-card" size="small" title="Selected body length" style={{ width: 300 }}>
+              <div className="sales__selectarea-card-row">
+                <div className="sales__selectarea-card-row-left"> Body Length</div>
                 <div>{currentLength.title} (ft)</div>
               </div>
             </Card>
           )}
-          <div className="sales__length-innerdiv">
+          <div className="sales__selectarea-innerdiv">
             <div>Select the length of the cargo body (ft)</div>
             {lengthsCategoriesArray ? (
               <>
                 {lengthsCategoriesArray.length > 0 ? (
-                  lengthsCategoriesArray.map((category) => {
-                    return (
-                      <>
-                        {/* Only render the non empty object */}
-                        {Object.keys(category).length !== 0 && (
-                          <div key={uuidv4()}>
-                            <div>
-                              <Divider orientation="left" className="sales__length-category">
-                                {category.title}
-                              </Divider>
+                  <>
+                    {lengthsCategoriesArray.map((category) => {
+                      return (
+                        <>
+                          {/* Only render the non empty object */}
+                          {Object.keys(category).length !== 0 && (
+                            <div key={uuidv4()}>
+                              <div>
+                                <Divider orientation="left" className="sales__length-category">
+                                  {category.title}
+                                </Divider>
+                              </div>
+                              <div className="sales__selectarea-div">
+                                {category.lengths.map((lengthObj) => {
+                                  return (
+                                    <div
+                                      className={`sales__selectarea-button ${
+                                        currentLength?.id === lengthObj.id ? 'active' : ''
+                                      }`}
+                                      onClick={() => {
+                                        //  if currentLength has an id
+                                        if (currentLength?.id === lengthObj.id) {
+                                          // reset the selection
+                                          setCurrentLength(null);
+                                        } else {
+                                          setCurrentLength(lengthObj);
+                                        }
+                                      }}
+                                    >
+                                      {lengthObj.title}
+                                    </div>
+                                  );
+                                })}
+                              </div>
                             </div>
-                            <div className="sales__length-div">
-                              {category.lengths.map((lengthObj) => {
-                                return (
-                                  <div
-                                    className={`sales__length-card ${
-                                      currentLength?.id === lengthObj.id ? 'active' : ''
-                                    }`}
-                                    onClick={() => {
-                                      //  if currentLength has an id
-                                      if (currentLength?.id === lengthObj.id) {
-                                        // reset the selection
-                                        setCurrentLength(null);
-                                      } else {
-                                        setCurrentLength(lengthObj);
-                                      }
-                                    }}
-                                  >
-                                    {lengthObj.title}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    );
-                  })
+                          )}
+                        </>
+                      );
+                    })}
+                  </>
                 ) : (
                   <Empty />
                 )}
               </>
             ) : (
               <>
-                <div className="sales__length-div margin_t-4 margin_b-2">
+                <div className="sales__selectarea-button margin_t-4 margin_b-2">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
                   ))}
                 </div>
-                <div className="sales__length-div">
+                <div className="sales__selectarea-button">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
                   ))}
@@ -294,20 +297,24 @@ const SalesPage: React.FC<Props> = ({
           </div>
 
           {/* Selections on the right */}
-          <div className="sales__length-outerdiv">
+          <div className="sales__selectarea-outerdiv">
             {currentBodyLength && (
-              <Card className="sales__card-selected" size="small" title="Selected body type" style={{ width: 300 }}>
-                <div className="sales__body-details-row">
-                  <div className="sales__body-details-row-left">Title</div>
-                  <div>{currentBodyLength?.body.title}</div>
+              <Card className="sales__selectarea-card" size="small" title="Selected body type" style={{ width: 300 }}>
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">Title</div>
+                  <div className="sales__selectarea-card-row-right-title">{currentBodyLength?.body.title}</div>
                 </div>
-                <div className="sales__body-details-row">
-                  <div className="sales__body-details-row-left">Description</div>
-                  <div>{currentBodyLength?.body.description}</div>
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">Description</div>
+                  <div>
+                    {`${currentBodyLength.length.title}ft${
+                      currentBodyLength.body.description === null ? '' : `, ${currentBodyLength.body.description}`
+                    }`}
+                  </div>
                 </div>
-                <div className="sales__body-details-row">
-                  <div className="sales__body-details-row-left">Dimension</div>
-                  <div className="sales__body-details-tag">
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">Dimension</div>
+                  <div className="sales__selectarea-card-tag">
                     <Tag className="flex" color="red">
                       <div>Width:&nbsp;</div>
                       <div>
@@ -332,27 +339,27 @@ const SalesPage: React.FC<Props> = ({
                     </Tag>
                   </div>
                 </div>
-                <div className="sales__body-details-row">
-                  <div className="sales__body-details-row-left">Price</div>
-                  <p className="sales__body-details-price">
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">Price</div>
+                  <p className="sales__selectarea-card-price">
                     RM
                     <NumberFormat value={currentBodyLength?.price} displayType={'text'} thousandSeparator={true} />
                   </p>
                 </div>
               </Card>
             )}
-            <div className="sales__length-innerdiv">
+            <div className="sales__selectarea-innerdiv">
               <div>Select the material type of the cargo body</div>
 
               {bodyLengthsArray ? (
                 <>
-                  <div className="sales__body-div">
-                    {bodyLengthsArray.length > 0 ? (
-                      bodyLengthsArray.map((bodyLength) => {
-                        return (
-                          <div className="sales__length-div" key={uuidv4()}>
+                  {bodyLengthsArray.length > 0 ? (
+                    <div className="sales__selectarea-div">
+                      <>
+                        {bodyLengthsArray.map((bodyLength) => {
+                          return (
                             <div
-                              className={`sales__length-card ${
+                              className={`sales__selectarea-button  ${
                                 currentBodyLength?.id === bodyLength.id ? 'active' : ''
                               }`}
                               onClick={() => {
@@ -367,16 +374,16 @@ const SalesPage: React.FC<Props> = ({
                             >
                               {bodyLength.body.title}
                             </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <Empty />
-                    )}
-                  </div>
+                          );
+                        })}
+                      </>
+                    </div>
+                  ) : (
+                    <Empty />
+                  )}
                 </>
               ) : (
-                <div className="sales__length-div margin_t-4 margin_b-2">
+                <div className="sales__selectarea-button margin_t-4 margin_b-2">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
                   ))}
@@ -459,8 +466,8 @@ const SalesPage: React.FC<Props> = ({
           </div>
 
           {/* Selections on the right */}
-          <div className="sales__length-outerdiv">
-            <div className="sales__length-innerdiv">
+          <div className="sales__selectarea-outerdiv">
+            <div className="sales__selectarea-innerdiv">
               <div>
                 Select the accessory for the cargo body
                 {currentBodyAccessory && (
@@ -470,6 +477,7 @@ const SalesPage: React.FC<Props> = ({
                 )}
               </div>
 
+              {/* The card details */}
               {currentBodyAccessory && (
                 <div className="sales__body-details-outerdiv">
                   <div className="sales__body-details-title">
@@ -477,24 +485,24 @@ const SalesPage: React.FC<Props> = ({
                       Details
                     </Divider>
                   </div>
-                  <div className="sales__body-details-row">
-                    <div className="sales__body-details-row-left">Brand</div>
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Brand</div>
                     <div>{currentBodyAccessory?.title}</div>
                   </div>
-                  <div className="sales__body-details-row">
-                    <div className="sales__body-details-row-left">Model</div>
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Model</div>
                     <div>{currentBodyAccessory?.title}</div>
                   </div>
-                  <div className="sales__body-details-row">
-                    <div className="sales__body-details-row-left">Description</div>
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Description</div>
                     <div>{currentBodyAccessory?.description}</div>
                   </div>
-                  <div className="sales__body-details-row">
-                    <div className="sales__body-details-row-left">Category</div>
-                    <div>{currentBodyAccessory?.accessory.title}&nbsp;</div>
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Category</div>
+                    <div>{currentBodyAccessory?.title}&nbsp;</div>
                   </div>
-                  <div className="sales__body-details-row">
-                    <div className="sales__body-details-row-left">Price</div>
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Price</div>
                     <p className="sales__body-details-price">
                       RM
                       <NumberFormat value={currentBodyAccessory?.price} displayType={'text'} thousandSeparator={true} />
@@ -506,46 +514,154 @@ const SalesPage: React.FC<Props> = ({
                 </div>
               )}
 
-              {bodyAccessoriesArray ? (
+              {/* If all the arrays are empty then show <Empty/> */}
+              {generalAccessoriesArray &&
+                bodyRelatedAccessoriesArray &&
+                dimensionRelatedAccessoriesArray &&
+                generalAccessoriesArray.length === 0 &&
+                dimensionRelatedAccessoriesArray.length === 0 &&
+                bodyRelatedAccessoriesArray.length === 0 && <Empty />}
+
+              {generalAccessoriesArray ? (
                 <>
-                  <Divider orientation="left">
-                    <div>Associated Accessories</div>
-                  </Divider>
-                  <div className="sales__body-div">
-                    {bodyAccessoriesArray.length > 0 ? (
-                      bodyAccessoriesArray.map((bodyAccessory) => {
-                        return (
-                          <div className="sales__length-div">
+                  {generalAccessoriesArray.length > 0 ? (
+                    <>
+                      <Divider orientation="left">
+                        <div>General Accessories</div>
+                      </Divider>
+                      <div className="sales__selectarea-div">
+                        <>
+                          {generalAccessoriesArray.map((accessory) => {
+                            return (
+                              <div
+                                className={`sales__selectarea-button ${
+                                  currentBodyAccessory?.id === accessory.id ? 'active' : ''
+                                }`}
+                                onClick={() => {
+                                  //  if currentLength has an id
+                                  if (currentBodyAccessory?.id === accessory.id) {
+                                    // reset the selection
+                                    setCurrentBodyAccessory(null);
+                                  } else {
+                                    setCurrentBodyAccessory(accessory);
+                                    // clear state first before calling this api
+                                    // onClearSalesState();
+                                  }
+                                }}
+                              >
+                                {accessory.title}
+                              </div>
+                            );
+                          })}
+                        </>
+                      </div>
+                    </>
+                  ) : null}
+                </>
+              ) : (
+                <div className="sales__selectarea-div">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <Skeleton.Button
+                      className="sales__selectarea-button-skeleton"
+                      key={num}
+                      active={true}
+                      size="large"
+                    />
+                  ))}
+                </div>
+              )}
+              {bodyRelatedAccessoriesArray ? (
+                <>
+                  {bodyRelatedAccessoriesArray.length > 0 ? (
+                    <>
+                      <Divider orientation="left">
+                        <div>Body Associated Accessories</div>
+                      </Divider>
+                      <div className="sales__selectarea-div">
+                        <>
+                          {bodyRelatedAccessoriesArray.map((accessory) => {
+                            return (
+                              <div
+                                className={`sales__selectarea-button ${
+                                  currentBodyAccessory?.id === accessory.id ? 'active' : ''
+                                }`}
+                                onClick={() => {
+                                  //  if currentLength has an id
+                                  if (currentBodyAccessory?.id === accessory.id) {
+                                    // reset the selection
+                                    setCurrentBodyAccessory(null);
+                                  } else {
+                                    setCurrentBodyAccessory(accessory);
+                                    // clear state first before calling this api
+                                    // onClearSalesState();
+                                  }
+                                }}
+                              >
+                                {accessory.title}
+                              </div>
+                            );
+                          })}
+                        </>
+                      </div>
+                    </>
+                  ) : null}
+                </>
+              ) : (
+                <div className="sales__selectarea-div">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <Skeleton.Button
+                      className="sales__selectarea-button-skeleton"
+                      key={num}
+                      active={true}
+                      size="large"
+                    />
+                  ))}
+                </div>
+              )}
+              {dimensionRelatedAccessoriesArray ? (
+                <>
+                  {dimensionRelatedAccessoriesArray.length > 0 ? (
+                    <>
+                      <Divider orientation="left">
+                        <div>Dimension Associated Accessories</div>
+                      </Divider>
+
+                      <div className="sales__selectarea-div">
+                        {dimensionRelatedAccessoriesArray.map((accessory) => {
+                          return (
                             <div
-                              className={`sales__length-card ${
-                                currentBodyAccessory?.id === bodyAccessory.id ? 'active' : ''
+                              className={`sales__selectarea-button ${
+                                currentBodyAccessory?.id === accessory.id ? 'active' : ''
                               }`}
                               onClick={() => {
                                 //  if currentLength has an id
-                                if (currentBodyAccessory?.id === bodyAccessory.id) {
+                                if (currentBodyAccessory?.id === accessory.id) {
                                   // reset the selection
                                   setCurrentBodyAccessory(null);
                                 } else {
-                                  setCurrentBodyAccessory(bodyAccessory);
+                                  setCurrentBodyAccessory(accessory);
                                   // clear state first before calling this api
                                   // onClearSalesState();
                                 }
                               }}
                             >
-                              {bodyAccessory.accessory.description}
+                              {accessory.title}
                             </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <Empty />
-                    )}
-                  </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : null}
                 </>
               ) : (
-                <div className="sales__length-div margin_t-4 margin_b-2">
+                <div className="sales__selectarea-div">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                    <Skeleton.Button
+                      className="sales__selectarea-button-skeleton"
+                      key={num}
+                      active={true}
+                      size="large"
+                    />
                   ))}
                 </div>
               )}
@@ -599,40 +715,40 @@ const SalesPage: React.FC<Props> = ({
           </div>
 
           {/* Selections on the right */}
-          <div className="sales__length-outerdiv">
+          <div className="sales__selectarea-outerdiv">
             {currentTyre && (
-              <Card className="sales__card-selected" size="small" title="Selected tyre count" style={{ width: 300 }}>
-                <div className="sales__body-details-row">
-                  <div className="sales__body-details-row-left"> Tyre count</div>
+              <Card className="sales__selectarea-card" size="small" title="Selected tyre count" style={{ width: 300 }}>
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left"> Tyre count</div>
                   <div>{currentTyre} tires</div>
                 </div>
               </Card>
             )}
-            <div className="sales__length-innerdiv">
+            <div className="sales__selectarea-innerdiv">
               <div>Select the tyre count for the cargo body</div>
 
-              <div className="sales__body-div">
+              <div className="sales__selectarea-div">
                 <>
-                  <div className="sales__length-div">
-                    {tyreCountArray.map((tyre) => {
-                      return (
-                        <div
-                          key={uuidv4()}
-                          className={`sales__length-card ${currentTyre === tyre ? 'active' : ''}`}
-                          onClick={() => {
-                            if (currentTyre === tyre) {
-                              // reset the selection
-                              setCurrentTyre(null);
-                            } else {
-                              setCurrentTyre(tyre);
-                            }
-                          }}
-                        >
-                          {tyre}
-                        </div>
-                      );
-                    })}
-                  </div>
+                  {/* <div className="sales__selectarea-button"> */}
+                  {tyreCountArray.map((tyre) => {
+                    return (
+                      <div
+                        key={uuidv4()}
+                        className={`sales__selectarea-button ${currentTyre === tyre ? 'active' : ''}`}
+                        onClick={() => {
+                          if (currentTyre === tyre) {
+                            // reset the selection
+                            setCurrentTyre(null);
+                          } else {
+                            setCurrentTyre(tyre);
+                          }
+                        }}
+                      >
+                        {tyre}
+                      </div>
+                    );
+                  })}
+                  {/* </div> */}
                 </>
               </div>
             </div>
@@ -820,26 +936,23 @@ const SalesPage: React.FC<Props> = ({
   );
 
   const steps = [
-    { step: 1, title: 'Tyre', content: tyreSection, disabled: false },
+    { step: 1, title: 'Tyre', content: tyreSection },
     {
       step: 2,
       title: 'Length',
       content: lengthSection,
-      disabled: lengthsCategoriesArray === null && currentTyre === null,
     },
     {
       step: 3,
       title: 'Body',
       content: bodyLengthSection,
-      disabled: bodyLengthsArray === null,
     },
     {
       step: 4,
       title: 'Accessory',
       content: bodyAccessorySection,
-      disabled: bodyAccessoriesArray === null,
     },
-    { step: 5, title: 'Brand', content: brandSection, disabled: salesBrandsArray === null },
+    { step: 5, title: 'Brand', content: brandSection },
   ];
 
   /* =========================== */
@@ -894,7 +1007,6 @@ const SalesPage: React.FC<Props> = ({
               {steps.map((item) => (
                 <Step
                   key={item.title}
-                  // disabled={item.disabled}
                   icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
                   title={
                     <div className="sales__steps-title">
@@ -935,7 +1047,9 @@ interface StateProps {
   // Arrays
   bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
   salesBrandsArray?: TReceivedSalesMakesObj[] | null;
-  bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
+  generalAccessoriesArray: TReceivedAccessoryObj[] | null;
+  dimensionRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
+  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
   // length category object
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
   // Bool for get api
@@ -950,11 +1064,15 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
     return {
       loading: state.sales.loading,
       errorMessage: state.sales.errorMessage,
+      // Arrays
       salesBrandsArray: state.sales.salesBrandsArray,
       bodyLengthsArray: state.sales.bodyLengthsArray,
-      bodyAccessoriesArray: state.sales.bodyAccessoriesArray,
-      getSalesMakesSucceed: state.sales.getSalesMakesSucceed,
+      generalAccessoriesArray: state.sales.generalAccessoriesArray,
+      dimensionRelatedAccessoriesArray: state.sales.dimensionRelatedAccessoriesArray,
+      bodyRelatedAccessoriesArray: state.sales.bodyRelatedAccessoriesArray,
       lengthsCategoriesArray: state.sales.lengthsCategoriesArray,
+      // Succeed states
+      getSalesMakesSucceed: state.sales.getSalesMakesSucceed,
       getSalesLengthsSucceed: state.sales.getSalesLengthsSucceed,
       getSalesBodyLengthsSucceed: state.sales.getSalesBodyLengthsSucceed,
       getSalesBodyAccessoriesSucceed: state.sales.getSalesBodyAccessoriesSucceed,

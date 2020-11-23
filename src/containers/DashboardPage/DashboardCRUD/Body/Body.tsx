@@ -159,7 +159,7 @@ const Body: React.FC<Props> = ({
   onUpdateBodyLength,
   // body accessory
   bodyAccessoriesArray,
-  onGetBodyAccessories,
+  // onGetBodyAccessories,
   onCreateBodyAccessory,
   onUpdateBodyAccessory,
   // accessory
@@ -350,7 +350,7 @@ const Body: React.FC<Props> = ({
         <>
           {typeof record.lengthDescription === 'string'
             ? record.lengthDescription
-            : record.lengthDescription.map((category, index) => {
+            : record.lengthDescription.map((category) => {
                 /** check categories and assign respective tag colors  */
                 const setRespectiveColors = (category: CheckboxValueType) => {
                   let color = '';
@@ -372,7 +372,7 @@ const Body: React.FC<Props> = ({
                 return (
                   <>
                     {category !== '' && (
-                      <Tag key={index} color={setRespectiveColors(category)}>
+                      <Tag key={uuidv4()} color={setRespectiveColors(category)}>
                         {category}
                       </Tag>
                     )}
@@ -397,27 +397,10 @@ const Body: React.FC<Props> = ({
               onClick={() => {
                 // show modal
                 setShowUpdateModal({ ...showUpdateModal, length: true });
-                // update the form value using the 'name' attribute as target/key
-                // if bodyDescription is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-                let extractedFeet = '';
-                let extractedInch = '';
-                // they have to be legit strings after being splitted
-
-                // needa check if inch is undefined, only have feet in the string
-                let onlyInchUndefined =
-                  record.lengthTitle.split("'")[0] !== undefined && record.lengthTitle.split(" '")[1] === undefined;
-
-                if (onlyInchUndefined) {
-                  extractedFeet = record.lengthTitle.split("'")[0]; //get the first index  (feet)
-                } else {
-                  extractedFeet = record.lengthTitle.split("'")[0]; //get the first index
-                  extractedInch = record.lengthTitle.split("'")[1].toString().trim(); //second index (inch) and remove empty space infront of the inch
-                }
 
                 updateLengthForm.setFieldsValue({
                   lengthId: record.lengthId,
-                  lengthTitle: { feet: extractedFeet, inch: extractedInch },
+                  lengthTitle: record.lengthTitle.replace('ft', ''),
                   lengthDescription: record.lengthDescription === '-' ? '' : record.lengthDescription,
                 });
               }}
@@ -901,28 +884,19 @@ const Body: React.FC<Props> = ({
   };
 
   /* --------- LENGTH ---------- */
-  const onCreateLengthFinish = (values: {
-    lengthTitle: { feet: string; inch: string };
-    lengthDescription: CheckboxValueType[];
-  }) => {
-    let concatLength = '';
-    console.log(concatCategories(values.lengthDescription));
-    // if inch has no input then only display length
-    concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
+  const onCreateLengthFinish = (values: { lengthTitle: string; lengthDescription: CheckboxValueType[] }) => {
     if (!loading) {
-      onCreateLength(concatLength, concatCategories(values.lengthDescription));
+      onCreateLength(values.lengthTitle, concatCategories(values.lengthDescription));
     }
   };
+
   const onUpdateLengthFinish = (values: {
     lengthId: number;
     lengthDescription: CheckboxValueType[];
-    lengthTitle: { feet: string; inch: string };
+    lengthTitle: string;
   }) => {
-    let concatLength = '';
-    // if inch has no input then only display length
-    concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
     if (!loading) {
-      onUpdateLength(values.lengthId, concatLength, concatCategories(values.lengthDescription));
+      onUpdateLength(values.lengthId, values.lengthTitle, concatCategories(values.lengthDescription));
     }
   };
 
@@ -1130,38 +1104,27 @@ const Body: React.FC<Props> = ({
   /* ---------------------------- */
 
   const lengthCategoryOptions = ['LCV', 'MCV', 'HCV'];
-  // const onLengthCategoryChange = (checkedValues: CheckboxValueType[]) => {
-  //   // console.log('checked = ', checkedValues);
-  // };
 
   /* Length Form Items*/
   let lengthFormItems = (
     <>
-      <div className="flex">
-        <Form.Item
-          className="make__form-item margin_r-1"
-          label="Title"
-          name={['lengthTitle', 'feet']}
-          rules={[{ required: true, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
-        >
-          {/* ft */}
-          <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
-        </Form.Item>
+      <Form.Item
+        className="make__form-item margin_r-1"
+        label="Title"
+        name={'lengthTitle'}
+        rules={[{ required: true, message: 'Input ft here!' }]}
+      >
+        {/* ft */}
+        <Input type="number" min={0} addonAfter={'ft'} placeholder="Type ft here" />
+      </Form.Item>
 
-        <Form.Item
-          className="make__form-item--make make__form-item--inch"
-          name={['lengthTitle', 'inch']}
-          rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
-        >
-          {/* inch */}
-          <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
-        </Form.Item>
-      </div>
-
-      <Form.Item className="make__form-item" label="Categories" name="lengthDescription">
-        <Checkbox.Group options={lengthCategoryOptions} />
+      <Form.Item
+        className="make__form-item"
+        label="Categories"
+        name="lengthDescription"
+        rules={[{ required: true, message: 'Choose a category!' }]}
+      >
+        <Checkbox.Group options={lengthCategoryOptions} style={{ paddingLeft: '2rem' }} />
       </Form.Item>
     </>
   );
@@ -1637,10 +1600,11 @@ const Body: React.FC<Props> = ({
                   //   <Empty />
                   // </div>
                   null
-                : record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
+                : record.bodyLengthBodyAccessory.map((bodyAccessory) => {
                     if (bodyAccessory.available) {
                       return (
                         <Card
+                          key={uuidv4()}
                           className="body__expand-card"
                           title={
                             <div className="body__expand-card-title-div">
@@ -1650,7 +1614,6 @@ const Body: React.FC<Props> = ({
                               </Tag>
                             </div>
                           }
-                          key={index}
                           size="small"
                           style={{ width: 'auto' }}
                           headStyle={{ background: '#FFF2E8' }}
@@ -1662,18 +1625,24 @@ const Body: React.FC<Props> = ({
                                 {bodyAccessory.images.length > 0 ? (
                                   bodyAccessory.images.map((image) => {
                                     return (
-                                      <LazyLoad
-                                        placeholder={
-                                          <img className="body__expand-card-img" alt="loading" src={img_loading_link} />
-                                        }
-                                      >
-                                        <img
-                                          className="body__expand-card-img"
-                                          key={image.id}
-                                          alt={image.filename}
-                                          src={image.url}
-                                        />
-                                      </LazyLoad>
+                                      <React.Fragment key={uuidv4()}>
+                                        <LazyLoad
+                                          placeholder={
+                                            <img
+                                              className="body__expand-card-img"
+                                              alt="loading"
+                                              src={img_loading_link}
+                                            />
+                                          }
+                                        >
+                                          <img
+                                            className="body__expand-card-img"
+                                            key={image.id}
+                                            alt={image.filename}
+                                            src={image.url}
+                                          />
+                                        </LazyLoad>
+                                      </React.Fragment>
                                     );
                                   })
                                 ) : (
@@ -1764,10 +1733,6 @@ const Body: React.FC<Props> = ({
     onGetBodyLengths();
   }, [onGetBodyLengths]);
 
-  useEffect(() => {
-    onGetBodyAccessories();
-  }, [onGetBodyAccessories]);
-
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for BODY
   /* ----------------------------------------------------- */
@@ -1808,8 +1773,10 @@ const Body: React.FC<Props> = ({
     const storeValue = (length: TReceivedLengthObj, index: number) => {
       let descriptionIsNullOrEmpty = length.description === null || length.description === '';
       let formattedLength = '';
-      if (!length.title.includes("'")) {
-        formattedLength = length.title + "'";
+      let lengthHasFtInString = length.title.includes('ft');
+      if (!lengthHasFtInString) {
+        // then add ft to the string behind
+        formattedLength = length.title + 'ft';
       } else {
         formattedLength = length.title;
       }
@@ -1955,6 +1922,32 @@ const Body: React.FC<Props> = ({
                 {bodiesArray && lengthsArray && bodyLengthsArray ? (
                   <>
                     {/* ===================================== */}
+                    {/*             Length Section            */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Lengths</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
+                        >
+                          Create New Length
+                        </Button>
+                      </div>
+                      {/* ------------------ */}
+                      {/*    Length Table     */}
+                      {/* ------------------ */}
+                      <Table
+                        bordered
+                        className="body__table"
+                        scroll={{ x: '89rem', y: 400 }}
+                        dataSource={lengthTableState}
+                        columns={convertHeader(lengthColumns, setLengthColumns)}
+                        pagination={false}
+                      />
+                    </section>
+                    {/* ===================================== */}
                     {/*              Body Section             */}
                     {/* ===================================== */}
                     <section className="make__section">
@@ -1988,38 +1981,11 @@ const Body: React.FC<Props> = ({
                     </section>
 
                     {/* ===================================== */}
-                    {/*             Length Section            */}
-                    {/* ===================================== */}
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Lengths</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
-                        >
-                          Create New Length
-                        </Button>
-                      </div>
-                      {/* ------------------ */}
-                      {/*    Length Table     */}
-                      {/* ------------------ */}
-                      <Table
-                        bordered
-                        className="body__table"
-                        scroll={{ x: '89rem', y: 400 }}
-                        dataSource={lengthTableState}
-                        columns={convertHeader(lengthColumns, setLengthColumns)}
-                        pagination={false}
-                      />
-                    </section>
-
-                    {/* ===================================== */}
                     {/*         Body Length Section           */}
                     {/* ===================================== */}
                     <section className="make__section">
                       <div className="make__header-div ">
-                        <div className="make__header-title">Body Price</div>
+                        <div className="make__header-title">Body Price (With Dimension)</div>
                         <Button
                           type="primary"
                           className="make__brand-btn"
@@ -2043,7 +2009,6 @@ const Body: React.FC<Props> = ({
                           expandedRowRender: (record: TBodyLengthTableState) => {
                             let bodyAccessoryCards = renderBodyAccessoryCardsComponent(record);
                             let imageGalleryComponent = onExpandedRowRender(record);
-
                             return (
                               <>
                                 <div style={{ marginBottom: record.bodyLengthImages.length > 0 ? '2rem' : 'none' }}>
@@ -2140,8 +2105,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.createBodyLength(createBodyLengthData, imageTag, imageFiles)),
     onUpdateBodyLength: (updateBodyLengthData, imageTag, imageFiles) =>
       dispatch(actions.updateBodyLength(updateBodyLengthData, imageTag, imageFiles)),
-    // Body Length
-    onGetBodyAccessories: () => dispatch(actions.getBodyAccessories()),
+    // Body Accessory
+    onGetBodyAccessories: (body_id) => dispatch(actions.getBodyAccessories(body_id)),
     onCreateBodyAccessory: (createBodyAccessoryData, imageTag, imageFiles) =>
       dispatch(actions.createBodyAccessory(createBodyAccessoryData, imageTag, imageFiles)),
     onUpdateBodyAccessory: (updateBodyAccessoryData, imageTag, imageFiles) =>

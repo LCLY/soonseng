@@ -1162,10 +1162,13 @@ export function* createBodyAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Body Accessories
 /* ------------------------------- */
-export function* getBodyAccessoriesSaga(_action: AppActions) {
+export function* getBodyAccessoriesSaga(action: AppActions) {
   yield put(actions.getBodyAccessoriesStart());
 
-  let url = process.env.REACT_APP_API + `/tail/body_accessory`;
+  let url = '';
+  if ('body_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
+  }
 
   try {
     let response = yield axios.get(url);

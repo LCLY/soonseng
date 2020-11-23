@@ -1,7 +1,7 @@
-import { TReceivedBodyAccessoryObj, TReceivedBodyLengthObj } from '../types/dashboard';
-import { TReceivedSalesMakesObj, TReceivedSalesLengthCategoryObj } from '../types/sales';
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
+import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from '../types/dashboard';
+import { TReceivedSalesMakesObj, TReceivedSalesLengthCategoryObj } from '../types/sales';
 
 /* ============================================================================================ */
 //  Sales
@@ -90,10 +90,16 @@ export const getSalesBodyAccessoriesStart = (): AppActions => {
   };
 };
 
-export const getSalesBodyAccessoriesSucceed = (bodyAccessoriesArray: TReceivedBodyAccessoryObj[]): AppActions => {
+export const getSalesBodyAccessoriesSucceed = (
+  generalAccessoriesArray: TReceivedAccessoryObj[],
+  dimensionRelatedAccessoriesArray: TReceivedAccessoryObj[],
+  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[],
+): AppActions => {
   return {
     type: actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED,
-    bodyAccessoriesArray: bodyAccessoriesArray,
+    generalAccessoriesArray: generalAccessoriesArray,
+    dimensionRelatedAccessoriesArray: dimensionRelatedAccessoriesArray,
+    bodyRelatedAccessoriesArray: bodyRelatedAccessoriesArray,
   };
 };
 export const getSalesBodyAccessoriesFailed = (errorMessage: string): AppActions => {

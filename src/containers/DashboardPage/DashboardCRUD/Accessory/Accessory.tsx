@@ -19,12 +19,7 @@ import { Button, Form, Input, Modal, Layout, Table, Tooltip, notification } from
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import {
-  TReceivedAccessoryObj,
-  TReceivedBodyAccessoryObj,
-  TReceivedBodyLengthObj,
-  TReceivedImageObj,
-} from 'src/store/types/dashboard';
+import { TReceivedAccessoryObj, TReceivedBodyLengthObj, TReceivedImageObj } from 'src/store/types/dashboard';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 
 const { TextArea } = Input;
@@ -678,7 +673,6 @@ interface StateProps {
   errorMessage?: string | null;
   successMessage?: string | null;
   accessoriesArray?: TReceivedAccessoryObj[] | null;
-  bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
   bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
@@ -690,7 +684,6 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       imagesUploaded: state.dashboard.imagesUploaded,
       bodyLengthsArray: state.dashboard.bodyLengthsArray,
       accessoriesArray: state.dashboard.accessoriesArray,
-      bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
     };
   }
 };
@@ -701,10 +694,6 @@ interface DispatchProps {
   onUpdateAccessory: typeof actions.updateAccessory;
   // Body length
   onGetBodyLengths: typeof actions.getBodyLengths;
-  //  Body accessory
-  onGetBodyAccessories: typeof actions.getBodyAccessories;
-  onCreateBodyAccessory: typeof actions.createBodyAccessory;
-  onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -720,12 +709,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.updateAccessory(id, title, description, imageTag, imageFiles)),
     // body length
     onGetBodyLengths: () => dispatch(actions.getBodyLengths()),
-    // body accessory
-    onGetBodyAccessories: () => dispatch(actions.getBodyAccessories()),
-    onCreateBodyAccessory: (createBodyAccessoryData, imageTag, imageFiles) =>
-      dispatch(actions.createBodyAccessory(createBodyAccessoryData, imageTag, imageFiles)),
-    onUpdateBodyAccessory: (updateBodyAccessoryData, imageTag, imageFiles) =>
-      dispatch(actions.updateBodyAccessory(updateBodyAccessoryData, imageTag, imageFiles)),
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

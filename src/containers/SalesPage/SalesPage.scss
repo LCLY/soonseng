@@ -61,6 +61,138 @@
     }
   }
 
+  /* ============================ */
+  // The select area on the right
+  /* ============================ */
+  &__selectarea {
+    /* ---------------- */
+    // most outerdiv
+    /* ---------------- */
+    &-outerdiv {
+      display: flex;
+      flex-direction: column;
+      width: 60rem;
+      border-radius: 5px;
+    }
+
+    /* --------------------- */
+    // innerdiv
+    /* --------------------- */
+    &-innerdiv {
+      padding: 2rem 2rem 5rem 2rem;
+      border-radius: 5px;
+      background: rgba(233, 234, 240, 0.219);
+    }
+
+    /* ---------------- */
+    // display grid div
+    /* ---------------- */
+    &-div {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-rows: auto;
+      grid-template-columns: repeat(3, 1fr);
+      justify-content: center;
+      align-items: center;
+      grid-auto-rows: 3fr;
+      justify-items: center;
+      grid-gap: 2rem;
+
+      /* --------------------- */
+      // Active selected buttons
+      /* --------------------- */
+      & .active {
+        // if the card is in active state
+        border: 1px solid $primary-color-2;
+        background: #fef9f6;
+        // if card is active, when hover, shouldnt have any changes
+        &:hover {
+          border: 1px solid $primary-color-2;
+          background: #fef9f6;
+        }
+      }
+    }
+
+    /* --------------------*/
+    // Small select buttons
+    /* --------------------*/
+    &-button {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      text-align: center;
+      text-transform: capitalize;
+      white-space: normal;
+      border-radius: 2px;
+      background: white;
+      width: 100%;
+      padding: 1rem 1rem;
+      border: 1px solid $translucent-grey;
+
+      &:hover {
+        background: rgba(230, 230, 230, 0.295);
+      }
+      &:focus {
+        background: blue;
+      }
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+
+      /* -------------------------- */
+      // the skeleton of the buttons
+      /* -------------------------- */
+      &-skeleton {
+        width: 100% !important;
+      }
+    }
+
+    /* ------------------------------------------- */
+    // details/ info card
+    // card that shows when user selected an option
+    /* ------------------------------------------- */
+    &-card {
+      width: 100% !important;
+      margin-bottom: 2rem !important;
+      & .ant-card-head {
+        font-family: $font-firesans;
+        color: rgba(0, 0, 0, 0.534);
+        background: rgba(187, 194, 212, 0.308) !important;
+      }
+
+      /* each row of the details within the card*/
+      &-row {
+        display: flex;
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+        // left part of the row
+        &-left {
+          width: 10rem;
+          font-family: $font-firesans;
+          color: rgba(0, 0, 0, 0.514);
+        }
+
+        /* right part of the row */
+        &-right {
+          &-title {
+            text-transform: capitalize;
+          }
+        }
+      }
+
+      /* ------------- */
+      // price in the card
+      /* ------------- */
+      &-price {
+        font-size: 1.5rem;
+        font-weight: bolder;
+        color: $primary-color-4;
+        font-family: $font-opensans;
+      }
+    }
+  }
+
   /* ===================== */
   // Loading component
   /* ===================== */
@@ -105,17 +237,6 @@
       padding: 2rem 2rem 5rem 2rem;
       border-radius: 5px;
       background: rgba(233, 234, 240, 0.219);
-    }
-    /* ---------------------- */
-    // div wrapping the small cards
-    /* ---------------------- */
-    &-div {
-      display: grid;
-      grid-template-rows: auto;
-      grid-template-columns: repeat(3, 1fr);
-      justify-content: center;
-      grid-auto-rows: 3fr;
-      grid-gap: 0.5rem;
     }
 
     // The MCV, LCV, HCV
@@ -176,12 +297,19 @@
       margin-top: 2rem;
       display: grid;
       grid-template-rows: auto;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       justify-content: center;
       align-items: center;
       grid-auto-rows: 3fr;
       justify-items: center;
       grid-gap: 2rem;
+
+      // display: grid;
+      // grid-template-rows: auto;
+      // grid-template-columns: repeat(3, 1fr);
+      // justify-content: center;
+      // grid-auto-rows: 3fr;
+      // grid-gap: 0.5rem;
     }
 
     /* --------------------------------------------- */
@@ -225,25 +353,6 @@
         font-family: $font-opensans;
         // font-size: 2rem !important;
         color: rgba(0, 0, 0, 0.397) !important;
-      }
-      /* each row of the details */
-      &-row {
-        display: flex;
-        &:not(:last-child) {
-          margin-bottom: 0.5rem;
-        }
-        // left part of the row
-        &-left {
-          width: 10rem;
-          font-family: $font-firesans;
-          color: rgba(0, 0, 0, 0.514);
-        }
-      }
-      &-price {
-        font-size: 1.5rem;
-        font-weight: bolder;
-        color: $primary-color-4;
-        font-family: $font-opensans;
       }
 
       // the description for accessory
@@ -385,19 +494,6 @@
       &-colon {
         margin-right: 0.3rem;
         margin-left: 0.1rem;
-      }
-    }
-
-    /* ------------------------------------------- */
-    // card that shows when user selected an option
-    /* ------------------------------------------- */
-    &-selected {
-      width: 100% !important;
-      margin-bottom: 2rem !important;
-      & .ant-card-head {
-        font-family: $font-firesans;
-        color: rgba(0, 0, 0, 0.534);
-        background: rgba(187, 194, 212, 0.308) !important;
       }
     }
   }

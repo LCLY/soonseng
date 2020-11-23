@@ -11,8 +11,9 @@ const initialState: SalesInitialState = {
   bodyLengthObj: null,
   bodyLengthsArray: null,
   // accessories
-  bodyAccessoryObj: null,
-  bodyAccessoriesArray: null,
+  generalAccessoriesArray: null,
+  dimensionRelatedAccessoriesArray: null,
+  bodyRelatedAccessoriesArray: null,
   // brands/makes
   salesBrandObj: null,
   salesBrandsArray: null,
@@ -96,12 +97,18 @@ const getSalesBodyAccessoriesStart = (state: SalesInitialState, _action: AppActi
   return updateObject(state, { errorMessage: null, loading: true, getSalesBodyAccessoriesSucceed: null });
 };
 const getSalesBodyAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
-  if ('bodyAccessoriesArray' in action) {
+  if (
+    'generalAccessoriesArray' in action &&
+    'dimensionRelatedAccessoriesArray' in action &&
+    'bodyRelatedAccessoriesArray' in action
+  ) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
-      bodyAccessoriesArray: action.bodyAccessoriesArray,
       getSalesBodyAccessoriesSucceed: true,
+      generalAccessoriesArray: action.generalAccessoriesArray,
+      bodyRelatedAccessoriesArray: action.bodyRelatedAccessoriesArray,
+      dimensionRelatedAccessoriesArray: action.dimensionRelatedAccessoriesArray,
     });
   }
 };
