@@ -794,7 +794,7 @@ const SalesPage: React.FC<Props> = ({
     <>
       <section className="sales__section sales__section-body">
         <Divider orientation="left">
-          <div className="sales__section-header">Accessory </div>
+          <div className="sales__section-header">Brand</div>
         </Divider>
 
         <section className="sales__section-innerdiv">
@@ -877,7 +877,11 @@ const SalesPage: React.FC<Props> = ({
 
           {/* Selections on the right */}
           <div className="sales__section-right">
-            <div className="sales__selectarea-desc"> This page is to choose your preferred whip. </div>
+            <div className="sales__selectarea-desc">
+              This page is to choose your preferred whip.
+              <br />
+              Choose your trusted or preferred brand, HINO is cool.
+            </div>
             <div className="sales__selectarea-innerdiv">
               <div>Select the model of your vehicle</div>
               <>
