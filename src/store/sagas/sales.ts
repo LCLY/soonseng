@@ -140,7 +140,7 @@ export function* getSalesBodyAccessoriesSaga(action: AppActions) {
 export function* getSalesMakesSaga(action: AppActions) {
   // get accessories through body length
   yield put(actions.getSalesMakesStart());
-  let url = process.env.REACT_APP_API + `/pages/sales/makes_for_body`;
+  let url = process.env.REACT_APP_API + `/pages/sales/get_makes_for_body`;
 
   let choice = {};
   if ('length_id' in action && 'tire' in action) {

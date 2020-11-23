@@ -1,6 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 import {
   TReceivedAccessoryObj,
+  TReceivedBodyAccessoryObj,
   TReceivedBodyLengthObj,
   TReceivedBrandObj,
   TReceivedImageObj,
@@ -19,7 +20,7 @@ export interface SalesInitialState {
   readonly bodyLengthsArray: TReceivedBodyLengthObj[] | null;
   // accessory
   readonly generalAccessoriesArray: TReceivedAccessoryObj[] | null;
-  readonly dimensionRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
+  readonly dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] | null;
   readonly bodyRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
   // brands
   readonly salesBrandObj: TReceivedSalesMakesObj | null;
@@ -102,6 +103,14 @@ export interface GetSalesBodyLengthsFailedAction {
 /* ------------------ */
 // Get Body length Accessories
 /* ------------------ */
+// Types
+export type TReceivedDimensionAccessoryObj = {
+  id: number;
+  accessory: TReceivedAccessoryObj;
+  body_length: TReceivedBodyLengthObj;
+  price: number;
+};
+
 export interface GetSalesBodyAccessoriesAction {
   type: typeof actionTypes.GET_SALES_BODYACCESSORIES;
   body_length_id: number;
@@ -112,8 +121,8 @@ export interface GetSalesBodyAccessoriesStartAction {
 export interface GetSalesBodyAccessoriesSucceedAction {
   type: typeof actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED;
   generalAccessoriesArray: TReceivedAccessoryObj[];
-  dimensionRelatedAccessoriesArray: TReceivedAccessoryObj[];
-  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
+  bodyRelatedAccessoriesArray: TReceivedBodyAccessoryObj[];
+  dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
 }
 export interface GetSalesBodyAccessoriesFailedAction {
   type: typeof actionTypes.GET_SALES_BODYACCESSORIES_FAILED;

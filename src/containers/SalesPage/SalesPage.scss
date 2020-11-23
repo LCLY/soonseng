@@ -35,8 +35,8 @@
     &-img {
       margin-top: 1rem;
       margin-bottom: 0.5rem;
-      width: 40rem;
-      height: 30rem;
+      width: 100%;
+      height: 25rem;
       object-fit: cover;
       &-unavailabletext {
         color: rgba(0, 0, 0, 0.479);
@@ -45,12 +45,24 @@
       }
     }
 
-    // the description box
-    &-desc {
+    /* --------------------------- */
+    // the left column with image
+    /* ---------------------------- */
+    &-left {
       color: $secondary-color-2;
       margin-bottom: 1rem;
       margin-right: 2rem;
-      width: 45rem;
+      width: 50rem;
+      padding-right: 10rem;
+    }
+    /* --------------------------- */
+    // the right column with select box
+    /* ---------------------------- */
+    &-right {
+      display: flex;
+      flex-direction: column;
+      width: 60rem;
+      border-radius: 5px;
     }
 
     &-result {
@@ -65,14 +77,17 @@
   // The select area on the right
   /* ============================ */
   &__selectarea {
-    /* ---------------- */
-    // most outerdiv
-    /* ---------------- */
-    &-outerdiv {
-      display: flex;
-      flex-direction: column;
-      width: 60rem;
-      border-radius: 5px;
+    // accessories alteration
+    &--accessories {
+      &:not(:last-child) {
+        margin-bottom: 5rem;
+      }
+    }
+
+    &--brand {
+      &:not(:last-child) {
+        margin-bottom: 5rem;
+      }
     }
 
     /* --------------------- */
@@ -81,7 +96,8 @@
     &-innerdiv {
       padding: 2rem 2rem 5rem 2rem;
       border-radius: 5px;
-      background: rgba(233, 234, 240, 0.219);
+      border: 1px solid rgba(0, 0, 0, 0.171);
+      // background: rgba(233, 234, 240, 0.219);
     }
 
     /* ---------------- */
@@ -97,6 +113,10 @@
       grid-auto-rows: 3fr;
       justify-items: center;
       grid-gap: 2rem;
+
+      &--twocolumn {
+        grid-template-columns: repeat(2, 1fr);
+      }
 
       /* --------------------- */
       // Active selected buttons
@@ -145,6 +165,17 @@
       &-skeleton {
         width: 100% !important;
       }
+
+      /* ----------------------------------- */
+      // add to cart button in accessory page
+      /* ------------------------------------ */
+      &-addtocart {
+        display: flex;
+        justify-content: flex-end;
+        & .fa-cart-plus {
+          margin-right: 1rem;
+        }
+      }
     }
 
     /* ------------------------------------------- */
@@ -152,10 +183,12 @@
     // card that shows when user selected an option
     /* ------------------------------------------- */
     &-card {
-      width: 100% !important;
-      margin-bottom: 2rem !important;
+      width: 100%;
+      margin-top: 2rem !important;
+      border-color: rgba(0, 0, 0, 0.123) !important;
+      // @include shadow-func(0.4rem, 0.4rem, 0.5rem, 0, rgba(0, 0, 0, 0.13));
       & .ant-card-head {
-        font-family: $font-firesans;
+        font-family: $font-roboto;
         color: rgba(0, 0, 0, 0.534);
         background: rgba(187, 194, 212, 0.308) !important;
       }
@@ -168,14 +201,18 @@
         }
         // left part of the row
         &-left {
-          width: 10rem;
+          width: 25%;
           font-family: $font-firesans;
           color: rgba(0, 0, 0, 0.514);
         }
 
         /* right part of the row */
         &-right {
+          width: 75%;
+          display: flex;
+          font-size: 1.3rem;
           &-title {
+            font-size: 1.3rem;
             text-transform: capitalize;
           }
         }
@@ -190,6 +227,45 @@
         color: $primary-color-4;
         font-family: $font-opensans;
       }
+    }
+
+    /* ----------------------------------------------- */
+    // different categories e.g. LCV, HCV, 300 Series
+    /* ----------------------------------------------- */
+    &-categorydivider {
+      font-family: $font-firesans;
+      border-color: rgba(0, 0, 0, 0.151) !important;
+      color: $primary-color-3 !important;
+
+      // alteration for brand
+      &--brand {
+        font-size: 2rem;
+      }
+    }
+
+    /* --------------------- */
+    // description on top of select area
+    /* --------------------- */
+    &-desc {
+      font-size: 1.4rem;
+      color: $secondary-color-3;
+      font-family: $font-roboto;
+      margin-bottom: 2rem;
+    }
+
+    /* -------------------------- */
+    // series title e.g. XZU600K
+    /* -------------------------- */
+    &-seriestitle {
+      display: inline-block;
+      font-size: 1.2rem;
+      font-family: $font-roboto;
+      padding: 0.1rem 1rem 0.1rem 2rem;
+      border-left: 0.5rem solid $primary-color-4;
+      border-top-left-radius: 5rem;
+      border-top: 1px solid rgba($primary-color-4, 0.2);
+      border-right: 1px solid rgba($primary-color-4, 0.2);
+      border-bottom: 1px solid rgba($primary-color-4, 0.2);
     }
   }
 
@@ -229,20 +305,6 @@
           background: #fef9f6;
         }
       }
-    }
-    /* ------------------------------------------ */
-    // the innerdiv wrapping all the small buttons
-    /* ------------------------------------------ */
-    &-innerdiv {
-      padding: 2rem 2rem 5rem 2rem;
-      border-radius: 5px;
-      background: rgba(233, 234, 240, 0.219);
-    }
-
-    // The MCV, LCV, HCV
-    &-category {
-      font-family: $font-opensans;
-      color: rgba(0, 0, 0, 0.623) !important;
     }
 
     /* --------------------*/
@@ -317,25 +379,6 @@
     /* --------------------------------------------- */
     &-preview {
       border: 1px solid $translucent-grey;
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-      width: 40rem;
-      height: 30rem;
-      object-fit: cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: $section-grey;
-
-      &-title {
-        font-family: $font-firesans;
-      }
-
-      &-icon {
-        text-align: center;
-        font-size: 10rem;
-        color: rgba($secondary-color-3, 0.7);
-      }
     }
 
     /* ------------------------------------------ */
@@ -367,133 +410,6 @@
         display: flex;
         padding-bottom: 1rem;
         justify-content: flex-end;
-      }
-    }
-  }
-
-  /* ================================ */
-  // overlay on length card
-  &__overlay {
-    background: rgba(0, 0, 0, 0.4);
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    border-radius: 0.5rem;
-    z-index: 100;
-
-    & > .fa-check-circle {
-      color: rgb(18, 233, 18);
-      margin: 0.5rem;
-    }
-
-    & > .fa-eye {
-      padding: 1rem;
-      margin: 1rem;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 0.5rem;
-      border: 2px solid white;
-    }
-  }
-
-  /* ======================================= */
-  // general card
-  &__card {
-    /* ------------------------------------ */
-    // card for the picker on the left column
-    &-picker {
-      position: relative;
-      width: auto !important;
-      margin: 1rem;
-      color: white;
-      background: $primary-color-2 !important;
-      padding: 0.5rem;
-      cursor: pointer;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-
-      &:hover {
-        transition: all 0.5s ease;
-        background: $primary-color-1 !important;
-        @include shadow-func(0rem, 0.3rem, 0.7rem, 0.2rem, rgba(34, 33, 33, 0.534));
-      }
-      // the body wrapping the title
-      &-body {
-        padding: 1rem 0 0 0 !important;
-      }
-      // title of the card picker content
-      &-title {
-        text-align: center;
-        font-family: $font-opensans !important;
-        font-weight: 600 !important;
-      }
-    }
-
-    /* ------------------------------------ */
-    //  the card on the viewer side
-    &-viewer {
-      width: auto !important;
-      margin: 3rem 10rem 3rem 10rem;
-    }
-
-    /* ===================== */
-    // dimension tag
-    /* ===================== */
-    &-tag {
-      text-align: center !important;
-      display: flex !important;
-      align-items: top !important;
-      padding-right: 0 !important;
-      margin: 0 !important;
-      /* ----------------------------------------- */
-      /* the tags inside the table accessory column */
-      /* ------------------------------------------ */
-      &--bodyaccessory {
-        width: auto;
-        padding-right: 0.3rem !important;
-        margin-right: 0.4rem !important;
-      }
-      /* ---------------------------- */
-      // the outerdiv wrapping all tags
-      /* ---------------------------- */
-      &-outerdiv {
-        display: flex;
-        flex-wrap: wrap; //let display flex but wrapped to next line
-      }
-
-      /* -------------- */
-      //  div wrapping tag
-      /* -------------- */
-      &-div {
-        display: flex !important;
-        margin-bottom: 0.2rem;
-        margin-right: 0.3rem;
-      }
-
-      /* --------------- */
-      // values of W x H x D
-      /* --------------- */
-      &-values {
-        white-space: normal;
-        display: flex;
-        padding-right: 0.5rem;
-      }
-      /* ------------------- */
-      // the title: Width, Height, Depth
-      /* ------------------- */
-      &-title {
-        width: 3.6rem;
-      }
-
-      &-colon {
-        margin-right: 0.3rem;
-        margin-left: 0.1rem;
       }
     }
   }
@@ -651,6 +567,7 @@
       border-radius: 5px;
       padding: 2rem 1rem 0 1rem;
       margin-left: 2rem;
+      background: white;
     }
 
     // the title showing which step user is at
@@ -664,7 +581,7 @@
     &-content {
       width: 100%;
       display: flex;
-      margin-left: 20rem;
+      margin-left: 10rem;
       justify-content: center;
     }
   }

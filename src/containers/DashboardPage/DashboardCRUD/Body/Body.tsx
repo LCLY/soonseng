@@ -1610,7 +1610,7 @@ const Body: React.FC<Props> = ({
                             <div className="body__expand-card-title-div">
                               <span className="body__expand-card-title">{bodyAccessory.accessory.title}</span>
                               <Tag color="geekblue" style={{ marginRight: 0 }}>
-                                RM{bodyAccessory.price}
+                                RM{bodyAccessory.accessory.price}
                               </Tag>
                             </div>
                           }
@@ -1658,8 +1658,10 @@ const Body: React.FC<Props> = ({
                               <div className="body__expand-card-description-left">
                                 <span className="body__expand-card-category">Description</span>:&nbsp;
                               </div>
-                              {bodyAccessory.description ? (
-                                <div className="body__expand-card-description-right">{bodyAccessory.description}</div>
+                              {bodyAccessory.body_length.body.description ? (
+                                <div className="body__expand-card-description-right">
+                                  {bodyAccessory.body_length.body.description}
+                                </div>
                               ) : (
                                 <div className="body__expand-card-description-right">-</div>
                               )}
@@ -1679,8 +1681,8 @@ const Body: React.FC<Props> = ({
                                       updateBodyAccessoryForm.setFieldsValue({
                                         bodyAccessoryId: bodyAccessory.id, //the id for update
                                         accessoryId: bodyAccessory.accessory.id,
-                                        bodyAccessoryPrice: bodyAccessory.price,
-                                        bodyAccessoryDescription: bodyAccessory.description,
+                                        bodyAccessoryPrice: bodyAccessory.accessory.price,
+                                        bodyAccessoryDescription: bodyAccessory.body_length.body.description,
                                         bodyLengthId: bodyAccessory.body_length.id,
                                       });
                                     }}

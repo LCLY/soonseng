@@ -1,7 +1,11 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from '../types/dashboard';
-import { TReceivedSalesMakesObj, TReceivedSalesLengthCategoryObj } from '../types/sales';
+import { TReceivedAccessoryObj, TReceivedBodyAccessoryObj, TReceivedBodyLengthObj } from '../types/dashboard';
+import {
+  TReceivedSalesMakesObj,
+  TReceivedSalesLengthCategoryObj,
+  TReceivedDimensionAccessoryObj,
+} from '../types/sales';
 
 /* ============================================================================================ */
 //  Sales
@@ -92,8 +96,8 @@ export const getSalesBodyAccessoriesStart = (): AppActions => {
 
 export const getSalesBodyAccessoriesSucceed = (
   generalAccessoriesArray: TReceivedAccessoryObj[],
-  dimensionRelatedAccessoriesArray: TReceivedAccessoryObj[],
-  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[],
+  dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[],
+  bodyRelatedAccessoriesArray: TReceivedBodyAccessoryObj[],
 ): AppActions => {
   return {
     type: actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED,

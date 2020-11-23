@@ -693,12 +693,9 @@ export type TUpdateBodyAccessoryData = {
 };
 export type TReceivedBodyAccessoryObj = {
   id: number;
-  title: string;
+  available: boolean;
   accessory: TReceivedAccessoryObj;
   body_length: TReceivedBodyLengthObj;
-  description: string;
-  price: number;
-  available: boolean;
   images: TReceivedImageObj[];
 };
 
