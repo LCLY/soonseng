@@ -43,6 +43,38 @@
         font-family: $font-firesans;
         font-size: 1.3rem;
       }
+
+      &--illustratoricon {
+        padding-top: 3rem;
+        width: 50%;
+        height: 16rem;
+        &-div {
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
+        &-text {
+          font-size: 3rem;
+          padding-top: 2rem;
+          padding-bottom: 2rem;
+          color: rgba($secondary-color-2, 0.5);
+          font-family: $font-bebasneue;
+        }
+      }
+
+      &--accessories {
+        padding-top: 2rem;
+        margin-top: 2rem;
+        width: 33%;
+        height: 15rem;
+        &-text {
+          font-size: 3rem;
+          padding-top: 1.3rem;
+          padding-bottom: 3rem;
+          color: rgba($secondary-color-2, 0.5);
+          font-family: $font-bebasneue;
+        }
+      }
     }
 
     /* --------------------------- */
@@ -77,6 +109,23 @@
     /* ---------------------------------------- */
     &-overview {
       width: 110rem;
+    }
+
+    /* --------------------------------------------- */
+    // the div to ask user to select to preview images
+    /* --------------------------------------------- */
+    &-preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid $translucent-grey;
+      &-innerdiv {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
     }
   }
 
@@ -381,13 +430,6 @@
       // grid-gap: 0.5rem;
     }
 
-    /* --------------------------------------------- */
-    // the div to ask user to select to preview images
-    /* --------------------------------------------- */
-    &-preview {
-      border: 1px solid $translucent-grey;
-    }
-
     /* ------------------------------------------ */
     // the details when user clicks on a body
     /* ------------------------------------------ */
@@ -634,6 +676,27 @@
     &-title {
       font-size: 3rem;
       font-family: $font-firesans;
+    }
+  }
+
+  &__breadcrumb {
+    font-family: $font-firesans;
+
+    /* outer div wrapping breadcrumb to push the content to further bottom */
+    &-outerdiv {
+      margin-bottom: 3rem;
+    }
+
+    /* the text within the breadcrumbs */
+    &-text {
+      color: rgba(0, 0, 0, 0.603);
+    }
+    /* the result text when user chooses something */
+    &-highlight {
+      font-family: $font-firesans;
+      font-weight: bolder;
+      padding-left: 0.7rem;
+      color: $primary-color-4;
     }
   }
 }
