@@ -5,23 +5,23 @@ import * as actions from 'src/store/actions/index';
 // import { img_placeholder_link } f`rom 'src/shared/global';
 
 // component
+
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 
 // 3rd party lib
 import { v4 as uuidv4 } from 'uuid';
-// import { Card } from 'react-bootstrap';
-
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { LoadingOutlined } from '@ant-design/icons';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Button, Skeleton, Card, Empty, Steps, Tag, Divider } from 'antd';
 
 // Util
 import { TMapStateToProps } from 'src/store/types/index';
-import { img_not_available_link } from 'src/shared/global';
+import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import {
   TReceivedSalesMakesObj,
   TReceivedSalesLengthObj,
@@ -30,6 +30,7 @@ import {
   TReceivedDimensionAccessoryObj,
 } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/dashboard';
+
 const { Step } = Steps;
 
 interface SalesPageProps {}
@@ -78,17 +79,15 @@ const SalesPage: React.FC<Props> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [totalSteps, setTotalSteps] = useState(0);
 
-  /* Lightbox for body */
+  /* Lightboxes */
   // whether the lightbox is opened
-  const [isBodyLightboxOpen, setIsBodyLightboxOpen] = useState(false);
+  const [bodyLightboxOpen, setBodyLightboxOpen] = useState(false);
+  const [makeLightboxOpen, setMakeLightboxOpen] = useState(false);
+  const [bodyAccessoryLightboxOpen, setBodyAccessoryLightboxOpen] = useState(false);
   // photoindex to keep track of which image it's showing right now
   const [bodyPhotoIndex, setBodyPhotoIndex] = useState(0);
-  /* Lightbox for body accessory */
-  const [isBodyAccessoryLightboxOpen, setIsBodyAccessoryLightboxOpen] = useState(false);
-  const [bodyAccessoryPhotoIndex, setBodyAccessoryPhotoIndex] = useState(0);
-  /* Lightbox for Make */
-  const [isMakeLightboxOpen, setIsMakeLightboxOpen] = useState(false);
   const [makePhotoIndex, setMakePhotoIndex] = useState(0);
+  const [bodyAccessoryPhotoIndex, setBodyAccessoryPhotoIndex] = useState(0);
 
   /* ========================= */
   //        method
@@ -97,6 +96,10 @@ const SalesPage: React.FC<Props> = ({
   /** To go to previous step/page  */
   const prev = () => {
     setCurrentStep(currentStep - 1);
+  };
+  /** To go to next step/page  */
+  const next = () => {
+    setCurrentStep(currentStep + 1);
   };
 
   /* =========================== */
@@ -262,14 +265,27 @@ const SalesPage: React.FC<Props> = ({
                 {/* if there is no image then show image not available */}
                 {currentBodyLength.images.length > 0 ? (
                   <>
-                    <div onClick={() => setIsBodyLightboxOpen(true)}> open</div>
-                    <LightboxComponent
-                      images={currentBodyLength?.images}
-                      photoIndex={bodyPhotoIndex}
-                      isOpen={isBodyLightboxOpen}
-                      setPhotoIndex={setBodyPhotoIndex}
-                      setIsOpen={setIsBodyLightboxOpen}
-                    />
+                    <div className="sales__lightbox-parent" onClick={() => setBodyLightboxOpen(true)}>
+                      {/* Clickable image to show lightbox */}
+
+                      <LazyLoadImage
+                        className="sales__section-img"
+                        src={currentBodyLength.images[0].url}
+                        alt={currentBodyLength.images[0].filename}
+                        placeholderSrc={img_loading_link}
+                      />
+
+                      <LightboxComponent
+                        images={currentBodyLength?.images}
+                        photoIndex={bodyPhotoIndex}
+                        isOpen={bodyLightboxOpen}
+                        setPhotoIndex={setBodyPhotoIndex}
+                        setIsOpen={setBodyLightboxOpen}
+                      />
+                      <div className="sales__lightbox-icon">
+                        <i className="fas fa-expand"></i>
+                      </div>
+                    </div>
                   </>
                 ) : (
                   <div>
@@ -440,13 +456,25 @@ const SalesPage: React.FC<Props> = ({
             {currentAccessory ? (
               <>
                 {currentAccessory.images.length > 0 ? (
-                  <LightboxComponent
-                    images={currentAccessory?.images}
-                    photoIndex={bodyAccessoryPhotoIndex}
-                    isOpen={isBodyAccessoryLightboxOpen}
-                    setPhotoIndex={setBodyAccessoryPhotoIndex}
-                    setIsOpen={setIsBodyAccessoryLightboxOpen}
-                  />
+                  <div className="sales__lightbox-parent" onClick={() => setBodyAccessoryLightboxOpen(true)}>
+                    {/* Clickable image to show lightbox */}
+                    <LazyLoadImage
+                      className="sales__section-img"
+                      src={currentAccessory.images[0].url}
+                      alt={currentAccessory.images[0].filename}
+                      placeholderSrc={img_loading_link}
+                    />
+                    <LightboxComponent
+                      images={currentAccessory?.images}
+                      photoIndex={bodyAccessoryPhotoIndex}
+                      isOpen={bodyAccessoryLightboxOpen}
+                      setPhotoIndex={setBodyAccessoryPhotoIndex}
+                      setIsOpen={setBodyAccessoryLightboxOpen}
+                    />
+                    <div className="sales__lightbox-icon">
+                      <i className="fas fa-expand"></i>
+                    </div>
+                  </div>
                 ) : (
                   <>
                     {/* if there is no image then show image not available */}
@@ -493,9 +521,7 @@ const SalesPage: React.FC<Props> = ({
                   </div>
                 </div>
                 <div className="sales__selectarea-button-addtocart">
-                  <Button type="primary">
-                    <i className="fas fa-cart-plus"></i>Add to cart
-                  </Button>
+                  <Button type="primary">Add To Body</Button>
                 </div>
               </Card>
             ) : (
@@ -804,13 +830,27 @@ const SalesPage: React.FC<Props> = ({
               <>
                 {/* if there is no image then show image not available */}
                 {currentMake.images.length > 0 ? (
-                  <LightboxComponent
-                    images={currentMake?.images}
-                    photoIndex={makePhotoIndex}
-                    isOpen={isMakeLightboxOpen}
-                    setPhotoIndex={setMakePhotoIndex}
-                    setIsOpen={setIsMakeLightboxOpen}
-                  />
+                  <>
+                    <div className="sales__lightbox-parent" onClick={() => setMakeLightboxOpen(true)}>
+                      {/* Clickable image to show lightbox */}
+                      <LazyLoadImage
+                        className="sales__section-img"
+                        src={currentMake.images[0].url}
+                        alt={currentMake.images[0].filename}
+                        placeholderSrc={img_loading_link}
+                      />
+                      <LightboxComponent
+                        images={currentMake?.images}
+                        photoIndex={makePhotoIndex}
+                        isOpen={makeLightboxOpen}
+                        setPhotoIndex={setMakePhotoIndex}
+                        setIsOpen={setMakeLightboxOpen}
+                      />
+                      <div className="sales__lightbox-icon">
+                        <i className="fas fa-expand"></i>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <>
                     <img className="sales__section-img" src={img_not_available_link} alt="no result" />
@@ -859,11 +899,6 @@ const SalesPage: React.FC<Props> = ({
                     RM
                     <NumberFormat value={currentMake?.price} displayType={'text'} thousandSeparator={true} />
                   </div>
-                </div>
-                <div className="sales__selectarea-button-addtocart">
-                  <Button type="primary">
-                    <i className="fas fa-cart-plus"></i>Add to cart
-                  </Button>
                 </div>
               </Card>
             ) : (
@@ -957,19 +992,14 @@ const SalesPage: React.FC<Props> = ({
           </Button>
           {currentStep < totalSteps - 1 && (
             <Button
-              type="primary"
-              onClick={() => {
-                // Then call the body lengths API
-                if (currentLength === null) return;
-                if (currentLength.id) {
-                  onGetSalesBodyLengths(currentLength.id);
-                }
-              }}
               className="sales__length-btn"
-              loading={loading}
-              disabled={currentLength === null ? true : false}
+              type="primary"
+              disabled={currentMake === null}
+              onClick={() => {
+                next();
+              }}
             >
-              Next
+              <i className="fas fa-cart-plus"></i>&nbsp;&nbsp;Add To Cart
             </Button>
           )}
         </div>
@@ -977,7 +1007,20 @@ const SalesPage: React.FC<Props> = ({
     </>
   );
 
+  let overviewSection = (
+    <section className="sales__section">
+      <div className="sales__section-overview">
+        <Divider orientation="left">
+          <div className="sales__section-header">Overview</div>
+        </Divider>
+
+        <div>{currentMake}</div>
+      </div>
+    </section>
+  );
+
   const steps = [
+    { step: 1, title: 'Overview', content: overviewSection },
     { step: 1, title: 'Tyre', content: tyreSection },
     {
       step: 2,
@@ -995,6 +1038,7 @@ const SalesPage: React.FC<Props> = ({
       content: bodyAccessorySection,
     },
     { step: 5, title: 'Brand', content: brandSection },
+    { step: 6, title: 'Overview', content: overviewSection },
   ];
 
   /* =========================== */
@@ -1040,14 +1084,7 @@ const SalesPage: React.FC<Props> = ({
       <div className="sales__outerdiv">
         <div className="sales__innerdiv">
           <div className="sales__steps-div">
-            <Steps
-              direction="vertical"
-              current={currentStep}
-              // onChange={(current) => {
-              //   //  later only enable onclick after user has completed everything
-              //   setCurrentStep(current);
-              // }}
-            >
+            <Steps direction="vertical" current={currentStep}>
               {steps.map((item) => (
                 <Step
                   key={item.title}

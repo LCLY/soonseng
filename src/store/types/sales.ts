@@ -25,7 +25,8 @@ export interface SalesInitialState {
   // brands
   readonly salesBrandObj: TReceivedSalesMakesObj | null;
   readonly salesBrandsArray: TReceivedSalesMakesObj[] | null;
-
+  // quotation obj
+  readonly quotationObj: TQuotationObj[] | null;
   // boolean to know whether fetch successful
   readonly getSalesLengthsSucceed: boolean | null;
   readonly getSalesBodyLengthsSucceed: boolean | null;
@@ -48,6 +49,23 @@ export interface ClearSalesStateAction {
 /* ============================================================== */
 // Sales
 /* ============================================================== */
+/* ---------------------------- */
+// Create Quotation
+/* ---------------------------- */
+// Quotation object should contain as much info as possible about a product
+export type TQuotationObj = {
+  salesBrandObj: TReceivedSalesMakesObj;
+  tireCount: number;
+  bodyLengthObj: TReceivedBodyLengthObj;
+  generalAccessoriesArray: TReceivedAccessoryObj[];
+  dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
+  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
+};
+
+export interface StoreLocalQuotationAction {
+  type: typeof actionTypes.STORE_LOCAL_QUOTATION;
+  quotationObj: TQuotationObj;
+}
 
 /* ------------------ */
 // Get Lengths
@@ -191,6 +209,10 @@ export type SalesActionTypes =
   // Clear sales state
   /* -------------------------- */
   | ClearSalesStateAction
+  /* -------------------------- */
+  // Store Local Quotation
+  /* -------------------------- */
+  | StoreLocalQuotationAction
   /* ------------------------ */
   // Lengths
   /* ------------------------ */

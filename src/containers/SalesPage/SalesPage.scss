@@ -71,6 +71,13 @@
       font-weight: bolder;
       text-transform: capitalize;
     }
+
+    /* ----------------------------------------- */
+    // overview of user's truck configuration
+    /* ---------------------------------------- */
+    &-overview {
+      width: 110rem;
+    }
   }
 
   /* ============================ */
@@ -583,6 +590,50 @@
       display: flex;
       margin-left: 10rem;
       justify-content: center;
+    }
+  }
+
+  /* ========================== */
+  // lightbox related css
+  /* ========================== */
+  &__lightbox {
+    //  parent div wrapping image and lightbox and icon
+    &-parent {
+      position: relative;
+      cursor: pointer;
+      border: 1px solid $translucent-grey;
+      &:hover {
+        transition: all 0.5s ease;
+        @include shadow-func(0.1rem, 0.1rem, 1rem, 0.5rem, rgba(0, 0, 0, 0.171));
+
+        & .sales__lightbox-icon {
+          transition: all 0.5s ease;
+          opacity: 1;
+        }
+      }
+    }
+
+    // the expand icon
+    &-icon {
+      position: absolute;
+      opacity: 0;
+      bottom: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.452);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      border: 2px solid white;
+    }
+  }
+
+  /* ========================== */
+  // overview section related css
+  /* ========================== */
+  &__overview {
+    &-title {
+      font-size: 3rem;
+      font-family: $font-firesans;
     }
   }
 }

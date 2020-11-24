@@ -32,7 +32,7 @@ const composeEnhancers =
 const persistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: [''], // which reducer want to store - name of reducer
+  whitelist: ['sales'], // which reducer want to store - name of reducer
 };
 
 // combine all reducers

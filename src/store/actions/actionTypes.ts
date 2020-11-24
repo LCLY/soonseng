@@ -7,6 +7,8 @@
 // Clear Sales State
 export const CLEAR_SALES_STATE = 'CLEAR_SALES_STATE';
 
+export const STORE_LOCAL_QUOTATION = 'STORE_LOCAL_QUOTATION';
+
 // Get Lengths in sales page
 export const GET_SALES_LENGTHS = 'GET_SALES_LENGTHS';
 export const GET_SALES_LENGTHS_START = 'GET_SALES_LENGTHS_START';

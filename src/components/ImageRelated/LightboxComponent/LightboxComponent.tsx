@@ -16,7 +16,6 @@ type Props = LightboxComponentProps;
 const LightboxComponent: React.FC<Props> = ({ images, photoIndex, isOpen, setPhotoIndex, setIsOpen }) => {
   const [imageUrlsArray, setImageUrlsArray] = useState<string[]>([]);
 
-  console.log(imageUrlsArray);
   // convert image objects array to image array with only urls
   useEffect(() => {
     let tempArray: string[] = [];
@@ -28,10 +27,9 @@ const LightboxComponent: React.FC<Props> = ({ images, photoIndex, isOpen, setPho
   }, [images, setImageUrlsArray]);
 
   return (
-    <div className="lightbox__outerdiv">
+    <>
       {isOpen && (
         <Lightbox
-          // reactModalProps={{ appElement: 'div' }}
           mainSrc={imageUrlsArray[photoIndex]}
           nextSrc={imageUrlsArray[(photoIndex + 1) % imageUrlsArray.length]}
           prevSrc={imageUrlsArray[(photoIndex + imageUrlsArray.length - 1) % imageUrlsArray.length]}
@@ -40,7 +38,7 @@ const LightboxComponent: React.FC<Props> = ({ images, photoIndex, isOpen, setPho
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % imageUrlsArray.length)}
         />
       )}
-    </div>
+    </>
   );
 };
 export default LightboxComponent;

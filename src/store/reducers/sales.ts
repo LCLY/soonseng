@@ -17,6 +17,8 @@ const initialState: SalesInitialState = {
   // brands/makes
   salesBrandObj: null,
   salesBrandsArray: null,
+  // quotation object
+  quotationObj: null,
   // others
   errorMessage: null,
   successMessage: null,

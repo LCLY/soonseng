@@ -4,7 +4,7 @@ import './NavbarComponent.scss';
 // 3rd party lib
 import { Navbar, Nav } from 'react-bootstrap';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-
+import { ShoppingCartOutlined } from '@ant-design/icons';
 // image
 import SoonSengLogo from 'src/img/soonseng_logo.png';
 
@@ -46,6 +46,11 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
             </div>
             <div className={`navbar__link ${activePage === 'dashboard' ? 'active' : ''}`}>
               <Nav.Link onClick={() => history.push('/dashboard/make')}>DASHBOARD</Nav.Link>
+            </div>
+            <div className={`navbar__link ${activePage === 'dashboard' ? 'active' : ''}`}>
+              <Nav.Link onClick={() => alert('go to shopping cart')}>
+                <ShoppingCartOutlined />
+              </Nav.Link>
             </div>
             {/* <div className="sales__dashboard">
               <Button type="default" onClick={() => history.push('/dashboard/make')}>
