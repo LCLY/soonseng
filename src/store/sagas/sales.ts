@@ -55,12 +55,13 @@ export function* getSalesLengthsSaga(action: AppActions) {
 /* ------------------------------- */
 export function* getSalesBodyLengthsSaga(action: AppActions) {
   yield put(actions.getSalesBodyLengthsStart());
-  let url = process.env.REACT_APP_API + `/pages/sales/get_bodylength_through_length`;
+  let url = process.env.REACT_APP_API + `/pages/sales/get_bodylength_through_length_and_tire`;
 
   let choice = {};
-  if ('length_id' in action) {
+  if ('length_id' in action && 'tire' in action) {
     choice = {
       length_id: action.length_id,
+      tire: action.tire,
     };
   }
 

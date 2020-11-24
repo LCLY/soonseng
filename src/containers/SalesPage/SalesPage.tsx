@@ -23,11 +23,12 @@ import { Button, Skeleton, Card, Empty, Steps, Tag, Divider, Breadcrumb } from '
 import { TMapStateToProps } from 'src/store/types/index';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import {
+  // TLocalOrderObj,
   TReceivedSalesMakesObj,
   TReceivedSalesLengthObj,
   TReceivedSalesMakeSeriesObj,
-  TReceivedSalesLengthCategoryObj,
   TReceivedDimensionAccessoryObj,
+  TReceivedSalesLengthCategoryObj,
 } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/dashboard';
 
@@ -74,6 +75,9 @@ const SalesPage: React.FC<Props> = ({
   const [currentBodyLength, setCurrentBodyLength] = useState<TReceivedBodyLengthObj | null>(null);
   const [currentAccessory, setCurrentAccessory] = useState<TReceivedAccessoryObj | null>(null);
   const [currentMake, setCurrentMake] = useState<TReceivedSalesMakeSeriesObj | null>(null);
+
+  /** Current order object to track what user has added to the current order  */
+  // const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj | null>(null);
 
   /** Current Steps of the antd steps component */
   const [currentStep, setCurrentStep] = useState(0);
@@ -340,9 +344,9 @@ const SalesPage: React.FC<Props> = ({
                 type="primary"
                 onClick={() => {
                   // Then call the body lengths API
-                  if (currentLength === null) return;
-                  if (currentLength.id) {
-                    onGetSalesBodyLengths(currentLength.id);
+                  if (currentLength === null || currentTyre === null) return;
+                  if (currentLength.id && currentTyre) {
+                    onGetSalesBodyLengths(currentLength.id, currentTyre);
                   }
                 }}
                 className="sales__length-btn"
@@ -1058,6 +1062,7 @@ const SalesPage: React.FC<Props> = ({
                                     {series[seriesName].map((make) => {
                                       return (
                                         <div
+                                          key={uuidv4()}
                                           className={`sales__selectarea-button                                            
                                            ${currentMake?.id === make.id ? 'active' : ''}`}
                                           onClick={() => {
@@ -1101,7 +1106,7 @@ const SalesPage: React.FC<Props> = ({
                 next();
               }}
             >
-              <i className="fas fa-cart-plus"></i>&nbsp;&nbsp;Add To Cart
+              Next
             </Button>
           )}
         </div>
@@ -1112,11 +1117,38 @@ const SalesPage: React.FC<Props> = ({
   let overviewSection = (
     <section className="sales__section">
       <div className="sales__section-overview">
+        <div className="sales__breadcrumb-outerdiv">
+          <Breadcrumb separator=">" className="sales__breadcrumb">
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Tyre Count</span>
+              <span className="sales__breadcrumb-highlight">({currentTyre})</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Length</span>
+              <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Body</span>
+              {currentBodyLength && (
+                <span className="sales__breadcrumb-highlight">({currentBodyLength?.body.title})</span>
+              )}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Accessory</span>
+              <span className="sales__breadcrumb-highlight">(5 Items)</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Brand</span>
+              {currentMake && <span className="sales__breadcrumb-highlight">({currentMake?.title})</span>}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Overview</span>
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
         <Divider orientation="left">
           <div className="sales__section-header">Overview</div>
         </Divider>
-
-        <div>{currentMake}</div>
       </div>
     </section>
   );
@@ -1262,7 +1294,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
     onGetSalesLengths: (tire) => dispatch(actions.getSalesLengths(tire)),
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
-    onGetSalesBodyLengths: (length_id) => dispatch(actions.getSalesBodyLengths(length_id)),
+    onGetSalesBodyLengths: (length_id, tire) => dispatch(actions.getSalesBodyLengths(length_id, tire)),
     onGetSalesBodyAccessories: (body_length_id) => dispatch(actions.getSalesBodyAccessories(body_length_id)),
   };
 };

@@ -5,6 +5,7 @@ import {
   TReceivedSalesMakesObj,
   TReceivedSalesLengthCategoryObj,
   TReceivedDimensionAccessoryObj,
+  TLocalOrderObj,
 } from '../types/sales';
 
 /* ============================================================================================ */
@@ -17,6 +18,16 @@ import {
 export const clearSalesState = (): AppActions => {
   return {
     type: actionTypes.CLEAR_SALES_STATE,
+  };
+};
+
+/* ------------------------------- */
+// Store local orders
+/* ------------------------------- */
+export const storeLocalorders = (localOrdersArray: TLocalOrderObj[]): AppActions => {
+  return {
+    type: actionTypes.STORE_LOCAL_ORDERS,
+    localOrdersArray: localOrdersArray,
   };
 };
 
@@ -52,10 +63,11 @@ export const getSalesLengthsFailed = (errorMessage: string): AppActions => {
 /* ----------------------------- */
 // Get Body Lengths
 /* ---------------------------- */
-export const getSalesBodyLengths = (length_id: number): AppActions => {
+export const getSalesBodyLengths = (length_id: number, tire: number): AppActions => {
   return {
     type: actionTypes.GET_SALES_BODYLENGTHS,
     length_id: length_id,
+    tire: tire,
   };
 };
 

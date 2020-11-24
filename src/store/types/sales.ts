@@ -25,8 +25,8 @@ export interface SalesInitialState {
   // brands
   readonly salesBrandObj: TReceivedSalesMakesObj | null;
   readonly salesBrandsArray: TReceivedSalesMakesObj[] | null;
-  // quotation obj
-  readonly quotationObj: TQuotationObj[] | null;
+  // local orders array / quotation objects array
+  readonly localOrdersArray: TLocalOrderObj[] | null;
   // boolean to know whether fetch successful
   readonly getSalesLengthsSucceed: boolean | null;
   readonly getSalesBodyLengthsSucceed: boolean | null;
@@ -53,18 +53,19 @@ export interface ClearSalesStateAction {
 // Create Quotation
 /* ---------------------------- */
 // Quotation object should contain as much info as possible about a product
-export type TQuotationObj = {
-  salesBrandObj: TReceivedSalesMakesObj;
+export type TLocalOrderObj = {
   tireCount: number;
+  length: number;
+  salesBrandObj: TReceivedSalesMakesObj;
   bodyLengthObj: TReceivedBodyLengthObj;
   generalAccessoriesArray: TReceivedAccessoryObj[];
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
 };
 
-export interface StoreLocalQuotationAction {
-  type: typeof actionTypes.STORE_LOCAL_QUOTATION;
-  quotationObj: TQuotationObj;
+export interface StoreLocalOrdersAction {
+  type: typeof actionTypes.STORE_LOCAL_ORDERS;
+  localOrdersArray: TLocalOrderObj[];
 }
 
 /* ------------------ */
@@ -105,6 +106,7 @@ export interface GetSalesLengthsFailedAction {
 export interface GetSalesBodyLengthsAction {
   type: typeof actionTypes.GET_SALES_BODYLENGTHS;
   length_id: number;
+  tire: number;
 }
 export interface GetSalesBodyLengthsStartAction {
   type: typeof actionTypes.GET_SALES_BODYLENGTHS_START;
@@ -210,9 +212,9 @@ export type SalesActionTypes =
   /* -------------------------- */
   | ClearSalesStateAction
   /* -------------------------- */
-  // Store Local Quotation
+  // Store Local Orders
   /* -------------------------- */
-  | StoreLocalQuotationAction
+  | StoreLocalOrdersAction
   /* ------------------------ */
   // Lengths
   /* ------------------------ */

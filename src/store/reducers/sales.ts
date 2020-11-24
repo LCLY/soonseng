@@ -1,6 +1,6 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 import { updateObject } from 'src/shared/Utils';
-import { SalesActionTypes, SalesInitialState } from 'src/store/types/sales';
+import { SalesActionTypes, SalesInitialState, TLocalOrderObj } from 'src/store/types/sales';
 import { AppActions } from 'src/store/types';
 
 const initialState: SalesInitialState = {
@@ -17,8 +17,8 @@ const initialState: SalesInitialState = {
   // brands/makes
   salesBrandObj: null,
   salesBrandsArray: null,
-  // quotation object
-  quotationObj: null,
+  // local orders array containing multiple objects inside
+  localOrdersArray: null,
   // others
   errorMessage: null,
   successMessage: null,
@@ -29,7 +29,7 @@ const initialState: SalesInitialState = {
 };
 
 /* -------------------------- */
-/* Get all sales Lengths  */
+/* Clear some sales states  */
 /* -------------------------- */
 const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
   return updateObject(state, {
@@ -42,6 +42,16 @@ const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
     getSalesBodyAccessoriesSucceed: null,
     getSalesMakesSucceed: null,
   });
+};
+
+/* ------------------------------- */
+// Store local orders
+/* ------------------------------- */
+export const storeLocalorders = (localOrdersArray: TLocalOrderObj[]): AppActions => {
+  return {
+    type: actionTypes.STORE_LOCAL_ORDERS,
+    localOrdersArray: localOrdersArray,
+  };
 };
 
 /* -------------------------- */
