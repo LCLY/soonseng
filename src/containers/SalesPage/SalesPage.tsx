@@ -521,7 +521,7 @@ const SalesPage: React.FC<Props> = ({
                   </div>
                 </div>
                 <div className="sales__selectarea-button-addtocart">
-                  <Button type="primary">Add To Body</Button>
+                  <Button type="primary">Add To Purchase</Button>
                 </div>
               </Card>
             ) : (
@@ -948,9 +948,10 @@ const SalesPage: React.FC<Props> = ({
                               let seriesName = Object.keys(series)[0];
                               return (
                                 <React.Fragment key={uuidv4()}>
-                                  <div>
+                                  {seriesName !== null && seriesName !== '' && (
                                     <div className="sales__selectarea-seriestitle">{seriesName}</div>
-                                  </div>
+                                  )}
+
                                   <div className="sales__selectarea-div">
                                     {/* loop the makes array */}
                                     {series[seriesName].map((make) => {
@@ -1020,7 +1021,7 @@ const SalesPage: React.FC<Props> = ({
   );
 
   const steps = [
-    { step: 1, title: 'Overview', content: overviewSection },
+    // { step: 1, title: 'Overview', content: overviewSection },
     { step: 1, title: 'Tyre', content: tyreSection },
     {
       step: 2,
