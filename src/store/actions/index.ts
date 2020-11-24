@@ -167,6 +167,8 @@ export {
 export {
   // clear sales state
   clearSalesState,
+  // Store local orders
+  storeLocalOrders,
   // get sales lengths
   getSalesLengths,
   getSalesLengthsStart,

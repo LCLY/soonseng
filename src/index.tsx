@@ -15,6 +15,7 @@ import { watchDashboard, watchSales } from './store/sagas/index';
 
 // redux-persist
 import storage from 'redux-persist/lib/storage';
+import { createFilter } from 'redux-persist-transform-filter';
 import { persistStore, persistReducer } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -28,11 +29,15 @@ const composeEnhancers =
     ? window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     : null || compose;
 
+// you want to store only a subset of your state of reducer one
+const saveSubsetFilter = createFilter('sales', ['localOrdersArray']);
+
 // redux persist config
 const persistConfig = {
   key: 'root',
   storage: storage,
   whitelist: ['sales'], // which reducer want to store - name of reducer
+  transforms: [saveSubsetFilter],
 };
 
 // combine all reducers

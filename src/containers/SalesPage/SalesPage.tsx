@@ -5,7 +5,6 @@ import * as actions from 'src/store/actions/index';
 // import { img_placeholder_link } f`rom 'src/shared/global';
 
 // component
-
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 
@@ -23,7 +22,7 @@ import { Button, Skeleton, Card, Empty, Steps, Tag, Divider, Breadcrumb } from '
 import { TMapStateToProps } from 'src/store/types/index';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import {
-  // TLocalOrderObj,
+  TLocalOrderObj,
   TReceivedSalesMakesObj,
   TReceivedSalesLengthObj,
   TReceivedSalesMakeSeriesObj,
@@ -47,11 +46,13 @@ const SalesPage: React.FC<Props> = ({
   loading,
   salesBrandsArray,
   bodyLengthsArray,
+  localOrdersArray,
   lengthsCategoriesArray,
   generalAccessoriesArray,
   bodyRelatedAccessoriesArray,
   dimensionRelatedAccessoriesArray,
   onClearSalesState,
+  onStoreLocalOrders,
   onGetSalesMakes,
   onGetSalesLengths,
   onGetSalesBodyLengths,
@@ -77,7 +78,20 @@ const SalesPage: React.FC<Props> = ({
   const [currentMake, setCurrentMake] = useState<TReceivedSalesMakeSeriesObj | null>(null);
 
   /** Current order object to track what user has added to the current order  */
-  // const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj | null>(null);
+  const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj>({
+    tireCount: -1,
+    lengthObj: null,
+    bodyLengthObj: null,
+    generalAccessoriesArray: [],
+    dimensionRelatedAccessoriesArray: [],
+    bodyRelatedAccessoriesArray: [],
+    makeObj: null,
+  });
+
+  let totalAccessoriesArrayLength =
+    currentOrderObj.generalAccessoriesArray.length +
+    currentOrderObj.bodyRelatedAccessoriesArray.length +
+    currentOrderObj.dimensionRelatedAccessoriesArray.length;
 
   /** Current Steps of the antd steps component */
   const [currentStep, setCurrentStep] = useState(0);
@@ -171,8 +185,10 @@ const SalesPage: React.FC<Props> = ({
                           if (currentTyre === tyre) {
                             // reset the selection
                             setCurrentTyre(null);
+                            setCurrentOrderObj({ ...currentOrderObj, tireCount: -1 });
                           } else {
                             setCurrentTyre(tyre);
+                            setCurrentOrderObj({ ...currentOrderObj, tireCount: tyre });
                           }
                         }}
                       >
@@ -292,6 +308,7 @@ const SalesPage: React.FC<Props> = ({
                                 {category.lengths.map((lengthObj) => {
                                   return (
                                     <div
+                                      key={uuidv4()}
                                       className={`sales__selectarea-button ${
                                         currentLength?.id === lengthObj.id ? 'active' : ''
                                       }`}
@@ -300,8 +317,10 @@ const SalesPage: React.FC<Props> = ({
                                         if (currentLength?.id === lengthObj.id) {
                                           // reset the selection
                                           setCurrentLength(null);
+                                          setCurrentOrderObj({ ...currentOrderObj, lengthObj: null });
                                         } else {
                                           setCurrentLength(lengthObj);
+                                          setCurrentOrderObj({ ...currentOrderObj, lengthObj: lengthObj });
                                         }
                                       }}
                                     >
@@ -324,12 +343,12 @@ const SalesPage: React.FC<Props> = ({
               <>
                 <div className="sales__selectarea-button margin_t-4 margin_b-2">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                    <Skeleton.Button className="sales__skeleton" key={num + uuidv4()} active={true} size="large" />
                   ))}
                 </div>
                 <div className="sales__selectarea-button">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                    <Skeleton.Button className="sales__skeleton" key={num + uuidv4()} active={true} size="large" />
                   ))}
                 </div>
               </>
@@ -520,6 +539,7 @@ const SalesPage: React.FC<Props> = ({
                         {bodyLengthsArray.map((bodyLength) => {
                           return (
                             <div
+                              key={uuidv4()}
                               className={`sales__selectarea-button  ${
                                 currentBodyLength?.id === bodyLength.id ? 'active' : ''
                               }`}
@@ -528,8 +548,10 @@ const SalesPage: React.FC<Props> = ({
                                 if (currentBodyLength?.id === bodyLength.id) {
                                   // reset the selection
                                   setCurrentBodyLength(null);
+                                  setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: null });
                                 } else {
                                   setCurrentBodyLength(bodyLength);
+                                  setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: bodyLength });
                                 }
                               }}
                             >
@@ -546,7 +568,7 @@ const SalesPage: React.FC<Props> = ({
               ) : (
                 <div className="sales__selectarea-button margin_t-4 margin_b-2">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <Skeleton.Button className="sales__skeleton" key={num} active={true} size="large" />
+                    <Skeleton.Button className="sales__skeleton" key={num + uuidv4()} active={true} size="large" />
                   ))}
                 </div>
               )}
@@ -604,7 +626,7 @@ const SalesPage: React.FC<Props> = ({
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Accessory</span>
-              <span className="sales__breadcrumb-highlight">(5 Items)</span>
+              <span className="sales__breadcrumb-highlight">({totalAccessoriesArrayLength} Items)</span>
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -685,9 +707,6 @@ const SalesPage: React.FC<Props> = ({
                     <NumberFormat value={currentAccessory?.price} displayType={'text'} thousandSeparator={true} />
                   </div>
                 </div>
-                <div className="sales__selectarea-button-addtocart">
-                  <Button type="primary">Add To Purchase</Button>
-                </div>
               </Card>
             ) : (
               <>
@@ -705,7 +724,12 @@ const SalesPage: React.FC<Props> = ({
               Depending on the different functionalities you are looking for you need different kinds of accessories
             </div>
             <div className="sales__selectarea-innerdiv">
-              <div>Select the accessory for the cargo body</div>
+              <div className="flex space-between">
+                Select the accessory for the cargo body
+                <span className="sales__breadcrumb-highlight">
+                  {totalAccessoriesArrayLength > 0 ? `${totalAccessoriesArrayLength} items` : null}
+                </span>
+              </div>
 
               {/* If all the arrays are empty then show <Empty/> */}
               {generalAccessoriesArray &&
@@ -725,21 +749,48 @@ const SalesPage: React.FC<Props> = ({
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                         <>
                           {generalAccessoriesArray.map((accessory) => {
+                            // Boolean
+                            let objExistInGeneralAccessoriesArray = currentOrderObj.generalAccessoriesArray.includes(
+                              accessory,
+                            );
                             return (
                               <div
                                 key={uuidv4()}
                                 className={`sales__selectarea-button ${
-                                  currentAccessory?.id === accessory.id ? 'active' : ''
+                                  // if the generalaccessoriesarray includes this specific accessory object
+                                  objExistInGeneralAccessoriesArray ? 'active' : ''
                                 }`}
                                 onClick={() => {
+                                  // Whenever user clicks on an accessory, straight show that accessory
+                                  setCurrentAccessory(accessory);
                                   //  if currentLength has an id
-                                  if (currentAccessory?.id === accessory.id) {
-                                    // reset the selection
-                                    setCurrentAccessory(null);
+                                  if (objExistInGeneralAccessoriesArray) {
+                                    //  Filter the current general accessories array and only return the rest that doesnt match that id
+                                    let arrayAfterDelete = [...currentOrderObj.generalAccessoriesArray].filter(
+                                      (accessoryObj) => {
+                                        return accessoryObj.id !== accessory.id;
+                                      },
+                                    );
+
+                                    let totalArrayAfterDelete =
+                                      arrayAfterDelete.length +
+                                      currentOrderObj.bodyRelatedAccessoriesArray.length +
+                                      currentOrderObj.dimensionRelatedAccessoriesArray.length;
+
+                                    // if after delete and nothing is left from the total array, then make the accessory null again
+                                    if (totalArrayAfterDelete === 0) {
+                                      setCurrentAccessory(null);
+                                    }
+                                    setCurrentOrderObj({
+                                      ...currentOrderObj,
+                                      generalAccessoriesArray: arrayAfterDelete,
+                                    });
                                   } else {
-                                    setCurrentAccessory(accessory);
-                                    // clear state first before calling this api
-                                    // onClearSalesState();
+                                    // spread the array
+                                    let tempArray = [...currentOrderObj.generalAccessoriesArray];
+                                    // add new accessory into the array and update the state
+                                    tempArray.push(accessory);
+                                    setCurrentOrderObj({ ...currentOrderObj, generalAccessoriesArray: tempArray });
                                   }
                                 }}
                               >
@@ -757,7 +808,7 @@ const SalesPage: React.FC<Props> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <Skeleton.Button
                       className="sales__selectarea-button-skeleton"
-                      key={num}
+                      key={num + uuidv4()}
                       active={true}
                       size="large"
                     />
@@ -774,20 +825,45 @@ const SalesPage: React.FC<Props> = ({
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                         <>
                           {bodyRelatedAccessoriesArray.map((accessory) => {
+                            let objExistInBodyRelatedAccessoriesArray = currentOrderObj.bodyRelatedAccessoriesArray.includes(
+                              accessory,
+                            );
                             return (
                               <div
+                                key={uuidv4()}
                                 className={`sales__selectarea-button ${
-                                  currentAccessory?.id === accessory.id ? 'active' : ''
+                                  objExistInBodyRelatedAccessoriesArray ? 'active' : ''
                                 }`}
                                 onClick={() => {
+                                  // Whenever user clicks on an accessory, straight show that accessory
+                                  setCurrentAccessory(accessory);
                                   //  if currentLength has an id
-                                  if (currentAccessory?.id === accessory.id) {
-                                    // reset the selection
-                                    setCurrentAccessory(null);
+                                  if (objExistInBodyRelatedAccessoriesArray) {
+                                    //  Filter the current general accessories array and only return the rest that doesnt match that id
+                                    let arrayAfterDelete = [...currentOrderObj.bodyRelatedAccessoriesArray].filter(
+                                      (accessoryObj) => {
+                                        return accessoryObj.id !== accessory.id;
+                                      },
+                                    );
+                                    let totalArrayAfterDelete =
+                                      arrayAfterDelete.length +
+                                      currentOrderObj.generalAccessoriesArray.length +
+                                      currentOrderObj.dimensionRelatedAccessoriesArray.length;
+
+                                    // if after delete and nothing is left from the total array, then make the accessory null again
+                                    if (totalArrayAfterDelete === 0) {
+                                      setCurrentAccessory(null);
+                                    }
+                                    setCurrentOrderObj({
+                                      ...currentOrderObj,
+                                      bodyRelatedAccessoriesArray: arrayAfterDelete,
+                                    });
                                   } else {
-                                    setCurrentAccessory(accessory);
-                                    // clear state first before calling this api
-                                    // onClearSalesState();
+                                    // spread the array
+                                    let tempArray = [...currentOrderObj.bodyRelatedAccessoriesArray];
+                                    // add new accessory into the array and update the state
+                                    tempArray.push(accessory);
+                                    setCurrentOrderObj({ ...currentOrderObj, bodyRelatedAccessoriesArray: tempArray });
                                   }
                                 }}
                               >
@@ -805,7 +881,7 @@ const SalesPage: React.FC<Props> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <Skeleton.Button
                       className="sales__selectarea-button-skeleton"
-                      key={num}
+                      key={num + uuidv4()}
                       active={true}
                       size="large"
                     />
@@ -822,20 +898,48 @@ const SalesPage: React.FC<Props> = ({
 
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                         {dimensionRelatedAccessoriesArray.map((dimensionRelatedAccessory) => {
+                          let objExistInDimensionRelatedAccessoriesArray = currentOrderObj.dimensionRelatedAccessoriesArray.includes(
+                            dimensionRelatedAccessory,
+                          );
                           return (
                             <div
+                              key={uuidv4()}
                               className={`sales__selectarea-button ${
-                                currentAccessory?.id === dimensionRelatedAccessory.accessory.id ? 'active' : ''
+                                objExistInDimensionRelatedAccessoriesArray ? 'active' : ''
                               }`}
                               onClick={() => {
+                                // Whenever user clicks on an accessory, straight show that accessory
+                                setCurrentAccessory(dimensionRelatedAccessory.accessory);
                                 //  if currentLength has an id
-                                if (currentAccessory?.id === dimensionRelatedAccessory.accessory.id) {
-                                  // reset the selection
-                                  setCurrentAccessory(null);
+                                if (objExistInDimensionRelatedAccessoriesArray) {
+                                  //  Filter the current general accessories array and only return the rest that doesnt match that id
+                                  let arrayAfterDelete = [...currentOrderObj.dimensionRelatedAccessoriesArray].filter(
+                                    (dimensionObj) => {
+                                      return dimensionObj.id !== dimensionRelatedAccessory.id;
+                                    },
+                                  );
+                                  let totalArrayAfterDelete =
+                                    arrayAfterDelete.length +
+                                    currentOrderObj.generalAccessoriesArray.length +
+                                    currentOrderObj.bodyRelatedAccessoriesArray.length;
+
+                                  // if after delete and nothing is left from the total array, then make the accessory null again
+                                  if (totalArrayAfterDelete === 0) {
+                                    setCurrentAccessory(null);
+                                  }
+                                  setCurrentOrderObj({
+                                    ...currentOrderObj,
+                                    dimensionRelatedAccessoriesArray: arrayAfterDelete,
+                                  });
                                 } else {
-                                  setCurrentAccessory(dimensionRelatedAccessory.accessory);
-                                  // clear state first before calling this api
-                                  // onClearSalesState();
+                                  // spread the array
+                                  let tempArray = [...currentOrderObj.dimensionRelatedAccessoriesArray];
+                                  // add new accessory into the array and update the state
+                                  tempArray.push(dimensionRelatedAccessory);
+                                  setCurrentOrderObj({
+                                    ...currentOrderObj,
+                                    dimensionRelatedAccessoriesArray: tempArray,
+                                  });
                                 }
                               }}
                             >
@@ -852,7 +956,7 @@ const SalesPage: React.FC<Props> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <Skeleton.Button
                       className="sales__selectarea-button-skeleton"
-                      key={num}
+                      key={num + uuidv4()}
                       active={true}
                       size="large"
                     />
@@ -911,7 +1015,7 @@ const SalesPage: React.FC<Props> = ({
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Accessory</span>
-              <span className="sales__breadcrumb-highlight">(5 Items)</span>
+              <span className="sales__breadcrumb-highlight">({totalAccessoriesArrayLength} Items)</span>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Brand</span>
@@ -1070,8 +1174,10 @@ const SalesPage: React.FC<Props> = ({
                                             if (currentMake?.id === make.id) {
                                               // reset the selection
                                               setCurrentMake(null); //set content to null
+                                              setCurrentOrderObj({ ...currentOrderObj, makeObj: null });
                                             } else {
                                               setCurrentMake(make); //select the content of the preview card
+                                              setCurrentOrderObj({ ...currentOrderObj, makeObj: brand });
                                             }
                                           }}
                                         >
@@ -1103,10 +1209,17 @@ const SalesPage: React.FC<Props> = ({
               type="primary"
               disabled={currentMake === null}
               onClick={() => {
+                // At the end of the choosing phase after user done choosing brand
+                // user click on complete button and we store the current order object
+                // into the localOrdersArray in redux so we can save it in localstorage
+                let copyArray = [...localOrdersArray];
+                copyArray.push(currentOrderObj);
+                console.log(currentOrderObj);
+                onStoreLocalOrders(copyArray);
                 next();
               }}
             >
-              Next
+              Complete
             </Button>
           )}
         </div>
@@ -1135,7 +1248,7 @@ const SalesPage: React.FC<Props> = ({
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Accessory</span>
-              <span className="sales__breadcrumb-highlight">(5 Items)</span>
+              <span className="sales__breadcrumb-highlight">({totalAccessoriesArrayLength} Items)</span>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Brand</span>
@@ -1149,6 +1262,37 @@ const SalesPage: React.FC<Props> = ({
         <Divider orientation="left">
           <div className="sales__section-header">Overview</div>
         </Divider>
+
+        <div>
+          {localOrdersArray &&
+            localOrdersArray.length > 0 &&
+            localOrdersArray.map((order) => (
+              <div key={uuidv4()} style={{ border: '1px solid black', marginBottom: '1rem' }}>
+                <div>Tire: {order.tireCount}</div>
+                <div>Length: {order.lengthObj?.title}ft</div>
+                <div>Body: {order.bodyLengthObj?.body.title}</div>
+                <div>
+                  {order.generalAccessoriesArray &&
+                    order.generalAccessoriesArray.length > 0 &&
+                    order.generalAccessoriesArray.map((accessory) => <div key={uuidv4()}>{accessory.title}</div>)}
+                </div>
+                <div>
+                  {order.bodyRelatedAccessoriesArray &&
+                    order.bodyRelatedAccessoriesArray.length > 0 &&
+                    order.bodyRelatedAccessoriesArray.map((accessory) => <div key={uuidv4()}>{accessory.title}</div>)}
+                </div>
+                <div>
+                  {order.dimensionRelatedAccessoriesArray &&
+                    order.dimensionRelatedAccessoriesArray.length > 0 &&
+                    order.dimensionRelatedAccessoriesArray.map((dimension) => (
+                      <div key={uuidv4()}>{dimension.accessory.title}</div>
+                    ))}
+                </div>
+              </div>
+            ))}
+
+          <Button onClick={() => setCurrentStep(0)}>Lets go again</Button>
+        </div>
       </div>
     </section>
   );
@@ -1221,7 +1365,7 @@ const SalesPage: React.FC<Props> = ({
             <Steps direction="vertical" current={currentStep}>
               {steps.map((item) => (
                 <Step
-                  key={item.title}
+                  key={uuidv4()}
                   icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
                   title={
                     <div className="sales__steps-title">
@@ -1253,6 +1397,8 @@ interface StateProps {
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
   // length category object
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
+  // array for local orders
+  localOrdersArray: TLocalOrderObj[];
   // Bool for get api
   getSalesMakesSucceed?: boolean | null;
   getSalesLengthsSucceed?: boolean | null;
@@ -1266,12 +1412,13 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       loading: state.sales.loading,
       errorMessage: state.sales.errorMessage,
       // Arrays
-      salesBrandsArray: state.sales.salesBrandsArray,
+      localOrdersArray: state.sales.localOrdersArray,
       bodyLengthsArray: state.sales.bodyLengthsArray,
-      generalAccessoriesArray: state.sales.generalAccessoriesArray,
-      dimensionRelatedAccessoriesArray: state.sales.dimensionRelatedAccessoriesArray,
-      bodyRelatedAccessoriesArray: state.sales.bodyRelatedAccessoriesArray,
+      salesBrandsArray: state.sales.salesBrandsArray,
       lengthsCategoriesArray: state.sales.lengthsCategoriesArray,
+      generalAccessoriesArray: state.sales.generalAccessoriesArray,
+      bodyRelatedAccessoriesArray: state.sales.bodyRelatedAccessoriesArray,
+      dimensionRelatedAccessoriesArray: state.sales.dimensionRelatedAccessoriesArray,
       // Succeed states
       getSalesMakesSucceed: state.sales.getSalesMakesSucceed,
       getSalesLengthsSucceed: state.sales.getSalesLengthsSucceed,
@@ -1287,6 +1434,7 @@ interface DispatchProps {
   onGetSalesLengths: typeof actions.getSalesLengths;
   onGetSalesBodyLengths: typeof actions.getSalesBodyLengths;
   onGetSalesBodyAccessories: typeof actions.getSalesBodyAccessories;
+  onStoreLocalOrders: typeof actions.storeLocalOrders;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
@@ -1294,6 +1442,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
     onGetSalesLengths: (tire) => dispatch(actions.getSalesLengths(tire)),
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
+    onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onGetSalesBodyLengths: (length_id, tire) => dispatch(actions.getSalesBodyLengths(length_id, tire)),
     onGetSalesBodyAccessories: (body_length_id) => dispatch(actions.getSalesBodyAccessories(body_length_id)),
   };

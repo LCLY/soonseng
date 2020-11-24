@@ -24,7 +24,7 @@ export const clearSalesState = (): AppActions => {
 /* ------------------------------- */
 // Store local orders
 /* ------------------------------- */
-export const storeLocalorders = (localOrdersArray: TLocalOrderObj[]): AppActions => {
+export const storeLocalOrders = (localOrdersArray: TLocalOrderObj[]): AppActions => {
   return {
     type: actionTypes.STORE_LOCAL_ORDERS,
     localOrdersArray: localOrdersArray,

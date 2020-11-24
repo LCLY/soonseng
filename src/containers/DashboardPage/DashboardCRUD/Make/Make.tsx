@@ -1185,7 +1185,7 @@ const Make: React.FC<Props> = ({
         name="makeConfig"
         rules={[{ required: false, message: 'Input config here!' }]}
       >
-        <Input type="number" placeholder="Type config here" />
+        <Input placeholder="Type config here e.g. 4X@" />
       </Form.Item>
       {/* ------- Series ------- */}
       <Form.Item
@@ -1413,7 +1413,7 @@ const Make: React.FC<Props> = ({
       let makePrice =
         make.price === undefined || make.price === null || make.price === 0 ? '' : 'RM' + make.price.toLocaleString();
       let makeTitle = make.title === undefined || make.title === null ? '' : make.title;
-      let makeLength = make.length === undefined || make.length === null ? '' : make.length + "'";
+      let makeLength = make.length === undefined || make.length === null || make.length === 0 ? '' : make.length + 'mm';
       let makeEngineCap = make.engine_cap === undefined || make.engine_cap === null ? '' : make.engine_cap;
       let makeHorsepower =
         make.horsepower === undefined || make.horsepower === null || make.horsepower === ''

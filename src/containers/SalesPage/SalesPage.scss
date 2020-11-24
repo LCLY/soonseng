@@ -221,17 +221,6 @@
       &-skeleton {
         width: 100% !important;
       }
-
-      /* ----------------------------------- */
-      // add to cart button in accessory page
-      /* ------------------------------------ */
-      &-addtocart {
-        display: flex;
-        justify-content: flex-end;
-        & .fa-cart-plus {
-          margin-right: 1rem;
-        }
-      }
     }
 
     /* ------------------------------------------- */

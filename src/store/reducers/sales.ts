@@ -1,6 +1,6 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 import { updateObject } from 'src/shared/Utils';
-import { SalesActionTypes, SalesInitialState, TLocalOrderObj } from 'src/store/types/sales';
+import { SalesActionTypes, SalesInitialState } from 'src/store/types/sales';
 import { AppActions } from 'src/store/types';
 
 const initialState: SalesInitialState = {
@@ -18,7 +18,7 @@ const initialState: SalesInitialState = {
   salesBrandObj: null,
   salesBrandsArray: null,
   // local orders array containing multiple objects inside
-  localOrdersArray: null,
+  localOrdersArray: [],
   // others
   errorMessage: null,
   successMessage: null,
@@ -47,11 +47,12 @@ const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
 /* ------------------------------- */
 // Store local orders
 /* ------------------------------- */
-export const storeLocalorders = (localOrdersArray: TLocalOrderObj[]): AppActions => {
-  return {
-    type: actionTypes.STORE_LOCAL_ORDERS,
-    localOrdersArray: localOrdersArray,
-  };
+export const storeLocalOrders = (state: SalesInitialState, action: AppActions) => {
+  if ('localOrdersArray' in action) {
+    return updateObject(state, {
+      localOrdersArray: action.localOrdersArray,
+    });
+  }
 };
 
 /* -------------------------- */
@@ -167,6 +168,11 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
     /* =================================== */
     case actionTypes.CLEAR_SALES_STATE:
       return clearSalesState(state, action);
+    /* =================================== */
+    //  Store local orders
+    /* =================================== */
+    case actionTypes.STORE_LOCAL_ORDERS:
+      return storeLocalOrders(state, action);
     /* =================================== */
     //  Lengths
     /* =================================== */

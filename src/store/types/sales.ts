@@ -26,7 +26,7 @@ export interface SalesInitialState {
   readonly salesBrandObj: TReceivedSalesMakesObj | null;
   readonly salesBrandsArray: TReceivedSalesMakesObj[] | null;
   // local orders array / quotation objects array
-  readonly localOrdersArray: TLocalOrderObj[] | null;
+  readonly localOrdersArray: TLocalOrderObj[];
   // boolean to know whether fetch successful
   readonly getSalesLengthsSucceed: boolean | null;
   readonly getSalesBodyLengthsSucceed: boolean | null;
@@ -55,12 +55,12 @@ export interface ClearSalesStateAction {
 // Quotation object should contain as much info as possible about a product
 export type TLocalOrderObj = {
   tireCount: number;
-  length: number;
-  salesBrandObj: TReceivedSalesMakesObj;
-  bodyLengthObj: TReceivedBodyLengthObj;
+  lengthObj: TReceivedSalesLengthObj | null;
+  bodyLengthObj: TReceivedBodyLengthObj | null;
   generalAccessoriesArray: TReceivedAccessoryObj[];
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
+  makeObj: TReceivedSalesMakesObj | null;
 };
 
 export interface StoreLocalOrdersAction {
