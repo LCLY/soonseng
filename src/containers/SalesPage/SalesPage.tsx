@@ -358,7 +358,14 @@ const SalesPage: React.FC<Props> = ({
             )}
           </div>
           <div className="sales__length-btn-div">
-            <Button className="sales__length-btn margin_r-1" onClick={() => prev()}>
+            <Button
+              loading={false}
+              className="sales__length-btn margin_r-1"
+              onClick={() => {
+                prev();
+                setCurrentLength(null);
+              }}
+            >
               Back
             </Button>
             {currentStep < totalSteps - 1 && (
@@ -577,7 +584,13 @@ const SalesPage: React.FC<Props> = ({
               )}
             </div>
             <div className="sales__length-btn-div">
-              <Button className="sales__length-btn margin_r-1" onClick={() => prev()}>
+              <Button
+                className="sales__length-btn margin_r-1"
+                onClick={() => {
+                  prev();
+                  setCurrentBodyLength(null);
+                }}
+              >
                 Back
               </Button>
               {currentStep < totalSteps - 1 && (
@@ -968,7 +981,13 @@ const SalesPage: React.FC<Props> = ({
               )}
             </div>
             <div className="sales__length-btn-div">
-              <Button className="sales__length-btn margin_r-1" onClick={() => prev()}>
+              <Button
+                className="sales__length-btn margin_r-1"
+                onClick={() => {
+                  prev();
+                  setCurrentAccessory(null);
+                }}
+              >
                 Back
               </Button>
               {currentStep < totalSteps - 1 && (
@@ -1212,7 +1231,13 @@ const SalesPage: React.FC<Props> = ({
         </section>
 
         <div className="sales__length-btn-div">
-          <Button className="sales__length-btn margin_r-1" onClick={() => prev()}>
+          <Button
+            className="sales__length-btn margin_r-1"
+            onClick={() => {
+              prev();
+              setCurrentMake(null);
+            }}
+          >
             Back
           </Button>
           {currentStep < totalSteps - 1 && (
@@ -1241,7 +1266,7 @@ const SalesPage: React.FC<Props> = ({
 
   let overviewSection = (
     <section className="sales__section">
-      <div className="sales__section-overview">
+      <div className="sales__section-overview" style={{ display: 'none' }}>
         <div className="sales__breadcrumb-outerdiv">
           <Breadcrumb separator=">" className="sales__breadcrumb">
             <Breadcrumb.Item>
@@ -1520,73 +1545,95 @@ const SalesPage: React.FC<Props> = ({
                                 {order.makeObj?.seriesObj.torque !== null && order.makeObj?.seriesObj.torque !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Torque:</span>
-                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.torque}</span>
+                                    <span className="sales__overview-panel-specs-value">
+                                      {order.makeObj?.seriesObj.torque}
+                                    </span>
                                   </div>
                                 )}
                                 {order.makeObj?.seriesObj.config !== null && order.makeObj?.seriesObj.config !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Config:</span>
-                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.config}</span>
+                                    <span className="sales__overview-panel-specs-value">
+                                      {order.makeObj?.seriesObj.config}
+                                    </span>
                                   </div>
                                 )}
                                 {order.makeObj?.seriesObj.emission !== null &&
                                   order.makeObj?.seriesObj.emission !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Emission:</span>
-                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.emission}</span>
+                                      <span className="sales__overview-panel-specs-value">
+                                        {order.makeObj?.seriesObj.emission}
+                                      </span>
                                     </div>
                                   )}
                                 {order.makeObj?.seriesObj.length !== null && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Length:</span>
-                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.length}mm</span>
+                                    <span className="sales__overview-panel-specs-value">
+                                      {order.makeObj?.seriesObj.length}mm
+                                    </span>
                                   </div>
                                 )}
                                 {order.makeObj?.seriesObj.horsepower !== null &&
                                   order.makeObj?.seriesObj.horsepower !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Horsepower:</span>
-                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.horsepower}PS</span>
+                                      <span className="sales__overview-panel-specs-value">
+                                        {order.makeObj?.seriesObj.horsepower}PS
+                                      </span>
                                     </div>
                                   )}
                                 {order.makeObj?.seriesObj.year !== null && order.makeObj?.seriesObj.year !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Year:</span>
-                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.year}</span>
+                                    <span className="sales__overview-panel-specs-value">
+                                      {order.makeObj?.seriesObj.year}
+                                    </span>
                                   </div>
                                 )}
 
                                 {order.makeObj?.seriesObj.tire !== null && order.makeObj?.seriesObj.tire !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Tyre Count:</span>
-                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.tire} tires</span>
+                                    <span className="sales__overview-panel-specs-value">
+                                      {order.makeObj?.seriesObj.tire} tires
+                                    </span>
                                   </div>
                                 )}
                                 {order.makeObj?.seriesObj.wheelbase.title !== null &&
                                   order.makeObj?.seriesObj.wheelbase.title !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Wheelbase:</span>
-                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.wheelbase.title}mm</span>
+                                      <span className="sales__overview-panel-specs-value">
+                                        {order.makeObj?.seriesObj.wheelbase.title}mm
+                                      </span>
                                     </div>
                                   )}
                                 {order.makeObj?.seriesObj.transmission !== null &&
                                   order.makeObj?.seriesObj.transmission !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Transmission:</span>
-                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.transmission}</span>
+                                      <span className="sales__overview-panel-specs-value">
+                                        {order.makeObj?.seriesObj.transmission}
+                                      </span>
                                     </div>
                                   )}
                                 {order.makeObj?.seriesObj.engine_cap !== null &&
                                   order.makeObj?.seriesObj.engine_cap !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Engine Capacity:</span>
-                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.engine_cap}CC</span>
+                                      <span className="sales__overview-panel-specs-value">
+                                        {order.makeObj?.seriesObj.engine_cap}CC
+                                      </span>
                                     </div>
                                   )}
                                 {order.makeObj?.seriesObj.gvw !== null && order.makeObj?.seriesObj.gvw !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Gross Vehicle Weight:</span>
-                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.gvw}kg</span>
+                                    <span className="sales__overview-panel-specs-value">
+                                      {order.makeObj?.seriesObj.gvw}kg
+                                    </span>
                                   </div>
                                 )}
                               </Panel>
@@ -1779,12 +1826,22 @@ const SalesPage: React.FC<Props> = ({
         </div>
         <Button onClick={() => setCurrentStep(0)}>Lets go again</Button>
       </div>
-      <Button onClick={() => setCurrentStep(0)}>Go back to first page</Button>
+      <Button
+        onClick={() => {
+          setCurrentStep(0);
+          setCurrentLength(null);
+          setCurrentTyre(null);
+          setCurrentBodyLength(null);
+          setCurrentAccessory(null);
+          setCurrentMake(null);
+        }}
+      >
+        Go back to first page
+      </Button>
     </section>
   );
 
   const steps = [
-    { step: 1, title: 'Overview', content: overviewSection },
     { step: 1, title: 'Tyre', content: tyreSection },
     {
       step: 2,
@@ -1821,11 +1878,12 @@ const SalesPage: React.FC<Props> = ({
       getSalesBodyLengthsSucceed ||
       getSalesBodyAccessoriesSucceed
     ) {
-      // go to the next step
-      setCurrentStep(currentStep + 1);
-
-      // then clear the state
+      // Clear the state
       onClearSalesState();
+      if (loading === false) {
+        // go to the next step only after loading is false
+        setCurrentStep(currentStep + 1);
+      }
     }
   }, [
     loading,
