@@ -234,10 +234,15 @@
         color: rgba(0, 0, 0, 0.534);
         background: rgba(187, 194, 212, 0.308) !important;
       }
+      /* the two columns in make */
+      &-column {
+        width: 50%;
+      }
 
       /* each row of the details within the card*/
       &-row {
         display: flex;
+        align-items: center;
         &:not(:last-child) {
           margin-bottom: 0.5rem;
         }
@@ -246,6 +251,13 @@
           width: 25%;
           font-family: $font-firesans;
           color: rgba(0, 0, 0, 0.514);
+
+          // for make
+          &--make {
+            width: 45%;
+            font-family: $font-firesans;
+            color: rgba(0, 0, 0, 0.514);
+          }
         }
 
         /* right part of the row */
@@ -256,6 +268,16 @@
           &-title {
             font-size: 1.3rem;
             text-transform: capitalize;
+          }
+          // for make
+          &--make {
+            display: block !important;
+            width: calc(55%);
+            display: flex;
+            font-size: 1.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            // white-space: nowrap;
           }
         }
       }

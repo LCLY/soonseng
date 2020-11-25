@@ -1100,31 +1100,83 @@ const SalesPage: React.FC<Props> = ({
             )}
             {currentMake ? (
               <Card className="sales__selectarea-card" size="small" title="Selected model">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Model</div>
-                  <div className="sales__selectarea-card-row-right">{currentMake.title}</div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Series</div>
-                  <div className="sales__selectarea-card-row-right">
-                    {currentMake.series === null || currentMake.series === '' ? '-' : currentMake.series}
-                  </div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Length</div>
-                  <div className="sales__selectarea-card-row-right">{currentMake.length}mm</div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Config</div>
-                  <div className="sales__selectarea-card-row-right">{currentMake.config}</div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Horsepower</div>
-                  <div className="sales__selectarea-card-row-right">{currentMake.horsepower}hp</div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Year</div>
-                  <div className="sales__selectarea-card-row-right">{currentMake.year ? currentMake.year : '-'}</div>
+                <div className="flex">
+                  <section className="sales__selectarea-card-column">
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Model</div>
+                      <div className="sales__selectarea-card-row-right--make">{currentMake.title}</div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Series</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.series === null || currentMake.series === '' ? '-' : currentMake.series}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Length</div>
+                      <div className="sales__selectarea-card-row-right--make">{currentMake.length}mm</div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Config</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.config ? currentMake.config : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Torque</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.torque ? currentMake.torque : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Horsepower</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.horsepower ? `${currentMake.horsepower}PC` : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Emission</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.emission ? currentMake.emission : '-'}
+                      </div>
+                    </div>
+                  </section>
+                  <section className="sales__selectarea-card-column">
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
+                      <div className="sales__selectarea-card-row-right--make">{currentMake.tire}</div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.wheelbase.title ? `${currentMake.wheelbase.title}mm` : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Transmission</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.transmission ? currentMake.transmission : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Engine Capacity</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.engine_cap ? `${currentMake.engine_cap}CC` : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Year</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.year ? currentMake.year : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">GVW</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentMake.gvw ? `${currentMake.gvw}kg` : '-'}
+                      </div>
+                    </div>
+                  </section>
                 </div>
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Price</div>
