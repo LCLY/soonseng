@@ -50,7 +50,7 @@ export interface ClearSalesStateAction {
 // Sales
 /* ============================================================== */
 /* ---------------------------- */
-// Create Quotation
+// Create Local Quotation
 /* ---------------------------- */
 // Quotation object should contain as much info as possible about a product
 export type TLocalOrderObj = {
@@ -65,6 +65,13 @@ export type TLocalOrderObj = {
 
 export interface StoreLocalOrdersAction {
   type: typeof actionTypes.STORE_LOCAL_ORDERS;
+  localOrdersArray: TLocalOrderObj[];
+}
+
+/* Remove one quotation / order using index  */
+export interface RemoveAnOrderAction {
+  type: typeof actionTypes.REMOVE_AN_ORDER;
+  index: number;
   localOrdersArray: TLocalOrderObj[];
 }
 
@@ -212,9 +219,12 @@ export type SalesActionTypes =
   /* -------------------------- */
   | ClearSalesStateAction
   /* -------------------------- */
-  // Store Local Orders
+  // Local quotation/ orders
   /* -------------------------- */
+  // Store Local Orders
   | StoreLocalOrdersAction
+  // remove a local Order
+  | RemoveAnOrderAction
   /* ------------------------ */
   // Lengths
   /* ------------------------ */

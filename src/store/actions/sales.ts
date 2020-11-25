@@ -30,6 +30,16 @@ export const storeLocalOrders = (localOrdersArray: TLocalOrderObj[]): AppActions
     localOrdersArray: localOrdersArray,
   };
 };
+/* ------------------------------- */
+// Remove a local order
+/* ------------------------------- */
+export const removeAnOrder = (index: number, localOrdersArray: TLocalOrderObj[]): AppActions => {
+  return {
+    type: actionTypes.REMOVE_AN_ORDER,
+    index: index,
+    localOrdersArray: localOrdersArray,
+  };
+};
 
 /* ----------------------------- */
 // Get Lengths

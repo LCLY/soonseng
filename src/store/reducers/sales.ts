@@ -44,6 +44,9 @@ const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
   });
 };
 
+/* ================================= */
+/* Local Quotation / Orders */
+/* ================================= */
 /* ------------------------------- */
 // Store local orders
 /* ------------------------------- */
@@ -51,6 +54,18 @@ export const storeLocalOrders = (state: SalesInitialState, action: AppActions) =
   if ('localOrdersArray' in action) {
     return updateObject(state, {
       localOrdersArray: action.localOrdersArray,
+    });
+  }
+};
+/* ------------------------------- */
+// Remove a local order
+/* ------------------------------- */
+// Take the index and use that index to remove item from the localOrdersArray
+export const removeAnOrder = (state: SalesInitialState, action: AppActions) => {
+  if ('index' in action && 'localOrdersArray' in action) {
+    let deletedLocalOrdersArray = action.localOrdersArray.filter((_localOrderObj, index) => action.index !== index);
+    return updateObject(state, {
+      localOrdersArray: deletedLocalOrdersArray,
     });
   }
 };
@@ -169,10 +184,14 @@ const reducer = (state = initialState, action: SalesActionTypes) => {
     case actionTypes.CLEAR_SALES_STATE:
       return clearSalesState(state, action);
     /* =================================== */
-    //  Store local orders
+    // Local Quotation/Orders
     /* =================================== */
+    //  Store local orders
     case actionTypes.STORE_LOCAL_ORDERS:
       return storeLocalOrders(state, action);
+    //  Remove a local order
+    case actionTypes.REMOVE_AN_ORDER:
+      return removeAnOrder(state, action);
     /* =================================== */
     //  Lengths
     /* =================================== */

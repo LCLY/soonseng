@@ -9,10 +9,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { LoadingOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { LoadingOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Button, Skeleton, Card, Empty, Steps, Collapse, Tag, Divider, Breadcrumb } from 'antd';
+import { Button, Skeleton, Card, Empty, Steps, Collapse, Tag, Divider, Breadcrumb, Dropdown, Menu } from 'antd';
 
 // Util
 import {
@@ -42,7 +42,7 @@ type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
  * @category Pages
  */
 const SalesPage: React.FC<Props> = ({
-  loading,
+  // Arrays
   salesBrandsArray,
   bodyLengthsArray,
   localOrdersArray,
@@ -50,13 +50,17 @@ const SalesPage: React.FC<Props> = ({
   generalAccessoriesArray,
   bodyRelatedAccessoriesArray,
   dimensionRelatedAccessoriesArray,
+  //  Miscellaneous
   onClearSalesState,
   onStoreLocalOrders,
+  onRemoveAnOrder,
+  // API calls
   onGetSalesMakes,
   onGetSalesLengths,
   onGetSalesBodyLengths,
   onGetSalesBodyAccessories,
-  // boolean
+  // Booleans
+  loading,
   getSalesMakesSucceed,
   getSalesLengthsSucceed,
   getSalesBodyLengthsSucceed,
@@ -1235,7 +1239,7 @@ const SalesPage: React.FC<Props> = ({
 
   let overviewSection = (
     <section className="sales__section">
-      <div className="sales__section-overview" style={{ display: 'none' }}>
+      <div className="sales__section-overview">
         <div className="sales__breadcrumb-outerdiv">
           <Breadcrumb separator=">" className="sales__breadcrumb">
             <Breadcrumb.Item>
@@ -1272,7 +1276,7 @@ const SalesPage: React.FC<Props> = ({
         <div>
           {localOrdersArray &&
             localOrdersArray.length > 0 &&
-            localOrdersArray.map((order) => {
+            localOrdersArray.map((order, index) => {
               type miscellaneousType = {
                 title: string;
                 price: number;
@@ -1382,285 +1386,304 @@ const SalesPage: React.FC<Props> = ({
 
               let grandTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice + discountPrice;
 
+              let moreOptionsDropdown = (
+                <Menu>
+                  <Menu.Item danger onClick={() => onRemoveAnOrder(index, localOrdersArray)}>
+                    Remove from order
+                  </Menu.Item>
+                </Menu>
+              );
+              /* ==================================================== */
+              // RENDER
+              /* ==================================================== */
               return (
-                <div className="sales__overview-row" key={uuidv4()}>
-                  {/* Image div on the left */}
-                  <section className="sales__overview-row-image-div">
-                    {/* Show make images */}
-                    {order.makeObj && order.makeObj?.seriesObj.images.length > 0 ? (
-                      <img
-                        alt={order.makeObj?.seriesObj.images[0].filename}
-                        src={order.makeObj?.seriesObj.images[0].url}
-                      />
-                    ) : (
-                      <img className="sales__overview-row-image" src={img_not_available_link} alt="not available" />
-                    )}
-                  </section>
-
-                  {/* Content div on the right */}
-                  <section className="sales__overview-row-content">
-                    {/* ------------ The largest header on top -------------- */}
-                    <div className="flex-align-center space-between margin_b-1">
-                      <span className="sales__overview-row-content-header">
-                        {order.lengthObj?.title}ft {order.bodyLengthObj?.body.title}
-                      </span>
-                      <span className="sales__overview-row-content-header-price--prediscount">
-                        RM&nbsp;
-                        <NumberFormat
-                          displayType={'text'}
-                          thousandSeparator={true}
-                          value={prediscountTotalPrice.toFixed(2)}
-                        />
-                      </span>
+                <div className="sales__overview-row-outerdiv" key={uuidv4()}>
+                  <div className="sales__overview-more">
+                    <div className="sales__overview-more-icon-div">
+                      <Dropdown trigger={['click']} overlay={moreOptionsDropdown} placement="bottomRight">
+                        <DownSquareOutlined className="sales__overview-more-icon" />
+                      </Dropdown>
                     </div>
+                  </div>
+                  <div className="sales__overview-row">
+                    {/* Image div on the left */}
+                    <section className="sales__overview-row-image-div">
+                      {/* Show make images */}
+                      {order.makeObj && order.makeObj?.seriesObj.images.length > 0 ? (
+                        <img
+                          alt={order.makeObj?.seriesObj.images[0].filename}
+                          src={order.makeObj?.seriesObj.images[0].url}
+                        />
+                      ) : (
+                        <img className="sales__overview-row-image" src={img_not_available_link} alt="not available" />
+                      )}
+                    </section>
 
-                    <div className="flex space-between">
-                      {/* ======================= */}
-                      {/* Model Series  */}
-                      {/* ======================= */}
-                      <div className="sales__selectarea-seriestitle">
-                        <span className="sales__overview-row-content-subheader">
-                          {`${order.makeObj?.brandName} ${order.makeObj?.seriesName} ${order.makeObj?.seriesObj.title}`}
+                    {/* Content div on the right */}
+                    <section className="sales__overview-row-content">
+                      {/* ------------ The largest header on top -------------- */}
+                      <div className="flex-align-center space-between margin_b-1">
+                        <span className="sales__overview-row-content-header">
+                          {order.lengthObj?.title}ft {order.bodyLengthObj?.body.title}
+                        </span>
+                        <span className="sales__overview-row-content-header-price--prediscount">
+                          RM&nbsp;
+                          <NumberFormat
+                            displayType={'text'}
+                            thousandSeparator={true}
+                            value={prediscountTotalPrice.toFixed(2)}
+                          />
                         </span>
                       </div>
-                      <span className="sales__overview-row-content-subheader-price">
-                        <NumberFormat
-                          displayType={'text'}
-                          thousandSeparator={true}
-                          value={modelSubtotalPrice.toFixed(2)}
-                        />
-                      </span>
-                    </div>
-                    <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                      <Panel className="sales__overview-panel" header="Show more model details" key="model">
-                        <ol className="sales__overview-list">
-                          <div className="sales__overview-smalltitle">Cargo</div>
-                          <li>
-                            {/* ------------ Chassis price ----------- */}
-                            <div className="flex space-between">
-                              <span>
-                                Chassis Price:&nbsp;
-                                <span className="sales__overview-highlight-model">
-                                  {order.makeObj && order.makeObj?.seriesObj.year === null
-                                    ? /* if year doesnt exist, dont show anything except the model name*/
-                                      order.makeObj.seriesObj.title
-                                    : order.makeObj &&
-                                      /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
-                                      parseInt(order.makeObj.seriesObj.year) === parseInt(moment().year().toString())
-                                    ? `NEW MODEL YEAR ${order.makeObj.seriesObj.year} - ${order.makeObj.seriesObj.title}`
-                                    : /* else show MODEL YEAR - model name */
-                                      order.makeObj &&
-                                      `MODEL ${order.makeObj.seriesObj.year} ${order.makeObj.seriesObj.title}`}
-                                </span>
-                              </span>
-                              <span>
-                                <NumberFormat
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                  value={order.makeObj?.seriesObj.price.toFixed(2)}
-                                />
-                              </span>
-                            </div>
-                          </li>
-                          <li>
-                            {/* ----------------- Body price ----------------- */}
-                            <div className="flex space-between">
-                              <span>
-                                Body Price:&nbsp;
-                                <span className="sales__overview-highlight-model">
-                                  {`${order.bodyLengthObj?.length.title}ft ${order.bodyLengthObj?.body.title}`}
-                                </span>
-                              </span>
-                              <span>
-                                <NumberFormat
-                                  value={order.bodyLengthObj?.price.toFixed(2)}
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                />
-                              </span>
-                            </div>
-                          </li>
-                          {/* Accessories */}
-                          <div className="sales__overview-smalltitle">Accessories</div>
-                          <>
-                            {order.generalAccessoriesArray &&
-                              order.generalAccessoriesArray.length > 0 &&
-                              order.generalAccessoriesArray.map((accessory) => (
-                                <li key={uuidv4()}>
-                                  <div className="flex space-between">
-                                    <span>{accessory.title} </span>
-                                    <span>
-                                      <NumberFormat
-                                        displayType={'text'}
-                                        thousandSeparator={true}
-                                        value={accessory.price.toFixed(2)}
-                                      />
-                                    </span>
-                                  </div>
-                                </li>
-                              ))}
-                          </>
-                          <>
-                            {order.bodyRelatedAccessoriesArray &&
-                              order.bodyRelatedAccessoriesArray.length > 0 &&
-                              order.bodyRelatedAccessoriesArray.map((accessory) => (
-                                <li key={uuidv4()}>
-                                  <div className="flex space-between">
-                                    <span>{accessory.title} </span>
-                                    <span>
-                                      <NumberFormat
-                                        displayType={'text'}
-                                        thousandSeparator={true}
-                                        value={accessory.price.toFixed(2)}
-                                      />
-                                    </span>
-                                  </div>
-                                </li>
-                              ))}
-                          </>
-                          <>
-                            {order.dimensionRelatedAccessoriesArray &&
-                              order.dimensionRelatedAccessoriesArray.length > 0 &&
-                              order.dimensionRelatedAccessoriesArray.map((dimension) => (
-                                <li key={uuidv4()}>
-                                  <div className="flex space-between">
-                                    <span> {dimension.accessory.title} </span>
-                                    <span>
-                                      <NumberFormat
-                                        displayType={'text'}
-                                        thousandSeparator={true}
-                                        value={dimension.accessory.price.toFixed(2)}
-                                      />
-                                    </span>
-                                  </div>
-                                </li>
-                              ))}
-                          </>
-                          <div className="sales__overview-smalltitle">Processing fees</div>
-                          {miscellaneousArray.map((item) => (
-                            <li key={uuidv4()}>
+
+                      <div className="flex space-between">
+                        {/* ======================= */}
+                        {/* Model Series  */}
+                        {/* ======================= */}
+                        <div className="sales__selectarea-seriestitle">
+                          <span className="sales__overview-row-content-subheader">
+                            {`${order.makeObj?.brandName} ${order.makeObj?.seriesName} ${order.makeObj?.seriesObj.title}`}
+                          </span>
+                        </div>
+                        <span className="sales__overview-row-content-subheader-price">
+                          <NumberFormat
+                            displayType={'text'}
+                            thousandSeparator={true}
+                            value={modelSubtotalPrice.toFixed(2)}
+                          />
+                        </span>
+                      </div>
+                      <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                        <Panel className="sales__overview-panel" header="Show more model details" key="model">
+                          <ol className="sales__overview-list">
+                            <div className="sales__overview-smalltitle">Cargo</div>
+                            <li>
+                              {/* ------------ Chassis price ----------- */}
                               <div className="flex space-between">
-                                <span>{item.title}</span>
+                                <span>
+                                  Chassis Price:&nbsp;
+                                  <span className="sales__overview-highlight-model">
+                                    {order.makeObj && order.makeObj?.seriesObj.year === null
+                                      ? /* if year doesnt exist, dont show anything except the model name*/
+                                        order.makeObj.seriesObj.title
+                                      : order.makeObj &&
+                                        /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
+                                        parseInt(order.makeObj.seriesObj.year) === parseInt(moment().year().toString())
+                                      ? `NEW MODEL YEAR ${order.makeObj.seriesObj.year} - ${order.makeObj.seriesObj.title}`
+                                      : /* else show MODEL YEAR - model name */
+                                        order.makeObj &&
+                                        `MODEL ${order.makeObj.seriesObj.year} ${order.makeObj.seriesObj.title}`}
+                                  </span>
+                                </span>
                                 <span>
                                   <NumberFormat
-                                    value={item.price.toFixed(2)}
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    value={order.makeObj?.seriesObj.price.toFixed(2)}
+                                  />
+                                </span>
+                              </div>
+                            </li>
+                            <li>
+                              {/* ----------------- Body price ----------------- */}
+                              <div className="flex space-between">
+                                <span>
+                                  Body Price:&nbsp;
+                                  <span className="sales__overview-highlight-model">
+                                    {`${order.bodyLengthObj?.length.title}ft ${order.bodyLengthObj?.body.title}`}
+                                  </span>
+                                </span>
+                                <span>
+                                  <NumberFormat
+                                    value={order.bodyLengthObj?.price.toFixed(2)}
                                     displayType={'text'}
                                     thousandSeparator={true}
                                   />
                                 </span>
                               </div>
                             </li>
-                          ))}
-                        </ol>
-                        {/* Cargo subtotal */}
-                        <div className="sales__overview-subtotal-outerdiv">
-                          <span className="sales__overview-subtotal-text">SUBTOTAL</span>
-                          <div className="sales__overview-subtotal">
-                            <NumberFormat
-                              value={modelSubtotalPrice.toFixed(2)}
-                              displayType={'text'}
-                              thousandSeparator={true}
-                            />
+                            {/* Accessories */}
+                            <div className="sales__overview-smalltitle">Accessories</div>
+                            <>
+                              {order.generalAccessoriesArray &&
+                                order.generalAccessoriesArray.length > 0 &&
+                                order.generalAccessoriesArray.map((accessory) => (
+                                  <li key={uuidv4()}>
+                                    <div className="flex space-between">
+                                      <span>{accessory.title} </span>
+                                      <span>
+                                        <NumberFormat
+                                          displayType={'text'}
+                                          thousandSeparator={true}
+                                          value={accessory.price.toFixed(2)}
+                                        />
+                                      </span>
+                                    </div>
+                                  </li>
+                                ))}
+                            </>
+                            <>
+                              {order.bodyRelatedAccessoriesArray &&
+                                order.bodyRelatedAccessoriesArray.length > 0 &&
+                                order.bodyRelatedAccessoriesArray.map((accessory) => (
+                                  <li key={uuidv4()}>
+                                    <div className="flex space-between">
+                                      <span>{accessory.title} </span>
+                                      <span>
+                                        <NumberFormat
+                                          displayType={'text'}
+                                          thousandSeparator={true}
+                                          value={accessory.price.toFixed(2)}
+                                        />
+                                      </span>
+                                    </div>
+                                  </li>
+                                ))}
+                            </>
+                            <>
+                              {order.dimensionRelatedAccessoriesArray &&
+                                order.dimensionRelatedAccessoriesArray.length > 0 &&
+                                order.dimensionRelatedAccessoriesArray.map((dimension) => (
+                                  <li key={uuidv4()}>
+                                    <div className="flex space-between">
+                                      <span> {dimension.accessory.title} </span>
+                                      <span>
+                                        <NumberFormat
+                                          displayType={'text'}
+                                          thousandSeparator={true}
+                                          value={dimension.accessory.price.toFixed(2)}
+                                        />
+                                      </span>
+                                    </div>
+                                  </li>
+                                ))}
+                            </>
+                            <div className="sales__overview-smalltitle">Processing fees</div>
+                            {miscellaneousArray.map((item) => (
+                              <li key={uuidv4()}>
+                                <div className="flex space-between">
+                                  <span>{item.title}</span>
+                                  <span>
+                                    <NumberFormat
+                                      value={item.price.toFixed(2)}
+                                      displayType={'text'}
+                                      thousandSeparator={true}
+                                    />
+                                  </span>
+                                </div>
+                              </li>
+                            ))}
+                          </ol>
+                          {/* Cargo subtotal */}
+                          <div className="sales__overview-subtotal-outerdiv">
+                            <span className="sales__overview-subtotal-text">SUBTOTAL</span>
+                            <div className="sales__overview-subtotal">
+                              <NumberFormat
+                                value={modelSubtotalPrice.toFixed(2)}
+                                displayType={'text'}
+                                thousandSeparator={true}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </Panel>
-                    </Collapse>
+                        </Panel>
+                      </Collapse>
 
-                    {/* ======================== */}
-                    {/* Road Tax and Insurance */}
-                    {/* ======================== */}
-                    <div className="flex space-between">
-                      <span className="sales__overview-row-content-subheader">Road Tax and Insurance</span>
-                      <span className="sales__overview-row-content-subheader-price">
-                        <NumberFormat
-                          displayType={'text'}
-                          thousandSeparator={true}
-                          value={insuranceSubtotalPrice.toFixed(2)}
-                        />
-                      </span>
-                    </div>
-                    <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                      <Panel className="sales__overview-panel" header="View more" key="insurance">
-                        <ul className="sales__overview-list">
-                          {insuranceArray.map((item) => (
-                            <li key={uuidv4()}>
-                              <div className="flex space-between">
-                                <span> {item.title}</span>
-                                <span>
-                                  <NumberFormat
-                                    displayType={'text'}
-                                    thousandSeparator={true}
-                                    value={item.price.toFixed(2)}
-                                  />
-                                </span>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                        {/* Insurance subtotal */}
-                        <div className="sales__overview-subtotal-outerdiv">
-                          <span className="sales__overview-subtotal-text">SUBTOTAL</span>
-                          <div className="sales__overview-subtotal">
-                            <NumberFormat
-                              value={insuranceSubtotalPrice.toFixed(2)}
-                              displayType={'text'}
-                              thousandSeparator={true}
-                            />
+                      {/* ======================== */}
+                      {/* Road Tax and Insurance */}
+                      {/* ======================== */}
+                      <div className="flex space-between">
+                        <span className="sales__overview-row-content-subheader">Road Tax and Insurance</span>
+                        <span className="sales__overview-row-content-subheader-price">
+                          <NumberFormat
+                            displayType={'text'}
+                            thousandSeparator={true}
+                            value={insuranceSubtotalPrice.toFixed(2)}
+                          />
+                        </span>
+                      </div>
+                      <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                        <Panel className="sales__overview-panel" header="View more" key="insurance">
+                          <ul className="sales__overview-list">
+                            {insuranceArray.map((item) => (
+                              <li key={uuidv4()}>
+                                <div className="flex space-between">
+                                  <span> {item.title}</span>
+                                  <span>
+                                    <NumberFormat
+                                      displayType={'text'}
+                                      thousandSeparator={true}
+                                      value={item.price.toFixed(2)}
+                                    />
+                                  </span>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                          {/* Insurance subtotal */}
+                          <div className="sales__overview-subtotal-outerdiv">
+                            <span className="sales__overview-subtotal-text">SUBTOTAL</span>
+                            <div className="sales__overview-subtotal">
+                              <NumberFormat
+                                value={insuranceSubtotalPrice.toFixed(2)}
+                                displayType={'text'}
+                                thousandSeparator={true}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </Panel>
-                    </Collapse>
+                        </Panel>
+                      </Collapse>
 
-                    <hr />
-                    {/* ======================== */}
-                    {/* Total Price */}
-                    {/* ======================== */}
-                    <div className="flex space-between">
-                      <span className="sales__overview-row-content-subheader">Total Price</span>
-                      <span className="sales__overview-row-content-subheader-price--prediscount">
-                        <NumberFormat
-                          displayType={'text'}
-                          thousandSeparator={true}
-                          value={prediscountTotalPrice.toFixed(2)}
-                        />
-                      </span>
-                    </div>
+                      <hr />
+                      {/* ======================== */}
+                      {/* Total Price */}
+                      {/* ======================== */}
+                      <div className="flex space-between">
+                        <span className="sales__overview-row-content-subheader">Total Price</span>
+                        <span className="sales__overview-row-content-subheader-price--prediscount">
+                          <NumberFormat
+                            displayType={'text'}
+                            thousandSeparator={true}
+                            value={prediscountTotalPrice.toFixed(2)}
+                          />
+                        </span>
+                      </div>
 
-                    {/* ======================== */}
-                    {/* DISCOUNT */}
-                    {/* ======================== */}
-                    <div className="flex space-between">
-                      <span className="sales__overview-row-content-subheader sales__overview-row-content-subheader--discount">
-                        Discount
-                      </span>
-                      <span className="sales__overview-row-content-subheader-price">
-                        -&nbsp;
-                        <NumberFormat
-                          displayType={'text'}
-                          thousandSeparator={true}
-                          value={Math.abs(discountPrice).toFixed(2)}
-                        />
-                      </span>
-                    </div>
-                    <hr />
-                    {/* ======================== */}
-                    {/* TOTAL ON THE ROAD PRICE */}
-                    {/* ======================== */}
-                    <div className="flex-align-center space-between">
-                      <span className="sales__overview-row-content-subheader--totalroadprice">
-                        TOTAL ON THE ROAD PRICE
-                      </span>
+                      {/* ======================== */}
+                      {/* DISCOUNT */}
+                      {/* ======================== */}
+                      <div className="flex space-between">
+                        <span className="sales__overview-row-content-subheader sales__overview-row-content-subheader--discount">
+                          Discount
+                        </span>
+                        <span className="sales__overview-row-content-subheader-price">
+                          -&nbsp;
+                          <NumberFormat
+                            displayType={'text'}
+                            thousandSeparator={true}
+                            value={Math.abs(discountPrice).toFixed(2)}
+                          />
+                        </span>
+                      </div>
+                      <hr />
+                      {/* ======================== */}
+                      {/* TOTAL ON THE ROAD PRICE */}
+                      {/* ======================== */}
+                      <div className="flex-align-center space-between">
+                        <span className="sales__overview-row-content-subheader--totalroadprice">
+                          TOTAL ON THE ROAD PRICE
+                        </span>
 
-                      <span className="sales__overview-row-content-header-price">
-                        RM&nbsp;
-                        <NumberFormat
-                          displayType={'text'}
-                          thousandSeparator={true}
-                          value={grandTotalPrice.toFixed(2)}
-                        />
-                      </span>
-                    </div>
-                  </section>
+                        <span className="sales__overview-row-content-header-price">
+                          RM&nbsp;
+                          <NumberFormat
+                            displayType={'text'}
+                            thousandSeparator={true}
+                            value={grandTotalPrice.toFixed(2)}
+                          />
+                        </span>
+                      </div>
+                    </section>
+                  </div>
                 </div>
               );
             })}
@@ -1672,7 +1695,7 @@ const SalesPage: React.FC<Props> = ({
   );
 
   const steps = [
-    // { step: 1, title: 'Overview', content: overviewSection },
+    { step: 1, title: 'Overview', content: overviewSection },
     { step: 1, title: 'Tyre', content: tyreSection },
     {
       step: 2,
@@ -1804,11 +1827,12 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
 
 interface DispatchProps {
   onClearSalesState: typeof actions.clearSalesState;
+  onRemoveAnOrder: typeof actions.removeAnOrder;
+  onStoreLocalOrders: typeof actions.storeLocalOrders;
   onGetSalesMakes: typeof actions.getSalesMakes;
   onGetSalesLengths: typeof actions.getSalesLengths;
   onGetSalesBodyLengths: typeof actions.getSalesBodyLengths;
   onGetSalesBodyAccessories: typeof actions.getSalesBodyAccessories;
-  onStoreLocalOrders: typeof actions.storeLocalOrders;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
@@ -1818,6 +1842,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onGetSalesBodyLengths: (length_id, tire) => dispatch(actions.getSalesBodyLengths(length_id, tire)),
+    onRemoveAnOrder: (index, localOrdersArray) => dispatch(actions.removeAnOrder(index, localOrdersArray)),
     onGetSalesBodyAccessories: (body_length_id) => dispatch(actions.getSalesBodyAccessories(body_length_id)),
   };
 };

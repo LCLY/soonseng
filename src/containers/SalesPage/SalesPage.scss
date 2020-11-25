@@ -683,12 +683,16 @@
     &-row {
       display: flex;
       width: 100%;
-      &:not(:first-child) {
-        padding-top: 5rem;
-      }
-      &:not(:last-child) {
-        padding-bottom: 5rem;
-        border-bottom: 1px solid $translucent-grey;
+
+      // most outerdiv
+      &-outerdiv {
+        &:not(:first-child) {
+          padding-top: 5rem;
+        }
+        &:not(:last-child) {
+          padding-bottom: 5rem;
+          border-bottom: 1px solid $translucent-grey;
+        }
       }
 
       /* ------------------------------- */
@@ -700,6 +704,7 @@
         object-fit: cover;
 
         &-div {
+          user-select: none;
           padding: 2rem;
         }
       }
@@ -821,6 +826,26 @@
       // border-top: 1px solid black;
       padding-left: 2rem;
       font-weight: bolder;
+    }
+
+    // The dropdown to show more options button
+    &-more {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 3.5rem;
+
+      &-icon {
+        &-div {
+          cursor: pointer;
+          &:hover {
+            & .sales__overview-more-icon {
+              transition: all 0.5s ease;
+              background: $primary-color-4;
+              color: white;
+            }
+          }
+        }
+      }
     }
   }
 
