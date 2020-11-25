@@ -18,7 +18,7 @@ import storage from 'redux-persist/lib/storage';
 import { createFilter } from 'redux-persist-transform-filter';
 import { persistStore, persistReducer } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 // reducers
 import dashboardReducer from 'src/store/reducers/dashboard';
@@ -39,7 +39,7 @@ const persistConfig = {
   storage: storage,
   whitelist: ['sales'], // which reducer want to store - name of reducer
   transforms: [saveSubsetFilter],
-  stateReconciler: hardSet,
+  stateReconciler: autoMergeLevel2,
 };
 
 // combine all reducers
