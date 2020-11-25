@@ -684,10 +684,10 @@
       display: flex;
       width: 100%;
       &:not(:first-child) {
-        padding-top: 2rem;
+        padding-top: 5rem;
       }
       &:not(:last-child) {
-        padding-bottom: 2rem;
+        padding-bottom: 5rem;
         border-bottom: 1px solid $translucent-grey;
       }
 
@@ -717,12 +717,22 @@
           font-weight: bolder;
           color: $primary-color-4;
 
-          // the total price
+          // the grand total price at the bottom
           &-price {
-            font-size: 2.4rem;
+            font-size: 2.5rem;
             font-family: $font-roboto;
             font-weight: bolder;
+            padding-right: 1.5rem;
             margin-bottom: 0.5rem;
+            color: $primary-color-4;
+
+            // the prediscount on the top
+            &--prediscount {
+              font-size: 1.8rem;
+              font-family: $font-roboto;
+              padding-right: 1.5rem;
+              font-weight: bolder;
+            }
           }
         }
 
@@ -733,8 +743,27 @@
           // padding-left: 1.5rem;
           font-family: $font-firesans;
 
+          &--discount {
+            color: black;
+            // font-weight: bolder;
+          }
+
+          &--totalroadprice {
+            font-size: 2.2rem;
+            color: black;
+            // padding-left: 1.5rem;
+            font-family: $font-firesans;
+          }
+
           &-price {
             padding-right: 1.5rem;
+
+            // the prediscount price
+            &--prediscount {
+              // font-size: 1.8rem;
+              font-weight: bolder;
+              padding-right: 1.5rem;
+            }
           }
         }
       }
@@ -747,6 +776,7 @@
       }
 
       & .ant-collapse-content-box {
+        padding-top: 0 !important;
         padding-left: 4rem !important;
       }
     }
@@ -763,19 +793,32 @@
     &-smalltitle {
       font-size: 1.4rem;
       color: $secondary-color-3;
-      margin-top: 1rem;
       margin-bottom: 0.5rem;
       font-family: $font-ubuntu;
+
+      &:not(:first-child) {
+        margin-top: 1rem;
+      }
     }
 
     // subtotal on every last
     &-subtotal {
       &-outerdiv {
         display: flex;
-        justify-content: flex-end;
+        align-items: center;
+        justify-content: space-between;
+        background: $section-grey;
+        border-top: 1px solid $translucent-grey;
+        border-bottom: 1px solid $translucent-grey;
       }
 
-      border-top: 1px solid black;
+      &-text {
+        color: black;
+        font-size: 1.6rem;
+        font-family: $font-opensans;
+      }
+      font-size: 1.7rem;
+      // border-top: 1px solid black;
       padding-left: 2rem;
       font-weight: bolder;
     }

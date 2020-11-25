@@ -1220,8 +1220,8 @@ const SalesPage: React.FC<Props> = ({
                 // into the localOrdersArray in redux so we can save it in localstorage
                 let copyArray = [...localOrdersArray];
                 copyArray.push(currentOrderObj);
-                console.log(currentOrderObj);
                 onStoreLocalOrders(copyArray);
+                alert('added order!');
                 next();
               }}
             >
@@ -1235,7 +1235,7 @@ const SalesPage: React.FC<Props> = ({
 
   let overviewSection = (
     <section className="sales__section">
-      <div className="sales__section-overview">
+      <div className="sales__section-overview" style={{ display: 'none' }}>
         <div className="sales__breadcrumb-outerdiv">
           <Breadcrumb separator=">" className="sales__breadcrumb">
             <Breadcrumb.Item>
@@ -1357,9 +1357,9 @@ const SalesPage: React.FC<Props> = ({
               /* ===================================================== */
               // Model subtotal price - add all except insurance fees
               /* ===================================================== */
-              let modelSubTotalPrice = 0;
+              let modelSubtotalPrice = 0;
               if (order.makeObj && order.bodyLengthObj) {
-                modelSubTotalPrice =
+                modelSubtotalPrice =
                   order.makeObj.seriesObj.price + order.bodyLengthObj.price + totalAccessoriesPrice + miscellaneousFees;
               }
 
@@ -1376,9 +1376,11 @@ const SalesPage: React.FC<Props> = ({
               /* ====================== */
               // Discount Price
               /* ====================== */
-              let discountPrice = -100;
+              let discountPrice = -6000;
 
-              let grandTotalPrice = modelSubTotalPrice + insuranceSubtotalPrice + discountPrice;
+              let prediscountTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice;
+
+              let grandTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice + discountPrice;
 
               return (
                 <div className="sales__overview-row" key={uuidv4()}>
@@ -1402,12 +1404,12 @@ const SalesPage: React.FC<Props> = ({
                       <span className="sales__overview-row-content-header">
                         {order.lengthObj?.title}ft {order.bodyLengthObj?.body.title}
                       </span>
-                      <span className="sales__overview-row-content-header-price">
+                      <span className="sales__overview-row-content-header-price--prediscount">
                         RM&nbsp;
                         <NumberFormat
                           displayType={'text'}
                           thousandSeparator={true}
-                          value={grandTotalPrice.toFixed(2)}
+                          value={prediscountTotalPrice.toFixed(2)}
                         />
                       </span>
                     </div>
@@ -1425,7 +1427,7 @@ const SalesPage: React.FC<Props> = ({
                         <NumberFormat
                           displayType={'text'}
                           thousandSeparator={true}
-                          value={modelSubTotalPrice.toFixed(2)}
+                          value={modelSubtotalPrice.toFixed(2)}
                         />
                       </span>
                     </div>
@@ -1534,7 +1536,7 @@ const SalesPage: React.FC<Props> = ({
                                 </li>
                               ))}
                           </>
-                          <div className="sales__overview-smalltitle">Miscellaneous</div>
+                          <div className="sales__overview-smalltitle">Processing fees</div>
                           {miscellaneousArray.map((item) => (
                             <li key={uuidv4()}>
                               <div className="flex space-between">
@@ -1550,10 +1552,12 @@ const SalesPage: React.FC<Props> = ({
                             </li>
                           ))}
                         </ol>
+                        {/* Cargo subtotal */}
                         <div className="sales__overview-subtotal-outerdiv">
+                          <span className="sales__overview-subtotal-text">SUBTOTAL</span>
                           <div className="sales__overview-subtotal">
                             <NumberFormat
-                              value={modelSubTotalPrice.toFixed(2)}
+                              value={modelSubtotalPrice.toFixed(2)}
                               displayType={'text'}
                               thousandSeparator={true}
                             />
@@ -1576,7 +1580,7 @@ const SalesPage: React.FC<Props> = ({
                       </span>
                     </div>
                     <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                      <Panel className="sales__overview-panel" header="View service details" key="insurance">
+                      <Panel className="sales__overview-panel" header="View more" key="insurance">
                         <ul className="sales__overview-list">
                           {insuranceArray.map((item) => (
                             <li key={uuidv4()}>
@@ -1593,7 +1597,9 @@ const SalesPage: React.FC<Props> = ({
                             </li>
                           ))}
                         </ul>
+                        {/* Insurance subtotal */}
                         <div className="sales__overview-subtotal-outerdiv">
+                          <span className="sales__overview-subtotal-text">SUBTOTAL</span>
                           <div className="sales__overview-subtotal">
                             <NumberFormat
                               value={insuranceSubtotalPrice.toFixed(2)}
@@ -1605,14 +1611,53 @@ const SalesPage: React.FC<Props> = ({
                       </Panel>
                     </Collapse>
 
+                    <hr />
+                    {/* ======================== */}
+                    {/* Total Price */}
+                    {/* ======================== */}
+                    <div className="flex space-between">
+                      <span className="sales__overview-row-content-subheader">Total Price</span>
+                      <span className="sales__overview-row-content-subheader-price--prediscount">
+                        <NumberFormat
+                          displayType={'text'}
+                          thousandSeparator={true}
+                          value={prediscountTotalPrice.toFixed(2)}
+                        />
+                      </span>
+                    </div>
+
                     {/* ======================== */}
                     {/* DISCOUNT */}
                     {/* ======================== */}
                     <div className="flex space-between">
-                      <span className="sales__overview-row-content-subheader">Discount</span>
+                      <span className="sales__overview-row-content-subheader sales__overview-row-content-subheader--discount">
+                        Discount
+                      </span>
                       <span className="sales__overview-row-content-subheader-price">
-                        (
-                        <NumberFormat displayType={'text'} thousandSeparator={true} value={discountPrice.toFixed(2)} />)
+                        -&nbsp;
+                        <NumberFormat
+                          displayType={'text'}
+                          thousandSeparator={true}
+                          value={Math.abs(discountPrice).toFixed(2)}
+                        />
+                      </span>
+                    </div>
+                    <hr />
+                    {/* ======================== */}
+                    {/* TOTAL ON THE ROAD PRICE */}
+                    {/* ======================== */}
+                    <div className="flex-align-center space-between">
+                      <span className="sales__overview-row-content-subheader--totalroadprice">
+                        TOTAL ON THE ROAD PRICE
+                      </span>
+
+                      <span className="sales__overview-row-content-header-price">
+                        RM&nbsp;
+                        <NumberFormat
+                          displayType={'text'}
+                          thousandSeparator={true}
+                          value={grandTotalPrice.toFixed(2)}
+                        />
                       </span>
                     </div>
                   </section>
@@ -1622,10 +1667,12 @@ const SalesPage: React.FC<Props> = ({
         </div>
         <Button onClick={() => setCurrentStep(0)}>Lets go again</Button>
       </div>
+      <Button onClick={() => setCurrentStep(0)}>Go back to first page</Button>
     </section>
   );
 
   const steps = [
+    // { step: 1, title: 'Overview', content: overviewSection },
     { step: 1, title: 'Tyre', content: tyreSection },
     {
       step: 2,
