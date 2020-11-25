@@ -108,7 +108,7 @@
     // overview of user's truck configuration
     /* ---------------------------------------- */
     &-overview {
-      width: 110rem;
+      width: 100rem;
     }
 
     /* --------------------------------------------- */
@@ -553,6 +553,7 @@
         &::-webkit-scrollbar {
           width: 8px;
         }
+
         &::-webkit-scrollbar-thumb {
           border-radius: 6px;
           background: $secondary-color-3;
@@ -665,6 +666,118 @@
     &-title {
       font-size: 3rem;
       font-family: $font-firesans;
+    }
+
+    // the list of items
+    &-list {
+      // list-style: inside;
+      list-style-type: lower-roman;
+      & li:hover {
+        transition: all 0.5 ease;
+        background: $section-grey;
+        cursor: default;
+      }
+    }
+
+    // each row of orders
+    &-row {
+      display: flex;
+      width: 100%;
+      &:not(:first-child) {
+        padding-top: 2rem;
+      }
+      &:not(:last-child) {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid $translucent-grey;
+      }
+
+      /* ------------------------------- */
+      // image on every row
+      /* ------------------------------- */
+      &-image {
+        width: 20rem;
+        height: 15rem;
+        object-fit: cover;
+
+        &-div {
+          padding: 2rem;
+        }
+      }
+      /* ------------------------------- */
+      // content on the right
+      /* ------------------------------- */
+      &-content {
+        width: 100%;
+        padding: 2rem;
+
+        // the header title e.g. 15ft wooden cargo
+        &-header {
+          font-size: 2.5rem;
+          font-family: $font-roboto;
+          font-weight: bolder;
+          color: $primary-color-4;
+
+          // the total price
+          &-price {
+            font-size: 2.4rem;
+            font-family: $font-roboto;
+            font-weight: bolder;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        // the subheader title e.g. HINO 300 Series model name or Insurance
+        &-subheader {
+          font-size: 1.7rem;
+          color: rgba(68, 68, 68, 0.678);
+          // padding-left: 1.5rem;
+          font-family: $font-firesans;
+
+          &-price {
+            padding-right: 1.5rem;
+          }
+        }
+      }
+    }
+
+    // the collapsible panels
+    &-panel {
+      & .ant-collapse-header {
+        color: $primary-color-3 !important;
+      }
+
+      & .ant-collapse-content-box {
+        padding-left: 4rem !important;
+      }
+    }
+
+    // highlight the model name
+    &-highlight {
+      &-model {
+        font-family: $font-firesans;
+        color: $primary-color-4;
+      }
+    }
+
+    // small title further splitting the categories
+    &-smalltitle {
+      font-size: 1.4rem;
+      color: $secondary-color-3;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-family: $font-ubuntu;
+    }
+
+    // subtotal on every last
+    &-subtotal {
+      &-outerdiv {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      border-top: 1px solid black;
+      padding-left: 2rem;
+      font-weight: bolder;
     }
   }
 

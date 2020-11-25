@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './SalesPage.scss';
-// links
-import * as actions from 'src/store/actions/index';
-// import { img_placeholder_link } f`rom 'src/shared/global';
-
 // component
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
@@ -13,14 +9,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Button, Skeleton, Card, Empty, Steps, Tag, Divider, Breadcrumb } from 'antd';
+import { Button, Skeleton, Card, Empty, Steps, Collapse, Tag, Divider, Breadcrumb } from 'antd';
 
 // Util
-import { TMapStateToProps } from 'src/store/types/index';
-import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import {
   TLocalOrderObj,
   TReceivedSalesMakesObj,
@@ -29,9 +23,14 @@ import {
   TReceivedDimensionAccessoryObj,
   TReceivedSalesLengthCategoryObj,
 } from 'src/store/types/sales';
+import * as actions from 'src/store/actions/index';
+import { TMapStateToProps } from 'src/store/types/index';
+import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/dashboard';
+import moment from 'moment';
 
 const { Step } = Steps;
+const { Panel } = Collapse;
 
 interface SalesPageProps {}
 
@@ -1177,7 +1176,14 @@ const SalesPage: React.FC<Props> = ({
                                               setCurrentOrderObj({ ...currentOrderObj, makeObj: null });
                                             } else {
                                               setCurrentMake(make); //select the content of the preview card
-                                              setCurrentOrderObj({ ...currentOrderObj, makeObj: brand });
+                                              setCurrentOrderObj({
+                                                ...currentOrderObj,
+                                                makeObj: {
+                                                  brandName: brandName,
+                                                  seriesName: seriesName,
+                                                  seriesObj: make,
+                                                },
+                                              });
                                             }
                                           }}
                                         >
@@ -1266,39 +1272,360 @@ const SalesPage: React.FC<Props> = ({
         <div>
           {localOrdersArray &&
             localOrdersArray.length > 0 &&
-            localOrdersArray.map((order) => (
-              <div key={uuidv4()} style={{ border: '1px solid black', marginBottom: '1rem' }}>
-                <div>Tire: {order.tireCount}</div>
-                <div>Length: {order.lengthObj?.title}ft</div>
-                <div>Body: {order.bodyLengthObj?.body.title}</div>
-                <div>
-                  {order.generalAccessoriesArray &&
-                    order.generalAccessoriesArray.length > 0 &&
-                    order.generalAccessoriesArray.map((accessory) => <div key={uuidv4()}>{accessory.title}</div>)}
-                </div>
-                <div>
-                  {order.bodyRelatedAccessoriesArray &&
-                    order.bodyRelatedAccessoriesArray.length > 0 &&
-                    order.bodyRelatedAccessoriesArray.map((accessory) => <div key={uuidv4()}>{accessory.title}</div>)}
-                </div>
-                <div>
-                  {order.dimensionRelatedAccessoriesArray &&
-                    order.dimensionRelatedAccessoriesArray.length > 0 &&
-                    order.dimensionRelatedAccessoriesArray.map((dimension) => (
-                      <div key={uuidv4()}>{dimension.accessory.title}</div>
-                    ))}
-                </div>
-              </div>
-            ))}
+            localOrdersArray.map((order) => {
+              type miscellaneousType = {
+                title: string;
+                price: number;
+              };
+              let miscellaneousArray = [
+                {
+                  title: 'Admin fees, handling charges, weighing',
+                  price: 500,
+                },
+                {
+                  title: 'Signwriting & luminous sticker',
+                  price: 250,
+                },
+                {
+                  title: 'Weighing / Inspection Fee (Puspakom)',
+                  price: 650,
+                },
+                {
+                  title: 'JPJ Booking Number',
+                  price: 325,
+                },
+                {
+                  title: 'HQS Final Inspection',
+                  price: 200,
+                },
+              ];
 
-          <Button onClick={() => setCurrentStep(0)}>Lets go again</Button>
+              type insuranceType = {
+                title: string;
+                price: number;
+              };
+              let insuranceArray = [
+                {
+                  title: 'Road tax (1year)',
+                  price: 1015,
+                },
+                {
+                  title: 'JPJ Registration & E Hak Milik ',
+                  price: 110,
+                },
+                {
+                  title: 'INSURANCE PREMIUM (windscreen included)  ',
+                  price: 4733.96,
+                },
+              ];
+
+              let totalAccessoriesPrice = 0;
+
+              // get total of general accessories
+              let generalAccessoriesTotalPrice = order.generalAccessoriesArray.reduce(
+                (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
+                  return currentTotal + accessoryObj.price;
+                },
+                0,
+              );
+
+              // get total of body related accessories
+              let bodyRelatedAccessoriesTotalPrice = order.bodyRelatedAccessoriesArray.reduce(
+                (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
+                  return currentTotal + accessoryObj.price;
+                },
+                0,
+              );
+              // get total of dimension related accessories
+              let dimensionRelatedAccessoriesTotalPrice = order.dimensionRelatedAccessoriesArray.reduce(
+                (currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
+                  return currentTotal + dimensionAccessoryObj.accessory.price;
+                },
+                0,
+              );
+
+              totalAccessoriesPrice =
+                generalAccessoriesTotalPrice + bodyRelatedAccessoriesTotalPrice + dimensionRelatedAccessoriesTotalPrice;
+
+              let miscellaneousFees = miscellaneousArray.reduce(
+                (currentTotal: number, miscellaneousObj: miscellaneousType) => {
+                  return currentTotal + miscellaneousObj.price;
+                },
+                0,
+              );
+
+              /* ===================================================== */
+              // Model subtotal price - add all except insurance fees
+              /* ===================================================== */
+              let modelSubTotalPrice = 0;
+              if (order.makeObj && order.bodyLengthObj) {
+                modelSubTotalPrice =
+                  order.makeObj.seriesObj.price + order.bodyLengthObj.price + totalAccessoriesPrice + miscellaneousFees;
+              }
+
+              /* ======================== */
+              // Insurance subtotal price
+              /* ====================== */
+              let insuranceSubtotalPrice = insuranceArray.reduce(
+                (currentTotal: number, insuranceObj: insuranceType) => {
+                  return currentTotal + insuranceObj.price;
+                },
+                0,
+              );
+
+              /* ====================== */
+              // Discount Price
+              /* ====================== */
+              let discountPrice = -100;
+
+              let grandTotalPrice = modelSubTotalPrice + insuranceSubtotalPrice + discountPrice;
+
+              return (
+                <div className="sales__overview-row" key={uuidv4()}>
+                  {/* Image div on the left */}
+                  <section className="sales__overview-row-image-div">
+                    {/* Show make images */}
+                    {order.makeObj && order.makeObj?.seriesObj.images.length > 0 ? (
+                      <img
+                        alt={order.makeObj?.seriesObj.images[0].filename}
+                        src={order.makeObj?.seriesObj.images[0].url}
+                      />
+                    ) : (
+                      <img className="sales__overview-row-image" src={img_not_available_link} alt="not available" />
+                    )}
+                  </section>
+
+                  {/* Content div on the right */}
+                  <section className="sales__overview-row-content">
+                    {/* ------------ The largest header on top -------------- */}
+                    <div className="flex-align-center space-between margin_b-1">
+                      <span className="sales__overview-row-content-header">
+                        {order.lengthObj?.title}ft {order.bodyLengthObj?.body.title}
+                      </span>
+                      <span className="sales__overview-row-content-header-price">
+                        RM&nbsp;
+                        <NumberFormat
+                          displayType={'text'}
+                          thousandSeparator={true}
+                          value={grandTotalPrice.toFixed(2)}
+                        />
+                      </span>
+                    </div>
+
+                    <div className="flex space-between">
+                      {/* ======================= */}
+                      {/* Model Series  */}
+                      {/* ======================= */}
+                      <div className="sales__selectarea-seriestitle">
+                        <span className="sales__overview-row-content-subheader">
+                          {`${order.makeObj?.brandName} ${order.makeObj?.seriesName} ${order.makeObj?.seriesObj.title}`}
+                        </span>
+                      </div>
+                      <span className="sales__overview-row-content-subheader-price">
+                        <NumberFormat
+                          displayType={'text'}
+                          thousandSeparator={true}
+                          value={modelSubTotalPrice.toFixed(2)}
+                        />
+                      </span>
+                    </div>
+                    <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                      <Panel className="sales__overview-panel" header="Show more model details" key="model">
+                        <ol className="sales__overview-list">
+                          <div className="sales__overview-smalltitle">Cargo</div>
+                          <li>
+                            {/* ------------ Chassis price ----------- */}
+                            <div className="flex space-between">
+                              <span>
+                                Chassis Price:&nbsp;
+                                <span className="sales__overview-highlight-model">
+                                  {order.makeObj && order.makeObj?.seriesObj.year === null
+                                    ? /* if year doesnt exist, dont show anything except the model name*/
+                                      order.makeObj.seriesObj.title
+                                    : order.makeObj &&
+                                      /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
+                                      parseInt(order.makeObj.seriesObj.year) === parseInt(moment().year().toString())
+                                    ? `NEW MODEL YEAR ${order.makeObj.seriesObj.year} - ${order.makeObj.seriesObj.title}`
+                                    : /* else show MODEL YEAR - model name */
+                                      order.makeObj &&
+                                      `MODEL ${order.makeObj.seriesObj.year} ${order.makeObj.seriesObj.title}`}
+                                </span>
+                              </span>
+                              <span>
+                                <NumberFormat
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                  value={order.makeObj?.seriesObj.price.toFixed(2)}
+                                />
+                              </span>
+                            </div>
+                          </li>
+                          <li>
+                            {/* ----------------- Body price ----------------- */}
+                            <div className="flex space-between">
+                              <span>
+                                Body Price:&nbsp;
+                                <span className="sales__overview-highlight-model">
+                                  {`${order.bodyLengthObj?.length.title}ft ${order.bodyLengthObj?.body.title}`}
+                                </span>
+                              </span>
+                              <span>
+                                <NumberFormat
+                                  value={order.bodyLengthObj?.price.toFixed(2)}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </span>
+                            </div>
+                          </li>
+                          {/* Accessories */}
+                          <div className="sales__overview-smalltitle">Accessories</div>
+                          <>
+                            {order.generalAccessoriesArray &&
+                              order.generalAccessoriesArray.length > 0 &&
+                              order.generalAccessoriesArray.map((accessory) => (
+                                <li key={uuidv4()}>
+                                  <div className="flex space-between">
+                                    <span>{accessory.title} </span>
+                                    <span>
+                                      <NumberFormat
+                                        displayType={'text'}
+                                        thousandSeparator={true}
+                                        value={accessory.price.toFixed(2)}
+                                      />
+                                    </span>
+                                  </div>
+                                </li>
+                              ))}
+                          </>
+                          <>
+                            {order.bodyRelatedAccessoriesArray &&
+                              order.bodyRelatedAccessoriesArray.length > 0 &&
+                              order.bodyRelatedAccessoriesArray.map((accessory) => (
+                                <li key={uuidv4()}>
+                                  <div className="flex space-between">
+                                    <span>{accessory.title} </span>
+                                    <span>
+                                      <NumberFormat
+                                        displayType={'text'}
+                                        thousandSeparator={true}
+                                        value={accessory.price.toFixed(2)}
+                                      />
+                                    </span>
+                                  </div>
+                                </li>
+                              ))}
+                          </>
+                          <>
+                            {order.dimensionRelatedAccessoriesArray &&
+                              order.dimensionRelatedAccessoriesArray.length > 0 &&
+                              order.dimensionRelatedAccessoriesArray.map((dimension) => (
+                                <li key={uuidv4()}>
+                                  <div className="flex space-between">
+                                    <span> {dimension.accessory.title} </span>
+                                    <span>
+                                      <NumberFormat
+                                        displayType={'text'}
+                                        thousandSeparator={true}
+                                        value={dimension.accessory.price.toFixed(2)}
+                                      />
+                                    </span>
+                                  </div>
+                                </li>
+                              ))}
+                          </>
+                          <div className="sales__overview-smalltitle">Miscellaneous</div>
+                          {miscellaneousArray.map((item) => (
+                            <li key={uuidv4()}>
+                              <div className="flex space-between">
+                                <span>{item.title}</span>
+                                <span>
+                                  <NumberFormat
+                                    value={item.price.toFixed(2)}
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                  />
+                                </span>
+                              </div>
+                            </li>
+                          ))}
+                        </ol>
+                        <div className="sales__overview-subtotal-outerdiv">
+                          <div className="sales__overview-subtotal">
+                            <NumberFormat
+                              value={modelSubTotalPrice.toFixed(2)}
+                              displayType={'text'}
+                              thousandSeparator={true}
+                            />
+                          </div>
+                        </div>
+                      </Panel>
+                    </Collapse>
+
+                    {/* ======================== */}
+                    {/* Road Tax and Insurance */}
+                    {/* ======================== */}
+                    <div className="flex space-between">
+                      <span className="sales__overview-row-content-subheader">Road Tax and Insurance</span>
+                      <span className="sales__overview-row-content-subheader-price">
+                        <NumberFormat
+                          displayType={'text'}
+                          thousandSeparator={true}
+                          value={insuranceSubtotalPrice.toFixed(2)}
+                        />
+                      </span>
+                    </div>
+                    <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                      <Panel className="sales__overview-panel" header="View service details" key="insurance">
+                        <ul className="sales__overview-list">
+                          {insuranceArray.map((item) => (
+                            <li key={uuidv4()}>
+                              <div className="flex space-between">
+                                <span> {item.title}</span>
+                                <span>
+                                  <NumberFormat
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    value={item.price.toFixed(2)}
+                                  />
+                                </span>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="sales__overview-subtotal-outerdiv">
+                          <div className="sales__overview-subtotal">
+                            <NumberFormat
+                              value={insuranceSubtotalPrice.toFixed(2)}
+                              displayType={'text'}
+                              thousandSeparator={true}
+                            />
+                          </div>
+                        </div>
+                      </Panel>
+                    </Collapse>
+
+                    {/* ======================== */}
+                    {/* DISCOUNT */}
+                    {/* ======================== */}
+                    <div className="flex space-between">
+                      <span className="sales__overview-row-content-subheader">Discount</span>
+                      <span className="sales__overview-row-content-subheader-price">
+                        (
+                        <NumberFormat displayType={'text'} thousandSeparator={true} value={discountPrice.toFixed(2)} />)
+                      </span>
+                    </div>
+                  </section>
+                </div>
+              );
+            })}
         </div>
+        <Button onClick={() => setCurrentStep(0)}>Lets go again</Button>
       </div>
     </section>
   );
 
   const steps = [
-    // { step: 1, title: 'Overview', content: overviewSection },
     { step: 1, title: 'Tyre', content: tyreSection },
     {
       step: 2,

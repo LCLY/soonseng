@@ -60,7 +60,7 @@ export type TLocalOrderObj = {
   generalAccessoriesArray: TReceivedAccessoryObj[];
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
-  makeObj: TReceivedSalesMakesObj | null;
+  makeObj: { brandName: string; seriesName: string; seriesObj: TReceivedSalesMakeSeriesObj } | null;
 };
 
 export interface StoreLocalOrdersAction {
