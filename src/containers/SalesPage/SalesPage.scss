@@ -211,9 +211,6 @@
       &:focus {
         background: blue;
       }
-      &:not(:last-child) {
-        margin-right: 1rem;
-      }
 
       /* -------------------------- */
       // the skeleton of the buttons
@@ -763,9 +760,9 @@
           &-price {
             padding-right: 1.5rem;
 
-            // the prediscount price
+            // the prediscount price at bottom
             &--prediscount {
-              // font-size: 1.8rem;
+              font-size: 1.7rem;
               font-weight: bolder;
               padding-right: 1.5rem;
             }
@@ -783,6 +780,35 @@
       & .ant-collapse-content-box {
         padding-top: 0 !important;
         padding-left: 4rem !important;
+      }
+
+      &--modeldetails {
+        & .ant-collapse-header {
+          padding: 0.5rem 0 0 0 !important;
+
+          color: $link-blue !important;
+        }
+      }
+
+      // another panel to show model specs
+      &-specs {
+        &-row {
+          display: flex;
+          align-items: center;
+          &:hover {
+            background: $section-grey;
+            cursor: default;
+          }
+        }
+        &-title {
+          font-family: $font-firesans;
+          color: $primary-color-4;
+          padding-right: 0.5rem;
+        }
+        &-value {
+          color: $secondary-color-2;
+          font-family: $font-ubuntu;
+        }
       }
     }
 

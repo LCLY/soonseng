@@ -162,8 +162,8 @@ export interface GetSalesBodyAccessoriesFailedAction {
 
 // Types
 export type TReceivedSalesMakeSeriesObj = {
-  brandObj: TReceivedBrandObj;
-  wheelbaseOBj: TReceivedWheelbaseObj;
+  brand: TReceivedBrandObj;
+  wheelbase: TReceivedWheelbaseObj;
   id: number;
   gvw: string;
   year: string;

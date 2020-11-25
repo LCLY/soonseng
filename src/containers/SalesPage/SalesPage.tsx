@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { LoadingOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { LoadingOutlined, InfoCircleOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Button, Skeleton, Card, Empty, Steps, Collapse, Tag, Divider, Breadcrumb, Dropdown, Menu } from 'antd';
@@ -1087,7 +1087,9 @@ const SalesPage: React.FC<Props> = ({
                 </div>
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Series</div>
-                  <div className="sales__selectarea-card-row-right">{currentMake.series}</div>
+                  <div className="sales__selectarea-card-row-right">
+                    {currentMake.series === null || currentMake.series === '' ? '-' : currentMake.series}
+                  </div>
                 </div>
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Length</div>
@@ -1454,7 +1456,7 @@ const SalesPage: React.FC<Props> = ({
                         </span>
                       </div>
                       <Collapse ghost expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
-                        <Panel className="sales__overview-panel" header="Show more model details" key="model">
+                        <Panel className="sales__overview-panel" header="View more" key="model">
                           <ol className="sales__overview-list">
                             <div className="sales__overview-smalltitle">Cargo</div>
                             <li>
@@ -1502,6 +1504,93 @@ const SalesPage: React.FC<Props> = ({
                                 </span>
                               </div>
                             </li>
+                            {/* more info for model */}
+                            <Collapse ghost className="sales__overview-panel--modeldetails">
+                              <Panel
+                                style={{ padding: 0 }}
+                                showArrow={false}
+                                className="sales__overview-panel"
+                                header={
+                                  <>
+                                    <InfoCircleOutlined /> Click here to view more specs
+                                  </>
+                                }
+                                key="model"
+                              >
+                                {order.makeObj?.seriesObj.torque !== null && order.makeObj?.seriesObj.torque !== '' && (
+                                  <div className="sales__overview-panel-specs-row">
+                                    <span className="sales__overview-panel-specs-title">Torque:</span>
+                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.torque}</span>
+                                  </div>
+                                )}
+                                {order.makeObj?.seriesObj.config !== null && order.makeObj?.seriesObj.config !== '' && (
+                                  <div className="sales__overview-panel-specs-row">
+                                    <span className="sales__overview-panel-specs-title">Config:</span>
+                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.config}</span>
+                                  </div>
+                                )}
+                                {order.makeObj?.seriesObj.emission !== null &&
+                                  order.makeObj?.seriesObj.emission !== '' && (
+                                    <div className="sales__overview-panel-specs-row">
+                                      <span className="sales__overview-panel-specs-title">Emission:</span>
+                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.emission}</span>
+                                    </div>
+                                  )}
+                                {order.makeObj?.seriesObj.length !== null && (
+                                  <div className="sales__overview-panel-specs-row">
+                                    <span className="sales__overview-panel-specs-title">Length:</span>
+                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.length}mm</span>
+                                  </div>
+                                )}
+                                {order.makeObj?.seriesObj.horsepower !== null &&
+                                  order.makeObj?.seriesObj.horsepower !== '' && (
+                                    <div className="sales__overview-panel-specs-row">
+                                      <span className="sales__overview-panel-specs-title">Horsepower:</span>
+                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.horsepower}PS</span>
+                                    </div>
+                                  )}
+                                {order.makeObj?.seriesObj.year !== null && order.makeObj?.seriesObj.year !== '' && (
+                                  <div className="sales__overview-panel-specs-row">
+                                    <span className="sales__overview-panel-specs-title">Year:</span>
+                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.year}</span>
+                                  </div>
+                                )}
+
+                                {order.makeObj?.seriesObj.tire !== null && order.makeObj?.seriesObj.tire !== '' && (
+                                  <div className="sales__overview-panel-specs-row">
+                                    <span className="sales__overview-panel-specs-title">Tyre Count:</span>
+                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.tire} tires</span>
+                                  </div>
+                                )}
+                                {order.makeObj?.seriesObj.wheelbase.title !== null &&
+                                  order.makeObj?.seriesObj.wheelbase.title !== '' && (
+                                    <div className="sales__overview-panel-specs-row">
+                                      <span className="sales__overview-panel-specs-title">Wheelbase:</span>
+                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.wheelbase.title}mm</span>
+                                    </div>
+                                  )}
+                                {order.makeObj?.seriesObj.transmission !== null &&
+                                  order.makeObj?.seriesObj.transmission !== '' && (
+                                    <div className="sales__overview-panel-specs-row">
+                                      <span className="sales__overview-panel-specs-title">Transmission:</span>
+                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.transmission}</span>
+                                    </div>
+                                  )}
+                                {order.makeObj?.seriesObj.engine_cap !== null &&
+                                  order.makeObj?.seriesObj.engine_cap !== '' && (
+                                    <div className="sales__overview-panel-specs-row">
+                                      <span className="sales__overview-panel-specs-title">Engine Capacity:</span>
+                                      <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.engine_cap}CC</span>
+                                    </div>
+                                  )}
+                                {order.makeObj?.seriesObj.gvw !== null && order.makeObj?.seriesObj.gvw !== '' && (
+                                  <div className="sales__overview-panel-specs-row">
+                                    <span className="sales__overview-panel-specs-title">Gross Vehicle Weight:</span>
+                                    <span className="sales__overview-panel-specs-value">{order.makeObj?.seriesObj.gvw}kg</span>
+                                  </div>
+                                )}
+                              </Panel>
+                            </Collapse>
                             {/* Accessories */}
                             <div className="sales__overview-smalltitle">Accessories</div>
                             <>
