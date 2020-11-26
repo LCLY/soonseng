@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
-import { Button, Form, Input, Modal, Layout, Table, Tooltip, notification } from 'antd'; /* Util */
+import { Button, Form, Input, Modal, Layout, Table, Tooltip, notification, Tag } from 'antd'; /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
@@ -32,8 +32,10 @@ type TAccessoryTableState = {
   accessoryId: number; //for update
   accessoryTitle: string;
   accessoryDescription: string;
-  available?: boolean;
+  accessoryPrice: string;
   accessoryImages: TReceivedImageObj[];
+  accessoryType: string; //use boolean to determine what type of accessory it is
+  available?: boolean;
 };
 
 type TShowModal = {
@@ -132,10 +134,48 @@ const Accessory: React.FC<Props> = ({
       title: 'Title',
       className: 'body__table-header--title',
       dataIndex: 'accessoryTitle',
-      width: '15rem',
+      width: '20rem',
       ellipsis: true,
       sorter: (a: TAccessoryTableState, b: TAccessoryTableState) => a.accessoryTitle.localeCompare(b.accessoryTitle),
       ...getColumnSearchProps(accessorySearchInput, 'accessoryTitle', 'Title'),
+    },
+    {
+      key: 'accessoryType',
+      title: 'Type',
+      className: 'body__table-header--title',
+      dataIndex: 'accessoryType',
+      width: '12rem',
+      align: 'center',
+      ellipsis: true,
+      sorter: (a: TAccessoryTableState, b: TAccessoryTableState) => a.accessoryType.localeCompare(b.accessoryType),
+      ...getColumnSearchProps(accessorySearchInput, 'accessoryType', 'Type'),
+      render: (_text: any, record: TAccessoryTableState) => {
+        let color = 'orange';
+        switch (record.accessoryType) {
+          case 'General':
+            color = 'magenta';
+            break;
+          case 'Dimension':
+            color = 'red';
+            break;
+          case 'General':
+            color = 'volcano';
+            break;
+          default:
+            color = 'orange';
+        }
+        return <Tag color={color}>{record.accessoryType}</Tag>;
+      },
+    },
+    {
+      key: 'accessoryPrice',
+      title: 'Price',
+      className: 'body__table-header--title',
+      dataIndex: 'accessoryPrice',
+      width: '15rem',
+      ellipsis: true,
+      sorter: (a: TAccessoryTableState, b: TAccessoryTableState) => a.accessoryPrice.localeCompare(b.accessoryPrice),
+      ...getColumnSearchProps(accessorySearchInput, 'accessoryPrice', 'Price'),
     },
     {
       key: 'accessoryDescription',
@@ -538,6 +578,28 @@ const Accessory: React.FC<Props> = ({
     const storeValue = (accessory: TReceivedAccessoryObj, index: number) => {
       let descriptionIsNullOrEmpty = accessory.description === null || accessory.description === '';
       // only render when available value is true
+
+      let accessoryTypeName = '';
+      if (accessory.general === true && accessory.dimension_associated === false) {
+        accessoryTypeName = 'General';
+      } else if (accessory.general === false && accessory.dimension_associated === true) {
+        accessoryTypeName = 'Dimension';
+      } else if (accessory.general === false && accessory.dimension_associated === false) {
+        accessoryTypeName = 'Body';
+      } else {
+        accessoryTypeName = 'NULL';
+      }
+
+      // empty dash string if price is 0, null or undefined and format the price to having comma
+      let formattedAccessoryPrice =
+        accessory.price === undefined || accessory.price === null || accessory.price === 0
+          ? '-'
+          : 'RM ' +
+            accessory.price.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+
       if (accessory.available) {
         tempArray.push({
           key: uuidv4(),
@@ -547,6 +609,8 @@ const Accessory: React.FC<Props> = ({
           accessoryDescription: descriptionIsNullOrEmpty ? '-' : accessory.description,
           available: accessory.available,
           accessoryImages: accessory.images,
+          accessoryPrice: formattedAccessoryPrice,
+          accessoryType: accessoryTypeName,
         });
       }
     };

@@ -77,7 +77,10 @@ const SalesPage: React.FC<Props> = ({
   const [currentTyre, setCurrentTyre] = useState<number | null>(null);
   const [currentLength, setCurrentLength] = useState<TReceivedSalesLengthObj | null>(null);
   const [currentBodyLength, setCurrentBodyLength] = useState<TReceivedBodyLengthObj | null>(null);
-  const [currentAccessory, setCurrentAccessory] = useState<TReceivedAccessoryObj | null>(null);
+  const [currentAccessory, setCurrentAccessory] = useState<{
+    accessoryObj: TReceivedAccessoryObj;
+    price: number;
+  } | null>(null);
   const [currentMake, setCurrentMake] = useState<TReceivedSalesMakeSeriesObj | null>(null);
 
   /** Current order object to track what user has added to the current order  */
@@ -653,17 +656,17 @@ const SalesPage: React.FC<Props> = ({
           <div className="sales__section-left">
             {currentAccessory ? (
               <>
-                {currentAccessory.images.length > 0 ? (
+                {currentAccessory.accessoryObj.images.length > 0 ? (
                   <div className="sales__lightbox-parent" onClick={() => setBodyAccessoryLightboxOpen(true)}>
                     {/* Clickable image to show lightbox */}
                     <LazyLoadImage
                       className="sales__section-img"
-                      src={currentAccessory.images[0].url}
-                      alt={currentAccessory.images[0].filename}
+                      src={currentAccessory.accessoryObj.images[0].url}
+                      alt={currentAccessory.accessoryObj.images[0].filename}
                       placeholderSrc={img_loading_link}
                     />
                     <LightboxComponent
-                      images={currentAccessory?.images}
+                      images={currentAccessory.accessoryObj?.images}
                       photoIndex={bodyAccessoryPhotoIndex}
                       isOpen={bodyAccessoryLightboxOpen}
                       setPhotoIndex={setBodyAccessoryPhotoIndex}
@@ -705,22 +708,23 @@ const SalesPage: React.FC<Props> = ({
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Title</div>
                   <div className="sales__selectarea-card-row-right sales__selectarea-card-row-right-title">
-                    {currentAccessory?.title}
+                    {currentAccessory.accessoryObj?.title}
                   </div>
                 </div>
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Description</div>
                   <div className="sales__selectarea-card-row-right">{`${
-                    currentAccessory.description === null || currentAccessory.description === ''
+                    currentAccessory.accessoryObj.description === null ||
+                    currentAccessory.accessoryObj.description === ''
                       ? 'None'
-                      : currentAccessory.description
+                      : currentAccessory.accessoryObj.description
                   }`}</div>
                 </div>
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Price</div>
                   <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
                     RM
-                    <NumberFormat value={currentAccessory?.price} displayType={'text'} thousandSeparator={true} />
+                    <NumberFormat value={currentAccessory.price} displayType={'text'} thousandSeparator={true} />
                   </div>
                 </div>
               </Card>
@@ -778,7 +782,13 @@ const SalesPage: React.FC<Props> = ({
                                 }`}
                                 onClick={() => {
                                   // Whenever user clicks on an accessory, straight show that accessory
-                                  setCurrentAccessory(accessory);
+                                  // we need a separate obj to keep track of price because for dimension the price is not
+                                  // in accessory
+                                  setCurrentAccessory({
+                                    ...currentAccessory,
+                                    accessoryObj: accessory,
+                                    price: accessory.price,
+                                  });
                                   //  if currentLength has an id
                                   if (objExistInGeneralAccessoriesArray) {
                                     //  Filter the current general accessories array and only return the rest that doesnt match that id
@@ -852,7 +862,12 @@ const SalesPage: React.FC<Props> = ({
                                 }`}
                                 onClick={() => {
                                   // Whenever user clicks on an accessory, straight show that accessory
-                                  setCurrentAccessory(accessory);
+                                  setCurrentAccessory({
+                                    ...currentAccessory,
+                                    accessoryObj: accessory,
+                                    price: accessory.price,
+                                  });
+
                                   //  if currentLength has an id
                                   if (objExistInBodyRelatedAccessoriesArray) {
                                     //  Filter the current general accessories array and only return the rest that doesnt match that id
@@ -925,7 +940,12 @@ const SalesPage: React.FC<Props> = ({
                               }`}
                               onClick={() => {
                                 // Whenever user clicks on an accessory, straight show that accessory
-                                setCurrentAccessory(dimensionRelatedAccessory.accessory);
+                                setCurrentAccessory({
+                                  ...currentAccessory,
+                                  accessoryObj: dimensionRelatedAccessory.accessory,
+                                  price: dimensionRelatedAccessory.price,
+                                });
+
                                 //  if currentLength has an id
                                 if (objExistInDimensionRelatedAccessoriesArray) {
                                   //  Filter the current general accessories array and only return the rest that doesnt match that id
@@ -1422,7 +1442,7 @@ const SalesPage: React.FC<Props> = ({
               // get total of dimension related accessories
               let dimensionRelatedAccessoriesTotalPrice = order.dimensionRelatedAccessoriesArray.reduce(
                 (currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
-                  return currentTotal + dimensionAccessoryObj.accessory.price;
+                  return currentTotal + dimensionAccessoryObj.price;
                 },
                 0,
               );
@@ -1690,7 +1710,7 @@ const SalesPage: React.FC<Props> = ({
                                 )}
                               </Panel>
                             </Collapse>
-                            {/* Accessories */}
+                            {/* Accessories section */}
                             <div className="sales__overview-smalltitle">Accessories</div>
                             <>
                               {order.generalAccessoriesArray &&
@@ -1739,13 +1759,15 @@ const SalesPage: React.FC<Props> = ({
                                         <NumberFormat
                                           displayType={'text'}
                                           thousandSeparator={true}
-                                          value={dimension.accessory.price.toFixed(2)}
+                                          value={dimension.price.toFixed(2)}
                                         />
                                       </span>
                                     </div>
                                   </li>
                                 ))}
                             </>
+
+                            {/* Processing fees section */}
                             <div className="sales__overview-smalltitle">Processing fees</div>
                             {miscellaneousArray.map((item) => (
                               <li key={uuidv4()}>

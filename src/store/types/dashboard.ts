@@ -785,7 +785,6 @@ export type TReceivedAccessoryObj = {
   description: string;
   dimension_associated: boolean;
   available: boolean;
-
   images: TReceivedImageObj[];
 };
 
