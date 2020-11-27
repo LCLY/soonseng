@@ -1,0 +1,190 @@
+.footer {
+  &__outerdiv {
+    background: black;
+    width: 100%;
+    color: white;
+    padding: 10rem 0 5rem 0;
+  }
+
+  /* =============================================== */
+  &__col {
+    &--1 {
+      display: flex;
+    }
+    &--2 {
+      display: flex;
+      padding-left: 5rem;
+    }
+    &--socialmedia {
+      display: flex;
+    }
+  }
+  /* =============================================== */
+  &__store {
+    &-name {
+      white-space: nowrap;
+      color: $primary-color-1;
+      font-size: 2.5rem;
+      font-family: $font-bowlby;
+      @include respond-to(medium) {
+        font-size: 2rem;
+      }
+      @include respond-to(tablet) {
+        font-size: 1.8rem;
+      }
+      @include respond-to(mobile) {
+        font-size: 1.8rem;
+      }
+    }
+
+    &-address {
+      @include respond-to(medium) {
+        font-size: 1.8rem;
+      }
+      @include respond-to(tablet) {
+        font-size: 1.5rem;
+      }
+      @include respond-to(mobile) {
+        font-size: 1.5rem;
+      }
+    }
+    &-phone {
+      color: rgb(255, 0, 0);
+      @include respond-to(medium) {
+        font-size: 2rem;
+      }
+      @include respond-to(tablet) {
+        font-size: 1.5rem;
+      }
+      @include respond-to(mobile) {
+        font-size: 1.5rem;
+      }
+    }
+    &-contact {
+      // div wrapping contact and phone number
+      &-div {
+        display: flex;
+        @include respond-to(medium) {
+          display: flex;
+          flex-direction: column;
+        }
+        @include respond-to(tablet) {
+          display: flex;
+          flex-direction: column;
+        }
+        @include respond-to(mobile) {
+          display: flex;
+          flex-direction: row;
+          margin-top: 1rem;
+        }
+      }
+
+      color: $tertiary-color-1;
+      margin-right: 1rem;
+      @include respond-to(medium) {
+        font-size: 1.8rem;
+      }
+      @include respond-to(tablet) {
+        font-size: 1.5rem;
+      }
+      @include respond-to(mobile) {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+      }
+    }
+  }
+  /* =============================================== */
+  &__copyright {
+    &-div {
+      margin-top: 10rem;
+      text-align: center;
+      color: $tertiary-color-1;
+      @include respond-to(tablet) {
+        margin-top: 4rem;
+      }
+      @include respond-to(mobile) {
+        margin-top: 4rem;
+      }
+    }
+
+    &-policy {
+      margin-left: 1rem;
+      padding-left: 1rem;
+      border-left: 2px solid white;
+
+      &-link {
+        color: $tertiary-color-1;
+        &:hover {
+          color: white;
+        }
+      }
+    }
+  }
+
+  &__services {
+    &-text {
+      font-size: 2.6rem;
+      font-family: $font-firesans;
+    }
+    &-div {
+      & a {
+        font-size: 1.7rem;
+        color: $primary-color-1;
+      }
+    }
+  }
+
+  /* =============================================== */
+  &__follow {
+    &-outerdiv {
+      display: flex;
+      flex-direction: column;
+      @include respond-to(tablet) {
+        flex-direction: row;
+      }
+      @include respond-to(mobile) {
+        flex-direction: row;
+      }
+    }
+
+    &-text {
+      font-size: 1.8rem;
+      color: $tertiary-color-3;
+      @include respond-to(tablet) {
+        margin-top: 3rem;
+      }
+      @include respond-to(mobile) {
+        margin-top: 3rem;
+        font-size: 1.5rem;
+      }
+    }
+
+    &-icons {
+      &-div {
+        margin-top: 1rem;
+        @include respond-to(tablet) {
+          margin-top: 3rem;
+          margin-left: 2rem;
+        }
+        @include respond-to(mobile) {
+          margin-top: 3rem;
+          margin-left: 2rem;
+        }
+
+        & > .fab {
+          font-size: 2.5rem;
+          cursor: pointer;
+          &:hover {
+            color: $tertiary-color-3;
+          }
+          &:active {
+            color: white;
+          }
+          &:not(:last-child) {
+            margin-right: 1rem;
+          }
+        }
+      }
+    }
+  }
+}

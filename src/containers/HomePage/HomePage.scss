@@ -15,7 +15,7 @@
       position: absolute;
       background: rgba(0, 0, 0, 0.562);
       width: 100%;
-      height: 100%;
+      height: calc(100vh - 106.88px); //100vh - navbar height
       z-index: 100;
       top: 0;
       left: 0;
@@ -90,7 +90,7 @@
   /* ========================= */
   &__background {
     &-image {
-      height: 100vh;
+      height: calc(100vh - 106.88px);
       background: url('https://s29755.pcdn.co/wp-content/uploads/2019/08/2019_Top_Five_Class_5-Mack.jpg');
       // background: url('https://media3.giphy.com/media/xUOxeYatzejqwawi4w/200.gif');
       // background: url('https://media3.giphy.com/media/xUOxf7BGcnKPNCA5kQ/giphy.gif');
@@ -103,7 +103,7 @@
     /* outerdiv wrapping the background image */
     &-outerdiv {
       // width: 100vw;
-      height: 100vh;
+      height: calc(100vh - 106.88px);
       overflow: hidden;
     }
   }

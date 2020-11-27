@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './HomePage.scss';
 // component
+import Footer from 'src/components/Footer/Footer';
 import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 // image
@@ -98,7 +99,6 @@ function HomePage() {
           <div className="homepage__background-image"></div>
         </div>
       </section>
-
       <Container>
         <section className="homepage__section-feature">
           <div className="homepage__feature-top">
@@ -189,7 +189,6 @@ function HomePage() {
           </div>
         </section>
       </Container>
-
       {/* Play carousel if user mouse point outside */}
       <div className="homepage__carousel-outerdiv">
         <Container>
@@ -335,6 +334,7 @@ function HomePage() {
           </Carousel>
         </Container>
       </div>
+      <Footer />
     </div>
   );
 }
