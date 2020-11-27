@@ -4,9 +4,10 @@ import './NavbarComponent.scss';
 // 3rd party lib
 import { Navbar, Nav } from 'react-bootstrap';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { ShoppingCartOutlined } from '@ant-design/icons';
+import { /*  ShoppingCartOutlined, */ DownOutlined } from '@ant-design/icons';
 // image
 import SoonSengLogo from 'src/img/soonseng_logo.png';
+import { Dropdown, Menu } from 'antd';
 
 interface NavbarComponentProps {
   /** Shows which active page it is currently */
@@ -23,6 +24,19 @@ type Props = NavbarComponentProps & RouteComponentProps;
  */
 
 const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
+  const dashboardMenu = (
+    <Menu>
+      <Menu.Item key="body" onClick={() => history.push('/dashboard/body')}>
+        Body
+      </Menu.Item>
+      <Menu.Item key="make" onClick={() => history.push('/dashboard/make')}>
+        Make
+      </Menu.Item>
+      <Menu.Item key="accessory" onClick={() => history.push('/dashboard/accessory')}>
+        Accessory
+      </Menu.Item>
+    </Menu>
+  );
   return (
     <div className="navbar__outerdiv">
       <Navbar className="navbar__div" bg="primary" variant="dark" expand="md">
@@ -32,30 +46,40 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto navbar__wrapper">
-            <div className={`navbar__link ${activePage === 'home' ? 'active' : ''}`}>
-              <Nav.Link onClick={() => history.push('/')}>HOME</Nav.Link>
+            <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
+              <span className="navbar__link" onClick={() => history.push('/')}>
+                HOME
+              </span>
             </div>
-            <div className={`navbar__link ${activePage === 'sales' ? 'active' : ''}`}>
-              <Nav.Link onClick={() => history.push('/sales')}>SALES</Nav.Link>
+            <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
+              <span className="navbar__link" onClick={() => history.push('/sales')}>
+                SALES
+              </span>
             </div>
-            <div className={`navbar__link ${activePage === 'about' ? 'active' : ''}`}>
-              <Nav.Link onClick={() => history.push('/about')}>ABOUT US</Nav.Link>
+            <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
+              <span className="navbar__link" onClick={() => history.push('/about')}>
+                ABOUT US
+              </span>
             </div>
-            <div className={`navbar__link ${activePage === 'contact' ? 'active' : ''}`}>
-              <Nav.Link onClick={() => history.push('/contact')}>CONTACT</Nav.Link>
+            <div className={`navbar__link-div ${activePage === 'contact' ? 'active' : ''}`}>
+              <span className="navbar__link" onClick={() => history.push('/contact')}>
+                CONTACT
+              </span>
             </div>
-            <div className={`navbar__link ${activePage === 'dashboard' ? 'active' : ''}`}>
+            {/* <div className={`navbar__link ${activePage === 'dashboard' ? 'active' : ''}`}>
               <Nav.Link onClick={() => history.push('/dashboard/make')}>DASHBOARD</Nav.Link>
+            </div> */}
+            <div className={`navbar__link-div`}>
+              <Dropdown overlay={dashboardMenu} trigger={['click']}>
+                <span className="navbar__link">
+                  DASHBOARD <DownOutlined />
+                </span>
+              </Dropdown>
             </div>
-            <div className={`navbar__link ${activePage === 'dashboard' ? 'active' : ''}`}>
+            {/* <div className={`navbar__link ${activePage === 'dashboard' ? 'active' : ''}`}>
               <Nav.Link onClick={() => alert('go to shopping cart')}>
                 <ShoppingCartOutlined />
               </Nav.Link>
-            </div>
-            {/* <div className="sales__dashboard">
-              <Button type="default" onClick={() => history.push('/dashboard/make')}>
-                Go to Dashboard
-              </Button>
             </div> */}
           </Nav>
         </Navbar.Collapse>

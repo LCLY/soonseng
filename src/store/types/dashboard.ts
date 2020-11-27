@@ -295,9 +295,9 @@ export interface UpdateWheelbaseFailedAction {
 export type TCreateMakeData = {
   gvw: string;
   year: string;
-  price: string;
+  price: number;
   title: string;
-  length: string;
+  length: number;
   brand_id: string;
   engine_cap: string;
   horsepower: string;
@@ -310,9 +310,9 @@ export type TUpdateMakeData = {
   make_id: number;
   gvw: string;
   year: string;
-  price: string;
+  price: number;
   title: string;
-  length: string;
+  length: number;
   brand_id: string;
   engine_cap: string;
   horsepower: string;
@@ -791,13 +791,30 @@ export type TReceivedAccessoryObj = {
 /* --------------------------- */
 // Create Accessory (tail)
 /* --------------------------- */
+export type TCreateAccessoryData = {
+  title: string;
+  description: string;
+  price: number;
+  general: boolean;
+  dimension_associated: boolean;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
+};
+export type TUpdateAccessoryData = {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  general: boolean;
+  dimension_associated: boolean;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
+};
+
 /*  Api call */
 export interface CreateAccessoryAction {
   type: typeof actionTypes.CREATE_ACCESSORY;
-  title: string;
-  description: string;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
+  createAccessoryData: TCreateAccessoryData;
 }
 /*  States */
 export interface CreateAccessoryStartAction {
@@ -820,11 +837,7 @@ export interface CreateAccessoryFailedAction {
 /* Api call */
 export interface UpdateAccessoryAction {
   type: typeof actionTypes.UPDATE_ACCESSORY;
-  id: number;
-  title: string;
-  description: string;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
+  updateAccessoryData: TUpdateAccessoryData;
 }
 /* States */
 export interface UpdateAccessoryStartAction {

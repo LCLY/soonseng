@@ -1,8 +1,9 @@
 import React from 'react';
 import { Resizable } from 'react-resizable';
-import { Input, Button, Space } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Input, Button, Space, Collapse } from 'antd';
+import { SearchOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
+const { Panel } = Collapse;
 // Containing all utilities functions
 // for reducers
 /**
@@ -19,25 +20,61 @@ export const updateObject = (oldObject: object, updatedProperties: object) => {
   };
 };
 
+/* ========================================== */
 /* For Unit testing */
+/* ========================================== */
 export const findByTestAttribute = (component: any, attribute: string) => {
   const wrapper = component.find(`[data-test='${attribute}']`);
   return wrapper;
 };
 
-/**  For converting thousand separators back into numbers */
-export const unformatString = (string: string) => {
-  var parts = string.toLocaleString().match(/(\D+)/g);
-  var unformatted = string;
-  if (parts) {
-    unformatted = unformatted.split(parts[0]).join('');
-    unformatted = unformatted.split(parts[1]).join('.');
-  }
+/* =========================================================== */
+/* =========================================================== */
 
-  return parseFloat(unformatted);
+/**
+ * For converting thousand separators back into numbers e.g. RM15,000.50 => 15000.5
+ * @param {string} priceWithComma
+ * @return {*}
+ */
+export const unformatString = (priceWithComma: string) => {
+  let reversedEngineeredPrice = parseFloat(priceWithComma.replace(/[^0-9-.]/g, ''));
+  return reversedEngineeredPrice;
 };
 
+/* =========================================================== */
+/**
+ * Take in price string with commas e.g. RM 15,000.50
+ * convert it to float 15000.5
+ * @param {string} price
+ * @return {float} float
+ */
+/* =========================================================== */
+export const convertPriceToFloat = (price: string) => {
+  let extractedPrice = '';
+  extractedPrice = price.replace('RM', '');
+  extractedPrice = unformatString(extractedPrice).toString();
+  return parseFloat(extractedPrice);
+};
+
+/* =========================================================== */
+/**
+ * helper function for checking inch undefined
+ * @param {string} feet
+ * @param {string} inch
+ * @return {*} [feet '] if inch is undefined or [feet ' inch '' ] if inch exist
+ * @category Helper function
+ */
+/* =========================================================== */
+export const formatFeetInch = (feet: string, inch: string) => {
+  if (inch === undefined) {
+    return feet + " ' ";
+  }
+  return feet + " ' " + inch + " '' ";
+};
+
+/* ============================================================================== */
 /* For AntD table resizable column */
+/* ============================================================================== */
 // https://ant.design/components/table/#header
 
 interface ResizableTitleProps {
@@ -154,7 +191,7 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
   render: (text: any, record: any) => {
     let highlightRender: React.ReactElement | null = null;
     if ('makeDetails' in record && dataIndex === 'makeDetails') {
-      let makeDetailsRecordArray: { title: string; dataIndex: string }[] = [
+      let makeDetailsRecord: { title: string; dataIndex: string }[] = [
         {
           title: 'Length',
           dataIndex: 'makeLength',
@@ -163,6 +200,9 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
           title: 'Wheelbase',
           dataIndex: 'makeWheelbaseTitle',
         },
+      ];
+
+      let makeDetailsRecordExpandable: { title: string; dataIndex: string }[] = [
         {
           title: 'Engine Cap',
           dataIndex: 'engine_cap',
@@ -180,6 +220,7 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
           title: 'GVW',
           dataIndex: 'gvw',
         },
+
         {
           title: 'Year',
           dataIndex: 'year',
@@ -201,10 +242,6 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
           dataIndex: 'makeConfig',
         },
         {
-          title: 'Series',
-          dataIndex: 'makeSeries',
-        },
-        {
           title: 'Emission',
           dataIndex: 'makeEmission',
         },
@@ -215,8 +252,8 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
       ];
       highlightRender = (
         <>
-          <div style={{ whiteSpace: 'initial', width: '30rem' }}>
-            {makeDetailsRecordArray.map((detail, index) => {
+          <div>
+            {makeDetailsRecord.map((detail, index) => {
               return (
                 <div className="flex" key={index}>
                   <div className="make__details-left">
@@ -240,6 +277,77 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
               );
             })}
           </div>
+
+          <Collapse ghost className="make__details-collapse">
+            <Panel
+              style={{ padding: 0 }}
+              showArrow={false}
+              className="make__details-panel"
+              header={
+                <>
+                  <InfoCircleOutlined /> Click here to view more info
+                </>
+              }
+              key="model"
+            >
+              <div className="">
+                <div style={{ whiteSpace: 'initial' }}>
+                  {makeDetailsRecordExpandable
+                    .slice(0, makeDetailsRecordExpandable.length / 2 + 1)
+                    .map((detail, index) => {
+                      return (
+                        <div className="flex" key={index}>
+                          <div className="make__details-left">
+                            {/* if its gvw, all uppercase, for others only capitalize the first letter */}
+                            <span className="make__details-category">{detail.title}</span>
+                          </div>
+                          :
+                          <div className="make__details-right">
+                            {record[detail.dataIndex] && record[detail.dataIndex] !== '' && filterData ? (
+                              <Highlighter
+                                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                                searchWords={[filterData.searchText]}
+                                autoEscape
+                                textToHighlight={record[detail.dataIndex].toString()}
+                              />
+                            ) : (
+                              '-'
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+                <div style={{ whiteSpace: 'initial' }}>
+                  {makeDetailsRecordExpandable
+                    .slice(makeDetailsRecordExpandable.length / 2 + 1)
+                    .map((detail, index) => {
+                      return (
+                        <div className="flex" key={index}>
+                          <div className="make__details-left">
+                            {/* if its gvw, all uppercase, for others only capitalize the first letter */}
+                            <span className="make__details-category">{detail.title}</span>
+                          </div>
+                          :
+                          <div className="make__details-right">
+                            {record[detail.dataIndex] && record[detail.dataIndex] !== '' && filterData ? (
+                              <Highlighter
+                                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                                searchWords={[filterData.searchText]}
+                                autoEscape
+                                textToHighlight={record[detail.dataIndex].toString()}
+                              />
+                            ) : (
+                              '-'
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </Panel>
+          </Collapse>
         </>
       );
     } else {

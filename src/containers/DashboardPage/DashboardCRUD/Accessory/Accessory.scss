@@ -28,4 +28,35 @@
       white-space: normal;
     }
   }
+
+  /* ============ */
+  // form
+  /* ============ */
+  &__form {
+    /* ---------- */
+    // the category item
+    /* ---------- */
+    &-item {
+      label {
+        width: auto;
+      }
+
+      // push to right abit for error message
+      .ant-form-item-explain.ant-form-item-explain-error {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+      // same thing applies to success message
+      .ant-form-item-explain.ant-form-item-explain-success {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+    }
+  }
 }

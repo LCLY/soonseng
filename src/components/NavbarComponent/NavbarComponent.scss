@@ -37,41 +37,44 @@
   }
 
   &__wrapper {
-    & > .active {
+    & .active {
       // the background when the nav items is active
       // background: $secondary-color-1;
       border-radius: 0.5rem;
+      & .navbar__link {
+        color: white;
+      }
     }
   }
 
   &__link {
-    padding: 0 1rem;
-    margin: 0 0.4rem;
+    // the link itself
+    color: rgba(white, 0.5);
+    cursor: pointer;
     &:hover {
-      transition: all 0.5s ease;
-      // background: $secondary-color-1;
-      // @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
-      border-radius: 0.5rem;
+      color: white;
     }
 
-    @include respond-to(tablet) {
-      margin: 0.3rem 0;
-    }
+    // div of the nav links
+    &-div {
+      padding: 0 1rem;
+      margin: 0 0.4rem;
+      &:hover {
+        transition: all 0.5s ease;
+        // background: $secondary-color-1;
+        // @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
+        border-radius: 0.5rem;
+      }
 
-    /* --------------- */
-    // the product dropdown, need to add padding to the bottom of the dropdown
-    &--product {
-      & > .show {
-        @include respond-to(tablet) {
-          margin-bottom: 1rem;
-        }
+      @include respond-to(tablet) {
+        margin: 0.3rem 0;
       }
     }
   }
-}
 
-.dropdown-menu {
-  & > a {
-    z-index: 1000 !important;
+  &__dropdown {
+    &-item {
+      font-size: 1.5rem !important;
+    }
   }
 }

@@ -16,6 +16,8 @@ import {
   TCreateBodyAccessoryData,
   TReceivedBodyAccessoryObj,
   TUpdateBodyAccessoryData,
+  TCreateAccessoryData,
+  TUpdateAccessoryData,
 } from 'src/store/types/dashboard';
 
 /* ============================================================================================ */
@@ -849,18 +851,10 @@ export const updateBodyAccessoryFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Create Accessory (tail)
 /* ------------------ */
-export const createAccessory = (
-  title: string,
-  description: string,
-  imageTag: string | null,
-  imageFiles: FileList | null,
-): AppActions => {
+export const createAccessory = (createAccessoryData: TCreateAccessoryData): AppActions => {
   return {
     type: actionTypes.CREATE_ACCESSORY,
-    title: title,
-    description: description,
-    imageTag: imageTag,
-    imageFiles: imageFiles,
+    createAccessoryData: createAccessoryData,
   };
 };
 
@@ -918,20 +912,10 @@ export const getAccessoriesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Update Accessory (tail)
 /* ------------------ */
-export const updateAccessory = (
-  id: number,
-  title: string,
-  description: string,
-  imageTag: string | null,
-  imageFiles: FileList | null,
-): AppActions => {
+export const updateAccessory = (updateAccessoryData: TUpdateAccessoryData): AppActions => {
   return {
     type: actionTypes.UPDATE_ACCESSORY,
-    id: id,
-    title: title,
-    description: description,
-    imageTag: imageTag,
-    imageFiles: imageFiles,
+    updateAccessoryData: updateAccessoryData,
   };
 };
 

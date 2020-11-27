@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import './LayoutComponent.scss';
 /*components*/
 import Backdrop from 'src/components/Backdrop/Backdrop';
-import DashboardSidebar from 'src/components/DashboardSidebar/DashboardSidebar';
+// import DashboardSidebar from 'src/components/DashboardSidebar/DashboardSidebar';
 /*3rd party lib*/
 import { Layout } from 'antd';
 
-const { Sider, Content } = Layout;
+const { /* Sider ,*/ Content } = Layout;
 
 interface LayoutComponentProps {
   // active key to know which page is it at, e.g. "make || brand || body etc"
-  activeKey: string;
+  activeKey?: string;
 }
 
 type Props = LayoutComponentProps;
@@ -22,18 +22,18 @@ type Props = LayoutComponentProps;
  * @param {*} { children }
  * @return {*}
  */
-const LayoutComponent: React.FC<Props> = ({ children, activeKey }) => {
+const LayoutComponent: React.FC<Props> = ({ children }) => {
   const [showSidebar, setShowSidebar] = useState<boolean>(false);
 
   return (
     <>
       <Layout>
-        <Sider theme="light" width={'auto'} className="layout__sider">
+        {/* <Sider theme="light" width={'auto'} className="layout__sider">
           <DashboardSidebar activeKey={activeKey} />
-        </Sider>
+        </Sider> */}
         <Backdrop show={showSidebar} clicked={() => setShowSidebar(false)} />
 
-        <div
+        {/* <div
           className="layout__sider--mobile-outerparent"
           style={{
             transform: showSidebar ? 'translateX(0%)' : 'translateX(-100%)',
@@ -54,7 +54,7 @@ const LayoutComponent: React.FC<Props> = ({ children, activeKey }) => {
               <DashboardSidebar activeKey={activeKey} />
             </Sider>
           </div>
-        </div>
+        </div> */}
         <Layout className="layout__inner">
           <Content className="layout__content">{children}</Content>
         </Layout>

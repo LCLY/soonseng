@@ -10,17 +10,27 @@ import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/Table
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 /*3rd party lib*/
+import { Button, Form, Input, Modal, Layout, Table, Tooltip, notification, Tag, Radio } from 'antd'; /* Util */
 import { v4 as uuidv4 } from 'uuid';
+import NumberFormat from 'react-number-format';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
-import { Button, Form, Input, Modal, Layout, Table, Tooltip, notification, Tag } from 'antd'; /* Util */
+
+/* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedAccessoryObj, TReceivedBodyLengthObj, TReceivedImageObj } from 'src/store/types/dashboard';
-import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
+import {
+  convertHeader,
+  convertPriceToFloat,
+  getColumnSearchProps,
+  setFilterReference,
+  unformatString,
+} from 'src/shared/Utils';
+import { GENERAL_ACCESSORY, BODY_ACCESSORY, DIMENSION_ACCESSORY } from 'src/shared/constants';
 
 const { TextArea } = Input;
 
@@ -28,7 +38,6 @@ interface AccessoryProps {}
 
 type TAccessoryTableState = {
   key?: string;
-  index?: number;
   accessoryId: number; //for update
   accessoryTitle: string;
   accessoryDescription: string;
@@ -89,7 +98,6 @@ const Accessory: React.FC<Props> = ({
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
 
   // edit image gallery
-
   /**
    * This state will be storing makeId as the key
    * The boolean is to determine whether to show each individual image gallery
@@ -111,6 +119,10 @@ const Accessory: React.FC<Props> = ({
     accessory: false,
   });
 
+  // check if accessory is dimension associated if yes, hide price
+  // true = hide, false = show
+  const [accessoryIsDimensionAssociated, setAccessoryIsDimensionAssociated] = useState<boolean>(false);
+
   // store table header definition in state
   /**
    * containing objects of arrays
@@ -119,16 +131,6 @@ const Accessory: React.FC<Props> = ({
 
   /* Accessory column initialization */
   const [accessoryColumns, setAccessoryColumns] = useState([
-    {
-      key: 'accessoryIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TAccessoryTableState, b: TAccessoryTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
     {
       key: 'accessoryTitle',
       title: 'Title',
@@ -152,13 +154,13 @@ const Accessory: React.FC<Props> = ({
       render: (_text: any, record: TAccessoryTableState) => {
         let color = 'orange';
         switch (record.accessoryType) {
-          case 'General':
+          case GENERAL_ACCESSORY:
             color = 'magenta';
             break;
-          case 'Dimension':
+          case DIMENSION_ACCESSORY:
             color = 'red';
             break;
-          case 'General':
+          case BODY_ACCESSORY:
             color = 'volcano';
             break;
           default:
@@ -182,7 +184,7 @@ const Accessory: React.FC<Props> = ({
       title: 'Description',
       dataIndex: 'accessoryDescription',
       ellipsis: true,
-      width: 'auto',
+      minWidth: 'auto',
       sorter: (a: TAccessoryTableState, b: TAccessoryTableState) =>
         a.accessoryDescription.localeCompare(b.accessoryDescription),
 
@@ -241,29 +243,90 @@ const Accessory: React.FC<Props> = ({
     // update the form value using the 'name' attribute as target/key
     // if accessoryDescription is '-' then change to empty string, else the real string
     // remember to set this form on the Form component
+
+    // if dimension then dont show price
+    if (record.accessoryType === DIMENSION_ACCESSORY) {
+      setAccessoryIsDimensionAssociated(true);
+    } else {
+      setAccessoryIsDimensionAssociated(false);
+    }
+
+    let extractedPrice = '';
+    extractedPrice = record.accessoryPrice.replace('RM', '');
+    extractedPrice = unformatString(extractedPrice).toString();
+
     updateAccessoryForm.setFieldsValue({
       accessoryId: record.accessoryId,
       accessoryTitle: record.accessoryTitle,
+      accessoryType: record.accessoryType,
+      accessoryPrice: extractedPrice,
       accessoryDescription: record.accessoryDescription === '-' ? '' : record.accessoryDescription,
     });
   };
 
   /* Forms onFinish methods */
   /* --------- ACCESSORY ---------- */
+  /**
+   * Use accessoryType string to check which category type is the accessory in and return the correct booleans
+   * @param {string} accessoryType
+   * @return {boolean} {general_bool: boolean, dimension_associated_bool: boolean}
+   */
+  const checkCategory = (accessoryType: string) => {
+    let general_bool = false;
+    let dimension_associated_bool = false;
+    switch (accessoryType) {
+      case GENERAL_ACCESSORY:
+        general_bool = true;
+        dimension_associated_bool = false;
+        break;
+      case DIMENSION_ACCESSORY:
+        general_bool = false;
+        dimension_associated_bool = false;
+        break;
+      case BODY_ACCESSORY:
+        general_bool = false;
+        dimension_associated_bool = false;
+        break;
+      default:
+    }
+    return { general_bool: general_bool, dimension_associated_bool: dimension_associated_bool };
+  };
 
   // the keys "values" are from the form's 'name' attribute
   const onCreateAccessoryFinish = (values: {
     accessoryTitle: string;
     accessoryDescription: string;
+    accessoryType: string;
+    accessoryPrice: string;
     imageTag: string;
   }) => {
+    const { general_bool, dimension_associated_bool } = checkCategory(values.accessoryType);
+
     // if not then just get the title and description
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
       // if there are files being selected to be uploaded
       // then send the tag and image files to the api call
-      onCreateAccessory(values.accessoryTitle, values.accessoryDescription, values.imageTag, uploadSelectedFiles);
+      let createAccessoryData = {
+        title: values.accessoryTitle,
+        description: values.accessoryDescription,
+        general: general_bool,
+        price: convertPriceToFloat(values.accessoryPrice),
+        dimension_associated: dimension_associated_bool,
+        imageTag: values.imageTag,
+        imageFiles: uploadSelectedFiles,
+      };
+      onCreateAccessory(createAccessoryData);
     } else {
-      onCreateAccessory(values.accessoryTitle, values.accessoryDescription, null, null);
+      let createAccessoryData = {
+        title: values.accessoryTitle,
+        description: values.accessoryDescription,
+        price: convertPriceToFloat(values.accessoryPrice),
+        general: general_bool,
+        dimension_associated: dimension_associated_bool,
+        imageTag: null,
+        imageFiles: null,
+      };
+      onCreateAccessory(createAccessoryData);
     }
   };
 
@@ -271,20 +334,38 @@ const Accessory: React.FC<Props> = ({
     accessoryId: number;
     accessoryTitle: string;
     accessoryDescription: string;
+    accessoryType: string;
+    accessoryPrice: string;
     imageTag: string;
   }) => {
+    const { general_bool, dimension_associated_bool } = checkCategory(values.accessoryType);
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
       // if there are files being selected to be uploaded
       // then send the tag and image files to the api call
-      onUpdateAccessory(
-        values.accessoryId,
-        values.accessoryTitle,
-        values.accessoryDescription,
-        values.imageTag,
-        uploadSelectedFiles,
-      );
+
+      let updateAccessoryData = {
+        id: values.accessoryId,
+        title: values.accessoryTitle,
+        description: values.accessoryDescription,
+        general: general_bool,
+        price: convertPriceToFloat(values.accessoryPrice),
+        dimension_associated: dimension_associated_bool,
+        imageTag: values.imageTag,
+        imageFiles: uploadSelectedFiles,
+      };
+      onUpdateAccessory(updateAccessoryData);
     } else {
-      onUpdateAccessory(values.accessoryId, values.accessoryTitle, values.accessoryDescription, null, null);
+      let updateAccessoryData = {
+        id: values.accessoryId,
+        title: values.accessoryTitle,
+        description: values.accessoryDescription,
+        price: convertPriceToFloat(values.accessoryPrice),
+        general: general_bool,
+        dimension_associated: dimension_associated_bool,
+        imageTag: null,
+        imageFiles: null,
+      };
+      onUpdateAccessory(updateAccessoryData);
     }
   };
 
@@ -452,6 +533,8 @@ const Accessory: React.FC<Props> = ({
   /* ================================================== */
   /*  Components  */
   /* ================================================== */
+
+  let accessoryTypeOptions = [GENERAL_ACCESSORY, DIMENSION_ACCESSORY, BODY_ACCESSORY];
   /* Create Accessory Form Items */
   let accessoryFormItems = (
     <>
@@ -471,6 +554,31 @@ const Accessory: React.FC<Props> = ({
       >
         <TextArea rows={3} placeholder="Type description here" />
       </Form.Item>
+      <Form.Item
+        className="accessory__form-item"
+        label="Type"
+        name="accessoryType"
+        rules={[{ required: true, message: 'Choose an accessory type!' }]}
+      >
+        <Radio.Group style={{ paddingLeft: '2rem' }}>
+          {accessoryTypeOptions.map((type) => (
+            <Radio key={uuidv4()} value={type}>
+              {type}
+            </Radio>
+          ))}
+        </Radio.Group>
+      </Form.Item>
+      {/* only show price if its not dimension associated */}
+      {accessoryIsDimensionAssociated ? null : (
+        <Form.Item
+          className="make__form-item"
+          label="Price"
+          name="accessoryPrice"
+          rules={[{ required: true, message: 'Input price here!' }]}
+        >
+          <NumberFormat className="ant-input" thousandSeparator={true} prefix={'RM '} />
+        </Form.Item>
+      )}
 
       <PreviewUploadImage
         setUploadSelectedFiles={setUploadSelectedFiles}
@@ -484,6 +592,16 @@ const Accessory: React.FC<Props> = ({
   let createAccessoryFormComponent = (
     <>
       <Form
+        onValuesChange={(values) => {
+          console.log(values);
+          if (values.accessoryType === DIMENSION_ACCESSORY) {
+            // hide price
+            setAccessoryIsDimensionAssociated(true);
+          } else {
+            // show price
+            setAccessoryIsDimensionAssociated(false);
+          }
+        }}
         form={createAccessoryForm}
         name="createAccessory"
         onKeyDown={(e) => handleKeyDown(e, createAccessoryForm)}
@@ -517,6 +635,13 @@ const Accessory: React.FC<Props> = ({
   let updateAccessoryFormComponent = (
     <>
       <Form
+        onValuesChange={(values) => {
+          if (values.accessoryType === DIMENSION_ACCESSORY) {
+            setAccessoryIsDimensionAssociated(true);
+          } else {
+            setAccessoryIsDimensionAssociated(false);
+          }
+        }}
         form={updateAccessoryForm}
         name="updateAccessory"
         onKeyDown={(e) => handleKeyDown(e, updateAccessoryForm)}
@@ -575,7 +700,7 @@ const Accessory: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TAccessoryTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (accessory: TReceivedAccessoryObj, index: number) => {
+    const storeValue = (accessory: TReceivedAccessoryObj) => {
       let descriptionIsNullOrEmpty = accessory.description === null || accessory.description === '';
       // only render when available value is true
 
@@ -590,9 +715,13 @@ const Accessory: React.FC<Props> = ({
         accessoryTypeName = 'NULL';
       }
 
-      // empty dash string if price is 0, null or undefined and format the price to having comma
+      // empty dash string if price is null or undefined
+      // also when accessory is dimension associated
+      // format the price to having comma
       let formattedAccessoryPrice =
-        accessory.price === undefined || accessory.price === null || accessory.price === 0
+        accessory.price === undefined ||
+        accessory.price === null ||
+        (accessory.dimension_associated === true && accessory.general === false)
           ? '-'
           : 'RM ' +
             accessory.price.toLocaleString(undefined, {
@@ -603,7 +732,6 @@ const Accessory: React.FC<Props> = ({
       if (accessory.available) {
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
           accessoryId: accessory.id,
           accessoryTitle: accessory.title,
           accessoryDescription: descriptionIsNullOrEmpty ? '-' : accessory.description,
@@ -695,7 +823,10 @@ const Accessory: React.FC<Props> = ({
                         <Button
                           type="primary"
                           className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, accessory: true })}
+                          onClick={() => {
+                            setAccessoryIsDimensionAssociated(false);
+                            setShowCreateModal({ ...showCreateModal, accessory: true });
+                          }}
                         >
                           Create New Accessory
                         </Button>
@@ -705,7 +836,7 @@ const Accessory: React.FC<Props> = ({
                       {/* --------------------- */}
                       <Table
                         bordered
-                        scroll={{ x: '89rem', y: 400 }}
+                        scroll={{ x: '89rem', y: 1000 }}
                         expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
                         onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
                         expandable={{
@@ -767,10 +898,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     //  accessory
     onGetAccessories: () => dispatch(actions.getAccessories()),
-    onCreateAccessory: (title, description, imageTag, imageFiles) =>
-      dispatch(actions.createAccessory(title, description, imageTag, imageFiles)),
-    onUpdateAccessory: (id, title, description, imageTag, imageFiles) =>
-      dispatch(actions.updateAccessory(id, title, description, imageTag, imageFiles)),
+    onCreateAccessory: (createAccessoryData) => dispatch(actions.createAccessory(createAccessoryData)),
+    onUpdateAccessory: (updateAccessoryData) => dispatch(actions.updateAccessory(updateAccessoryData)),
     // body length
     onGetBodyLengths: () => dispatch(actions.getBodyLengths()),
     // Image

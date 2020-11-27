@@ -1277,11 +1277,15 @@ export function* createAccessorySaga(action: AppActions) {
   let url = process.env.REACT_APP_API + `/tail/accessories`;
 
   let accessory = {};
+
   // Type guard, check if the "key" exist in the action object
-  if ('title' in action && 'description' in action) {
+  if ('createAccessoryData' in action) {
     accessory = {
-      title: action.title,
-      description: action.description,
+      title: action.createAccessoryData.title,
+      description: action.createAccessoryData.description,
+      price: action.createAccessoryData.price,
+      general: action.createAccessoryData.general,
+      dimension_associated: action.createAccessoryData.dimension_associated,
     };
   }
 
@@ -1289,12 +1293,21 @@ export function* createAccessorySaga(action: AppActions) {
     let response = yield axios.post(url, { accessory });
 
     // Upload Image to model 'Accessory'
-    if ('imageTag' in action && 'imageFiles' in action) {
+    if (
+      'createAccessoryData' in action &&
+      'imageTag' in action.createAccessoryData &&
+      'imageFiles' in action.createAccessoryData
+    ) {
       //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
+      if (action.createAccessoryData.imageTag && action.createAccessoryData.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
         yield put(
-          actions.uploadImage(UPLOAD_TO_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
+          actions.uploadImage(
+            UPLOAD_TO_ACCESSORY,
+            response.data.updated.id,
+            action.createAccessoryData.imageTag,
+            action.createAccessoryData.imageFiles,
+          ),
         );
 
         if (imageIsUploaded) {
@@ -1375,11 +1388,14 @@ export function* updateAccessorySaga(action: AppActions) {
 
   let url = '';
   let accessory = {};
-  if ('id' in action && 'title' in action && 'description' in action) {
-    url = process.env.REACT_APP_API + `/tail/accessories/${action.id}`;
+  if ('updateAccessoryData' in action) {
+    url = process.env.REACT_APP_API + `/tail/accessories/${action.updateAccessoryData.id}`;
     accessory = {
-      title: action.title,
-      description: action.description,
+      title: action.updateAccessoryData.title,
+      description: action.updateAccessoryData.description,
+      price: action.updateAccessoryData.price,
+      general: action.updateAccessoryData.general,
+      dimension_associated: action.updateAccessoryData.dimension_associated,
     };
   }
 
@@ -1387,12 +1403,21 @@ export function* updateAccessorySaga(action: AppActions) {
     let response = yield axios.put(url, { accessory });
 
     // Upload Image to model 'Accessory'
-    if ('imageTag' in action && 'imageFiles' in action) {
+    if (
+      'updateAccessoryData' in action &&
+      'imageTag' in action.updateAccessoryData &&
+      'imageFiles' in action.updateAccessoryData
+    ) {
       //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
+      if (action.updateAccessoryData.imageTag && action.updateAccessoryData.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
         yield put(
-          actions.uploadImage(UPLOAD_TO_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
+          actions.uploadImage(
+            UPLOAD_TO_ACCESSORY,
+            response.data.updated.id,
+            action.updateAccessoryData.imageTag,
+            action.updateAccessoryData.imageFiles,
+          ),
         );
 
         if (imageIsUploaded) {
