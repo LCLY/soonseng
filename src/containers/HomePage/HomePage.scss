@@ -505,7 +505,7 @@
   /* ======================== */
   &__carousel {
     &-outerdiv {
-      padding: 2rem;
+      padding: 8rem 2rem 2rem 2rem;
       background: $primary-color-4;
       & .ant-carousel .slick-dots li {
         width: 5rem !important;
@@ -535,7 +535,9 @@
         flex-direction: column;
         height: auto;
       }
-
+      /* ----------------------- */
+      // Left column
+      /* ----------------------- */
       &-left {
         width: 49%;
         padding-right: 3%;
@@ -552,6 +554,9 @@
           padding: 0;
         }
       }
+      /* -------------------------- */
+      // right Column
+      /* -------------------------- */
       &-right {
         display: flex;
         align-items: center;
@@ -574,6 +579,10 @@
         }
       }
     }
+
+    /* ------------------- */
+    // The text 'Our Team'
+    /* ------------------- */
     &-ourteam {
       font-size: 4rem;
       color: white;
