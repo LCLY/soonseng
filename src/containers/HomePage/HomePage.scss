@@ -616,10 +616,10 @@
         height: 40rem;
       }
       @include respond-to(tablet) {
-        height: 40rem;
+        height: 30rem;
       }
       @include respond-to(mobile) {
-        height: 40rem;
+        height: 20rem;
       }
     }
   }
