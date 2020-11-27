@@ -193,7 +193,7 @@ function HomePage() {
       <div className="homepage__carousel-outerdiv">
         <Container>
           <div className="homepage__carousel-ourteam">Our Team</div>
-          <Carousel autoplaySpeed={8000}>
+          <Carousel autoplay autoplaySpeed={8000}>
             <div className="homepage__carousel-div">
               <div className="homepage__carousel-div-left">
                 <div className="homepage__carousel-title">
