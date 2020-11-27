@@ -4,13 +4,10 @@ import './HomePage.scss';
 import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 // image
-// import transparent_background_truck_img from 'src/img/truck.png';
-import transparent_green_hino from 'src/img/greenhino.png';
 // 3rd party lib
 import gsap from 'gsap';
-import { Parallax } from 'react-scroll-parallax';
+import { Button, Carousel } from 'antd';
 import ScrollAnimation from 'react-animate-on-scroll';
-import { Button } from 'antd';
 
 /**
  * Home page of the website
@@ -57,6 +54,22 @@ function HomePage() {
     });
   };
 
+  let homepageButtons = [
+    { title: 'Sales', desc: 'We don’t just sell vehicles. We solve problems.' },
+    {
+      title: 'Service',
+      desc: 'Treat your tools to a spa, and they will serve you well',
+    },
+    {
+      title: 'Sparepart',
+      desc: 'Sourcing the best parts since 1988.',
+    },
+    {
+      title: 'Insurance',
+      desc: ' We offer competitive rates, tailored just for you.',
+    },
+  ];
+
   return (
     <div>
       <NavbarComponent activePage="home" />
@@ -71,30 +84,14 @@ function HomePage() {
             <div className="homepage__first-parallelogram"></div>
           </div>
           <div className="homepage__first-button-outerdiv">
-            <div className="homepage__first-button-div">
-              <Button className="homepage__first-button" type="default">
-                Sales
-              </Button>
-              <div className="homepage__first-button-description">Some short description about sales</div>
-            </div>
-            <div className="homepage__first-button-div">
-              <Button className="homepage__first-button" type="default">
-                Service
-              </Button>
-              <div className="homepage__first-button-description">Some short description about service</div>
-            </div>
-            <div className="homepage__first-button-div">
-              <Button className="homepage__first-button" type="default">
-                Sparepart
-              </Button>
-              <div className="homepage__first-button-description">Some short description about sparepart</div>
-            </div>
-            <div className="homepage__first-button-div">
-              <Button className="homepage__first-button" type="default">
-                Insurance
-              </Button>
-              <div className="homepage__first-button-description">Some short description about insurance</div>
-            </div>
+            {homepageButtons.map((buttonObj, index) => (
+              <div key={index} className="homepage__first-button-div">
+                <Button className="homepage__first-button" type="default">
+                  {buttonObj.title}
+                </Button>
+                <div className="homepage__first-button-description">{buttonObj.desc}</div>
+              </div>
+            ))}
           </div>
         </div>
         <div className="homepage__background-outerdiv">
@@ -155,8 +152,9 @@ function HomePage() {
               <ScrollAnimation animateOnce={true} delay={0.2} animateIn="animate__fadeInBottomLeft">
                 <div className="homepage__feature-div">
                   <div
+                    style={{ cursor: 'pointer' }}
                     className="homepage__feature-icon-div"
-                    onMouseEnter={() => {
+                    onDoubleClick={() => {
                       if (!animationIsMoving) {
                         vroom();
                       }
@@ -192,84 +190,150 @@ function HomePage() {
         </section>
       </Container>
 
-      {/* <section className="homepage__section-intro">
-        <div className="homepage__intro-img-parent">
-          <div className="homepage__intro-img--transparent-div">
-            <img
-              ref={(element: any) => {
-                imageElement = element;
-              }}
-              onMouseEnter={scaleup}
-              onMouseLeave={scaledown}
-              className="homepage__intro-img--transparent"
-              src={transparent_background_truck_img}
-              alt="transparent truck"
-            />
-          </div>
-          <div className="homepage__intro-img-overlay"></div>
-          <div className="homepage__intro-img--ori-div">
-            <img
-              className="homepage__intro-img--ori"
-              alt="trucklogo"
-              src="https://www.daimler.com/bilder/innovation/autonomes-fahren/future-truck-2025/14c1049-42-klein-w1024xh512-cutout.jpg"
-            />
-          </div>
-        </div>
-        <div className="homepage__intro-text-outerdiv">
-          <ScrollAnimation animateOnce={true} animateIn="bounceInRight">
-            <div className="homepage__intro-title margin_b-2">Load and Roll</div>
-            <div className="homepage__intro-text">
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
-              atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
-              sunt in culpa
-              <br />
-              <br />
-              Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-              placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
-              et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates.
-              <br />
-              <br />
-              Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-              placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
-              et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates.
-            </div>
-          </ScrollAnimation>
-        </div>
-      </section> */}
+      <div className="homepage__carousel-outerdiv">
+        <Container>
+          <div className="homepage__carousel-ourteam">Our Team</div>
+          <Carousel autoplaySpeed={8000}>
+            <div className="homepage__carousel-div">
+              <div className="homepage__carousel-div-left">
+                <div className="homepage__carousel-title">
+                  Service Advisor
+                  <div className="homepage__carousel-parallelogram"></div>
+                </div>
+                <div>
+                  <div className="homepage__carousel-italic">
+                    Let our service advisors represent you in conveying your concerns to our skilled mechanics.
+                  </div>
+                  <div className="homepage__carousel-content">
+                    <div className="homepage__carousel-content-paragraph">
+                      Our service advisor liaises between service technicians and you, whilst assisting you in
+                      determining problems with your vehicles. Pin-pointing problems and providing accurate descriptions
+                      to our technicians ensures the process of the job runs smoothly.
+                    </div>
 
-      <section className="homepage__section-third">
-        <div className="homepage__third-left">
-          <div className="homepage__third-title">So Many Trucks To Choose</div>
-          <div className="homepage__third-subtitle">Don't even know where to start</div>
-          <div className="homepage__third-text">
-            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
-            atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
-            sunt in culpa qui officia deserunt.
-            <br />
-            <br />
-            Mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
-            Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-          </div>
-        </div>
-        <div className="homepage__third-right">
-          <Parallax className="homepage__third-img-div" x={['150px', '-0px']} tagOuter="figure">
-            <img className="homepage__third-img" alt="green hino" src={transparent_green_hino} />
-          </Parallax>
-        </div>
-      </section>
-      <section className="homepage__section-third">
-        <div className="homepage__third-text">
-          At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
-          atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
-          sunt in culpa qui officia deserunt. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-          praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati
-          cupiditate non provident, similique sunt in culpa qui officia deserunt.
-          <br />
-          <br />
-          Mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam
-          libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-        </div>
-      </section>
+                    <div className="homepage__carousel-content-paragraph">
+                      Share your problems and requests while we greet you with utmost sincerity. No challenges too huge
+                      to intimidate us, no challenges too small to ignore.
+                    </div>
+
+                    <div className="homepage__carousel-content-paragraph">
+                      Insurance are also considered one of our well-known products that are offered. Contact us to learn
+                      more about our selection of products, as we venture into get you covered!
+                    </div>
+
+                    <div className="homepage__carousel-content-paragraph">
+                      Skip the queue by scheduling a service appointment with us.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="homepage__carousel-div-right">
+                <img
+                  alt="service advisor"
+                  className="homepage__carousel-image"
+                  src="https://www.autotrainingcentre.com/wp-content/uploads/2015/11/image15.jpeg"
+                />
+              </div>
+            </div>
+            <div className="homepage__carousel-div">
+              <div className="homepage__carousel-div-left">
+                <div className="homepage__carousel-title">
+                  Mechanic
+                  <div className="homepage__carousel-parallelogram"></div>
+                </div>
+
+                <div className="homepage__carousel-italic">
+                  Your vehicle’s masseuse, responsible in making sure your vehicles have a great time. Rest assured,
+                  they are in good hands.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  Our mechanics do not stop until your vehicle is back on the road. We take our quality of service
+                  seriously and continuously attend workshop training to ensure we are keeping up with the latest trends
+                  of the automotive industry.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  We help you preemptively detect potential problems regarding your vehicle through our detailed
+                  30-Point inspection and routine checks and services. Our goal is to reduce uncertainty and allow our
+                  customers to have smooth business operations.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  We value customers reaching out to us whenever there is an issue, no matter the day nor the time. We
+                  provide 24/7 emergency services.
+                </div>
+              </div>
+              <div className="homepage__carousel-div-right">
+                <img
+                  alt="mechanic"
+                  className="homepage__carousel-image"
+                  src="https://www.cashcarsbuyer.com/wp-content/uploads/2020/04/Ask-A-Mechanic-1200x900.jpg"
+                />
+              </div>
+            </div>
+            <div className="homepage__carousel-div">
+              <div className="homepage__carousel-div-left">
+                <div className="homepage__carousel-title">
+                  Salesmen
+                  <div className="homepage__carousel-parallelogram"></div>
+                </div>
+                <div className="homepage__carousel-italic">
+                  Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we
+                  listen, discuss, and solve them together.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est
+                  eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas
+                  assumenda est, omnis dolor repellendus.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  Ut ac ligula quis augue porta ultricies a quis justo. Aliquam facilisis ullamcorper purus. Nam
+                  suscipit tellus sed lorem porta, sed volutpat lacus tempor. Aliquam in lacus felis.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  Fusce a leo sed nibh fringilla tincidunt sit amet quis diam. Praesent volutpat nunc a diam porta
+                  malesuada. Integer sollicitudin purus non rutrum scelerisque. Nunc dictum fringilla enim id tempor.
+                </div>
+              </div>
+              <div className="homepage__carousel-div-right">
+                <img
+                  alt="salesmen"
+                  className="homepage__carousel-image"
+                  src="https://www.salesman.org/wp-content/uploads/2015/05/suit-hacks-for-salesmen.jpg"
+                />
+              </div>
+            </div>
+            <div className="homepage__carousel-div">
+              <div className="homepage__carousel-div-left">
+                <div className="homepage__carousel-title">
+                  Customer Support
+                  <div className="homepage__carousel-parallelogram"></div>
+                </div>
+                <div className="homepage__carousel-italic">Your satisfaction, we guarantee.</div>
+
+                <div className="homepage__carousel-content-paragraph">
+                  Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est
+                  eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas
+                  assumenda est, omnis dolor repellendus.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  Ut ac ligula quis augue porta ultricies a quis justo. Aliquam facilisis ullamcorper purus. Nam
+                  suscipit tellus sed lorem porta, sed volutpat lacus tempor. Aliquam in lacus felis.
+                </div>
+                <div className="homepage__carousel-content-paragraph">
+                  Fusce a leo sed nibh fringilla tincidunt sit amet quis diam. Praesent volutpat nunc a diam porta
+                  malesuada. Integer sollicitudin purus non rutrum scelerisque. Nunc dictum fringilla enim id tempor.
+                </div>
+              </div>
+              <div className="homepage__carousel-div-right">
+                <img
+                  alt="customer support"
+                  className="homepage__carousel-image"
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd5aAff7FNXBxgHHpFNsezNMV4fwsMqhyETg&usqp=CAU"
+                />
+              </div>
+            </div>
+          </Carousel>
+        </Container>
+      </div>
     </div>
   );
 }

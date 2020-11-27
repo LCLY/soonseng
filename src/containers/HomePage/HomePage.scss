@@ -291,6 +291,20 @@
         width: 8rem;
         text-align: center;
         margin-right: 3rem;
+
+        & .fa-truck-moving {
+          cursor: pointer;
+        }
+        &:hover {
+          & .fa-truck-moving {
+            &:hover {
+              color: $primary-color-1;
+            }
+            &:active {
+              color: $primary-color-4;
+            }
+          }
+        }
       }
     }
 
@@ -482,6 +496,130 @@
       @include respond-to(medium) {
         width: 100%;
         padding: 0rem;
+      }
+    }
+  }
+
+  /* ======================== */
+  // Each carousel in section 2
+  /* ======================== */
+  &__carousel {
+    &-outerdiv {
+      padding: 2rem;
+      background: $primary-color-4;
+    }
+    &-div {
+      display: flex !important;
+      height: 50rem;
+      background: $primary-color-4;
+      color: white;
+      overflow: hidden;
+      backface-visibility: hidden;
+
+      @include respond-to(medium) {
+        flex-direction: column;
+        height: auto;
+      }
+      @include respond-to(tablet) {
+        flex-direction: column;
+        height: auto;
+      }
+      @include respond-to(mobile) {
+        flex-direction: column;
+        height: auto;
+      }
+
+      &-left {
+        width: 49%;
+        padding-right: 3%;
+        @include respond-to(medium) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(mobile) {
+          width: 100%;
+          padding: 0;
+        }
+      }
+      &-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        padding-left: 2rem;
+        padding-bottom: 10rem;
+
+        @include respond-to(medium) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(mobile) {
+          width: 100%;
+          padding: 0;
+        }
+      }
+    }
+    &-ourteam {
+      font-size: 4rem;
+      color: white;
+      font-family: $font-courgette;
+    }
+
+    &-title {
+      font-size: 2rem;
+      font-family: $font-roboto;
+      display: inline-block;
+      padding-left: 0.5rem;
+      margin: 2rem 0;
+    }
+
+    &-parallelogram {
+      width: 100%;
+      height: 0.6rem;
+      opacity: 1;
+      transform: skew(-30deg);
+      border-top: 2px solid white;
+      background: $primary-color-1;
+    }
+
+    // the italic text
+    &-italic {
+      font-style: italic;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      font-family: $font-firesans;
+      color: rgb(209, 202, 202);
+    }
+
+    &-content {
+      &-paragraph {
+        font-family: $font-ubuntu;
+        margin-bottom: 2rem;
+      }
+    }
+
+    // the image
+    &-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      @include respond-to(medium) {
+        height: 40rem;
+      }
+      @include respond-to(tablet) {
+        height: 40rem;
+      }
+      @include respond-to(mobile) {
+        height: 40rem;
       }
     }
   }
