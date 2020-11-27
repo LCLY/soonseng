@@ -74,7 +74,7 @@
   /* ==================== */
   // make the text go to next line instead of just overflow hidden and ellipsis
   &__table {
-    .ant-table-cell {
+    & .ant-table-cell {
       white-space: normal !important;
     }
 

@@ -20,6 +20,8 @@ import {
   createMakeSaga,
   getMakesSaga,
   updateMakeSaga,
+  // Series
+  getSeriesSaga,
   // Body
   createBodySaga,
   getBodiesSaga,
@@ -76,6 +78,9 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_MAKE, createMakeSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_MAKES, getMakesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_MAKE, updateMakeSaga)]);
+  //  Series
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_SERIES, getSeriesSaga)]);
+
   // Body
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODY, createBodySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODIES, getBodiesSaga)]);

@@ -65,6 +65,11 @@ export {
   getMakesStart,
   getMakesFailed,
   getMakesSucceed,
+  // Get Series
+  getSeries,
+  getSeriesStart,
+  getSeriesFailed,
+  getSeriesSucceed,
   // Update Make
   updateMake,
   updateMakeStart,

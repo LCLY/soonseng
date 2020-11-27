@@ -14,6 +14,7 @@ import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
+import NumberFormat from 'react-number-format';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 
 import { Table, Form, Input, Layout, Button, Modal, Tooltip, notification, Select, DatePicker } from 'antd';
@@ -30,7 +31,13 @@ import {
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
-import { setFilterReference, convertHeader, unformatString, getColumnSearchProps } from 'src/shared/Utils';
+import {
+  setFilterReference,
+  convertHeader,
+  unformatString,
+  getColumnSearchProps,
+  convertPriceToFloat,
+} from 'src/shared/Utils';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -40,7 +47,6 @@ interface MakeProps {}
 // State for the table column definition
 type TBrandTableState = {
   key?: string;
-  index?: number;
   brandId: number;
   brandTitle: string;
   brandDescription: string;
@@ -50,7 +56,6 @@ type TBrandTableState = {
 // State for the table column definition
 type TWheelbaseTableState = {
   key?: string;
-  index?: number;
   wheelbaseId: number;
   wheelbaseTitle: string;
   wheelbaseDescription: string;
@@ -59,7 +64,6 @@ type TWheelbaseTableState = {
 // State for the table column definition
 type TMakeTableState = {
   key: string;
-  index: number;
   makeId: number;
   gvw: string;
   year: string;
@@ -189,16 +193,6 @@ const Make: React.FC<Props> = ({
   /* Brand column initialization */
   const [brandColumns, setBrandColumns] = useState([
     {
-      key: 'brandIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TBrandTableState, b: TBrandTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
-    {
       key: 'brandTitle',
       title: 'Title',
       dataIndex: 'brandTitle',
@@ -250,16 +244,6 @@ const Make: React.FC<Props> = ({
 
   /* Wheelbase column initialization */
   const [wheelbaseColumn, setWheelbaseColumn] = useState([
-    {
-      key: 'wheelbaseIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
     {
       key: 'wheelbaseTitle',
       title: 'Title',
@@ -319,22 +303,12 @@ const Make: React.FC<Props> = ({
   /* Make column initialization */
   const [makeColumn, setMakeColumn] = useState([
     {
-      key: 'makeIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TMakeTableState, b: TMakeTableState) => a.index - b.index,
-    },
-    {
       key: 'makeBrandTitle',
       title: 'Brand',
       dataIndex: 'makeBrandTitle',
       className: 'body__table-header--title',
       ellipsis: true,
-      width: '15rem',
-      // align: 'center',
+      width: 'auto',
       sorter: (a: TMakeTableState, b: TMakeTableState) =>
         typeof a.makeBrandTitle === 'string' &&
         typeof b.makeBrandTitle === 'string' &&
@@ -346,18 +320,27 @@ const Make: React.FC<Props> = ({
       title: 'Title',
       dataIndex: 'makeTitle',
       className: 'body__table-header--title',
-      width: '20rem',
-      // align: 'center',
+      width: 'auto',
       ellipsis: true,
       sorter: (a: TMakeTableState, b: TMakeTableState) => a.makeTitle.localeCompare(b.makeTitle),
       ...getColumnSearchProps(makeSearchInput, 'makeTitle', 'Title'),
+    },
+    {
+      key: 'makeSeries',
+      title: 'Series',
+      dataIndex: 'makeSeries',
+      className: 'body__table-header--title',
+      width: 'auto',
+      ellipsis: true,
+      sorter: (a: TMakeTableState, b: TMakeTableState) => a.makeSeries.localeCompare(b.makeSeries),
+      ...getColumnSearchProps(makeSearchInput, 'makeSeries', 'Series'),
     },
     {
       key: 'makeDetails',
       title: 'Details',
       dataIndex: 'makeDetails',
       ellipsis: true,
-      width: 'auto',
+      width: '30rem',
       ...getColumnSearchProps(makeSearchInput, 'makeDetails', 'Details'),
     },
     {
@@ -393,19 +376,6 @@ const Make: React.FC<Props> = ({
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
-  /**
-   * helper function for checking inch undefined
-   * @param {string} feet
-   * @param {string} inch
-   * @return {*} [feet '] if inch is undefined or [feet ' inch '' ] if inch exist
-   * @category Helper function
-   */
-  const formatFeetInch = (feet: string, inch: string) => {
-    if (inch === undefined) {
-      return feet + " ' ";
-    }
-    return feet + " ' " + inch + " '' ";
-  };
 
   /**
    *
@@ -478,31 +448,17 @@ const Make: React.FC<Props> = ({
   const onPopulateEditMakeModal = (record: TMakeTableState) => {
     // update the form value using the 'name' attribute as target/key
     // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
-    let extractedFeet = '';
-    let extractedInch = '';
     let extractedHorsepower = '';
     let extractedPrice = '';
     let extractedGvw = '';
-
-    // console.log(record.makeLength);
-    // only goes in when the string has a ' character in it
-
-    // needa check if inch is undefined, only have feet in the string
-    let onlyInchUndefined =
-      record.makeLength.split(" '")[0] !== undefined && record.makeLength.split(" '")[1] === undefined;
-
-    if (onlyInchUndefined) {
-      extractedFeet = record.makeLength.split("'")[0]; //get the first index
-    } else {
-      extractedFeet = record.makeLength.split("'")[0]; //get the first index
-      extractedInch = record.makeLength.split("'")[1].toString().trim(); //second index and remove empty space infront of the inch
-    }
+    let extractedLength = '';
 
     // replace units with empty strings
     extractedHorsepower = record.horsepower.replace('hp', '');
     extractedPrice = record.price.replace('RM', '');
     extractedPrice = unformatString(extractedPrice).toString();
     extractedGvw = record.gvw.replace('kg', '');
+    extractedLength = record.makeLength.replace('mm', '');
 
     // remember to set this form on the Form component
     editMakeForm.setFieldsValue({
@@ -516,7 +472,7 @@ const Make: React.FC<Props> = ({
       engine_cap: record.engine_cap,
       horsepower: extractedHorsepower,
       transmission: record.transmission,
-      length: { feet: extractedFeet, inch: extractedInch },
+      makeLength: extractedLength,
       makeAbs: record.makeAbs,
       makeTorque: record.makeTorque,
       makeTire: record.makeTire,
@@ -589,7 +545,7 @@ const Make: React.FC<Props> = ({
     horsepower: string;
     description: string;
     transmission: string;
-    length: { feet: string; inch: string };
+    length: number;
     imageTag: string;
   };
   type TUpdateMakeFinishValues = {
@@ -604,24 +560,22 @@ const Make: React.FC<Props> = ({
     horsepower: string;
     description: string;
     transmission: string;
-    length: { feet: string; inch: string };
+    length: number;
     imageTag: string;
   };
 
   // Create Make
   const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
-    // combine the ft and inch
-    let concatLength = formatFeetInch(values.length.feet, values.length.inch);
     // package the object
     let createMakeData: TCreateMakeData = {
       gvw: values.gvw,
       title: values.title,
-      length: concatLength,
+      length: values.length,
       engine_cap: values.engine_cap,
-      price: values.price.toString(),
       horsepower: values.horsepower,
       transmission: values.transmission,
       brand_id: values.makeBrandId.toString(),
+      price: convertPriceToFloat(values.price),
       wheelbase_id: values.makeWheelbaseId.toString(),
       year: moment(values.year).year().toString(), //convert to year
     };
@@ -637,18 +591,17 @@ const Make: React.FC<Props> = ({
 
   // Edit Make
   const onEditMakeFinish = (values: TUpdateMakeFinishValues) => {
-    let concatLength = formatFeetInch(values.length.feet, values.length.inch);
     // package the object
     let updateMakeData: TUpdateMakeData = {
       make_id: values.makeId,
       gvw: values.gvw,
       title: values.title,
-      length: concatLength,
+      length: values.length,
       engine_cap: values.engine_cap,
-      price: values.price.toString(),
       horsepower: values.horsepower,
       transmission: values.transmission,
       brand_id: values.makeBrandId.toString(),
+      price: convertPriceToFloat(values.price),
       wheelbase_id: values.makeWheelbaseId.toString(),
       year: moment(values.year).year().toString(), //convert to year
     };
@@ -1024,196 +977,191 @@ const Make: React.FC<Props> = ({
   /* Make Form Items */
   let makeFormItems = (
     <>
-      {/* ------- title ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Title"
-        name="title"
-        rules={[{ required: true, message: 'Input title here!' }]}
-      >
-        <Input placeholder="Type title here e.g. XZA200" />
-      </Form.Item>
-      {/* ------- Brand - value is brand id but display is brand name -------*/}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Brand"
-        name="makeBrandId"
-        rules={[{ required: true, message: 'Select Brand!' }]}
-      >
-        {/* only render if brandsArray is not null */}
-        <Select
-          showSearch
-          placeholder="Select a brand"
-          optionFilterProp="children"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {brandsArray &&
-            brandsArray.map((brand) => {
-              return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={brand.id}>
-                  {brand.title}
-                </Option>
-              );
-            })}
-        </Select>
-      </Form.Item>
-      {/* ------- Wheelbase - value is Wheelbase id but display is Wheelbase name  -------*/}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Wheelbase"
-        name="makeWheelbaseId"
-        rules={[{ required: true, message: 'Select wheelbase!' }]}
-      >
-        <Select
-          showSearch
-          placeholder="Select a wheelbase"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {wheelbasesArray &&
-            wheelbasesArray.map((wheelbase) => {
-              return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
-                  {wheelbase.title + 'mm'}
-                </Option>
-              );
-            })}
-        </Select>
-      </Form.Item>
-      {/* ------- Tire ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Tyre"
-        name="makeTire"
-        rules={[{ required: true, message: 'Input tyre count here!' }]}
-      >
-        <Input type="number" placeholder="Type tyre count here" />
-      </Form.Item>
-      {/* ------- Length ------- */}
       <div className="flex">
-        <Form.Item
-          className="make__form-item make__form-item--make margin_r-1"
-          label="Length"
-          name={['length', 'feet']}
-          rules={[{ required: true, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
-        >
-          {/* ft */}
-          <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
-        </Form.Item>
+        <div className="make__form-left">
+          {/* ------- title ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Title"
+            name="title"
+            rules={[{ required: true, message: 'Input title here!' }]}
+          >
+            <Input placeholder="Type title here e.g. XZA200" />
+          </Form.Item>
+          {/* ------- Brand - value is brand id but display is brand name -------*/}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Brand"
+            name="makeBrandId"
+            rules={[{ required: true, message: 'Select Brand!' }]}
+          >
+            {/* only render if brandsArray is not null */}
+            <Select
+              showSearch
+              placeholder="Select a brand"
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {brandsArray &&
+                brandsArray.map((brand) => {
+                  return (
+                    <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={brand.id}>
+                      {brand.title}
+                    </Option>
+                  );
+                })}
+            </Select>
+          </Form.Item>
+          {/* ------- Wheelbase - value is Wheelbase id but display is Wheelbase name  -------*/}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Wheelbase"
+            name="makeWheelbaseId"
+            rules={[{ required: true, message: 'Select wheelbase!' }]}
+          >
+            <Select
+              showSearch
+              placeholder="Select a wheelbase"
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {wheelbasesArray &&
+                wheelbasesArray.map((wheelbase) => {
+                  return (
+                    <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
+                      {wheelbase.title + 'mm'}
+                    </Option>
+                  );
+                })}
+            </Select>
+          </Form.Item>
+          {/* ------- Length ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Length"
+            name="makeLength"
+            rules={[{ required: true, message: 'Input length (mm) here!' }]}
+          >
+            <Input type="number" min={0} addonAfter={'mm'} placeholder="Type length here" />
+          </Form.Item>
+          {/* ------- Series ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Series"
+            name="makeSeries"
+            rules={[{ required: false, message: 'Input Series here!' }]}
+          >
+            <Input placeholder="Type Series here" />
+          </Form.Item>
+          {/* ------- Tire ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Tyre"
+            name="makeTire"
+            rules={[{ required: false, message: 'Input tyre count here!' }]}
+          >
+            <Input type="number" placeholder="Type tyre count here" />
+          </Form.Item>
 
-        <Form.Item
-          className="make__form-item--make make__form-item--inch"
-          name={['length', 'inch']}
-          rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
-        >
-          {/* inch */}
-          <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
-        </Form.Item>
+          {/* ------- Horsepower ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Horsepower"
+            name="horsepower"
+            rules={[{ required: false, message: 'Input Horsepower here!' }]}
+          >
+            <Input type="number" min={0} addonAfter={'hp'} placeholder="Type horsepower here e.g. 250" />
+          </Form.Item>
+          {/* ------- Year ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Year"
+            name="year"
+            rules={[{ required: false, message: 'Select a year!' }]}
+          >
+            <DatePicker style={{ width: '100%' }} picker="year" />
+          </Form.Item>
+        </div>
+        <div className="make__form-right">
+          {/* ------- Transmission ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Transmission"
+            name="transmission"
+            rules={[{ required: false, message: 'Input Transmission here!' }]}
+          >
+            <Input placeholder="Type transmission here e.g. MT" />
+          </Form.Item>
+          {/* ------- Engine cap ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Engine Cap"
+            name="engine_cap"
+            rules={[{ required: false, message: 'Input Engine Cap here!' }]}
+          >
+            <Input type="number" min={0} placeholder="Type length here e.g. 115" />
+          </Form.Item>
+          {/* ------- GVW ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="GVW"
+            name="gvw"
+            rules={[{ required: false, message: 'Input Gross Vehicle Weight here!' }]}
+          >
+            <Input addonAfter="kg" placeholder="Type Gross Vehicle Weight here e.g. 2t" />
+          </Form.Item>
+          {/* ------- ABS ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Abs"
+            name="makeAbs"
+            rules={[{ required: false, message: 'Input ABS here!' }]}
+          >
+            <Input placeholder="Type ABS here" />
+          </Form.Item>
+          {/* ------- Torque ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Torque"
+            name="makeTorque"
+            rules={[{ required: false, message: 'Input torque here!' }]}
+          >
+            <Input placeholder="Type torque here" />
+          </Form.Item>
+
+          {/* ------- Config ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Config"
+            name="makeConfig"
+            rules={[{ required: false, message: 'Input config here!' }]}
+          >
+            <Input placeholder="Type config here e.g. 4X4" />
+          </Form.Item>
+
+          {/* ------- Emission ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Emission"
+            name="makeEmission"
+            rules={[{ required: false, message: 'Input Emission here!' }]}
+          >
+            <Input type="number" placeholder="Type Emission here" />
+          </Form.Item>
+          {/* ------- Price ------- */}
+          <Form.Item
+            className="make__form-item make__form-item--make"
+            label="Price"
+            name="price"
+            rules={[{ required: false, message: 'Input price here!' }]}
+          >
+            <NumberFormat className="ant-input" placeholder="Type price here" thousandSeparator={true} prefix={'RM '} />
+          </Form.Item>
+        </div>
       </div>
-      {/* ------- Engine cap ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Engine Cap"
-        name="engine_cap"
-        rules={[{ required: true, message: 'Input Engine Cap here!' }]}
-      >
-        <Input type="number" min={0} placeholder="Type length here e.g. 115" />
-      </Form.Item>
-      {/* ------- Horsepower ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Horsepower"
-        name="horsepower"
-        rules={[{ required: true, message: 'Input Horsepower here!' }]}
-      >
-        <Input type="number" min={0} addonAfter={'hp'} placeholder="Type horsepower here e.g. 250" />
-      </Form.Item>
-      {/* ------- Year ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Year"
-        name="year"
-        rules={[{ required: true, message: 'Select a year!' }]}
-      >
-        <DatePicker style={{ width: '100%' }} picker="year" />
-      </Form.Item>
-      {/* ------- Transmission ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Transmission"
-        name="transmission"
-        rules={[{ required: true, message: 'Input Transmission here!' }]}
-      >
-        <Input placeholder="Type transmission here e.g. MT" />
-      </Form.Item>
-      {/* ------- GVW ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="GVW"
-        name="gvw"
-        rules={[{ required: true, message: 'Input Gross Vehicle Weight here!' }]}
-      >
-        <Input addonAfter="kg" placeholder="Type Gross Vehicle Weight here e.g. 2t" />
-      </Form.Item>
-      {/* ------- ABS ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Abs"
-        name="makeAbs"
-        rules={[{ required: false, message: 'Input ABS here!' }]}
-      >
-        <Input placeholder="Type ABS here" />
-      </Form.Item>
-      {/* ------- Torque ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Torque"
-        name="makeTorque"
-        rules={[{ required: false, message: 'Input torque here!' }]}
-      >
-        <Input placeholder="Type torque here" />
-      </Form.Item>
 
-      {/* ------- Config ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Config"
-        name="makeConfig"
-        rules={[{ required: false, message: 'Input config here!' }]}
-      >
-        <Input placeholder="Type config here e.g. 4X@" />
-      </Form.Item>
-      {/* ------- Series ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Series"
-        name="makeSeries"
-        rules={[{ required: false, message: 'Input Series here!' }]}
-      >
-        <Input type="number" placeholder="Type Series here" />
-      </Form.Item>
-      {/* ------- Emission ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Emission"
-        name="makeEmission"
-        rules={[{ required: false, message: 'Input Emission here!' }]}
-      >
-        <Input type="number" placeholder="Type Emission here" />
-      </Form.Item>
-      {/* ------- Price ------- */}
-      <Form.Item
-        className="make__form-item make__form-item--make"
-        label="Price"
-        name="price"
-        rules={[{ required: true, message: 'Input price here!' }]}
-      >
-        <Input type="number" min={0} addonBefore="RM" placeholder="Type price here e.g. 1500" />
-      </Form.Item>
       {/* The whole upload image component including buttons and image previews */}
       <PreviewUploadImage
         imagesPreviewUrls={imagesPreviewUrls}
@@ -1242,6 +1190,7 @@ const Make: React.FC<Props> = ({
     <Modal
       title="Create Make"
       centered
+      width={800}
       visible={showCreateModal.make}
       onOk={createMakeForm.submit}
       confirmLoading={loading}
@@ -1284,6 +1233,7 @@ const Make: React.FC<Props> = ({
   let editMakeModal = (
     <Modal
       centered
+      width={800}
       title="Edit Make"
       visible={showUpdateModal.make}
       onOk={editMakeForm.submit}
@@ -1321,13 +1271,13 @@ const Make: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TBrandTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (brand: TReceivedBrandObj, index: number) => {
+    const storeValue = (brand: TReceivedBrandObj) => {
       let descriptionIsNullOrEmpty = brand.description === null || brand.description === '';
       // only render when available value is true
       if (brand.available) {
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
+
           brandId: brand.id,
           brandTitle: brand.title,
           brandDescription: descriptionIsNullOrEmpty ? '-' : brand.description,
@@ -1351,14 +1301,14 @@ const Make: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TWheelbaseTableState[] = [];
     // A function that stores desired keys and values into a tempArray
-    const storeValue = (wheelbase: TReceivedWheelbaseObj, index: number) => {
+    const storeValue = (wheelbase: TReceivedWheelbaseObj) => {
       let descriptionIsNullOrEmpty = wheelbase.description === null || wheelbase.description === '';
 
       // only push into the array when available value is true
       if (wheelbase.available) {
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
+
           wheelbaseId: wheelbase.id,
           wheelbaseTitle: wheelbase.title + 'mm',
           wheelbaseDescription: descriptionIsNullOrEmpty ? '-' : wheelbase.description,
@@ -1381,14 +1331,14 @@ const Make: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TMakeTableState[] = [];
     // A function that stores desired keys and values into a tempArray
-    const storeValue = (make: TReceivedMakeObj, index: number) => {
+    const storeValue = (make: TReceivedMakeObj) => {
       let detailsCombinedString = ''; //use this combined string so that filter can work
       // manipulate the strings first
       let concatLength = make.length;
       let concatWheelbase = make.wheelbase.title + 'mm';
       let concatHorsePower = make.horsepower + 'hp';
       let concatGvw = make.gvw + 'kg';
-      let concatPrice = 'RM' + make.price;
+      let concatPrice = 'RM' + make.price.toFixed(2);
 
       // concatenate them
       detailsCombinedString +=
@@ -1411,7 +1361,13 @@ const Make: React.FC<Props> = ({
       let makeGVW = make.gvw === undefined || make.gvw === null || make.gvw === '' ? '' : make.gvw + 'kg';
       let makeYear = make.year === undefined || make.year === null ? moment().year().toString() : make.year;
       let makePrice =
-        make.price === undefined || make.price === null || make.price === 0 ? '' : 'RM' + make.price.toLocaleString();
+        make.price === undefined || make.price === null || make.price === 0
+          ? ''
+          : 'RM' +
+            make.price.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
       let makeTitle = make.title === undefined || make.title === null ? '' : make.title;
       let makeLength = make.length === undefined || make.length === null || make.length === 0 ? '' : make.length + 'mm';
       let makeEngineCap = make.engine_cap === undefined || make.engine_cap === null ? '' : make.engine_cap;
@@ -1434,12 +1390,11 @@ const Make: React.FC<Props> = ({
       if (make.available) {
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
           gvw: makeGVW,
           year: makeYear,
           makeId: make.id,
           price: makePrice,
-          makeLength: makeLength.toString(),
+          makeLength: makeLength,
           makeTitle: makeTitle,
           available: make.available,
           engine_cap: makeEngineCap,
@@ -1448,6 +1403,7 @@ const Make: React.FC<Props> = ({
           makeDetails: detailsCombinedString,
           makeBrandId: make.brand.id,
           makeBrandTitle: makeBrandTitle,
+          makeSeries: makeSeries,
           makeWheelbaseId: make.wheelbase.id,
           makeWheelbaseTitle: makeWheelbaseTitle,
           makeImages: make.images, //the whole array of images
@@ -1455,7 +1411,6 @@ const Make: React.FC<Props> = ({
           makeTorque: makeTorque,
           makeTire: makeTire.toString(),
           makeConfig: makeConfig,
-          makeSeries: makeSeries,
           makeEmission: makeEmission,
         });
       }

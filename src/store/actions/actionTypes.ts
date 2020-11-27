@@ -120,6 +120,15 @@ export const UPDATE_MAKE_FAILED = 'UPDATE_MAKE_FAILED';
 
 /* ======================================================================================== */
 
+/* -------------------------- */
+// Get series for the dropdown
+/* -------------------------- */
+export const GET_SERIES = 'GET_SERIES';
+export const GET_SERIES_START = 'GET_SERIES_START';
+export const GET_SERIES_SUCCEED = 'GET_SERIES_SUCCEED';
+export const GET_SERIES_FAILED = 'GET_SERIES_FAILED';
+
+/* ======================================================================================== */
 /* --------------------------------------------- */
 // Body Page - Body
 /* --------------------------------------------- */

@@ -8,6 +8,9 @@ export interface DashboardInitialState {
   // make
   readonly makeObj: TReceivedMakeObj | null;
   readonly makesArray: TReceivedMakeObj[] | null;
+  // series
+  readonly seriesObj: TReceivedSeriesObj | null;
+  readonly seriesArray: TReceivedSeriesObj[] | null;
   // brand
   readonly brandsArray: TReceivedBrandObj[] | null;
   readonly brandObj: TReceivedBrandObj | null;
@@ -384,6 +387,34 @@ export interface GetMakesSucceedAction {
 }
 export interface GetMakesFailedAction {
   type: typeof actionTypes.GET_MAKES_FAILED;
+  errorMessage: string;
+}
+/* --------------------------- */
+// Get Series (Make)
+/* --------------------------- */
+
+// type
+export type TReceivedSeriesObj = {
+  id: number;
+  brand_id: number;
+  title: string;
+  available: boolean;
+};
+/*  Api call */
+export interface GetSeriesAction {
+  type: typeof actionTypes.GET_SERIES;
+  brand_id: number;
+}
+/*  States */
+export interface GetSeriesStartAction {
+  type: typeof actionTypes.GET_SERIES_START;
+}
+export interface GetSeriesSucceedAction {
+  type: typeof actionTypes.GET_SERIES_SUCCEED;
+  seriesArray: TReceivedSeriesObj[];
+}
+export interface GetSeriesFailedAction {
+  type: typeof actionTypes.GET_SERIES_FAILED;
   errorMessage: string;
 }
 
@@ -950,6 +981,14 @@ export type DashboardActionTypes =
   | UpdateMakeStartAction
   | UpdateMakeSucceedAction
   | UpdateMakeFailedAction
+  /* ----------------------- */
+  // Series (make)
+  /* ----------------------- */
+  /* Get */
+  | GetSeriesAction
+  | GetSeriesStartAction
+  | GetSeriesSucceedAction
+  | GetSeriesFailedAction
   /* ------------------------ */
   /* ======================================================================= */
   /* ------------------------ */

@@ -608,6 +608,47 @@ export function* updateMakeSaga(action: AppActions) {
   }
 }
 
+/* ================================================= */
+// Series (Make)
+/* ================================================= */
+
+/* ------------------------------- */
+//    Get series
+/* ------------------------------- */
+export function* getSeriesSaga(action: AppActions) {
+  yield put(actions.getSeriesStart());
+  let url = '';
+  if ('brand_id' in action) {
+    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}/series`;
+  }
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getSeriesSucceed(response.data.series));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.getSeriesFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
 /* ================================================================== */
 /*   Body (Body Page) (tail) */
 /* ================================================================== */

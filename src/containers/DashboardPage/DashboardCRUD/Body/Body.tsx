@@ -57,7 +57,6 @@ interface BodyProps {}
 
 type TBodyTableState = {
   key?: string;
-  index?: number;
   bodyId: number; //for update
   bodyTitle: string;
   bodyDescription: string;
@@ -66,7 +65,6 @@ type TBodyTableState = {
 };
 type TLengthTableState = {
   key?: string;
-  index?: number;
   lengthId: number; //for update
   lengthTitle: string;
   lengthDescription: CheckboxValueType[] | string;
@@ -74,7 +72,6 @@ type TLengthTableState = {
 };
 type TBodyLengthTableState = {
   key?: string;
-  index?: number;
   bodyLengthId: number; //for update
   bodyLengthLengthId: number;
   bodyLengthLengthTitle: string;
@@ -248,22 +245,12 @@ const Body: React.FC<Props> = ({
   /* Body column initialization */
   const [bodyColumns, setBodyColumns] = useState([
     {
-      key: 'bodyIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TBodyTableState, b: TBodyTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
-    {
       key: 'bodyTitle',
       title: 'Title',
       dataIndex: 'bodyTitle',
-      width: '15rem',
-      className: 'body__table-header--title',
+      width: '20rem',
       ellipsis: true,
+      className: 'body__table-header--title',
       sorter: (a: TBodyTableState, b: TBodyTableState) => a.bodyTitle.localeCompare(b.bodyTitle),
       ...getColumnSearchProps(bodySearchInput, 'bodyTitle', 'Title'),
     },
@@ -321,16 +308,6 @@ const Body: React.FC<Props> = ({
   ]);
   /* Length column initialization */
   const [lengthColumns, setLengthColumns] = useState([
-    {
-      key: 'lengthIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TLengthTableState, b: TLengthTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
     {
       key: 'lengthTitle',
       title: 'Title',
@@ -419,16 +396,6 @@ const Body: React.FC<Props> = ({
   /* Body Length column initialization */
   const [bodyLengthColumns, setBodyLengthColumns] = useState([
     {
-      key: 'bodyLengthIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
-    {
       key: 'bodyLengthBodyTitle',
       title: 'Body',
       dataIndex: 'bodyLengthBodyTitle',
@@ -444,7 +411,7 @@ const Body: React.FC<Props> = ({
       title: 'Length',
       dataIndex: 'bodyLengthLengthTitle',
       className: 'body__table-header--title',
-      ellipsis: true,
+
       width: '15rem',
       sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
         a.bodyLengthLengthTitle.localeCompare(b.bodyLengthLengthTitle),
@@ -1741,13 +1708,13 @@ const Body: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TBodyTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (body: TReceivedBodyObj, index: number) => {
+    const storeValue = (body: TReceivedBodyObj) => {
       let descriptionIsNullOrEmpty = body.description === null || body.description === '';
       // only render when available value is true
       if (body.available) {
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
+
           bodyId: body.id,
           bodyTitle: body.title,
           bodyDescription: descriptionIsNullOrEmpty ? '-' : body.description,
@@ -1772,7 +1739,7 @@ const Body: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TLengthTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (length: TReceivedLengthObj, index: number) => {
+    const storeValue = (length: TReceivedLengthObj) => {
       let descriptionIsNullOrEmpty = length.description === null || length.description === '';
       let formattedLength = '';
       let lengthHasFtInString = length.title.includes('ft');
@@ -1787,7 +1754,7 @@ const Body: React.FC<Props> = ({
         // only render when available value is true
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
+
           lengthId: length.id,
           lengthTitle: formattedLength,
           lengthDescription: descriptionIsNullOrEmpty ? '-' : convertCategoriesToCheckboxValuesType(length.description),
@@ -1811,7 +1778,7 @@ const Body: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TBodyLengthTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (bodyLength: TReceivedBodyLengthObj, index: number) => {
+    const storeValue = (bodyLength: TReceivedBodyLengthObj) => {
       // only render when available value is true
       let concatPrice = `RM${bodyLength.price}`;
       let formattedLength = '';
@@ -1824,7 +1791,6 @@ const Body: React.FC<Props> = ({
       if (bodyLength.available && bodyLengthsArray) {
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
           bodyLengthId: bodyLength.id,
           bodyLengthLengthId: bodyLength.length.id,
           bodyLengthBodyId: bodyLength.body.id,

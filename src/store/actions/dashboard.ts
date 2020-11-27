@@ -18,6 +18,7 @@ import {
   TUpdateBodyAccessoryData,
   TCreateAccessoryData,
   TUpdateAccessoryData,
+  TReceivedSeriesObj,
 } from 'src/store/types/dashboard';
 
 /* ============================================================================================ */
@@ -372,6 +373,35 @@ export const getMakesSucceed = (makesArray: TReceivedMakeObj[]): AppActions => {
 export const getMakesFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.GET_MAKES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Get Series (for make)
+/* ------------------ */
+export const getSeries = (brand_id: number): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES,
+    brand_id: brand_id,
+  };
+};
+
+export const getSeriesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES_START,
+  };
+};
+
+export const getSeriesSucceed = (seriesArray: TReceivedSeriesObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES_SUCCEED,
+    seriesArray: seriesArray,
+  };
+};
+export const getSeriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES_FAILED,
     errorMessage: errorMessage,
   };
 };

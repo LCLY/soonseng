@@ -8,6 +8,9 @@ const initialState: DashboardInitialState = {
   // makes
   makeObj: null,
   makesArray: null,
+  // series
+  seriesObj: null,
+  seriesArray: null,
   // brand
   brandObj: null,
   brandsArray: null,
@@ -285,6 +288,33 @@ const updateMakeSucceed = (state: DashboardInitialState, action: AppActions) => 
   }
 };
 const updateMakeFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+
+
+/* ============================================================================================ */
+/*  Series (Make Page) */
+/* ============================================================================================ */
+
+/* -------------------------- */
+/* Get Series  */
+/* -------------------------- */
+const getSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('seriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      seriesArray: action.seriesArray,
+    });
+  }
+};
+const getSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -725,6 +755,13 @@ const reducer = (state = initialState, action: DashboardActionTypes) => {
       return getMakesSucceed(state, action);
     case actionTypes.GET_MAKES_FAILED:
       return getMakesFailed(state, action);
+    // Get series (make)
+    case actionTypes.GET_SERIES_START:
+      return getSeriesStart(state, action);
+    case actionTypes.GET_SERIES_SUCCEED:
+      return getSeriesSucceed(state, action);
+    case actionTypes.GET_SERIES_FAILED:
+      return getSeriesFailed(state, action);
     // Update make (head)
     case actionTypes.UPDATE_MAKE_START:
       return updateMakeStart(state, action);

@@ -3,7 +3,7 @@
   // main sections
   /* ============ */
   &__section {
-    background: $section-grey;
+    // background: $section-grey;
     padding: 1rem 2rem 2rem 2rem;
     margin-bottom: 2rem;
   }
@@ -40,6 +40,21 @@
   }
 
   &__table {
+    & .ant-table-body {
+      &::-webkit-scrollbar {
+        width: 0.5rem !important;
+        height: 0.5rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: $secondary-color-3 !important;
+        border-radius: 1rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: $secondary-color-2 !important;
+      }
+    }
     /* ==================== */
     // Every make table
     /* ==================== */
@@ -137,6 +152,18 @@
         }
       }
     }
+
+    // left side of the forms
+    &-left {
+      width: 50%;
+      padding-right: 2rem;
+    }
+
+    // right side of the forms
+    &-right {
+      width: 50%;
+      padding-left: 1rem;
+    }
   }
   /* ================================== */
   // the details column under make
@@ -153,6 +180,8 @@
     // the left div of details
     /* ------------------------------ */
     &-left {
+      white-space: initial;
+
       width: 11rem;
     }
 
@@ -160,7 +189,23 @@
     &-right {
       margin-left: 1rem;
       white-space: initial;
-      width: 17rem;
+      width: 9rem;
+    }
+
+    // The outer collapsible div
+    &-collapse {
+      & .ant-collapse-content-box {
+        border: 1px solid $translucent-grey;
+      }
+    }
+
+    // the collapsible panel inside
+    &-panel {
+      & .ant-collapse-header {
+        padding: 0.5rem 0 0 0 !important;
+
+        color: $link-blue !important;
+      }
     }
   }
 
