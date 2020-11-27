@@ -507,6 +507,13 @@
     &-outerdiv {
       padding: 2rem;
       background: $primary-color-4;
+      & .ant-carousel .slick-dots li {
+        width: 5rem !important;
+      }
+      & .ant-carousel .slick-dots li button {
+        height: 0.8rem !important;
+        border-radius: 1rem;
+      }
     }
     &-div {
       display: flex !important;
