@@ -139,7 +139,7 @@ function HomePage() {
                   </div>
                   <div className="homepage__feature-text">
                     <div className="homepage__feature-title">Efficiency</div>
-                    <div className="homepage__feature-desc">Using less fuel to get more done.</div>
+                    <div className="homepage__feature-desc">Using less resources to get more done.</div>
                   </div>
                 </div>
               </ScrollAnimation>
@@ -279,17 +279,16 @@ function HomePage() {
                   listen, discuss, and solve them together."
                 </div>
                 <div className="homepage__carousel-content-paragraph">
-                  Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est
-                  eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas
-                  assumenda est, omnis dolor repellendus.
+                  Our customer’s satisfaction has always been our top priority. Share your problems with us and let us
+                  embark on our journey into solving them.
                 </div>
                 <div className="homepage__carousel-content-paragraph">
-                  Ut ac ligula quis augue porta ultricies a quis justo. Aliquam facilisis ullamcorper purus. Nam
-                  suscipit tellus sed lorem porta, sed volutpat lacus tempor. Aliquam in lacus felis.
+                  Being under budget is every businesses’ concern. Providing the cheapest options are always easy,
+                  however the challenge lies within recommending the most suitable and effective solution. We aim to get
+                  your problems solved under budget for we care for our customers.
                 </div>
                 <div className="homepage__carousel-content-paragraph">
-                  Fusce a leo sed nibh fringilla tincidunt sit amet quis diam. Praesent volutpat nunc a diam porta
-                  malesuada. Integer sollicitudin purus non rutrum scelerisque. Nunc dictum fringilla enim id tempor.
+                  Leave it up to us in providing you solutions for rest assured, your concerns are in good hands.
                 </div>
               </div>
               <div className="homepage__carousel-div-right">
@@ -308,7 +307,7 @@ function HomePage() {
                 </div>
                 <div className="homepage__carousel-italic">"Your satisfaction, we guarantee."</div>
 
-                <div className="homepage__carousel-content-paragraph">
+                {/* <div className="homepage__carousel-content-paragraph">
                   Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est
                   eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas
                   assumenda est, omnis dolor repellendus.
@@ -320,7 +319,7 @@ function HomePage() {
                 <div className="homepage__carousel-content-paragraph">
                   Fusce a leo sed nibh fringilla tincidunt sit amet quis diam. Praesent volutpat nunc a diam porta
                   malesuada. Integer sollicitudin purus non rutrum scelerisque. Nunc dictum fringilla enim id tempor.
-                </div>
+                </div> */}
               </div>
               <div className="homepage__carousel-div-right">
                 <img
