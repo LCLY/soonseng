@@ -1,0 +1,238 @@
+.orders {
+  &__section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1rem 0;
+    padding-bottom: 5rem;
+    &-outerdiv {
+      width: auto;
+    }
+  }
+
+  &__total {
+    &-text {
+      color: $primary-color-4;
+      font-family: $font-anton;
+    }
+  }
+
+  /* ========================== */
+  // overview section related css
+  /* ========================== */
+  &__overview {
+    &-title {
+      font-size: 3rem;
+      font-family: $font-firesans;
+    }
+
+    // the list of items
+    &-list {
+      // list-style: inside;
+      list-style-type: lower-roman;
+      & li:hover {
+        transition: all 0.5 ease;
+        background: $section-grey;
+        cursor: default;
+      }
+    }
+
+    // each row of orders
+    &-row {
+      display: flex;
+      width: 100%;
+
+      // most outerdiv
+      &-outerdiv {
+        &:not(:first-child) {
+          padding-top: 5rem;
+        }
+        &:not(:last-child) {
+          padding-bottom: 5rem;
+          border-bottom: 1px solid $translucent-grey;
+        }
+      }
+
+      /* ------------------------------- */
+      // image on every row
+      /* ------------------------------- */
+      &-image {
+        width: 18rem;
+        height: 13rem;
+        object-fit: cover;
+
+        &-div {
+          user-select: none;
+          padding: 1rem;
+        }
+      }
+      /* ------------------------------- */
+      // content on the right
+      /* ------------------------------- */
+      &-content {
+        width: 100%;
+        padding: 2rem;
+
+        // the header title e.g. 15ft wooden cargo
+        &-header {
+          font-size: 2.5rem;
+          font-family: $font-roboto;
+          font-weight: bolder;
+          color: $primary-color-4;
+
+          // the grand total price at the bottom
+          &-price {
+            font-size: 2.5rem;
+            font-family: $font-roboto;
+            font-weight: bolder;
+            padding-right: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: $primary-color-4;
+
+            // the prediscount on the top
+            &--prediscount {
+              font-size: 1.8rem;
+              font-family: $font-roboto;
+              padding-right: 1.5rem;
+              font-weight: bolder;
+            }
+          }
+        }
+
+        // the subheader title e.g. HINO 300 Series model name or Insurance
+        &-subheader {
+          font-size: 1.7rem;
+          color: rgba(68, 68, 68, 0.678);
+          // padding-left: 1.5rem;
+          font-family: $font-firesans;
+
+          &--discount {
+            color: black;
+            // font-weight: bolder;
+          }
+
+          &--totalroadprice {
+            font-size: 2.2rem;
+            color: black;
+            // padding-left: 1.5rem;
+            font-family: $font-firesans;
+          }
+
+          &-price {
+            padding-right: 1.5rem;
+
+            // the prediscount price at bottom
+            &--prediscount {
+              font-size: 1.7rem;
+              font-weight: bolder;
+              padding-right: 1.5rem;
+            }
+          }
+        }
+      }
+    }
+
+    // the collapsible panels
+    &-panel {
+      & .ant-collapse-header {
+        color: $primary-color-3 !important;
+      }
+
+      & .ant-collapse-content-box {
+        padding-top: 0 !important;
+        padding-left: 4rem !important;
+      }
+
+      &--modeldetails {
+        & .ant-collapse-header {
+          padding: 0.5rem 0 0 0 !important;
+
+          color: $link-blue !important;
+        }
+      }
+
+      // another panel to show model specs
+      &-specs {
+        &-row {
+          display: flex;
+          align-items: center;
+          &:hover {
+            background: $section-grey;
+            cursor: default;
+          }
+        }
+        &-title {
+          font-family: $font-firesans;
+          color: $primary-color-4;
+          padding-right: 0.5rem;
+        }
+        &-value {
+          color: $secondary-color-2;
+          font-family: $font-ubuntu;
+        }
+      }
+    }
+
+    // highlight the model name
+    &-highlight {
+      &-model {
+        font-family: $font-firesans;
+        color: $primary-color-4;
+      }
+    }
+
+    // small title further splitting the categories
+    &-smalltitle {
+      font-size: 1.4rem;
+      color: $secondary-color-3;
+      margin-bottom: 0.5rem;
+      font-family: $font-ubuntu;
+
+      &:not(:first-child) {
+        margin-top: 1rem;
+      }
+    }
+
+    // subtotal on every last
+    &-subtotal {
+      &-outerdiv {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: $section-grey;
+        border-top: 1px solid $translucent-grey;
+        border-bottom: 1px solid $translucent-grey;
+      }
+
+      &-text {
+        color: black;
+        font-size: 1.6rem;
+        font-family: $font-opensans;
+      }
+      font-size: 1.7rem;
+      // border-top: 1px solid black;
+      padding-left: 2rem;
+      font-weight: bolder;
+    }
+
+    // The dropdown to show more options button
+    &-more {
+      display: flex;
+      justify-content: flex-end;
+      margin-right: 3.5rem;
+
+      &-icon {
+        &-div {
+          cursor: pointer;
+          &:hover {
+            & .sales__overview-more-icon {
+              transition: all 0.5s ease;
+              background: $primary-color-4;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+}

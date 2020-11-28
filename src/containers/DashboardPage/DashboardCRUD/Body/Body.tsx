@@ -26,12 +26,13 @@ import {
   notification,
   Checkbox,
 } from 'antd';
-import LazyLoad from 'react-lazyload';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
+import LazyLoad from 'react-lazyload';
 import { AnyAction, Dispatch } from 'redux';
+import NumberFormat from 'react-number-format';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
+import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 /* Util */
 import {
   TCreateBodyLengthData,
@@ -47,7 +48,7 @@ import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { img_not_available_link, img_loading_link } from 'src/shared/global';
-import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
+import { convertHeader, getColumnSearchProps, setFilterReference, unformatString } from 'src/shared/Utils';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 const { Option } = Select;
@@ -401,7 +402,7 @@ const Body: React.FC<Props> = ({
       dataIndex: 'bodyLengthBodyTitle',
       className: 'body__table-header--title',
       ellipsis: true,
-      width: '15rem',
+      width: '20rem',
       sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
         a.bodyLengthBodyTitle.localeCompare(b.bodyLengthBodyTitle),
       ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthBodyTitle', 'Body'),
@@ -416,6 +417,16 @@ const Body: React.FC<Props> = ({
       sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
         a.bodyLengthLengthTitle.localeCompare(b.bodyLengthLengthTitle),
       ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthLengthTitle', 'Body'),
+    },
+    {
+      key: 'bodyLengthPrice',
+      title: 'Price',
+      dataIndex: 'bodyLengthPrice',
+      ellipsis: true,
+      width: '15rem',
+      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
+        a.bodyLengthPrice.localeCompare(b.bodyLengthPrice),
+      ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthPrice', 'Price'),
     },
     {
       key: 'bodyLengthDimension',
@@ -436,18 +447,18 @@ const Body: React.FC<Props> = ({
                 </Tag>
               </div>
               <div className="body__tag-div">
-                <Tag className="body__tag" color="cyan">
-                  <div className="body__tag-title">Height</div>
-                  <div className="body__tag-values">
-                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthHeight}</div>
-                  </div>
-                </Tag>
-              </div>
-              <div className="body__tag-div">
                 <Tag className="body__tag" color="blue">
                   <div className="body__tag-title">Depth</div>
                   <div className="body__tag-values">
                     <div className="body__tag-colon">:</div> <div>{record.bodyLengthDepth}</div>
+                  </div>
+                </Tag>
+              </div>
+              <div className="body__tag-div">
+                <Tag className="body__tag" color="cyan">
+                  <div className="body__tag-title">Height</div>
+                  <div className="body__tag-values">
+                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthHeight}</div>
                   </div>
                 </Tag>
               </div>
@@ -456,16 +467,7 @@ const Body: React.FC<Props> = ({
         );
       },
     },
-    {
-      key: 'bodyLengthPrice',
-      title: 'Price',
-      dataIndex: 'bodyLengthPrice',
-      ellipsis: true,
-      width: 'auto',
-      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
-        a.bodyLengthPrice.localeCompare(b.bodyLengthPrice),
-      ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthPrice', 'Price'),
-    },
+
     {
       key: 'bodyLengthAction',
       title: 'Action',
@@ -764,6 +766,7 @@ const Body: React.FC<Props> = ({
       let extractedFeet = '';
       let extractedInch = '';
 
+      if (extractedValue === null || extractedValue === undefined) return { feet: '', inch: '' };
       // needa check if inch is undefined, only have feet in the string
       let onlyInchUndefined = extractedValue.split("'")[0] !== undefined && extractedValue.split("'")[1] === undefined;
 
@@ -778,7 +781,9 @@ const Body: React.FC<Props> = ({
       return { feet: extractedFeet, inch: extractedInch };
     };
 
-    let formattedPrice = record.bodyLengthPrice.replace('RM', ''); //remove unit
+    let formattedPrice = '';
+    formattedPrice = record.bodyLengthPrice.replace('RM', '');
+    formattedPrice = unformatString(formattedPrice).toString();
 
     // update the form value using the 'name' attribute as target/key
     updateBodyLengthForm.setFieldsValue({
@@ -1307,9 +1312,9 @@ const Body: React.FC<Props> = ({
         className="make__form-item"
         label="Price"
         name="bodyLengthPrice"
-        rules={[{ required: true, message: 'Input price here!' }]}
+        rules={[{ required: false, message: 'Input price here!' }]}
       >
-        <Input type="number" min={0} addonBefore="RM" placeholder="Type price here" />
+        <NumberFormat className="ant-input" placeholder="Type price here" thousandSeparator={true} prefix={'RM '} />
       </Form.Item>
       <PreviewUploadImage
         setUploadSelectedFiles={setUploadSelectedFiles}
@@ -1780,13 +1785,17 @@ const Body: React.FC<Props> = ({
     /** A function that stores desired keys and values into a tempArray */
     const storeValue = (bodyLength: TReceivedBodyLengthObj) => {
       // only render when available value is true
-      let concatPrice = `RM${bodyLength.price}`;
+      let concatPrice =
+        bodyLength.price === undefined || bodyLength.price === null || bodyLength.price === 0
+          ? '-'
+          : 'RM' +
+            bodyLength.price.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+
       let formattedLength = '';
-      if (!bodyLength.length.title.includes("'")) {
-        formattedLength = bodyLength.length.title + "'";
-      } else {
-        formattedLength = bodyLength.length.title;
-      }
+      formattedLength = bodyLength.length.title + 'ft';
 
       if (bodyLength.available && bodyLengthsArray) {
         tempArray.push({

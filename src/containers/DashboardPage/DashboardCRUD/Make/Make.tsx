@@ -26,6 +26,7 @@ import {
   TReceivedBrandObj,
   TReceivedImageObj,
   TReceivedWheelbaseObj,
+  TReceivedSeriesObj,
 } from 'src/store/types/dashboard';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
@@ -93,6 +94,7 @@ type TShowModal = {
   make: boolean;
   brand: boolean;
   wheelbase: boolean;
+  series: boolean;
 };
 
 type Props = MakeProps & StateProps & DispatchProps;
@@ -119,6 +121,9 @@ const Make: React.FC<Props> = ({
   onGetMakes,
   onCreateMake,
   onUpdateMake,
+  // series
+  seriesArray,
+  onGetSeries,
   // image
   imagesUploaded,
   // delete uploaded image
@@ -131,9 +136,11 @@ const Make: React.FC<Props> = ({
   const [createBrandForm] = Form.useForm();
   const [updateBrandForm] = Form.useForm();
   const [createWheelbaseForm] = Form.useForm();
-  const [editWheelbaseForm] = Form.useForm();
+  const [updateWheelbaseForm] = Form.useForm();
   const [createMakeForm] = Form.useForm();
-  const [editMakeForm] = Form.useForm();
+  const [updateMakeForm] = Form.useForm();
+  const [createSeriesForm] = Form.useForm();
+  const [updateSeriesForm] = Form.useForm();
 
   // const { width } = useWindowDimensions();
   // Table states
@@ -154,12 +161,17 @@ const Make: React.FC<Props> = ({
     brand: false,
     wheelbase: false,
     make: false,
+    series: false,
   });
   const [showCreateModal, setShowCreateModal] = useState<TShowModal>({
     brand: false,
     wheelbase: false,
     make: false,
+    series: false,
   });
+
+  // state to track which brand we are using
+  const [selectedBrand, setSelectedBrand] = useState<{ brandId: number; brandTitle: string } | null>(null);
 
   /* ======================== */
   /*   Image related states   */
@@ -197,7 +209,7 @@ const Make: React.FC<Props> = ({
       title: 'Title',
       dataIndex: 'brandTitle',
       className: 'body__table-header--title',
-      width: '20rem',
+      width: 'auto',
       ellipsis: true,
       sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandTitle.localeCompare(b.brandTitle),
       ...getColumnSearchProps(brandSearchInput, 'brandTitle', 'Title'),
@@ -221,21 +233,37 @@ const Make: React.FC<Props> = ({
       render: (_text: any, record: TBrandTableState) => {
         return (
           <>
-            <Button
-              type="link"
-              className="make__brand-btn--edit"
-              onClick={() => {
-                onPopulateUpdateBrandModal(record);
+            <div>
+              <Button
+                type="link"
+                className="make__brand-btn--edit"
+                onClick={() => {
+                  onPopulateUpdateBrandModal(record);
 
-                // show modal
-                setShowUpdateModal({ ...showUpdateModal, brand: true });
-              }}
-            >
-              Edit
-            </Button>
-            <Button disabled type="link" danger>
-              Delete
-            </Button>
+                  // show modal
+                  setShowUpdateModal({ ...showUpdateModal, brand: true });
+                }}
+              >
+                Edit
+              </Button>
+              <Button disabled type="link" danger>
+                Delete
+              </Button>
+            </div>
+            <div className="flex justify-conter">
+              <Button
+                type="default"
+                onClick={() => {
+                  setSelectedBrand({ ...selectedBrand, brandId: record.brandId, brandTitle: record.brandTitle });
+                  setShowCreateModal({ ...showCreateModal, series: true });
+                  createSeriesForm.setFieldsValue({
+                    brandId: record.brandId,
+                  });
+                }}
+              >
+                Create series
+              </Button>
+            </div>
           </>
         );
       },
@@ -248,7 +276,7 @@ const Make: React.FC<Props> = ({
       key: 'wheelbaseTitle',
       title: 'Title',
       dataIndex: 'wheelbaseTitle',
-      width: '25rem',
+      width: 'auto',
       ellipsis: true,
       sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) => a.wheelbaseTitle.localeCompare(b.wheelbaseTitle),
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseTitle', 'Title'),
@@ -282,7 +310,7 @@ const Make: React.FC<Props> = ({
                 // update the form value
                 // if wheelbaseDescription is '-' then change to empty string, else the real string
                 // remember to set this form on the Form component
-                editWheelbaseForm.setFieldsValue({
+                updateWheelbaseForm.setFieldsValue({
                   wheelbaseId: record.wheelbaseId,
                   wheelbaseTitle: convertedToIntWheelbaseTitle,
                   wheelbaseDescription: record.wheelbaseDescription === '-' ? '' : record.wheelbaseDescription,
@@ -357,7 +385,7 @@ const Make: React.FC<Props> = ({
               type="link"
               onClick={() => {
                 // populate the editModalForm
-                onPopulateEditMakeModal(record);
+                onPopulateupdateMakeModal(record);
                 // show modal
                 setShowUpdateModal({ ...showUpdateModal, make: true });
               }}
@@ -445,7 +473,7 @@ const Make: React.FC<Props> = ({
    * and then reformat the important information and pass into the current modal / form
    * @param {*} record
    */
-  const onPopulateEditMakeModal = (record: TMakeTableState) => {
+  const onPopulateupdateMakeModal = (record: TMakeTableState) => {
     // update the form value using the 'name' attribute as target/key
     // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
     let extractedHorsepower = '';
@@ -461,7 +489,7 @@ const Make: React.FC<Props> = ({
     extractedLength = record.makeLength.replace('mm', '');
 
     // remember to set this form on the Form component
-    editMakeForm.setFieldsValue({
+    updateMakeForm.setFieldsValue({
       makeId: record.makeId,
       makeBrandId: record.makeBrandId,
       makeWheelbaseId: record.makeWheelbaseId,
@@ -500,6 +528,10 @@ const Make: React.FC<Props> = ({
 
   /* Forms onFinish methods */
   // the keys "values" are from the form's 'name' attribute
+
+  /* ===================================== */
+  // Brand
+  /* ===================================== */
   const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; imageTag: string }) => {
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
       // if there are files being selected to be uploaded
@@ -523,6 +555,21 @@ const Make: React.FC<Props> = ({
       onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription, null, null);
     }
   };
+
+  /* ===================================== */
+  // Series
+  /* ===================================== */
+
+  const onCreateSeriesFinish = (values: any) => {
+    console.log(values);
+  };
+  const onEditSeriesFinish = (values: any) => {
+    console.log(values);
+  };
+
+  /* ===================================== */
+  // Wheelbase
+  /* ===================================== */
   const onCreateWheelbaseFinish = (values: { wheelbaseTitle: string; wheelbaseDescription: string }) => {
     onCreateWheelbase(values.wheelbaseTitle, values.wheelbaseDescription);
   };
@@ -533,6 +580,10 @@ const Make: React.FC<Props> = ({
   }) => {
     onUpdateWheelbase(values.wheelbaseId, values.wheelBaseTitle, values.wheelbaseDescription);
   };
+
+  /* ===================================== */
+  // Make
+  /* ===================================== */
   // Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
   type TCreateMakeFinishValues = {
     makeBrandId: string;
@@ -737,7 +788,7 @@ const Make: React.FC<Props> = ({
           onClearAllSelectedImages={onClearAllSelectedImages}
           onPopulateEditModal={(record) => {
             if ('makeImages' in record && 'makeId' in record) {
-              onPopulateEditMakeModal(record);
+              onPopulateupdateMakeModal(record);
             } else if ('brandImages' in record && 'brandId' in record) {
               onPopulateUpdateBrandModal(record);
             }
@@ -863,6 +914,114 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
+  /* ------------------------ */
+  // Series
+  /* ------------------------ */
+
+  // Series Form items
+  let seriesFormItems = (
+    <>
+      <Form.Item
+        className="make__form-item"
+        label="Title"
+        name="brandTitle"
+        rules={[{ required: true, message: 'Input title here!' }]}
+      >
+        <Input placeholder="Type title here" />
+      </Form.Item>
+      <Form.Item
+        className="make__form-item"
+        hidden
+        label="id"
+        name="brandId"
+        rules={[{ required: true, message: 'Input id here!' }]}
+      ></Form.Item>
+    </>
+  );
+
+  /* Create Series Form */
+  let createSeriesFormComponent = (
+    <>
+      <Form
+        form={createSeriesForm}
+        name="createSeries"
+        onKeyDown={(e) => handleKeyDown(e, createSeriesForm)}
+        onFinish={onCreateSeriesFinish}
+      >
+        {/* The rest of the form items */}
+        {seriesFormItems}
+      </Form>
+    </>
+  );
+
+  /* Create Series Modal */
+  let createSeriesModal = (
+    <Modal
+      centered
+      title={
+        selectedBrand && (
+          <>
+            Create series for <span className="make__brand-series-title">{selectedBrand.brandTitle}</span>
+          </>
+        )
+      }
+      visible={showCreateModal.series}
+      onOk={createSeriesForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        createSeriesForm.resetFields();
+        setShowCreateModal({ ...showCreateModal, series: false }); //close modal on cancel
+      }}
+    >
+      {/* the content within the modal */}
+      {createSeriesFormComponent}
+    </Modal>
+  );
+
+  /* Edit Series Form */
+  let updateSeriesFormComponent = (
+    <>
+      <Form
+        form={updateSeriesForm}
+        name="editSeries"
+        onKeyDown={(e) => handleKeyDown(e, updateSeriesForm)}
+        onFinish={onEditSeriesFinish}
+      >
+        {/* The rest of the form items */}
+        {seriesFormItems}
+        {/* Getting the Series id - hidden */}
+        <Form.Item
+          className="make__form-item"
+          label="id"
+          name="seriesId"
+          hidden
+          rules={[{ required: true, message: 'Get Series id!' }]}
+        ></Form.Item>
+      </Form>
+    </>
+  );
+
+  /* Edit Series Modal */
+  let updateSeriesModal = (
+    <Modal
+      centered
+      title={selectedBrand && `Edit series for ${selectedBrand.brandTitle}`}
+      visible={showUpdateModal.series}
+      onOk={updateSeriesForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        // reset the series value
+        setShowUpdateModal({
+          ...showUpdateModal,
+          series: false,
+        });
+      }}
+    >
+      {/* the content within the modal */}
+      {updateSeriesFormComponent}
+    </Modal>
+  );
+
   /* ----------------------------------------------- */
   // Wheelbase
   /* ----------------------------------------------- */
@@ -916,12 +1075,12 @@ const Make: React.FC<Props> = ({
   );
 
   /* Edit Wheelbase Form */
-  let editWheelbaseFormComponent = (
+  let updateWheelbaseFormComponent = (
     <>
       <Form
-        form={editWheelbaseForm}
+        form={updateWheelbaseForm}
         name="editWheelbase"
-        onKeyDown={(e) => handleKeyDown(e, editWheelbaseForm)}
+        onKeyDown={(e) => handleKeyDown(e, updateWheelbaseForm)}
         onFinish={onEditWheelbaseFinish}
       >
         <Form.Item
@@ -957,16 +1116,16 @@ const Make: React.FC<Props> = ({
   );
 
   /* Edit Wheelbase Modal */
-  let editWheelbaseModal = (
+  let updateWheelbaseModal = (
     <Modal
       title="Edit Wheelbase"
       visible={showUpdateModal.wheelbase}
-      onOk={editWheelbaseForm.submit}
+      onOk={updateWheelbaseForm.submit}
       confirmLoading={loading}
       onCancel={() => setShowUpdateModal({ ...showUpdateModal, wheelbase: false })}
     >
       {/* the content within the modal */}
-      {editWheelbaseFormComponent}
+      {updateWheelbaseFormComponent}
     </Modal>
   );
 
@@ -1053,7 +1212,22 @@ const Make: React.FC<Props> = ({
             name="makeSeries"
             rules={[{ required: false, message: 'Input Series here!' }]}
           >
-            <Input placeholder="Type Series here" />
+            {/* only render if brandsArray is not null */}
+            <Select
+              showSearch
+              placeholder="Select a series"
+              optionFilterProp="children"
+              filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {seriesArray &&
+                seriesArray.map((seriesObj) => {
+                  return (
+                    <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={seriesObj.id}>
+                      {seriesObj.title}
+                    </Option>
+                  );
+                })}
+            </Select>
           </Form.Item>
           {/* ------- Tire ------- */}
           <Form.Item
@@ -1175,6 +1349,12 @@ const Make: React.FC<Props> = ({
   let createMakeFormComponent = (
     <>
       <Form
+        onValuesChange={(value) => {
+          // check if brand id is chosen
+          if (typeof value.makeBrandId === 'number')
+            // call get series array
+            onGetSeries(value.makeBrandId);
+        }}
         form={createMakeForm}
         name="createMake"
         onKeyDown={(e) => handleKeyDown(e, createMakeForm)}
@@ -1206,12 +1386,12 @@ const Make: React.FC<Props> = ({
   );
 
   /* Edit Make Form */
-  let editMakeFormComponent = (
+  let updateMakeFormComponent = (
     <>
       <Form
-        form={editMakeForm}
+        form={updateMakeForm}
         name="editMake"
-        onKeyDown={(e) => handleKeyDown(e, editMakeForm)}
+        onKeyDown={(e) => handleKeyDown(e, updateMakeForm)}
         onFinish={onEditMakeFinish}
       >
         {makeFormItems}
@@ -1230,13 +1410,13 @@ const Make: React.FC<Props> = ({
   );
 
   /* Edit Make Modal */
-  let editMakeModal = (
+  let updateMakeModal = (
     <Modal
       centered
       width={800}
       title="Edit Make"
       visible={showUpdateModal.make}
-      onOk={editMakeForm.submit}
+      onOk={updateMakeForm.submit}
       confirmLoading={loading}
       onCancel={() => {
         setShowUpdateModal({ ...showUpdateModal, make: false });
@@ -1244,7 +1424,7 @@ const Make: React.FC<Props> = ({
       }}
     >
       {/* the content within the modal */}
-      {editMakeFormComponent}
+      {updateMakeFormComponent}
     </Modal>
   );
 
@@ -1500,9 +1680,11 @@ const Make: React.FC<Props> = ({
       {createBrandModal}
       {updateBrandModal}
       {createWheelbaseModal}
-      {editWheelbaseModal}
+      {updateWheelbaseModal}
       {createMakeModal}
-      {editMakeModal}
+      {updateMakeModal}
+      {createSeriesModal}
+      {updateSeriesModal}
 
       <Layout>
         <NavbarComponent activePage="dashboard" />
@@ -1510,7 +1692,7 @@ const Make: React.FC<Props> = ({
           <CustomContainer>
             <div className="make__tab-outerdiv">
               <section>
-                <HeaderTitle>Make</HeaderTitle>
+                <HeaderTitle>Model</HeaderTitle>
 
                 {brandsArray && wheelbasesArray && makesArray ? (
                   <>
@@ -1579,12 +1761,12 @@ const Make: React.FC<Props> = ({
                     </section>
 
                     {/* ====================== */}
-                    {/*      Makes Section     */}
+                    {/*      Makes/Models Section     */}
                     {/* ====================== */}
 
                     <section className="make__section">
                       <div className="make__header-div ">
-                        <div className="make__header-title">Makes</div>
+                        <div className="make__header-title">Models</div>
                         <Button
                           type="primary"
                           className="make__brand-btn"
@@ -1634,6 +1816,7 @@ interface StateProps {
   successMessage?: string | null;
   makesArray?: TReceivedMakeObj[] | null;
   brandsArray?: TReceivedBrandObj[] | null;
+  seriesArray?: TReceivedSeriesObj[] | null;
   wheelbasesArray?: TReceivedWheelbaseObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
@@ -1641,6 +1824,7 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
     return {
       loading: state.dashboard.loading,
       makesArray: state.dashboard.makesArray,
+      seriesArray: state.dashboard.seriesArray,
       brandsArray: state.dashboard.brandsArray,
       errorMessage: state.dashboard.errorMessage,
       imagesUploaded: state.dashboard.imagesUploaded,
@@ -1663,6 +1847,8 @@ interface DispatchProps {
   onGetMakes: typeof actions.getMakes;
   onCreateMake: typeof actions.createMake;
   onUpdateMake: typeof actions.updateMake;
+  // Series
+  onGetSeries: typeof actions.getSeries;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -1687,6 +1873,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
     onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    //  Series
+    onGetSeries: (brand_id) => dispatch(actions.getSeries(brand_id)),
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

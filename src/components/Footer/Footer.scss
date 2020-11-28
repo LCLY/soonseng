@@ -2,6 +2,7 @@
   &__outerdiv {
     background: black;
     width: 100%;
+    bottom: 0;
     color: white;
     padding: 10rem 0 5rem 0;
   }
@@ -51,7 +52,7 @@
     &-phone {
       color: rgb(255, 0, 0);
       @include respond-to(medium) {
-        font-size: 2rem;
+        font-size: 1.5rem;
       }
       @include respond-to(tablet) {
         font-size: 1.5rem;
@@ -66,7 +67,6 @@
         display: flex;
         @include respond-to(medium) {
           display: flex;
-          flex-direction: column;
         }
         @include respond-to(tablet) {
           display: flex;
@@ -125,12 +125,18 @@
     &-text {
       font-size: 2.7rem;
       font-family: $font-firesans;
+      @include respond-to(tablet) {
+        font-size: 1.8rem;
+      }
     }
     &-div {
       & a {
         font-size: 1.5rem;
         color: rgb(223, 223, 223);
         font-family: $font-roboto;
+        @include respond-to(tablet) {
+          font-size: 1.3rem;
+        }
       }
     }
   }

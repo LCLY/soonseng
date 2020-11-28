@@ -7,6 +7,7 @@ import AboutPage from 'src/containers/AboutPage/AboutPage';
 import ContactPage from 'src/containers/ContactPage/ContactPage';
 import PageNotFound from './components/PageNotFound/PageNotFound';
 import SalesPage from 'src/containers/SalesPage/SalesPage';
+import OrdersPage from './containers/OrdersPage/OrdersPage';
 // Dashboard
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
 import Make from './containers/DashboardPage/DashboardCRUD/Make/Make';
@@ -34,6 +35,7 @@ function App() {
       <Route exact path="/about" component={AboutPage} />
       <Route exact path="/sales" component={SalesPage} />
       <Route exact path="/contact" component={ContactPage} />
+      <Route exact path="/orders" component={OrdersPage} />
       <Route exact path="/dashboard" component={DashboardPage} />
       <Route exact path="/dashboard/make" component={Make} />
       <Route exact path="/dashboard/body" component={Body} />

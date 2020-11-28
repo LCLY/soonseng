@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './SalesPage.scss';
 // component
+import Footer from 'src/components/Footer/Footer';
+import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
-
 // 3rd party lib
+import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
@@ -27,7 +29,7 @@ import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types/index';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/dashboard';
-import moment from 'moment';
+import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BRAND } from 'src/shared/constants';
 
 const { Step } = Steps;
 const { Panel } = Collapse;
@@ -235,163 +237,171 @@ const SalesPage: React.FC<Props> = ({
   // Lengths
   /* -------------------- */
   let lengthSection = (
-    <section className="sales__section">
-      <div className="sales__breadcrumb-outerdiv">
-        <Breadcrumb separator=">" className="sales__breadcrumb">
-          <Breadcrumb.Item>
-            <span className="sales__breadcrumb-text">Tyre Count</span>
-            {currentTyre && <span className="sales__breadcrumb-highlight">({currentTyre})</span>}
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <span className="sales__breadcrumb-text">Length</span>
-            {currentLength && <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>}
-          </Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
-      <Divider orientation="left">
-        <div className="sales__section-header">Length </div>
-      </Divider>
-
-      <section className="sales__section-innerdiv">
-        {/* Description on the left */}
-        <div className="sales__section-left">
-          <img
-            className="sales__section-img"
-            src="https://i.pinimg.com/originals/49/e4/e1/49e4e11ce6571189fceff40836ebdac9.jpg"
-            alt="length of body"
-          />
-          {currentLength ? (
-            <Card className="sales__selectarea-card" size="small" title="Selected body length">
-              <div className="sales__selectarea-card-row">
-                <div className="sales__selectarea-card-row-left">Body Length</div>
-                <div>{currentLength.title} (ft)</div>
-              </div>
-            </Card>
-          ) : (
-            <Card className="sales__selectarea-card" size="small" title="Selected body length">
-              <div className="sales__selectarea-card-row">
-                <div className="sales__selectarea-card-row-left">None</div>
-              </div>
-            </Card>
-          )}
+    <>
+      <section className="sales__section">
+        <div className="sales__breadcrumb-outerdiv">
+          <Breadcrumb separator=">" className="sales__breadcrumb">
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Tyre Count</span>
+              {currentTyre && <span className="sales__breadcrumb-highlight">({currentTyre})</span>}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Length</span>
+              {currentLength && <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>}
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </div>
+        <Divider orientation="left">
+          <div className="sales__section-header">Length </div>
+        </Divider>
 
-        {/* Selections on the right */}
-        <div className="sales__section-right">
-          <div className="sales__selectarea-desc">
-            Decide on the length of your cargo body, the length of the cargo body is measured from this side to that
-            side.
-            <div className="margin_t-1 margin_b-1">There are three main categories:</div>
-            <div>
-              <span>LCV</span> - Low Commercial Vehicle
-            </div>
-            <div>
-              <span>MCV</span> - Medium Commercial Vehicle
-            </div>
-            <div>
-              <span>HCV</span> - High Commercial Vehicle
-            </div>
-          </div>
-
-          <div className="sales__selectarea-innerdiv">
-            <div>Select the length of the cargo body (ft)</div>
-            {lengthsCategoriesArray ? (
-              <>
-                {lengthsCategoriesArray.length > 0 ? (
-                  <>
-                    {lengthsCategoriesArray.map((category) => {
-                      return (
-                        <React.Fragment key={uuidv4()}>
-                          {/* Only render the non empty object */}
-                          {Object.keys(category).length !== 0 && (
-                            <div>
-                              <div>
-                                <Divider orientation="left" className="sales__selectarea-categorydivider">
-                                  {category.title}
-                                </Divider>
-                              </div>
-                              <div className="sales__selectarea-div">
-                                {category.lengths.map((lengthObj) => {
-                                  return (
-                                    <div
-                                      key={uuidv4()}
-                                      className={`sales__selectarea-button ${
-                                        currentLength?.id === lengthObj.id ? 'active' : ''
-                                      }`}
-                                      onClick={() => {
-                                        //  if currentLength has an id
-                                        if (currentLength?.id === lengthObj.id) {
-                                          // reset the selection
-                                          setCurrentLength(null);
-                                          setCurrentOrderObj({ ...currentOrderObj, lengthObj: null });
-                                        } else {
-                                          setCurrentLength(lengthObj);
-                                          setCurrentOrderObj({ ...currentOrderObj, lengthObj: lengthObj });
-                                        }
-                                      }}
-                                    >
-                                      {lengthObj.title}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                  </>
-                ) : (
-                  <Empty />
-                )}
-              </>
+        <section className="sales__section-innerdiv">
+          {/* Description on the left */}
+          <div className="sales__section-left">
+            <img
+              className="sales__section-img"
+              src="https://i.pinimg.com/originals/49/e4/e1/49e4e11ce6571189fceff40836ebdac9.jpg"
+              alt="length of body"
+            />
+            {currentLength ? (
+              <Card className="sales__selectarea-card" size="small" title="Selected body length">
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">Body Length</div>
+                  <div>{currentLength.title} (ft)</div>
+                </div>
+              </Card>
             ) : (
-              <>
-                <div className="sales__selectarea-button margin_t-4 margin_b-2">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <Skeleton.Button className="sales__skeleton" key={num + uuidv4()} active={true} size="large" />
-                  ))}
+              <Card className="sales__selectarea-card" size="small" title="Selected body length">
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">None</div>
                 </div>
-                <div className="sales__selectarea-button">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                    <Skeleton.Button className="sales__skeleton" key={num + uuidv4()} active={true} size="large" />
-                  ))}
-                </div>
-              </>
+              </Card>
             )}
           </div>
-          <div className="sales__length-btn-div">
-            <Button
-              loading={false}
-              className="sales__length-btn margin_r-1"
-              onClick={() => {
-                prev();
-                setCurrentLength(null);
-              }}
-            >
-              Back
-            </Button>
-            {currentStep < totalSteps - 1 && (
+
+          {/* Selections on the right */}
+          <div className="sales__section-right">
+            <div className="sales__selectarea-desc">
+              Decide on the length of your cargo body, the length of the cargo body is measured from this side to that
+              side.
+              <div className="margin_t-1 margin_b-1">There are three main categories:</div>
+              <div>
+                <span>LCV</span> - Low Commercial Vehicle
+              </div>
+              <div>
+                <span>MCV</span> - Medium Commercial Vehicle
+              </div>
+              <div>
+                <span>HCV</span> - High Commercial Vehicle
+              </div>
+            </div>
+
+            <div className="sales__selectarea-innerdiv">
+              <div>Select the length of the cargo body (ft)</div>
+              {lengthsCategoriesArray ? (
+                <>
+                  {lengthsCategoriesArray.length > 0 ? (
+                    <>
+                      {lengthsCategoriesArray.map((category) => {
+                        return (
+                          <React.Fragment key={uuidv4()}>
+                            {/* Only render the non empty object */}
+                            {Object.keys(category).length !== 0 && (
+                              <div>
+                                <div>
+                                  <Divider orientation="left" className="sales__selectarea-categorydivider">
+                                    {category.title}
+                                  </Divider>
+                                </div>
+                                <div className="sales__selectarea-div">
+                                  {category.lengths.map((lengthObj) => {
+                                    return (
+                                      <div
+                                        key={uuidv4()}
+                                        className={`sales__selectarea-button ${
+                                          currentLength?.id === lengthObj.id ? 'active' : ''
+                                        }`}
+                                        onClick={() => {
+                                          //  if currentLength has an id
+                                          if (currentLength?.id === lengthObj.id) {
+                                            // reset the selection
+                                            setCurrentLength(null);
+                                            setCurrentOrderObj({
+                                              ...currentOrderObj,
+                                              lengthObj: null,
+                                            });
+                                          } else {
+                                            setCurrentLength(lengthObj);
+                                            setCurrentOrderObj({
+                                              ...currentOrderObj,
+                                              lengthObj: lengthObj,
+                                            });
+                                          }
+                                        }}
+                                      >
+                                        {lengthObj.title}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <Empty />
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="sales__selectarea-button margin_t-4 margin_b-2">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                      <Skeleton.Button className="sales__skeleton" key={num + uuidv4()} active={true} size="large" />
+                    ))}
+                  </div>
+                  <div className="sales__selectarea-button">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                      <Skeleton.Button className="sales__skeleton" key={num + uuidv4()} active={true} size="large" />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="sales__length-btn-div">
               <Button
-                type="primary"
+                loading={false}
+                className="sales__length-btn margin_r-1"
                 onClick={() => {
-                  // Then call the body lengths API
-                  if (currentLength === null || currentTyre === null) return;
-                  if (currentLength.id && currentTyre) {
-                    onGetSalesBodyLengths(currentLength.id, currentTyre);
-                  }
+                  prev();
+                  setCurrentLength(null);
                 }}
-                className="sales__length-btn"
-                loading={loading}
-                disabled={currentLength === null ? true : false}
               >
-                Next
+                Back
               </Button>
-            )}
+              {currentStep < totalSteps - 1 && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    // Then call the body lengths API
+                    if (currentLength === null || currentTyre === null) return;
+                    if (currentLength.id && currentTyre) {
+                      onGetSalesBodyLengths(currentLength.id, currentTyre);
+                    }
+                  }}
+                  className="sales__length-btn"
+                  loading={loading}
+                  disabled={currentLength === null ? true : false}
+                >
+                  Next
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        </section>
       </section>
-    </section>
+    </>
   );
 
   /* ------------------ */
@@ -564,7 +574,10 @@ const SalesPage: React.FC<Props> = ({
                                   setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: null });
                                 } else {
                                   setCurrentBodyLength(bodyLength);
-                                  setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: bodyLength });
+                                  setCurrentOrderObj({
+                                    ...currentOrderObj,
+                                    bodyLengthObj: bodyLength,
+                                  });
                                 }
                               }}
                             >
@@ -816,7 +829,10 @@ const SalesPage: React.FC<Props> = ({
                                     let tempArray = [...currentOrderObj.generalAccessoriesArray];
                                     // add new accessory into the array and update the state
                                     tempArray.push(accessory);
-                                    setCurrentOrderObj({ ...currentOrderObj, generalAccessoriesArray: tempArray });
+                                    setCurrentOrderObj({
+                                      ...currentOrderObj,
+                                      generalAccessoriesArray: tempArray,
+                                    });
                                   }
                                 }}
                               >
@@ -894,7 +910,10 @@ const SalesPage: React.FC<Props> = ({
                                     let tempArray = [...currentOrderObj.bodyRelatedAccessoriesArray];
                                     // add new accessory into the array and update the state
                                     tempArray.push(accessory);
-                                    setCurrentOrderObj({ ...currentOrderObj, bodyRelatedAccessoriesArray: tempArray });
+                                    setCurrentOrderObj({
+                                      ...currentOrderObj,
+                                      bodyRelatedAccessoriesArray: tempArray,
+                                    });
                                   }
                                 }}
                               >
@@ -1257,7 +1276,7 @@ const SalesPage: React.FC<Props> = ({
                                     <div className="sales__selectarea-seriestitle">{seriesName}</div>
                                   )}
 
-                                  <div className="sales__selectarea-div">
+                                  <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                                     {/* loop the makes array */}
                                     {series[seriesName].map((make) => {
                                       return (
@@ -1270,7 +1289,10 @@ const SalesPage: React.FC<Props> = ({
                                             if (currentMake?.id === make.id) {
                                               // reset the selection
                                               setCurrentMake(null); //set content to null
-                                              setCurrentOrderObj({ ...currentOrderObj, makeObj: null });
+                                              setCurrentOrderObj({
+                                                ...currentOrderObj,
+                                                makeObj: null,
+                                              });
                                             } else {
                                               setCurrentMake(make); //select the content of the preview card
                                               setCurrentOrderObj({
@@ -1324,7 +1346,6 @@ const SalesPage: React.FC<Props> = ({
                 let copyArray = [...localOrdersArray];
                 copyArray.push(currentOrderObj);
                 onStoreLocalOrders(copyArray);
-                alert('added order!');
                 next();
               }}
             >
@@ -1373,9 +1394,10 @@ const SalesPage: React.FC<Props> = ({
         </Divider>
 
         <div>
+          {localOrdersArray && <div>Total: {localOrdersArray.length}items</div>}
           {localOrdersArray &&
             localOrdersArray.length > 0 &&
-            localOrdersArray.map((order, index) => {
+            [...localOrdersArray].reverse().map((order, index) => {
               type miscellaneousType = {
                 title: string;
                 price: number;
@@ -1898,7 +1920,6 @@ const SalesPage: React.FC<Props> = ({
               );
             })}
         </div>
-        <Button onClick={() => setCurrentStep(0)}>Lets go again</Button>
       </div>
       <Button
         onClick={() => {
@@ -1916,23 +1937,23 @@ const SalesPage: React.FC<Props> = ({
   );
 
   const steps = [
-    { step: 1, title: 'Tyre', content: tyreSection },
+    { step: 1, title: STEPS_TYRE, content: tyreSection },
     {
       step: 2,
-      title: 'Length',
+      title: STEPS_LENGTH,
       content: lengthSection,
     },
     {
       step: 3,
-      title: 'Body',
+      title: STEPS_BODY,
       content: bodyLengthSection,
     },
     {
       step: 4,
-      title: 'Accessory',
+      title: STEPS_ACCESSORY,
       content: bodyAccessorySection,
     },
-    { step: 5, title: 'Brand', content: brandSection },
+    { step: 5, title: STEPS_BRAND, content: brandSection },
     { step: 6, title: 'Overview', content: overviewSection },
   ];
 
@@ -1979,27 +2000,50 @@ const SalesPage: React.FC<Props> = ({
 
       <div className="sales__outerdiv">
         <div className="sales__innerdiv">
-          <div className="sales__steps-div">
-            <Steps direction="vertical" current={currentStep}>
-              {steps.map((item) => (
-                <Step
-                  key={uuidv4()}
-                  icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
-                  title={
-                    <div className="sales__steps-title">
-                      <div>{item.title}</div>
-                    </div>
-                  }
-                />
-              ))}
-            </Steps>
-          </div>
-
           <div className="sales__steps-content">
-            <div>{steps[currentStep].content}</div>
+            <Container>
+              <div className="sales__steps-div">
+                <Steps current={currentStep}>
+                  {steps.map((item) => (
+                    <Step
+                      key={uuidv4()}
+                      icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
+                      title={
+                        <div className="sales__steps-title">
+                          <div>{item.title}</div>
+                          {/* <div className="sales__steps-additionalinfo">
+                              {currentTyre && item.title === STEPS_TYRE && (
+                                <span className="sales__breadcrumb-highlight">({currentTyre})</span>
+                              )}
+                              {currentLength && item.title === STEPS_LENGTH && (
+                                <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
+                              )}
+                              {currentBodyLength && item.title === STEPS_BODY && (
+                                <span className="sales__breadcrumb-highlight">({currentBodyLength?.body.title})</span>
+                              )}
+                              {currentAccessory && item.title === STEPS_ACCESSORY && (
+                                <span className="sales__breadcrumb-highlight">
+                                  ({totalAccessoriesArrayLength} Items)
+                                </span>
+                              )}
+                              {currentMake && item.title === STEPS_BRAND && (
+                                <span className="sales__breadcrumb-highlight">{currentMake.series}</span>
+                              )}
+                            </div> */}
+                        </div>
+                      }
+                    />
+                  ))}
+                </Steps>
+              </div>
+            </Container>
+            <div className="sales__steps-content-outerdiv">
+              <Container>{steps[currentStep].content}</Container>
+            </div>
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

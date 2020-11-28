@@ -20,20 +20,24 @@ const Footer: React.FC<Props> = () => {
                 <div>
                   <span className="footer__store-name">SOON SENG MOTORS</span>
                   <div className="footer__store-address">
-                    6040 B & C
+                    LOT 2776
                     <br />
-                    Jalan Sultan Ibrahim
+                    Jalan Long Yunus
                     <br />
-                    Bandar Kota Bharu,
+                    KAWASAN MIEL
                     <br />
-                    15050 Kota Bharu,
+                    15200 Kota Bharu
                     <br />
                     Kelantan
                   </div>
 
                   <div className="footer__store-contact-div">
                     <span className="footer__store-contact">Contact Us:</span>
-                    <span className="footer__store-phone">018-888-8888</span>
+                    <div>
+                      <span className="footer__store-phone">09-747-7835</span>
+                      <br />
+                      <span className="footer__store-phone">012-900-2676</span>
+                    </div>
                   </div>
                 </div>
               </div>

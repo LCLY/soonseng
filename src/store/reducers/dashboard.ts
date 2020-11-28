@@ -293,8 +293,6 @@ const updateMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   }
 };
 
-
-
 /* ============================================================================================ */
 /*  Series (Make Page) */
 /* ============================================================================================ */
@@ -303,20 +301,20 @@ const updateMakeFailed = (state: DashboardInitialState, action: AppActions) => {
 /* Get Series  */
 /* -------------------------- */
 const getSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
+  return updateObject(state, { errorMessage: null });
 };
 const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('seriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
-      loading: false,
+
       seriesArray: action.seriesArray,
     });
   }
 };
 const getSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+    return updateObject(state, { errorMessage: action.errorMessage });
   }
 };
 

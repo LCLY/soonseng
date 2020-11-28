@@ -78,6 +78,22 @@
       white-space: normal !important;
     }
 
+    & .ant-table-body {
+      &::-webkit-scrollbar {
+        width: 0.5rem !important;
+        height: 0.5rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: $secondary-color-3 !important;
+        border-radius: 1rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: $secondary-color-2 !important;
+      }
+    }
+
     /* --------------- */
     // The header
     /* --------------- */

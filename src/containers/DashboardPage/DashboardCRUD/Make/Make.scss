@@ -90,6 +90,15 @@
         }
       }
     }
+
+    /* Title for the brand in the craete/update series modal */
+    &-series {
+      &-title {
+        font-family: $font-roboto;
+        font-weight: bolder;
+        color: $primary-color-3;
+      }
+    }
   }
 
   /* ============ */

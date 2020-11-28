@@ -1,16 +1,16 @@
 .customcontainer {
   &__div {
-    margin: 0 10%;
+    margin: 0 15%;
     // display: flex;
 
+    @include respond-to(medium) {
+      margin: 0 10rem;
+    }
     @include respond-to(tablet) {
-      margin: 0 1rem;
+      margin: 0 2rem;
     }
     @include respond-to(mobile) {
       margin: 0 1rem;
-    }
-    @include respond-to(medium) {
-      margin: 0 3rem;
     }
   }
 }

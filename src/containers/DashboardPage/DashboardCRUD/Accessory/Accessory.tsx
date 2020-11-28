@@ -835,6 +835,7 @@ const Accessory: React.FC<Props> = ({
                       {/*    Accessory Table    */}
                       {/* --------------------- */}
                       <Table
+                        className="accessory__table"
                         bordered
                         scroll={{ x: '89rem', y: 1000 }}
                         expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time

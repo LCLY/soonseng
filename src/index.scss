@@ -14,16 +14,20 @@ html {
 
   // if content is less then pages still takes full view-port height
   // and footer will stick at the bottom of page
-  // min-height: 100%;
+  // min-height: 100rem !important;
   // height: 100vh !important;
   // overflow-y: overlay; // a hack to prevent stuffs from moving around when scrollbar pops up
 }
 
 body {
   margin: 0;
+  display: flex !important;
+  min-height: 100vh !important;
+  flex-direction: column !important;
   font-size: 1.5rem !important;
   font-family: 'Helvetica Neue', sans-serif !important;
   text-rendering: optimizeLegibility;
+
   -webkit-font-smoothing: antialiased;
   &::-webkit-scrollbar {
     width: 0.5rem;
