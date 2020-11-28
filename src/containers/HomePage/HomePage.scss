@@ -15,7 +15,8 @@
       position: absolute;
       background: rgba(0, 0, 0, 0.562);
       width: 100%;
-      height: calc(100vh - 106.88px); //100vh - navbar height
+      min-height: calc(100vh - 106.88px); //100vh - navbar height
+      height: auto;
       z-index: 100;
       top: 0;
       left: 0;
@@ -90,7 +91,7 @@
   /* ========================= */
   &__background {
     &-image {
-      height: calc(100vh - 106.88px);
+      min-height: calc(100vh - 106.88px);
       background: url('https://s29755.pcdn.co/wp-content/uploads/2019/08/2019_Top_Five_Class_5-Mack.jpg');
       // background: url('https://media3.giphy.com/media/xUOxeYatzejqwawi4w/200.gif');
       // background: url('https://media3.giphy.com/media/xUOxf7BGcnKPNCA5kQ/giphy.gif');
@@ -103,7 +104,7 @@
     /* outerdiv wrapping the background image */
     &-outerdiv {
       // width: 100vw;
-      height: calc(100vh - 106.88px);
+      min-height: calc(100vh - 106.88px);
       overflow: hidden;
     }
   }
@@ -188,9 +189,9 @@
       color: white;
       font-family: $font-firesans;
       &-text {
-        color: black;
+        color: rgb(190, 190, 190);
         transform: skew(30deg);
-        font-weight: bolder;
+        // font-weight: bolder;
       }
     }
   }
