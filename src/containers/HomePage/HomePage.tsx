@@ -103,6 +103,7 @@ function HomePage() {
       </section>
       <Container>
         <section className="homepage__section-feature">
+          <div className="homepage__section-feature-title">Our values</div>
           <div className="homepage__feature-top">
             <div className="homepage__feature-outerdiv">
               <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
@@ -111,10 +112,8 @@ function HomePage() {
                     <i className="homepage__feature-icon  fas fa-hard-hat"></i>
                   </div>
                   <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Safety</div>
-                    <div className="homepage__feature-desc">
-                      Our trucks are the safest, they are built with bulletproof materials
-                    </div>
+                    <div className="homepage__feature-title">Reliability</div>
+                    <div className="homepage__feature-desc">Turning uncertainties into predictabilities.</div>
                   </div>
                 </div>
               </ScrollAnimation>
@@ -126,8 +125,8 @@ function HomePage() {
                     <i className="homepage__feature-icon fas fa-chart-line"></i>
                   </div>
                   <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Performance</div>
-                    <div className="homepage__feature-desc">Our trucks are beasts, they can run 200 miles per hour</div>
+                    <div className="homepage__feature-title">Profit</div>
+                    <div className="homepage__feature-desc">Crafting solutions with customers’ profits in mind.</div>
                   </div>
                 </div>
               </ScrollAnimation>
@@ -140,9 +139,7 @@ function HomePage() {
                   </div>
                   <div className="homepage__feature-text">
                     <div className="homepage__feature-title">Efficiency</div>
-                    <div className="homepage__feature-desc">
-                      Our trucks are so efficient that their efficency are faster than time itself
-                    </div>
+                    <div className="homepage__feature-desc">Using less fuel to get more done.</div>
                   </div>
                 </div>
               </ScrollAnimation>
@@ -165,9 +162,9 @@ function HomePage() {
                     <i style={{ zIndex: 10 }} id="truckicon" className="homepage__feature-icon fas fa-truck-moving"></i>
                   </div>
                   <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Comfort</div>
+                    <div className="homepage__feature-title">Performance</div>
                     <div className="homepage__feature-desc">
-                      Our trucks are so comfortable that you don't want to leave it
+                      Variety of vehicle selections that strive to perform on every situations possible.
                     </div>
                   </div>
                 </div>
@@ -182,7 +179,7 @@ function HomePage() {
                   <div className="homepage__feature-text">
                     <div className="homepage__feature-title">Green Energy</div>
                     <div className="homepage__feature-desc">
-                      Our trucks are environmentally friendly, they create oxygen while moving.
+                      Introducing our latest EURO Engine technology in the market.
                     </div>
                   </div>
                 </div>

@@ -31,7 +31,7 @@
     /* feature section */
     /* ----------------------- */
     &-feature {
-      padding: 15rem 5rem;
+      padding: 12rem 5rem 12rem 5rem;
       // display: flex;
       // justify-content: space-between;
       overflow-x: hidden;
@@ -42,6 +42,16 @@
       }
       @include respond-to(medium) {
         padding: 5rem 0;
+      }
+
+      // our values
+      &-title {
+        font-size: 4rem;
+        text-align: center;
+        color: $primary-color-4;
+        font-weight: bolder;
+        font-family: $font-bebasneue;
+        margin-bottom: 1rem;
       }
     }
     /* ----------------------- */
@@ -270,7 +280,7 @@
 
       // only change the width of the bottom feature outerdivs
       &--bottom {
-        width: 45%;
+        width: 50%;
         @include respond-to(mobile) {
           width: 100%;
         }
