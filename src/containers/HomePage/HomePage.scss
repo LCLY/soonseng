@@ -188,7 +188,9 @@
       color: white;
       font-family: $font-firesans;
       &-text {
+        color: black;
         transform: skew(30deg);
+        font-weight: bolder;
       }
     }
   }
