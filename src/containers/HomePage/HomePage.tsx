@@ -82,7 +82,9 @@ function HomePage() {
               <br />
               ENTERPRISE (1988)
             </h1>
-            <div className="homepage__first-parallelogram"></div>
+            <div className="homepage__first-parallelogram">
+              <div className="homepage__first-parallelogram-text">- Your one stop commercial vehicle hub -</div>
+            </div>
           </div>
           <div className="homepage__first-button-outerdiv">
             {homepageButtons.map((buttonObj, index) => (
@@ -202,7 +204,7 @@ function HomePage() {
                 </div>
                 <div>
                   <div className="homepage__carousel-italic">
-                    Let our service advisors represent you in conveying your concerns to our skilled mechanics.
+                    "Let our service advisors represent you in conveying your concerns to our skilled mechanics."
                   </div>
                   <div className="homepage__carousel-content">
                     <div className="homepage__carousel-content-paragraph">
@@ -243,8 +245,8 @@ function HomePage() {
                 </div>
 
                 <div className="homepage__carousel-italic">
-                  Your vehicle’s masseuse, responsible in making sure your vehicles have a great time. Rest assured,
-                  they are in good hands.
+                  "Your vehicle’s masseuse, responsible in making sure your vehicles have a great time. Rest assured,
+                  they are in good hands."
                 </div>
                 <div className="homepage__carousel-content-paragraph">
                   Our mechanics do not stop until your vehicle is back on the road. We take our quality of service
@@ -276,8 +278,8 @@ function HomePage() {
                   <div className="homepage__carousel-parallelogram"></div>
                 </div>
                 <div className="homepage__carousel-italic">
-                  Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we
-                  listen, discuss, and solve them together.
+                  "Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we
+                  listen, discuss, and solve them together."
                 </div>
                 <div className="homepage__carousel-content-paragraph">
                   Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est
@@ -307,7 +309,7 @@ function HomePage() {
                   Customer Support
                   <div className="homepage__carousel-parallelogram"></div>
                 </div>
-                <div className="homepage__carousel-italic">Your satisfaction, we guarantee.</div>
+                <div className="homepage__carousel-italic">"Your satisfaction, we guarantee."</div>
 
                 <div className="homepage__carousel-content-paragraph">
                   Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est

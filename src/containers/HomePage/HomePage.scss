@@ -179,12 +179,17 @@
     // the shape underneath the title
     /* -------------------------------- */
     &-parallelogram {
-      width: 80%;
-      height: 2rem;
+      width: 90%;
+      // height: 2rem;
       opacity: 0;
       transform: skew(-30deg) translateX(-100%);
       border-top: 2px solid white;
       background: $primary-color-1;
+      color: white;
+      font-family: $font-firesans;
+      &-text {
+        transform: skew(30deg);
+      }
     }
   }
 
