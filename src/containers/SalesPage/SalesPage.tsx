@@ -1338,7 +1338,7 @@ const SalesPage: React.FC<Props> = ({
 
   let overviewSection = (
     <section className="sales__section">
-      <div className="sales__section-overview" style={{ display: 'none' }}>
+      <div className="sales__section-overview">
         <div className="sales__breadcrumb-outerdiv">
           <Breadcrumb separator=">" className="sales__breadcrumb">
             <Breadcrumb.Item>
