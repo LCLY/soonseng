@@ -325,18 +325,18 @@ export type TUpdateMakeData = {
 
 // type of Objs received on succees
 export type TReceivedMakeObj = {
+  id: number;
   abs: any;
   torque: any;
   tire: number;
-  config: any;
-  series: any;
+  config: string;
   emission: any;
-  id: number;
   gvw: string;
   year: string;
   title: string;
   price: number;
   length: number;
+  series: string;
   available: boolean;
   engine_cap: string;
   horsepower: string;
@@ -454,6 +454,7 @@ export type TReceivedBodyObj = {
   title: string;
   description: string;
   available: boolean;
+  accessories: TReceivedAccessoryObj[];
   images: TReceivedImageObj[];
 };
 

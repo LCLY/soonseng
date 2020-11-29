@@ -3,9 +3,9 @@ import {
   TReceivedAccessoryObj,
   TReceivedBodyAccessoryObj,
   TReceivedBodyLengthObj,
+  TReceivedBodyObj,
   TReceivedBrandObj,
-  TReceivedImageObj,
-  TReceivedWheelbaseObj,
+  TReceivedMakeObj,
 } from './dashboard';
 
 // initialState for reducers
@@ -16,8 +16,11 @@ export interface SalesInitialState {
   // length
   readonly lengthsCategoriesArray: TReceivedSalesLengthCategoryObj[] | null;
   // body
-  readonly bodyLengthObj: TReceivedBodyLengthObj | null;
-  readonly bodyLengthsArray: TReceivedBodyLengthObj[] | null;
+  readonly bodyObj: TReceivedBodyObj | null;
+  readonly bodiesArray: TReceivedBodyObj[] | null;
+  // body makes
+  readonly bodyMakeObj: TReceivedSalesBodyMakeObj | null;
+  readonly bodyMakesArray: TReceivedSalesBodyMakeObj[] | null;
   // accessory
   readonly generalAccessoriesArray: TReceivedAccessoryObj[] | null;
   readonly dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] | null;
@@ -29,8 +32,9 @@ export interface SalesInitialState {
   readonly localOrdersArray: TLocalOrderObj[];
   // boolean to know whether fetch successful
   readonly getSalesLengthsSucceed: boolean | null;
-  readonly getSalesBodyLengthsSucceed: boolean | null;
-  readonly getSalesBodyAccessoriesSucceed: boolean | null;
+  readonly getSalesBodiesSucceed: boolean | null;
+  readonly getSalesBodyMakesSucceed: boolean | null;
+  readonly getSalesAccessoriesSucceed: boolean | null;
   readonly getSalesMakesSucceed: boolean | null;
 }
 
@@ -56,11 +60,11 @@ export interface ClearSalesStateAction {
 export type TLocalOrderObj = {
   tireCount: number;
   lengthObj: TReceivedSalesLengthObj | null;
-  bodyLengthObj: TReceivedBodyLengthObj | null;
+  bodyLengthObj: any | null;
   generalAccessoriesArray: TReceivedAccessoryObj[];
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
-  makeObj: { brandName: string; seriesName: string; seriesObj: TReceivedSalesMakeSeriesObj } | null;
+  bodyMakeObj: TReceivedBodyMakeObj | null;
 };
 
 export interface StoreLocalOrdersAction {
@@ -110,25 +114,67 @@ export interface GetSalesLengthsFailedAction {
 /* ------------------ */
 // Get Bodies
 /* ------------------ */
-export interface GetSalesBodyLengthsAction {
-  type: typeof actionTypes.GET_SALES_BODYLENGTHS;
+export interface GetSalesBodiesAction {
+  type: typeof actionTypes.GET_SALES_BODIES;
   length_id: number;
   tire: number;
 }
-export interface GetSalesBodyLengthsStartAction {
-  type: typeof actionTypes.GET_SALES_BODYLENGTHS_START;
+export interface GetSalesBodiesStartAction {
+  type: typeof actionTypes.GET_SALES_BODIES_START;
 }
-export interface GetSalesBodyLengthsSucceedAction {
-  type: typeof actionTypes.GET_SALES_BODYLENGTHS_SUCCEED;
-  bodyLengthsArray: TReceivedBodyLengthObj[];
+export interface GetSalesBodiesSucceedAction {
+  type: typeof actionTypes.GET_SALES_BODIES_SUCCEED;
+  bodiesArray: TReceivedBodyObj[];
 }
-export interface GetSalesBodyLengthsFailedAction {
-  type: typeof actionTypes.GET_SALES_BODYLENGTHS_FAILED;
+export interface GetSalesBodiesFailedAction {
+  type: typeof actionTypes.GET_SALES_BODIES_FAILED;
   errorMessage: string;
 }
 
 /* ------------------ */
-// Get Body length Accessories
+// Get Body Makes
+/* ------------------ */
+// Types
+export type TReceivedBodyMakeObj = {
+  make: TReceivedMakeObj;
+  body: TReceivedBodyObj;
+  available: true;
+  price: number;
+  width: string;
+  depth: string;
+  height: string | null;
+};
+
+export type TReceivedSeriesObj = {
+  title: string;
+  body_makes: TReceivedBodyMakeObj[];
+};
+
+export type TReceivedSalesBodyMakeObj = {
+  brand: TReceivedBrandObj;
+  series: TReceivedSeriesObj[];
+};
+
+export interface GetSalesBodyMakesAction {
+  type: typeof actionTypes.GET_SALES_BODYMAKES;
+  length_id: number;
+  tire: number;
+  body_id: number;
+}
+export interface GetSalesBodyMakesStartAction {
+  type: typeof actionTypes.GET_SALES_BODYMAKES_START;
+}
+export interface GetSalesBodyMakesSucceedAction {
+  type: typeof actionTypes.GET_SALES_BODYMAKES_SUCCEED;
+  bodyMakesArray: TReceivedSalesBodyMakeObj[];
+}
+export interface GetSalesBodyMakesFailedAction {
+  type: typeof actionTypes.GET_SALES_BODYMAKES_FAILED;
+  errorMessage: string;
+}
+
+/* ------------------ */
+// Get Accessories
 /* ------------------ */
 // Types
 export type TReceivedDimensionAccessoryObj = {
@@ -138,21 +184,21 @@ export type TReceivedDimensionAccessoryObj = {
   price: number;
 };
 
-export interface GetSalesBodyAccessoriesAction {
-  type: typeof actionTypes.GET_SALES_BODYACCESSORIES;
+export interface GetSalesAccessoriesAction {
+  type: typeof actionTypes.GET_SALES_ACCESSORIES;
   body_length_id: number;
 }
-export interface GetSalesBodyAccessoriesStartAction {
-  type: typeof actionTypes.GET_SALES_BODYACCESSORIES_START;
+export interface GetSalesAccessoriesStartAction {
+  type: typeof actionTypes.GET_SALES_ACCESSORIES_START;
 }
-export interface GetSalesBodyAccessoriesSucceedAction {
-  type: typeof actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED;
+export interface GetSalesAccessoriesSucceedAction {
+  type: typeof actionTypes.GET_SALES_ACCESSORIES_SUCCEED;
   generalAccessoriesArray: TReceivedAccessoryObj[];
   bodyRelatedAccessoriesArray: TReceivedBodyAccessoryObj[];
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
 }
-export interface GetSalesBodyAccessoriesFailedAction {
-  type: typeof actionTypes.GET_SALES_BODYACCESSORIES_FAILED;
+export interface GetSalesAccessoriesFailedAction {
+  type: typeof actionTypes.GET_SALES_ACCESSORIES_FAILED;
   errorMessage: string;
 }
 
@@ -161,31 +207,9 @@ export interface GetSalesBodyAccessoriesFailedAction {
 /* ------------------ */
 
 // Types
-export type TReceivedSalesMakeSeriesObj = {
-  brand: TReceivedBrandObj;
-  wheelbase: TReceivedWheelbaseObj;
-  id: number;
-  gvw: string;
-  year: string;
-  tire: string;
-  abs: boolean;
-  title: string;
-  series: string;
-  length: number;
-  torque: string;
-  config: string;
-  price: number;
-  available: true;
-  emission: string;
-  horsepower: string;
-  engine_cap: string;
-  transmission: string;
-  images: TReceivedImageObj[];
-};
-
 export type TReceivedSalesMakeBrandsObj = {
   // [key:string] here is for example, "300 SERIES", the name of the series
-  [key: string]: TReceivedSalesMakeSeriesObj[];
+  [key: string]: TReceivedMakeObj[];
 };
 
 export type TReceivedSalesMakesObj = {
@@ -235,17 +259,24 @@ export type SalesActionTypes =
   /* ------------------------- */
   // Bodies
   /* ------------------------- */
-  | GetSalesBodyLengthsAction
-  | GetSalesBodyLengthsStartAction
-  | GetSalesBodyLengthsSucceedAction
-  | GetSalesBodyLengthsFailedAction
+  | GetSalesBodiesAction
+  | GetSalesBodiesStartAction
+  | GetSalesBodiesSucceedAction
+  | GetSalesBodiesFailedAction
+  /* ------------------------- */
+  // Body Makes
+  /* ------------------------- */
+  | GetSalesBodyMakesAction
+  | GetSalesBodyMakesStartAction
+  | GetSalesBodyMakesSucceedAction
+  | GetSalesBodyMakesFailedAction
   /* ------------------------- */
   // Body Accessories
   /* ------------------------- */
-  | GetSalesBodyAccessoriesAction
-  | GetSalesBodyAccessoriesStartAction
-  | GetSalesBodyAccessoriesSucceedAction
-  | GetSalesBodyAccessoriesFailedAction
+  | GetSalesAccessoriesAction
+  | GetSalesAccessoriesStartAction
+  | GetSalesAccessoriesSucceedAction
+  | GetSalesAccessoriesFailedAction
   /* ------------------------- */
   // Makes
   /* ------------------------- */

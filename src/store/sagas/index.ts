@@ -48,18 +48,18 @@ import {
   // Get sales lengths
   getSalesLengthsSaga,
   // Get sales bodies
-  getSalesBodyLengthsSaga,
+  getSalesBodiesSaga,
+  // Get sales BodyMakes
+  getSalesBodyMakesSaga,
   // Get sales accessories
-  getSalesBodyAccessoriesSaga,
-  // Get sales Makes
-  getSalesMakesSaga,
+  getSalesAccessoriesSaga,
 } from './sales';
 
 export function* watchSales() {
-  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_MAKES, getSalesMakesSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_LENGTHS, getSalesLengthsSaga)]);
-  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODYLENGTHS, getSalesBodyLengthsSaga)]);
-  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODYACCESSORIES, getSalesBodyAccessoriesSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODIES, getSalesBodiesSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODYMAKES, getSalesBodyMakesSaga)]);
+  yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_ACCESSORIES, getSalesAccessoriesSaga)]);
 }
 
 export function* watchDashboard() {

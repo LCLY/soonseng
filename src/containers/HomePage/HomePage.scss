@@ -643,6 +643,10 @@
         height: 0.8rem !important;
         border-radius: 1rem;
       }
+
+      @include respond-to(mobile) {
+        padding: 2rem;
+      }
     }
     &-div {
       display: flex !important;
@@ -716,6 +720,10 @@
       font-size: 4rem;
       color: white;
       font-family: $font-courgette;
+      @include respond-to(mobile) {
+        font-size: 3rem;
+        text-align: center;
+      }
     }
 
     &-title {
@@ -724,6 +732,10 @@
       display: inline-block;
       padding-left: 0.5rem;
       margin: 2rem 0;
+      @include respond-to(mobile) {
+        font-size: 1.5rem;
+        text-align: center;
+      }
     }
 
     &-parallelogram {
@@ -742,12 +754,18 @@
       margin-bottom: 2rem;
       font-family: $font-firesans;
       color: rgb(209, 202, 202);
+      @include respond-to(mobile) {
+        font-size: 1.3rem;
+      }
     }
 
     &-content {
       &-paragraph {
         font-family: $font-ubuntu;
         margin-bottom: 2rem;
+        @include respond-to(mobile) {
+          font-size: 1rem;
+        }
       }
     }
 

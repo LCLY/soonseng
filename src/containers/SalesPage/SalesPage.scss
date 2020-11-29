@@ -153,6 +153,10 @@
   // The select area on the right
   /* ============================ */
   &__selectarea {
+    // the search bar
+    &-search {
+      margin-top: 1rem;
+    }
     // accessories alteration
     &--accessories {
       &:not(:last-child) {
@@ -195,6 +199,7 @@
 
       &--twocolumn {
         grid-template-columns: repeat(2, 1fr);
+
         @include respond-to(medium) {
           font-size: 1.3rem;
         }
@@ -231,8 +236,12 @@
       border-radius: 2px;
       background: white;
       width: 100%;
+      height: 100%;
       padding: 1rem 1rem;
       border: 1px solid $translucent-grey;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &:hover {
         background: rgba(230, 230, 230, 0.295);

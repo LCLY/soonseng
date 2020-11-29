@@ -1,11 +1,12 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TReceivedAccessoryObj, TReceivedBodyAccessoryObj, TReceivedBodyLengthObj } from '../types/dashboard';
+import { TReceivedAccessoryObj, TReceivedBodyAccessoryObj, TReceivedBodyObj } from '../types/dashboard';
 import {
+  TLocalOrderObj,
   TReceivedSalesMakesObj,
   TReceivedSalesLengthCategoryObj,
   TReceivedDimensionAccessoryObj,
-  TLocalOrderObj,
+  TReceivedSalesBodyMakeObj,
 } from '../types/sales';
 
 /* ============================================================================================ */
@@ -71,31 +72,61 @@ export const getSalesLengthsFailed = (errorMessage: string): AppActions => {
 };
 
 /* ----------------------------- */
-// Get Body Lengths
+// Get Body Types
 /* ---------------------------- */
-export const getSalesBodyLengths = (length_id: number, tire: number): AppActions => {
+export const getSalesBodies = (length_id: number, tire: number): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYLENGTHS,
+    type: actionTypes.GET_SALES_BODIES,
     length_id: length_id,
     tire: tire,
   };
 };
 
-export const getSalesBodyLengthsStart = (): AppActions => {
+export const getSalesBodiesStart = (): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYLENGTHS_START,
+    type: actionTypes.GET_SALES_BODIES_START,
   };
 };
 
-export const getSalesBodyLengthsSucceed = (bodyLengthsArray: TReceivedBodyLengthObj[]): AppActions => {
+export const getSalesBodiesSucceed = (bodiesArray: TReceivedBodyObj[]): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYLENGTHS_SUCCEED,
-    bodyLengthsArray: bodyLengthsArray,
+    type: actionTypes.GET_SALES_BODIES_SUCCEED,
+    bodiesArray: bodiesArray,
   };
 };
-export const getSalesBodyLengthsFailed = (errorMessage: string): AppActions => {
+export const getSalesBodiesFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYLENGTHS_FAILED,
+    type: actionTypes.GET_SALES_BODIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/* ----------------------------- */
+// Get Body Makes
+/* ---------------------------- */
+export const getSalesBodyMakes = (length_id: number, tire: number, body_id: number): AppActions => {
+  return {
+    type: actionTypes.GET_SALES_BODYMAKES,
+    length_id: length_id,
+    tire: tire,
+    body_id: body_id,
+  };
+};
+
+export const getSalesBodyMakesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_SALES_BODYMAKES_START,
+  };
+};
+
+export const getSalesBodyMakesSucceed = (bodyMakesArray: TReceivedSalesBodyMakeObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_SALES_BODYMAKES_SUCCEED,
+    bodyMakesArray: bodyMakesArray,
+  };
+};
+export const getSalesBodyMakesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_SALES_BODYMAKES_FAILED,
     errorMessage: errorMessage,
   };
 };
@@ -103,34 +134,34 @@ export const getSalesBodyLengthsFailed = (errorMessage: string): AppActions => {
 /* ----------------------------- */
 // Get Body Accessories
 /* ---------------------------- */
-export const getSalesBodyAccessories = (body_length_id: number): AppActions => {
+export const getSalesAccessories = (body_length_id: number): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYACCESSORIES,
+    type: actionTypes.GET_SALES_ACCESSORIES,
     body_length_id: body_length_id,
   };
 };
 
-export const getSalesBodyAccessoriesStart = (): AppActions => {
+export const getSalesAccessoriesStart = (): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYACCESSORIES_START,
+    type: actionTypes.GET_SALES_ACCESSORIES_START,
   };
 };
 
-export const getSalesBodyAccessoriesSucceed = (
+export const getSalesAccessoriesSucceed = (
   generalAccessoriesArray: TReceivedAccessoryObj[],
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[],
   bodyRelatedAccessoriesArray: TReceivedBodyAccessoryObj[],
 ): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYACCESSORIES_SUCCEED,
+    type: actionTypes.GET_SALES_ACCESSORIES_SUCCEED,
     generalAccessoriesArray: generalAccessoriesArray,
     dimensionRelatedAccessoriesArray: dimensionRelatedAccessoriesArray,
     bodyRelatedAccessoriesArray: bodyRelatedAccessoriesArray,
   };
 };
-export const getSalesBodyAccessoriesFailed = (errorMessage: string): AppActions => {
+export const getSalesAccessoriesFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.GET_SALES_BODYACCESSORIES_FAILED,
+    type: actionTypes.GET_SALES_ACCESSORIES_FAILED,
     errorMessage: errorMessage,
   };
 };

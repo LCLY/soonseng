@@ -7,5 +7,6 @@ export const DIMENSION_ACCESSORY = 'Dimension';
 export const STEPS_TYRE = 'Tyre';
 export const STEPS_LENGTH = 'Length';
 export const STEPS_BODY = 'Body';
+export const STEPS_BODYMAKE = 'Option';
 export const STEPS_ACCESSORY = 'Accessory';
 export const STEPS_BRAND = 'Brand';

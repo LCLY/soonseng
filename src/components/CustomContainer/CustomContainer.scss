@@ -4,7 +4,7 @@
     // display: flex;
 
     @include respond-to(medium) {
-      margin: 0 10rem;
+      margin: 0 5rem;
     }
     @include respond-to(tablet) {
       margin: 0 2rem;

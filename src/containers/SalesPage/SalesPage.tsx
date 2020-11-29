@@ -14,24 +14,27 @@ import NumberFormat from 'react-number-format';
 import { LoadingOutlined, InfoCircleOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Button, Skeleton, Card, Empty, Steps, Collapse, Tag, Divider, Breadcrumb, Dropdown, Menu } from 'antd';
+import { Button, Input, Skeleton, Card, Tag, Empty, Steps, Collapse, Divider, Breadcrumb, Dropdown, Menu } from 'antd';
 
 // Util
 import {
   TLocalOrderObj,
   TReceivedSalesMakesObj,
   TReceivedSalesLengthObj,
-  TReceivedSalesMakeSeriesObj,
+  TReceivedBodyMakeObj,
   TReceivedDimensionAccessoryObj,
   TReceivedSalesLengthCategoryObj,
+  TReceivedSalesBodyMakeObj,
+  // TReceivedSalesMakeObj,
 } from 'src/store/types/sales';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types/index';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
-import { TReceivedAccessoryObj, TReceivedBodyLengthObj } from 'src/store/types/dashboard';
-import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BRAND } from 'src/shared/constants';
+import { TReceivedAccessoryObj, TReceivedBodyObj } from 'src/store/types/dashboard';
+import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BODYMAKE } from 'src/shared/constants';
 
 const { Step } = Steps;
+const { Search } = Input;
 const { Panel } = Collapse;
 
 interface SalesPageProps {}
@@ -45,8 +48,9 @@ type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
  */
 const SalesPage: React.FC<Props> = ({
   // Arrays
-  salesBrandsArray,
-  bodyLengthsArray,
+  bodiesArray,
+  bodyMakesArray,
+  // salesBrandsArray,
   localOrdersArray,
   lengthsCategoriesArray,
   generalAccessoriesArray,
@@ -57,16 +61,17 @@ const SalesPage: React.FC<Props> = ({
   onStoreLocalOrders,
   onRemoveAnOrder,
   // API calls
-  onGetSalesMakes,
   onGetSalesLengths,
-  onGetSalesBodyLengths,
-  onGetSalesBodyAccessories,
+  onGetSalesBodies,
+  onGetSalesBodyMakes,
+  onGetSalesAccessories,
   // Booleans
   loading,
   getSalesMakesSucceed,
   getSalesLengthsSucceed,
-  getSalesBodyLengthsSucceed,
-  getSalesBodyAccessoriesSucceed,
+  getSalesBodiesSucceed,
+  getSalesBodyMakesSucceed,
+  getSalesAccessoriesSucceed,
 }) => {
   /* ================================================ */
   //                    state
@@ -78,12 +83,12 @@ const SalesPage: React.FC<Props> = ({
 
   const [currentTyre, setCurrentTyre] = useState<number | null>(null);
   const [currentLength, setCurrentLength] = useState<TReceivedSalesLengthObj | null>(null);
-  const [currentBodyLength, setCurrentBodyLength] = useState<TReceivedBodyLengthObj | null>(null);
+  const [currentBody, setCurrentBody] = useState<TReceivedBodyObj | null>(null);
   const [currentAccessory, setCurrentAccessory] = useState<{
     accessoryObj: TReceivedAccessoryObj;
     price: number;
   } | null>(null);
-  const [currentMake, setCurrentMake] = useState<TReceivedSalesMakeSeriesObj | null>(null);
+  const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
 
   /** Current order object to track what user has added to the current order  */
   const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj>({
@@ -93,7 +98,7 @@ const SalesPage: React.FC<Props> = ({
     generalAccessoriesArray: [],
     dimensionRelatedAccessoriesArray: [],
     bodyRelatedAccessoriesArray: [],
-    makeObj: null,
+    bodyMakeObj: null,
   });
 
   let totalAccessoriesArrayLength =
@@ -115,6 +120,9 @@ const SalesPage: React.FC<Props> = ({
   const [makePhotoIndex, setMakePhotoIndex] = useState(0);
   const [bodyAccessoryPhotoIndex, setBodyAccessoryPhotoIndex] = useState(0);
 
+  // Searched terms
+  const [searchedBody, setSearchedBody] = useState<string>('');
+
   /* ========================= */
   //        method
   /* ========================= */
@@ -127,6 +135,9 @@ const SalesPage: React.FC<Props> = ({
   const next = () => {
     setCurrentStep(currentStep + 1);
   };
+
+  /** Filter for body  */
+  const onBodySearch = (event: React.ChangeEvent<HTMLInputElement>) => setSearchedBody(event.target.value);
 
   /* =========================== */
   /*         components          */
@@ -387,7 +398,7 @@ const SalesPage: React.FC<Props> = ({
                     // Then call the body lengths API
                     if (currentLength === null || currentTyre === null) return;
                     if (currentLength.id && currentTyre) {
-                      onGetSalesBodyLengths(currentLength.id, currentTyre);
+                      onGetSalesBodies(currentLength.id, currentTyre);
                     }
                   }}
                   className="sales__length-btn"
@@ -405,9 +416,9 @@ const SalesPage: React.FC<Props> = ({
   );
 
   /* ------------------ */
-  // Body Length
+  // Body Type
   /* ------------------ */
-  let bodyLengthSection = (
+  let bodySection = (
     <>
       {/*  only show if length is selected */}
       <section className="sales__section">
@@ -423,9 +434,7 @@ const SalesPage: React.FC<Props> = ({
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Body</span>
-              {currentBodyLength && (
-                <span className="sales__breadcrumb-highlight">({currentBodyLength?.body.title})</span>
-              )}
+              {currentBody && <span className="sales__breadcrumb-highlight">({currentBody?.title})</span>}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -435,23 +444,23 @@ const SalesPage: React.FC<Props> = ({
         <section className="sales__section-innerdiv">
           {/* Description */}
           <div className="sales__section-left">
-            {currentBodyLength ? (
+            {currentBody ? (
               <>
                 {/* if there is no image then show image not available */}
-                {currentBodyLength.images.length > 0 ? (
+                {currentBody.images.length > 0 ? (
                   <>
                     <div className="sales__lightbox-parent" onClick={() => setBodyLightboxOpen(true)}>
                       {/* Clickable image to show lightbox */}
 
                       <LazyLoadImage
                         className="sales__section-img"
-                        src={currentBodyLength.images[0].url}
-                        alt={currentBodyLength.images[0].filename}
+                        src={currentBody.images[0].url}
+                        alt={currentBody.images[0].filename}
                         placeholderSrc={img_loading_link}
                       />
 
                       <LightboxComponent
-                        images={currentBodyLength?.images}
+                        images={currentBody?.images}
                         photoIndex={bodyPhotoIndex}
                         isOpen={bodyLightboxOpen}
                         setPhotoIndex={setBodyPhotoIndex}
@@ -488,52 +497,22 @@ const SalesPage: React.FC<Props> = ({
             )}
 
             {/* Card Details */}
-            {currentBodyLength ? (
+            {currentBody && currentLength ? (
               <Card className="sales__selectarea-card" size="small" title="Selected body type">
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Title</div>
                   <div className="sales__selectarea-card-row-right sales__selectarea-card-row-right-title">
-                    {currentBodyLength?.body.title}
+                    {currentBody?.title}
                   </div>
                 </div>
                 <div className="sales__selectarea-card-row">
                   <div className="sales__selectarea-card-row-left">Description</div>
                   <div className="sales__selectarea-card-row-right">
-                    {`${currentBodyLength.length.title}ft${
-                      currentBodyLength.body.description === null ? '' : `, ${currentBodyLength.body.description}`
+                    {`${currentLength.title}ft${
+                      currentBody.description === null || currentBody.description === ''
+                        ? ''
+                        : `, ${currentBody.description}`
                     }`}
-                  </div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Dimension</div>
-                  <div className="sales__selectarea-card-row-right">
-                    <Tag className="flex" color="red">
-                      <div>Width:&nbsp;</div>
-                      <div>
-                        <div>{currentBodyLength?.width}</div>
-                      </div>
-                    </Tag>
-
-                    <Tag className="flex" color="volcano">
-                      <div>Height:&nbsp;</div>
-                      <div>
-                        <div>{currentBodyLength?.depth}</div>
-                      </div>
-                    </Tag>
-
-                    <Tag className="flex" color="orange">
-                      <div>Depth:&nbsp;</div>
-                      <div>
-                        <div>{currentBodyLength?.height}</div>
-                      </div>
-                    </Tag>
-                  </div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Price</div>
-                  <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                    RM
-                    <NumberFormat value={currentBodyLength?.price} displayType={'text'} thousandSeparator={true} />
                   </div>
                 </div>
               </Card>
@@ -553,38 +532,45 @@ const SalesPage: React.FC<Props> = ({
             </div>
             <div className="sales__selectarea-innerdiv">
               <div>Select the material type of the cargo body</div>
+              <Search
+                className="sales__selectarea-search"
+                placeholder="Input text here to search body type"
+                // onSearch={onBodySearch}
+                onChange={(e) => onBodySearch(e)}
+                enterButton
+              />
 
-              {bodyLengthsArray ? (
+              {bodiesArray ? (
                 <>
-                  {bodyLengthsArray.length > 0 ? (
+                  {bodiesArray.length > 0 ? (
                     <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                       <>
-                        {bodyLengthsArray.map((bodyLength) => {
-                          return (
-                            <div
-                              key={uuidv4()}
-                              className={`sales__selectarea-button  ${
-                                currentBodyLength?.id === bodyLength.id ? 'active' : ''
-                              }`}
-                              onClick={() => {
-                                //  if currentLength has an id
-                                if (currentBodyLength?.id === bodyLength.id) {
-                                  // reset the selection
-                                  setCurrentBodyLength(null);
-                                  setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: null });
-                                } else {
-                                  setCurrentBodyLength(bodyLength);
-                                  setCurrentOrderObj({
-                                    ...currentOrderObj,
-                                    bodyLengthObj: bodyLength,
-                                  });
-                                }
-                              }}
-                            >
-                              {bodyLength.body.title}
-                            </div>
-                          );
-                        })}
+                        {bodiesArray
+                          .filter((bodyObj) => bodyObj.title.toLowerCase().includes(searchedBody))
+                          .map((body) => {
+                            return (
+                              <div
+                                key={uuidv4()}
+                                className={`sales__selectarea-button  ${currentBody?.id === body.id ? 'active' : ''}`}
+                                onClick={() => {
+                                  //  if currentLength has an id
+                                  if (currentBody?.id === body.id) {
+                                    // reset the selection
+                                    setCurrentBody(null);
+                                    setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: null });
+                                  } else {
+                                    setCurrentBody(body);
+                                    setCurrentOrderObj({
+                                      ...currentOrderObj,
+                                      bodyLengthObj: body,
+                                    });
+                                  }
+                                }}
+                              >
+                                {body.title}
+                              </div>
+                            );
+                          })}
                       </>
                     </div>
                   ) : (
@@ -604,7 +590,7 @@ const SalesPage: React.FC<Props> = ({
                 className="sales__length-btn margin_r-1"
                 onClick={() => {
                   prev();
-                  setCurrentBodyLength(null);
+                  setCurrentBody(null);
                 }}
               >
                 Back
@@ -614,14 +600,12 @@ const SalesPage: React.FC<Props> = ({
                   type="primary"
                   onClick={() => {
                     // Then call the body lengths API
-                    if (currentBodyLength === null) return;
-                    if (currentBodyLength.id) {
-                      onGetSalesBodyAccessories(currentBodyLength.id);
-                    }
+                    if (currentBody === null || currentLength === null || currentTyre === null) return;
+                    onGetSalesBodyMakes(currentLength.id, currentTyre, currentBody.id);
                   }}
                   className="sales__length-btn"
                   loading={loading}
-                  disabled={currentBodyLength === null ? true : false}
+                  disabled={currentBody === null ? true : false}
                 >
                   Next
                 </Button>
@@ -633,10 +617,331 @@ const SalesPage: React.FC<Props> = ({
     </>
   );
 
+  /* ------------------ */
+  // Body Make / Option
+  /* ------------------ */
+  let bodyMakeSection = (
+    <>
+      <section className="sales__section sales__section-body">
+        <div className="sales__breadcrumb-outerdiv">
+          <Breadcrumb separator=">" className="sales__breadcrumb">
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Tyre Count</span>
+              <span className="sales__breadcrumb-highlight">({currentTyre})</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Length</span>
+              <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Body</span>
+              {currentBody && <span className="sales__breadcrumb-highlight">({currentBody?.title})</span>}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Option</span>
+              {currentBodyMake && (
+                <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make.brand.title} ${currentBodyMake?.make.title} ${currentBodyMake?.make.series})`}</span>
+              )}{' '}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
+        <Divider orientation="left">
+          <div className="sales__section-header">Option</div>
+        </Divider>
+
+        <section className="sales__section-innerdiv">
+          {/* Description on the left */}
+          <div className="sales__section-left">
+            {currentBodyMake ? (
+              <>
+                {/* if there is no image then show image not available */}
+                {currentBodyMake.make.images.length > 0 ? (
+                  <>
+                    <div className="sales__lightbox-parent" onClick={() => setMakeLightboxOpen(true)}>
+                      {/* Clickable image to show lightbox */}
+                      <LazyLoadImage
+                        className="sales__section-img"
+                        src={currentBodyMake.make.images[0].url}
+                        alt={currentBodyMake.make.images[0].filename}
+                        placeholderSrc={img_loading_link}
+                      />
+                      <LightboxComponent
+                        images={currentBodyMake?.make.images}
+                        photoIndex={makePhotoIndex}
+                        isOpen={makeLightboxOpen}
+                        setPhotoIndex={setMakePhotoIndex}
+                        setIsOpen={setMakeLightboxOpen}
+                      />
+                      <div className="sales__lightbox-icon">
+                        <i className="fas fa-expand"></i>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <img className="sales__section-img" src={img_not_available_link} alt="no result" />
+                    <div className="sales__section-img-unavailabletext"> No image is provided for this model</div>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="sales__section-preview">
+                <div className="sales__section-preview-innerdiv">
+                  <div className="sales__section-img--illustratoricon-div">
+                    <img
+                      alt="make"
+                      className="sales__section-img sales__section-img--accessories"
+                      src="data:image/svg+xml;base64,PHN2ZyBpZD0iQ2FwYV8xIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1MTIgNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHdpZHRoPSI1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGc+PGc+PGc+PGc+PHBhdGggZD0ibTExMi40NzcgMjk5LjA1OGgtOTMuNzMxYy0xMC4zNTMgMC0xOC43NDYtOC4zOTMtMTguNzQ2LTE4Ljc0N3YtOTMuNzMxYzAtMTAuMzUzIDguMzkzLTE4Ljc0NiAxOC43NDYtMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYgOC4zOTMgMTguNzQ2IDE4Ljc0NnY5My43MzFjMCAxMC4zNTQtOC4zOTMgMTguNzQ3LTE4Ljc0NiAxOC43NDd6IiBmaWxsPSIjZmZlMDdkIi8+PC9nPjxnPjxwYXRoIGQ9Im0xMTQuMDUzIDE2Ny44NzRjLjE5OCAyLjYwMy4yOTkgNS4yMzQuMjk5IDcuODg4IDAgNTYuNjg0LTQ1Ljk1MSAxMDIuNjM1LTEwMi42MzUgMTAyLjYzNS0zLjk2MyAwLTcuODcxLS4yMzItMTEuNzE2LS42N3YyLjU0NGMwIDEwLjM1MyA4LjM5MyAxOC43NDYgMTguNzQ2IDE4Ljc0Nmg5My43MzFjMTAuMzUzIDAgMTguNzQ2LTguMzkzIDE4Ljc0Ni0xOC43NDZ2LTkzLjczMWMtLjAwMS05LjgyLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY2eiIgZmlsbD0iI2ZmZDA2NCIvPjwvZz48L2c+PC9nPjxwYXRoIGQ9Im04My40MDQgMjI4LjUxOWMyLjQ5LTMuNjQ0IDMuOTUtOC4wNDUgMy45NS0xMi43ODIgMC0xMi41MjItMTAuMTg3LTIyLjcwOS0yMi43MDktMjIuNzA5aC0xOS4wNTdjLTQuMjA0IDAtNy42MTEgMy40MDgtNy42MTEgNy42MTF2NjUuNjExYzAgMi4wMjUuODA3IDMuOTY2IDIuMjQxIDUuMzk0IDEuNDI3IDEuNDIxIDMuMzU4IDIuMjE4IDUuMzcxIDIuMjE4aC4wMzRjLjAwMiAwIDE3LjUyNC0uMDc4IDIyLjM1My0uMDc4IDEzLjkzNiAwIDI1LjI3My0xMS4zMzcgMjUuMjczLTI1LjI3Mi0uMDAyLTguMTI3LTMuODY0LTE1LjM2Ny05Ljg0NS0xOS45OTN6bS0xOC43NTgtMjAuMjY3YzQuMTI4IDAgNy40ODYgMy4zNTggNy40ODYgNy40ODZzLTMuMzU4IDcuNDg2LTcuNDg2IDcuNDg2Yy0xLjQxMSAwLTExLjQ0Ny4wMTgtMTEuNDQ3LjAxOHYtMTQuOTl6bTMuMzI4IDUwLjMxYy0yLjcxIDAtOS40MDIuMDI0LTE0Ljc3NS4wNDZ2LTIwLjEyN2MxLjQ3My0uMDA2IDE0Ljc3NS0uMDE3IDE0Ljc3NS0uMDE3IDUuNTQxIDAgMTAuMDUgNC41MDggMTAuMDUgMTAuMDQ5IDAgNS41NDItNC41MDkgMTAuMDQ5LTEwLjA1IDEwLjA0OXoiIGZpbGw9IiNlY2Y0ZmYiLz48Zz48Zz48cGF0aCBkPSJtMTEyLjQ3NyAxMzUuMDI5aC05My43MzFjLTEwLjM1MyAwLTE4Ljc0Ni04LjM5My0xOC43NDYtMTguNzQ2di05My43MzFjMC0xMC4zNTMgOC4zOTMtMTguNzQ2IDE4Ljc0Ni0xOC43NDZoOTMuNzMxYzEwLjM1MyAwIDE4Ljc0NiA4LjM5MyAxOC43NDYgMTguNzQ2djkzLjczMWMwIDEwLjM1My04LjM5MyAxOC43NDYtMTguNzQ2IDE4Ljc0NnoiIGZpbGw9IiNkZjc1YTUiLz48cGF0aCBkPSJtMTE0LjA1MyAzLjgwNmMuMTk4IDIuNjAzLjI5OSA1LjIzNC4yOTkgNy44ODggMCA1Ni42ODQtNDUuOTUxIDEwMi42MzUtMTAyLjYzNSAxMDIuNjM1LTMuOTYzIDAtNy44NzEtLjIzMi0xMS43MTYtLjY3djIuNTQ0YzAgMTAuMzUzIDguMzkzIDE4Ljc0NiAxOC43NDYgMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYtOC4zOTMgMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYy0uMDAxLTkuODIxLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY2eiIgZmlsbD0iI2RkNTc5MCIvPjwvZz48L2c+PGc+PGc+PGc+PHBhdGggZD0ibTM5Ny40NzcgMTM1LjAyOWgtOTMuNzMxYy0xMC4zNTMgMC0xOC43NDYtOC4zOTMtMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYzAtMTAuMzUzIDguMzkzLTE4Ljc0NiAxOC43NDYtMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYgOC4zOTMgMTguNzQ2IDE4Ljc0NnY5My43MzFjMCAxMC4zNTMtOC4zOTMgMTguNzQ2LTE4Ljc0NiAxOC43NDZ6IiBmaWxsPSIjYjNlNTlmIi8+PHBhdGggZD0ibTM5OS4wNTMgMy44ODVjLjE5OCAyLjYwMy4yOTkgNS4yMzQuMjk5IDcuODg4IDAgNTYuNjg0LTQ1Ljk1MSAxMDIuNjM1LTEwMi42MzUgMTAyLjYzNS0zLjk2MyAwLTcuODcxLS4yMzItMTEuNzE2LS42N3YyLjU0NGMwIDEwLjM1MyA4LjM5MyAxOC43NDYgMTguNzQ2IDE4Ljc0Nmg5My43MzFjMTAuMzUzIDAgMTguNzQ2LTguMzkzIDE4Ljc0Ni0xOC43NDZ2LTkzLjczYy0uMDAxLTkuODIxLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY3eiIgZmlsbD0iIzk1ZDZhNCIvPjwvZz48L2c+PGc+PGc+PHBhdGggZD0ibTM5Ny40NzcgMjk5LjA1OGgtOTMuNzMxYy0xMC4zNTMgMC0xOC43NDYtOC4zOTMtMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYzAtMTAuMzUzIDguMzkzLTE4Ljc0NiAxOC43NDYtMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYgOC4zOTMgMTguNzQ2IDE4Ljc0NnY5My43MzFjMCAxMC4zNTMtOC4zOTMgMTguNzQ2LTE4Ljc0NiAxOC43NDZ6IiBmaWxsPSIjOTBkOGY5Ii8+PHBhdGggZD0ibTM5OS4wNTMgMTY3LjkxNGMuMTk4IDIuNjAzLjI5OSA1LjIzNC4yOTkgNy44ODggMCA1Ni42ODQtNDUuOTUxIDEwMi42MzUtMTAyLjYzNSAxMDIuNjM1LTMuOTYzIDAtNy44NzEtLjIzMy0xMS43MTYtLjY3djIuNTQ0YzAgMTAuMzUzIDguMzkzIDE4Ljc0NiAxOC43NDYgMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYtOC4zOTMgMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYy0uMDAxLTkuODIxLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY2eiIgZmlsbD0iIzc1Y2VmOSIvPjwvZz48L2c+PC9nPjxwYXRoIGQ9Im05OC42MzMgOTkuNTM2LTI0LjQxMy02NC42OTFjLS4wMjYtLjA2OS0uMDUzLS4xMzgtLjA4MS0uMjA3LTEuNDA5LTMuNDI1LTQuNzExLTUuNjM4LTguNDE1LTUuNjM4LS4wMDMgMC0uMDA2IDAtLjAwOSAwLTMuNzA3LjAwMy03LjAwOSAyLjIyMy04LjQxMiA1LjY1NC0uMDI0LjA1Ny0uMDQ3LjExNC0uMDY4LjE3MmwtMjQuNjM3IDY0LjY4OGMtMS40OTcgMy45MjkuNDc2IDguMzI2IDQuNDAzIDkuODIyIDMuOTI4IDEuNDk1IDguMzI2LS40NzUgOS44MjMtNC40MDRsNC4yNjktMTEuMjA4aDI5LjA3N2w0LjIyMiAxMS4xODZjMS4xNSAzLjA0OCA0LjA0NyA0LjkyNyA3LjEyMiA0LjkyNi44OTMgMCAxLjgwMi0uMTU4IDIuNjg3LS40OTIgMy45MzItMS40ODQgNS45MTctNS44NzYgNC40MzItOS44MDh6bS00MS43NDMtMjEuMDM1IDguODA3LTIzLjEyNCA4LjcyNyAyMy4xMjR6IiBmaWxsPSIjZWNmNGZmIi8+PGcgZmlsbD0iIzRhODBhYSI+PHBhdGggZD0ibTIxOS4zODkgNDQuMjIzaC01NS4zNmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMXMzLjQwNy03LjYxMiA3LjYxMS03LjYxMmg1NS4zNmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExcy0zLjQwNyA3LjYxMi03LjYxMSA3LjYxMnoiLz48cGF0aCBkPSJtMTk4Ljg4NSA3Ny4wMjloLTM0Ljg1NmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMXMzLjQwNy03LjYxMSA3LjYxMS03LjYxMWgzNC44NTZjNC4yMDQgMCA3LjYxMSAzLjQwOCA3LjYxMSA3LjYxMXMtMy40MDcgNy42MTEtNy42MTEgNy42MTF6Ii8+PHBhdGggZD0ibTE5OC44ODUgMTA5LjgzNGgtMzQuODU2Yy00LjIwNCAwLTcuNjExLTMuNDA4LTcuNjExLTcuNjExczMuNDA3LTcuNjExIDcuNjExLTcuNjExaDM0Ljg1NmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExcy0zLjQwNyA3LjYxMS03LjYxMSA3LjYxMXoiLz48cGF0aCBkPSJtMjE5LjM4OSAyMDguMjUyaC01NS4zNmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMSAwLTQuMjA0IDMuNDA3LTcuNjExIDcuNjExLTcuNjExaDU1LjM2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTFzLTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIvPjxwYXRoIGQ9Im0xOTguODg1IDI0MS4wNTdoLTM0Ljg1NmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMSAwLTQuMjA0IDMuNDA3LTcuNjExIDcuNjExLTcuNjExaDM0Ljg1NmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExLjAwMSA0LjIwNC0zLjQwNyA3LjYxMS03LjYxMSA3LjYxMXoiLz48cGF0aCBkPSJtMTk4Ljg4NSAyNzMuODYzaC0zNC44NTZjLTQuMjA0IDAtNy42MTEtMy40MDgtNy42MTEtNy42MTFzMy40MDctNy42MTIgNy42MTEtNy42MTJoMzQuODU2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTJzLTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIvPjwvZz48Zz48Zz48cGF0aCBkPSJtMzU2LjY4MSAxMDkuODM0Yy0yMi4yODYgMC00MC40MTctMTguMTMxLTQwLjQxNy00MC40MTdzMTguMTMtNDAuNDE3IDQwLjQxNy00MC40MTdjOC4wOTggMCAxNS45MTQgMi4zODkgMjIuNjAzIDYuOTA3IDMuNDg0IDIuMzUzIDQuMzk5IDcuMDg1IDIuMDQ3IDEwLjU2OC0yLjM1NCAzLjQ4NC03LjA4NSA0LjM5OS0xMC41NjggMi4wNDctNC4xNjMtMi44MTItOS4wMzItNC4yOTgtMTQuMDgxLTQuMjk4LTEzLjg5MiAwLTI1LjE5NCAxMS4zMDItMjUuMTk0IDI1LjE5NHMxMS4zMDIgMjUuMTk0IDI1LjE5NCAyNS4xOTRjNS4xNzEgMCA5LjUyNS0xLjU0MyAxMi45NDMtNC41ODYuNjY2LS41OTMgMS4zMDEtMS4yNSAxLjg5MS0xLjk1MyAyLjctMy4yMjIgNy41MDEtMy42NDQgMTAuNzIzLS45NDRzMy42NDUgNy41MDEuOTQ0IDEwLjcyM2MtMS4wNjIgMS4yNjgtMi4yMTggMi40Ni0zLjQzMyAzLjU0My02LjIwMyA1LjUyLTE0LjE3OSA4LjQzOS0yMy4wNjkgOC40Mzl6IiBmaWxsPSIjZWNmNGZmIi8+PC9nPjwvZz48Zz48Zz48cGF0aCBkPSJtMzI4LjIwNSAyNzMuODYzYy0yLjAwOSAwLTMuOTM3LS43OTQtNS4zNjItMi4yMS0xLjQzMy0xLjQyMi0yLjI0My0zLjM1Ni0yLjI1LTUuMzc1IDAgMC0uMDg1LTIzLjc4NS0uMDg1LTMyLjkwNSAwLTcuNDgxLS4wNDgtMzIuNzE5LS4wNDgtMzIuNzE5LS4wMDQtMi4wMjEuNzk3LTMuOTYxIDIuMjI0LTUuMzkxIDEuNDI4LTEuNDMxIDMuMzY3LTIuMjM0IDUuMzg4LTIuMjM0aDE4LjU4M2MyMC40IDAgMzQuMTA3IDE2LjI0MiAzNC4xMDcgNDAuNDE3IDAgMjIuOTk2LTE0LjA1OSAzOS45MzMtMzMuNDMxIDQwLjI3Mi01LjI4OS4wOTItMTguNTM1LjE0My0xOS4wOTcuMTQ1LS4wMSAwLS4wMTkgMC0uMDI5IDB6bTcuNDkzLTY1LjYxMWMuMDE0IDguMDcuMDM0IDIwLjI5My4wMzQgMjUuMTIyIDAgNS43ODIuMDM1IDE3LjQ2OC4wNTkgMjUuMjI4IDQuMDQzLS4wMjQgOC42OTYtLjA2IDExLjI3NS0uMTA1IDEyLjc2MS0uMjIzIDE4LjQ3NC0xMi43NDMgMTguNDc0LTI1LjA1MSAwLTEyLjE4LTQuOTYtMjUuMTk0LTE4Ljg4NC0yNS4xOTR6IiBmaWxsPSIjZWNmNGZmIi8+PC9nPjwvZz48cGF0aCBkPSJtNTA0LjM4OCA0NC4yMjNoLTU1LjM2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExczMuNDA5LTcuNjEyIDcuNjEzLTcuNjEyaDU1LjM2YzQuMjA0IDAgNy42MTIgMy40MDggNy42MTIgNy42MTFzLTMuNDA4IDcuNjEyLTcuNjEzIDcuNjEyeiIgZmlsbD0iIzRhODBhYSIvPjxwYXRoIGQ9Im00ODMuODg1IDc3LjAyOWgtMzQuODU2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExczMuNDA3LTcuNjExIDcuNjEyLTcuNjExaDM0Ljg1NmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExcy0zLjQwNyA3LjYxMS03LjYxMSA3LjYxMXoiIGZpbGw9IiM0YTgwYWEiLz48cGF0aCBkPSJtNDgzLjg4NSAxMDkuODM0aC0zNC44NTZjLTQuMjA0IDAtNy42MTItMy40MDgtNy42MTItNy42MTFzMy40MDctNy42MTEgNy42MTItNy42MTFoMzQuODU2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTFzLTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIgZmlsbD0iIzRhODBhYSIvPjxwYXRoIGQ9Im01MDQuMzg4IDIwOC4yNTJoLTU1LjM2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExIDAtNC4yMDQgMy40MDctNy42MTEgNy42MTItNy42MTFoNTUuMzZjNC4yMDQgMCA3LjYxMiAzLjQwOCA3LjYxMiA3LjYxMXMtMy40MDcgNy42MTEtNy42MTIgNy42MTF6IiBmaWxsPSIjNGE4MGFhIi8+PHBhdGggZD0ibTQ4My44ODUgMjQxLjA1N2gtMzQuODU2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExIDAtNC4yMDQgMy40MDctNy42MTEgNy42MTItNy42MTFoMzQuODU2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTEuMDAxIDQuMjA0LTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIgZmlsbD0iIzRhODBhYSIvPjxwYXRoIGQ9Im00ODMuODg1IDI3My44NjNoLTM0Ljg1NmMtNC4yMDQgMC03LjYxMi0zLjQwOC03LjYxMi03LjYxMXMzLjQwNy03LjYxMiA3LjYxMi03LjYxMmgzNC44NTZjNC4yMDQgMCA3LjYxMSAzLjQwOCA3LjYxMSA3LjYxMnMtMy40MDcgNy42MTEtNy42MTEgNy42MTF6IiBmaWxsPSIjNGE4MGFhIi8+PGc+PHBhdGggZD0ibTg0Ljg3MyA0OTguNjg2IDEwLjQzOSA3LjU3NGMxLjczMyAxLjI1NyAzLjgxOSAxLjkzNCA1Ljk2IDEuOTM0aDE3My41NjhjNC4xIDAgNy4wMjgtMy45NjkgNS44MTgtNy44ODdsLTguMjcxLTI2Ljc3MWMtLjI0NS0uNzkzLS4zOTItMS42MTMtLjQzNy0yLjQ0MWwtMS45NjYtMzUuOTE4Yy0uMTgzLTMuMzQ4LS43NzYtNi42NjEtMS43NjYtOS44NjVsLTMxLjk1NC0xMDMuNDNjLTMuMjgyLTEwLjYyMi0xNC4zMzctMTcuMTE3LTI1LjA2OS0xNC4yMTUtMTEuMjY3IDMuMDQ3LTE3LjY3MiAxNC43OTQtMTQuMjU2IDI1Ljg1bC02LjIxLTIwLjFjLTMuMjgyLTEwLjYyMi0xNC4zMzctMTcuMTE3LTI1LjA2OS0xNC4yMTUtMTEuMjY3IDMuMDQ3LTE3LjY3MiAxNC43OTQtMTQuMjU2IDI1Ljg1bC01LjkwNy0xOS4xMmMtMy4yODItMTAuNjIyLTE0LjMzNy0xNy4xMTgtMjUuMDY5LTE0LjIxNS0xMS4yNjcgMy4wNDctMTcuNjcyIDE0Ljc5NC0xNC4yNTYgMjUuODVsLTIwLjQzMi02Ni4xMzdjLTMuMjgyLTEwLjYyMi0xNC4zMzctMTcuMTE4LTI1LjA2OS0xNC4yMTUtMTEuMjY3IDMuMDQ3LTE3LjY3MiAxNC43OTQtMTQuMjU2IDI1Ljg1bDM2LjMxMyAxMTcuNTRjLTMuNDE2LTExLjA1Ni0xNS4zMy0xNy4xNDQtMjYuMzUzLTEzLjMwNC0xMC40OTkgMy42NTctMTUuOTY0IDE1LjI1Ni0xMi42ODIgMjUuODc4bDI2LjA4MSA4NC40MmMyLjYxOSA4LjQ3OCA3LjkxNyAxNS44NzcgMTUuMDk5IDIxLjA4N3oiIGZpbGw9IiNmZmRkY2UiLz48cGF0aCBkPSJtMTYwLjM1IDUwOC4xOTRoMTE0LjQ5YzQuMSAwIDcuMDI4LTMuOTY5IDUuODE4LTcuODg3bC04LjI3MS0yNi43NzFjLS4yNDUtLjc5My0uMzkyLTEuNjEzLS40MzctMi40NDFsLTEuOTY2LTM1LjkyYy0uMTgzLTMuMzQ3LS43NzYtNi42Ni0xLjc2Ni05Ljg2MmwtMjAuNTM2LTY2LjQ3M2MtNy45MzEgNDQuMzk1LTI5LjQ0NiAxMDcuNjk0LTg3LjMzMiAxNDkuMzU0eiIgZmlsbD0iI2ZmY2JiZSIvPjwvZz48ZyBmaWxsPSIjZmZjYmJlIj48cGF0aCBkPSJtNjUuMjA2IDIzNi41NTIgNDQuNDg1IDE0My45OWMxLjAxIDMuMjY4IDQuMDIgNS4zNjcgNy4yNzEgNS4zNjcuNzQzIDAgMS41LS4xMSAyLjI0OS0uMzQxIDQuMDE3LTEuMjQxIDYuMjY3LTUuNTAzIDUuMDI2LTkuNTE5bC0zOC41MjUtMTI0LjY5OGMtMi44NDUtOS4wNzktMTEuMzc0LTE1LjEwNC0yMC41MDYtMTQuNzk5eiIvPjxwYXRoIGQ9Im0xMjQuOTYzIDI5MS4wNTMgMjMuOTA4IDc3LjM4NGMxLjAxIDMuMjY4IDQuMDIgNS4zNjcgNy4yNzEgNS4zNjcuNzQzIDAgMS41MDEtLjExIDIuMjQ5LS4zNDEgNC4wMTctMS4yNDEgNi4yNjctNS41MDMgNS4wMjYtOS41MTlsLTE3Ljk0OS01OC4wOTZjLTIuODQ2LTkuMDc3LTExLjM3NS0xNS4xLTIwLjUwNS0xNC43OTV6Ii8+PHBhdGggZD0ibTE3MC4xOTUgMjk4LjUzOSAxNy44NTUgNTcuNzk0YzEuMDEgMy4yNjggNC4wMiA1LjM2NyA3LjI3MSA1LjM2Ny43NDMgMCAxLjUwMS0uMTEgMi4yNDktLjM0MSA0LjAxNy0xLjI0MSA2LjI2Ny01LjUwMyA1LjAyNi05LjUxOWwtMTEuODk3LTM4LjUwOGMtMi44NDYtOS4wNzYtMTEuMzc0LTE1LjA5OC0yMC41MDQtMTQuNzkzeiIvPjxwYXRoIGQ9Im0yMTUuNzY2IDMwNy4wMDQgMTEuNzQgMzcuOTk5YzEuMDEgMy4yNjggNC4wMiA1LjM2NyA3LjI3MSA1LjM2Ny43NDMgMCAxLjUtLjExIDIuMjQ5LS4zNDEgMy44MjQtMS4xODEgNi4wNC01LjEwMiA1LjE3My04Ljk0MWwtNS45MzQtMTkuMjA2Yy0yLjgxNi05LjExMi0xMS4zNTMtMTUuMTY3LTIwLjQ5OS0xNC44Nzh6Ii8+PHBhdGggZD0ibTgyLjUyNCAzODAuMDQ1Yy0yLjk4Mi04Ljc1LTExLjMzNi0xNC4yMTktMjAuMjE0LTEzLjg1NWwxOS42NSA2My42MDQtNC42MTkgOC43NWMtMS45NjMgMy43MTgtLjU0MSA4LjMyMiAzLjE3NiAxMC4yODUgMS4xMzQuNTk5IDIuMzQ5Ljg4MiAzLjU0Ny44ODIgMi43MzIgMCA1LjM3NC0xLjQ3NSA2LjczOC00LjA1OWw2LjA5Mi0xMS41MzljLjk0My0xLjc4NSAxLjEzNy0zLjg3Mi41NDEtNS44MDF6Ii8+PC9nPjwvZz48L3N2Zz4="
+                    />
+                  </div>
+                  <div className="sales__section-img--accessories-text">Brand/Model</div>
+                </div>
+              </div>
+            )}
+            {currentBodyMake ? (
+              <Card className="sales__selectarea-card" size="small" title="Selected model">
+                <div className="flex">
+                  <section className="sales__selectarea-card-column">
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Model</div>
+                      <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.title}</div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Series</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.series === null || currentBodyMake.make.series === ''
+                          ? '-'
+                          : currentBodyMake.make.series}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Length</div>
+                      <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.length}mm</div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Config</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.config ? currentBodyMake.make.config : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Torque</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.torque ? currentBodyMake.make.torque : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Horsepower</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.horsepower ? `${currentBodyMake.make.horsepower}PC` : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Emission</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.emission ? currentBodyMake.make.emission : '-'}
+                      </div>
+                    </div>
+                  </section>
+                  <section className="sales__selectarea-card-column">
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
+                      <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.tire}</div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.wheelbase.title ? `${currentBodyMake.make.wheelbase.title}mm` : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Transmission</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.transmission ? currentBodyMake.make.transmission : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Engine Capacity</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.engine_cap ? `${currentBodyMake.make.engine_cap}CC` : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">Year</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.year ? currentBodyMake.make.year : '-'}
+                      </div>
+                    </div>
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left--make">GVW</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.gvw ? `${currentBodyMake.make.gvw}kg` : '-'}
+                      </div>
+                    </div>
+                  </section>
+                </div>
+                <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
+                  <div className="sales__selectarea-card-row-left">Dimension</div>
+                  <div className="sales__selectarea-card-row-right">
+                    {currentBodyMake?.width !== null &&
+                      currentBodyMake?.width !== '' &&
+                      currentBodyMake?.width !== null && (
+                        <Tag className="flex" color="red">
+                          <div>Width:&nbsp;</div>
+                          <div>
+                            <div>{currentBodyMake?.width}</div>
+                          </div>
+                        </Tag>
+                      )}
+                    {currentBodyMake?.depth !== null &&
+                      currentBodyMake?.depth !== '' &&
+                      currentBodyMake?.depth !== null && (
+                        <Tag className="flex" color="volcano">
+                          <div>Height:&nbsp;</div>
+                          <div>
+                            <div>{currentBodyMake?.depth}</div>
+                          </div>
+                        </Tag>
+                      )}
+                    {currentBodyMake?.height !== null &&
+                      currentBodyMake?.height !== '' &&
+                      currentBodyMake?.height !== null && (
+                        <Tag className="flex" color="orange">
+                          <div>Depth:&nbsp;</div>
+                          <div>
+                            <div>{currentBodyMake?.height}</div>
+                          </div>
+                        </Tag>
+                      )}
+                  </div>
+                </div>
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">Price</div>
+                  <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
+                    RM
+                    <NumberFormat value={currentBodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
+                  </div>
+                </div>
+              </Card>
+            ) : (
+              <Card className="sales__selectarea-card" size="small" title="Selected model">
+                <div className="sales__selectarea-card-row">
+                  <div className="sales__selectarea-card-row-left">None</div>
+                </div>
+              </Card>
+            )}
+          </div>
+
+          {/* Selections on the right */}
+          <div className="sales__section-right">
+            <div className="sales__selectarea-desc">
+              This page is to choose your preferred whip.
+              <br />
+              Choose your trusted or preferred brand, HINO is cool.
+            </div>
+            <div className="sales__selectarea-innerdiv">
+              <div>Select the model of your vehicle</div>
+              <>
+                {bodyMakesArray && (
+                  <>
+                    {bodyMakesArray.map((bodyMake) => {
+                      return (
+                        <div className="sales__selectarea--brand" key={uuidv4()}>
+                          <div>
+                            <Divider
+                              orientation="left"
+                              className="sales__selectarea-categorydivider sales__selectarea-categorydivider--brand"
+                            >
+                              {/* The title of the brand */}
+                              {bodyMake.brand.title}
+                            </Divider>
+                          </div>
+                          {/* Groups of different series  */}
+                          {bodyMake.series &&
+                            bodyMake.series.map((series) => {
+                              return (
+                                <React.Fragment key={uuidv4()}>
+                                  <div className="sales__selectarea-seriestitle">{series.title}</div>
+
+                                  <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
+                                    {/* loop the makes array */}
+                                    {series.body_makes.map((body_make) => {
+                                      return (
+                                        <div
+                                          key={uuidv4()}
+                                          className={`sales__selectarea-button                                            
+                                           ${currentBodyMake?.make.id === body_make.make.id ? 'active' : ''}`}
+                                          onClick={() => {
+                                            //  if currentBodyMake contains an id
+                                            if (currentBodyMake?.make.id === body_make.make.id) {
+                                              // reset the selection
+                                              setCurrentBodyMake(null); //set content to null
+                                              setCurrentOrderObj({
+                                                ...currentOrderObj,
+                                                bodyMakeObj: null,
+                                              });
+                                            } else {
+                                              setCurrentBodyMake(body_make); //select the content of the preview card
+                                              setCurrentOrderObj({
+                                                ...currentOrderObj,
+                                                bodyMakeObj: body_make,
+                                              });
+                                            }
+                                          }}
+                                        >
+                                          <div>{body_make.make.title}</div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </React.Fragment>
+                              );
+                            })}
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </>
+            </div>
+          </div>
+        </section>
+
+        <div className="sales__length-btn-div">
+          <Button
+            className="sales__length-btn margin_r-1"
+            onClick={() => {
+              prev();
+              setCurrentBodyMake(null);
+            }}
+          >
+            Back
+          </Button>
+          {currentStep < totalSteps - 1 && (
+            <Button
+              type="primary"
+              loading={loading}
+              onClick={() => {
+                // Then call the body lengths API
+                if (currentLength === null) return;
+                if (currentLength) {
+                  onGetSalesAccessories(currentLength.id);
+                }
+              }}
+              className="sales__length-btn"
+            >
+              Next
+            </Button>
+          )}
+        </div>
+      </section>
+    </>
+  );
+
   /* ------------------------------- */
-  // Body Accessories
+  // Accessories
   /* ------------------------------- */
-  let bodyAccessorySection = (
+  let accessorySection = (
     <>
       {/*  only show if length is selected */}
       <section className="sales__section sales__section-body">
@@ -652,8 +957,12 @@ const SalesPage: React.FC<Props> = ({
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Body</span>
-              {currentBodyLength && (
-                <span className="sales__breadcrumb-highlight">({currentBodyLength?.body.title})</span>
+              {currentBody && <span className="sales__breadcrumb-highlight">({currentBody?.title})</span>}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Option</span>
+              {currentBodyMake && (
+                <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make.brand.title} ${currentBodyMake?.make.title} ${currentBodyMake?.make.series})`}</span>
               )}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
@@ -927,7 +1236,7 @@ const SalesPage: React.FC<Props> = ({
                   ) : null}
                 </>
               ) : (
-                <div className="sales__ sales__selectarea-div--twocolumn">
+                <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <Skeleton.Button
                       className="sales__selectarea-button-skeleton"
@@ -1029,330 +1338,28 @@ const SalesPage: React.FC<Props> = ({
               >
                 Back
               </Button>
+
               {currentStep < totalSteps - 1 && (
                 <Button
-                  type="primary"
-                  loading={loading}
-                  onClick={() => {
-                    // Then call the body lengths API
-                    if (currentLength === null && currentTyre === null) return;
-                    if (currentLength && currentTyre) {
-                      onGetSalesMakes(currentLength.id, currentTyre);
-                    }
-                  }}
                   className="sales__length-btn"
+                  type="primary"
+                  disabled={currentBodyMake === null}
+                  onClick={() => {
+                    // At the end of the choosing phase after user done choosing brand
+                    // user click on complete button and we store the current order object
+                    // into the localOrdersArray in redux so we can save it in localstorage
+                    let copyArray = [...localOrdersArray];
+                    copyArray.push(currentOrderObj);
+                    onStoreLocalOrders(copyArray);
+                    next();
+                  }}
                 >
-                  Next
+                  Complete
                 </Button>
               )}
             </div>
           </div>
         </section>
-      </section>
-    </>
-  );
-
-  /* ------------------ */
-  // Brand/Make
-  /* ------------------ */
-  let brandSection = (
-    <>
-      <section className="sales__section sales__section-body">
-        <div className="sales__breadcrumb-outerdiv">
-          <Breadcrumb separator=">" className="sales__breadcrumb">
-            <Breadcrumb.Item>
-              <span className="sales__breadcrumb-text">Tyre Count</span>
-              <span className="sales__breadcrumb-highlight">({currentTyre})</span>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <span className="sales__breadcrumb-text">Length</span>
-              <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <span className="sales__breadcrumb-text">Body</span>
-              {currentBodyLength && (
-                <span className="sales__breadcrumb-highlight">({currentBodyLength?.body.title})</span>
-              )}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <span className="sales__breadcrumb-text">Accessory</span>
-              <span className="sales__breadcrumb-highlight">({totalAccessoriesArrayLength} Items)</span>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <span className="sales__breadcrumb-text">Brand</span>
-              {currentMake && <span className="sales__breadcrumb-highlight">({currentMake?.title})</span>}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </div>
-        <Divider orientation="left">
-          <div className="sales__section-header">Brand</div>
-        </Divider>
-
-        <section className="sales__section-innerdiv">
-          {/* Description on the left */}
-          <div className="sales__section-left">
-            {currentMake ? (
-              <>
-                {/* if there is no image then show image not available */}
-                {currentMake.images.length > 0 ? (
-                  <>
-                    <div className="sales__lightbox-parent" onClick={() => setMakeLightboxOpen(true)}>
-                      {/* Clickable image to show lightbox */}
-                      <LazyLoadImage
-                        className="sales__section-img"
-                        src={currentMake.images[0].url}
-                        alt={currentMake.images[0].filename}
-                        placeholderSrc={img_loading_link}
-                      />
-                      <LightboxComponent
-                        images={currentMake?.images}
-                        photoIndex={makePhotoIndex}
-                        isOpen={makeLightboxOpen}
-                        setPhotoIndex={setMakePhotoIndex}
-                        setIsOpen={setMakeLightboxOpen}
-                      />
-                      <div className="sales__lightbox-icon">
-                        <i className="fas fa-expand"></i>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <img className="sales__section-img" src={img_not_available_link} alt="no result" />
-                    <div className="sales__section-img-unavailabletext"> No image is provided for this model</div>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="sales__section-preview">
-                <div className="sales__section-preview-innerdiv">
-                  <div className="sales__section-img--illustratoricon-div">
-                    <img
-                      alt="make"
-                      className="sales__section-img sales__section-img--accessories"
-                      src="data:image/svg+xml;base64,PHN2ZyBpZD0iQ2FwYV8xIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1MTIgNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHdpZHRoPSI1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGc+PGc+PGc+PGc+PHBhdGggZD0ibTExMi40NzcgMjk5LjA1OGgtOTMuNzMxYy0xMC4zNTMgMC0xOC43NDYtOC4zOTMtMTguNzQ2LTE4Ljc0N3YtOTMuNzMxYzAtMTAuMzUzIDguMzkzLTE4Ljc0NiAxOC43NDYtMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYgOC4zOTMgMTguNzQ2IDE4Ljc0NnY5My43MzFjMCAxMC4zNTQtOC4zOTMgMTguNzQ3LTE4Ljc0NiAxOC43NDd6IiBmaWxsPSIjZmZlMDdkIi8+PC9nPjxnPjxwYXRoIGQ9Im0xMTQuMDUzIDE2Ny44NzRjLjE5OCAyLjYwMy4yOTkgNS4yMzQuMjk5IDcuODg4IDAgNTYuNjg0LTQ1Ljk1MSAxMDIuNjM1LTEwMi42MzUgMTAyLjYzNS0zLjk2MyAwLTcuODcxLS4yMzItMTEuNzE2LS42N3YyLjU0NGMwIDEwLjM1MyA4LjM5MyAxOC43NDYgMTguNzQ2IDE4Ljc0Nmg5My43MzFjMTAuMzUzIDAgMTguNzQ2LTguMzkzIDE4Ljc0Ni0xOC43NDZ2LTkzLjczMWMtLjAwMS05LjgyLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY2eiIgZmlsbD0iI2ZmZDA2NCIvPjwvZz48L2c+PC9nPjxwYXRoIGQ9Im04My40MDQgMjI4LjUxOWMyLjQ5LTMuNjQ0IDMuOTUtOC4wNDUgMy45NS0xMi43ODIgMC0xMi41MjItMTAuMTg3LTIyLjcwOS0yMi43MDktMjIuNzA5aC0xOS4wNTdjLTQuMjA0IDAtNy42MTEgMy40MDgtNy42MTEgNy42MTF2NjUuNjExYzAgMi4wMjUuODA3IDMuOTY2IDIuMjQxIDUuMzk0IDEuNDI3IDEuNDIxIDMuMzU4IDIuMjE4IDUuMzcxIDIuMjE4aC4wMzRjLjAwMiAwIDE3LjUyNC0uMDc4IDIyLjM1My0uMDc4IDEzLjkzNiAwIDI1LjI3My0xMS4zMzcgMjUuMjczLTI1LjI3Mi0uMDAyLTguMTI3LTMuODY0LTE1LjM2Ny05Ljg0NS0xOS45OTN6bS0xOC43NTgtMjAuMjY3YzQuMTI4IDAgNy40ODYgMy4zNTggNy40ODYgNy40ODZzLTMuMzU4IDcuNDg2LTcuNDg2IDcuNDg2Yy0xLjQxMSAwLTExLjQ0Ny4wMTgtMTEuNDQ3LjAxOHYtMTQuOTl6bTMuMzI4IDUwLjMxYy0yLjcxIDAtOS40MDIuMDI0LTE0Ljc3NS4wNDZ2LTIwLjEyN2MxLjQ3My0uMDA2IDE0Ljc3NS0uMDE3IDE0Ljc3NS0uMDE3IDUuNTQxIDAgMTAuMDUgNC41MDggMTAuMDUgMTAuMDQ5IDAgNS41NDItNC41MDkgMTAuMDQ5LTEwLjA1IDEwLjA0OXoiIGZpbGw9IiNlY2Y0ZmYiLz48Zz48Zz48cGF0aCBkPSJtMTEyLjQ3NyAxMzUuMDI5aC05My43MzFjLTEwLjM1MyAwLTE4Ljc0Ni04LjM5My0xOC43NDYtMTguNzQ2di05My43MzFjMC0xMC4zNTMgOC4zOTMtMTguNzQ2IDE4Ljc0Ni0xOC43NDZoOTMuNzMxYzEwLjM1MyAwIDE4Ljc0NiA4LjM5MyAxOC43NDYgMTguNzQ2djkzLjczMWMwIDEwLjM1My04LjM5MyAxOC43NDYtMTguNzQ2IDE4Ljc0NnoiIGZpbGw9IiNkZjc1YTUiLz48cGF0aCBkPSJtMTE0LjA1MyAzLjgwNmMuMTk4IDIuNjAzLjI5OSA1LjIzNC4yOTkgNy44ODggMCA1Ni42ODQtNDUuOTUxIDEwMi42MzUtMTAyLjYzNSAxMDIuNjM1LTMuOTYzIDAtNy44NzEtLjIzMi0xMS43MTYtLjY3djIuNTQ0YzAgMTAuMzUzIDguMzkzIDE4Ljc0NiAxOC43NDYgMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYtOC4zOTMgMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYy0uMDAxLTkuODIxLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY2eiIgZmlsbD0iI2RkNTc5MCIvPjwvZz48L2c+PGc+PGc+PGc+PHBhdGggZD0ibTM5Ny40NzcgMTM1LjAyOWgtOTMuNzMxYy0xMC4zNTMgMC0xOC43NDYtOC4zOTMtMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYzAtMTAuMzUzIDguMzkzLTE4Ljc0NiAxOC43NDYtMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYgOC4zOTMgMTguNzQ2IDE4Ljc0NnY5My43MzFjMCAxMC4zNTMtOC4zOTMgMTguNzQ2LTE4Ljc0NiAxOC43NDZ6IiBmaWxsPSIjYjNlNTlmIi8+PHBhdGggZD0ibTM5OS4wNTMgMy44ODVjLjE5OCAyLjYwMy4yOTkgNS4yMzQuMjk5IDcuODg4IDAgNTYuNjg0LTQ1Ljk1MSAxMDIuNjM1LTEwMi42MzUgMTAyLjYzNS0zLjk2MyAwLTcuODcxLS4yMzItMTEuNzE2LS42N3YyLjU0NGMwIDEwLjM1MyA4LjM5MyAxOC43NDYgMTguNzQ2IDE4Ljc0Nmg5My43MzFjMTAuMzUzIDAgMTguNzQ2LTguMzkzIDE4Ljc0Ni0xOC43NDZ2LTkzLjczYy0uMDAxLTkuODIxLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY3eiIgZmlsbD0iIzk1ZDZhNCIvPjwvZz48L2c+PGc+PGc+PHBhdGggZD0ibTM5Ny40NzcgMjk5LjA1OGgtOTMuNzMxYy0xMC4zNTMgMC0xOC43NDYtOC4zOTMtMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYzAtMTAuMzUzIDguMzkzLTE4Ljc0NiAxOC43NDYtMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYgOC4zOTMgMTguNzQ2IDE4Ljc0NnY5My43MzFjMCAxMC4zNTMtOC4zOTMgMTguNzQ2LTE4Ljc0NiAxOC43NDZ6IiBmaWxsPSIjOTBkOGY5Ii8+PHBhdGggZD0ibTM5OS4wNTMgMTY3LjkxNGMuMTk4IDIuNjAzLjI5OSA1LjIzNC4yOTkgNy44ODggMCA1Ni42ODQtNDUuOTUxIDEwMi42MzUtMTAyLjYzNSAxMDIuNjM1LTMuOTYzIDAtNy44NzEtLjIzMy0xMS43MTYtLjY3djIuNTQ0YzAgMTAuMzUzIDguMzkzIDE4Ljc0NiAxOC43NDYgMTguNzQ2aDkzLjczMWMxMC4zNTMgMCAxOC43NDYtOC4zOTMgMTguNzQ2LTE4Ljc0NnYtOTMuNzMxYy0uMDAxLTkuODIxLTcuNTU3LTE3Ljg2NC0xNy4xNzEtMTguNjY2eiIgZmlsbD0iIzc1Y2VmOSIvPjwvZz48L2c+PC9nPjxwYXRoIGQ9Im05OC42MzMgOTkuNTM2LTI0LjQxMy02NC42OTFjLS4wMjYtLjA2OS0uMDUzLS4xMzgtLjA4MS0uMjA3LTEuNDA5LTMuNDI1LTQuNzExLTUuNjM4LTguNDE1LTUuNjM4LS4wMDMgMC0uMDA2IDAtLjAwOSAwLTMuNzA3LjAwMy03LjAwOSAyLjIyMy04LjQxMiA1LjY1NC0uMDI0LjA1Ny0uMDQ3LjExNC0uMDY4LjE3MmwtMjQuNjM3IDY0LjY4OGMtMS40OTcgMy45MjkuNDc2IDguMzI2IDQuNDAzIDkuODIyIDMuOTI4IDEuNDk1IDguMzI2LS40NzUgOS44MjMtNC40MDRsNC4yNjktMTEuMjA4aDI5LjA3N2w0LjIyMiAxMS4xODZjMS4xNSAzLjA0OCA0LjA0NyA0LjkyNyA3LjEyMiA0LjkyNi44OTMgMCAxLjgwMi0uMTU4IDIuNjg3LS40OTIgMy45MzItMS40ODQgNS45MTctNS44NzYgNC40MzItOS44MDh6bS00MS43NDMtMjEuMDM1IDguODA3LTIzLjEyNCA4LjcyNyAyMy4xMjR6IiBmaWxsPSIjZWNmNGZmIi8+PGcgZmlsbD0iIzRhODBhYSI+PHBhdGggZD0ibTIxOS4zODkgNDQuMjIzaC01NS4zNmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMXMzLjQwNy03LjYxMiA3LjYxMS03LjYxMmg1NS4zNmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExcy0zLjQwNyA3LjYxMi03LjYxMSA3LjYxMnoiLz48cGF0aCBkPSJtMTk4Ljg4NSA3Ny4wMjloLTM0Ljg1NmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMXMzLjQwNy03LjYxMSA3LjYxMS03LjYxMWgzNC44NTZjNC4yMDQgMCA3LjYxMSAzLjQwOCA3LjYxMSA3LjYxMXMtMy40MDcgNy42MTEtNy42MTEgNy42MTF6Ii8+PHBhdGggZD0ibTE5OC44ODUgMTA5LjgzNGgtMzQuODU2Yy00LjIwNCAwLTcuNjExLTMuNDA4LTcuNjExLTcuNjExczMuNDA3LTcuNjExIDcuNjExLTcuNjExaDM0Ljg1NmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExcy0zLjQwNyA3LjYxMS03LjYxMSA3LjYxMXoiLz48cGF0aCBkPSJtMjE5LjM4OSAyMDguMjUyaC01NS4zNmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMSAwLTQuMjA0IDMuNDA3LTcuNjExIDcuNjExLTcuNjExaDU1LjM2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTFzLTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIvPjxwYXRoIGQ9Im0xOTguODg1IDI0MS4wNTdoLTM0Ljg1NmMtNC4yMDQgMC03LjYxMS0zLjQwOC03LjYxMS03LjYxMSAwLTQuMjA0IDMuNDA3LTcuNjExIDcuNjExLTcuNjExaDM0Ljg1NmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExLjAwMSA0LjIwNC0zLjQwNyA3LjYxMS03LjYxMSA3LjYxMXoiLz48cGF0aCBkPSJtMTk4Ljg4NSAyNzMuODYzaC0zNC44NTZjLTQuMjA0IDAtNy42MTEtMy40MDgtNy42MTEtNy42MTFzMy40MDctNy42MTIgNy42MTEtNy42MTJoMzQuODU2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTJzLTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIvPjwvZz48Zz48Zz48cGF0aCBkPSJtMzU2LjY4MSAxMDkuODM0Yy0yMi4yODYgMC00MC40MTctMTguMTMxLTQwLjQxNy00MC40MTdzMTguMTMtNDAuNDE3IDQwLjQxNy00MC40MTdjOC4wOTggMCAxNS45MTQgMi4zODkgMjIuNjAzIDYuOTA3IDMuNDg0IDIuMzUzIDQuMzk5IDcuMDg1IDIuMDQ3IDEwLjU2OC0yLjM1NCAzLjQ4NC03LjA4NSA0LjM5OS0xMC41NjggMi4wNDctNC4xNjMtMi44MTItOS4wMzItNC4yOTgtMTQuMDgxLTQuMjk4LTEzLjg5MiAwLTI1LjE5NCAxMS4zMDItMjUuMTk0IDI1LjE5NHMxMS4zMDIgMjUuMTk0IDI1LjE5NCAyNS4xOTRjNS4xNzEgMCA5LjUyNS0xLjU0MyAxMi45NDMtNC41ODYuNjY2LS41OTMgMS4zMDEtMS4yNSAxLjg5MS0xLjk1MyAyLjctMy4yMjIgNy41MDEtMy42NDQgMTAuNzIzLS45NDRzMy42NDUgNy41MDEuOTQ0IDEwLjcyM2MtMS4wNjIgMS4yNjgtMi4yMTggMi40Ni0zLjQzMyAzLjU0My02LjIwMyA1LjUyLTE0LjE3OSA4LjQzOS0yMy4wNjkgOC40Mzl6IiBmaWxsPSIjZWNmNGZmIi8+PC9nPjwvZz48Zz48Zz48cGF0aCBkPSJtMzI4LjIwNSAyNzMuODYzYy0yLjAwOSAwLTMuOTM3LS43OTQtNS4zNjItMi4yMS0xLjQzMy0xLjQyMi0yLjI0My0zLjM1Ni0yLjI1LTUuMzc1IDAgMC0uMDg1LTIzLjc4NS0uMDg1LTMyLjkwNSAwLTcuNDgxLS4wNDgtMzIuNzE5LS4wNDgtMzIuNzE5LS4wMDQtMi4wMjEuNzk3LTMuOTYxIDIuMjI0LTUuMzkxIDEuNDI4LTEuNDMxIDMuMzY3LTIuMjM0IDUuMzg4LTIuMjM0aDE4LjU4M2MyMC40IDAgMzQuMTA3IDE2LjI0MiAzNC4xMDcgNDAuNDE3IDAgMjIuOTk2LTE0LjA1OSAzOS45MzMtMzMuNDMxIDQwLjI3Mi01LjI4OS4wOTItMTguNTM1LjE0My0xOS4wOTcuMTQ1LS4wMSAwLS4wMTkgMC0uMDI5IDB6bTcuNDkzLTY1LjYxMWMuMDE0IDguMDcuMDM0IDIwLjI5My4wMzQgMjUuMTIyIDAgNS43ODIuMDM1IDE3LjQ2OC4wNTkgMjUuMjI4IDQuMDQzLS4wMjQgOC42OTYtLjA2IDExLjI3NS0uMTA1IDEyLjc2MS0uMjIzIDE4LjQ3NC0xMi43NDMgMTguNDc0LTI1LjA1MSAwLTEyLjE4LTQuOTYtMjUuMTk0LTE4Ljg4NC0yNS4xOTR6IiBmaWxsPSIjZWNmNGZmIi8+PC9nPjwvZz48cGF0aCBkPSJtNTA0LjM4OCA0NC4yMjNoLTU1LjM2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExczMuNDA5LTcuNjEyIDcuNjEzLTcuNjEyaDU1LjM2YzQuMjA0IDAgNy42MTIgMy40MDggNy42MTIgNy42MTFzLTMuNDA4IDcuNjEyLTcuNjEzIDcuNjEyeiIgZmlsbD0iIzRhODBhYSIvPjxwYXRoIGQ9Im00ODMuODg1IDc3LjAyOWgtMzQuODU2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExczMuNDA3LTcuNjExIDcuNjEyLTcuNjExaDM0Ljg1NmM0LjIwNCAwIDcuNjExIDMuNDA4IDcuNjExIDcuNjExcy0zLjQwNyA3LjYxMS03LjYxMSA3LjYxMXoiIGZpbGw9IiM0YTgwYWEiLz48cGF0aCBkPSJtNDgzLjg4NSAxMDkuODM0aC0zNC44NTZjLTQuMjA0IDAtNy42MTItMy40MDgtNy42MTItNy42MTFzMy40MDctNy42MTEgNy42MTItNy42MTFoMzQuODU2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTFzLTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIgZmlsbD0iIzRhODBhYSIvPjxwYXRoIGQ9Im01MDQuMzg4IDIwOC4yNTJoLTU1LjM2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExIDAtNC4yMDQgMy40MDctNy42MTEgNy42MTItNy42MTFoNTUuMzZjNC4yMDQgMCA3LjYxMiAzLjQwOCA3LjYxMiA3LjYxMXMtMy40MDcgNy42MTEtNy42MTIgNy42MTF6IiBmaWxsPSIjNGE4MGFhIi8+PHBhdGggZD0ibTQ4My44ODUgMjQxLjA1N2gtMzQuODU2Yy00LjIwNCAwLTcuNjEyLTMuNDA4LTcuNjEyLTcuNjExIDAtNC4yMDQgMy40MDctNy42MTEgNy42MTItNy42MTFoMzQuODU2YzQuMjA0IDAgNy42MTEgMy40MDggNy42MTEgNy42MTEuMDAxIDQuMjA0LTMuNDA3IDcuNjExLTcuNjExIDcuNjExeiIgZmlsbD0iIzRhODBhYSIvPjxwYXRoIGQ9Im00ODMuODg1IDI3My44NjNoLTM0Ljg1NmMtNC4yMDQgMC03LjYxMi0zLjQwOC03LjYxMi03LjYxMXMzLjQwNy03LjYxMiA3LjYxMi03LjYxMmgzNC44NTZjNC4yMDQgMCA3LjYxMSAzLjQwOCA3LjYxMSA3LjYxMnMtMy40MDcgNy42MTEtNy42MTEgNy42MTF6IiBmaWxsPSIjNGE4MGFhIi8+PGc+PHBhdGggZD0ibTg0Ljg3MyA0OTguNjg2IDEwLjQzOSA3LjU3NGMxLjczMyAxLjI1NyAzLjgxOSAxLjkzNCA1Ljk2IDEuOTM0aDE3My41NjhjNC4xIDAgNy4wMjgtMy45NjkgNS44MTgtNy44ODdsLTguMjcxLTI2Ljc3MWMtLjI0NS0uNzkzLS4zOTItMS42MTMtLjQzNy0yLjQ0MWwtMS45NjYtMzUuOTE4Yy0uMTgzLTMuMzQ4LS43NzYtNi42NjEtMS43NjYtOS44NjVsLTMxLjk1NC0xMDMuNDNjLTMuMjgyLTEwLjYyMi0xNC4zMzctMTcuMTE3LTI1LjA2OS0xNC4yMTUtMTEuMjY3IDMuMDQ3LTE3LjY3MiAxNC43OTQtMTQuMjU2IDI1Ljg1bC02LjIxLTIwLjFjLTMuMjgyLTEwLjYyMi0xNC4zMzctMTcuMTE3LTI1LjA2OS0xNC4yMTUtMTEuMjY3IDMuMDQ3LTE3LjY3MiAxNC43OTQtMTQuMjU2IDI1Ljg1bC01LjkwNy0xOS4xMmMtMy4yODItMTAuNjIyLTE0LjMzNy0xNy4xMTgtMjUuMDY5LTE0LjIxNS0xMS4yNjcgMy4wNDctMTcuNjcyIDE0Ljc5NC0xNC4yNTYgMjUuODVsLTIwLjQzMi02Ni4xMzdjLTMuMjgyLTEwLjYyMi0xNC4zMzctMTcuMTE4LTI1LjA2OS0xNC4yMTUtMTEuMjY3IDMuMDQ3LTE3LjY3MiAxNC43OTQtMTQuMjU2IDI1Ljg1bDM2LjMxMyAxMTcuNTRjLTMuNDE2LTExLjA1Ni0xNS4zMy0xNy4xNDQtMjYuMzUzLTEzLjMwNC0xMC40OTkgMy42NTctMTUuOTY0IDE1LjI1Ni0xMi42ODIgMjUuODc4bDI2LjA4MSA4NC40MmMyLjYxOSA4LjQ3OCA3LjkxNyAxNS44NzcgMTUuMDk5IDIxLjA4N3oiIGZpbGw9IiNmZmRkY2UiLz48cGF0aCBkPSJtMTYwLjM1IDUwOC4xOTRoMTE0LjQ5YzQuMSAwIDcuMDI4LTMuOTY5IDUuODE4LTcuODg3bC04LjI3MS0yNi43NzFjLS4yNDUtLjc5My0uMzkyLTEuNjEzLS40MzctMi40NDFsLTEuOTY2LTM1LjkyYy0uMTgzLTMuMzQ3LS43NzYtNi42Ni0xLjc2Ni05Ljg2MmwtMjAuNTM2LTY2LjQ3M2MtNy45MzEgNDQuMzk1LTI5LjQ0NiAxMDcuNjk0LTg3LjMzMiAxNDkuMzU0eiIgZmlsbD0iI2ZmY2JiZSIvPjwvZz48ZyBmaWxsPSIjZmZjYmJlIj48cGF0aCBkPSJtNjUuMjA2IDIzNi41NTIgNDQuNDg1IDE0My45OWMxLjAxIDMuMjY4IDQuMDIgNS4zNjcgNy4yNzEgNS4zNjcuNzQzIDAgMS41LS4xMSAyLjI0OS0uMzQxIDQuMDE3LTEuMjQxIDYuMjY3LTUuNTAzIDUuMDI2LTkuNTE5bC0zOC41MjUtMTI0LjY5OGMtMi44NDUtOS4wNzktMTEuMzc0LTE1LjEwNC0yMC41MDYtMTQuNzk5eiIvPjxwYXRoIGQ9Im0xMjQuOTYzIDI5MS4wNTMgMjMuOTA4IDc3LjM4NGMxLjAxIDMuMjY4IDQuMDIgNS4zNjcgNy4yNzEgNS4zNjcuNzQzIDAgMS41MDEtLjExIDIuMjQ5LS4zNDEgNC4wMTctMS4yNDEgNi4yNjctNS41MDMgNS4wMjYtOS41MTlsLTE3Ljk0OS01OC4wOTZjLTIuODQ2LTkuMDc3LTExLjM3NS0xNS4xLTIwLjUwNS0xNC43OTV6Ii8+PHBhdGggZD0ibTE3MC4xOTUgMjk4LjUzOSAxNy44NTUgNTcuNzk0YzEuMDEgMy4yNjggNC4wMiA1LjM2NyA3LjI3MSA1LjM2Ny43NDMgMCAxLjUwMS0uMTEgMi4yNDktLjM0MSA0LjAxNy0xLjI0MSA2LjI2Ny01LjUwMyA1LjAyNi05LjUxOWwtMTEuODk3LTM4LjUwOGMtMi44NDYtOS4wNzYtMTEuMzc0LTE1LjA5OC0yMC41MDQtMTQuNzkzeiIvPjxwYXRoIGQ9Im0yMTUuNzY2IDMwNy4wMDQgMTEuNzQgMzcuOTk5YzEuMDEgMy4yNjggNC4wMiA1LjM2NyA3LjI3MSA1LjM2Ny43NDMgMCAxLjUtLjExIDIuMjQ5LS4zNDEgMy44MjQtMS4xODEgNi4wNC01LjEwMiA1LjE3My04Ljk0MWwtNS45MzQtMTkuMjA2Yy0yLjgxNi05LjExMi0xMS4zNTMtMTUuMTY3LTIwLjQ5OS0xNC44Nzh6Ii8+PHBhdGggZD0ibTgyLjUyNCAzODAuMDQ1Yy0yLjk4Mi04Ljc1LTExLjMzNi0xNC4yMTktMjAuMjE0LTEzLjg1NWwxOS42NSA2My42MDQtNC42MTkgOC43NWMtMS45NjMgMy43MTgtLjU0MSA4LjMyMiAzLjE3NiAxMC4yODUgMS4xMzQuNTk5IDIuMzQ5Ljg4MiAzLjU0Ny44ODIgMi43MzIgMCA1LjM3NC0xLjQ3NSA2LjczOC00LjA1OWw2LjA5Mi0xMS41MzljLjk0My0xLjc4NSAxLjEzNy0zLjg3Mi41NDEtNS44MDF6Ii8+PC9nPjwvZz48L3N2Zz4="
-                    />
-                  </div>
-                  <div className="sales__section-img--accessories-text">Brand/Model</div>
-                </div>
-              </div>
-            )}
-            {currentMake ? (
-              <Card className="sales__selectarea-card" size="small" title="Selected model">
-                <div className="flex">
-                  <section className="sales__selectarea-card-column">
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Model</div>
-                      <div className="sales__selectarea-card-row-right--make">{currentMake.title}</div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Series</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.series === null || currentMake.series === '' ? '-' : currentMake.series}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Length</div>
-                      <div className="sales__selectarea-card-row-right--make">{currentMake.length}mm</div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Config</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.config ? currentMake.config : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Torque</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.torque ? currentMake.torque : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Horsepower</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.horsepower ? `${currentMake.horsepower}PC` : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Emission</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.emission ? currentMake.emission : '-'}
-                      </div>
-                    </div>
-                  </section>
-                  <section className="sales__selectarea-card-column">
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
-                      <div className="sales__selectarea-card-row-right--make">{currentMake.tire}</div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.wheelbase.title ? `${currentMake.wheelbase.title}mm` : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Transmission</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.transmission ? currentMake.transmission : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Engine Capacity</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.engine_cap ? `${currentMake.engine_cap}CC` : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Year</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.year ? currentMake.year : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">GVW</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentMake.gvw ? `${currentMake.gvw}kg` : '-'}
-                      </div>
-                    </div>
-                  </section>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Price</div>
-                  <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                    RM
-                    <NumberFormat value={currentMake?.price} displayType={'text'} thousandSeparator={true} />
-                  </div>
-                </div>
-              </Card>
-            ) : (
-              <Card className="sales__selectarea-card" size="small" title="Selected model">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">None</div>
-                </div>
-              </Card>
-            )}
-          </div>
-
-          {/* Selections on the right */}
-          <div className="sales__section-right">
-            <div className="sales__selectarea-desc">
-              This page is to choose your preferred whip.
-              <br />
-              Choose your trusted or preferred brand, HINO is cool.
-            </div>
-            <div className="sales__selectarea-innerdiv">
-              <div>Select the model of your vehicle</div>
-              <>
-                {salesBrandsArray && (
-                  <>
-                    {salesBrandsArray.map((brand) => {
-                      // brand here is an object of brand containing values of series array
-                      // {["HINO"]: TSalesMakeSeries[]}
-                      //  To extract the array out, we have to do this
-                      // since we are already looping the object, when we do Object.keys
-                      // we will obtain only 1 value ['DAIHATSU'] for example, so thats why we use 0 here as index
-                      let brandName = Object.keys(brand)[0];
-                      return (
-                        <div className="sales__selectarea--brand" key={uuidv4()}>
-                          <div>
-                            <Divider
-                              orientation="left"
-                              className="sales__selectarea-categorydivider sales__selectarea-categorydivider--brand"
-                            >
-                              {brandName}
-                            </Divider>
-                          </div>
-                          {/* Groups of different series  */}
-                          {brand[brandName] &&
-                            brand[brandName].map((series) => {
-                              // same things goes to series
-                              // series here is an object of series containing array of its object
-                              // {['300 SERIES']: TSalesMakeSeries[]}
-                              let seriesName = Object.keys(series)[0];
-                              return (
-                                <React.Fragment key={uuidv4()}>
-                                  {seriesName !== null && seriesName !== '' && (
-                                    <div className="sales__selectarea-seriestitle">{seriesName}</div>
-                                  )}
-
-                                  <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
-                                    {/* loop the makes array */}
-                                    {series[seriesName].map((make) => {
-                                      return (
-                                        <div
-                                          key={uuidv4()}
-                                          className={`sales__selectarea-button                                            
-                                           ${currentMake?.id === make.id ? 'active' : ''}`}
-                                          onClick={() => {
-                                            //  if currentMake contains an id
-                                            if (currentMake?.id === make.id) {
-                                              // reset the selection
-                                              setCurrentMake(null); //set content to null
-                                              setCurrentOrderObj({
-                                                ...currentOrderObj,
-                                                makeObj: null,
-                                              });
-                                            } else {
-                                              setCurrentMake(make); //select the content of the preview card
-                                              setCurrentOrderObj({
-                                                ...currentOrderObj,
-                                                makeObj: {
-                                                  brandName: brandName,
-                                                  seriesName: seriesName,
-                                                  seriesObj: make,
-                                                },
-                                              });
-                                            }
-                                          }}
-                                        >
-                                          <div>{make.title}</div>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </React.Fragment>
-                              );
-                            })}
-                        </div>
-                      );
-                    })}
-                  </>
-                )}
-              </>
-            </div>
-          </div>
-        </section>
-
-        <div className="sales__length-btn-div">
-          <Button
-            className="sales__length-btn margin_r-1"
-            onClick={() => {
-              prev();
-              setCurrentMake(null);
-            }}
-          >
-            Back
-          </Button>
-          {currentStep < totalSteps - 1 && (
-            <Button
-              className="sales__length-btn"
-              type="primary"
-              disabled={currentMake === null}
-              onClick={() => {
-                // At the end of the choosing phase after user done choosing brand
-                // user click on complete button and we store the current order object
-                // into the localOrdersArray in redux so we can save it in localstorage
-                let copyArray = [...localOrdersArray];
-                copyArray.push(currentOrderObj);
-                onStoreLocalOrders(copyArray);
-                next();
-              }}
-            >
-              Complete
-            </Button>
-          )}
-        </div>
       </section>
     </>
   );
@@ -1372,17 +1379,17 @@ const SalesPage: React.FC<Props> = ({
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Body</span>
-              {currentBodyLength && (
-                <span className="sales__breadcrumb-highlight">({currentBodyLength?.body.title})</span>
-              )}
+              {currentBody && <span className="sales__breadcrumb-highlight">({currentBody?.title})</span>}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="sales__breadcrumb-text">Option</span>
+              {currentBodyMake && (
+                <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make.brand.title} ${currentBodyMake?.make.title} ${currentBodyMake?.make.series})`}</span>
+              )}{' '}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Accessory</span>
               <span className="sales__breadcrumb-highlight">({totalAccessoriesArrayLength} Items)</span>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <span className="sales__breadcrumb-text">Brand</span>
-              {currentMake && <span className="sales__breadcrumb-highlight">({currentMake?.title})</span>}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Overview</span>
@@ -1483,9 +1490,9 @@ const SalesPage: React.FC<Props> = ({
               // Model subtotal price - add all except insurance fees
               /* ===================================================== */
               let modelSubtotalPrice = 0;
-              if (order.makeObj && order.bodyLengthObj) {
+              if (order.bodyMakeObj && order.bodyLengthObj) {
                 modelSubtotalPrice =
-                  order.makeObj.seriesObj.price + order.bodyLengthObj.price + totalAccessoriesPrice + miscellaneousFees;
+                  order.bodyMakeObj.make.price + order.bodyLengthObj.price + totalAccessoriesPrice + miscellaneousFees;
               }
 
               /* ======================== */
@@ -1530,10 +1537,10 @@ const SalesPage: React.FC<Props> = ({
                     {/* Image div on the left */}
                     <section className="sales__overview-row-image-div">
                       {/* Show make images */}
-                      {order.makeObj && order.makeObj?.seriesObj.images.length > 0 ? (
+                      {order.bodyMakeObj && order.bodyMakeObj?.make.images.length > 0 ? (
                         <img
-                          alt={order.makeObj?.seriesObj.images[0].filename}
-                          src={order.makeObj?.seriesObj.images[0].url}
+                          alt={order.bodyMakeObj?.make.images[0].filename}
+                          src={order.bodyMakeObj?.make.images[0].url}
                         />
                       ) : (
                         <img className="sales__overview-row-image" src={img_not_available_link} alt="not available" />
@@ -1563,7 +1570,7 @@ const SalesPage: React.FC<Props> = ({
                         {/* ======================= */}
                         <div className="sales__selectarea-seriestitle">
                           <span className="sales__overview-row-content-subheader">
-                            {`${order.makeObj?.brandName} ${order.makeObj?.seriesName} ${order.makeObj?.seriesObj.title}`}
+                            {`${order.bodyMakeObj?.make.brand.title} ${order.bodyMakeObj?.make.series}  ${order.bodyMakeObj?.make.title}`}
                           </span>
                         </div>
                         <span className="sales__overview-row-content-subheader-price">
@@ -1584,23 +1591,23 @@ const SalesPage: React.FC<Props> = ({
                                 <span>
                                   Chassis Price:&nbsp;
                                   <span className="sales__overview-highlight-model">
-                                    {order.makeObj && order.makeObj?.seriesObj.year === null
+                                    {order.bodyMakeObj && order.bodyMakeObj?.make.year === null
                                       ? /* if year doesnt exist, dont show anything except the model name*/
-                                        order.makeObj.seriesObj.title
-                                      : order.makeObj &&
+                                        order.bodyMakeObj.make.title
+                                      : order.bodyMakeObj &&
                                         /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
-                                        parseInt(order.makeObj.seriesObj.year) === parseInt(moment().year().toString())
-                                      ? `NEW MODEL YEAR ${order.makeObj.seriesObj.year} - ${order.makeObj.seriesObj.title}`
+                                        parseInt(order.bodyMakeObj.make.year) === parseInt(moment().year().toString())
+                                      ? `NEW MODEL YEAR ${order.bodyMakeObj.make.year} - ${order.bodyMakeObj.make.title}`
                                       : /* else show MODEL YEAR - model name */
-                                        order.makeObj &&
-                                        `MODEL ${order.makeObj.seriesObj.year} ${order.makeObj.seriesObj.title}`}
+                                        order.bodyMakeObj &&
+                                        `MODEL ${order.bodyMakeObj.make.year} ${order.bodyMakeObj.make.title}`}
                                   </span>
                                 </span>
                                 <span>
                                   <NumberFormat
                                     displayType={'text'}
                                     thousandSeparator={true}
-                                    value={order.makeObj?.seriesObj.price.toFixed(2)}
+                                    value={order.bodyMakeObj?.make.price.toFixed(2)}
                                   />
                                 </span>
                               </div>
@@ -1636,97 +1643,96 @@ const SalesPage: React.FC<Props> = ({
                                 }
                                 key="model"
                               >
-                                {order.makeObj?.seriesObj.torque !== null && order.makeObj?.seriesObj.torque !== '' && (
+                                {order.bodyMakeObj?.make.torque !== null && order.bodyMakeObj?.make.torque !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Torque:</span>
                                     <span className="sales__overview-panel-specs-value">
-                                      {order.makeObj?.seriesObj.torque}
+                                      {order.bodyMakeObj?.make.torque}
                                     </span>
                                   </div>
                                 )}
-                                {order.makeObj?.seriesObj.config !== null && order.makeObj?.seriesObj.config !== '' && (
+                                {order.bodyMakeObj?.make.config !== null && order.bodyMakeObj?.make.config !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Config:</span>
                                     <span className="sales__overview-panel-specs-value">
-                                      {order.makeObj?.seriesObj.config}
+                                      {order.bodyMakeObj?.make.config}
                                     </span>
                                   </div>
                                 )}
-                                {order.makeObj?.seriesObj.emission !== null &&
-                                  order.makeObj?.seriesObj.emission !== '' && (
-                                    <div className="sales__overview-panel-specs-row">
-                                      <span className="sales__overview-panel-specs-title">Emission:</span>
-                                      <span className="sales__overview-panel-specs-value">
-                                        {order.makeObj?.seriesObj.emission}
-                                      </span>
-                                    </div>
-                                  )}
-                                {order.makeObj?.seriesObj.length !== null && (
+                                {order.bodyMakeObj?.make.emission !== null && order.bodyMakeObj?.make.emission !== '' && (
+                                  <div className="sales__overview-panel-specs-row">
+                                    <span className="sales__overview-panel-specs-title">Emission:</span>
+                                    <span className="sales__overview-panel-specs-value">
+                                      {order.bodyMakeObj?.make.emission}
+                                    </span>
+                                  </div>
+                                )}
+                                {order.bodyMakeObj?.make.length !== null && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Length:</span>
                                     <span className="sales__overview-panel-specs-value">
-                                      {order.makeObj?.seriesObj.length}mm
+                                      {order.bodyMakeObj?.make.length}mm
                                     </span>
                                   </div>
                                 )}
-                                {order.makeObj?.seriesObj.horsepower !== null &&
-                                  order.makeObj?.seriesObj.horsepower !== '' && (
+                                {order.bodyMakeObj?.make.horsepower !== null &&
+                                  order.bodyMakeObj?.make.horsepower !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Horsepower:</span>
                                       <span className="sales__overview-panel-specs-value">
-                                        {order.makeObj?.seriesObj.horsepower}PS
+                                        {order.bodyMakeObj?.make.horsepower}PS
                                       </span>
                                     </div>
                                   )}
-                                {order.makeObj?.seriesObj.year !== null && order.makeObj?.seriesObj.year !== '' && (
+                                {order.bodyMakeObj?.make.year !== null && order.bodyMakeObj?.make.year !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Year:</span>
                                     <span className="sales__overview-panel-specs-value">
-                                      {order.makeObj?.seriesObj.year}
+                                      {order.bodyMakeObj?.make.year}
                                     </span>
                                   </div>
                                 )}
 
-                                {order.makeObj?.seriesObj.tire !== null && order.makeObj?.seriesObj.tire !== '' && (
+                                {order.bodyMakeObj?.make.tire !== null && order.bodyMakeObj?.make.tire !== 0 && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Tyre Count:</span>
                                     <span className="sales__overview-panel-specs-value">
-                                      {order.makeObj?.seriesObj.tire} tires
+                                      {order.bodyMakeObj?.make.tire} tires
                                     </span>
                                   </div>
                                 )}
-                                {order.makeObj?.seriesObj.wheelbase.title !== null &&
-                                  order.makeObj?.seriesObj.wheelbase.title !== '' && (
+                                {order.bodyMakeObj?.make.wheelbase.title !== null &&
+                                  order.bodyMakeObj?.make.wheelbase.title !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Wheelbase:</span>
                                       <span className="sales__overview-panel-specs-value">
-                                        {order.makeObj?.seriesObj.wheelbase.title}mm
+                                        {order.bodyMakeObj?.make.wheelbase.title}mm
                                       </span>
                                     </div>
                                   )}
-                                {order.makeObj?.seriesObj.transmission !== null &&
-                                  order.makeObj?.seriesObj.transmission !== '' && (
+                                {order.bodyMakeObj?.make.transmission !== null &&
+                                  order.bodyMakeObj?.make.transmission !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Transmission:</span>
                                       <span className="sales__overview-panel-specs-value">
-                                        {order.makeObj?.seriesObj.transmission}
+                                        {order.bodyMakeObj?.make.transmission}
                                       </span>
                                     </div>
                                   )}
-                                {order.makeObj?.seriesObj.engine_cap !== null &&
-                                  order.makeObj?.seriesObj.engine_cap !== '' && (
+                                {order.bodyMakeObj?.make.engine_cap !== null &&
+                                  order.bodyMakeObj?.make.engine_cap !== '' && (
                                     <div className="sales__overview-panel-specs-row">
                                       <span className="sales__overview-panel-specs-title">Engine Capacity:</span>
                                       <span className="sales__overview-panel-specs-value">
-                                        {order.makeObj?.seriesObj.engine_cap}CC
+                                        {order.bodyMakeObj?.make.engine_cap}CC
                                       </span>
                                     </div>
                                   )}
-                                {order.makeObj?.seriesObj.gvw !== null && order.makeObj?.seriesObj.gvw !== '' && (
+                                {order.bodyMakeObj?.make.gvw !== null && order.bodyMakeObj?.make.gvw !== '' && (
                                   <div className="sales__overview-panel-specs-row">
                                     <span className="sales__overview-panel-specs-title">Gross Vehicle Weight:</span>
                                     <span className="sales__overview-panel-specs-value">
-                                      {order.makeObj?.seriesObj.gvw}kg
+                                      {order.bodyMakeObj?.make.gvw}kg
                                     </span>
                                   </div>
                                 )}
@@ -1926,9 +1932,9 @@ const SalesPage: React.FC<Props> = ({
           setCurrentStep(0);
           setCurrentLength(null);
           setCurrentTyre(null);
-          setCurrentBodyLength(null);
+          setCurrentBody(null);
           setCurrentAccessory(null);
-          setCurrentMake(null);
+          setCurrentBodyMake(null);
         }}
       >
         Go back to first page
@@ -1946,14 +1952,15 @@ const SalesPage: React.FC<Props> = ({
     {
       step: 3,
       title: STEPS_BODY,
-      content: bodyLengthSection,
+      content: bodySection,
     },
+    { step: 5, title: STEPS_BODYMAKE, content: bodyMakeSection },
     {
       step: 4,
       title: STEPS_ACCESSORY,
-      content: bodyAccessorySection,
+      content: accessorySection,
     },
-    { step: 5, title: STEPS_BRAND, content: brandSection },
+
     { step: 6, title: 'Overview', content: overviewSection },
   ];
 
@@ -1970,8 +1977,9 @@ const SalesPage: React.FC<Props> = ({
     if (
       getSalesMakesSucceed ||
       getSalesLengthsSucceed ||
-      getSalesBodyLengthsSucceed ||
-      getSalesBodyAccessoriesSucceed
+      getSalesBodyMakesSucceed ||
+      getSalesBodiesSucceed ||
+      getSalesAccessoriesSucceed
     ) {
       // Clear the state
       onClearSalesState();
@@ -1986,9 +1994,10 @@ const SalesPage: React.FC<Props> = ({
     setCurrentStep,
     onClearSalesState,
     getSalesMakesSucceed,
+    getSalesBodiesSucceed,
     getSalesLengthsSucceed,
-    getSalesBodyLengthsSucceed,
-    getSalesBodyAccessoriesSucceed,
+    getSalesBodyMakesSucceed,
+    getSalesAccessoriesSucceed,
   ]);
 
   /* ====================================================== */
@@ -2018,16 +2027,16 @@ const SalesPage: React.FC<Props> = ({
                               {currentLength && item.title === STEPS_LENGTH && (
                                 <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
                               )}
-                              {currentBodyLength && item.title === STEPS_BODY && (
-                                <span className="sales__breadcrumb-highlight">({currentBodyLength?.body.title})</span>
+                              {currentBody && item.title === STEPS_BODY && (
+                                <span className="sales__breadcrumb-highlight">({currentBody?.body.title})</span>
                               )}
                               {currentAccessory && item.title === STEPS_ACCESSORY && (
                                 <span className="sales__breadcrumb-highlight">
                                   ({totalAccessoriesArrayLength} Items)
                                 </span>
                               )}
-                              {currentMake && item.title === STEPS_BRAND && (
-                                <span className="sales__breadcrumb-highlight">{currentMake.series}</span>
+                              {currentBodyMake && item.title === STEPS_BODYMAKE && (
+                                <span className="sales__breadcrumb-highlight">{currentBodyMake.series}</span>
                               )}
                             </div> */}
                         </div>
@@ -2052,8 +2061,9 @@ interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
   // Arrays
-  bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
+  bodiesArray?: TReceivedBodyObj[] | null;
   salesBrandsArray?: TReceivedSalesMakesObj[] | null;
+  bodyMakesArray?: TReceivedSalesBodyMakeObj[] | null;
   generalAccessoriesArray: TReceivedAccessoryObj[] | null;
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] | null;
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
@@ -2064,8 +2074,9 @@ interface StateProps {
   // Bool for get api
   getSalesMakesSucceed?: boolean | null;
   getSalesLengthsSucceed?: boolean | null;
-  getSalesBodyLengthsSucceed?: boolean | null;
-  getSalesBodyAccessoriesSucceed?: boolean | null;
+  getSalesBodiesSucceed?: boolean | null;
+  getSalesBodyMakesSucceed?: boolean | null;
+  getSalesAccessoriesSucceed?: boolean | null;
 }
 
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
@@ -2074,8 +2085,9 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       loading: state.sales.loading,
       errorMessage: state.sales.errorMessage,
       // Arrays
+      bodiesArray: state.sales.bodiesArray,
+      bodyMakesArray: state.sales.bodyMakesArray,
       localOrdersArray: state.sales.localOrdersArray,
-      bodyLengthsArray: state.sales.bodyLengthsArray,
       salesBrandsArray: state.sales.salesBrandsArray,
       lengthsCategoriesArray: state.sales.lengthsCategoriesArray,
       generalAccessoriesArray: state.sales.generalAccessoriesArray,
@@ -2084,8 +2096,9 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       // Succeed states
       getSalesMakesSucceed: state.sales.getSalesMakesSucceed,
       getSalesLengthsSucceed: state.sales.getSalesLengthsSucceed,
-      getSalesBodyLengthsSucceed: state.sales.getSalesBodyLengthsSucceed,
-      getSalesBodyAccessoriesSucceed: state.sales.getSalesBodyAccessoriesSucceed,
+      getSalesBodiesSucceed: state.sales.getSalesBodiesSucceed,
+      getSalesBodyMakesSucceed: state.sales.getSalesBodyMakesSucceed,
+      getSalesAccessoriesSucceed: state.sales.getSalesAccessoriesSucceed,
     };
   }
 };
@@ -2096,8 +2109,9 @@ interface DispatchProps {
   onStoreLocalOrders: typeof actions.storeLocalOrders;
   onGetSalesMakes: typeof actions.getSalesMakes;
   onGetSalesLengths: typeof actions.getSalesLengths;
-  onGetSalesBodyLengths: typeof actions.getSalesBodyLengths;
-  onGetSalesBodyAccessories: typeof actions.getSalesBodyAccessories;
+  onGetSalesBodies: typeof actions.getSalesBodies;
+  onGetSalesBodyMakes: typeof actions.getSalesBodyMakes;
+  onGetSalesAccessories: typeof actions.getSalesAccessories;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
@@ -2106,9 +2120,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetSalesLengths: (tire) => dispatch(actions.getSalesLengths(tire)),
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
-    onGetSalesBodyLengths: (length_id, tire) => dispatch(actions.getSalesBodyLengths(length_id, tire)),
+    onGetSalesBodies: (length_id, tire) => dispatch(actions.getSalesBodies(length_id, tire)),
     onRemoveAnOrder: (index, localOrdersArray) => dispatch(actions.removeAnOrder(index, localOrdersArray)),
-    onGetSalesBodyAccessories: (body_length_id) => dispatch(actions.getSalesBodyAccessories(body_length_id)),
+    onGetSalesAccessories: (body_length_id) => dispatch(actions.getSalesAccessories(body_length_id)),
+    onGetSalesBodyMakes: (length_id, tire, body_id) => dispatch(actions.getSalesBodyMakes(length_id, tire, body_id)),
   };
 };
 

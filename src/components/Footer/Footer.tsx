@@ -15,10 +15,10 @@ const Footer: React.FC<Props> = () => {
       <footer className="footer__outerdiv">
         <Container>
           <Row gutter={8}>
-            <Col xs={{ span: 24 }} span={6}>
+            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 6 }} lg={{ span: 6 }}>
               <div className="footer__col footer__col--1">
                 <div>
-                  <span className="footer__store-name">SOON SENG MOTORS</span>
+                  <div className="footer__store-name">SOON SENG MOTORS</div>
                   <div className="footer__store-address">
                     LOT 2776
                     <br />
@@ -36,7 +36,7 @@ const Footer: React.FC<Props> = () => {
 
                   <div className="footer__store-contact-div">
                     <span className="footer__store-contact">Contact Us:</span>
-                    <div>
+                    <div className="footer__store-phone-div">
                       <span className="footer__store-phone">09-747-7835</span>
                       <br />
                       <span className="footer__store-phone">012-900-2676</span>
@@ -45,7 +45,7 @@ const Footer: React.FC<Props> = () => {
                 </div>
               </div>
             </Col>
-            <Col xs={{ span: 24 }} span={6}>
+            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 6 }} lg={{ span: 6 }}>
               <div className="footer__col footer__col--2">
                 <div style={{ width: '100%' }}>
                   <div className="footer__services-text">Our Services</div>
@@ -66,7 +66,7 @@ const Footer: React.FC<Props> = () => {
                 </div>
               </div>
             </Col>
-            <Col xs={{ span: 24 }} span={6}>
+            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 6 }} lg={{ span: 6 }}>
               <div className="footer__col footer__col--2">
                 <div style={{ width: '100%' }}>
                   <div className="footer__services-text">Our Company</div>
@@ -83,7 +83,7 @@ const Footer: React.FC<Props> = () => {
                 </div>
               </div>
             </Col>
-            <Col xs={{ span: 24 }} span={6}>
+            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 6 }} lg={{ span: 6 }}>
               <div className="footer__col footer__col--2">
                 <div style={{ width: '100%' }}>
                   <div className="footer__services-text">Follow Us</div>

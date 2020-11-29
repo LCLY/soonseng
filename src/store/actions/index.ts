@@ -182,15 +182,20 @@ export {
   getSalesLengthsSucceed,
   getSalesLengthsFailed,
   // get sales bodies
-  getSalesBodyLengths,
-  getSalesBodyLengthsFailed,
-  getSalesBodyLengthsStart,
-  getSalesBodyLengthsSucceed,
+  getSalesBodies,
+  getSalesBodiesFailed,
+  getSalesBodiesStart,
+  getSalesBodiesSucceed,
+  // get sales body makes
+  getSalesBodyMakes,
+  getSalesBodyMakesFailed,
+  getSalesBodyMakesStart,
+  getSalesBodyMakesSucceed,
   // get sales Body accessories
-  getSalesBodyAccessories,
-  getSalesBodyAccessoriesFailed,
-  getSalesBodyAccessoriesStart,
-  getSalesBodyAccessoriesSucceed,
+  getSalesAccessories,
+  getSalesAccessoriesFailed,
+  getSalesAccessoriesStart,
+  getSalesAccessoriesSucceed,
   // get sales makes
   getSalesMakes,
   getSalesMakesFailed,

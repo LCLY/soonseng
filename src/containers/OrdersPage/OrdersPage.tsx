@@ -133,9 +133,9 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                   // Model subtotal price - add all except insurance fees
                   /* ===================================================== */
                   let modelSubtotalPrice = 0;
-                  if (order.makeObj && order.bodyLengthObj) {
+                  if (order.bodyMakeObj && order.bodyLengthObj) {
                     modelSubtotalPrice =
-                      order.makeObj.seriesObj.price +
+                      order.bodyMakeObj.make.price +
                       order.bodyLengthObj.price +
                       totalAccessoriesPrice +
                       miscellaneousFees;
@@ -183,10 +183,10 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                         {/* Image div on the left */}
                         <section className="orders__overview-row-image-div">
                           {/* Show make images */}
-                          {order.makeObj && order.makeObj?.seriesObj.images.length > 0 ? (
+                          {order.bodyMakeObj && order.bodyMakeObj?.make.images.length > 0 ? (
                             <img
-                              alt={order.makeObj?.seriesObj.images[0].filename}
-                              src={order.makeObj?.seriesObj.images[0].url}
+                              alt={order.bodyMakeObj?.make.images[0].filename}
+                              src={order.bodyMakeObj?.make.images[0].url}
                             />
                           ) : (
                             <img
@@ -220,7 +220,7 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                             {/* ======================= */}
                             <div className="sales__selectarea-seriestitle">
                               <span className="orders__overview-row-content-subheader">
-                                {`${order.makeObj?.brandName} ${order.makeObj?.seriesName} ${order.makeObj?.seriesObj.title}`}
+                                {`${order.bodyMakeObj?.make.brand.title} ${order.bodyMakeObj?.make.series} ${order.bodyMakeObj?.make.title}`}
                               </span>
                             </div>
                             <span className="orders__overview-row-content-subheader-price">
@@ -244,24 +244,24 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                                     <span>
                                       Chassis Price:&nbsp;
                                       <span className="orders__overview-highlight-model">
-                                        {order.makeObj && order.makeObj?.seriesObj.year === null
+                                        {order.bodyMakeObj && order.bodyMakeObj?.make.year === null
                                           ? /* if year doesnt exist, dont show anything except the model name*/
-                                            order.makeObj.seriesObj.title
-                                          : order.makeObj &&
+                                            order.bodyMakeObj.make.title
+                                          : order.bodyMakeObj &&
                                             /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
-                                            parseInt(order.makeObj.seriesObj.year) ===
+                                            parseInt(order.bodyMakeObj.make.year) ===
                                               parseInt(moment().year().toString())
-                                          ? `NEW MODEL YEAR ${order.makeObj.seriesObj.year} - ${order.makeObj.seriesObj.title}`
+                                          ? `NEW MODEL YEAR ${order.bodyMakeObj.make.year} - ${order.bodyMakeObj.make.title}`
                                           : /* else show MODEL YEAR - model name */
-                                            order.makeObj &&
-                                            `MODEL ${order.makeObj.seriesObj.year} ${order.makeObj.seriesObj.title}`}
+                                            order.bodyMakeObj &&
+                                            `MODEL ${order.bodyMakeObj.make.year} ${order.bodyMakeObj.make.title}`}
                                       </span>
                                     </span>
                                     <span>
                                       <NumberFormat
                                         displayType={'text'}
                                         thousandSeparator={true}
-                                        value={order.makeObj?.seriesObj.price.toFixed(2)}
+                                        value={order.bodyMakeObj?.make.price.toFixed(2)}
                                       />
                                     </span>
                                   </div>
@@ -297,101 +297,99 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                                     }
                                     key="model"
                                   >
-                                    {order.makeObj?.seriesObj.torque !== null &&
-                                      order.makeObj?.seriesObj.torque !== '' && (
-                                        <div className="orders__overview-panel-specs-row">
-                                          <span className="orders__overview-panel-specs-title">Torque:</span>
-                                          <span className="orders__overview-panel-specs-value">
-                                            {order.makeObj?.seriesObj.torque}
-                                          </span>
-                                        </div>
-                                      )}
-                                    {order.makeObj?.seriesObj.config !== null &&
-                                      order.makeObj?.seriesObj.config !== '' && (
-                                        <div className="orders__overview-panel-specs-row">
-                                          <span className="orders__overview-panel-specs-title">Config:</span>
-                                          <span className="orders__overview-panel-specs-value">
-                                            {order.makeObj?.seriesObj.config}
-                                          </span>
-                                        </div>
-                                      )}
-                                    {order.makeObj?.seriesObj.emission !== null &&
-                                      order.makeObj?.seriesObj.emission !== '' && (
-                                        <div className="orders__overview-panel-specs-row">
-                                          <span className="orders__overview-panel-specs-title">Emission:</span>
-                                          <span className="orders__overview-panel-specs-value">
-                                            {order.makeObj?.seriesObj.emission}
-                                          </span>
-                                        </div>
-                                      )}
-                                    {order.makeObj?.seriesObj.length !== null && (
+                                    {order.bodyMakeObj?.make.torque !== null && order.bodyMakeObj?.make.torque !== '' && (
                                       <div className="orders__overview-panel-specs-row">
-                                        <span className="orders__overview-panel-specs-title">Length:</span>
+                                        <span className="orders__overview-panel-specs-title">Torque:</span>
                                         <span className="orders__overview-panel-specs-value">
-                                          {order.makeObj?.seriesObj.length}mm
+                                          {order.bodyMakeObj?.make.torque}
                                         </span>
                                       </div>
                                     )}
-                                    {order.makeObj?.seriesObj.horsepower !== null &&
-                                      order.makeObj?.seriesObj.horsepower !== '' && (
+                                    {order.bodyMakeObj?.make.config !== null && order.bodyMakeObj?.make.config !== '' && (
+                                      <div className="orders__overview-panel-specs-row">
+                                        <span className="orders__overview-panel-specs-title">Config:</span>
+                                        <span className="orders__overview-panel-specs-value">
+                                          {order.bodyMakeObj?.make.config}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {order.bodyMakeObj?.make.emission !== null &&
+                                      order.bodyMakeObj?.make.emission !== '' && (
                                         <div className="orders__overview-panel-specs-row">
-                                          <span className="orders__overview-panel-specs-title">Horsepower:</span>
+                                          <span className="orders__overview-panel-specs-title">Emission:</span>
                                           <span className="orders__overview-panel-specs-value">
-                                            {order.makeObj?.seriesObj.horsepower}PS
+                                            {order.bodyMakeObj?.make.emission}
                                           </span>
                                         </div>
                                       )}
-                                    {order.makeObj?.seriesObj.year !== null && order.makeObj?.seriesObj.year !== '' && (
+                                    {order.bodyMakeObj?.make.length !== null && (
+                                      <div className="orders__overview-panel-specs-row">
+                                        <span className="orders__overview-panel-specs-title">Length:</span>
+                                        <span className="orders__overview-panel-specs-value">
+                                          {order.bodyMakeObj?.make.length}mm
+                                        </span>
+                                      </div>
+                                    )}
+                                    {order.bodyMakeObj?.make.horsepower !== null &&
+                                      order.bodyMakeObj?.make.horsepower !== '' && (
+                                        <div className="orders__overview-panel-specs-row">
+                                          <span className="orders__overview-panel-specs-title">Horsepower:</span>
+                                          <span className="orders__overview-panel-specs-value">
+                                            {order.bodyMakeObj?.make.horsepower}PS
+                                          </span>
+                                        </div>
+                                      )}
+                                    {order.bodyMakeObj?.make.year !== null && order.bodyMakeObj?.make.year !== '' && (
                                       <div className="orders__overview-panel-specs-row">
                                         <span className="orders__overview-panel-specs-title">Year:</span>
                                         <span className="orders__overview-panel-specs-value">
-                                          {order.makeObj?.seriesObj.year}
+                                          {order.bodyMakeObj?.make.year}
                                         </span>
                                       </div>
                                     )}
 
-                                    {order.makeObj?.seriesObj.tire !== null && order.makeObj?.seriesObj.tire !== '' && (
+                                    {order.bodyMakeObj?.make.tire !== null && order.bodyMakeObj?.make.tire !== 0 && (
                                       <div className="orders__overview-panel-specs-row">
                                         <span className="orders__overview-panel-specs-title">Tyre Count:</span>
                                         <span className="orders__overview-panel-specs-value">
-                                          {order.makeObj?.seriesObj.tire} tires
+                                          {order.bodyMakeObj?.make.tire} tires
                                         </span>
                                       </div>
                                     )}
-                                    {order.makeObj?.seriesObj.wheelbase.title !== null &&
-                                      order.makeObj?.seriesObj.wheelbase.title !== '' && (
+                                    {order.bodyMakeObj?.make.wheelbase.title !== null &&
+                                      order.bodyMakeObj?.make.wheelbase.title !== '' && (
                                         <div className="orders__overview-panel-specs-row">
                                           <span className="orders__overview-panel-specs-title">Wheelbase:</span>
                                           <span className="orders__overview-panel-specs-value">
-                                            {order.makeObj?.seriesObj.wheelbase.title}mm
+                                            {order.bodyMakeObj?.make.wheelbase.title}mm
                                           </span>
                                         </div>
                                       )}
-                                    {order.makeObj?.seriesObj.transmission !== null &&
-                                      order.makeObj?.seriesObj.transmission !== '' && (
+                                    {order.bodyMakeObj?.make.transmission !== null &&
+                                      order.bodyMakeObj?.make.transmission !== '' && (
                                         <div className="orders__overview-panel-specs-row">
                                           <span className="orders__overview-panel-specs-title">Transmission:</span>
                                           <span className="orders__overview-panel-specs-value">
-                                            {order.makeObj?.seriesObj.transmission}
+                                            {order.bodyMakeObj?.make.transmission}
                                           </span>
                                         </div>
                                       )}
-                                    {order.makeObj?.seriesObj.engine_cap !== null &&
-                                      order.makeObj?.seriesObj.engine_cap !== '' && (
+                                    {order.bodyMakeObj?.make.engine_cap !== null &&
+                                      order.bodyMakeObj?.make.engine_cap !== '' && (
                                         <div className="orders__overview-panel-specs-row">
                                           <span className="orders__overview-panel-specs-title">Engine Capacity:</span>
                                           <span className="orders__overview-panel-specs-value">
-                                            {order.makeObj?.seriesObj.engine_cap}CC
+                                            {order.bodyMakeObj?.make.engine_cap}CC
                                           </span>
                                         </div>
                                       )}
-                                    {order.makeObj?.seriesObj.gvw !== null && order.makeObj?.seriesObj.gvw !== '' && (
+                                    {order.bodyMakeObj?.make.gvw !== null && order.bodyMakeObj?.make.gvw !== '' && (
                                       <div className="orders__overview-panel-specs-row">
                                         <span className="orders__overview-panel-specs-title">
                                           Gross Vehicle Weight:
                                         </span>
                                         <span className="orders__overview-panel-specs-value">
-                                          {order.makeObj?.seriesObj.gvw}kg
+                                          {order.bodyMakeObj?.make.gvw}kg
                                         </span>
                                       </div>
                                     )}
