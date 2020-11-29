@@ -104,81 +104,81 @@ function HomePage() {
       <Container>
         <section className="homepage__section-feature">
           <div className="homepage__section-feature-title">Our values</div>
-          <div className="homepage__feature-top">
-            <div className="homepage__feature-outerdiv">
+          <div className="homepage__values-top">
+            <div className="homepage__values-outerdiv">
               <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
-                <div className="homepage__feature-div">
-                  <div className="homepage__feature-icon-div">
-                    <i className="homepage__feature-icon  fas fa-hard-hat"></i>
+                <div className="homepage__values-div">
+                  <div className="homepage__values-icon-div">
+                    <i className="homepage__values-icon  fas fa-hard-hat"></i>
                   </div>
-                  <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Reliability</div>
-                    <div className="homepage__feature-desc">Turning uncertainties into predictabilities.</div>
+                  <div className="homepage__values-text">
+                    <div className="homepage__values-title">Reliability</div>
+                    <div className="homepage__values-desc">Turning uncertainties into predictabilities.</div>
                   </div>
                 </div>
               </ScrollAnimation>
             </div>
-            <div className="homepage__feature-outerdiv">
+            <div className="homepage__values-outerdiv">
               <ScrollAnimation animateOnce={true} animateIn="fadeInDown">
-                <div className="homepage__feature-div">
-                  <div className="homepage__feature-icon-div">
-                    <i className="homepage__feature-icon fas fa-chart-line"></i>
+                <div className="homepage__values-div">
+                  <div className="homepage__values-icon-div">
+                    <i className="homepage__values-icon fas fa-chart-line"></i>
                   </div>
-                  <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Profit</div>
-                    <div className="homepage__feature-desc">Crafting solutions with customers’ profits in mind.</div>
+                  <div className="homepage__values-text">
+                    <div className="homepage__values-title">Profit</div>
+                    <div className="homepage__values-desc">Crafting solutions with customers’ profits in mind.</div>
                   </div>
                 </div>
               </ScrollAnimation>
             </div>
-            <div className="homepage__feature-outerdiv homepage__feature-outerdiv--efficiency">
+            <div className="homepage__values-outerdiv homepage__values-outerdiv--efficiency">
               <ScrollAnimation animateOnce={true} animateIn="fadeInRight">
-                <div className="homepage__feature-div">
-                  <div className="homepage__feature-icon-div">
-                    <i className="homepage__feature-icon fas fa-business-time"></i>
+                <div className="homepage__values-div">
+                  <div className="homepage__values-icon-div">
+                    <i className="homepage__values-icon fas fa-business-time"></i>
                   </div>
-                  <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Efficiency</div>
-                    <div className="homepage__feature-desc">Using less resources to get more done.</div>
+                  <div className="homepage__values-text">
+                    <div className="homepage__values-title">Efficiency</div>
+                    <div className="homepage__values-desc">Using less resources to get more done.</div>
                   </div>
                 </div>
               </ScrollAnimation>
             </div>
           </div>
 
-          <div className="homepage__feature-bottom">
-            <div className="homepage__feature-outerdiv homepage__feature-outerdiv--bottom">
+          <div className="homepage__values-bottom">
+            <div className="homepage__values-outerdiv homepage__values-outerdiv--bottom">
               <ScrollAnimation animateOnce={true} delay={0.2} animateIn="animate__fadeInBottomLeft">
-                <div className="homepage__feature-div">
+                <div className="homepage__values-div">
                   <div
                     style={{ cursor: 'pointer' }}
-                    className="homepage__feature-icon-div"
+                    className="homepage__values-icon-div"
                     onDoubleClick={() => {
                       if (!animationIsMoving) {
                         vroom();
                       }
                     }}
                   >
-                    <i style={{ zIndex: 10 }} id="truckicon" className="homepage__feature-icon fas fa-truck-moving"></i>
+                    <i style={{ zIndex: 10 }} id="truckicon" className="homepage__values-icon fas fa-truck-moving"></i>
                   </div>
-                  <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Performance</div>
-                    <div className="homepage__feature-desc">
+                  <div className="homepage__values-text">
+                    <div className="homepage__values-title">Performance</div>
+                    <div className="homepage__values-desc">
                       Variety of vehicle selections that strive to perform on every situations possible.
                     </div>
                   </div>
                 </div>
               </ScrollAnimation>
             </div>
-            <div className="homepage__feature-outerdiv homepage__feature-outerdiv--bottom">
+            <div className="homepage__values-outerdiv homepage__values-outerdiv--bottom">
               <ScrollAnimation animateOnce={true} delay={0.4} animateIn="animate__fadeInBottomRight">
-                <div className="homepage__feature-div">
-                  <div className="homepage__feature-icon-div">
-                    <i className="homepage__feature-icon fas fa-leaf"></i>
+                <div className="homepage__values-div">
+                  <div className="homepage__values-icon-div">
+                    <i className="homepage__values-icon fas fa-leaf"></i>
                   </div>
-                  <div className="homepage__feature-text">
-                    <div className="homepage__feature-title">Green Energy</div>
-                    <div className="homepage__feature-desc">
+                  <div className="homepage__values-text">
+                    <div className="homepage__values-title">Green Energy</div>
+                    <div className="homepage__values-desc">
                       Introducing our latest EURO Engine technology in the market.
                     </div>
                   </div>

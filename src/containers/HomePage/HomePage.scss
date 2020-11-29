@@ -22,6 +22,11 @@
       left: 0;
       right: 0;
       bottom: 0;
+
+      @include respond-to(mobile) {
+        padding: 0;
+      }
+
       &-parent {
         position: relative;
       }
@@ -31,7 +36,7 @@
     /* feature section */
     /* ----------------------- */
     &-feature {
-      padding: 12rem 5rem 12rem 5rem;
+      padding: 12rem 0;
       // display: flex;
       // justify-content: space-between;
       overflow-x: hidden;
@@ -131,10 +136,22 @@
       font-size: 8rem;
       text-align: left;
       margin-bottom: 2rem;
+
+      @include respond-to(mobile) {
+        font-size: 4rem;
+        text-align: center;
+      }
+
       &-div {
         margin-bottom: 4rem;
         transform: translateY(-2rem);
         width: 50rem;
+
+        @include respond-to(mobile) {
+          padding-top: 5rem;
+          transform: none;
+          width: auto;
+        }
       }
     }
 
@@ -148,6 +165,13 @@
       margin-right: 3rem;
       opacity: 0;
       transform: translateX(-100%);
+      @include respond-to(mobile) {
+        margin-right: 0;
+        font-size: 1.2rem !important;
+        width: 15rem !important;
+        height: 4rem !important;
+      }
+
       &:hover {
         background: $primary-color-3 !important;
         border: 1px solid white !important;
@@ -161,6 +185,9 @@
       &:focus {
         background: rgba($primary-color-3, 0.3) !important;
         border: 1px solid white !important;
+        @include respond-to(mobile) {
+          background: $primary-color-3 !important;
+        }
       }
 
       // most outerdiv wrapping all buttons
@@ -174,8 +201,20 @@
       &-div {
         display: flex;
         align-items: center;
+
         &:not(:last-child) {
           margin-bottom: 2rem;
+        }
+
+        @include respond-to(mobile) {
+          flex-direction: column;
+          justify-content: center;
+          width: 100%;
+          text-align: center;
+
+          &:not(:last-child) {
+            margin-bottom: 0.5rem;
+          }
         }
       }
 
@@ -183,6 +222,10 @@
       &-description {
         color: white;
         opacity: 0;
+        @include respond-to(mobile) {
+          font-size: 1rem;
+          padding-top: 0.5rem;
+        }
       }
     }
 
@@ -198,25 +241,37 @@
       background: $primary-color-1;
       color: white;
       font-family: $font-firesans;
+      @include respond-to(mobile) {
+        width: 23rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
       &-text {
         color: rgb(190, 190, 190);
         transform: skew(30deg);
         // font-weight: bolder;
+
+        @include respond-to(mobile) {
+          font-size: 1rem;
+        }
       }
     }
   }
 
   /* ================================== */
-  // The features
+  // Our values
   /* ================================== */
-  &__feature {
+  &__values {
     /* ------------------------------------ */
-    // The div of each of the feature
+    // The div of each of the values
     /* ------------------------------------ */
     &-div {
       display: flex;
       align-items: center;
       margin-right: 2rem;
+      @include respond-to(mobile) {
+        margin-right: 0;
+      }
     }
 
     &-top {
@@ -229,14 +284,17 @@
       @include respond-to(tablet) {
         flex-direction: column;
       }
+      @include respond-to(medium) {
+        flex-direction: column;
+      }
     }
     /* ------------------------------------------- */
-    // The bottom part of features
+    // The bottom part of values
     /* ------------------------------------------- */
     &-bottom {
       display: flex;
       justify-content: center;
-      padding: 0 15rem;
+      padding: 0 10%;
       @include respond-to(mobile) {
         flex-direction: column;
         padding: 0;
@@ -246,6 +304,7 @@
         padding: 0;
       }
       @include respond-to(medium) {
+        flex-direction: column;
         padding: 0;
       }
     }
@@ -265,6 +324,10 @@
           border-bottom: 1px solid $translucent-grey;
           width: 100%;
         }
+        @include respond-to(medium) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
       }
       // border bottom wont work on efficiency row using lastchild
       &--efficiency {
@@ -273,6 +336,10 @@
           width: 100%;
         }
         @include respond-to(tablet) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+        @include respond-to(medium) {
           border-bottom: 1px solid $translucent-grey;
           width: 100%;
         }
@@ -287,11 +354,18 @@
         @include respond-to(tablet) {
           width: 100%;
         }
+        @include respond-to(medium) {
+          width: 100%;
+        }
+
         &:not(:last-child) {
           @include respond-to(mobile) {
             border-bottom: 1px solid $translucent-grey;
           }
           @include respond-to(tablet) {
+            border-bottom: 1px solid $translucent-grey;
+          }
+          @include respond-to(medium) {
             border-bottom: 1px solid $translucent-grey;
           }
         }
@@ -323,6 +397,34 @@
             }
           }
         }
+
+        @include respond-to(mobile) {
+          width: 35%;
+          margin-right: 0;
+        }
+        @include respond-to(tablet) {
+          width: 35%;
+          margin-right: 0;
+        }
+        @include respond-to(medium) {
+          width: 35%;
+          margin-right: 0;
+        }
+      }
+    }
+
+    /* ------------------------------ */
+    // the div for the text containing title and desc
+    /* ------------------------------ */
+    &-text {
+      @include respond-to(mobile) {
+        width: 65%;
+      }
+      @include respond-to(tablet) {
+        width: 65%;
+      }
+      @include respond-to(medium) {
+        width: 65%;
       }
     }
 
@@ -332,7 +434,16 @@
     &-title {
       font-weight: bolder;
       font-family: $font-ubuntu;
-      font-size: 1.7rem;
+      font-size: 1.8rem;
+      @include respond-to(mobile) {
+        font-size: 1.4rem;
+      }
+    }
+
+    &-desc {
+      @include respond-to(mobile) {
+        font-size: 1.2rem;
+      }
     }
   }
 

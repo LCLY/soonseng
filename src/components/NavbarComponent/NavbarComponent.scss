@@ -14,6 +14,9 @@
     border-radius: 0.5rem;
     margin-right: 3rem !important;
     object-fit: cover;
+    @include respond-to(mobile) {
+      width: 7rem;
+    }
 
     &:hover {
       transition: all 0.3s ease;
@@ -40,6 +43,7 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+
     & .active {
       // the background when the nav items is active
       // background: $secondary-color-1;
@@ -84,12 +88,21 @@
   &__left {
     &-div {
       display: flex;
+      @include respond-to(mobile) {
+        flex-direction: column;
+      }
     }
   }
 
   &__right {
     &-div {
       display: flex;
+      @include respond-to(mobile) {
+        flex-direction: column;
+        border-top: 1px solid $translucent-grey;
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
     }
   }
 }
