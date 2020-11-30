@@ -62,7 +62,7 @@
         text-align: left;
       }
       @include respond-to(tablet-landscape-up) {
-        font-size: 2rem;
+        font-size: 1.8rem;
         text-align: left;
       }
     }
@@ -165,8 +165,9 @@
     &-text {
       font-size: 2.7rem;
       font-family: $font-firesans;
-      @include respond-to(tablet-landscape-up) {
-        text-align: left;
+
+      @include respond-to(phone-only) {
+        text-align: center;
         padding-bottom: 1rem;
         font-size: 1.8rem;
       }
@@ -175,10 +176,10 @@
         padding-bottom: 1rem;
         font-size: 2.3rem;
       }
-      @include respond-to(phone-only) {
-        text-align: center;
+      @include respond-to(tablet-landscape-up) {
+        font-size: 2.7rem;
+        text-align: left;
         padding-bottom: 1rem;
-        font-size: 1.8rem;
       }
     }
     &-div {
@@ -187,6 +188,9 @@
       }
       @include respond-to(tablet-portrait-up) {
         text-align: center;
+      }
+      @include respond-to(tablet-landscape-up) {
+        text-align: left;
       }
       & a {
         font-size: 1.5rem;
