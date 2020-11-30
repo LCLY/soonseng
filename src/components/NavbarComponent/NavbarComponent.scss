@@ -1,6 +1,10 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv {
+    position: fixed;
+    transition: all 0.5s ease;
+    width: 100%;
+    z-index: 1000;
     & .bg-primary {
       background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
     }
@@ -16,7 +20,7 @@
     border-radius: 0.5rem;
     margin-right: 3rem !important;
     object-fit: cover;
-    @include respond-to(mobile) {
+    @include respond-to(phone-only) {
       width: 7rem;
     }
 
@@ -75,7 +79,7 @@
         border-radius: 0.5rem;
       }
 
-      @include respond-to(tablet) {
+      @include respond-to(tablet-portrait-up) {
         margin: 0.3rem 0;
       }
     }
@@ -90,7 +94,7 @@
   &__left {
     &-div {
       display: flex;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         flex-direction: column;
       }
     }
@@ -99,7 +103,7 @@
   &__right {
     &-div {
       display: flex;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         flex-direction: column;
         border-top: 1px solid $translucent-grey;
         margin-top: 1rem;
