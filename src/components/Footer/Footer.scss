@@ -6,7 +6,7 @@
     color: white;
     padding: 10rem 0 5rem 0;
 
-    @include respond-to(mobile) {
+    @include respond-to(phone-only) {
       padding: 5rem 0 1rem 0;
     }
   }
@@ -15,31 +15,32 @@
   &__col {
     &--1 {
       display: flex;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         padding: 2rem;
       }
-      @include respond-to(tablet) {
+      @include respond-to(tablet-portrait-up) {
         justify-content: center;
         padding: 2rem;
       }
     }
     &--2 {
-      // display: flex;
-      padding-left: 5rem;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         padding: 2rem;
         &:first-child {
           border-top: 1px solid white;
         }
       }
-      @include respond-to(tablet) {
-        padding: 2rem;
-        &:first-child {
-          border-top: 1px solid white;
-        }
-      }
-      @include respond-to(medium) {
+      @include respond-to(tablet-portrait-up) {
         padding: 1.5rem;
+        &:first-child {
+          border-top: none;
+        }
+      }
+      @include respond-to(tablet-landscape-up) {
+        padding-left: 5rem;
+        &:first-child {
+          border-top: none;
+        }
       }
     }
     &--socialmedia {
@@ -50,41 +51,43 @@
   &__store {
     &-name {
       color: $primary-color-1;
-      font-size: 2rem;
       font-family: $font-bowlby;
 
-      @include respond-to(medium) {
-        font-size: 2rem;
-      }
-      @include respond-to(tablet) {
+      @include respond-to(phone-only) {
         font-size: 2.5rem;
         text-align: center;
       }
-      @include respond-to(mobile) {
-        font-size: 2.5rem;
+      @include respond-to(tablet-portrait-up) {
+        font-size: 2rem;
+        text-align: left;
+      }
+      @include respond-to(tablet-landscape-up) {
+        font-size: 2rem;
+        text-align: left;
       }
     }
 
     &-address {
       width: 15rem;
-
-      @include respond-to(medium) {
+      margin-bottom: 1rem;
+      @include respond-to(tablet-landscape-up) {
         font-size: 1.3rem;
       }
-      @include respond-to(tablet) {
+      @include respond-to(tablet-portrait-up) {
         display: none;
       }
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         display: none;
       }
 
       &--mobile {
         display: none;
-        @include respond-to(mobile) {
+        @include respond-to(phone-only) {
           display: block;
           margin: 1rem 0 2rem 0;
         }
-        @include respond-to(tablet) {
+
+        @include respond-to(tablet-portrait-up) {
           display: block;
           margin: 1rem 0 2rem 0;
         }
@@ -92,13 +95,11 @@
     }
     &-phone {
       color: rgb(255, 0, 0);
-      @include respond-to(medium) {
+
+      @include respond-to(tablet-portrait-up) {
         font-size: 1.5rem;
       }
-      @include respond-to(tablet) {
-        font-size: 1.5rem;
-      }
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         font-size: 1.5rem;
       }
     }
@@ -107,29 +108,26 @@
       &-div {
         display: flex;
 
-        @include respond-to(tablet) {
+        @include respond-to(tablet-portrait-up) {
           display: flex;
+          flex-direction: column;
         }
-        @include respond-to(mobile) {
+        @include respond-to(phone-only) {
           display: flex;
           flex-direction: row;
           margin-top: 1rem;
-        }
-        @include respond-to(medium) {
-          display: flex;
-          flex-direction: column;
         }
       }
 
       color: $tertiary-color-1;
       margin-right: 1rem;
-      @include respond-to(medium) {
+      @include respond-to(tablet-landscape-up) {
         font-size: 1.8rem;
       }
-      @include respond-to(tablet) {
+      @include respond-to(tablet-portrait-up) {
         font-size: 1.5rem;
       }
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         font-size: 1.5rem;
         margin-right: 1rem;
       }
@@ -144,7 +142,7 @@
       @include respond-to(tablet) {
         margin-top: 4rem;
       }
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         margin-top: 4rem;
       }
     }
@@ -167,27 +165,27 @@
     &-text {
       font-size: 2.7rem;
       font-family: $font-firesans;
-      @include respond-to(medium) {
+      @include respond-to(tablet-landscape-up) {
         text-align: left;
         padding-bottom: 1rem;
         font-size: 1.8rem;
       }
-      @include respond-to(tablet) {
+      @include respond-to(tablet-portrait-up) {
         text-align: center;
         padding-bottom: 1rem;
-        font-size: 1.8rem;
+        font-size: 2.3rem;
       }
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         text-align: center;
         padding-bottom: 1rem;
         font-size: 1.8rem;
       }
     }
     &-div {
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         text-align: center;
       }
-      @include respond-to(tablet) {
+      @include respond-to(tablet-portrait-up) {
         text-align: center;
       }
       & a {
@@ -196,60 +194,6 @@
         font-family: $font-roboto;
         @include respond-to(tablet) {
           font-size: 1.3rem;
-        }
-      }
-    }
-  }
-
-  /* =============================================== */
-  &__follow {
-    &-outerdiv {
-      display: flex;
-      flex-direction: column;
-      @include respond-to(tablet) {
-        flex-direction: row;
-      }
-      @include respond-to(mobile) {
-        flex-direction: row;
-      }
-    }
-
-    &-text {
-      font-size: 1.8rem;
-      color: $tertiary-color-3;
-      @include respond-to(tablet) {
-        margin-top: 3rem;
-      }
-      @include respond-to(mobile) {
-        margin-top: 3rem;
-        font-size: 1.5rem;
-      }
-    }
-
-    &-icons {
-      &-div {
-        margin-top: 1rem;
-        @include respond-to(tablet) {
-          margin-top: 3rem;
-          margin-left: 2rem;
-        }
-        @include respond-to(mobile) {
-          margin-top: 3rem;
-          margin-left: 2rem;
-        }
-
-        & > .fab {
-          font-size: 2.5rem;
-          cursor: pointer;
-          &:hover {
-            color: $tertiary-color-3;
-          }
-          &:active {
-            color: white;
-          }
-          &:not(:last-child) {
-            margin-right: 1rem;
-          }
         }
       }
     }

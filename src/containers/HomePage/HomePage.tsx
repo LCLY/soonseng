@@ -72,8 +72,9 @@ function HomePage() {
   ];
 
   return (
-    <div>
+    <>
       <NavbarComponent activePage="home" />
+
       <section className="homepage__section-first-parent">
         <div className="homepage__section-first">
           <div className="homepage__first-title-div">
@@ -102,8 +103,8 @@ function HomePage() {
         </div>
       </section>
       <Container>
-        <section className="homepage__section-feature">
-          <div className="homepage__section-feature-title">Our values</div>
+        <section className="homepage__section-values">
+          <div className="homepage__section-values-title">Our values</div>
           <div className="homepage__values-top">
             <div className="homepage__values-outerdiv">
               <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
@@ -112,7 +113,7 @@ function HomePage() {
                     <i className="homepage__values-icon  fas fa-hard-hat"></i>
                   </div>
                   <div className="homepage__values-text">
-                    <div className="homepage__values-title">Reliability</div>
+                    <div className="homepage__values-title">Product Reliability</div>
                     <div className="homepage__values-desc">Turning uncertainties into predictabilities.</div>
                   </div>
                 </div>
@@ -125,8 +126,10 @@ function HomePage() {
                     <i className="homepage__values-icon fas fa-chart-line"></i>
                   </div>
                   <div className="homepage__values-text">
-                    <div className="homepage__values-title">Profit</div>
-                    <div className="homepage__values-desc">Crafting solutions with customers’ profits in mind.</div>
+                    <div className="homepage__values-title">Customers First</div>
+                    <div className="homepage__values-desc">
+                      Generating profit for customers through consistent logistic performance.
+                    </div>
                   </div>
                 </div>
               </ScrollAnimation>
@@ -177,9 +180,9 @@ function HomePage() {
                     <i className="homepage__values-icon fas fa-leaf"></i>
                   </div>
                   <div className="homepage__values-text">
-                    <div className="homepage__values-title">Green Energy</div>
+                    <div className="homepage__values-title">Growth</div>
                     <div className="homepage__values-desc">
-                      Introducing our latest EURO Engine technology in the market.
+                      Taking part in growth, may it be our employees or customers.
                     </div>
                   </div>
                 </div>
@@ -332,8 +335,9 @@ function HomePage() {
           </Carousel>
         </Container>
       </div>
+
       <Footer />
-    </div>
+    </>
   );
 }
 

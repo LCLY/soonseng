@@ -1,24 +1,59 @@
 // mixin media query
-$break-small: 575px;
+$break-small: 576px;
 $break-landscape: 480px;
 $break-tablet: 768px;
 $break-medium: 1200px;
 
-@mixin respond-to($media) {
-  @if $media == mobile {
-    @media only screen and (max-width: $break-small) {
+// @mixin respond-to($media) {
+//   @if $media == mobile {
+//     //  < 576
+//     @media only screen and (max-width: $break-small) {
+//       @content;
+//     }
+//   } @else if $media == mobile-landscape {
+//     @media only screen and (max-height: $break-landscape) {
+//       @content;
+//     }
+//   } @else if $media == tablet {
+//     @media only screen and (max-width: $break-tablet) {
+//       @content;
+//     }
+//   } @else if $media == medium {
+//     @media only screen and (min-width: $break-tablet + 1) and (max-width: $break-medium) {
+//       @content;
+//     }
+//   }
+// }
+
+@mixin respond-to($range) {
+  $phone-upper-boundary: 768px;
+  $tablet-portrait-upper-boundary: 900px;
+  $tablet-landscape-upper-boundary: 1200px;
+  $desktop-upper-boundary: 1800px;
+
+  @if $range == phone-only {
+    // <= 767px
+    @media (max-width: #{$phone-upper-boundary - 1}) {
       @content;
     }
-  } @else if $media == mobile-landscape {
-    @media only screen and (max-height: $break-landscape) {
+  } @else if $range == tablet-portrait-up {
+    //  >= 768px
+    @media (min-width: $phone-upper-boundary) {
       @content;
     }
-  } @else if $media == tablet {
-    @media only screen and (max-width: $break-tablet) {
+  } @else if $range == tablet-landscape-up {
+    //  >= 900px
+    @media (min-width: $tablet-portrait-upper-boundary) {
       @content;
     }
-  } @else if $media == medium {
-    @media only screen and (min-width: $break-tablet) and (max-width: $break-medium) {
+  } @else if $range == desktop-up {
+    //  >= 1200px
+    @media (min-width: $tablet-landscape-upper-boundary) {
+      @content;
+    }
+  } @else if $range == big-desktop-up {
+    //  >= 1800px
+    @media (min-width: $desktop-upper-boundary) {
       @content;
     }
   }

@@ -9,6 +9,7 @@
 
   &__outerdiv {
     flex: 1;
+    padding-top: 106.88px; //height of navbar
   }
 
   // div wrapping the steps and the content
@@ -37,7 +38,7 @@
     // the innerdiv wrapping the description on the left and choices on the right
     &-innerdiv {
       display: flex;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         flex-direction: column;
       }
     }
@@ -47,14 +48,13 @@
       margin-top: 1rem;
       margin-bottom: 0.5rem;
       width: 100%;
-      height: 30rem;
       object-fit: cover;
 
-      @include respond-to(medium) {
+      @include respond-to(tablet-portrait-up) {
         height: 22rem;
       }
-      @include respond-to(tablet) {
-        height: 22rem;
+      @include respond-to(tablet-landscape-up) {
+        height: 30rem;
       }
 
       &-unavailabletext {
@@ -106,10 +106,10 @@
       width: 45%;
       padding-right: 3rem;
 
-      @include respond-to(tablet) {
+      @include respond-to(tablet-portrait-up) {
         padding-right: 1rem;
       }
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         width: 100%;
         padding-right: 0;
       }
@@ -122,7 +122,7 @@
       flex-direction: column;
       width: 55%;
       border-radius: 5px;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         width: 100%;
       }
     }
@@ -197,27 +197,27 @@
       margin-top: 2rem;
       display: grid;
       grid-template-rows: auto;
-      grid-template-columns: repeat(3, 1fr);
       justify-content: center;
       align-items: center;
       grid-auto-rows: 3fr;
       justify-items: center;
-      grid-gap: 2rem;
-      @include respond-to(tablet) {
-        grid-gap: 0.5rem;
-      }
-      @include respond-to(mobile) {
+
+      @include respond-to(phone-only) {
         grid-gap: 0.5rem;
         grid-template-columns: repeat(2, 1fr);
+      }
+      @include respond-to(tablet-portrait-up) {
+        grid-gap: 2rem;
+        grid-template-columns: repeat(3, 1fr);
       }
 
       &--twocolumn {
         grid-template-columns: repeat(2, 1fr);
 
-        @include respond-to(medium) {
+        @include respond-to(tablet-landscape-up) {
           font-size: 1.3rem;
         }
-        @include respond-to(tablet) {
+        @include respond-to(tablet-portrait-up) {
           font-size: 1.2rem;
         }
       }
@@ -241,8 +241,11 @@
     // the select text above the small button
     /* ---------------------- */
     &-selecttext {
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         font-size: 1.2rem;
+      }
+      @include respond-to(tablet-portrait-up) {
+        font-size: 1.5rem;
       }
     }
 
@@ -273,8 +276,12 @@
         background: blue;
       }
 
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         font-size: 1.2rem;
+      }
+
+      @include respond-to(tablet-portrait-up) {
+        font-size: 1.5rem;
       }
 
       /* -------------------------- */
@@ -316,8 +323,11 @@
           width: 25%;
           font-family: $font-firesans;
           color: rgba(0, 0, 0, 0.514);
-          @include respond-to(mobile) {
+          @include respond-to(phone-only) {
             font-size: 1.2rem;
+          }
+          @include respond-to(tablet-portrait-up) {
+            font-size: 1.5rem;
           }
 
           // for make
@@ -325,8 +335,11 @@
             width: 52%;
             font-family: $font-firesans;
             color: rgba(0, 0, 0, 0.514);
-            @include respond-to(mobile) {
+            @include respond-to(phone-only) {
               font-size: 1.2rem;
+            }
+            @include respond-to(tablet-portrait-up) {
+              font-size: 1.5rem;
             }
           }
         }
@@ -345,38 +358,47 @@
             display: block !important;
             width: calc(55%);
             display: flex;
-            font-size: 1.3rem;
             overflow: hidden;
             text-overflow: ellipsis;
             // white-space: nowrap;
-            @include respond-to(mobile) {
+            @include respond-to(phone-only) {
               font-size: 1rem;
+            }
+            @include respond-to(tablet-portrait-up) {
+              font-size: 1.3rem;
             }
           }
         }
       }
       &-dimension {
-        @include respond-to(mobile) {
+        @include respond-to(phone-only) {
           font-size: 1rem !important;
+        }
+        @include respond-to(tablet-portrait-up) {
+          font-size: 1.2rem;
         }
       }
       /* ------------- */
       // price in the card
       /* ------------- */
       &-price {
-        font-size: 1.5rem;
         font-weight: bolder;
         color: $primary-color-4;
         font-family: $font-opensans;
-        @include respond-to(mobile) {
+        @include respond-to(phone-only) {
           font-size: 1.2rem;
+        }
+        @include respond-to(tablet-portrait-up) {
+          font-size: 1.5rem;
         }
         // price for model
         &--model {
-          font-size: 1.3rem;
           color: black;
-          @include respond-to(mobile) {
+          @include respond-to(phone-only) {
             font-size: 1rem;
+          }
+          @include respond-to(tablet-portrait-up) {
+            font-size: 1.3rem;
           }
         }
       }
@@ -404,9 +426,13 @@
       color: $secondary-color-3;
       font-family: $font-roboto;
       margin-bottom: 2rem;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         font-size: 1.2rem;
         padding: 1rem 1rem 0 1rem;
+      }
+      @include respond-to(tablet-portrait-up) {
+        font-size: 1.4rem;
+        padding: 0;
       }
     }
 
@@ -720,7 +746,7 @@
       padding: 2rem 2rem 0 2rem;
       background: white;
 
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         display: none;
       }
     }
@@ -1011,7 +1037,7 @@
     /* outer div wrapping breadcrumb to push the content to further bottom */
     &-outerdiv {
       margin-bottom: 3rem;
-      @include respond-to(mobile) {
+      @include respond-to(phone-only) {
         margin-bottom: 1rem;
         margin-top: 3rem;
       }
