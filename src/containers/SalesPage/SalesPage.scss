@@ -241,7 +241,9 @@
     // the select text above the small button
     /* ---------------------- */
     &-selecttext {
-      font-size: 1.2rem;
+      @include respond-to(mobile) {
+        font-size: 1.2rem;
+      }
     }
 
     /* --------------------*/
