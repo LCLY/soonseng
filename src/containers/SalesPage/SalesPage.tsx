@@ -92,8 +92,8 @@ const SalesPage: React.FC<Props> = ({
   /** Current order object to track what user has added to the current order  */
   const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj>({
     tireCount: -1,
+    bodyObj: null,
     lengthObj: null,
-    bodyLengthObj: null,
     generalAccessoriesArray: [],
     dimensionRelatedAccessoriesArray: [],
     bodyRelatedAccessoriesArray: [],
@@ -531,30 +531,32 @@ const SalesPage: React.FC<Props> = ({
                   {bodiesArray.length > 0 ? (
                     <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                       <>
-                        {bodiesArray.map((body) => {
-                          return (
-                            <div
-                              key={uuidv4()}
-                              className={`sales__selectarea-button  ${currentBody?.id === body.id ? 'active' : ''}`}
-                              onClick={() => {
-                                //  if currentLength has an id
-                                if (currentBody?.id === body.id) {
-                                  // reset the selection
-                                  setCurrentBody(null);
-                                  setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: null });
-                                } else {
-                                  setCurrentBody(body);
-                                  setCurrentOrderObj({
-                                    ...currentOrderObj,
-                                    bodyLengthObj: body,
-                                  });
-                                }
-                              }}
-                            >
-                              {body.title}
-                            </div>
-                          );
-                        })}
+                        {bodiesArray
+                          .sort((a: TReceivedBodyObj, b: TReceivedBodyObj) => a.title.localeCompare(b.title))
+                          .map((body) => {
+                            return (
+                              <div
+                                key={uuidv4()}
+                                className={`sales__selectarea-button  ${currentBody?.id === body.id ? 'active' : ''}`}
+                                onClick={() => {
+                                  //  if currentLength has an id
+                                  if (currentBody?.id === body.id) {
+                                    // reset the selection
+                                    setCurrentBody(null);
+                                    setCurrentOrderObj({ ...currentOrderObj, bodyObj: null });
+                                  } else {
+                                    setCurrentBody(body);
+                                    setCurrentOrderObj({
+                                      ...currentOrderObj,
+                                      bodyObj: body,
+                                    });
+                                  }
+                                }}
+                              >
+                                {body.title}
+                              </div>
+                            );
+                          })}
                       </>
                     </div>
                   ) : (
@@ -1501,9 +1503,9 @@ const SalesPage: React.FC<Props> = ({
               // Model subtotal price - add all except insurance fees
               /* ===================================================== */
               let modelSubtotalPrice = 0;
-              if (order.bodyMakeObj && order.bodyLengthObj) {
+              if (order.bodyMakeObj && order.bodyMakeObj) {
                 modelSubtotalPrice =
-                  order.bodyMakeObj.make.price + order.bodyLengthObj.price + totalAccessoriesPrice + miscellaneousFees;
+                  order.bodyMakeObj.make.price + order.bodyMakeObj.price + totalAccessoriesPrice + miscellaneousFees;
               }
 
               /* ======================== */
@@ -1563,7 +1565,7 @@ const SalesPage: React.FC<Props> = ({
                       {/* ------------ The largest header on top -------------- */}
                       <div className="flex-align-center space-between margin_b-1">
                         <span className="sales__overview-row-content-header">
-                          {order.lengthObj?.title}ft {order.bodyLengthObj?.body.title}
+                          {order.lengthObj?.title}ft {order.bodyMakeObj?.body.title}
                         </span>
                         <span className="sales__overview-row-content-header-price--prediscount">
                           RM&nbsp;
@@ -1629,12 +1631,12 @@ const SalesPage: React.FC<Props> = ({
                                 <span>
                                   Body Price:&nbsp;
                                   <span className="sales__overview-highlight-model">
-                                    {`${order.bodyLengthObj?.length.title}ft ${order.bodyLengthObj?.body.title}`}
+                                    {`${order.lengthObj?.title}ft ${order.bodyMakeObj?.body.title}`}
                                   </span>
                                 </span>
                                 <span>
                                   <NumberFormat
-                                    value={order.bodyLengthObj?.price.toFixed(2)}
+                                    value={order.bodyMakeObj?.price.toFixed(2)}
                                     displayType={'text'}
                                     thousandSeparator={true}
                                   />
@@ -2031,25 +2033,6 @@ const SalesPage: React.FC<Props> = ({
                       title={
                         <div className="sales__steps-title">
                           <div>{item.title}</div>
-                          {/* <div className="sales__steps-additionalinfo">
-                              {currentTyre && item.title === STEPS_TYRE && (
-                                <span className="sales__breadcrumb-highlight">({currentTyre})</span>
-                              )}
-                              {currentLength && item.title === STEPS_LENGTH && (
-                                <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
-                              )}
-                              {currentBody && item.title === STEPS_BODY && (
-                                <span className="sales__breadcrumb-highlight">({currentBody?.body.title})</span>
-                              )}
-                              {currentAccessory && item.title === STEPS_ACCESSORY && (
-                                <span className="sales__breadcrumb-highlight">
-                                  ({totalAccessoriesArrayLength} Items)
-                                </span>
-                              )}
-                              {currentBodyMake && item.title === STEPS_BODYMAKE && (
-                                <span className="sales__breadcrumb-highlight">{currentBodyMake.series}</span>
-                              )}
-                            </div> */}
                         </div>
                       }
                     />
@@ -2133,7 +2116,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onGetSalesBodies: (length_id, tire) => dispatch(actions.getSalesBodies(length_id, tire)),
     onRemoveAnOrder: (index, localOrdersArray) => dispatch(actions.removeAnOrder(index, localOrdersArray)),
-    onGetSalesAccessories: (body_length_id) => dispatch(actions.getSalesAccessories(body_length_id)),
+    onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
     onGetSalesBodyMakes: (length_id, tire, body_id) => dispatch(actions.getSalesBodyMakes(length_id, tire, body_id)),
   };
 };

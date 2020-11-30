@@ -133,10 +133,10 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                   // Model subtotal price - add all except insurance fees
                   /* ===================================================== */
                   let modelSubtotalPrice = 0;
-                  if (order.bodyMakeObj && order.bodyLengthObj) {
+                  if (order.bodyMakeObj && order.bodyObj) {
                     modelSubtotalPrice =
                       order.bodyMakeObj.make.price +
-                      order.bodyLengthObj.price +
+                      order.bodyMakeObj.price +
                       totalAccessoriesPrice +
                       miscellaneousFees;
                   }
@@ -202,7 +202,7 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                           {/* ------------ The largest header on top -------------- */}
                           <div className="flex-align-center space-between margin_b-1">
                             <span className="orders__overview-row-content-header">
-                              {order.lengthObj?.title}ft {order.bodyLengthObj?.body.title}
+                              {order.lengthObj?.title}ft {order.bodyMakeObj?.body.title}
                             </span>
                             <span className="orders__overview-row-content-header-price--prediscount">
                               RM&nbsp;
@@ -272,12 +272,12 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                                     <span>
                                       Body Price:&nbsp;
                                       <span className="orders__overview-highlight-model">
-                                        {`${order.bodyLengthObj?.length.title}ft ${order.bodyLengthObj?.body.title}`}
+                                        {`${order.lengthObj?.title}ft ${order.bodyMakeObj?.body.title}`}
                                       </span>
                                     </span>
                                     <span>
                                       <NumberFormat
-                                        value={order.bodyLengthObj?.price.toFixed(2)}
+                                        value={order.bodyMakeObj?.price.toFixed(2)}
                                         displayType={'text'}
                                         thousandSeparator={true}
                                       />

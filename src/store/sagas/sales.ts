@@ -140,12 +140,12 @@ export function* getSalesBodyMakesSaga(action: AppActions) {
 export function* getSalesAccessoriesSaga(action: AppActions) {
   // get accessories through body length
   yield put(actions.getSalesAccessoriesStart());
-  let url = process.env.REACT_APP_API + `/pages/sales/get_accessories_for_bodylength`;
+  let url = process.env.REACT_APP_API + `/pages/sales/get_accessories_through_bodymake`;
 
   let choice = {};
-  if ('body_length_id' in action) {
+  if ('body_make_id' in action) {
     choice = {
-      body_length_id: action.body_length_id,
+      body_make_id: action.body_make_id,
     };
   }
 

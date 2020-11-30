@@ -134,10 +134,10 @@ export const getSalesBodyMakesFailed = (errorMessage: string): AppActions => {
 /* ----------------------------- */
 // Get Body Accessories
 /* ---------------------------- */
-export const getSalesAccessories = (body_length_id: number): AppActions => {
+export const getSalesAccessories = (body_make_id: number): AppActions => {
   return {
     type: actionTypes.GET_SALES_ACCESSORIES,
-    body_length_id: body_length_id,
+    body_make_id: body_make_id,
   };
 };
 

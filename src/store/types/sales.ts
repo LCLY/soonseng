@@ -59,8 +59,8 @@ export interface ClearSalesStateAction {
 // Quotation object should contain as much info as possible about a product
 export type TLocalOrderObj = {
   tireCount: number;
+  bodyObj: TReceivedBodyObj | null;
   lengthObj: TReceivedSalesLengthObj | null;
-  bodyLengthObj: any | null;
   generalAccessoriesArray: TReceivedAccessoryObj[];
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
@@ -186,7 +186,7 @@ export type TReceivedDimensionAccessoryObj = {
 
 export interface GetSalesAccessoriesAction {
   type: typeof actionTypes.GET_SALES_ACCESSORIES;
-  body_length_id: number;
+  body_make_id: number;
 }
 export interface GetSalesAccessoriesStartAction {
   type: typeof actionTypes.GET_SALES_ACCESSORIES_START;
@@ -271,7 +271,7 @@ export type SalesActionTypes =
   | GetSalesBodyMakesSucceedAction
   | GetSalesBodyMakesFailedAction
   /* ------------------------- */
-  // Body Accessories
+  // Accessories
   /* ------------------------- */
   | GetSalesAccessoriesAction
   | GetSalesAccessoriesStartAction
