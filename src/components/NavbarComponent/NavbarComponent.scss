@@ -1,9 +1,6 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
     & .bg-primary {
       background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
     }
