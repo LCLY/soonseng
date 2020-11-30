@@ -14,7 +14,7 @@ import NumberFormat from 'react-number-format';
 import { LoadingOutlined, InfoCircleOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Button, Input, Skeleton, Card, Tag, Empty, Steps, Collapse, Divider, Breadcrumb, Dropdown, Menu } from 'antd';
+import { Button, Skeleton, Card, Tag, Empty, Steps, Collapse, Divider, Breadcrumb, Dropdown, Menu } from 'antd';
 
 // Util
 import {
@@ -34,7 +34,6 @@ import { TReceivedAccessoryObj, TReceivedBodyObj } from 'src/store/types/dashboa
 import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BODYMAKE } from 'src/shared/constants';
 
 const { Step } = Steps;
-const { Search } = Input;
 const { Panel } = Collapse;
 
 interface SalesPageProps {}
@@ -120,9 +119,6 @@ const SalesPage: React.FC<Props> = ({
   const [makePhotoIndex, setMakePhotoIndex] = useState(0);
   const [bodyAccessoryPhotoIndex, setBodyAccessoryPhotoIndex] = useState(0);
 
-  // Searched terms
-  const [searchedBody, setSearchedBody] = useState<string>('');
-
   /* ========================= */
   //        method
   /* ========================= */
@@ -135,9 +131,6 @@ const SalesPage: React.FC<Props> = ({
   const next = () => {
     setCurrentStep(currentStep + 1);
   };
-
-  /** Filter for body  */
-  const onBodySearch = (event: React.ChangeEvent<HTMLInputElement>) => setSearchedBody(event.target.value);
 
   /* =========================== */
   /*         components          */
@@ -532,45 +525,36 @@ const SalesPage: React.FC<Props> = ({
             </div>
             <div className="sales__selectarea-innerdiv">
               <div className="sales__selectarea-selecttext">Select the material type of the cargo body</div>
-              <Search
-                className="sales__selectarea-search"
-                placeholder="Input text here to search body type"
-                // onSearch={onBodySearch}
-                onChange={(e) => onBodySearch(e)}
-                enterButton
-              />
 
               {bodiesArray ? (
                 <>
                   {bodiesArray.length > 0 ? (
                     <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                       <>
-                        {bodiesArray
-                          .filter((bodyObj) => bodyObj.title.toLowerCase().includes(searchedBody))
-                          .map((body) => {
-                            return (
-                              <div
-                                key={uuidv4()}
-                                className={`sales__selectarea-button  ${currentBody?.id === body.id ? 'active' : ''}`}
-                                onClick={() => {
-                                  //  if currentLength has an id
-                                  if (currentBody?.id === body.id) {
-                                    // reset the selection
-                                    setCurrentBody(null);
-                                    setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: null });
-                                  } else {
-                                    setCurrentBody(body);
-                                    setCurrentOrderObj({
-                                      ...currentOrderObj,
-                                      bodyLengthObj: body,
-                                    });
-                                  }
-                                }}
-                              >
-                                {body.title}
-                              </div>
-                            );
-                          })}
+                        {bodiesArray.map((body) => {
+                          return (
+                            <div
+                              key={uuidv4()}
+                              className={`sales__selectarea-button  ${currentBody?.id === body.id ? 'active' : ''}`}
+                              onClick={() => {
+                                //  if currentLength has an id
+                                if (currentBody?.id === body.id) {
+                                  // reset the selection
+                                  setCurrentBody(null);
+                                  setCurrentOrderObj({ ...currentOrderObj, bodyLengthObj: null });
+                                } else {
+                                  setCurrentBody(body);
+                                  setCurrentOrderObj({
+                                    ...currentOrderObj,
+                                    bodyLengthObj: body,
+                                  });
+                                }
+                              }}
+                            >
+                              {body.title}
+                            </div>
+                          );
+                        })}
                       </>
                     </div>
                   ) : (
