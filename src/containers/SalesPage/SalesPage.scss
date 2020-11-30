@@ -37,9 +37,12 @@
     // the innerdiv wrapping the description on the left and choices on the right
     &-innerdiv {
       display: flex;
+      @include respond-to(mobile) {
+        flex-direction: column;
+      }
     }
 
-    // the blueprint image
+    // the section image
     &-img {
       margin-top: 1rem;
       margin-bottom: 0.5rem;
@@ -106,6 +109,10 @@
       @include respond-to(tablet) {
         padding-right: 1rem;
       }
+      @include respond-to(mobile) {
+        width: 100%;
+        padding-right: 0;
+      }
     }
     /* --------------------------- */
     // the right column with select box
@@ -115,6 +122,9 @@
       flex-direction: column;
       width: 55%;
       border-radius: 5px;
+      @include respond-to(mobile) {
+        width: 100%;
+      }
     }
 
     &-result {
@@ -196,6 +206,10 @@
       @include respond-to(tablet) {
         grid-gap: 0.5rem;
       }
+      @include respond-to(mobile) {
+        grid-gap: 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
 
       &--twocolumn {
         grid-template-columns: repeat(2, 1fr);
@@ -223,6 +237,13 @@
       }
     }
 
+    /* ---------------------- */
+    // the select text above the small button
+    /* ---------------------- */
+    &-selecttext {
+      font-size: 1.2rem;
+    }
+
     /* --------------------*/
     // Small select buttons
     /* --------------------*/
@@ -248,6 +269,10 @@
       }
       &:focus {
         background: blue;
+      }
+
+      @include respond-to(mobile) {
+        font-size: 1.2rem;
       }
 
       /* -------------------------- */
@@ -289,12 +314,18 @@
           width: 25%;
           font-family: $font-firesans;
           color: rgba(0, 0, 0, 0.514);
+          @include respond-to(mobile) {
+            font-size: 1.2rem;
+          }
 
           // for make
           &--make {
             width: 52%;
             font-family: $font-firesans;
             color: rgba(0, 0, 0, 0.514);
+            @include respond-to(mobile) {
+              font-size: 1.2rem;
+            }
           }
         }
 
@@ -316,10 +347,17 @@
             overflow: hidden;
             text-overflow: ellipsis;
             // white-space: nowrap;
+            @include respond-to(mobile) {
+              font-size: 1rem;
+            }
           }
         }
       }
-
+      &-dimension {
+        @include respond-to(mobile) {
+          font-size: 1rem !important;
+        }
+      }
       /* ------------- */
       // price in the card
       /* ------------- */
@@ -328,6 +366,17 @@
         font-weight: bolder;
         color: $primary-color-4;
         font-family: $font-opensans;
+        @include respond-to(mobile) {
+          font-size: 1.2rem;
+        }
+        // price for model
+        &--model {
+          font-size: 1.3rem;
+          color: black;
+          @include respond-to(mobile) {
+            font-size: 1rem;
+          }
+        }
       }
     }
 
@@ -353,6 +402,10 @@
       color: $secondary-color-3;
       font-family: $font-roboto;
       margin-bottom: 2rem;
+      @include respond-to(mobile) {
+        font-size: 1.2rem;
+        padding: 1rem 1rem 0 1rem;
+      }
     }
 
     /* -------------------------- */
@@ -664,6 +717,10 @@
       border-radius: 5px;
       padding: 2rem 2rem 0 2rem;
       background: white;
+
+      @include respond-to(mobile) {
+        display: none;
+      }
     }
 
     // the title showing which step user is at
@@ -952,6 +1009,10 @@
     /* outer div wrapping breadcrumb to push the content to further bottom */
     &-outerdiv {
       margin-bottom: 3rem;
+      @include respond-to(mobile) {
+        margin-bottom: 1rem;
+        margin-top: 3rem;
+      }
     }
 
     /* the text within the breadcrumbs */

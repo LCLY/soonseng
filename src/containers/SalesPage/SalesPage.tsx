@@ -191,7 +191,7 @@ const SalesPage: React.FC<Props> = ({
               The length of the truck is decided on the number of the tires it has.
             </div>
             <div className="sales__selectarea-innerdiv">
-              <div>Select the tyre count for the cargo body</div>
+              <div className="sales__selectarea-selecttext">Select the tyre count for the cargo body</div>
               <div className="sales__selectarea-div">
                 <>
                   {/* <div className="sales__selectarea-button"> */}
@@ -308,7 +308,7 @@ const SalesPage: React.FC<Props> = ({
             </div>
 
             <div className="sales__selectarea-innerdiv">
-              <div>Select the length of the cargo body (ft)</div>
+              <div className="sales__selectarea-selecttext">Select the length of the cargo body (ft)</div>
               {lengthsCategoriesArray ? (
                 <>
                   {lengthsCategoriesArray.length > 0 ? (
@@ -531,7 +531,7 @@ const SalesPage: React.FC<Props> = ({
               There are a few of main body types in the market.
             </div>
             <div className="sales__selectarea-innerdiv">
-              <div>Select the material type of the cargo body</div>
+              <div className="sales__selectarea-selecttext">Select the material type of the cargo body</div>
               <Search
                 className="sales__selectarea-search"
                 placeholder="Input text here to search body type"
@@ -716,7 +716,12 @@ const SalesPage: React.FC<Props> = ({
                     </div>
                     <div className="sales__selectarea-card-row">
                       <div className="sales__selectarea-card-row-left--make">Length</div>
-                      <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.length}mm</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.length !== null || currentBodyMake.make.length !== 0
+                          ? currentBodyMake.make.length
+                          : '-'}
+                        mm
+                      </div>
                     </div>
                     <div className="sales__selectarea-card-row">
                       <div className="sales__selectarea-card-row-left--make">Config</div>
@@ -781,45 +786,67 @@ const SalesPage: React.FC<Props> = ({
                   </section>
                 </div>
                 <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
+                  <div className="sales__selectarea-card-row-left">Model Price</div>
+
+                  <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
+                    {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
+                      '-'
+                    ) : (
+                      <>
+                        RM
+                        <NumberFormat
+                          value={currentBodyMake?.make.price}
+                          displayType={'text'}
+                          thousandSeparator={true}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
                   <div className="sales__selectarea-card-row-left">Dimension</div>
                   <div className="sales__selectarea-card-row-right">
                     {currentBodyMake?.width !== null &&
                       currentBodyMake?.width !== '' &&
                       currentBodyMake?.width !== null && (
                         <Tag className="flex" color="red">
-                          <div>Width:&nbsp;</div>
-                          <div>
-                            <div>{currentBodyMake?.width}</div>
-                          </div>
+                          <div className="sales__selectarea-card-dimension">Width:&nbsp;</div>
+                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.width}</div>
                         </Tag>
                       )}
+
                     {currentBodyMake?.depth !== null &&
                       currentBodyMake?.depth !== '' &&
                       currentBodyMake?.depth !== null && (
-                        <Tag className="flex" color="volcano">
-                          <div>Height:&nbsp;</div>
-                          <div>
-                            <div>{currentBodyMake?.depth}</div>
-                          </div>
+                        <Tag className="flex" color="orange">
+                          <div className="sales__selectarea-card-dimension">Depth:&nbsp;</div>
+                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.depth}</div>
                         </Tag>
                       )}
+
                     {currentBodyMake?.height !== null &&
                       currentBodyMake?.height !== '' &&
                       currentBodyMake?.height !== null && (
-                        <Tag className="flex" color="orange">
-                          <div>Depth:&nbsp;</div>
-                          <div>
-                            <div>{currentBodyMake?.height}</div>
-                          </div>
+                        <Tag className="flex" color="volcano">
+                          <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
+                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.height}</div>
                         </Tag>
                       )}
                   </div>
                 </div>
+
                 <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Price</div>
+                  <div className="sales__selectarea-card-row-left">Body Price</div>
+
                   <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                    RM
-                    <NumberFormat value={currentBodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
+                    {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
+                      '-'
+                    ) : (
+                      <>
+                        RM
+                        <NumberFormat value={currentBodyMake?.price} displayType={'text'} thousandSeparator={true} />
+                      </>
+                    )}
                   </div>
                 </div>
               </Card>
@@ -840,7 +867,7 @@ const SalesPage: React.FC<Props> = ({
               Choose your trusted or preferred brand, HINO is cool.
             </div>
             <div className="sales__selectarea-innerdiv">
-              <div>Select the model of your vehicle</div>
+              <div className="sales__selectarea-selecttext">Select the model of your vehicle</div>
               <>
                 {bodyMakesArray && (
                   <>
@@ -1066,7 +1093,7 @@ const SalesPage: React.FC<Props> = ({
               Depending on the different functionalities you are looking for you need different kinds of accessories
             </div>
             <div className="sales__selectarea-innerdiv">
-              <div className="flex space-between">
+              <div className="sales__selectarea-selecttext flex space-between">
                 Select the accessory for the cargo body
                 <span className="sales__breadcrumb-highlight">
                   {totalAccessoriesArrayLength > 0 ? `${totalAccessoriesArrayLength} items` : null}

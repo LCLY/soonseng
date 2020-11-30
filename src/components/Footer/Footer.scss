@@ -49,15 +49,12 @@
   /* =============================================== */
   &__store {
     &-name {
-      white-space: nowrap;
-
       color: $primary-color-1;
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-family: $font-bowlby;
 
       @include respond-to(medium) {
         font-size: 2rem;
-        white-space: normal;
       }
       @include respond-to(tablet) {
         font-size: 2.5rem;
