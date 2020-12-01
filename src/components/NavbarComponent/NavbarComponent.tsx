@@ -37,14 +37,27 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   /* =========================================== */
 
   const handleScroll = useCallback(
-    debounce(() => {
-      // find current scroll position
-      const currentScrollPos = window.pageYOffset;
-      // set state based on location info
-      setVisible((prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 50) || currentScrollPos < 10);
-      // set state to new scroll position
-      setPrevScrollPos(currentScrollPos);
-    }, 100),
+    debounce(
+      () => {
+        // find current scroll position
+        const currentScrollPos = window.pageYOffset;
+        // set state based on location info
+        if (prevScrollPos > currentScrollPos) {
+          setVisible(true);
+        } else {
+          setVisible(false);
+        }
+
+        // setVisible((prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 50) || currentScrollPos < 10);
+        // set state to new scroll position
+        setPrevScrollPos(currentScrollPos);
+      },
+      100,
+      {
+        leading: true,
+        trailing: false,
+      },
+    ),
 
     [prevScrollPos],
   );

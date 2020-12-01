@@ -12,6 +12,10 @@
 
   &__div {
     padding: 2rem 5rem !important;
+
+    @include respond-to(phone-only) {
+      padding: 0.5rem 5rem !important;
+    }
   }
 
   &__logo {
