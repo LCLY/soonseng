@@ -107,19 +107,6 @@ function HomePage() {
           <div className="homepage__section-values-title">Our values</div>
           <div className="homepage__values-top">
             <div className="homepage__values-outerdiv">
-              <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
-                <div className="homepage__values-div">
-                  <div className="homepage__values-icon-div">
-                    <i className="homepage__values-icon  fas fa-hard-hat"></i>
-                  </div>
-                  <div className="homepage__values-text">
-                    <div className="homepage__values-title">Product Reliability</div>
-                    <div className="homepage__values-desc">Turning uncertainties into predictabilities.</div>
-                  </div>
-                </div>
-              </ScrollAnimation>
-            </div>
-            <div className="homepage__values-outerdiv">
               <ScrollAnimation animateOnce={true} animateIn="fadeInDown">
                 <div className="homepage__values-div">
                   <div className="homepage__values-icon-div">
@@ -130,6 +117,19 @@ function HomePage() {
                     <div className="homepage__values-desc">
                       Generating profit for customers through consistent logistic performance.
                     </div>
+                  </div>
+                </div>
+              </ScrollAnimation>
+            </div>
+            <div className="homepage__values-outerdiv">
+              <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
+                <div className="homepage__values-div">
+                  <div className="homepage__values-icon-div">
+                    <i className="homepage__values-icon  fas fa-hard-hat"></i>
+                  </div>
+                  <div className="homepage__values-text">
+                    <div className="homepage__values-title">Product Reliability</div>
+                    <div className="homepage__values-desc">Turning uncertainties into predictabilities.</div>
                   </div>
                 </div>
               </ScrollAnimation>
