@@ -707,6 +707,29 @@ export interface GetBodyMakesFailedAction {
   errorMessage: string;
 }
 
+/* --------------------------- */
+// Delete Body Make (tail)
+/* --------------------------- */
+
+/* Api call */
+export interface DeleteBodyMakeAction {
+  type: typeof actionTypes.DELETE_BODYMAKE;
+  body_make_id: number;
+}
+/* States */
+export interface DeleteBodyMakeStartAction {
+  type: typeof actionTypes.DELETE_BODYMAKE_START;
+}
+export interface DeleteBodyMakeSucceedAction {
+  type: typeof actionTypes.DELETE_BODYMAKE_SUCCEED;
+  bodyMakesArray: TReceivedBodyMakeObj[];
+  successMessage: string;
+}
+export interface DeleteBodyMakeFailedAction {
+  type: typeof actionTypes.DELETE_BODYMAKE_FAILED;
+  errorMessage: string;
+}
+
 /* ============================================================== */
 // Body Accessory (Body Page) (tail)
 /* ============================================================== */
@@ -1048,6 +1071,11 @@ export type DashboardActionTypes =
   | UpdateBodyMakeStartAction
   | UpdateBodyMakeSucceedAction
   | UpdateBodyMakeFailedAction
+  /* Delete */
+  | DeleteBodyMakeAction
+  | DeleteBodyMakeStartAction
+  | DeleteBodyMakeSucceedAction
+  | DeleteBodyMakeFailedAction
   /* ------------------------ */
   // Body Accessory (Body Page)
   /* ------------------------ */

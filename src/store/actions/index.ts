@@ -130,6 +130,11 @@ export {
   updateBodyMakeStart,
   updateBodyMakeFailed,
   updateBodyMakeSucceed,
+  // Delete Body Make
+  deleteBodyMake,
+  deleteBodyMakeStart,
+  deleteBodyMakeFailed,
+  deleteBodyMakeSucceed,
   /* =================== */
   //  Body Accessory (Body Page)
   /* =================== */

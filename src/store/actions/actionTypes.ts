@@ -199,6 +199,12 @@ export const UPDATE_BODYMAKE_START = 'UPDATE_BODYMAKE_START';
 export const UPDATE_BODYMAKE_SUCCEED = 'UPDATE_BODYMAKE_SUCCEED';
 export const UPDATE_BODYMAKE_FAILED = 'UPDATE_BODYMAKE_FAILED';
 
+// Delete Body Make(Tail)
+export const DELETE_BODYMAKE = 'DELETE_BODYMAKE';
+export const DELETE_BODYMAKE_START = 'DELETE_BODYMAKE_START';
+export const DELETE_BODYMAKE_SUCCEED = 'DELETE_BODYMAKE_SUCCEED';
+export const DELETE_BODYMAKE_FAILED = 'DELETE_BODYMAKE_FAILED';
+
 /* --------------------------------------------- */
 // Body Page - Body Accessory
 /* --------------------------------------------- */

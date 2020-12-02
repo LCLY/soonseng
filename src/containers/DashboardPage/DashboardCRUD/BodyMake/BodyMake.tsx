@@ -15,7 +15,7 @@ import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import NumberFormat from 'react-number-format';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
+import { PlusCircleTwoTone, ExclamationCircleOutlined, MinusCircleTwoTone } from '@ant-design/icons';
 /* Util */
 import {
   checkInchExist,
@@ -92,6 +92,10 @@ type TShowModal = {
   body_make_accessory: boolean;
 };
 
+type TDeleteModalContent = {
+  body_make: { body_make_id: number; makeObj: TReceivedMakeObj | null; bodyObj: TReceivedBodyObj | null };
+};
+
 type Props = bodyMakeProps & StateProps & DispatchProps;
 
 const BodyMake: React.FC<Props> = ({
@@ -108,6 +112,7 @@ const BodyMake: React.FC<Props> = ({
   onGetBodyMakes,
   onCreateBodyMake,
   onUpdateBodyMake,
+  onDeleteBodyMake,
   onDeleteUploadImage,
   onClearDashboardState,
 }) => {
@@ -117,8 +122,8 @@ const BodyMake: React.FC<Props> = ({
   /* Form */
   const [createBodyMakeForm] = Form.useForm();
   const [updateBodyMakeForm] = Form.useForm();
-  // const [createBodyMakeAccessoryForm] = Form.useForm();
-  // const [updateBodyMakeAccessoryForm] = Form.useForm();
+  const [createBodyMakeAccessoryForm] = Form.useForm();
+  const [updateBodyMakeAccessoryForm] = Form.useForm();
   /*  Table states */
   const [bodyMakeTableState, setBodyMakeTableState] = useState<TBodyMakeTableState[]>([]);
 
@@ -132,6 +137,15 @@ const BodyMake: React.FC<Props> = ({
   const [showUpdateModal, setShowUpdateModal] = useState<TShowModal>({
     body_make: false,
     body_make_accessory: false,
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState<TShowModal>({
+    body_make: false,
+    body_make_accessory: false,
+  });
+
+  // this state to keep track of what to show on delete modal and what useful info to pass
+  const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
+    body_make: { body_make_id: -1, makeObj: null, bodyObj: null },
   });
 
   // for table search input
@@ -260,10 +274,10 @@ const BodyMake: React.FC<Props> = ({
       render: (_text: any, record: TBodyMakeTableState) => {
         return (
           <>
-            <div>
+            <div className="bodymake__btn-div">
               <Button
                 type="link"
-                className="make__brand-btn--edit"
+                className="bodymake__btn-link"
                 onClick={() => {
                   // populate bodyMake modal
                   onPopulateEditbodyMakeModal(record);
@@ -271,10 +285,42 @@ const BodyMake: React.FC<Props> = ({
                   setShowUpdateModal({ ...showUpdateModal, body_make: true });
                 }}
               >
-                Edit
+                <i className="far fa-edit"></i>
               </Button>
-              <Button disabled type="link" danger>
-                Delete
+              <Button
+                type="link"
+                className="bodymake__btn-link"
+                onClick={() => {
+                  alert('disable - supposed to set available to false');
+                }}
+              >
+                <i className="fas fa-eye-slash"></i>
+              </Button>
+              <Button
+                type="link"
+                danger
+                className="bodymake__btn-link--danger"
+                onClick={() => {
+                  setShowDeleteModal({ ...showDeleteModal, body_make: true });
+                  setDeleteModalContent({
+                    ...deleteModalContent,
+                    body_make: { body_make_id: record.bodyMakeId, makeObj: record.makeObj, bodyObj: record.bodyObj },
+                  });
+                }}
+              >
+                <i className="far fa-trash-alt"></i>
+              </Button>
+            </div>
+            <div>
+              <Button
+                type="default"
+                onClick={() => {
+                  setShowCreateModal({ ...showCreateModal, body_make_accessory: true });
+                  //  set the body make id
+                  createBodyMakeAccessoryForm.setFieldsValue({ bodyMakeId: record.bodyMakeId });
+                }}
+              >
+                Create Accessory
               </Button>
             </div>
           </>
@@ -691,13 +737,13 @@ const BodyMake: React.FC<Props> = ({
       >
         {/* reuse form items */}
         {bodyMakeFormItems}
-        {/* Getting the BODY LENGTH ID */}
+        {/* Getting the BODY MAKE ID */}
         <Form.Item
           className="make__form-item"
           label="id"
           name="bodyMakeId"
           hidden
-          rules={[{ required: true, message: 'Get body length id!' }]}
+          rules={[{ required: true, message: 'Get body make id!' }]}
         >
           <Input />
         </Form.Item>
@@ -849,6 +895,173 @@ const BodyMake: React.FC<Props> = ({
     );
   };
 
+  /* ==================================== */
+  // Body Make Accessory Form Items
+  /* ==================================== */
+  let bodyMakeAccessoryFormItems = (
+    <>
+      <Form.Item
+        className="make__form-item"
+        label="Model"
+        name="makeId"
+        style={{ marginBottom: '0.8rem' }}
+        rules={[{ required: true, message: 'Select a Model!' }]}
+      >
+        {/* only render if bodiesArray is not null */}
+        <Select
+          showSearch
+          placeholder="Select a Body"
+          optionFilterProp="children"
+          className="body__select-updatebodyMake"
+          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {makesArray &&
+            makesArray.map((make) => {
+              return (
+                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={make.id}>
+                  {`${make.brand.title} ${make.title} ${make.series}`}
+                </Option>
+              );
+            })}
+        </Select>
+      </Form.Item>
+
+      {/* Body Make ID */}
+      <Form.Item
+        className="make__form-item"
+        label="id"
+        name="bodyMakeId"
+        hidden
+        rules={[{ required: true, message: 'Get body make id!' }]}
+      >
+        <Input />
+      </Form.Item>
+    </>
+  );
+
+  /* ----------------------------------------- */
+  /* Create Body Make Accessory Form */
+  /* ----------------------------------------- */
+  let createBodyMakeAccessoryFormComponent = (
+    <>
+      <Form
+        form={createBodyMakeAccessoryForm}
+        name="createBodyMakeAccessory"
+        onKeyDown={(e) => handleFormKeyDown(e, createBodyMakeAccessoryForm)}
+        onFinish={onUpdateBodyMakeFinish}
+      >
+        {/* reuse form items */}
+        {bodyMakeAccessoryFormItems}
+      </Form>
+    </>
+  );
+
+  /* ======================================== */
+  // Create Body Make Accessory Modal
+  /* ======================================== */
+  /* Create Body Make Accessory Modal */
+  let createBodyMakeAccessoryModal = (
+    <Modal
+      centered
+      title="Create Body Make Accessory"
+      visible={showCreateModal.body_make_accessory}
+      onOk={createBodyMakeAccessoryForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        // close edit body modal
+        setShowUpdateModal({
+          ...showCreateModal,
+          body_make_accessory: false,
+        });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
+      }}
+    >
+      {/* the content within the modal */}
+      {createBodyMakeAccessoryFormComponent}
+    </Modal>
+  );
+
+  /* ----------------------------------------- */
+  /* Update Body Make Accessory Form */
+  /* ----------------------------------------- */
+  let updateBodyMakeAccessoryFormComponent = (
+    <>
+      <Form
+        form={updateBodyMakeAccessoryForm}
+        name="updateBodyMakeAccessory"
+        onKeyDown={(e) => handleFormKeyDown(e, updateBodyMakeAccessoryForm)}
+        onFinish={onUpdateBodyMakeFinish}
+      >
+        {/* reuse form items */}
+        {bodyMakeAccessoryFormItems}
+        {/* Getting the Body Make Accessory ID */}
+        <Form.Item
+          className="make__form-item"
+          label="id"
+          name="bodyMakeAccessoryId"
+          hidden
+          rules={[{ required: true, message: 'Get body make accessory id!' }]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </>
+  );
+
+  /* ----------------------------------------- */
+  /* Update Body Make Accessory Modal */
+  /* ----------------------------------------- */
+  let updateBodyMakeAccessoryModal = (
+    <Modal
+      centered
+      title="Update Body Make Accessory"
+      visible={showUpdateModal.body_make_accessory}
+      onOk={updateBodyMakeAccessoryForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        // close edit body modal
+        setShowUpdateModal({
+          ...showUpdateModal,
+          body_make_accessory: false,
+        });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
+      }}
+    >
+      {/* the content within the modal */}
+      {updateBodyMakeAccessoryFormComponent}
+    </Modal>
+  );
+
+  /* ================================== */
+  //  Delete Body Make Modal
+  /* ================================== */
+  let deleteBodyMakeModal = (
+    <Modal
+      title={
+        <div className="bodymake__delete-header">
+          <ExclamationCircleOutlined className="bodymake__delete-icon" />
+          Delete Body Make
+        </div>
+      }
+      visible={showDeleteModal.body_make}
+      onOk={() => onDeleteBodyMake(deleteModalContent.body_make.body_make_id)}
+      onCancel={() => setShowDeleteModal({ ...showDeleteModal, body_make: false })}
+      okText="Yes, delete it"
+      confirmLoading={loading}
+      cancelText="Cancel"
+    >
+      You are deleting
+      {deleteModalContent.body_make.makeObj === null && deleteModalContent.body_make.bodyObj === null ? (
+        ' this body make'
+      ) : (
+        <span className="bodymake__delete-message">
+          {` ${deleteModalContent.body_make.makeObj?.brand.title} ${deleteModalContent.body_make.makeObj?.title} ${deleteModalContent.body_make.bodyObj?.title}`}
+        </span>
+      )}
+      , this action is permanent. Are you sure?
+    </Modal>
+  );
+
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
@@ -879,7 +1092,7 @@ const BodyMake: React.FC<Props> = ({
       let formattedPrice =
         bodyMake.price === undefined || bodyMake.price === null || bodyMake.price === 0
           ? '-'
-          : 'RM' +
+          : 'RM ' +
             bodyMake.price.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -938,15 +1151,18 @@ const BodyMake: React.FC<Props> = ({
       // close all the modals if successful
       setShowCreateModal({ ...showCreateModal, body_make: false });
       setShowUpdateModal({ ...showUpdateModal, body_make: false });
+      setShowDeleteModal({ ...showDeleteModal, body_make: false });
     }
   }, [
     successMessage,
     showUpdateModal,
     showCreateModal,
+    showDeleteModal,
     createBodyMakeForm,
     onClearDashboardState,
     setShowUpdateModal,
     setShowCreateModal,
+    setShowDeleteModal,
   ]);
 
   /* ------------------ */
@@ -972,6 +1188,9 @@ const BodyMake: React.FC<Props> = ({
       {/* ================== */}
       {createBodyMakeModal}
       {updateBodyMakeModal}
+      {deleteBodyMakeModal}
+      {createBodyMakeAccessoryModal}
+      {updateBodyMakeAccessoryModal}
 
       <Layout>
         <NavbarComponent activePage="dashboard" />
@@ -1074,6 +1293,7 @@ interface DispatchProps {
   onGetBodyMakes: typeof actions.getBodyMakes;
   onCreateBodyMake: typeof actions.createBodyMake;
   onUpdateBodyMake: typeof actions.updateBodyMake;
+  onDeleteBodyMake: typeof actions.deleteBodyMake;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -1090,6 +1310,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.createBodyMake(createBodyMakeData, imageTag, imageFiles)),
     onUpdateBodyMake: (updateBodyMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateBodyMake(updateBodyMakeData, imageTag, imageFiles)),
+    onDeleteBodyMake: (body_make_id) => dispatch(actions.deleteBodyMake(body_make_id)),
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

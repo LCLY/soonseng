@@ -521,6 +521,27 @@ const updateBodyMakeFailed = (state: DashboardInitialState, action: AppActions) 
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
 };
+/* -------------------------- */
+/* Delete Body Make  */
+/* -------------------------- */
+const deleteBodyMakeStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteBodyMakeSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyMakesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyMakesArray: action.bodyMakesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const deleteBodyMakeFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
 
 /* ============================================================================================ */
 /* Body Accessory (Body Page) (tail) */
@@ -819,29 +840,36 @@ const reducer = (state = initialState, action: DashboardActionTypes) => {
       return updateLengthFailed(state, action);
 
     /* =================================== */
-    //  Body Length (Body Page)(tail)
+    //  Body Make (Body Page)(tail)
     /* =================================== */
-    // Get all body lengths (tail)
+    // Get all body makes (tail)
     case actionTypes.GET_BODYMAKES_START:
       return getBodyMakesStart(state, action);
     case actionTypes.GET_BODYMAKES_SUCCEED:
       return getBodyMakesSucceed(state, action);
     case actionTypes.GET_BODYMAKES_FAILED:
       return getBodyMakesFailed(state, action);
-    // Create body length (tail)
+    // Create body make (tail)
     case actionTypes.CREATE_BODYMAKE_START:
       return createBodyMakeStart(state, action);
     case actionTypes.CREATE_BODYMAKE_SUCCEED:
       return createBodyMakeSucceed(state, action);
     case actionTypes.CREATE_BODYMAKE_FAILED:
       return createBodyMakeFailed(state, action);
-    // Update body length (tail)
+    // Update body make (tail)
     case actionTypes.UPDATE_BODYMAKE_START:
       return updateBodyMakeStart(state, action);
     case actionTypes.UPDATE_BODYMAKE_SUCCEED:
       return updateBodyMakeSucceed(state, action);
     case actionTypes.UPDATE_BODYMAKE_FAILED:
       return updateBodyMakeFailed(state, action);
+    // Delete body make (tail)
+    case actionTypes.DELETE_BODYMAKE_START:
+      return deleteBodyMakeStart(state, action);
+    case actionTypes.DELETE_BODYMAKE_SUCCEED:
+      return deleteBodyMakeSucceed(state, action);
+    case actionTypes.DELETE_BODYMAKE_FAILED:
+      return deleteBodyMakeFailed(state, action);
 
     /* =================================== */
     //  Body Accessory (Body Page)(tail)

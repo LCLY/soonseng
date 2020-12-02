@@ -755,6 +755,36 @@ export const updateBodyMakeFailed = (errorMessage: string): AppActions => {
   };
 };
 
+/* ------------------ */
+// Delete Body Make (tail)
+/* ------------------ */
+export const deleteBodyMake = (body_make_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYMAKE,
+    body_make_id: body_make_id,
+  };
+};
+
+export const deleteBodyMakeStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYMAKE_START,
+  };
+};
+
+export const deleteBodyMakeSucceed = (bodyMakesArray: TReceivedBodyMakeObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYMAKE_SUCCEED,
+    bodyMakesArray: bodyMakesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteBodyMakeFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYMAKE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
 /* ============================================================================================ */
 // Body Accessory (Body Page) (tail)
 /* ============================================================================================ */

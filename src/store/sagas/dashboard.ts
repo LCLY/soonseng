@@ -1071,7 +1071,6 @@ export function* updateBodyMakeSaga(action: AppActions) {
       height: action.updateBodyMakeData.height,
       price: action.updateBodyMakeData.price,
     };
-    console.log(bodymake);
   }
 
   try {
@@ -1098,6 +1097,44 @@ export function* updateBodyMakeSaga(action: AppActions) {
         yield put(actions.updateBodyMakeSucceed(response.data.body_makes, response.data.success));
       }
     }
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.updateBodyMakeFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Delete Body Make
+/* ------------------------------- */
+export function* deleteBodyMakeSaga(action: AppActions) {
+  yield put(actions.deleteBodyMakeStart());
+
+  let url = '';
+  if ('body_make_id' in action) {
+    url = process.env.REACT_APP_API + `/products/body_make/${action.body_make_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteBodyMakeSucceed(response.data.body_makes, response.data.success));
   } catch (error) {
     if (error.response) {
       /*
