@@ -428,7 +428,7 @@ const BodyMake: React.FC<Props> = ({
     let concatDepth = formatFeetInch(values.bodyMakeDepth.feet, values.bodyMakeDepth.inch);
 
     // if inch has no input then only display length
-    let createbodyMakeData: TCreateBodyMakeData = {
+    let createBodyMakeData: TCreateBodyMakeData = {
       body_id: values.bodyId,
       length_id: values.lengthId,
       make_id: values.makeId,
@@ -441,9 +441,9 @@ const BodyMake: React.FC<Props> = ({
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
       // if there are files being selected to be uploaded
       // then send the tag and image files to the api call
-      onCreateBodyMake(createbodyMakeData, values.imageTag, uploadSelectedFiles);
+      onCreateBodyMake(createBodyMakeData, values.imageTag, uploadSelectedFiles);
     } else {
-      onCreateBodyMake(createbodyMakeData, null, null);
+      onCreateBodyMake(createBodyMakeData, null, null);
     }
   };
 
@@ -453,7 +453,7 @@ const BodyMake: React.FC<Props> = ({
     let concatHeight = formatFeetInch(values.bodyMakeHeight.feet, values.bodyMakeHeight.inch);
     let concatDepth = formatFeetInch(values.bodyMakeDepth.feet, values.bodyMakeDepth.inch);
 
-    let updatebodyMakeData: TUpdateBodyMakeData = {
+    let updateBodyMakeData: TUpdateBodyMakeData = {
       body_make_id: values.bodyMakeId,
       body_id: values.bodyId,
       make_id: values.makeId,
@@ -466,9 +466,9 @@ const BodyMake: React.FC<Props> = ({
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
       // if there are files being selected to be uploaded
       // then send the tag and image files to the api call
-      onUpdateBodyMake(updatebodyMakeData, values.imageTag, uploadSelectedFiles);
+      onUpdateBodyMake(updateBodyMakeData, values.imageTag, uploadSelectedFiles);
     } else {
-      onUpdateBodyMake(updatebodyMakeData, null, null);
+      onUpdateBodyMake(updateBodyMakeData, null, null);
     }
   };
   /* ====================================================== */
@@ -664,7 +664,7 @@ const BodyMake: React.FC<Props> = ({
   let createBodyMakeModal = (
     <Modal
       centered
-      title="Create Body Price"
+      title="Create Body Make"
       visible={showCreateModal.body_make}
       onOk={createBodyMakeForm.submit}
       confirmLoading={loading}
@@ -709,7 +709,7 @@ const BodyMake: React.FC<Props> = ({
   let updateBodyMakeModal = (
     <Modal
       centered
-      title="Edit Body Price"
+      title="Edit Body Make"
       visible={showUpdateModal.body_make}
       onOk={updateBodyMakeForm.submit}
       confirmLoading={loading}
@@ -889,7 +889,9 @@ const BodyMake: React.FC<Props> = ({
       let bodyMakeDetails =
         bodyMake.make.brand.title + bodyMake.make.title + bodyMake.make.series + bodyMake.body.title;
 
-      let body_make_height = bodyMake.height ? bodyMake.height : '-';
+      let body_make_height = bodyMake.height ? bodyMake.height : ' -';
+      let body_make_width = bodyMake.width ? bodyMake.width : ' -';
+      let body_make_depth = bodyMake.depth ? bodyMake.depth : ' -';
 
       if (bodyMake.available && bodyMakesArray) {
         tempArray.push({
@@ -898,9 +900,9 @@ const BodyMake: React.FC<Props> = ({
           bodyObj: bodyMake.body,
           makeObj: bodyMake.make,
           bodyMakeDetails: bodyMakeDetails,
-          bodyMakeWidth: bodyMake.width,
+          bodyMakeWidth: body_make_width,
           bodyMakeHeight: body_make_height,
-          bodyMakeDepth: bodyMake.depth,
+          bodyMakeDepth: body_make_depth,
           bodyMakePrice: formattedPrice,
           bodyMakeAccessories: bodyMake.body_make_accessories, //pass the bodyaccessory array
           bodyMakeAccessoriesArrayLength: bodyMake.body_make_accessories.length, //pass in the body make accessory array length for rowSpan
@@ -917,34 +919,6 @@ const BodyMake: React.FC<Props> = ({
     // update the state with tempArray
     setBodyMakeTableState(tempArray);
   }, [bodyMakesArray]);
-
-  // else if ('bodyMakeImages' in record && 'bodyMakeId' in record) {
-  //   expandImageGalleryButton = (
-  //     // Prevent user from clicking if both arrays lengths are 0
-  //     <PlusCircleTwoTone
-  //       style={{
-  //         opacity: record.bodyMakeImages.length === 0 && record.bodyMakeBodyAccessoryArrayLength === 0 ? 0.3 : 1,
-  //         pointerEvents:
-  //           record.bodyMakeImages.length === 0 && record.bodyMakeBodyAccessoryArrayLength === 0 ? 'none' : 'auto',
-  //       }}
-  //       onClick={() => {
-  //         // this allow only 1 row to expand at a time
-  //         onTableRowExpand(expanded, record);
-  //         // this closes all the edit image gallery when user expand other row
-  //         // clearing out all the booleans
-  //         setShowEditImageGallery({});
-  //         // this function is passed to imageGallery
-  //         //  it will simply uncheck everything
-  //         onClearAllSelectedImages();
-  //         // populate image array state and pass to ImageGallery component
-  //         onPopulateImagesArray(record.bodyMakeImages);
-  //       }}
-  //     />
-  //   );
-  //   // when showing plus, text should be click to show, vice versa
-  //   tooltipIconsText.plusIcon = 'Click to show images and attachable accessories';
-  //   tooltipIconsText.minusIcon = 'Click to hide images and attachable accessories';
-  // }
 
   /* -------------------- */
   // success notification

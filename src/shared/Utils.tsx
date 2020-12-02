@@ -56,10 +56,22 @@ export const unformatPriceString = (priceWithComma: string) => {
  */
 /* =========================================================== */
 export const convertPriceToFloat = (price: string) => {
+  if (price === undefined) return 0;
   let extractedPrice = '';
   extractedPrice = price.replace('RM', '');
   extractedPrice = unformatPriceString(extractedPrice).toString();
   return parseFloat(extractedPrice);
+};
+
+/* =========================================================== */
+/**
+ *  Helper function to return string with only numbers in it
+ * @param {string} value some strings
+ * @return {string} return string with only numbers in it
+ */
+/* =========================================================== */
+export const onlyNumberString = (value: string) => {
+  return value.replace(/\D/g, '');
 };
 
 /* =========================================================== */
@@ -82,7 +94,7 @@ export const checkInchExist = (extractedValue: string) => {
     extractedFeet = extractedValue.split("'")[0]; //get the first index
   } else {
     extractedFeet = extractedValue.split("'")[0]; //get the first index
-    extractedInch = extractedValue.split("'")[1].toString().trim(); //second index and remove empty space infront of the inch
+    extractedInch = onlyNumberString(extractedValue.split("'")[1].toString()); //second index and remove empty space infront of the inch
   }
 
   return { feet: extractedFeet, inch: extractedInch };
@@ -98,11 +110,16 @@ export const checkInchExist = (extractedValue: string) => {
  */
 /* =========================================================== */
 export const formatFeetInch = (feet: string, inch: string) => {
-  console.log(feet, inch);
-  if (inch === undefined) {
+  // if both have no input, return empty string
+  if (feet === undefined && inch === undefined) {
+    return '';
+  }
+  // if only inch doesnt have any input return only feet
+  if (feet !== undefined && inch === undefined) {
     return feet + "' ";
   }
-  return feet + "' " + inch + "''";
+
+  return feet + "' " + inch + '"';
 };
 
 /* =========================================================== */

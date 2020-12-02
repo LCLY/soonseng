@@ -649,7 +649,7 @@ const Accessory: React.FC<Props> = ({
   /* Update Accessory Modal */
   let updateAccessoryModal = (
     <Modal
-      title="Create Accessory"
+      title="Edit Accessory"
       centered
       visible={showUpdateModal.accessory}
       onOk={updateAccessoryForm.submit}

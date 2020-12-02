@@ -38,17 +38,18 @@
     /* values section */
     /* ----------------------- */
     &-values {
-      padding: 12rem 0;
-      // display: flex;
       // justify-content: space-between;
       overflow-x: hidden;
 
-      @include respond-to(tablet) {
-        flex-direction: column;
+      @include respond-to(phone-only) {
         padding: 5rem 1rem;
       }
-      @include respond-to(medium) {
-        padding: 5rem 0;
+
+      @include respond-to(tablet-portrait-up) {
+        padding: 5rem 1rem;
+      }
+      @include respond-to(tablet-landscape-up) {
+        padding: 12rem 0;
       }
 
       // our values
@@ -73,7 +74,7 @@
         background-image: linear-gradient(to bottom, black 50%, $primary-color-4);
         flex-direction: column;
       }
-      @include respond-to(tablet) {
+      @include respond-to(tablet-landscape-up) {
         background-image: linear-gradient(to bottom, black 50%, $primary-color-4);
         flex-direction: column;
       }
@@ -94,7 +95,7 @@
       @include respond-to(phone-only) {
         flex-direction: column;
       }
-      @include respond-to(tablet) {
+      @include respond-to(tablet-landscape-up) {
         flex-direction: column;
       }
       @include respond-to(medium) {
@@ -373,7 +374,7 @@
     }
 
     /* ------------------------------------ */
-    // The icon within those features div
+    // The icon within those values div
     /* ------------------------------------ */
     &-icon {
       font-size: 5rem;
@@ -402,7 +403,7 @@
           width: 35%;
           margin-right: 0;
         }
-        @include respond-to(tablet) {
+        @include respond-to(tablet-landscape-up) {
           width: 35%;
           margin-right: 0;
         }
@@ -420,16 +421,13 @@
       @include respond-to(phone-only) {
         width: 65%;
       }
-      @include respond-to(tablet) {
-        width: 65%;
-      }
-      @include respond-to(medium) {
+      @include respond-to(tablet-landscape-up) {
         width: 65%;
       }
     }
 
     /* ------------------------------------ */
-    // The title within those features div
+    // The title within those values div
     /* ------------------------------------ */
     &-title {
       font-weight: bolder;
@@ -443,188 +441,6 @@
     &-desc {
       @include respond-to(phone-only) {
         font-size: 1.2rem;
-      }
-    }
-  }
-
-  /* ============================= */
-  // Intro of the homepage
-  /* ============================= */
-  &__intro {
-    &-img {
-      // parent div of the images
-      &-parent {
-        position: relative;
-        width: 50%;
-        height: 100%;
-        background: white;
-        @include respond-to(phone-only) {
-          width: 100%;
-        }
-        @include respond-to(tablet) {
-          width: 100%;
-        }
-        @include respond-to(medium) {
-          width: 100%;
-        }
-      }
-
-      // the non transparent truck image
-      &--ori {
-        z-index: 0;
-        height: 100%;
-        width: 100%;
-        &-div {
-          height: 100%;
-          width: 100%;
-        }
-      }
-
-      // the transparent truck image
-      &--transparent {
-        height: 100%;
-        width: 100%;
-
-        // transparent DIV
-        &-div {
-          height: 100%;
-          width: 100%;
-          transform: scale(1.3);
-          overflow: hidden;
-          z-index: 2;
-          background: $primary-color-3;
-          box-shadow: 0 0rem 16rem 12rem black inset;
-          &:hover {
-            & + .homepage__intro-img-overlay {
-              opacity: 1;
-            }
-          }
-        }
-
-        object-position: 60% 100% !important;
-        overflow: hidden;
-        object-fit: cover;
-
-        &:hover {
-          // transform: scale(1.08);
-          & + .homepage__intro-img-overlay {
-            opacity: 1;
-          }
-        }
-      }
-
-      // create overlay effect when user hover
-      &-overlay {
-        transition: all 0.5s ease;
-        position: absolute;
-        opacity: 0;
-        background: rgba(0, 0, 0, 0.342);
-        height: 100%;
-        width: 100%;
-        z-index: 1;
-      }
-    }
-
-    &-title {
-      color: white;
-      font-size: 4rem;
-      font-family: $font-ubuntu;
-    }
-    // the text in the intro section
-    &-text {
-      &-outerdiv {
-        display: flex;
-        flex-direction: column;
-        width: 50%;
-        padding-left: 5rem;
-        overflow-x: hidden;
-        @include respond-to(phone-only) {
-          width: 100%;
-          padding-left: 0rem;
-        }
-        @include respond-to(tablet) {
-          width: 100%;
-          padding-left: 0rem;
-        }
-        @include respond-to(medium) {
-          width: 100%;
-          padding-left: 0rem;
-        }
-      }
-      color: rgb(185, 185, 185);
-      line-height: 2.5rem;
-      font-size: 1.5rem;
-      font-family: $font-opensans;
-    }
-  }
-
-  /* ========================= */
-  // the third section
-  /* ========================= */
-  &__third {
-    &-title {
-      font-size: 4rem;
-      font-family: $font-bebasneue;
-    }
-    &-subtitle {
-      font-size: 2.5rem;
-      font-family: $font-opensans;
-      margin-bottom: 1rem;
-    }
-    &-text {
-      font-size: 1.7rem;
-    }
-    // left column
-    &-left {
-      width: 55%;
-      @include respond-to(phone-only) {
-        width: 100%;
-      }
-      @include respond-to(tablet) {
-        width: 100%;
-      }
-      @include respond-to(medium) {
-        width: 100%;
-      }
-    }
-    // right column
-    &-right {
-      width: 45%;
-      display: flex;
-      justify-content: center;
-      @include respond-to(phone-only) {
-        width: 100%;
-      }
-      @include respond-to(tablet) {
-        width: 100%;
-      }
-      @include respond-to(medium) {
-        width: 100%;
-      }
-    }
-
-    &-img {
-      // width: 50rem;
-      // height: 35rem;
-      width: 100%;
-      height: 100%;
-      padding: 5rem;
-
-      &-div {
-        overflow: hidden !important;
-      }
-      // object-fit: cover;
-      @include respond-to(phone-only) {
-        width: 100%;
-        padding: 0rem;
-      }
-      @include respond-to(tablet) {
-        width: 100%;
-        padding: 0rem;
-      }
-      @include respond-to(medium) {
-        width: 100%;
-        padding: 0rem;
       }
     }
   }
@@ -647,26 +463,34 @@
       @include respond-to(phone-only) {
         padding: 2rem;
       }
+      @include respond-to(tablet-portrait-up) {
+        padding: 8rem 2rem 5rem 2rem;
+      }
     }
     &-div {
       display: flex !important;
-      height: 50rem;
+
       background: $primary-color-4;
       color: white;
       overflow: hidden;
       backface-visibility: hidden;
 
-      @include respond-to(medium) {
-        flex-direction: column;
-        height: auto;
-      }
-      @include respond-to(tablet) {
-        flex-direction: column;
-        height: auto;
-      }
       @include respond-to(phone-only) {
         flex-direction: column;
         height: auto;
+      }
+      @include respond-to(tablet-portrait-up) {
+        flex-direction: column;
+        height: auto;
+      }
+      @include respond-to(tablet-landscape-up) {
+        flex-direction: row;
+        height: 40rem;
+      }
+      @include respond-to(desktop-up) {
+        flex-direction: row;
+        height: 45rem;
+        padding-bottom: 10rem;
       }
       /* ----------------------- */
       // Left column
@@ -674,16 +498,18 @@
       &-left {
         width: 49%;
         padding-right: 3%;
-        @include respond-to(medium) {
-          width: 100%;
-          padding: 0;
-        }
-        @include respond-to(tablet) {
-          width: 100%;
-          padding: 0;
-        }
+        height: 100%;
+
         @include respond-to(phone-only) {
           width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet-portrait-up) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet-landscape-up) {
+          width: 49%;
           padding: 0;
         }
       }
@@ -694,21 +520,25 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 50%;
-        padding-left: 2rem;
-        padding-bottom: 10rem;
 
-        @include respond-to(medium) {
-          width: 100%;
-          padding: 0;
-        }
-        @include respond-to(tablet) {
-          width: 100%;
-          padding: 0;
-        }
         @include respond-to(phone-only) {
           width: 100%;
           padding: 0;
+        }
+        @include respond-to(tablet-portrait-up) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet-landscape-up) {
+          width: 50%;
+          padding: 0;
+        }
+        @include respond-to(desktop-up) {
+          width: 50%;
+          height: 100%;
+          padding: 0;
+          padding-bottom: 2rem;
+          padding-left: 2rem;
         }
       }
     }
@@ -771,18 +601,20 @@
 
     // the image
     &-image {
-      width: 100%;
-      height: 100%;
       object-fit: cover;
+      width: 100%;
 
-      @include respond-to(medium) {
-        height: 40rem;
-      }
-      @include respond-to(tablet) {
-        height: 30rem;
-      }
       @include respond-to(phone-only) {
         height: 20rem;
+        width: 100%;
+      }
+      @include respond-to(tablet-portrait-up) {
+        height: 40rem;
+        width: 100%;
+      }
+      @include respond-to(tablet-landscape-up) {
+        width: 100%;
+        height: 100%;
       }
     }
   }
