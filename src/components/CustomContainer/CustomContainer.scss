@@ -1,19 +1,16 @@
 .customcontainer {
   &__div {
-    margin: 0 15%;
-    // display: flex;
-
+    @include respond-to(phone-only) {
+      margin: 0 1rem;
+    }
     @include respond-to(tablet-portrait-up) {
       margin: 0 2rem;
     }
     @include respond-to(tablet-landscape-up) {
-      margin: 0 2rem;
-    }
-    @include respond-to(phone-only) {
-      margin: 0 1rem;
+      margin: 0 5rem;
     }
     @include respond-to(desktop-up) {
-      margin: 0 15%;
+      margin: 0 10%;
     }
   }
 }

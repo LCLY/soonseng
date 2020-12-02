@@ -7,6 +7,7 @@
     padding-bottom: 5rem;
     &-outerdiv {
       width: auto;
+      padding-top: $navbar-height;
     }
   }
 
@@ -41,6 +42,10 @@
     &-row {
       display: flex;
       width: 100%;
+
+      @include respond-to(phone-only) {
+        flex-direction: column;
+      }
 
       // most outerdiv
       &-outerdiv {

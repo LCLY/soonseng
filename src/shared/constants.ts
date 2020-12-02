@@ -10,3 +10,11 @@ export const STEPS_BODY = 'Body';
 export const STEPS_BODYMAKE = 'Option';
 export const STEPS_ACCESSORY = 'Accessory';
 export const STEPS_BRAND = 'Brand';
+
+// Upload constants
+export const UPLOAD_TO_MAKE = 'Make';
+export const UPLOAD_TO_BRAND = 'Brand';
+export const UPLOAD_TO_BODY = 'Body';
+export const UPLOAD_TO_BODY_MAKE = 'BodyMake';
+export const UPLOAD_TO_ACCESSORY = 'Accessory';
+export const UPLOAD_TO_BODY_ACCESSORY = 'BodyAccessory';

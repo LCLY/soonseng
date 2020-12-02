@@ -8,9 +8,9 @@ import {
   TReceivedWheelbaseObj,
   TUpdateMakeData,
   TReceivedBodyObj,
-  TReceivedBodyLengthObj,
-  TCreateBodyLengthData,
-  TUpdateBodyLengthData,
+  TReceivedBodyMakeObj,
+  TCreateBodyMakeData,
+  TUpdateBodyMakeData,
   TReceivedLengthObj,
   TReceivedAccessoryObj,
   TCreateBodyAccessoryData,
@@ -652,111 +652,105 @@ export const updateLengthFailed = (errorMessage: string): AppActions => {
 };
 
 /* ============================================================================================ */
-// Body Length (Body Page) (tail)
+// Body Make (Body Page) (tail)
 /* ============================================================================================ */
 
 /* ------------------ */
-// Create Body Length (tail)
+// Create Body Make (tail)
 /* ------------------ */
-export const createBodyLength = (
-  createBodyLengthData: TCreateBodyLengthData,
+export const createBodyMake = (
+  createBodyMakeData: TCreateBodyMakeData,
   imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
-    type: actionTypes.CREATE_BODYLENGTH,
-    createBodyLengthData: createBodyLengthData,
+    type: actionTypes.CREATE_BODYMAKE,
+    createBodyMakeData: createBodyMakeData,
     imageTag: imageTag,
     imageFiles: imageFiles,
   };
 };
 
-export const createBodyLengthStart = (): AppActions => {
+export const createBodyMakeStart = (): AppActions => {
   return {
-    type: actionTypes.CREATE_BODYLENGTH_START,
+    type: actionTypes.CREATE_BODYMAKE_START,
   };
 };
 
-export const createBodyLengthSucceed = (
-  bodyLengthsArray: TReceivedBodyLengthObj[],
-  successMessage: string,
-): AppActions => {
+export const createBodyMakeSucceed = (bodyMakesArray: TReceivedBodyMakeObj[], successMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_BODYLENGTH_SUCCEED,
-    bodyLengthsArray: bodyLengthsArray,
+    type: actionTypes.CREATE_BODYMAKE_SUCCEED,
+    bodyMakesArray: bodyMakesArray,
     successMessage: successMessage,
   };
 };
-export const createBodyLengthFailed = (errorMessage: string): AppActions => {
+export const createBodyMakeFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_BODYLENGTH_FAILED,
+    type: actionTypes.CREATE_BODYMAKE_FAILED,
     errorMessage: errorMessage,
   };
 };
 
 /* ------------------ */
-// Get Body Lengths (tail)
+// Get Body makes (tail)
 /* ------------------ */
-export const getBodyLengths = (): AppActions => {
+export const getBodyMakes = (): AppActions => {
   return {
-    type: actionTypes.GET_BODYLENGTHS,
+    type: actionTypes.GET_BODYMAKES,
   };
 };
 
-export const getBodyLengthsStart = (): AppActions => {
+export const getBodyMakesStart = (): AppActions => {
   return {
-    type: actionTypes.GET_BODYLENGTHS_START,
+    type: actionTypes.GET_BODYMAKES_START,
   };
 };
 
-export const getBodyLengthsSucceed = (bodyLengthsArray: TReceivedBodyLengthObj[]): AppActions => {
+export const getBodyMakesSucceed = (bodyMakesArray: TReceivedBodyMakeObj[]): AppActions => {
   return {
-    type: actionTypes.GET_BODYLENGTHS_SUCCEED,
-    bodyLengthsArray: bodyLengthsArray,
+    type: actionTypes.GET_BODYMAKES_SUCCEED,
+    bodyMakesArray: bodyMakesArray,
   };
 };
-export const getBodyLengthsFailed = (errorMessage: string): AppActions => {
+export const getBodyMakesFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.GET_BODYLENGTHS_FAILED,
+    type: actionTypes.GET_BODYMAKES_FAILED,
     errorMessage: errorMessage,
   };
 };
 
 /* ------------------ */
-// Update Body Length (tail)
+// Update Body Make (tail)
 /* ------------------ */
-export const updateBodyLength = (
-  updateBodyLengthData: TUpdateBodyLengthData,
+export const updateBodyMake = (
+  updateBodyMakeData: TUpdateBodyMakeData,
   imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
-    type: actionTypes.UPDATE_BODYLENGTH,
-    updateBodyLengthData: updateBodyLengthData,
+    type: actionTypes.UPDATE_BODYMAKE,
+    updateBodyMakeData: updateBodyMakeData,
     imageTag: imageTag,
     imageFiles: imageFiles,
   };
 };
 
-export const updateBodyLengthStart = (): AppActions => {
+export const updateBodyMakeStart = (): AppActions => {
   return {
-    type: actionTypes.UPDATE_BODYLENGTH_START,
+    type: actionTypes.UPDATE_BODYMAKE_START,
   };
 };
 
-export const updateBodyLengthSucceed = (
-  bodyLengthsArray: TReceivedBodyLengthObj[],
-  successMessage: string,
-): AppActions => {
+export const updateBodyMakeSucceed = (bodyMakesArray: TReceivedBodyMakeObj[], successMessage: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_BODYLENGTH_SUCCEED,
-    bodyLengthsArray: bodyLengthsArray,
+    type: actionTypes.UPDATE_BODYMAKE_SUCCEED,
+    bodyMakesArray: bodyMakesArray,
     successMessage: successMessage,
   };
 };
-export const updateBodyLengthFailed = (errorMessage: string): AppActions => {
+export const updateBodyMakeFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_BODYLENGTH_FAILED,
+    type: actionTypes.UPDATE_BODYMAKE_FAILED,
     errorMessage: errorMessage,
   };
 };
@@ -789,13 +783,13 @@ export const createBodyAccessoryStart = (): AppActions => {
 
 export const createBodyAccessorySucceed = (
   bodyAccessoriesArray: TReceivedBodyAccessoryObj[],
-  bodyLengthsArray: TReceivedBodyLengthObj[],
+  bodyMakesArray: TReceivedBodyMakeObj[],
   successMessage: string,
 ): AppActions => {
   return {
     type: actionTypes.CREATE_BODYACCESSORY_SUCCEED,
     bodyAccessoriesArray: bodyAccessoriesArray,
-    bodyLengthsArray: bodyLengthsArray,
+    bodyMakesArray: bodyMakesArray,
     successMessage: successMessage,
   };
 };

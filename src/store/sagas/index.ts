@@ -30,10 +30,10 @@ import {
   createLengthSaga,
   getLengthsSaga,
   updateLengthSaga,
-  // Body Length
-  createBodyLengthSaga,
-  getBodyLengthsSaga,
-  updateBodyLengthSaga,
+  // Body Make
+  createBodyMakeSaga,
+  getBodyMakesSaga,
+  updateBodyMakeSaga,
   // Body Accessory
   createBodyAccessorySaga,
   getBodyAccessoriesSaga,
@@ -90,9 +90,9 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_LENGTHS, getLengthsSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_LENGTH, updateLengthSaga)]);
   // Body Length
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYLENGTH, createBodyLengthSaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYLENGTHS, getBodyLengthsSaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYLENGTH, updateBodyLengthSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYMAKE, createBodyMakeSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYMAKES, getBodyMakesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYMAKE, updateBodyMakeSaga)]);
   // Body Accessory
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYACCESSORY, createBodyAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYACCESSORIES, getBodyAccessoriesSaga)]);

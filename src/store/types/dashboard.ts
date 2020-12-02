@@ -24,8 +24,8 @@ export interface DashboardInitialState {
   readonly lengthObj: TReceivedLengthObj | null;
   readonly lengthsArray: TReceivedLengthObj[] | null;
   // body length
-  readonly bodyLengthObj: TReceivedBodyLengthObj | null;
-  readonly bodyLengthsArray: TReceivedBodyLengthObj[] | null;
+  readonly bodyMakeObj: TReceivedBodyMakeObj | null;
+  readonly bodyMakesArray: TReceivedBodyMakeObj[] | null;
   // body accessory
   readonly bodyAccessoryObj: TReceivedBodyAccessoryObj | null;
   readonly bodyAccessoriesArray: TReceivedBodyAccessoryObj[] | null;
@@ -600,108 +600,110 @@ export interface UpdateLengthFailedAction {
 }
 
 /* ============================================================== */
-// Body Length (Body Page) (tail)
+// Body Make (Body Page) (tail)
 /* ============================================================== */
 /* types */
-// Body length data when creating
-export type TCreateBodyLengthData = {
+// Body make data when creating
+export type TCreateBodyMakeData = {
   body_id: number;
   length_id: number;
+  make_id: number;
   depth: string;
   width: string;
   height: string;
   price: number;
 };
-export type TUpdateBodyLengthData = {
-  body_length_id: number;
+export type TUpdateBodyMakeData = {
+  body_make_id: number;
   body_id: number;
-  length_id: number;
+  make_id: number;
   depth: string;
   width: string;
   height: string;
   price: number;
 };
 // Received body length object when action success
-export type TReceivedBodyLengthObj = {
+// Types
+export type TReceivedBodyMakeObj = {
   id: number;
-  length: TReceivedLengthObj;
-  body: TReceivedBodyObj;
-  depth: string;
-  width: string;
-  height: string;
+  available: true;
   price: number;
-  available: boolean;
+  width: string;
+  depth: string;
+  height: string | null;
+  make: TReceivedMakeObj;
+  body: TReceivedBodyObj;
+  body_make_accessories: TReceivedAccessoryObj[];
   images: TReceivedImageObj[];
-  body_accessories: TReceivedBodyAccessoryObj[];
 };
 
 /* --------------------------- */
-// Create Body Length (tail)
+// Create Body Make (tail)
 /* --------------------------- */
 /*  Api call */
-export interface CreateBodyLengthAction {
-  type: typeof actionTypes.CREATE_BODYLENGTH;
-  createBodyLengthData: TCreateBodyLengthData;
+export interface CreateBodyMakeAction {
+  type: typeof actionTypes.CREATE_BODYMAKE;
+  createBodyMakeData: TCreateBodyMakeData;
   imageTag: string | null; //for upload images
   imageFiles: FileList | null; //for upload images
 }
 /*  States */
-export interface CreateBodyLengthStartAction {
-  type: typeof actionTypes.CREATE_BODYLENGTH_START;
+export interface CreateBodyMakeStartAction {
+  type: typeof actionTypes.CREATE_BODYMAKE_START;
 }
-export interface CreateBodyLengthSucceedAction {
-  type: typeof actionTypes.CREATE_BODYLENGTH_SUCCEED;
-  bodyLengthsArray: TReceivedBodyLengthObj[];
+export interface CreateBodyMakeSucceedAction {
+  type: typeof actionTypes.CREATE_BODYMAKE_SUCCEED;
+  bodyMakesArray: TReceivedBodyMakeObj[];
   successMessage: string;
 }
-export interface CreateBodyLengthFailedAction {
-  type: typeof actionTypes.CREATE_BODYLENGTH_FAILED;
+export interface CreateBodyMakeFailedAction {
+  type: typeof actionTypes.CREATE_BODYMAKE_FAILED;
   errorMessage: string;
 }
 
 /* --------------------------- */
-// Update Body Length (Tail)
+// Update Body Make (Tail)
 /* --------------------------- */
 
 /* Api call */
-export interface UpdateBodyLengthAction {
-  type: typeof actionTypes.UPDATE_BODYLENGTH;
-  updateBodyLengthData: TUpdateBodyLengthData;
+export interface UpdateBodyMakeAction {
+  type: typeof actionTypes.UPDATE_BODYMAKE;
+  updateBodyMakeData: TUpdateBodyMakeData;
   imageTag: string | null; //for upload images
   imageFiles: FileList | null; //for upload images
 }
 /* States */
-export interface UpdateBodyLengthStartAction {
-  type: typeof actionTypes.UPDATE_BODYLENGTH_START;
+export interface UpdateBodyMakeStartAction {
+  type: typeof actionTypes.UPDATE_BODYMAKE_START;
 }
-export interface UpdateBodyLengthSucceedAction {
-  type: typeof actionTypes.UPDATE_BODYLENGTH_SUCCEED;
-  bodyLengthsArray: TReceivedBodyLengthObj[];
+export interface UpdateBodyMakeSucceedAction {
+  type: typeof actionTypes.UPDATE_BODYMAKE_SUCCEED;
+  bodyMakesArray: TReceivedBodyMakeObj[];
   successMessage: string;
 }
-export interface UpdateBodyLengthFailedAction {
-  type: typeof actionTypes.UPDATE_BODYLENGTH_FAILED;
+export interface UpdateBodyMakeFailedAction {
+  type: typeof actionTypes.UPDATE_BODYMAKE_FAILED;
   errorMessage: string;
 }
 
 /* --------------------------- */
-// Get All Body Lengths (tail)
+// Get All Body Makes (tail)
 /* --------------------------- */
 
 /* Api call */
-export interface GetBodyLengthsAction {
-  type: typeof actionTypes.GET_BODYLENGTHS;
+export interface GetBodyMakesAction {
+  type: typeof actionTypes.GET_BODYMAKES;
 }
 /* States */
-export interface GetBodyLengthsStartAction {
-  type: typeof actionTypes.GET_BODYLENGTHS_START;
+export interface GetBodyMakesStartAction {
+  type: typeof actionTypes.GET_BODYMAKES_START;
 }
-export interface GetBodyLengthsSucceedAction {
-  type: typeof actionTypes.GET_BODYLENGTHS_SUCCEED;
-  bodyLengthsArray: TReceivedBodyLengthObj[];
+export interface GetBodyMakesSucceedAction {
+  type: typeof actionTypes.GET_BODYMAKES_SUCCEED;
+  bodyMakesArray: TReceivedBodyMakeObj[];
 }
-export interface GetBodyLengthsFailedAction {
-  type: typeof actionTypes.GET_BODYLENGTHS_FAILED;
+export interface GetBodyMakesFailedAction {
+  type: typeof actionTypes.GET_BODYMAKES_FAILED;
   errorMessage: string;
 }
 
@@ -727,7 +729,7 @@ export type TReceivedBodyAccessoryObj = {
   id: number;
   available: boolean;
   accessory: TReceivedAccessoryObj;
-  body_length: TReceivedBodyLengthObj;
+  body_length: TReceivedBodyMakeObj;
   images: TReceivedImageObj[];
 };
 
@@ -749,7 +751,7 @@ export interface CreateBodyAccessorySucceedAction {
   type: typeof actionTypes.CREATE_BODYACCESSORY_SUCCEED;
   bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
   /** Need this array so within the body lengths table, the body accessory can be updated smoothly */
-  bodyLengthsArray: TReceivedBodyLengthObj[];
+  bodyMakesArray: TReceivedBodyMakeObj[];
   successMessage: string;
 }
 export interface CreateBodyAccessoryFailedAction {
@@ -1032,20 +1034,20 @@ export type DashboardActionTypes =
   // Body Length (Body Page)
   /* ------------------------ */
   /* Create */
-  | CreateBodyLengthAction
-  | CreateBodyLengthStartAction
-  | CreateBodyLengthSucceedAction
-  | CreateBodyLengthFailedAction
+  | CreateBodyMakeAction
+  | CreateBodyMakeStartAction
+  | CreateBodyMakeSucceedAction
+  | CreateBodyMakeFailedAction
   /* Get */
-  | GetBodyLengthsAction
-  | GetBodyLengthsStartAction
-  | GetBodyLengthsSucceedAction
-  | GetBodyLengthsFailedAction
+  | GetBodyMakesAction
+  | GetBodyMakesStartAction
+  | GetBodyMakesSucceedAction
+  | GetBodyMakesFailedAction
   /* Update */
-  | UpdateBodyLengthAction
-  | UpdateBodyLengthStartAction
-  | UpdateBodyLengthSucceedAction
-  | UpdateBodyLengthFailedAction
+  | UpdateBodyMakeAction
+  | UpdateBodyMakeStartAction
+  | UpdateBodyMakeSucceedAction
+  | UpdateBodyMakeFailedAction
   /* ------------------------ */
   // Body Accessory (Body Page)
   /* ------------------------ */

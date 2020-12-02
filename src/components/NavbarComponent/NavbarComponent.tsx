@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import './NavbarComponent.scss';
 // components
 // 3rd party lib
@@ -10,6 +10,38 @@ import { debounce } from 'lodash';
 // image
 import SoonSengLogo from 'src/img/soonseng_logo.png';
 import { Dropdown, Menu } from 'antd';
+
+/**
+ * Hook that alerts clicks outside of the passed ref
+ */
+function useOutsideAlerter(
+  wrapperRef: any,
+  dropdownRef: any,
+  setShowPopUp: React.Dispatch<React.SetStateAction<boolean>>,
+) {
+  useEffect(() => {
+    /**
+     * Hide pop up if clicked on outside of element
+     */
+    function handleClickOutside(event: any) {
+      if (
+        wrapperRef.current &&
+        dropdownRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setShowPopUp(false);
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [wrapperRef, dropdownRef, setShowPopUp]);
+}
 
 interface NavbarComponentProps {
   /** Shows which active page it is currently */
@@ -31,6 +63,10 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   /* ======================================= */
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const wrapperRef = useRef(null);
+  const dropdownRef = useRef(null);
+  useOutsideAlerter(wrapperRef, dropdownRef, setDropdownVisible);
 
   /* =========================================== */
   // methods
@@ -44,8 +80,10 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
         // set state based on location info
         if (prevScrollPos > currentScrollPos) {
           setVisible(true);
+          setDropdownVisible(false);
         } else {
           setVisible(false);
+          setDropdownVisible(false);
         }
 
         // setVisible((prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 50) || currentScrollPos < 10);
@@ -66,17 +104,46 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   //  Component
   /* ========================================== */
   const dashboardMenu = (
-    <Menu>
-      <Menu.Item key="body" onClick={() => history.push('/dashboard/body')}>
-        Body
-      </Menu.Item>
-      <Menu.Item key="make" onClick={() => history.push('/dashboard/make')}>
-        Make
-      </Menu.Item>
-      <Menu.Item key="accessory" onClick={() => history.push('/dashboard/accessory')}>
-        Accessory
-      </Menu.Item>
-    </Menu>
+    <div ref={dropdownRef}>
+      <Menu>
+        <Menu.Item
+          key="body"
+          onClick={() => {
+            history.push('/dashboard/body');
+            setDropdownVisible(false);
+          }}
+        >
+          Body
+        </Menu.Item>
+        <Menu.Item
+          key="make"
+          onClick={() => {
+            history.push('/dashboard/make');
+            setDropdownVisible(false);
+          }}
+        >
+          Make
+        </Menu.Item>
+        <Menu.Item
+          key="accessory"
+          onClick={() => {
+            history.push('/dashboard/accessory');
+            setDropdownVisible(false);
+          }}
+        >
+          Accessory
+        </Menu.Item>
+        <Menu.Item
+          key="body_make"
+          onClick={() => {
+            history.push('/dashboard/body_make');
+            setDropdownVisible(false);
+          }}
+        >
+          Vehicle Option
+        </Menu.Item>
+      </Menu>
+    </div>
   );
 
   /* ======================================== */
@@ -119,8 +186,8 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
                   </span>
                 </div>
                 <div className={`navbar__link-div`}>
-                  <Dropdown overlay={dashboardMenu} trigger={['click']}>
-                    <span className="navbar__link">
+                  <Dropdown visible={dropdownVisible} overlay={dashboardMenu} trigger={['click']}>
+                    <span className="navbar__link" ref={wrapperRef} onClick={() => setDropdownVisible(true)}>
                       DASHBOARD <DownOutlined />
                     </span>
                   </Dropdown>
@@ -128,7 +195,7 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
               </div>
               <div className="navbar__right-div">
                 <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
-                  <div className={`navbar__link`} onClick={() => history.push('/orders')}>
+                  <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push('/orders')}>
                     <ShoppingCartOutlined /> Orders
                   </div>
                 </div>

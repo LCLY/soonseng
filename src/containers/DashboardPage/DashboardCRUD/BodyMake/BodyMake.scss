@@ -1,0 +1,14 @@
+.bodymake {
+  &__details {
+    &-category {
+      color: $primary-color-3;
+      font-family: $font-opensans;
+    }
+    &-left {
+      width: 5rem;
+    }
+    &-right {
+      margin-left: 1rem;
+    }
+  }
+}

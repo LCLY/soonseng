@@ -177,26 +177,27 @@ export const UPDATE_LENGTH = 'UPDATE_LENGTH';
 export const UPDATE_LENGTH_START = 'UPDATE_LENGTH_START';
 export const UPDATE_LENGTH_SUCCEED = 'UPDATE_LENGTH_SUCCEED';
 export const UPDATE_LENGTH_FAILED = 'UPDATE_LENGTH_FAILED';
-/* --------------------------------------------- */
-// Body Page - Body Length
-/* --------------------------------------------- */
-// Create Body Length (Tail)
-export const CREATE_BODYLENGTH = 'CREATE_BODYLENGTH';
-export const CREATE_BODYLENGTH_START = 'CREATE_BODYLENGTH_START';
-export const CREATE_BODYLENGTH_SUCCEED = 'CREATE_BODYLENGTH_SUCCEED';
-export const CREATE_BODYLENGTH_FAILED = 'CREATE_BODYLENGTH_FAILED';
 
-// Get Body Lengths (Tail)
-export const GET_BODYLENGTHS = 'GET_BODYLENGTHS';
-export const GET_BODYLENGTHS_START = 'GET_BODYLENGTHS_START';
-export const GET_BODYLENGTHS_SUCCEED = 'GET_BODYLENGTHS_SUCCEED';
-export const GET_BODYLENGTHS_FAILED = 'GET_BODYLENGTHS_FAILED';
+/* --------------------------------------------- */
+// Body Page - Body Make
+/* --------------------------------------------- */
+// Create Body Make (Tail)
+export const CREATE_BODYMAKE = 'CREATE_BODYMAKE';
+export const CREATE_BODYMAKE_START = 'CREATE_BODYMAKE_START';
+export const CREATE_BODYMAKE_SUCCEED = 'CREATE_BODYMAKE_SUCCEED';
+export const CREATE_BODYMAKE_FAILED = 'CREATE_BODYMAKE_FAILED';
 
-// Update Body Length(Tail)
-export const UPDATE_BODYLENGTH = 'UPDATE_BODYLENGTH';
-export const UPDATE_BODYLENGTH_START = 'UPDATE_BODYLENGTH_START';
-export const UPDATE_BODYLENGTH_SUCCEED = 'UPDATE_BODYLENGTH_SUCCEED';
-export const UPDATE_BODYLENGTH_FAILED = 'UPDATE_BODYLENGTH_FAILED';
+// Get Body Makes (Tail)
+export const GET_BODYMAKES = 'GET_BODYMAKES';
+export const GET_BODYMAKES_START = 'GET_BODYMAKES_START';
+export const GET_BODYMAKES_SUCCEED = 'GET_BODYMAKES_SUCCEED';
+export const GET_BODYMAKES_FAILED = 'GET_BODYMAKES_FAILED';
+
+// Update Body Make(Tail)
+export const UPDATE_BODYMAKE = 'UPDATE_BODYMAKE';
+export const UPDATE_BODYMAKE_START = 'UPDATE_BODYMAKE_START';
+export const UPDATE_BODYMAKE_SUCCEED = 'UPDATE_BODYMAKE_SUCCEED';
+export const UPDATE_BODYMAKE_FAILED = 'UPDATE_BODYMAKE_FAILED';
 
 /* --------------------------------------------- */
 // Body Page - Body Accessory

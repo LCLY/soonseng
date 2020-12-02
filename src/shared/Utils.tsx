@@ -1,8 +1,11 @@
 import React from 'react';
 import { Resizable } from 'react-resizable';
 import { Input, Button, Space, Collapse } from 'antd';
+import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { SearchOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
+import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
+import { TReceivedImageObj } from 'src/store/types/dashboard';
 const { Panel } = Collapse;
 // Containing all utilities functions
 // for reducers
@@ -28,15 +31,18 @@ export const findByTestAttribute = (component: any, attribute: string) => {
   return wrapper;
 };
 
-/* =========================================================== */
-/* =========================================================== */
+/* ===================================================================== */
+/* ===================================================================== */
+/* ===================================================================== */
 
+/* =================================================================== */
 /**
  * For converting thousand separators back into numbers e.g. RM15,000.50 => 15000.5
  * @param {string} priceWithComma
  * @return {*}
  */
-export const unformatString = (priceWithComma: string) => {
+/* =================================================================== */
+export const unformatPriceString = (priceWithComma: string) => {
   let reversedEngineeredPrice = parseFloat(priceWithComma.replace(/[^0-9-.]/g, ''));
   return reversedEngineeredPrice;
 };
@@ -52,8 +58,34 @@ export const unformatString = (priceWithComma: string) => {
 export const convertPriceToFloat = (price: string) => {
   let extractedPrice = '';
   extractedPrice = price.replace('RM', '');
-  extractedPrice = unformatString(extractedPrice).toString();
+  extractedPrice = unformatPriceString(extractedPrice).toString();
   return parseFloat(extractedPrice);
+};
+
+/* =========================================================== */
+/**
+ *  Inner helper function to return feet only or feet with inch
+ * @param {string} extractedValue Value after width/height/depth is extracted
+ * @return {*} return object of feet and inch
+ */
+/* =========================================================== */
+export const checkInchExist = (extractedValue: string) => {
+  let extractedFeet = '';
+  let extractedInch = '';
+
+  if (extractedValue === null || extractedValue === undefined) return { feet: '', inch: '' };
+  // needa check if inch is undefined, only have feet in the string
+  let onlyInchUndefined = extractedValue.split("'")[0] !== undefined && extractedValue.split("'")[1] === undefined;
+
+  // needa check if inch is undefined, only have feet in the string
+  if (onlyInchUndefined) {
+    extractedFeet = extractedValue.split("'")[0]; //get the first index
+  } else {
+    extractedFeet = extractedValue.split("'")[0]; //get the first index
+    extractedInch = extractedValue.split("'")[1].toString().trim(); //second index and remove empty space infront of the inch
+  }
+
+  return { feet: extractedFeet, inch: extractedInch };
 };
 
 /* =========================================================== */
@@ -66,11 +98,114 @@ export const convertPriceToFloat = (price: string) => {
  */
 /* =========================================================== */
 export const formatFeetInch = (feet: string, inch: string) => {
+  console.log(feet, inch);
   if (inch === undefined) {
-    return feet + " ' ";
+    return feet + "' ";
   }
-  return feet + " ' " + inch + " '' ";
+  return feet + "' " + inch + "''";
 };
+
+/* =========================================================== */
+/**
+ * For user to be able to press enter and submit the form
+ * @param {React.KeyboardEvent<HTMLFormElement>} e
+ * @param {FormInstance<any>} form form instance created at initialization using useForm
+ */
+/* =========================================================== */
+export const handleFormKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, formRef: FormInstance<any>) => {
+  if (e.key === 'Enter') {
+    formRef.submit();
+  }
+};
+
+/* =========================================================== */
+/**
+ * helper function to clear all selected images in image gallery when user calls it
+ * @param {boolean} selectAllChecked
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setSelectAllChecked
+ * @param {TGalleryImageArrayObj[]} galleryImages
+ * @param {React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>} setGalleryImages
+ * @category Helper function
+ * /
+======================================================= */
+export const onClearAllSelectedImages = (
+  selectAllChecked: boolean,
+  setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>,
+  galleryImages: TGalleryImageArrayObj[],
+  setGalleryImages: React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>,
+) => {
+  setSelectAllChecked(false);
+
+  var temp_images: any = galleryImages.slice();
+  if (selectAllChecked) {
+    for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = false;
+  }
+  setGalleryImages(temp_images);
+};
+
+/* =========================================================== */
+/**
+ *
+ * helper function to only show 1 expanded row
+ * @param {boolean} expanded
+ * @param {table} record
+ * @param {React.Dispatch<React.SetStateAction<React.ReactText[]>>} setExpandedRowKeys
+ * @category Helper function
+ */
+/* =========================================================== */
+export const onTableRowExpand = (
+  expanded: boolean,
+  record: any,
+  setExpandedRowKeys: React.Dispatch<React.SetStateAction<React.ReactText[]>>,
+) => {
+  var keys = [];
+  let key = record.key;
+  if (!expanded && key) {
+    keys.push(key.toString()); // I have set my record.id as row key. Check the documentation for more details.
+  }
+
+  setExpandedRowKeys(keys);
+};
+
+/**
+ *
+ * This function takes in images array from make object and then populate the current state
+ * of setImage
+ * @param {TReceivedImageObj[]} recordImagesArray
+ * @param {React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>} setGalleryImages
+ * @category Helper function
+ */
+export const onPopulateImagesArray = (
+  recordImagesArray: TReceivedImageObj[],
+  setGalleryImages: React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>,
+) => {
+  let tempArray: TGalleryImageArrayObj[] = [];
+
+  // Populate the array state with every image and later pass to Image Gallery
+  const storeValue = (image: TReceivedImageObj) => {
+    let imageObject = {
+      id: image.id,
+      src: image.url,
+      thumbnail: image.url,
+      thumbnailWidth: 320,
+      thumbnailHeight: 212,
+      alt: image.filename,
+      nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
+      isSelected: false,
+      tags: [{ value: image.tag ? image.tag : ' - ', title: image.tag ? image.tag : ' - ' }],
+      caption: image.filename,
+    };
+
+    tempArray.push(imageObject);
+  };
+  recordImagesArray.map(storeValue);
+
+  setGalleryImages(tempArray);
+};
+
+/* ============================================================================= */
+/* ============================================================================= */
+/* ============================================================================= */
 
 /* ============================================================================== */
 /* For AntD table resizable column */

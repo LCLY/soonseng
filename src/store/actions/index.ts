@@ -113,23 +113,23 @@ export {
   updateLengthFailed,
   updateLengthSucceed,
   /* =================== */
-  //  Body Length (Body Page)
+  //  Body Make (Body Page)
   /* =================== */
-  // Create Body Length
-  createBodyLength,
-  createBodyLengthStart,
-  createBodyLengthFailed,
-  createBodyLengthSucceed,
-  // Get Body Lengths
-  getBodyLengths,
-  getBodyLengthsStart,
-  getBodyLengthsFailed,
-  getBodyLengthsSucceed,
-  // Update Body Length
-  updateBodyLength,
-  updateBodyLengthStart,
-  updateBodyLengthFailed,
-  updateBodyLengthSucceed,
+  // Create Body Make
+  createBodyMake,
+  createBodyMakeStart,
+  createBodyMakeFailed,
+  createBodyMakeSucceed,
+  // Get Body Makes
+  getBodyMakes,
+  getBodyMakesStart,
+  getBodyMakesFailed,
+  getBodyMakesSucceed,
+  // Update Body Make
+  updateBodyMake,
+  updateBodyMakeStart,
+  updateBodyMakeFailed,
+  updateBodyMakeSucceed,
   /* =================== */
   //  Body Accessory (Body Page)
   /* =================== */

@@ -14,6 +14,7 @@
   &__tab {
     &-outerdiv {
       margin-top: 3rem;
+      padding-top: $navbar-height;
     }
   }
 
@@ -190,7 +191,6 @@
     /* ------------------------------ */
     &-left {
       white-space: initial;
-
       width: 11rem;
     }
 

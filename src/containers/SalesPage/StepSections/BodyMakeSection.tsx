@@ -9,14 +9,9 @@ import { Breadcrumb, Button, Card, Divider, Tag } from 'antd';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 /* Util */
 import { AppActions } from 'src/store/types';
-import { TReceivedBodyObj } from 'src/store/types/dashboard';
+import { TReceivedBodyObj, TReceivedBodyMakeObj } from 'src/store/types/dashboard';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
-import {
-  TLocalOrderObj,
-  TReceivedSalesLengthObj,
-  TReceivedBodyMakeObj,
-  TReceivedSalesBodyMakeObj,
-} from 'src/store/types/sales';
+import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedSalesBodyMakeObj } from 'src/store/types/sales';
 
 interface BodyMakeSectionProps {
   loading?: boolean;

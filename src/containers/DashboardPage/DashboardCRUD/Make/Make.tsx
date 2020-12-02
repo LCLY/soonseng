@@ -35,9 +35,9 @@ import { TMapStateToProps } from 'src/store/types';
 import {
   setFilterReference,
   convertHeader,
-  unformatString,
   getColumnSearchProps,
   convertPriceToFloat,
+  onClearAllSelectedImages,
 } from 'src/shared/Utils';
 
 const { Option } = Select;
@@ -423,20 +423,6 @@ const Make: React.FC<Props> = ({
   };
 
   /**
-   * helper function to clear all selected images in image gallery when user call it
-   * @category Helper function
-   */
-  const onClearAllSelectedImages = () => {
-    setSelectAllChecked(false);
-
-    var temp_images: any = galleryImages.slice();
-    if (selectAllChecked) {
-      for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = false;
-    }
-    setGalleryImages(temp_images);
-  };
-
-  /**
    *
    * This function takes in images array from make object and then populate the current state
    * of setImage
@@ -483,8 +469,6 @@ const Make: React.FC<Props> = ({
 
     // replace units with empty strings
     extractedHorsepower = record.horsepower.replace('hp', '');
-    extractedPrice = record.price.replace('RM', '');
-    extractedPrice = unformatString(extractedPrice).toString();
     extractedGvw = record.gvw.replace('kg', '');
     extractedLength = record.makeLength.replace('mm', '');
 
@@ -495,7 +479,7 @@ const Make: React.FC<Props> = ({
       makeWheelbaseId: record.makeWheelbaseId,
       gvw: extractedGvw,
       year: moment(record.year),
-      price: extractedPrice,
+      price: convertPriceToFloat(extractedPrice),
       title: record.makeTitle,
       engine_cap: record.engine_cap,
       horsepower: extractedHorsepower,
@@ -701,7 +685,7 @@ const Make: React.FC<Props> = ({
             setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            onClearAllSelectedImages();
+            onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
             // populate image array state and pass to ImageGallery component
             onPopulateImagesArray(record.brandImages);
           }}
@@ -722,7 +706,7 @@ const Make: React.FC<Props> = ({
             setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            onClearAllSelectedImages();
+            onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
             // populate image array state and pass to ImageGallery component
             onPopulateImagesArray(record.makeImages);
           }}
@@ -739,7 +723,7 @@ const Make: React.FC<Props> = ({
                 onTableRowExpand(expanded, record);
                 // this function is passed to imageGallery
                 //  it will simply uncheck everything
-                onClearAllSelectedImages();
+                onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
               }}
             />
           </Tooltip>
@@ -785,7 +769,6 @@ const Make: React.FC<Props> = ({
           setExpandedRowKeys={setExpandedRowKeys}
           showEditImageGallery={showEditImageGallery}
           setShowEditImageGallery={setShowEditImageGallery}
-          onClearAllSelectedImages={onClearAllSelectedImages}
           onPopulateEditModal={(record) => {
             if ('makeImages' in record && 'makeId' in record) {
               onPopulateupdateMakeModal(record);

@@ -7,6 +7,7 @@ import { Button } from 'antd';
 import { DeleteOutlined, UploadOutlined, CloseCircleOutlined } from '@ant-design/icons';
 /* Util */
 import { TReceivedImageObj } from 'src/store/types/dashboard';
+import { onClearAllSelectedImages } from 'src/shared/Utils';
 
 interface TableImageViewerProps {
   /** record from each model's table */
@@ -23,7 +24,6 @@ interface TableImageViewerProps {
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   /** api call to delete upload image by passing in array of ids */
   onDeleteUploadImage: (ids: number[]) => void;
-  onClearAllSelectedImages: () => void;
   /** to populate any edit/update modal when user clicks on upload image button */
   onPopulateEditModal: (record: any) => void;
   /** for showing update modal when user clicks on upload image button */
@@ -63,7 +63,6 @@ const TableImageViewer: React.FC<Props> = ({
   setExpandedRowKeys,
   setShowUpdateModal,
   showEditImageGallery,
-  onClearAllSelectedImages,
   setShowEditImageGallery,
 }) => {
   return (
@@ -89,7 +88,7 @@ const TableImageViewer: React.FC<Props> = ({
                   });
                   // this function is passed to imageGallery
                   //  it will simply uncheck everything
-                  onClearAllSelectedImages();
+                  onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
                 }}
               >
                 {/* if screen is showing image gallery, then it should cancel button, edit button otherwise  */}
@@ -128,7 +127,7 @@ const TableImageViewer: React.FC<Props> = ({
                   setExpandedRowKeys([]);
                   // this function is passed to imageGallery
                   //  it will simply uncheck everything
-                  onClearAllSelectedImages();
+                  onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
                 }}
               >
                 Close

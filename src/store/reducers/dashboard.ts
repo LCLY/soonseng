@@ -23,9 +23,9 @@ const initialState: DashboardInitialState = {
   // length
   lengthObj: null,
   lengthsArray: null,
-  // body length
-  bodyLengthObj: null,
-  bodyLengthsArray: null,
+  // body make
+  bodyMakeObj: null,
+  bodyMakesArray: null,
   // body accessory length
   bodyAccessoryObj: null,
   bodyAccessoriesArray: null,
@@ -455,68 +455,68 @@ const updateLengthFailed = (state: DashboardInitialState, action: AppActions) =>
 };
 
 /* ============================================================================================ */
-/* Body Length (Body Page) (tail) */
+/* Body Make (Body Page) (tail) */
 /* ============================================================================================ */
 /* -------------------------- */
-/* Create Body Length  */
+/* Create Body Make  */
 /* -------------------------- */
-const createBodyLengthStart = (state: DashboardInitialState, _action: AppActions) => {
+const createBodyMakeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createBodyLengthSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'bodyLengthsArray' in action) {
+const createBodyMakeSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyMakesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
-      bodyLengthsArray: action.bodyLengthsArray,
+      bodyMakesArray: action.bodyMakesArray,
       successMessage: action.successMessage,
     });
   }
 };
-const createBodyLengthFailed = (state: DashboardInitialState, action: AppActions) => {
+const createBodyMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
 };
 
 /* -------------------------- */
-/* Get Body Lengths  */
+/* Get Body Makes  */
 /* -------------------------- */
-const getBodyLengthsStart = (state: DashboardInitialState, _action: AppActions) => {
+const getBodyMakesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getBodyLengthsSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('bodyLengthsArray' in action) {
+const getBodyMakesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('bodyMakesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
-      bodyLengthsArray: action.bodyLengthsArray,
+      bodyMakesArray: action.bodyMakesArray,
     });
   }
 };
-const getBodyLengthsFailed = (state: DashboardInitialState, action: AppActions) => {
+const getBodyMakesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
 };
 
 /* -------------------------- */
-/* Update Body Length  */
+/* Update Body Make  */
 /* -------------------------- */
-const updateBodyLengthStart = (state: DashboardInitialState, _action: AppActions) => {
+const updateBodyMakeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateBodyLengthSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'bodyLengthsArray' in action) {
+const updateBodyMakeSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyMakesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
-      bodyLengthsArray: action.bodyLengthsArray,
+      bodyMakesArray: action.bodyMakesArray,
       successMessage: action.successMessage,
     });
   }
 };
-const updateBodyLengthFailed = (state: DashboardInitialState, action: AppActions) => {
+const updateBodyMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -532,12 +532,12 @@ const createBodyAccessoryStart = (state: DashboardInitialState, _action: AppActi
   return updateObject(state, { errorMessage: null, loading: true });
 };
 const createBodyAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'bodyAccessoriesArray' in action && 'bodyLengthsArray' in action) {
+  if ('successMessage' in action && 'bodyAccessoriesArray' in action && 'bodyMakesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
       bodyAccessoriesArray: action.bodyAccessoriesArray,
-      bodyLengthsArray: action.bodyLengthsArray,
+      BodyMakesArray: action.bodyMakesArray,
       successMessage: action.successMessage,
     });
   }
@@ -822,26 +822,26 @@ const reducer = (state = initialState, action: DashboardActionTypes) => {
     //  Body Length (Body Page)(tail)
     /* =================================== */
     // Get all body lengths (tail)
-    case actionTypes.GET_BODYLENGTHS_START:
-      return getBodyLengthsStart(state, action);
-    case actionTypes.GET_BODYLENGTHS_SUCCEED:
-      return getBodyLengthsSucceed(state, action);
-    case actionTypes.GET_BODYLENGTHS_FAILED:
-      return getBodyLengthsFailed(state, action);
+    case actionTypes.GET_BODYMAKES_START:
+      return getBodyMakesStart(state, action);
+    case actionTypes.GET_BODYMAKES_SUCCEED:
+      return getBodyMakesSucceed(state, action);
+    case actionTypes.GET_BODYMAKES_FAILED:
+      return getBodyMakesFailed(state, action);
     // Create body length (tail)
-    case actionTypes.CREATE_BODYLENGTH_START:
-      return createBodyLengthStart(state, action);
-    case actionTypes.CREATE_BODYLENGTH_SUCCEED:
-      return createBodyLengthSucceed(state, action);
-    case actionTypes.CREATE_BODYLENGTH_FAILED:
-      return createBodyLengthFailed(state, action);
+    case actionTypes.CREATE_BODYMAKE_START:
+      return createBodyMakeStart(state, action);
+    case actionTypes.CREATE_BODYMAKE_SUCCEED:
+      return createBodyMakeSucceed(state, action);
+    case actionTypes.CREATE_BODYMAKE_FAILED:
+      return createBodyMakeFailed(state, action);
     // Update body length (tail)
-    case actionTypes.UPDATE_BODYLENGTH_START:
-      return updateBodyLengthStart(state, action);
-    case actionTypes.UPDATE_BODYLENGTH_SUCCEED:
-      return updateBodyLengthSucceed(state, action);
-    case actionTypes.UPDATE_BODYLENGTH_FAILED:
-      return updateBodyLengthFailed(state, action);
+    case actionTypes.UPDATE_BODYMAKE_START:
+      return updateBodyMakeStart(state, action);
+    case actionTypes.UPDATE_BODYMAKE_SUCCEED:
+      return updateBodyMakeSucceed(state, action);
+    case actionTypes.UPDATE_BODYMAKE_FAILED:
+      return updateBodyMakeFailed(state, action);
 
     /* =================================== */
     //  Body Accessory (Body Page)(tail)

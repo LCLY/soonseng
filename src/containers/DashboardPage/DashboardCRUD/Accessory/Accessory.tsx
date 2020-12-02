@@ -22,13 +22,14 @@ import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { TReceivedAccessoryObj, TReceivedBodyLengthObj, TReceivedImageObj } from 'src/store/types/dashboard';
+import { TReceivedAccessoryObj, TReceivedImageObj } from 'src/store/types/dashboard';
 import {
   convertHeader,
   convertPriceToFloat,
   getColumnSearchProps,
+  onClearAllSelectedImages,
   setFilterReference,
-  unformatString,
+  unformatPriceString,
 } from 'src/shared/Utils';
 import { GENERAL_ACCESSORY, BODY_ACCESSORY, DIMENSION_ACCESSORY } from 'src/shared/constants';
 
@@ -63,9 +64,6 @@ const Accessory: React.FC<Props> = ({
   onGetAccessories,
   onCreateAccessory,
   onUpdateAccessory,
-  // body length
-  bodyLengthsArray,
-  onGetBodyLengths,
   // delete upload iamge
   onDeleteUploadImage,
   // clear states
@@ -253,7 +251,7 @@ const Accessory: React.FC<Props> = ({
 
     let extractedPrice = '';
     extractedPrice = record.accessoryPrice.replace('RM', '');
-    extractedPrice = unformatString(extractedPrice).toString();
+    extractedPrice = unformatPriceString(extractedPrice).toString();
 
     updateAccessoryForm.setFieldsValue({
       accessoryId: record.accessoryId,
@@ -370,20 +368,6 @@ const Accessory: React.FC<Props> = ({
   };
 
   /**
-   * helper function to clear all selected images in image gallery when user call it
-   * @category Helper function
-   */
-  const onClearAllSelectedImages = () => {
-    setSelectAllChecked(false);
-
-    var temp_images: any = galleryImages.slice();
-    if (selectAllChecked) {
-      for (var j = 0; j < temp_images.length; j++) temp_images[j].isSelected = false;
-    }
-    setGalleryImages(temp_images);
-  };
-
-  /**
    *
    * This function takes in images array from make object and then populate the current state
    * of setImage
@@ -458,7 +442,7 @@ const Accessory: React.FC<Props> = ({
             setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            onClearAllSelectedImages();
+            onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
             // populate image array state and pass to ImageGallery component
             onPopulateImagesArray(record.accessoryImages);
           }}
@@ -478,7 +462,7 @@ const Accessory: React.FC<Props> = ({
                 onTableRowExpand(expanded, record);
                 // this function is passed to imageGallery
                 //  it will simply uncheck everything
-                onClearAllSelectedImages();
+                onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
               }}
             />
           </Tooltip>
@@ -519,7 +503,6 @@ const Accessory: React.FC<Props> = ({
           setExpandedRowKeys={setExpandedRowKeys}
           showEditImageGallery={showEditImageGallery}
           setShowEditImageGallery={setShowEditImageGallery}
-          onClearAllSelectedImages={onClearAllSelectedImages}
           onPopulateEditModal={(record) => {
             if ('accessoryImages' in record && 'accessoryId' in record) {
               onPopulateAccessoryModal(record);
@@ -688,12 +671,6 @@ const Accessory: React.FC<Props> = ({
     onGetAccessories();
   }, [onGetAccessories]);
 
-  useEffect(() => {
-    if (!bodyLengthsArray) {
-      onGetBodyLengths();
-    }
-  }, [bodyLengthsArray, onGetBodyLengths]);
-
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for ACCESSORY
   /* ----------------------------------------------------- */
@@ -792,6 +769,7 @@ const Accessory: React.FC<Props> = ({
         duration: 2.5,
         description: errorMessage,
       });
+      onClearDashboardState();
     }
   }, [errorMessage, onClearDashboardState]);
 
@@ -812,7 +790,7 @@ const Accessory: React.FC<Props> = ({
             <div className="accessory__tab-outerdiv">
               <section>
                 <HeaderTitle>Accessory</HeaderTitle>
-                {accessoriesArray && bodyLengthsArray ? (
+                {accessoriesArray ? (
                   <>
                     {/* ===================================== */}
                     {/*           Accessory Section           */}
@@ -869,7 +847,6 @@ interface StateProps {
   errorMessage?: string | null;
   successMessage?: string | null;
   accessoriesArray?: TReceivedAccessoryObj[] | null;
-  bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   if ('dashboard' in state) {
@@ -878,7 +855,6 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       errorMessage: state.dashboard.errorMessage,
       successMessage: state.dashboard.successMessage,
       imagesUploaded: state.dashboard.imagesUploaded,
-      bodyLengthsArray: state.dashboard.bodyLengthsArray,
       accessoriesArray: state.dashboard.accessoriesArray,
     };
   }
@@ -888,8 +864,6 @@ interface DispatchProps {
   onGetAccessories: typeof actions.getAccessories;
   onCreateAccessory: typeof actions.createAccessory;
   onUpdateAccessory: typeof actions.updateAccessory;
-  // Body length
-  onGetBodyLengths: typeof actions.getBodyLengths;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -901,8 +875,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetAccessories: () => dispatch(actions.getAccessories()),
     onCreateAccessory: (createAccessoryData) => dispatch(actions.createAccessory(createAccessoryData)),
     onUpdateAccessory: (updateAccessoryData) => dispatch(actions.updateAccessory(updateAccessoryData)),
-    // body length
-    onGetBodyLengths: () => dispatch(actions.getBodyLengths()),
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

@@ -2,13 +2,14 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import axios from 'axios';
-
-const UPLOAD_TO_MAKE = 'Make';
-const UPLOAD_TO_BRAND = 'Brand';
-const UPLOAD_TO_BODY = 'Body';
-const UPLOAD_TO_BODY_LENGTH = 'BodyLength';
-const UPLOAD_TO_ACCESSORY = 'Accessory';
-const UPLOAD_TO_BODY_ACCESSORY = 'BodyAccessory';
+import {
+  UPLOAD_TO_MAKE,
+  UPLOAD_TO_BRAND,
+  UPLOAD_TO_BODY,
+  UPLOAD_TO_BODY_MAKE,
+  UPLOAD_TO_ACCESSORY,
+  UPLOAD_TO_BODY_ACCESSORY,
+} from 'src/shared/constants';
 
 /**
  * A boolean to check whether image has been uploaded
@@ -944,51 +945,52 @@ export function* updateLengthSaga(action: AppActions) {
 }
 
 /* ================================================================== */
-/*   Body Length (Body Page) (tail) */
+/*   Body Make (Body Page) (tail) */
 /* ================================================================== */
 
 /* ------------------------------- */
-//    Create Body Length
+//    Create Body Make
 /* ------------------------------- */
-export function* createBodyLengthSaga(action: AppActions) {
-  yield put(actions.createBodyLengthStart());
+export function* createBodyMakeSaga(action: AppActions) {
+  yield put(actions.createBodyMakeStart());
 
-  let url = process.env.REACT_APP_API + `/tail/body_length`;
+  let url = process.env.REACT_APP_API + `/products/body_make`;
 
-  let body_length = {};
+  let bodymake = {};
   // Type guard, check if the "key" exist in the action object
-  if ('createBodyLengthData' in action) {
-    body_length = {
-      body_id: action.createBodyLengthData.body_id,
-      length_id: action.createBodyLengthData.length_id,
-      depth: action.createBodyLengthData.depth,
-      width: action.createBodyLengthData.width,
-      height: action.createBodyLengthData.height,
-      price: action.createBodyLengthData.price,
+  if ('createBodyMakeData' in action) {
+    bodymake = {
+      body_id: action.createBodyMakeData.body_id,
+      length_id: action.createBodyMakeData.length_id,
+      make_id: action.createBodyMakeData.make_id,
+      depth: action.createBodyMakeData.depth,
+      width: action.createBodyMakeData.width,
+      height: action.createBodyMakeData.height,
+      price: action.createBodyMakeData.price,
     };
   }
 
   try {
-    let response = yield axios.post(url, { body_length });
+    let response = yield axios.post(url, { bodymake });
     // Upload Image to model 'BodyLength'
     if ('imageTag' in action && 'imageFiles' in action) {
       //  check if they are null or not
       if (action.imageTag && action.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
         yield put(
-          actions.uploadImage(UPLOAD_TO_BODY_LENGTH, response.data.updated.id, action.imageTag, action.imageFiles),
+          actions.uploadImage(UPLOAD_TO_BODY_MAKE, response.data.updated.id, action.imageTag, action.imageFiles),
         );
 
         if (imageIsUploaded) {
           //wait until upload image succeed then only declare create make succeed
-          yield put(actions.createBodyLengthSucceed(response.data.body_lengths, response.data.success));
+          yield put(actions.createBodyMakeSucceed(response.data.body_makes, response.data.success));
 
           //  reset imageIsUploaded boolean
           imageIsUploaded = false;
         }
       } else {
         // if user is not uploading files, then straight give success
-        yield put(actions.createBodyLengthSucceed(response.data.body_lengths, response.data.success));
+        yield put(actions.createBodyMakeSucceed(response.data.body_makes, response.data.success));
       }
     }
   } catch (error) {
@@ -1000,7 +1002,7 @@ export function* createBodyLengthSaga(action: AppActions) {
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
-      yield put(actions.createBodyLengthFailed(error.response.data.error));
+      yield put(actions.createBodyMakeFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
@@ -1016,16 +1018,16 @@ export function* createBodyLengthSaga(action: AppActions) {
 }
 
 /* ------------------------------- */
-//    Get Body lengths
+//    Get Body Makes
 /* ------------------------------- */
-export function* getBodyLengthsSaga(_action: AppActions) {
-  yield put(actions.getBodyLengthsStart());
+export function* getBodyMakesSaga(_action: AppActions) {
+  yield put(actions.getBodyMakesStart());
 
-  let url = process.env.REACT_APP_API + `/tail/body_length`;
+  let url = process.env.REACT_APP_API + `/products/body_make`;
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getBodyLengthsSucceed(response.data.body_lengths));
+    yield put(actions.getBodyMakesSucceed(response.data.body_makes));
   } catch (error) {
     if (error.response) {
       /*
@@ -1035,7 +1037,7 @@ export function* getBodyLengthsSaga(_action: AppActions) {
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
-      yield put(actions.getBodyLengthsFailed(error.response.data.error));
+      yield put(actions.getBodyMakesFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
@@ -1051,28 +1053,29 @@ export function* getBodyLengthsSaga(_action: AppActions) {
 }
 
 /* ------------------------------- */
-//    Update length
+//    Update Body Make
 /* ------------------------------- */
-export function* updateBodyLengthSaga(action: AppActions) {
-  yield put(actions.updateBodyLengthStart());
+export function* updateBodyMakeSaga(action: AppActions) {
+  yield put(actions.updateBodyMakeStart());
 
   let url = '';
-  let body_length = {};
-  if ('updateBodyLengthData' in action) {
-    url = process.env.REACT_APP_API + `/tail/body_length/${action.updateBodyLengthData.body_length_id}`;
+  let bodymake = {};
+  if ('updateBodyMakeData' in action) {
+    url = process.env.REACT_APP_API + `/products/body_make/${action.updateBodyMakeData.body_make_id}`;
 
-    body_length = {
-      body_id: action.updateBodyLengthData.body_id,
-      length_id: action.updateBodyLengthData.length_id,
-      depth: action.updateBodyLengthData.depth,
-      width: action.updateBodyLengthData.width,
-      height: action.updateBodyLengthData.height,
-      price: action.updateBodyLengthData.price,
+    bodymake = {
+      body_id: action.updateBodyMakeData.body_id,
+      make_id: action.updateBodyMakeData.make_id,
+      depth: action.updateBodyMakeData.depth,
+      width: action.updateBodyMakeData.width,
+      height: action.updateBodyMakeData.height,
+      price: action.updateBodyMakeData.price,
     };
+    console.log(bodymake);
   }
 
   try {
-    let response = yield axios.put(url, { body_length });
+    let response = yield axios.put(url, { bodymake });
 
     // Upload Image to model 'BodyLength'
     if ('imageTag' in action && 'imageFiles' in action) {
@@ -1080,19 +1083,19 @@ export function* updateBodyLengthSaga(action: AppActions) {
       if (action.imageTag && action.imageFiles) {
         // retrieve the updated individual make id on success and then call Upload Image action
         yield put(
-          actions.uploadImage(UPLOAD_TO_BODY_LENGTH, response.data.updated.id, action.imageTag, action.imageFiles),
+          actions.uploadImage(UPLOAD_TO_BODY_MAKE, response.data.updated.id, action.imageTag, action.imageFiles),
         );
 
         if (imageIsUploaded) {
           //wait until upload image succeed then only declare create make succeed
-          yield put(actions.updateBodyLengthSucceed(response.data.body_lengths, response.data.success));
+          yield put(actions.updateBodyMakeSucceed(response.data.body_makes, response.data.success));
 
           //  reset imageIsUploaded boolean
           imageIsUploaded = false;
         }
       } else {
         // if user is not uploading files, then straight give success
-        yield put(actions.updateBodyLengthSucceed(response.data.body_lengths, response.data.success));
+        yield put(actions.updateBodyMakeSucceed(response.data.body_makes, response.data.success));
       }
     }
   } catch (error) {
@@ -1104,7 +1107,7 @@ export function* updateBodyLengthSaga(action: AppActions) {
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
-      yield put(actions.updateBodyLengthFailed(error.response.data.error));
+      yield put(actions.updateBodyMakeFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

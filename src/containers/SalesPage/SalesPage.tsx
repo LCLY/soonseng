@@ -25,7 +25,6 @@ import {
   TLocalOrderObj,
   TReceivedSalesMakesObj,
   TReceivedSalesLengthObj,
-  TReceivedBodyMakeObj,
   TReceivedDimensionAccessoryObj,
   TReceivedSalesLengthCategoryObj,
   TReceivedSalesBodyMakeObj,
@@ -34,7 +33,7 @@ import {
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types/index';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
-import { TReceivedAccessoryObj, TReceivedBodyObj } from 'src/store/types/dashboard';
+import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BODYMAKE } from 'src/shared/constants';
 import BodyMakeSection from './StepSections/BodyMakeSection';
 

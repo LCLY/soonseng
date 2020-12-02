@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import {
   TReceivedAccessoryObj,
   TReceivedBodyAccessoryObj,
-  TReceivedBodyLengthObj,
+  TReceivedBodyMakeObj,
   TReceivedBodyObj,
   TReceivedBrandObj,
   TReceivedMakeObj,
@@ -132,18 +132,8 @@ export interface GetSalesBodiesFailedAction {
 }
 
 /* ------------------ */
-// Get Body Makes
+// Get Sales Body Makes
 /* ------------------ */
-// Types
-export type TReceivedBodyMakeObj = {
-  make: TReceivedMakeObj;
-  body: TReceivedBodyObj;
-  available: true;
-  price: number;
-  width: string;
-  depth: string;
-  height: string | null;
-};
 
 export type TReceivedSeriesObj = {
   title: string;
@@ -180,7 +170,7 @@ export interface GetSalesBodyMakesFailedAction {
 export type TReceivedDimensionAccessoryObj = {
   id: number;
   accessory: TReceivedAccessoryObj;
-  body_length: TReceivedBodyLengthObj;
+  body_length: TReceivedBodyMakeObj;
   price: number;
 };
 

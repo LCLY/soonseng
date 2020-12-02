@@ -12,6 +12,7 @@ import OrdersPage from './containers/OrdersPage/OrdersPage';
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
 import Make from './containers/DashboardPage/DashboardCRUD/Make/Make';
 import Body from './containers/DashboardPage/DashboardCRUD/Body/Body';
+import BodyMake from './containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
 import Accessory from './containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
 // 3rd party lib
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -39,6 +40,7 @@ function App() {
       <Route exact path="/dashboard" component={DashboardPage} />
       <Route exact path="/dashboard/make" component={Make} />
       <Route exact path="/dashboard/body" component={Body} />
+      <Route exact path="/dashboard/body_make" component={BodyMake} />
       <Route exact path="/dashboard/accessory" component={Accessory} />
 
       {/* <Route exact path="/logout" component={Logout} /> */}
