@@ -45,7 +45,7 @@ function useOutsideAlerter(
 
 interface NavbarComponentProps {
   /** Shows which active page it is currently */
-  activePage?: 'home' | 'sales' | 'about' | 'contact' | 'about' | 'orders' | 'dashboard';
+  activePage?: 'home' | 'sales' | 'about' | 'contact' | 'about' | 'orders' | 'dashboard' | 'login';
 }
 
 type Props = NavbarComponentProps & RouteComponentProps;
@@ -194,6 +194,11 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
                 </div>
               </div>
               <div className="navbar__right-div">
+                <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
+                  <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push('/login')}>
+                    <i className="fas fa-sign-in-alt"></i> Sign In
+                  </div>
+                </div>
                 <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
                   <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push('/orders')}>
                     <ShoppingCartOutlined /> Orders

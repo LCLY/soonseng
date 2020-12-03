@@ -1,0 +1,44 @@
+.login {
+  &__section {
+    &-outerdiv {
+      padding-top: $navbar-height;
+      background: black;
+      border-bottom: 1px solid white;
+    }
+
+    &-header {
+      text-align: center;
+      font-size: 3rem;
+      font-family: $font-firesans;
+      font-weight: bolder;
+      padding-bottom: 2rem;
+      color: $primary-color-1;
+    }
+  }
+  &__form {
+    &-div {
+      border: 1px solid $primary-color-1;
+      padding: 2rem;
+      width: 40rem;
+      margin-bottom: 10rem;
+      margin-top: 2rem;
+    }
+
+    &-outerdiv {
+      margin-top: 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    &-items {
+      & label {
+        color: white !important;
+      }
+    }
+  }
+
+  &__btn {
+    width: 100%;
+  }
+}
