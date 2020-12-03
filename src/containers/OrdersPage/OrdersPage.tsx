@@ -10,7 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { Collapse, Divider, Dropdown, Menu } from 'antd';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Button, Collapse, Divider, Dropdown, Empty, Menu } from 'antd';
 import { InfoCircleOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant-design/icons';
 
 // Util
@@ -24,9 +25,9 @@ const { Panel } = Collapse;
 
 interface OrdersPageProps {}
 
-type Props = OrdersPageProps & StateProps & DispatchProps;
+type Props = OrdersPageProps & StateProps & DispatchProps & RouteComponentProps;
 
-const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
+const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrder }) => {
   return (
     <>
       <NavbarComponent activePage="orders" />
@@ -43,8 +44,7 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                   Total:&nbsp;<span className="orders__total-text">{localOrdersArray.length}&nbsp;items</span>
                 </div>
               )}
-              {localOrdersArray &&
-                localOrdersArray.length > 0 &&
+              {localOrdersArray && localOrdersArray.length > 0 ? (
                 [...localOrdersArray].reverse().map((order, index) => {
                   type miscellaneousType = {
                     title: string;
@@ -584,7 +584,14 @@ const OrdersPage: React.FC<Props> = ({ localOrdersArray, onRemoveAnOrder }) => {
                       </div>
                     </div>
                   );
-                })}
+                })
+              ) : (
+                <Empty description={<span>You have no order currently</span>}>
+                  <Button type="primary" onClick={() => history.push('/sales')}>
+                    Make a new order
+                  </Button>
+                </Empty>
+              )}
             </div>
           </div>
         </Container>
@@ -614,4 +621,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return { onRemoveAnOrder: (index, localOrdersArray) => dispatch(actions.removeAnOrder(index, localOrdersArray)) };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersPage);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(OrdersPage));

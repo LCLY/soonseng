@@ -8,13 +8,14 @@ import { Button, Form, Input } from 'antd';
 /*3rd party lib*/
 // import { connect } from 'react-redux';
 // import { AnyAction, Dispatch } from 'redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 /* Util */
 // import * as actions from 'src/store/actions/index';
 // import { TMapStateToProps } from 'src/store/types';
 
 interface LoginPageProps {}
 
-type Props = LoginPageProps;
+type Props = LoginPageProps & RouteComponentProps;
 
 const LoginPage: React.FC<Props> = () => {
   /* ================================================== */
@@ -89,4 +90,4 @@ const LoginPage: React.FC<Props> = () => {
 // const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
 //   return { onFunctionName: (param) => dispatch(actions.functionName(param)) };
 // };
-export default LoginPage;
+export default withRouter(LoginPage);
