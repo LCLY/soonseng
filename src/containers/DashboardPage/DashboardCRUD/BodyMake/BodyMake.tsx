@@ -969,7 +969,7 @@ const BodyMake: React.FC<Props> = ({
       confirmLoading={loading}
       onCancel={() => {
         // close edit body modal
-        setShowUpdateModal({
+        setShowCreateModal({
           ...showCreateModal,
           body_make_accessory: false,
         });

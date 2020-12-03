@@ -26,10 +26,12 @@ import {
   createBodySaga,
   getBodiesSaga,
   updateBodySaga,
+  deleteBodySaga,
   // Length
   createLengthSaga,
   getLengthsSaga,
   updateLengthSaga,
+  deleteLengthSaga,
   // Body Make
   createBodyMakeSaga,
   getBodyMakesSaga,
@@ -39,6 +41,7 @@ import {
   createBodyAccessorySaga,
   getBodyAccessoriesSaga,
   updateBodyAccessorySaga,
+  deleteBodyAccessorySaga,
   // Accessory
   createAccessorySaga,
   getAccessoriesSaga,
@@ -86,10 +89,12 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODY, createBodySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODIES, getBodiesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODY, updateBodySaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODY, deleteBodySaga)]);
   // Length
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_LENGTH, createLengthSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_LENGTHS, getLengthsSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_LENGTH, updateLengthSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_LENGTH, deleteLengthSaga)]);
   // Body Make
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYMAKE, createBodyMakeSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYMAKES, getBodyMakesSaga)]);
@@ -99,6 +104,7 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYACCESSORY, createBodyAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYACCESSORIES, getBodyAccessoriesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYACCESSORY, updateBodyAccessorySaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODYACCESSORY, deleteBodyAccessorySaga)]);
   // Accessory
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_ACCESSORY, createAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_ACCESSORIES, getAccessoriesSaga)]);

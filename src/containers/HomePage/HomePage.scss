@@ -26,7 +26,8 @@
       bottom: 0;
 
       @include respond-to(phone-only) {
-        padding: 0;
+        padding: 10rem 0 0 0;
+        height: 60rem;
       }
 
       &-parent {
@@ -118,6 +119,10 @@
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
+
+      @include respond-to(phone-only) {
+        height: 60rem;
+      }
     }
 
     /* outerdiv wrapping the background image */
@@ -126,6 +131,10 @@
       min-height: 100vh;
       // min-height: calc(100vh - 106.88px);
       overflow: hidden;
+
+      @include respond-to(phone-only) {
+        height: 60rem;
+      }
     }
   }
   /*================================= */

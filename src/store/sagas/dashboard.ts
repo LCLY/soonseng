@@ -814,6 +814,46 @@ export function* updateBodySaga(action: AppActions) {
     }
   }
 }
+
+/* ------------------------------- */
+//    Delete body
+/* ------------------------------- */
+export function* deleteBodySaga(action: AppActions) {
+  yield put(actions.deleteBodyStart());
+
+  let url = '';
+  if ('body_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+
+    // if user is not uploading files, then straight give success
+    yield put(actions.deleteBodySucceed(response.data.bodies, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.updateBodyFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
 /* ================================================================== */
 /*   Length (Body Page) (tail) */
 /* ================================================================== */
@@ -930,6 +970,44 @@ export function* updateLengthSaga(action: AppActions) {
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
       yield put(actions.updateLengthFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Delete length
+/* ------------------------------- */
+export function* deleteLengthSaga(action: AppActions) {
+  yield put(actions.deleteLengthStart());
+
+  let url = '';
+  if ('length_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/lengths/${action.length_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteLengthSucceed(response.data.lengths, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.deleteLengthFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
@@ -1168,17 +1246,18 @@ export function* deleteBodyMakeSaga(action: AppActions) {
 export function* createBodyAccessorySaga(action: AppActions) {
   yield put(actions.createBodyAccessoryStart());
 
-  let url = process.env.REACT_APP_API + `/tail/body_accessory`;
+  let url = '';
+
+  if ('body_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
+  }
 
   let body_accessory = {};
   // Type guard, check if the "key" exist in the action object
-  if ('createBodyAccessoryData' in action) {
+  if ('body_id' in action && 'accessory_id' in action) {
     body_accessory = {
-      title: '',
-      description: action.createBodyAccessoryData.description,
-      body_length_id: action.createBodyAccessoryData.body_length_id,
-      accessory_id: action.createBodyAccessoryData.accessory_id,
-      price: action.createBodyAccessoryData.price,
+      body_id: action.body_id,
+      accessory_id: action.accessory_id,
     };
   }
 
@@ -1196,24 +1275,12 @@ export function* createBodyAccessorySaga(action: AppActions) {
 
         if (imageIsUploaded) {
           //wait until upload image succeed then only declare create make succeed
-          yield put(
-            actions.createBodyAccessorySucceed(
-              response.data.body_accessories,
-              response.data.body_lengths,
-              response.data.success,
-            ),
-          ); //  reset imageIsUploaded boolean
+          yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success)); //  reset imageIsUploaded boolean
           imageIsUploaded = false;
         }
       } else {
         // if user is not uploading files, then straight give success
-        yield put(
-          actions.createBodyAccessorySucceed(
-            response.data.body_accessories,
-            response.data.body_lengths,
-            response.data.success,
-          ),
-        );
+        yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success));
       }
     }
   } catch (error) {
@@ -1279,21 +1346,18 @@ export function* getBodyAccessoriesSaga(action: AppActions) {
 }
 
 /* ------------------------------- */
-//    Update Accessory
+//    Update Body Accessory
 /* ------------------------------- */
 export function* updateBodyAccessorySaga(action: AppActions) {
   yield put(actions.updateBodyAccessoryStart());
 
   let url = '';
   let body_accessory = {};
-  if ('updateBodyAccessoryData' in action) {
-    url = process.env.REACT_APP_API + `/tail/body_accessory/${action.updateBodyAccessoryData.body_accessory_id}`;
+  if ('body_id' in action && 'accessory_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
     body_accessory = {
-      title: '',
-      description: action.updateBodyAccessoryData.description,
-      body_length_id: action.updateBodyAccessoryData.body_length_id,
-      accessory_id: action.updateBodyAccessoryData.accessory_id,
-      price: action.updateBodyAccessoryData.price,
+      body_id: action.body_id,
+      accessory_id: action.accessory_id,
     };
   }
 
@@ -1331,6 +1395,45 @@ export function* updateBodyAccessorySaga(action: AppActions) {
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
       yield put(actions.updateBodyAccessoryFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Delete Body Accessory
+/* ------------------------------- */
+export function* deleteBodyAccessorySaga(action: AppActions) {
+  yield put(actions.deleteBodyAccessoryStart());
+
+  let url = '';
+  if ('body_id' in action && 'body_accessory_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory/${action.body_accessory_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    // if user is not uploading files, then straight give success
+    yield put(actions.deleteBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.deleteBodyAccessoryFailed(error.response.data.error));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`

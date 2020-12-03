@@ -279,7 +279,7 @@ const Accessory: React.FC<Props> = ({
         break;
       case DIMENSION_ACCESSORY:
         general_bool = false;
-        dimension_associated_bool = false;
+        dimension_associated_bool = true;
         break;
       case BODY_ACCESSORY:
         general_bool = false;

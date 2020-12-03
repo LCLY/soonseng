@@ -11,4 +11,56 @@
   &__tab {
     padding: 0 2rem 2rem 0;
   }
+
+  /* delete modal related css */
+  &__delete {
+    &-header {
+      display: flex;
+      align-items: center;
+    }
+    &-icon {
+      font-size: 2.5rem;
+      margin-right: 1rem;
+      color: $primary-color-2 !important;
+    }
+    &-message {
+      color: $primary-color-3;
+      font-weight: bolder;
+      font-family: $font-firesans;
+    }
+  }
+
+  // button related css
+  &__btn {
+    // div wrapping the link buttons
+    &-div {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    // the link buttons
+    &-link {
+      padding: 0 !important;
+      color: $link-blue !important;
+      margin-right: 2rem;
+      &:hover {
+        color: darken($link-blue, 50%) !important;
+      }
+      &:active {
+        transition: none;
+        color: $link-blue !important;
+      }
+      // the delete button
+      &--danger {
+        padding: 0 !important;
+        &:hover {
+          color: $primary-color-3 !important;
+        }
+        &:active {
+          transition: none;
+          color: $primary-color-1 !important;
+        }
+      }
+    }
+  }
 }

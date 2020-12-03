@@ -94,6 +94,11 @@ export {
   updateBodyStart,
   updateBodyFailed,
   updateBodySucceed,
+  // Delete Body
+  deleteBody,
+  deleteBodyStart,
+  deleteBodyFailed,
+  deleteBodySucceed,
   /* =================== */
   // Length (Body Page)
   /* =================== */
@@ -112,6 +117,11 @@ export {
   updateLengthStart,
   updateLengthFailed,
   updateLengthSucceed,
+  // Delete Length
+  deleteLength,
+  deleteLengthStart,
+  deleteLengthFailed,
+  deleteLengthSucceed,
   /* =================== */
   //  Body Make (Body Page)
   /* =================== */
@@ -153,6 +163,13 @@ export {
   updateBodyAccessoryStart,
   updateBodyAccessoryFailed,
   updateBodyAccessorySucceed,
+  // Delete Body Accessory
+  deleteBodyAccessory,
+  deleteBodyAccessoryStart,
+  deleteBodyAccessoryFailed,
+  deleteBodyAccessorySucceed,
+  // Clear Body Accessory Array
+  clearBodyAccessoryArray,
   /* ------------------------------------- */
   /* =================== */
   //  Accessory (Accessory Page)

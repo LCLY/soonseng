@@ -530,6 +530,147 @@ export interface GetBodiesFailedAction {
   type: typeof actionTypes.GET_BODIES_FAILED;
   errorMessage: string;
 }
+
+/* --------------------------- */
+// Delete Body (Tail)
+/* --------------------------- */
+
+/* Api call */
+export interface DeleteBodyAction {
+  type: typeof actionTypes.DELETE_BODY;
+  body_id: number;
+}
+/* States */
+export interface DeleteBodyStartAction {
+  type: typeof actionTypes.DELETE_BODY_START;
+}
+export interface DeleteBodySucceedAction {
+  type: typeof actionTypes.DELETE_BODY_SUCCEED;
+  bodiesArray: TReceivedBodyObj[];
+  successMessage: string;
+}
+export interface DeleteBodyFailedAction {
+  type: typeof actionTypes.DELETE_BODY_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
+// Body Accessory (Body Page) (tail)
+/* ============================================================== */
+/* types */
+// Body accessory data when creating
+export type TReceivedBodyAccessoryObj = {
+  id: number;
+  available: boolean;
+  body: TReceivedBodyObj;
+  images: TReceivedImageObj[];
+  accessory: TReceivedAccessoryObj;
+};
+
+/* --------------------------- */
+// Create Body Accessory (tail)
+/* --------------------------- */
+/*  Api call */
+export interface CreateBodyAccessoryAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY;
+  body_id: number;
+  accessory_id: number;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
+}
+/*  States */
+export interface CreateBodyAccessoryStartAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY_START;
+}
+export interface CreateBodyAccessorySucceedAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+  successMessage: string;
+}
+export interface CreateBodyAccessoryFailedAction {
+  type: typeof actionTypes.CREATE_BODYACCESSORY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Update Body Accessory (Tail)
+/* --------------------------- */
+
+/* Api call */
+export interface UpdateBodyAccessoryAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY;
+  body_id: number;
+  accessory_id: number;
+  imageTag: string | null; //for upload images
+  imageFiles: FileList | null; //for upload images
+}
+/* States */
+export interface UpdateBodyAccessoryStartAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY_START;
+}
+export interface UpdateBodyAccessorySucceedAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+  successMessage: string;
+}
+export interface UpdateBodyAccessoryFailedAction {
+  type: typeof actionTypes.UPDATE_BODYACCESSORY_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Get All Body Accessories (tail)
+/* --------------------------- */
+
+/* Api call */
+export interface GetBodyAccessoriesAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES;
+  body_id: number;
+}
+/* States */
+export interface GetBodyAccessoriesStartAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES_START;
+}
+export interface GetBodyAccessoriesSucceedAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+}
+export interface GetBodyAccessoriesFailedAction {
+  type: typeof actionTypes.GET_BODYACCESSORIES_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Delete body Accessory (tail)
+/* --------------------------- */
+
+/* Api call */
+export interface DeleteBodyAccessoryAction {
+  type: typeof actionTypes.DELETE_BODYACCESSORY;
+  body_id: number;
+  body_accessory_id: number;
+}
+/* States */
+export interface DeleteBodyAccessoryStartAction {
+  type: typeof actionTypes.DELETE_BODYACCESSORY_START;
+}
+export interface DeleteBodyAccessorySucceedAction {
+  type: typeof actionTypes.DELETE_BODYACCESSORY_SUCCEED;
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
+  successMessage: string;
+}
+export interface DeleteBodyAccessoryFailedAction {
+  type: typeof actionTypes.DELETE_BODYACCESSORY_FAILED;
+  errorMessage: string;
+}
+
+/* ---------------------------- */
+// Clear body accessory array
+/* ---------------------------- */
+export interface ClearBodyAccessoryArrayAction {
+  type: typeof actionTypes.CLEAR_BODYACCESSORY_ARRAY;
+}
+
 /* ============================================================== */
 //  Length (Body Page) (tail)
 /* ============================================================== */
@@ -596,6 +737,26 @@ export interface UpdateLengthSucceedAction {
 }
 export interface UpdateLengthFailedAction {
   type: typeof actionTypes.UPDATE_LENGTH_FAILED;
+  errorMessage: string;
+}
+/* --------------------------- */
+// Delete Length (tail)
+/* --------------------------- */
+export interface DeleteLengthAction {
+  type: typeof actionTypes.DELETE_LENGTH;
+  length_id: number;
+}
+/*  States */
+export interface DeleteLengthStartAction {
+  type: typeof actionTypes.DELETE_LENGTH_START;
+}
+export interface DeleteLengthSucceedAction {
+  type: typeof actionTypes.DELETE_LENGTH_SUCCEED;
+  lengthsArray: TReceivedLengthObj[];
+  successMessage: string;
+}
+export interface DeleteLengthFailedAction {
+  type: typeof actionTypes.DELETE_LENGTH_FAILED;
   errorMessage: string;
 }
 
@@ -727,105 +888,6 @@ export interface DeleteBodyMakeSucceedAction {
 }
 export interface DeleteBodyMakeFailedAction {
   type: typeof actionTypes.DELETE_BODYMAKE_FAILED;
-  errorMessage: string;
-}
-
-/* ============================================================== */
-// Body Accessory (Body Page) (tail)
-/* ============================================================== */
-/* types */
-// Body length data when creating
-export type TCreateBodyAccessoryData = {
-  body_length_id: number;
-  accessory_id: number;
-  description: string;
-  price: number;
-};
-export type TUpdateBodyAccessoryData = {
-  body_accessory_id: number;
-  accessory_id: number;
-  body_length_id: number;
-  description: string;
-  price: number;
-};
-export type TReceivedBodyAccessoryObj = {
-  id: number;
-  available: boolean;
-  accessory: TReceivedAccessoryObj;
-  body_length: TReceivedBodyMakeObj;
-  images: TReceivedImageObj[];
-};
-
-/* --------------------------- */
-// Create Body Accessory (tail)
-/* --------------------------- */
-/*  Api call */
-export interface CreateBodyAccessoryAction {
-  type: typeof actionTypes.CREATE_BODYACCESSORY;
-  createBodyAccessoryData: TCreateBodyAccessoryData;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
-}
-/*  States */
-export interface CreateBodyAccessoryStartAction {
-  type: typeof actionTypes.CREATE_BODYACCESSORY_START;
-}
-export interface CreateBodyAccessorySucceedAction {
-  type: typeof actionTypes.CREATE_BODYACCESSORY_SUCCEED;
-  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
-  /** Need this array so within the body lengths table, the body accessory can be updated smoothly */
-  bodyMakesArray: TReceivedBodyMakeObj[];
-  successMessage: string;
-}
-export interface CreateBodyAccessoryFailedAction {
-  type: typeof actionTypes.CREATE_BODYACCESSORY_FAILED;
-  errorMessage: string;
-}
-
-/* --------------------------- */
-// Update Body Accessory (Tail)
-/* --------------------------- */
-
-/* Api call */
-export interface UpdateBodyAccessoryAction {
-  type: typeof actionTypes.UPDATE_BODYACCESSORY;
-  updateBodyAccessoryData: TUpdateBodyAccessoryData;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
-}
-/* States */
-export interface UpdateBodyAccessoryStartAction {
-  type: typeof actionTypes.UPDATE_BODYACCESSORY_START;
-}
-export interface UpdateBodyAccessorySucceedAction {
-  type: typeof actionTypes.UPDATE_BODYACCESSORY_SUCCEED;
-  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
-  successMessage: string;
-}
-export interface UpdateBodyAccessoryFailedAction {
-  type: typeof actionTypes.UPDATE_BODYACCESSORY_FAILED;
-  errorMessage: string;
-}
-
-/* --------------------------- */
-// Get All Body Lengths (tail)
-/* --------------------------- */
-
-/* Api call */
-export interface GetBodyAccessoriesAction {
-  type: typeof actionTypes.GET_BODYACCESSORIES;
-  body_id: number;
-}
-/* States */
-export interface GetBodyAccessoriesStartAction {
-  type: typeof actionTypes.GET_BODYACCESSORIES_START;
-}
-export interface GetBodyAccessoriesSucceedAction {
-  type: typeof actionTypes.GET_BODYACCESSORIES_SUCCEED;
-  bodyAccessoriesArray: TReceivedBodyAccessoryObj[];
-}
-export interface GetBodyAccessoriesFailedAction {
-  type: typeof actionTypes.GET_BODYACCESSORIES_FAILED;
   errorMessage: string;
 }
 
@@ -1035,6 +1097,36 @@ export type DashboardActionTypes =
   | UpdateBodyStartAction
   | UpdateBodySucceedAction
   | UpdateBodyFailedAction
+  /* Delete */
+  | DeleteBodyAction
+  | DeleteBodyStartAction
+  | DeleteBodySucceedAction
+  | DeleteBodyFailedAction
+  /* ------------------------ */
+  // Body Accessory (Body Page)
+  /* ------------------------ */
+  /* Create */
+  | CreateBodyAccessoryAction
+  | CreateBodyAccessoryStartAction
+  | CreateBodyAccessorySucceedAction
+  | CreateBodyAccessoryFailedAction
+  /* Get */
+  | GetBodyAccessoriesAction
+  | GetBodyAccessoriesStartAction
+  | GetBodyAccessoriesSucceedAction
+  | GetBodyAccessoriesFailedAction
+  /* Update */
+  | UpdateBodyAccessoryAction
+  | UpdateBodyAccessoryStartAction
+  | UpdateBodyAccessorySucceedAction
+  | UpdateBodyAccessoryFailedAction
+  /* Delete */
+  | DeleteBodyAccessoryAction
+  | DeleteBodyAccessoryStartAction
+  | DeleteBodyAccessorySucceedAction
+  | DeleteBodyAccessoryFailedAction
+  // Clear body accessory array
+  | ClearBodyAccessoryArrayAction
   /* ------------------------ */
   // Length (Body Page)
   /* ------------------------ */
@@ -1053,6 +1145,11 @@ export type DashboardActionTypes =
   | UpdateLengthStartAction
   | UpdateLengthSucceedAction
   | UpdateLengthFailedAction
+  /* Delete */
+  | DeleteLengthAction
+  | DeleteLengthStartAction
+  | DeleteLengthSucceedAction
+  | DeleteLengthFailedAction
   /* ------------------------ */
   // Body Length (Body Page)
   /* ------------------------ */
@@ -1076,24 +1173,7 @@ export type DashboardActionTypes =
   | DeleteBodyMakeStartAction
   | DeleteBodyMakeSucceedAction
   | DeleteBodyMakeFailedAction
-  /* ------------------------ */
-  // Body Accessory (Body Page)
-  /* ------------------------ */
-  /* Create */
-  | CreateBodyAccessoryAction
-  | CreateBodyAccessoryStartAction
-  | CreateBodyAccessorySucceedAction
-  | CreateBodyAccessoryFailedAction
-  /* Get */
-  | GetBodyAccessoriesAction
-  | GetBodyAccessoriesStartAction
-  | GetBodyAccessoriesSucceedAction
-  | GetBodyAccessoriesFailedAction
-  /* Update */
-  | UpdateBodyAccessoryAction
-  | UpdateBodyAccessoryStartAction
-  | UpdateBodyAccessorySucceedAction
-  | UpdateBodyAccessoryFailedAction
+
   /* ======================================================================= */
   /* ------------------------ */
   // Accessory (Accessory Page)

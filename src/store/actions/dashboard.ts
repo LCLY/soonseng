@@ -13,9 +13,7 @@ import {
   TUpdateBodyMakeData,
   TReceivedLengthObj,
   TReceivedAccessoryObj,
-  TCreateBodyAccessoryData,
   TReceivedBodyAccessoryObj,
-  TUpdateBodyAccessoryData,
   TCreateAccessoryData,
   TUpdateAccessoryData,
   TReceivedSeriesObj,
@@ -556,6 +554,36 @@ export const updateBodyFailed = (errorMessage: string): AppActions => {
   };
 };
 
+/* ------------------ */
+// Delete Body (tail)
+/* ------------------ */
+export const deleteBody = (body_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODY,
+    body_id: body_id,
+  };
+};
+
+export const deleteBodyStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODY_START,
+  };
+};
+
+export const deleteBodySucceed = (bodiesArray: TReceivedBodyObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODY_SUCCEED,
+    bodiesArray: bodiesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteBodyFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
 /* ============================================================================================ */
 // Length (Body Page) (tail)
 /* ============================================================================================ */
@@ -647,6 +675,36 @@ export const updateLengthSucceed = (lengthsArray: TReceivedLengthObj[], successM
 export const updateLengthFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.UPDATE_LENGTH_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------ */
+// Delete Length (tail)
+/* ------------------ */
+export const deleteLength = (length_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_LENGTH,
+    length_id: length_id,
+  };
+};
+
+export const deleteLengthStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_LENGTH_START,
+  };
+};
+
+export const deleteLengthSucceed = (lengthsArray: TReceivedLengthObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_LENGTH_SUCCEED,
+    lengthsArray: lengthsArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteLengthFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_LENGTH_FAILED,
     errorMessage: errorMessage,
   };
 };
@@ -793,13 +851,15 @@ export const deleteBodyMakeFailed = (errorMessage: string): AppActions => {
 // Create Body Accessory (tail)
 /* ------------------ */
 export const createBodyAccessory = (
-  createBodyAccessoryData: TCreateBodyAccessoryData,
+  body_id: number,
+  accessory_id: number,
   imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
     type: actionTypes.CREATE_BODYACCESSORY,
-    createBodyAccessoryData: createBodyAccessoryData,
+    body_id: body_id,
+    accessory_id: accessory_id,
     imageTag: imageTag,
     imageFiles: imageFiles,
   };
@@ -813,13 +873,12 @@ export const createBodyAccessoryStart = (): AppActions => {
 
 export const createBodyAccessorySucceed = (
   bodyAccessoriesArray: TReceivedBodyAccessoryObj[],
-  bodyMakesArray: TReceivedBodyMakeObj[],
+
   successMessage: string,
 ): AppActions => {
   return {
     type: actionTypes.CREATE_BODYACCESSORY_SUCCEED,
     bodyAccessoriesArray: bodyAccessoriesArray,
-    bodyMakesArray: bodyMakesArray,
     successMessage: successMessage,
   };
 };
@@ -863,13 +922,15 @@ export const getBodyAccessoriesFailed = (errorMessage: string): AppActions => {
 // Update Body Accessories (tail)
 /* ------------------ */
 export const updateBodyAccessory = (
-  updateBodyAccessoryData: TUpdateBodyAccessoryData,
+  body_id: number,
+  accessory_id: number,
   imageTag: string | null,
   imageFiles: FileList | null,
 ): AppActions => {
   return {
     type: actionTypes.UPDATE_BODYACCESSORY,
-    updateBodyAccessoryData: updateBodyAccessoryData,
+    body_id: body_id,
+    accessory_id: accessory_id,
     imageTag: imageTag,
     imageFiles: imageFiles,
   };
@@ -897,7 +958,49 @@ export const updateBodyAccessoryFailed = (errorMessage: string): AppActions => {
     errorMessage: errorMessage,
   };
 };
+/* ------------------ */
+// Delete  Body Accessories (tail)
+/* ------------------ */
+export const deleteBodyAccessory = (body_id: number, body_accessory_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYACCESSORY,
+    body_id: body_id,
+    body_accessory_id: body_accessory_id,
+  };
+};
 
+export const deleteBodyAccessoryStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYACCESSORY_START,
+  };
+};
+
+export const deleteBodyAccessorySucceed = (
+  bodyAccessoriesArray: TReceivedBodyAccessoryObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYACCESSORY_SUCCEED,
+    bodyAccessoriesArray: bodyAccessoriesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteBodyAccessoryFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_BODYACCESSORY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------------------------------------------------------------------------------- */
+// Clear body accessory
+/* ------------------------------------------------------------------------------------------- */
+
+export const clearBodyAccessoryArray = (): AppActions => {
+  return {
+    type: actionTypes.CLEAR_BODYACCESSORY_ARRAY,
+  };
+};
 /* ============================================================================================ */
 // Accessory (Accessory Page) (tail)
 /* ============================================================================================ */

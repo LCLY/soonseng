@@ -44,7 +44,12 @@ const initialState: DashboardInitialState = {
 // Clear Dashboard State - reset the states
 /* ============================================================================================ */
 const clearDashboardState = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { loading: false, errorMessage: null, successMessage: null, imagesUploaded: false });
+  return updateObject(state, {
+    loading: false,
+    errorMessage: null,
+    successMessage: null,
+    imagesUploaded: false,
+  });
 };
 
 /* ============================================================================================ */
@@ -385,6 +390,27 @@ const updateBodyFailed = (state: DashboardInitialState, action: AppActions) => {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
 };
+/* -------------------------- */
+/* Delete Body  */
+/* -------------------------- */
+const deleteBodyStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteBodySucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodiesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodiesArray: action.bodiesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const deleteBodyFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
 
 /* ============================================================================================ */
 /* Length (Body Page) (tail) */
@@ -449,6 +475,27 @@ const updateLengthSucceed = (state: DashboardInitialState, action: AppActions) =
   }
 };
 const updateLengthFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+/* -------------------------- */
+/* Delete Length  */
+/* -------------------------- */
+const deleteLengthStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteLengthSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'lengthsArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      lengthsArray: action.lengthsArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const deleteLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -553,12 +600,11 @@ const createBodyAccessoryStart = (state: DashboardInitialState, _action: AppActi
   return updateObject(state, { errorMessage: null, loading: true });
 };
 const createBodyAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'bodyAccessoriesArray' in action && 'bodyMakesArray' in action) {
+  if ('successMessage' in action && 'bodyAccessoriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
       bodyAccessoriesArray: action.bodyAccessoriesArray,
-      BodyMakesArray: action.bodyMakesArray,
       successMessage: action.successMessage,
     });
   }
@@ -610,6 +656,34 @@ const updateBodyAccessoryFailed = (state: DashboardInitialState, action: AppActi
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+};
+/* -------------------------- */
+/* Delete Body Accessory  */
+/* -------------------------- */
+const deleteBodyAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteBodyAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyAccessoriesArray: action.bodyAccessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+};
+const deleteBodyAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* ------------------------ */
+// Clear body accessory array
+/* ------------------------ */
+const clearBodyAccessoryArray = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { bodyAccessoriesArray: null });
 };
 
 /* ============================================================================================ */
@@ -813,6 +887,13 @@ const reducer = (state = initialState, action: DashboardActionTypes) => {
       return updateBodySucceed(state, action);
     case actionTypes.UPDATE_BODY_FAILED:
       return updateBodyFailed(state, action);
+    // Delete body (tail)
+    case actionTypes.DELETE_BODY_START:
+      return deleteBodyStart(state, action);
+    case actionTypes.DELETE_BODY_SUCCEED:
+      return deleteBodySucceed(state, action);
+    case actionTypes.DELETE_BODY_FAILED:
+      return deleteBodyFailed(state, action);
 
     /* =================================== */
     // Length (Body Page) (tail)
@@ -838,6 +919,13 @@ const reducer = (state = initialState, action: DashboardActionTypes) => {
       return updateLengthSucceed(state, action);
     case actionTypes.UPDATE_LENGTH_FAILED:
       return updateLengthFailed(state, action);
+    // Delete length (tail)
+    case actionTypes.DELETE_LENGTH_START:
+      return deleteLengthStart(state, action);
+    case actionTypes.DELETE_LENGTH_SUCCEED:
+      return deleteLengthSucceed(state, action);
+    case actionTypes.DELETE_LENGTH_FAILED:
+      return deleteLengthFailed(state, action);
 
     /* =================================== */
     //  Body Make (Body Page)(tail)
@@ -895,6 +983,16 @@ const reducer = (state = initialState, action: DashboardActionTypes) => {
       return updateBodyAccessorySucceed(state, action);
     case actionTypes.UPDATE_BODYACCESSORY_FAILED:
       return updateBodyAccessoryFailed(state, action);
+    // Delete body Accessory (tail)
+    case actionTypes.DELETE_BODYACCESSORY_START:
+      return deleteBodyAccessoryStart(state, action);
+    case actionTypes.DELETE_BODYACCESSORY_SUCCEED:
+      return deleteBodyAccessorySucceed(state, action);
+    case actionTypes.DELETE_BODYACCESSORY_FAILED:
+      return deleteBodyAccessoryFailed(state, action);
+    // clear body accessory array
+    case actionTypes.CLEAR_BODYACCESSORY_ARRAY:
+      return clearBodyAccessoryArray(state, action);
 
     /* =================================== */
     //  Accessory (Accessory Page)(tail)
