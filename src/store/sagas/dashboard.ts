@@ -1447,6 +1447,41 @@ export function* deleteBodyAccessorySaga(action: AppActions) {
     }
   }
 }
+/* ------------------------------- */
+//    Get Body Associated Accessories
+/* ------------------------------- */
+export function* getBodyAssociatedAccessoriesSaga(_action: AppActions) {
+  yield put(actions.getBodyAssociatedAccessoriesStart());
+
+  let url = process.env.REACT_APP_API + `/pages/dashboard/get_body_associated_accessories`;
+
+  try {
+    let response = yield axios.get(url);
+    // if user is not uploading files, then straight give success
+    yield put(actions.getBodyAssociatedAccessoriesSucceed(response.data.body_associated));
+  } catch (error) {
+    if (error.response) {
+      /*
+       * The request was made and the server responded with a
+       * status code that falls out of the range of 2xx
+       */
+      console.log('error response data:', error.response.data);
+      console.log('error response status:', error.response.status);
+      console.log('error response error:', error.response.errors);
+      yield put(actions.getBodyAssociatedAccessoriesFailed(error.response.data.error));
+    } else if (error.request) {
+      /*
+       * The request was made but no response was received, `error.request`
+       * is an instance of XMLHttpRequest in the browser and an instance
+       * of http.ClientRequest in Node.js
+       */
+      console.log('error response request:', error.request);
+    } else {
+      // Something happened in setting up the request and triggered an Error
+      alert('Error:' + error.message);
+    }
+  }
+}
 
 /* ================================================================== */
 /*   Accessory (Accessory Page) (tail) */

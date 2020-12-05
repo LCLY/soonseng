@@ -170,6 +170,13 @@ export {
   deleteBodyAccessorySucceed,
   // Clear Body Accessory Array
   clearBodyAccessoryArray,
+  // Get Body associated Accessories
+  getBodyAssociatedAccessories,
+  getBodyAssociatedAccessoriesStart,
+  getBodyAssociatedAccessoriesSucceed,
+  getBodyAssociatedAccessoriesFailed,
+  // Clear body associated accessories
+  clearBodyAssociatedAccessoriesArray,
   /* ------------------------------------- */
   /* =================== */
   //  Accessory (Accessory Page)

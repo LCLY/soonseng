@@ -29,6 +29,7 @@ export interface DashboardInitialState {
   // body accessory
   readonly bodyAccessoryObj: TReceivedBodyAccessoryObj | null;
   readonly bodyAccessoriesArray: TReceivedBodyAccessoryObj[] | null;
+  readonly bodyAssociatedAccessoriesArray: TReceivedAccessoryObj[] | null;
   // accessory
   readonly accessoryObj: TReceivedAccessoryObj | null;
   readonly accessoriesArray: TReceivedAccessoryObj[] | null;
@@ -671,6 +672,34 @@ export interface ClearBodyAccessoryArrayAction {
   type: typeof actionTypes.CLEAR_BODYACCESSORY_ARRAY;
 }
 
+/* --------------------------- */
+// Get body associated Accessories (tail)
+/* --------------------------- */
+
+/* Api call */
+export interface GetBodyAssociatedAccessoriesAction {
+  type: typeof actionTypes.GET_BODYASSOCIATED_ACCESSORIES;
+}
+/* States */
+export interface GetBodyAssociatedAccessoriesStartAction {
+  type: typeof actionTypes.GET_BODYASSOCIATED_ACCESSORIES_START;
+}
+export interface GetBodyAssociatedAccessoriesSucceedAction {
+  type: typeof actionTypes.GET_BODYASSOCIATED_ACCESSORIES_SUCCEED;
+  bodyAssociatedAccessoriesArray: TReceivedAccessoryObj[];
+}
+export interface GetBodyAssociatedAccessoriesFailedAction {
+  type: typeof actionTypes.GET_BODYASSOCIATED_ACCESSORIES_FAILED;
+  errorMessage: string;
+}
+
+/* ---------------------------- */
+// Clear body associated accessories array
+/* ---------------------------- */
+export interface ClearBodyAssociatedAccessoriesArrayAction {
+  type: typeof actionTypes.CLEAR_BODYASSOCIATED_ACCESSORIES_ARRAY;
+}
+
 /* ============================================================== */
 //  Length (Body Page) (tail)
 /* ============================================================== */
@@ -1127,6 +1156,13 @@ export type DashboardActionTypes =
   | DeleteBodyAccessoryFailedAction
   // Clear body accessory array
   | ClearBodyAccessoryArrayAction
+  /* body associated accessories */
+  | GetBodyAssociatedAccessoriesAction
+  | GetBodyAssociatedAccessoriesStartAction
+  | GetBodyAssociatedAccessoriesSucceedAction
+  | GetBodyAssociatedAccessoriesFailedAction
+  // Clear body associated accessories array
+  | ClearBodyAssociatedAccessoriesArrayAction
   /* ------------------------ */
   // Length (Body Page)
   /* ------------------------ */

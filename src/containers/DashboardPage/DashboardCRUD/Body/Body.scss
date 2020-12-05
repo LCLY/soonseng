@@ -286,6 +286,11 @@
     }
   }
 
-  &__btn {
+  &__form {
+    &-item {
+      &-skeleton {
+        width: 100% !important;
+      }
+    }
   }
 }

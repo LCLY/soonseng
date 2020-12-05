@@ -42,6 +42,7 @@ import {
   getBodyAccessoriesSaga,
   updateBodyAccessorySaga,
   deleteBodyAccessorySaga,
+  getBodyAssociatedAccessoriesSaga,
   // Accessory
   createAccessorySaga,
   getAccessoriesSaga,
@@ -105,6 +106,9 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYACCESSORIES, getBodyAccessoriesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYACCESSORY, updateBodyAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODYACCESSORY, deleteBodyAccessorySaga)]);
+  yield all([
+    takeEvery<DashboardActionTypes>(actionTypes.GET_BODYASSOCIATED_ACCESSORIES, getBodyAssociatedAccessoriesSaga),
+  ]);
   // Accessory
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_ACCESSORY, createAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_ACCESSORIES, getAccessoriesSaga)]);

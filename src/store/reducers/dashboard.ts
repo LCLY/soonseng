@@ -29,6 +29,7 @@ const initialState: DashboardInitialState = {
   // body accessory length
   bodyAccessoryObj: null,
   bodyAccessoriesArray: null,
+  bodyAssociatedAccessoriesArray: null,
   // accessory
   accessoryObj: null,
   accessoriesArray: null,
@@ -686,6 +687,35 @@ const clearBodyAccessoryArray = (state: DashboardInitialState, _action: AppActio
   return updateObject(state, { bodyAccessoriesArray: null });
 };
 
+/* ------------------------ */
+// Get body associated accessories
+/* ------------------------ */
+
+const getBodyAssociatedAccessoriesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getBodyAssociatedAccessoriesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('bodyAssociatedAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyAssociatedAccessoriesArray: action.bodyAssociatedAccessoriesArray,
+    });
+  }
+};
+const getBodyAssociatedAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+};
+
+/* ------------------------ */
+// Clear body associated accessories array
+/* ------------------------ */
+const clearBodyAssociatedAccessoriesArray = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { bodyAssociatedAccessoriesArray: null });
+};
+
 /* ============================================================================================ */
 /* Accessory (Accessory Page) (tail) */
 /* ============================================================================================ */
@@ -993,6 +1023,16 @@ const reducer = (state = initialState, action: DashboardActionTypes) => {
     // clear body accessory array
     case actionTypes.CLEAR_BODYACCESSORY_ARRAY:
       return clearBodyAccessoryArray(state, action);
+    // Delete body Accessory (tail)
+    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_START:
+      return getBodyAssociatedAccessoriesStart(state, action);
+    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_SUCCEED:
+      return getBodyAssociatedAccessoriesSucceed(state, action);
+    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_FAILED:
+      return getBodyAssociatedAccessoriesFailed(state, action);
+    // clear body associatead accessories array
+    case actionTypes.CLEAR_BODYASSOCIATED_ACCESSORIES_ARRAY:
+      return clearBodyAssociatedAccessoriesArray(state, action);
 
     /* =================================== */
     //  Accessory (Accessory Page)(tail)

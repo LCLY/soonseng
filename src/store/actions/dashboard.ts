@@ -13,9 +13,9 @@ import {
   TUpdateBodyMakeData,
   TReceivedLengthObj,
   TReceivedAccessoryObj,
-  TReceivedBodyAccessoryObj,
   TCreateAccessoryData,
   TUpdateAccessoryData,
+  TReceivedBodyAccessoryObj,
   TReceivedSeriesObj,
 } from 'src/store/types/dashboard';
 
@@ -873,7 +873,6 @@ export const createBodyAccessoryStart = (): AppActions => {
 
 export const createBodyAccessorySucceed = (
   bodyAccessoriesArray: TReceivedBodyAccessoryObj[],
-
   successMessage: string,
 ): AppActions => {
   return {
@@ -1001,6 +1000,48 @@ export const clearBodyAccessoryArray = (): AppActions => {
     type: actionTypes.CLEAR_BODYACCESSORY_ARRAY,
   };
 };
+
+/* ------------------------------------------------------------------------------------------- */
+// Get body associated accessories
+/* ------------------------------------------------------------------------------------------- */
+
+export const getBodyAssociatedAccessories = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODYASSOCIATED_ACCESSORIES,
+  };
+};
+
+export const getBodyAssociatedAccessoriesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_BODYASSOCIATED_ACCESSORIES_START,
+  };
+};
+
+export const getBodyAssociatedAccessoriesSucceed = (
+  bodyAssociatedAccessoriesArray: TReceivedAccessoryObj[],
+): AppActions => {
+  return {
+    type: actionTypes.GET_BODYASSOCIATED_ACCESSORIES_SUCCEED,
+    bodyAssociatedAccessoriesArray: bodyAssociatedAccessoriesArray,
+  };
+};
+export const getBodyAssociatedAccessoriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_BODYASSOCIATED_ACCESSORIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------------------------------------------------------------------------------- */
+// Clear body associated accessories
+/* ------------------------------------------------------------------------------------------- */
+
+export const clearBodyAssociatedAccessoriesArray = (): AppActions => {
+  return {
+    type: actionTypes.CLEAR_BODYASSOCIATED_ACCESSORIES_ARRAY,
+  };
+};
+
 /* ============================================================================================ */
 // Accessory (Accessory Page) (tail)
 /* ============================================================================================ */

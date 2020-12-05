@@ -102,14 +102,13 @@ const Body: React.FC<Props> = ({
   onDeleteLength,
   // body accessory
   bodyAccessoriesArray,
+  bodyAssociatedAccessoriesArray,
   onGetBodyAccessories,
   onCreateBodyAccessory,
-  onUpdateBodyAccessory,
+  // onUpdateBodyAccessory,
   onDeleteBodyAccessory,
+  onGetBodyAssociatedAccessories,
   onClearBodyAccessoryArray,
-  // accessory
-  accessoriesArray,
-  onGetAccessories,
   // delete upload iamges
   onDeleteUploadImage,
   // clear states
@@ -128,7 +127,7 @@ const Body: React.FC<Props> = ({
 
   /* bodyAccessories */
   const [createBodyAccessoryForm] = Form.useForm();
-  const [updateBodyAccessoryForm] = Form.useForm();
+  // const [updateBodyAccessoryForm] = Form.useForm();
 
   // const { width } = useWindowDimensions();
 
@@ -265,9 +264,12 @@ const Body: React.FC<Props> = ({
               <Button
                 type="default"
                 onClick={() => {
+                  // everytime when user open the modal clear the body accessory array first
+                  onClearBodyAccessoryArray();
                   //  set the body id
                   createBodyAccessoryForm.setFieldsValue({ bodyId: record.bodyId });
                   setShowCreateModal({ ...showCreateModal, body_accessory: true });
+                  onGetBodyAccessories(record.bodyId); //get body accessories so we can know what to filter
                 }}
               >
                 Create Accessory
@@ -319,13 +321,9 @@ const Body: React.FC<Props> = ({
                   return color;
                 };
                 return (
-                  <>
-                    {category !== '' && (
-                      <Tag key={uuidv4()} color={setRespectiveColors(category)}>
-                        {category}
-                      </Tag>
-                    )}
-                  </>
+                  <React.Fragment key={uuidv4()}>
+                    {category !== '' && <Tag color={setRespectiveColors(category)}>{category}</Tag>}
+                  </React.Fragment>
                 );
               })}
         </>
@@ -648,15 +646,15 @@ const Body: React.FC<Props> = ({
       onCreateBodyAccessory(values.bodyId, values.accessoryId, null, null);
     }
   };
-  const onUpdateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number; imageTag: string }) => {
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onUpdateBodyAccessory(values.bodyId, values.accessoryId, values.imageTag, uploadSelectedFiles);
-    } else {
-      onUpdateBodyAccessory(values.bodyId, values.accessoryId, null, null);
-    }
-  };
+  // const onUpdateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number; imageTag: string }) => {
+  //   if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+  //     // if there are files being selected to be uploaded
+  //     // then send the tag and image files to the api call
+  //     onUpdateBodyAccessory(values.bodyId, values.accessoryId, values.imageTag, uploadSelectedFiles);
+  //   } else {
+  //     onUpdateBodyAccessory(values.bodyId, values.accessoryId, null, null);
+  //   }
+  // };
 
   /* ================================================== */
   /*  Components  */
@@ -887,6 +885,18 @@ const Body: React.FC<Props> = ({
     </Modal>
   );
 
+  /**
+   * Extract accessories only from each body accessory and form a new
+   * accessory array so can filter
+   * @param {TReceivedBodyAccessoryObj[]} bodyAccessoriesArray
+   * @return {*}
+   */
+  const extractAccessoriesArray = (bodyAccessoriesArray: TReceivedBodyAccessoryObj[]) => {
+    let resultArray: TReceivedAccessoryObj[] = [];
+    bodyAccessoriesArray.forEach((bodyAccessory) => resultArray.push(bodyAccessory.accessory));
+    return resultArray;
+  };
+
   /* ---------------------------- */
   // Body Accessory
   /* ---------------------------- */
@@ -901,16 +911,24 @@ const Body: React.FC<Props> = ({
         rules={[{ required: true, message: 'Select an Accessory!' }]}
       >
         {/* only render if accessoriesArray is not null */}
-        {accessoriesArray && (
+        {bodyAssociatedAccessoriesArray && bodyAccessoriesArray ? (
           <Select placeholder="Select an Accessory">
-            {accessoriesArray.map((accessory) => {
-              return (
-                <Option key={uuidv4()} value={accessory.id}>
-                  {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
-                </Option>
-              );
-            })}
+            {bodyAssociatedAccessoriesArray
+              .filter((mainArrayChild) =>
+                extractAccessoriesArray(bodyAccessoriesArray).every(
+                  (filterArrayChild) => filterArrayChild.id !== mainArrayChild.id,
+                ),
+              )
+              .map((accessory) => {
+                return (
+                  <Option key={uuidv4()} value={accessory.id}>
+                    {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
+                  </Option>
+                );
+              })}
           </Select>
+        ) : (
+          <Skeleton.Input className="body__form-item-skeleton" style={{ width: '100%' }} active={true} />
         )}
       </Form.Item>
 
@@ -952,51 +970,6 @@ const Body: React.FC<Props> = ({
     >
       {/* the content within the modal */}
       {createBodyAccessoryFormComponent}
-    </Modal>
-  );
-
-  /* Update Body Accessory Form */
-  let updateBodyAccessoryFormComponent = (
-    <>
-      <Form
-        form={updateBodyAccessoryForm}
-        name="updateBodyAccessory"
-        onKeyDown={(e) => handleKeyDown(e, updateBodyAccessoryForm)}
-        onFinish={onUpdateBodyAccessoryFinish}
-      >
-        {bodyAccessoryFormItems}
-
-        {/* Getting the BODY ACCESSORY ID */}
-        <Form.Item
-          className="make__form-item"
-          label="id"
-          name="bodyAccessoryId"
-          hidden
-          rules={[{ required: true, message: 'Get body accessory id!' }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
-    </>
-  );
-
-  /* ------------------------------- */
-  /* Update Body Accessory Modal */
-  /* ------------------------------- */
-  let updateBodyAccessoryModal = (
-    <Modal
-      centered
-      title="Edit Body Accessory"
-      visible={showUpdateModal.body_accessory}
-      onOk={updateBodyAccessoryForm.submit}
-      confirmLoading={loading}
-      onCancel={() => {
-        setShowUpdateModal({ ...showUpdateModal, body_accessory: false }); //close modal on cancel
-        setImagesPreviewUrls([]); //clear the image preview when oncancel
-      }}
-    >
-      {/* the content within the modal */}
-      {updateBodyAccessoryFormComponent}
     </Modal>
   );
 
@@ -1105,7 +1078,7 @@ const Body: React.FC<Props> = ({
                 </div>
                 <hr />
                 <div className="body__expand-outerdiv">
-                  {bodyAccessoriesArray.map((bodyAccessory) => {
+                  {[...bodyAccessoriesArray].reverse().map((bodyAccessory) => {
                     if (bodyAccessory.available) {
                       return (
                         <Card
@@ -1123,12 +1096,12 @@ const Body: React.FC<Props> = ({
                           style={{ width: 'auto' }}
                           headStyle={{ background: '#FFF2E8' }}
                         >
-                          {bodyAccessory.images ? (
+                          {bodyAccessory.accessory.images ? (
                             <>
                               <Carousel autoplay>
                                 {/* render all images if array more than 0 else render 'image not available' image */}
-                                {bodyAccessory.images.length > 0 ? (
-                                  bodyAccessory.images.map((image) => {
+                                {bodyAccessory.accessory.images.length > 0 ? (
+                                  bodyAccessory.accessory.images.map((image) => {
                                     return (
                                       <React.Fragment key={uuidv4()}>
                                         <LazyLoad
@@ -1167,23 +1140,6 @@ const Body: React.FC<Props> = ({
                               <div className="body__expand-card-btn-div">
                                 <div>
                                   <Button
-                                    className="body__expand-card-btn-edit"
-                                    style={{ padding: 0 }}
-                                    type="link"
-                                    onClick={() => {
-                                      // fill in the updateBodyAccessoryform
-                                      updateBodyAccessoryForm.setFieldsValue({
-                                        bodyId: record.bodyId,
-                                        bodyAccessoryId: bodyAccessory.id,
-                                        accessoryId: bodyAccessory.accessory.id,
-                                      });
-                                      // show the update modal
-                                      setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
-                                    }}
-                                  >
-                                    Edit
-                                  </Button>
-                                  <Button
                                     type="link"
                                     danger
                                     style={{ padding: 0 }}
@@ -1208,7 +1164,7 @@ const Body: React.FC<Props> = ({
                         </Card>
                       );
                     }
-                    return <></>;
+                    return <React.Fragment key={uuidv4()}></React.Fragment>;
                   })}
                 </div>
               </>
@@ -1236,15 +1192,8 @@ const Body: React.FC<Props> = ({
   }, [onGetLengths]);
 
   useEffect(() => {
-    onGetLengths();
-  }, [onGetLengths]);
-
-  useEffect(() => {
-    if (!accessoriesArray) {
-      // only call if accessoriesArray is null
-      onGetAccessories();
-    }
-  }, [accessoriesArray, onGetAccessories]);
+    onGetBodyAssociatedAccessories();
+  }, [onGetBodyAssociatedAccessories]);
 
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for BODY
@@ -1375,7 +1324,6 @@ const Body: React.FC<Props> = ({
       {createLengthModal}
       {updateLengthModal}
       {createBodyAccessoryModal}
-      {updateBodyAccessoryModal}
       {deleteBodyModal}
       {deleteLengthModal}
       {deleteBodyAccessoryModal}
@@ -1485,8 +1433,8 @@ interface StateProps {
   successMessage?: string | null;
   bodiesArray?: TReceivedBodyObj[] | null;
   lengthsArray?: TReceivedLengthObj[] | null;
-  accessoriesArray?: TReceivedAccessoryObj[] | null;
   bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
+  bodyAssociatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
 }
 
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
@@ -1497,8 +1445,8 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       lengthsArray: state.dashboard.lengthsArray,
       errorMessage: state.dashboard.errorMessage,
       successMessage: state.dashboard.successMessage,
-      accessoriesArray: state.dashboard.accessoriesArray,
       bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
+      bodyAssociatedAccessoriesArray: state.dashboard.bodyAssociatedAccessoriesArray,
     };
   }
 };
@@ -1518,9 +1466,8 @@ interface DispatchProps {
   onCreateBodyAccessory: typeof actions.createBodyAccessory;
   onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
   onDeleteBodyAccessory: typeof actions.deleteBodyAccessory;
+  onGetBodyAssociatedAccessories: typeof actions.getBodyAssociatedAccessories;
   onClearBodyAccessoryArray: typeof actions.clearBodyAccessoryArray;
-  // Accessory
-  onGetAccessories: typeof actions.getAccessories;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -1547,9 +1494,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onUpdateBodyAccessory: (body_id, accessory_id, imageTag, imageFiles) =>
       dispatch(actions.updateBodyAccessory(body_id, accessory_id, imageTag, imageFiles)),
     onDeleteBodyAccessory: (body_id, body_make_id) => dispatch(actions.deleteBodyAccessory(body_id, body_make_id)),
+    onGetBodyAssociatedAccessories: () => dispatch(actions.getBodyAssociatedAccessories()),
     onClearBodyAccessoryArray: () => dispatch(actions.clearBodyAccessoryArray()),
-    // Accessory
-    onGetAccessories: () => dispatch(actions.getAccessories()),
+
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

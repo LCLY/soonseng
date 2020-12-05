@@ -46,8 +46,8 @@ const BodySection: React.FC<Props> = ({
   onGetSalesBodyMakes,
 }) => {
   /* ================================================== */
-/*  state */
-/* ================================================== */
+  /*  state */
+  /* ================================================== */
   // To keep track which image is it in the lightbox
   const [bodyPhotoIndex, setBodyPhotoIndex] = useState(0);
   // whether the lightbox is opened
@@ -72,7 +72,7 @@ const BodySection: React.FC<Props> = ({
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <Divider orientation="left">
+        <Divider className="sales__section-header-divider" orientation="left">
           <div className="sales__section-header">Body </div>
         </Divider>
         <section className="sales__section-innerdiv">

@@ -46,7 +46,7 @@ const TyreSection: React.FC<Props> = ({
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <Divider orientation="left">
+        <Divider className="sales__section-header-divider" orientation="left">
           <div className="sales__section-header">Tyre </div>
         </Divider>
         <section className="sales__section-innerdiv">

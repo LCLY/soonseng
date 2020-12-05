@@ -77,7 +77,7 @@ const BodyMakeSection: React.FC<Props> = ({
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <Divider orientation="left">
+        <Divider className="sales__section-header-divider" orientation="left">
           <div className="sales__section-header">Option</div>
         </Divider>
 
@@ -382,9 +382,9 @@ const BodyMakeSection: React.FC<Props> = ({
               loading={loading}
               onClick={() => {
                 // Then call the body lengths API
-                if (currentLength === null) return;
-                if (currentLength) {
-                  onGetSalesAccessories(currentLength.id);
+                if (currentBody === null) return;
+                if (currentBody) {
+                  onGetSalesAccessories(currentBody.id);
                 }
               }}
               className="sales__length-btn"

@@ -86,7 +86,9 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
           setDropdownVisible(false);
         }
 
-        // setVisible((prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 50) || currentScrollPos < 10);
+        // setVisible(
+        //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 20) || currentScrollPos < 10,
+        // );
         // set state to new scroll position
         setPrevScrollPos(currentScrollPos);
       },
