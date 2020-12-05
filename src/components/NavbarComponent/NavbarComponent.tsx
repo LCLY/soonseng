@@ -62,11 +62,18 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   // state
   /* ======================================= */
   const [prevScrollPos, setPrevScrollPos] = useState(0);
+  // navbar visibility
   const [visible, setVisible] = useState(true);
+
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const wrapperRef = useRef(null);
   const dropdownRef = useRef(null);
   useOutsideAlerter(wrapperRef, dropdownRef, setDropdownVisible);
+
+  const [salesDropdownVisible, setSalesDropdownVisible] = useState(false);
+  const salesWrapperRef = useRef(null);
+  const salesDropdownRef = useRef(null);
+  useOutsideAlerter(salesWrapperRef, salesDropdownRef, setSalesDropdownVisible);
 
   /* =========================================== */
   // methods
@@ -79,12 +86,23 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
         const currentScrollPos = window.pageYOffset;
         // set state based on location info
         if (prevScrollPos > currentScrollPos) {
-          setVisible(true);
-          setDropdownVisible(false);
+          if (Math.abs(prevScrollPos - currentScrollPos) > 50 || currentScrollPos < 10) {
+            setVisible(true);
+            setDropdownVisible(false);
+            setSalesDropdownVisible(false);
+          }
         } else {
-          setVisible(false);
-          setDropdownVisible(false);
+          if (Math.abs(prevScrollPos - currentScrollPos) > 50) {
+            setVisible(false);
+            setDropdownVisible(false);
+            setSalesDropdownVisible(false);
+          }
         }
+
+        // // set state based on location info (explained in more detail below)
+        // setVisible(
+        //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 70) || currentScrollPos < 10,
+        // );
 
         // setVisible(
         //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 20) || currentScrollPos < 10,
@@ -148,6 +166,31 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
     </div>
   );
 
+  const salesMenu = (
+    <div ref={salesDropdownRef}>
+      <Menu>
+        <Menu.Item
+          key="body"
+          onClick={() => {
+            history.push('/sales');
+            setSalesDropdownVisible(false);
+          }}
+        >
+          Product
+        </Menu.Item>
+        <Menu.Item
+          key="make"
+          onClick={() => {
+            history.push('/');
+            setSalesDropdownVisible(false);
+          }}
+        >
+          Vehicle Option
+        </Menu.Item>
+      </Menu>
+    </div>
+  );
+
   /* ======================================== */
   // useEffect
   /* ======================================== */
@@ -173,9 +216,11 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
                   </span>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
-                  <span className="navbar__link" onClick={() => history.push('/sales')}>
-                    SALES
-                  </span>
+                  <Dropdown visible={salesDropdownVisible} overlay={salesMenu} trigger={['click']}>
+                    <span className="navbar__link" ref={salesWrapperRef} onClick={() => setSalesDropdownVisible(true)}>
+                      SALES <DownOutlined />
+                    </span>
+                  </Dropdown>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
                   <span className="navbar__link" onClick={() => history.push('/about')}>

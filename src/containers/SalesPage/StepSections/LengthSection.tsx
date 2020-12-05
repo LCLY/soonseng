@@ -169,10 +169,10 @@ const LengthSection: React.FC<Props> = ({
                 </>
               )}
             </div>
-            <div className="sales__length-btn-div">
+            <div className="sales__btn-div">
               <Button
                 loading={false}
-                className="sales__length-btn margin_r-1"
+                className="sales__btn margin_r-1"
                 onClick={() => {
                   setCurrentStep(currentStep - 1);
                   setCurrentLength(null);
@@ -190,7 +190,7 @@ const LengthSection: React.FC<Props> = ({
                       onGetSalesBodies(currentLength.id, currentTyre);
                     }
                   }}
-                  className="sales__length-btn"
+                  className="sales__btn"
                   loading={loading}
                   disabled={currentLength === null ? true : false}
                 >

@@ -10,7 +10,7 @@
   &__outerdiv {
     flex: 1;
     padding-top: 106.88px; //height of navbar
-    background: #d6d6d638;
+    background: $soonseng-grey;
   }
 
   // div wrapping the steps and the content
@@ -197,8 +197,9 @@
     &-innerdiv {
       padding: 2rem 2rem 5rem 2rem;
       border-top-left-radius: 3rem;
-      border-top-right-radius: 3rem;
+      // border-top-right-radius: 3rem;
       border-bottom-right-radius: 3rem;
+      // border-bottom-left-radius: 3rem;
       border: 1px solid rgba(0, 0, 0, 0.171);
       background: $primary-color-4;
       color: white;
@@ -241,13 +242,13 @@
       /* --------------------- */
       & .active {
         // if the card is in active state
-        border: 1px solid $primary-color-2;
+        border: 1px solid white;
         background: $primary-color-1;
         color: white;
         // if card is active, when hover, shouldnt have any changes
         &:hover {
-          border: 1px solid $primary-color-2;
-          background: red;
+          border: 1px solid white;
+          background: $primary-color-1;
           color: white;
         }
       }
@@ -287,8 +288,8 @@
       color: $primary-color-4;
 
       &:hover {
-        border: 1px solid $primary-color-2;
-        background: red;
+        border: 1px solid $primary-color-1;
+        background: $primary-color-2;
         color: white;
       }
       &:focus {
@@ -318,8 +319,9 @@
     &-card {
       width: 100%;
       margin-top: 2rem !important;
-      border-bottom-right-radius: 10rem !important;
-      // border-color: rgba(0, 0, 0, 0.123) !important;
+      min-height: 10rem !important;
+      border-bottom-right-radius: 5rem !important;
+      border-color: $translucent-grey !important;
       // background: $primary-color-4 !important;
       // color: white !important;
       & .ant-card-head {
@@ -469,89 +471,29 @@
       font-size: 1.2rem;
       font-family: $font-roboto;
       padding: 0.1rem 1rem 0.1rem 2rem;
-      border-left: 0.5rem solid $primary-color-4;
+      border-left: 0.5rem solid red;
       border-top-left-radius: 5rem;
-      border-top: 1px solid rgba($primary-color-4, 0.2);
-      border-right: 1px solid rgba($primary-color-4, 0.2);
-      border-bottom: 1px solid rgba($primary-color-4, 0.2);
-    }
-  }
-
-  /* ===================== */
-  // Loading component
-  /* ===================== */
-  &__loading {
-    &_div {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-  }
-  /* =================================== */
-  // Length section
-  /* =================================== */
-  &__length {
-    /* ------------------*/
-    // outerdiv wrapping everything including cards
-    /* ------------------*/
-    &-outerdiv {
-      display: flex;
-      flex-direction: column;
-      width: 60rem;
-      border-radius: 5px;
-
-      /* --------------------- */
-      // Active length cards
-      /* --------------------- */
-      & .active {
-        // if the card is in active state
-        border: 1px solid $primary-color-2;
-        background: #fef9f6;
-        // if card is active, when hover, shouldnt have any changes
-        &:hover {
-          border: 1px solid $primary-color-2;
-          background: #fef9f6;
-        }
-      }
-    }
-
-    /* --------------------*/
-    // body length card
-    /* --------------------*/
-    &-card {
-      transition: all 0.3s ease;
-      position: relative;
-      white-space: nowrap;
-      cursor: pointer;
-      border-radius: 2px;
       background: white;
-      text-align: center;
-      padding: 1rem 5rem;
-      margin-right: 1rem;
-      user-select: none;
-      border: 1px solid $translucent-grey;
-      &:hover {
-        background: rgba(230, 230, 230, 0.295);
-      }
-      &:focus {
-        background: blue;
-      }
+      color: $primary-color-4;
+      border-top: 1px solid rgba(red, 0.2);
+      border-right: 1px solid rgba(red, 0.2);
+      border-bottom: 1px solid rgba(red, 0.2);
     }
+  }
 
-    /* ------------------------- */
-    // The buttons within the length section
-    /* ------------------------- */
-    &-btn {
-      margin-top: 2rem;
-      padding: 0.5rem 2.5rem !important;
+  /* ===================================== */
+  // The buttons of the sales section
+  /* ===================================== */
+  &__btn {
+    margin-top: 2rem;
+    padding: 0.5rem 2.5rem !important;
 
-      /* --------------------------- */
-      // the div wrapping the button
-      /* --------------------------- */
-      &-div {
-        display: flex;
-        justify-content: flex-end;
-      }
+    /* --------------------------- */
+    // the div wrapping the button
+    /* --------------------------- */
+    &-div {
+      display: flex;
+      justify-content: flex-end;
     }
   }
 
@@ -615,151 +557,6 @@
     }
   }
 
-  /* ========================= */
-  // when nothing is selected
-  &__nothing {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: $translucent-grey;
-    background: #dde2eba8;
-
-    &-innerdiv {
-      padding: 2rem;
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      border-radius: 1rem;
-      color: $secondary-color-3;
-      border: 2px solid $tertiary-color-1;
-      background: #e7e7e7bd;
-
-      & > .fa-truck {
-        color: $secondary-color-3;
-        font-size: 5rem;
-        margin-bottom: 1rem;
-      }
-    }
-  }
-
-  &__dashboard {
-    display: flex;
-    justify-content: flex-end;
-    margin-left: 5rem;
-    // margin-top: 3rem;
-  }
-
-  // The collapsible panels
-  &__panel {
-    & .ant-collapse-header {
-      font-size: 2rem;
-      color: white !important;
-      background: $primary-color-3 !important;
-    }
-
-    // the divider for the series title
-    &-divider {
-      padding: 0 1rem;
-
-      &-title {
-        color: rgba($secondary-color-3, 0.6);
-        font-weight: bolder;
-      }
-    }
-
-    /* ------------------------ */
-    &-toggle {
-      // the accordion from bootstrap
-      background: $primary-color-3 !important;
-      color: white;
-      cursor: pointer;
-      font-size: 2rem;
-      padding: 1rem 2rem !important;
-      display: flex;
-      align-items: center;
-      width: 100%;
-      justify-content: space-between;
-      &:hover {
-        transition: all 0.5 ease;
-        background: $primary-color-4 !important;
-      }
-    }
-    /* ------------------------ */
-    // logo inside the clickable accordions
-    &-logo {
-      margin-left: 5rem;
-      background: white;
-      padding: 0.5rem;
-    }
-    /* ------------------------- */
-    // further into the catalog of vehicles provided by different brands
-    &-makes {
-      // the div
-      &-div {
-        border: 1px solid $translucent-grey;
-        height: 50rem;
-        display: flex;
-      }
-
-      /* -------------- */
-      // the picker for user to choose which vehicle to preview on the left
-      &-picker {
-        width: 40rem;
-        height: 100%;
-        border-right: 1px solid $translucent-grey;
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-color: $secondary-color-3 $translucent-grey;
-        scrollbar-width: thin;
-        &::-webkit-scrollbar {
-          width: 8px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          border-radius: 6px;
-          background: $secondary-color-3;
-        }
-        &::-webkit-scrollbar-thumb:hover {
-          background: $secondary-color-2;
-        }
-
-        /* targeting the active class */
-        & > .active {
-          transition: all 0.5s ease;
-          background: $primary-color-1 !important;
-
-          &:hover {
-            box-shadow: none;
-            background: $primary-color-1 !important;
-          }
-        }
-      }
-      /* -------------- */
-      // the viewer for user to choose which vehicle to view on the right
-      &-viewer {
-        height: 100%;
-        width: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-color: $primary-color-4 $translucent-grey;
-        scrollbar-width: thin;
-        // change the look of the scrollbar
-        &::-webkit-scrollbar {
-          width: 8px;
-        }
-        &::-webkit-scrollbar-thumb {
-          border-radius: 6px;
-          background: $primary-color-4;
-        }
-        &::-webkit-scrollbar-thumb:hover {
-          background: $primary-color-2;
-        }
-      }
-    }
-  }
-
   // The steps showing progress
   &__steps {
     &-div {
@@ -786,7 +583,7 @@
       & .ant-steps-item-icon {
         background: $primary-color-3 !important;
         & span {
-          color: rgba(175, 175, 174, 0.692) !important;
+          color: white !important;
         }
       }
     }
@@ -877,9 +674,16 @@
     &-row {
       display: flex;
       width: 100%;
+      // background: white
 
       // most outerdiv
       &-outerdiv {
+        // background: $primary-color-4;
+        // border-top-left-radius: 10rem;
+        // border-top-right-radius: 10rem;
+        // border-bottom-right-radius: 10rem;
+        // border: 1px solid $primary-color-4;
+        // padding: 5rem;
         &:not(:first-child) {
           padding-top: 5rem;
         }
@@ -1068,6 +872,20 @@
             }
           }
         }
+      }
+    }
+
+    &-btn {
+      &--another {
+        margin-bottom: 1rem;
+        margin-top: 3rem;
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
+      }
+
+      &--allorders {
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
       }
     }
   }

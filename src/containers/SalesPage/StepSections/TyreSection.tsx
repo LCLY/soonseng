@@ -109,7 +109,7 @@ const TyreSection: React.FC<Props> = ({
                 </>
               </div>
             </div>
-            <div className="sales__length-btn-div">
+            <div className="sales__btn-div">
               {currentStep < totalSteps - 1 && (
                 <Button
                   type="primary"
@@ -120,7 +120,7 @@ const TyreSection: React.FC<Props> = ({
                       onGetSalesLengths(currentTyre);
                     }
                   }}
-                  className="sales__length-btn"
+                  className="sales__btn"
                   loading={loading}
                   disabled={currentTyre === null ? true : false}
                 >

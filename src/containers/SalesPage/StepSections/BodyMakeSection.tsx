@@ -363,36 +363,36 @@ const BodyMakeSection: React.FC<Props> = ({
                 )}
               </>
             </div>
+
+            <div className="sales__btn-div">
+              <Button
+                className="sales__btn margin_r-1"
+                onClick={() => {
+                  setCurrentStep(currentStep - 1);
+                  setCurrentBodyMake(null);
+                }}
+              >
+                Back
+              </Button>
+              {currentStep < totalSteps - 1 && (
+                <Button
+                  type="primary"
+                  loading={loading}
+                  onClick={() => {
+                    // Then call the body lengths API
+                    if (currentBodyMake === null) return;
+                    if (currentBodyMake) {
+                      onGetSalesAccessories(currentBodyMake.id);
+                    }
+                  }}
+                  className="sales__btn"
+                >
+                  Next
+                </Button>
+              )}
+            </div>
           </div>
         </section>
-
-        <div className="sales__length-btn-div">
-          <Button
-            className="sales__length-btn margin_r-1"
-            onClick={() => {
-              setCurrentStep(currentStep - 1);
-              setCurrentBodyMake(null);
-            }}
-          >
-            Back
-          </Button>
-          {currentStep < totalSteps - 1 && (
-            <Button
-              type="primary"
-              loading={loading}
-              onClick={() => {
-                // Then call the body lengths API
-                if (currentBody === null) return;
-                if (currentBody) {
-                  onGetSalesAccessories(currentBody.id);
-                }
-              }}
-              className="sales__length-btn"
-            >
-              Next
-            </Button>
-          )}
-        </div>
       </section>
     </>
   );
