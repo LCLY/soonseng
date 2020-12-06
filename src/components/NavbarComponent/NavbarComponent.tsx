@@ -4,7 +4,7 @@ import './NavbarComponent.scss';
 // 3rd party lib
 import { Navbar, Nav } from 'react-bootstrap';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { ShoppingCartOutlined, DownOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 
 // image
@@ -212,30 +212,34 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
               <div className="navbar__left-div">
                 <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
                   <span className="navbar__link" onClick={() => history.push('/')}>
-                    HOME
+                    <i className="fas fa-home"></i>&nbsp;Home
                   </span>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
                   <Dropdown visible={salesDropdownVisible} overlay={salesMenu} trigger={['click']}>
                     <span className="navbar__link" ref={salesWrapperRef} onClick={() => setSalesDropdownVisible(true)}>
-                      SALES <DownOutlined />
+                      {/* SALES <DownOutlined /> */}
+                      <i className="fas fa-balance-scale"></i>&nbsp;Sales
                     </span>
                   </Dropdown>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
                   <span className="navbar__link" onClick={() => history.push('/about')}>
-                    ABOUT US
+                    {/* ABOUT US */}
+                    <i className="fas fa-address-card"></i>&nbsp;About us
                   </span>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'contact' ? 'active' : ''}`}>
                   <span className="navbar__link" onClick={() => history.push('/contact')}>
-                    CONTACT
+                    {/* CONTACT */}
+                    <i className="fas fa-address-book"></i>&nbsp;Contact
                   </span>
                 </div>
                 <div className={`navbar__link-div`}>
                   <Dropdown visible={dropdownVisible} overlay={dashboardMenu} trigger={['click']}>
                     <span className="navbar__link" ref={wrapperRef} onClick={() => setDropdownVisible(true)}>
-                      DASHBOARD <DownOutlined />
+                      {/* DASHBOARD <DownOutlined /> */}
+                      <i className="fas fa-columns"></i>&nbsp;Dashboard
                     </span>
                   </Dropdown>
                 </div>
@@ -243,12 +247,13 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
               <div className="navbar__right-div">
                 <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
                   <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push('/login')}>
-                    <i className="fas fa-sign-in-alt"></i> Sign In
+                    <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
                   </div>
                 </div>
                 <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
                   <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push('/orders')}>
-                    <ShoppingCartOutlined /> Orders
+                    <ShoppingCartOutlined />
+                    &nbsp;Orders
                   </div>
                 </div>
               </div>
