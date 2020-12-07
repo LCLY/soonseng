@@ -162,7 +162,7 @@
         width: 50rem;
 
         @include respond-to(phone-only) {
-          padding-top: 5rem;
+          padding-top: 0rem;
           transform: none;
           width: auto;
         }

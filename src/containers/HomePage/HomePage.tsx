@@ -7,6 +7,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 // image
 // 3rd party lib
 import gsap from 'gsap';
+import { v4 as uuidv4 } from 'uuid';
 import { Button, Carousel } from 'antd';
 import ScrollAnimation from 'react-animate-on-scroll';
 
@@ -253,7 +254,7 @@ function HomePage() {
           <Carousel autoplay autoplaySpeed={4000} pauseOnHover={true}>
             {carouselContents.map((carousel) => {
               return (
-                <div className="homepage__carousel-div">
+                <div key={uuidv4()} className="homepage__carousel-div">
                   <div className="homepage__carousel-div-left">
                     <div className="homepage__carousel-title">
                       {carousel.title}
@@ -263,7 +264,11 @@ function HomePage() {
                       <div className="homepage__carousel-italic">{`"${carousel.italicText}"`}</div>
                       <div className="homepage__carousel-content">
                         {carousel.paragraph.map((paragraph) => {
-                          return <div className="homepage__carousel-content-paragraph">{paragraph}</div>;
+                          return (
+                            <div key={uuidv4()} className="homepage__carousel-content-paragraph">
+                              {paragraph}
+                            </div>
+                          );
                         })}
                       </div>
                     </div>
