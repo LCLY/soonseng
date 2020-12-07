@@ -475,7 +475,23 @@
         padding: 3rem 2rem 5rem 2rem;
       }
       @include respond-to(tablet-landscape-up) {
-        padding: 8rem 2rem 2rem 2rem;
+        padding: 6rem 2rem 4rem 2rem;
+      }
+
+      // pushing the carousel white dots down
+      & .slick-list {
+        @include respond-to(phone-only) {
+          padding-bottom: 0 !important;
+        }
+        @include respond-to(tablet-portrait-up) {
+          padding-bottom: 5% !important;
+        }
+        @include respond-to(tablet-landscape-up) {
+          padding-bottom: 10% !important;
+        }
+        @include respond-to(desktop-up) {
+          padding-bottom: 0 !important;
+        }
       }
     }
     &-div {
@@ -517,11 +533,11 @@
         }
         @include respond-to(tablet-portrait-up) {
           width: 100%;
-          padding: 0;
+          padding-right: 3%;
         }
         @include respond-to(tablet-landscape-up) {
           width: 49%;
-          padding: 0;
+          padding-right: 3%;
         }
       }
       /* -------------------------- */
