@@ -1,5 +1,18 @@
 // export all the actions
 export {
+  // sign in
+  signIn,
+  signInStart,
+  signInSucceed,
+  signInFailed,
+  // get user info
+  getUserInfo,
+  getUserInfoFailed,
+  getUserInfoStart,
+  getUserInfoSucceed,
+} from './auth';
+
+export {
   // Clear all dashboard state
   clearDashboardState,
   /* =================== */

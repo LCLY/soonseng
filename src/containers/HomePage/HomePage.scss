@@ -459,7 +459,6 @@
   /* ======================== */
   &__carousel {
     &-outerdiv {
-      padding: 8rem 2rem 2rem 2rem;
       background: $primary-color-4;
       & .ant-carousel .slick-dots li {
         width: 5rem !important;
@@ -473,7 +472,10 @@
         padding: 2rem;
       }
       @include respond-to(tablet-portrait-up) {
-        padding: 8rem 2rem 5rem 2rem;
+        padding: 3rem 2rem 5rem 2rem;
+      }
+      @include respond-to(tablet-landscape-up) {
+        padding: 8rem 2rem 2rem 2rem;
       }
     }
     &-div {
@@ -498,7 +500,7 @@
       }
       @include respond-to(desktop-up) {
         flex-direction: row;
-        height: 45rem;
+        height: 50rem;
         padding-bottom: 10rem;
       }
       /* ----------------------- */
@@ -558,6 +560,7 @@
     &-ourteam {
       font-size: 4rem;
       color: white;
+      text-align: center;
       font-family: $font-courgette;
       @include respond-to(phone-only) {
         font-size: 3rem;
@@ -624,6 +627,7 @@
       @include respond-to(tablet-landscape-up) {
         width: 100%;
         height: 100%;
+        margin-top: 10rem;
       }
     }
   }

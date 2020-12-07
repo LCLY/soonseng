@@ -71,6 +71,61 @@ function HomePage() {
     },
   ];
 
+  let carouselContents = [
+    {
+      title: 'Service Advisor',
+      italicText: 'Let our service advisors represent you in conveying your concerns to our skilled mechanics.',
+      paragraph: [
+        'Our service advisor liaises between service technicians and you, whilst assisting you in determining problems with your vehicles. Pin-pointing problems and providing accurate descriptions to our technicians ensures the process of the job runs smoothly.',
+        'We put our customers on our HINO preventive maintenance schedule. By helping our customers think ahead of time on vehicle services, our schedule reduces downtime for vehicles which results in providing our customers a more consistent logistic performance.',
+        'Share your problems and requests while we greet you with utmost sincerity.',
+        '  Skip the queue by scheduling a service appointment with us.',
+      ],
+      imgUrl: 'https://www.autotrainingcentre.com/wp-content/uploads/2015/11/image15.jpeg',
+    },
+    {
+      title: 'HINO Certified Service Technician',
+      italicText:
+        'Your vehicle’s masseuse, responsible in making sure your vehicles have a great time. Rest assured, they are in good hands.',
+      paragraph: [
+        'Our Service Technicians do not stop until your vehicle is back on the road. We take our quality of service seriously and continuously attend workshop training to ensure we are keeping up with the latest trends of the automotive industry.',
+        'We help you preemptively detect potential problems regarding your vehicle through our detailed 30-Point inspection and routine checks and services. Our goal is to reduce uncertainty and allow our customers to have smooth business operations.',
+        '  We value customers reaching out to us whenever there is an issue, no matter the day nor the time.',
+      ],
+      imgUrl: 'https://www.cashcarsbuyer.com/wp-content/uploads/2020/04/Ask-A-Mechanic-1200x900.jpg',
+    },
+    {
+      title: 'Sales Advisor',
+      italicText:
+        'Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we listen, discuss, and solve them together.',
+      paragraph: [
+        'Our customer’s satisfaction has always been our top priority. Share your problems with us and let us embark on our journey into solving them.',
+        'Being under budget is every businesses’ concern. Providing the cheapest options are always easy, however the challenge lies within recommending the most suitable and effective solution. We aim to get your problems solved under budget for we care for our customers.',
+        'Leave it up to us in providing you solutions for rest assured, your concerns are in good hands.',
+      ],
+      imgUrl: 'https://www.salesman.org/wp-content/uploads/2015/05/suit-hacks-for-salesmen.jpg',
+    },
+    {
+      title: 'Customer Support',
+      italicText: 'Your satisfaction, we guarantee.',
+      paragraph: [
+        'Our customer support extends way beyond our products. One of our proudest steps to emphasize on our commitment on customers’ satisfactory, we invested in having Procare units to provide customers’ with onsite services, and standby units for customers. We provide 24/7 breakdown assistance so that we know that our customers’ needs will always be met.',
+        'Being part of the automotive industry, we support our customers’ through providing their drivers with training that are focuses on road safety, vehicle maintenance, fuel efficiency driving and many more. Together with HINO’s support through HTSCC (HINO Total Support Customer Center), we hope to get the idea across that we are always around to support our customers.',
+        'With the resources we have at hand, we strive to make sure that no customer is left behind.',
+      ],
+      imgUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd5aAff7FNXBxgHHpFNsezNMV4fwsMqhyETg&usqp=CAU',
+    },
+    {
+      title: ' Parts Advisor',
+      italicText: 'Good parts are the main components to a vehicle, as healthy organs are to humans.',
+      paragraph: [
+        'Good parts are the main components to a vehicle, as healthy organs are to humans. With HINO being our manufacturer, we are proud to offer our customers’ and business partners with HINO genuine parts. With HINO’s genuine parts program, we strive to provide our customers with good quality parts, within their constraints of budget in mind.',
+        'Aligned to our core values where we look heavily upon growth, we often send our Parts Advisor to specially designed training sessions from HINO, to make sure that they are not left behind by the ever-changing technology of spare parts.',
+      ],
+      imgUrl: 'https://sc02.alicdn.com/kf/HTB1n5Z8KpXXXXaYXFXXq6xXFXXXK.jpg',
+    },
+  ];
+
   return (
     <>
       <NavbarComponent activePage="home" />
@@ -196,142 +251,29 @@ function HomePage() {
         <Container>
           <div className="homepage__carousel-ourteam">Our Team</div>
           <Carousel autoplay autoplaySpeed={4000} pauseOnHover={true}>
-            <div className="homepage__carousel-div">
-              <div className="homepage__carousel-div-left">
-                <div className="homepage__carousel-title">
-                  Service Advisor
-                  <div className="homepage__carousel-parallelogram"></div>
-                </div>
-                <div>
-                  <div className="homepage__carousel-italic">
-                    "Let our service advisors represent you in conveying your concerns to our skilled mechanics."
-                  </div>
-                  <div className="homepage__carousel-content">
-                    <div className="homepage__carousel-content-paragraph">
-                      Our service advisor liaises between service technicians and you, whilst assisting you in
-                      determining problems with your vehicles. Pin-pointing problems and providing accurate descriptions
-                      to our technicians ensures the process of the job runs smoothly.
+            {carouselContents.map((carousel) => {
+              return (
+                <div className="homepage__carousel-div">
+                  <div className="homepage__carousel-div-left">
+                    <div className="homepage__carousel-title">
+                      {carousel.title}
+                      <div className="homepage__carousel-parallelogram"></div>
                     </div>
-
-                    <div className="homepage__carousel-content-paragraph">
-                      Share your problems and requests while we greet you with utmost sincerity. No challenges too huge
-                      to intimidate us, no challenges too small to ignore.
-                    </div>
-
-                    <div className="homepage__carousel-content-paragraph">
-                      Insurance are also considered one of our well-known products that are offered. Contact us to learn
-                      more about our selection of products, as we venture into get you covered!
-                    </div>
-
-                    <div className="homepage__carousel-content-paragraph">
-                      Skip the queue by scheduling a service appointment with us.
+                    <div>
+                      <div className="homepage__carousel-italic">{`"${carousel.italicText}"`}</div>
+                      <div className="homepage__carousel-content">
+                        {carousel.paragraph.map((paragraph) => {
+                          return <div className="homepage__carousel-content-paragraph">{paragraph}</div>;
+                        })}
+                      </div>
                     </div>
                   </div>
+                  <div className="homepage__carousel-div-right">
+                    <img alt={carousel.title} className="homepage__carousel-image" src={carousel.imgUrl} />
+                  </div>
                 </div>
-              </div>
-              <div className="homepage__carousel-div-right">
-                <img
-                  alt="service advisor"
-                  className="homepage__carousel-image"
-                  src="https://www.autotrainingcentre.com/wp-content/uploads/2015/11/image15.jpeg"
-                />
-              </div>
-            </div>
-            <div className="homepage__carousel-div">
-              <div className="homepage__carousel-div-left">
-                <div className="homepage__carousel-title">
-                  Mechanic
-                  <div className="homepage__carousel-parallelogram"></div>
-                </div>
-
-                <div className="homepage__carousel-italic">
-                  "Your vehicle’s masseuse, responsible in making sure your vehicles have a great time. Rest assured,
-                  they are in good hands."
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  Our mechanics do not stop until your vehicle is back on the road. We take our quality of service
-                  seriously and continuously attend workshop training to ensure we are keeping up with the latest trends
-                  of the automotive industry.
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  We help you preemptively detect potential problems regarding your vehicle through our detailed
-                  30-Point inspection and routine checks and services. Our goal is to reduce uncertainty and allow our
-                  customers to have smooth business operations.
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  We value customers reaching out to us whenever there is an issue, no matter the day nor the time. We
-                  provide 24/7 emergency services.
-                </div>
-              </div>
-              <div className="homepage__carousel-div-right">
-                <img
-                  alt="mechanic"
-                  className="homepage__carousel-image"
-                  src="https://www.cashcarsbuyer.com/wp-content/uploads/2020/04/Ask-A-Mechanic-1200x900.jpg"
-                />
-              </div>
-            </div>
-            <div className="homepage__carousel-div">
-              <div className="homepage__carousel-div-left">
-                <div className="homepage__carousel-title">
-                  Salesmen
-                  <div className="homepage__carousel-parallelogram"></div>
-                </div>
-                <div className="homepage__carousel-italic">
-                  "Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we
-                  listen, discuss, and solve them together."
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  Our customer’s satisfaction has always been our top priority. Share your problems with us and let us
-                  embark on our journey into solving them.
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  Being under budget is every businesses’ concern. Providing the cheapest options are always easy,
-                  however the challenge lies within recommending the most suitable and effective solution. We aim to get
-                  your problems solved under budget for we care for our customers.
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  Leave it up to us in providing you solutions for rest assured, your concerns are in good hands.
-                </div>
-              </div>
-              <div className="homepage__carousel-div-right">
-                <img
-                  alt="salesmen"
-                  className="homepage__carousel-image"
-                  src="https://www.salesman.org/wp-content/uploads/2015/05/suit-hacks-for-salesmen.jpg"
-                />
-              </div>
-            </div>
-            <div className="homepage__carousel-div">
-              <div className="homepage__carousel-div-left">
-                <div className="homepage__carousel-title">
-                  Customer Support
-                  <div className="homepage__carousel-parallelogram"></div>
-                </div>
-                <div className="homepage__carousel-italic">"Your satisfaction, we guarantee."</div>
-
-                {/* <div className="homepage__carousel-content-paragraph">
-                  Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est
-                  eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas
-                  assumenda est, omnis dolor repellendus.
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  Ut ac ligula quis augue porta ultricies a quis justo. Aliquam facilisis ullamcorper purus. Nam
-                  suscipit tellus sed lorem porta, sed volutpat lacus tempor. Aliquam in lacus felis.
-                </div>
-                <div className="homepage__carousel-content-paragraph">
-                  Fusce a leo sed nibh fringilla tincidunt sit amet quis diam. Praesent volutpat nunc a diam porta
-                  malesuada. Integer sollicitudin purus non rutrum scelerisque. Nunc dictum fringilla enim id tempor.
-                </div> */}
-              </div>
-              <div className="homepage__carousel-div-right">
-                <img
-                  alt="customer support"
-                  className="homepage__carousel-image"
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd5aAff7FNXBxgHHpFNsezNMV4fwsMqhyETg&usqp=CAU"
-                />
-              </div>
-            </div>
+              );
+            })}
           </Carousel>
         </Container>
       </div>
