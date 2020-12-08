@@ -157,7 +157,7 @@ const NavbarComponent: React.FC<Props> = ({
             setDropdownVisible(false);
           }}
         >
-          Make
+          Model
         </Menu.Item>
         <Menu.Item
           key="accessory"
@@ -175,7 +175,7 @@ const NavbarComponent: React.FC<Props> = ({
             setDropdownVisible(false);
           }}
         >
-          Vehicle Catalog
+          Model with body
         </Menu.Item>
       </Menu>
     </div>
@@ -191,7 +191,7 @@ const NavbarComponent: React.FC<Props> = ({
             setSalesDropdownVisible(false);
           }}
         >
-          Vehicle Option
+          Vehicle Catalog
         </Menu.Item>
       </Menu>
     </div>
