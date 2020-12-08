@@ -180,7 +180,7 @@ function HomePage() {
               <ScrollAnimation animateOnce={true} animateIn="fadeInLeft">
                 <div className="homepage__values-div">
                   <div className="homepage__values-icon-div">
-                    <i className="homepage__values-icon  fas fa-hard-hat"></i>
+                    <i className="homepage__values-icon fas fa-smile-beam"></i>
                   </div>
                   <div className="homepage__values-text">
                     <div className="homepage__values-title">Product Reliability</div>
