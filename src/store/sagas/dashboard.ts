@@ -83,22 +83,6 @@ export function* deleteUploadImageSaga(action: AppActions) {
 
   let url = process.env.REACT_APP_API + `/uploads`;
 
-  // let ids = {};
-
-  // if ('ids' in action) {
-  //   console.log(action.ids);
-  //   ids = {
-  //     ids: action.ids,
-  //   };
-  // }
-
-  // let data = {};
-  // if ('ids' in action) {
-  //   data = {
-  //     ids: action.ids,
-  //   };
-  // }
-
   let config = {};
   if ('ids' in action) {
     config = yield {

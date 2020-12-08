@@ -33,7 +33,7 @@
       list-style-type: lower-roman;
       & li:hover {
         transition: all 0.5 ease;
-        background: $section-grey;
+        background: rgba($primary-color-4, 0.15);
         cursor: default;
       }
     }
@@ -49,6 +49,12 @@
 
       // most outerdiv
       &-outerdiv {
+        // background: $primary-color-4;
+        // border-top-left-radius: 10rem;
+        // border-top-right-radius: 10rem;
+        // border-bottom-right-radius: 10rem;
+        // border: 1px solid $primary-color-4;
+        // padding: 5rem;
         &:not(:first-child) {
           padding-top: 5rem;
         }
@@ -62,13 +68,26 @@
       // image on every row
       /* ------------------------------- */
       &-image {
-        width: 18rem;
-        height: 13rem;
+        width: 20rem;
+        height: 15rem;
         object-fit: cover;
+
+        @include respond-to(phone-only) {
+          width: 100%;
+          height: 20rem;
+        }
+        @include respond-to(desktop-up) {
+          width: 40rem;
+          height: 30rem;
+        }
 
         &-div {
           user-select: none;
-          padding: 1rem;
+          padding: 2rem;
+          @include respond-to(phone-only) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
         }
       }
       /* ------------------------------- */
@@ -78,12 +97,20 @@
         width: 100%;
         padding: 2rem;
 
+        @include respond-to(phone-only) {
+          padding: 0;
+        }
+
         // the header title e.g. 15ft wooden cargo
         &-header {
           font-size: 2.5rem;
           font-family: $font-roboto;
           font-weight: bolder;
           color: $primary-color-4;
+
+          @include respond-to(phone-only) {
+            font-size: 2rem;
+          }
 
           // the grand total price at the bottom
           &-price {
@@ -93,6 +120,9 @@
             padding-right: 1.5rem;
             margin-bottom: 0.5rem;
             color: $primary-color-4;
+            @include respond-to(phone-only) {
+              font-size: 1.8rem;
+            }
 
             // the prediscount on the top
             &--prediscount {
@@ -100,6 +130,9 @@
               font-family: $font-roboto;
               padding-right: 1.5rem;
               font-weight: bolder;
+              @include respond-to(phone-only) {
+                font-size: 1.5rem;
+              }
             }
           }
         }
@@ -111,6 +144,10 @@
           // padding-left: 1.5rem;
           font-family: $font-firesans;
 
+          @include respond-to(phone-only) {
+            font-size: 1.3rem;
+          }
+
           &--discount {
             color: black;
             // font-weight: bolder;
@@ -121,6 +158,9 @@
             color: black;
             // padding-left: 1.5rem;
             font-family: $font-firesans;
+            @include respond-to(phone-only) {
+              font-size: 1.7rem;
+            }
           }
 
           &-price {
@@ -131,6 +171,9 @@
               font-size: 1.7rem;
               font-weight: bolder;
               padding-right: 1.5rem;
+              @include respond-to(phone-only) {
+                font-size: 1.5rem;
+              }
             }
           }
         }
@@ -141,6 +184,10 @@
     &-panel {
       & .ant-collapse-header {
         color: $primary-color-3 !important;
+
+        @include respond-to(phone-only) {
+          padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
       }
 
       & .ant-collapse-content-box {
@@ -162,7 +209,7 @@
           display: flex;
           align-items: center;
           &:hover {
-            background: $section-grey;
+            background: rgba($primary-color-4, 0.15);
             cursor: default;
           }
         }
@@ -225,6 +272,9 @@
       display: flex;
       justify-content: flex-end;
       margin-right: 3.5rem;
+      @include respond-to(phone-only) {
+        margin-right: 0.5rem;
+      }
 
       &-icon {
         &-div {
@@ -232,11 +282,25 @@
           &:hover {
             & .sales__overview-more-icon {
               transition: all 0.5s ease;
-              background: $primary-color-4;
+              background: rgba($primary-color-4, 0.15);
               color: white;
             }
           }
         }
+      }
+    }
+
+    &-btn {
+      &--another {
+        margin-bottom: 1rem;
+        margin-top: 3rem;
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
+      }
+
+      &--allorders {
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
       }
     }
   }

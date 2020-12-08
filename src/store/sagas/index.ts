@@ -3,6 +3,7 @@ import { takeEvery, all } from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
 import { DashboardActionTypes } from '../types/dashboard';
 import { SalesActionTypes } from '../types/sales';
+import { AuthActionTypes } from '../types/auth';
 
 import {
   // Upload/Delete Image(s)
@@ -60,6 +61,12 @@ import {
   getSalesAccessoriesSaga,
 } from './sales';
 
+import { signInSaga, getUserInfoSaga } from './auth';
+
+export function* watchAuth() {
+  yield all([takeEvery<AuthActionTypes>(actionTypes.SIGN_IN, signInSaga)]);
+  yield all([takeEvery<AuthActionTypes>(actionTypes.GET_USER_INFO, getUserInfoSaga)]);
+}
 export function* watchSales() {
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_LENGTHS, getSalesLengthsSaga)]);
   yield all([takeEvery<SalesActionTypes>(actionTypes.GET_SALES_BODIES, getSalesBodiesSaga)]);

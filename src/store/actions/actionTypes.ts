@@ -3,11 +3,16 @@
 /* ================================================================================== */
 /*                                  Authentication                                    */
 /* ================================================================================== */
+// Clear Auth State
+export const CLEAR_AUTH_STATE = 'CLEAR_AUTH_STATE';
+
+// Sign in
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_IN_START = 'SIGN_IN_START';
 export const SIGN_IN_SUCCEED = 'SIGN_IN_SUCCEED';
 export const SIGN_IN_FAILED = 'SIGN_IN_FAILED';
 
+// Get user info
 export const GET_USER_INFO = 'GET_USER_INFO';
 export const GET_USER_INFO_START = 'GET_USER_INFO_START';
 export const GET_USER_INFO_SUCCEED = 'GET_USER_INFO_SUCCEED';

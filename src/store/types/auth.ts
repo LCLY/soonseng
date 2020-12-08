@@ -15,6 +15,13 @@ export interface IAuthMapStateToProps {
 }
 
 /* ============================================================== */
+// Clear all the auth state
+/* ============================================================== */
+export interface ClearAuthStateAction {
+  type: typeof actionTypes.CLEAR_AUTH_STATE;
+}
+
+/* ============================================================== */
 // Sign in
 /* ============================================================== */
 /* Api call */
@@ -79,6 +86,10 @@ export interface GetUserInfoFailedAction {
 // Combine and export all action types
 /* ============================================================== */
 export type AuthActionTypes =
+  /* -------------------- */
+  // Clear state
+  /* -------------------- */
+  | ClearAuthStateAction
   /* -------------------- */
   // Sign in
   /* -------------------- */

@@ -26,6 +26,12 @@
       border-top-left-radius: 5rem;
       border-bottom-right-radius: 5rem;
       background: $primary-color-4;
+
+      @include respond-to(phone-only) {
+        width: auto;
+        margin-right: 1rem;
+        margin-left: 1rem;
+      }
     }
 
     &-outerdiv {
@@ -38,6 +44,7 @@
     &-items {
       & label {
         color: white !important;
+        width: 10rem;
       }
     }
   }

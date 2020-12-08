@@ -1,34 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './LoginPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
-// import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 /*3rd party lib*/
-// import { connect } from 'react-redux';
-// import { AnyAction, Dispatch } from 'redux';
+import { Spin } from 'antd';
+import { connect } from 'react-redux';
+import { AnyAction, Dispatch } from 'redux';
+import { LoadingOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 /* Util */
-// import * as actions from 'src/store/actions/index';
-// import { TMapStateToProps } from 'src/store/types';
+import * as actions from 'src/store/actions/index';
+import { TMapStateToProps } from 'src/store/types';
+import { TReceivedUserInfoObj } from 'src/store/types/auth';
 
 interface LoginPageProps {}
 
-type Props = LoginPageProps & RouteComponentProps;
+type Props = LoginPageProps & StateProps & DispatchProps & RouteComponentProps;
 
-const LoginPage: React.FC<Props> = () => {
+const LoginPage: React.FC<Props> = ({ loading, errorMessage, userInfoObj, onSignIn, onClearAuthState }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
+  const antIcon = <LoadingOutlined style={{ color: 'white' }} spin />;
 
+  console.log(userInfoObj);
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
 
+  // Form finish methods
+  const onSignInFinish = (values: { email: string; password: string }) => {
+    onSignIn(values.email, values.password);
+  };
+
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
+  /* ------------------ */
+  // error notification
+  /* ------------------ */
+  useEffect(() => {
+    if (errorMessage) {
+      message.error(errorMessage);
+      onClearAuthState();
+    }
+  }, [errorMessage, onClearAuthState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -41,19 +59,14 @@ const LoginPage: React.FC<Props> = () => {
           <div className="login__form-outerdiv">
             <div className="login__form-div">
               <div className="login__section-header">Sign In</div>
-              <Form
-                name="basic"
-                initialValues={{ remember: true }}
-                // onFinish={onFinish}
-                // onFinishFailed={onFinishFailed}
-              >
+              <Form name="basic" initialValues={{ remember: true }} onFinish={onSignInFinish}>
                 <Form.Item
                   className="login__form-items"
-                  label="Username"
-                  name="username"
-                  rules={[{ required: true, message: 'Please input your username!' }]}
+                  label="Email"
+                  name="email"
+                  rules={[{ required: true, message: 'Please input your email!' }]}
                 >
-                  <Input />
+                  <Input type="email" />
                 </Form.Item>
 
                 <Form.Item
@@ -64,10 +77,9 @@ const LoginPage: React.FC<Props> = () => {
                 >
                   <Input.Password />
                 </Form.Item>
-
                 <Form.Item>
                   <Button className="login__btn" type="primary" htmlType="submit">
-                    Submit
+                    {loading ? <Spin indicator={antIcon} /> : 'Submit'}
                   </Button>
                 </Form.Item>
               </Form>
@@ -80,14 +92,28 @@ const LoginPage: React.FC<Props> = () => {
     </>
   );
 };
-// interface StateProps {}
-// const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-//   return { variable: state.reducer.variable };
-// };
-// interface DispatchProps {
-//   onFunctionName: typeof actions.functionName;
-// }
-// const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
-//   return { onFunctionName: (param) => dispatch(actions.functionName(param)) };
-// };
-export default withRouter(LoginPage);
+interface StateProps {
+  loading: boolean;
+  errorMessage: string | null;
+  userInfoObj: TReceivedUserInfoObj | null;
+}
+const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
+  if ('auth' in state) {
+    return {
+      loading: state.auth.loading,
+      errorMessage: state.auth.errorMessage,
+      userInfoObj: state.auth.userInfoObj,
+    };
+  }
+};
+interface DispatchProps {
+  onSignIn: typeof actions.signIn;
+  onClearAuthState: typeof actions.clearAuthState;
+}
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
+  return {
+    onSignIn: (email, password) => dispatch(actions.signIn(email, password)),
+    onClearAuthState: () => dispatch(actions.clearAuthState()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LoginPage));

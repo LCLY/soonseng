@@ -11,7 +11,7 @@ import { ParallaxProvider } from 'react-scroll-parallax';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { watchDashboard, watchSales } from './store/sagas/index';
+import { watchDashboard, watchSales, watchAuth } from './store/sagas/index';
 
 // redux-persist
 import storage from 'redux-persist/lib/storage';
@@ -21,8 +21,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 // reducers
-import dashboardReducer from 'src/store/reducers/dashboard';
+import authReducer from 'src/store/reducers/auth';
 import salesReducer from 'src/store/reducers/sales';
+import dashboardReducer from 'src/store/reducers/dashboard';
 
 // enable browser redux extension tool
 const composeEnhancers =
@@ -46,6 +47,7 @@ const persistConfig = {
 const rootReducer: any = combineReducers({
   dashboard: dashboardReducer,
   sales: salesReducer,
+  auth: authReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
@@ -61,6 +63,7 @@ const persistor = persistStore(store);
 
 sagaMiddleware.run(watchDashboard);
 sagaMiddleware.run(watchSales);
+sagaMiddleware.run(watchAuth);
 
 /**
  * @ignore

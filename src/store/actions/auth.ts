@@ -6,6 +6,12 @@ import * as actionTypes from './actionTypes';
 //  Authentication
 /* ============================================================================================ */
 
+export const clearAuthState = () => {
+  return {
+    type: actionTypes.CLEAR_AUTH_STATE,
+  };
+};
+
 // Sign in
 export const signIn = (email: string, password: string): AppActions => {
   return {

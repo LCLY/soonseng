@@ -1,5 +1,6 @@
 // export all the actions
 export {
+  clearAuthState,
   // sign in
   signIn,
   signInStart,

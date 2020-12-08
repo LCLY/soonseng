@@ -86,13 +86,13 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
         const currentScrollPos = window.pageYOffset;
         // set state based on location info
         if (prevScrollPos > currentScrollPos) {
-          if (Math.abs(prevScrollPos - currentScrollPos) > 50 || currentScrollPos < 10) {
+          if (Math.abs(prevScrollPos - currentScrollPos) > 40 || currentScrollPos < 10) {
             setVisible(true);
             setDropdownVisible(false);
             setSalesDropdownVisible(false);
           }
         } else {
-          if (Math.abs(prevScrollPos - currentScrollPos) > 50) {
+          if (Math.abs(prevScrollPos - currentScrollPos) > 35) {
             setVisible(false);
             setDropdownVisible(false);
             setSalesDropdownVisible(false);

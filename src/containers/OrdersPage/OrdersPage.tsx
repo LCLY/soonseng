@@ -34,7 +34,7 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
       <section className="orders__section">
         <Container>
           <div className="orders__section-outerdiv">
-            <Divider orientation="left">
+            <Divider className="sales__section-header-divider" orientation="left">
               <div className="sales__section-header">Your Orders</div>
             </Divider>
 
