@@ -52,7 +52,7 @@ function useOutsideAlerter(
 
 interface NavbarComponentProps {
   /** Shows which active page it is currently */
-  activePage?: 'home' | 'sales' | 'about' | 'contact' | 'about' | 'orders' | 'dashboard' | 'login';
+  activePage?: 'home' | 'sales' | 'about' | 'product' | 'contact' | 'about' | 'orders' | 'dashboard' | 'login';
 }
 
 type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentProps;
@@ -175,7 +175,7 @@ const NavbarComponent: React.FC<Props> = ({
             setDropdownVisible(false);
           }}
         >
-          Vehicle Option
+          Vehicle Catalog
         </Menu.Item>
       </Menu>
     </div>
@@ -185,18 +185,9 @@ const NavbarComponent: React.FC<Props> = ({
     <div ref={salesDropdownRef}>
       <Menu>
         <Menu.Item
-          key="body"
-          onClick={() => {
-            history.push('/');
-            setSalesDropdownVisible(false);
-          }}
-        >
-          Product
-        </Menu.Item>
-        <Menu.Item
           key="make"
           onClick={() => {
-            history.push('/sales');
+            history.push('/');
             setSalesDropdownVisible(false);
           }}
         >
@@ -235,13 +226,18 @@ const NavbarComponent: React.FC<Props> = ({
                     <i className="fas fa-home"></i>&nbsp;Home
                   </span>
                 </div>
-                <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
+                <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
                   <Dropdown visible={salesDropdownVisible} overlay={salesMenu} trigger={['click']}>
                     <span className="navbar__link" ref={salesWrapperRef} onClick={() => setSalesDropdownVisible(true)}>
                       {/* SALES <DownOutlined /> */}
-                      <i className="fas fa-balance-scale"></i>&nbsp;Sales
+                      <i className="fas fa-book"></i>&nbsp;Product
                     </span>
                   </Dropdown>
+                </div>
+                <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
+                  <span className="navbar__link" onClick={() => history.push('/sales')}>
+                    <i className="fas fa-balance-scale"></i>&nbsp;Sales
+                  </span>
                 </div>
                 {/* ABOUT US */}
                 {/* <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
