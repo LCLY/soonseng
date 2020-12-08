@@ -12,11 +12,17 @@ export const SIGN_IN_START = 'SIGN_IN_START';
 export const SIGN_IN_SUCCEED = 'SIGN_IN_SUCCEED';
 export const SIGN_IN_FAILED = 'SIGN_IN_FAILED';
 
+// Sign out
+export const SIGN_OUT = 'SIGN_OUT';
+
 // Get user info
 export const GET_USER_INFO = 'GET_USER_INFO';
 export const GET_USER_INFO_START = 'GET_USER_INFO_START';
 export const GET_USER_INFO_SUCCEED = 'GET_USER_INFO_SUCCEED';
 export const GET_USER_INFO_FAILED = 'GET_USER_INFO_FAILED';
+
+// Assign Access
+export const ASSIGN_ACCESS = 'ASSIGN_ACCESS';
 
 /* ================================================================================== */
 /*                                       Sales                                        */

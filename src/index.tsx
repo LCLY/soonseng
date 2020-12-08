@@ -32,14 +32,15 @@ const composeEnhancers =
     : null || compose;
 
 // you want to store only a subset of your state of reducer one
-const saveSubsetFilter = createFilter('sales', ['localOrdersArray']);
+const saveSalesSubsetFilter = createFilter('sales', ['localOrdersArray']);
+const saveAuthSubsetFilter = createFilter('auth', ['auth_token']);
 
 // redux persist config
 const persistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: ['sales'], // which reducer want to store - name of reducer
-  transforms: [saveSubsetFilter],
+  whitelist: ['sales', 'auth'], // which reducer want to store - name of reducer
+  transforms: [saveSalesSubsetFilter, saveAuthSubsetFilter],
   stateReconciler: autoMergeLevel2,
 };
 

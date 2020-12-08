@@ -1,15 +1,22 @@
-import React, { useCallback, useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import './NavbarComponent.scss';
 // components
 // 3rd party lib
+// import { debounce } from 'lodash';
+import { connect } from 'react-redux';
 import { Navbar, Nav } from 'react-bootstrap';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import { debounce } from 'lodash';
+import { AnyAction, Dispatch } from 'redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 // image
-import SoonSengLogo from 'src/img/soonseng_logo.png';
 import { Dropdown, Menu } from 'antd';
+import SoonSengLogo from 'src/img/soonseng_logo.png';
+
+// Util
+import * as actions from 'src/store/actions/index';
+import { TMapStateToProps } from 'src/store/types';
+import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 
 /**
  * Hook that alerts clicks outside of the passed ref
@@ -48,7 +55,7 @@ interface NavbarComponentProps {
   activePage?: 'home' | 'sales' | 'about' | 'contact' | 'about' | 'orders' | 'dashboard' | 'login';
 }
 
-type Props = NavbarComponentProps & RouteComponentProps;
+type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentProps;
 
 /**
  *  A navbar component containing links to other pages
@@ -57,13 +64,21 @@ type Props = NavbarComponentProps & RouteComponentProps;
  * @category Components
  */
 
-const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
+const NavbarComponent: React.FC<Props> = ({
+  history,
+  auth_token,
+  accessObj,
+  userInfoObj,
+  authenticated,
+  activePage,
+  onGetUserInfo,
+}) => {
   /* ======================================= */
   // state
   /* ======================================= */
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  // const [prevScrollPos, setPrevScrollPos] = useState(0);
   // navbar visibility
-  const [visible, setVisible] = useState(true);
+  // const [visible, setVisible] = useState(true);
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const wrapperRef = useRef(null);
@@ -79,46 +94,46 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   // methods
   /* =========================================== */
 
-  const handleScroll = useCallback(
-    debounce(
-      () => {
-        // find current scroll position
-        const currentScrollPos = window.pageYOffset;
-        // set state based on location info
-        if (prevScrollPos > currentScrollPos) {
-          if (Math.abs(prevScrollPos - currentScrollPos) > 40 || currentScrollPos < 10) {
-            setVisible(true);
-            setDropdownVisible(false);
-            setSalesDropdownVisible(false);
-          }
-        } else {
-          if (Math.abs(prevScrollPos - currentScrollPos) > 35) {
-            setVisible(false);
-            setDropdownVisible(false);
-            setSalesDropdownVisible(false);
-          }
-        }
+  // const handleScroll = useCallback(
+  //   debounce(
+  //     () => {
+  //       // find current scroll position
+  //       const currentScrollPos = window.pageYOffset;
+  //       // set state based on location info
+  //       if (prevScrollPos > currentScrollPos) {
+  //         if (Math.abs(prevScrollPos - currentScrollPos) > 40 || currentScrollPos < 10) {
+  //           setVisible(true);
+  //           setDropdownVisible(false);
+  //           setSalesDropdownVisible(false);
+  //         }
+  //       } else {
+  //         if (Math.abs(prevScrollPos - currentScrollPos) > 35) {
+  //           setVisible(false);
+  //           setDropdownVisible(false);
+  //           setSalesDropdownVisible(false);
+  //         }
+  //       }
 
-        // // set state based on location info (explained in more detail below)
-        // setVisible(
-        //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 70) || currentScrollPos < 10,
-        // );
+  //       // // set state based on location info (explained in more detail below)
+  //       // setVisible(
+  //       //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 70) || currentScrollPos < 10,
+  //       // );
 
-        // setVisible(
-        //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 20) || currentScrollPos < 10,
-        // );
-        // set state to new scroll position
-        setPrevScrollPos(currentScrollPos);
-      },
-      100,
-      {
-        leading: true,
-        trailing: false,
-      },
-    ),
+  //       // setVisible(
+  //       //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 20) || currentScrollPos < 10,
+  //       // );
+  //       // set state to new scroll position
+  //       setPrevScrollPos(currentScrollPos);
+  //     },
+  //     100,
+  //     {
+  //       leading: true,
+  //       trailing: false,
+  //     },
+  //   ),
 
-    [prevScrollPos],
-  );
+  //   [prevScrollPos],
+  // );
 
   /* ========================================== */
   //  Component
@@ -172,7 +187,7 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
         <Menu.Item
           key="body"
           onClick={() => {
-            history.push('/sales');
+            history.push('/');
             setSalesDropdownVisible(false);
           }}
         >
@@ -181,7 +196,7 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
         <Menu.Item
           key="make"
           onClick={() => {
-            history.push('/');
+            history.push('/sales');
             setSalesDropdownVisible(false);
           }}
         >
@@ -194,14 +209,19 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   /* ======================================== */
   // useEffect
   /* ======================================== */
+  // useEffect(() => {
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => window.removeEventListener('scroll', handleScroll);
+  // }, [prevScrollPos, visible, handleScroll]);
+
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [prevScrollPos, visible, handleScroll]);
+    if (auth_token === undefined) return;
+    onGetUserInfo(auth_token);
+  }, [onGetUserInfo, auth_token]);
 
   return (
     <>
-      <div className="navbar__outerdiv" style={{ top: visible ? '0' : '-100%' }}>
+      <div className="navbar__outerdiv" /*  style={{ top: visible ? '0' : '-100%' }} */>
         <Navbar className="navbar__div" bg="primary" variant="dark" expand="md">
           <Navbar.Brand className="navbar__logo" href="#home">
             <img alt="soonseng logo" className="navbar__logo" onClick={() => history.push('/')} src={SoonSengLogo} />
@@ -223,31 +243,51 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
                     </span>
                   </Dropdown>
                 </div>
-                <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
+                {/* ABOUT US */}
+                {/* <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
                   <span className="navbar__link" onClick={() => history.push('/about')}>
-                    {/* ABOUT US */}
                     <i className="fas fa-address-card"></i>&nbsp;About us
                   </span>
-                </div>
-                <div className={`navbar__link-div ${activePage === 'contact' ? 'active' : ''}`}>
+                </div> */}
+                {/* CONTACT */}
+                {/* <div className={`navbar__link-div ${activePage === 'contact' ? 'active' : ''}`}>
                   <span className="navbar__link" onClick={() => history.push('/contact')}>
-                    {/* CONTACT */}
                     <i className="fas fa-address-book"></i>&nbsp;Contact
                   </span>
-                </div>
-                <div className={`navbar__link-div`}>
-                  <Dropdown visible={dropdownVisible} overlay={dashboardMenu} trigger={['click']}>
-                    <span className="navbar__link" ref={wrapperRef} onClick={() => setDropdownVisible(true)}>
-                      {/* DASHBOARD <DownOutlined /> */}
-                      <i className="fas fa-columns"></i>&nbsp;Dashboard
-                    </span>
-                  </Dropdown>
-                </div>
+                </div> */}
+
+                {/* only show dashboard when bool is true */}
+                {accessObj?.showSalesDashboard ? (
+                  <div className={`navbar__link-div`}>
+                    <Dropdown visible={dropdownVisible} overlay={dashboardMenu} trigger={['click']}>
+                      <span className="navbar__link" ref={wrapperRef} onClick={() => setDropdownVisible(true)}>
+                        {/* DASHBOARD <DownOutlined /> */}
+                        <i className="fas fa-columns"></i>&nbsp;Dashboard
+                      </span>
+                    </Dropdown>
+                  </div>
+                ) : null}
               </div>
               <div className="navbar__right-div">
+                {/* only show if user info exist or not a normal user */}
+                {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>}
                 <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
-                  <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push('/login')}>
-                    <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
+                  <div
+                    className={`navbar__link`}
+                    ref={dropdownRef}
+                    onClick={() => {
+                      authenticated ? history.push('/logout') : history.push('/login');
+                    }}
+                  >
+                    {authenticated ? (
+                      <>
+                        <i className="fas fa-sign-out-alt"></i>&nbsp;Sign Out
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
@@ -265,4 +305,28 @@ const NavbarComponent: React.FC<Props> = ({ history, activePage }) => {
   );
 };
 
-export default withRouter(NavbarComponent);
+interface StateProps {
+  auth_token?: string | null;
+  authenticated?: boolean;
+  accessObj?: TUserAccess;
+  userInfoObj?: TReceivedUserInfoObj | null;
+}
+const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
+  if ('auth' in state) {
+    return {
+      accessObj: state.auth.accessObj,
+      auth_token: state.auth.auth_token,
+      userInfoObj: state.auth.userInfoObj,
+      authenticated: state.auth.auth_token !== null,
+    };
+  }
+};
+
+interface DispatchProps {
+  onGetUserInfo: typeof actions.getUserInfo;
+}
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
+  return { onGetUserInfo: (auth_token) => dispatch(actions.getUserInfo(auth_token)) };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavbarComponent));

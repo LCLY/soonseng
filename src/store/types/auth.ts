@@ -7,6 +7,10 @@ export interface AuthInitialState {
   readonly successMessage: string | null;
   // user info
   readonly userInfoObj: TReceivedUserInfoObj | null;
+  // auth token
+  readonly auth_token: string | null;
+  // access
+  readonly accessObj: TUserAccess;
 }
 
 // to further breakdown the state, use in mapStateToProps
@@ -19,6 +23,24 @@ export interface IAuthMapStateToProps {
 /* ============================================================== */
 export interface ClearAuthStateAction {
   type: typeof actionTypes.CLEAR_AUTH_STATE;
+}
+
+/* ============================================================== */
+// Assign access
+/* ============================================================== */
+
+export type TUserAccess = {
+  showAdminDashboard: false;
+  allowEditSalesDashboard: false;
+  showFullSalesPage: false;
+  showPriceSalesPage: false;
+  showSalesmenDashboard: false;
+  showSalesDashboard: false;
+};
+
+export interface AssignAccessAction {
+  type: typeof actionTypes.ASSIGN_ACCESS;
+  accessObj: TUserAccess;
 }
 
 /* ============================================================== */
@@ -37,11 +59,19 @@ export interface SignInStartAction {
 
 export interface SignInSucceedAction {
   type: typeof actionTypes.SIGN_IN_SUCCEED;
+  auth_token: string;
 }
 
 export interface SignInFailedAction {
   type: typeof actionTypes.SIGN_IN_FAILED;
   errorMessage: string;
+}
+
+/* ============================================================== */
+// Sign out
+/* ============================================================== */
+export interface SignOutAction {
+  type: typeof actionTypes.SIGN_OUT;
 }
 
 /* ============================================================== */
@@ -66,6 +96,7 @@ export type TReceivedUserInfoObj = {
 /* Api call */
 export interface GetUserInfoAction {
   type: typeof actionTypes.GET_USER_INFO;
+  auth_token: string | null;
 }
 
 export interface GetUserInfoStartAction {
@@ -91,12 +122,20 @@ export type AuthActionTypes =
   /* -------------------- */
   | ClearAuthStateAction
   /* -------------------- */
+  // Assign Access
+  /* -------------------- */
+  | AssignAccessAction
+  /* -------------------- */
   // Sign in
   /* -------------------- */
   | SignInAction
   | SignInStartAction
   | SignInSucceedAction
   | SignInFailedAction
+  /* -------------------- */
+  // Sign in
+  /* -------------------- */
+  | SignOutAction
   /* -------------------- */
   // User Info
   /* -------------------- */

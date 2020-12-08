@@ -1,13 +1,15 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv {
-    position: fixed;
+    position: absolute;
     transition: all 0.5s ease;
     width: 100%;
     z-index: 1000;
 
     & .bg-primary {
-      background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
+      // background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
+      // background: rgba(0, 0, 0, 0.9) !important;
+      background: rgba($primary-color-4, 0.9) !important;
     }
   }
 
@@ -112,6 +114,10 @@
     }
   }
 
+  /* ========================= */
+  // the right div of the navbar
+  /* ======================== */
+
   &__right {
     &-div {
       display: flex;
@@ -121,6 +127,19 @@
         margin-top: 1rem;
         padding-top: 1rem;
       }
+    }
+  }
+
+  /* ================ */
+  // user role
+  /* ================ */
+  &__role {
+    &-title {
+      color: white;
+      background: $primary-color-3;
+      border: 1px solid white;
+      border-radius: 0.5rem;
+      margin-right: 1rem;
     }
   }
 }

@@ -26,9 +26,9 @@ export function* signInSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { user });
-    yield put(actions.signInSucceed());
-    // assign auth token
-    localStorage.setItem('AuthToken', response.data.auth_token);
+    yield put(actions.signInSucceed(response.data.auth_token));
+    // call get user info
+    yield put(actions.getUserInfo(response.data.auth_token));
   } catch (error) {
     if (error.response) {
       /*
@@ -38,7 +38,7 @@ export function* signInSaga(action: AppActions) {
       console.log('error response data:', error.response.data);
       console.log('error response status:', error.response.status);
       console.log('error response error:', error.response.errors);
-      yield put(actions.signInFailed(error.response.data.error));
+      yield put(actions.signInFailed(error.response.data.messages));
     } else if (error.request) {
       /*
        * The request was made but no response was received, `error.request`
@@ -56,14 +56,39 @@ export function* signInSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get User Info
 /* ------------------------------- */
-export function* getUserInfoSaga(_action: AppActions) {
+export function* getUserInfoSaga(action: AppActions) {
   yield put(actions.getUserInfoStart());
+
+  let config = {};
+  if ('auth_token' in action) {
+    config = {
+      headers: {
+        Authorization: 'Bearer ' + action.auth_token,
+      },
+    };
+  }
 
   let url = process.env.REACT_APP_API + `/get_user_info`;
 
   try {
-    let response = yield axios.get(url);
-    yield put(actions.getUserInfoSucceed(response.user));
+    let response = yield axios.get(url, config);
+
+    yield put(actions.getUserInfoSucceed(response.data.user));
+
+    if (response.data.user) {
+      const { roles } = response.data.user; //extract the roles out
+      // only assign access if there's a role
+      let accessObj = {
+        showAdminDashboard: roles.priceSalesPage,
+        allowEditSalesDashboard: roles.fullSalesPage,
+        showFullSalesPage: roles.viewSalesDashboard,
+        showPriceSalesPage: roles.editSalesDashboard,
+        showSalesmenDashboard: roles.salesmenDashboard,
+        showSalesDashboard: roles.adminDashboard,
+      };
+      // assign the access booleans
+      yield put(actions.assignAccess(accessObj));
+    }
   } catch (error) {
     if (error.response) {
       /*

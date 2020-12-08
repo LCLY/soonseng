@@ -1,6 +1,8 @@
 import React, { Suspense } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 /* containers */
+// Authentication
+import Logout from './containers/Authentication/Logout/Logout';
 // General pages
 import Homepage from 'src/containers/HomePage/HomePage';
 import AboutPage from 'src/containers/AboutPage/AboutPage';
@@ -45,7 +47,7 @@ function App() {
       <Route exact path="/dashboard/body_make" component={BodyMake} />
       <Route exact path="/dashboard/accessory" component={Accessory} />
 
-      {/* <Route exact path="/logout" component={Logout} /> */}
+      <Route exact path="/logout" component={Logout} />
       <Route exact path="/404" component={PageNotFound} />
       <Redirect from="*" to="/404" />
     </Switch>

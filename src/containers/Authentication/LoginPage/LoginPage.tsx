@@ -9,7 +9,7 @@ import { Spin } from 'antd';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { LoadingOutlined } from '@ant-design/icons';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
@@ -19,7 +19,14 @@ interface LoginPageProps {}
 
 type Props = LoginPageProps & StateProps & DispatchProps & RouteComponentProps;
 
-const LoginPage: React.FC<Props> = ({ loading, errorMessage, userInfoObj, onSignIn, onClearAuthState }) => {
+const LoginPage: React.FC<Props> = ({
+  loading,
+  errorMessage,
+  authenticated,
+  userInfoObj,
+  onSignIn,
+  onClearAuthState,
+}) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
@@ -52,6 +59,7 @@ const LoginPage: React.FC<Props> = ({ loading, errorMessage, userInfoObj, onSign
   /* ================================================== */
   return (
     <>
+      {authenticated && <Redirect to="/" />}
       <NavbarComponent activePage="login" />
       <section className="login__section">
         {/* <Container> */}
@@ -94,6 +102,7 @@ const LoginPage: React.FC<Props> = ({ loading, errorMessage, userInfoObj, onSign
 };
 interface StateProps {
   loading: boolean;
+  authenticated: boolean;
   errorMessage: string | null;
   userInfoObj: TReceivedUserInfoObj | null;
 }
@@ -103,6 +112,7 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       loading: state.auth.loading,
       errorMessage: state.auth.errorMessage,
       userInfoObj: state.auth.userInfoObj,
+      authenticated: state.auth.auth_token !== null,
     };
   }
 };

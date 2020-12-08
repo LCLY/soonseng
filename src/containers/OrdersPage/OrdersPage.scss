@@ -8,6 +8,10 @@
     &-outerdiv {
       width: auto;
       padding-top: $navbar-height;
+
+      @include respond-to(phone-only) {
+        padding-top: 60px; //height of navbar
+      }
     }
   }
 
@@ -61,6 +65,12 @@
         &:not(:last-child) {
           padding-bottom: 5rem;
           border-bottom: 1px solid $translucent-grey;
+        }
+
+        @include respond-to(phone-only) {
+          &:not(:first-child) {
+            padding-top: 0;
+          }
         }
       }
 

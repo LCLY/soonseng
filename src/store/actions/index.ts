@@ -1,11 +1,16 @@
 // export all the actions
 export {
+  // clear state
   clearAuthState,
+  // assign access
+  assignAccess,
   // sign in
   signIn,
   signInStart,
   signInSucceed,
   signInFailed,
+  // signout
+  signOut,
   // get user info
   getUserInfo,
   getUserInfoFailed,

@@ -614,7 +614,7 @@ const OverviewSection: React.FC<Props> = ({
                           {/* ======================== */}
                           <div className="flex space-between">
                             <span className="sales__overview-row-content-subheader sales__overview-row-content-subheader--discount">
-                              Discount
+                              Hino Discount
                             </span>
                             <span className="sales__overview-row-content-subheader-price">
                               -&nbsp;

@@ -79,8 +79,7 @@ function HomePage() {
       paragraph: [
         'Our service advisor liaises between service technicians and you, whilst assisting you in determining problems with your vehicles. Pin-pointing problems and providing accurate descriptions to our technicians ensures the process of the job runs smoothly.',
         'We put our customers on our HINO preventive maintenance schedule. By helping our customers think ahead of time on vehicle services, our schedule reduces downtime for vehicles which results in providing our customers a more consistent logistic performance.',
-        'Share your problems and requests while we greet you with utmost sincerity.',
-        '  Skip the queue by scheduling a service appointment with us.',
+        'Share your problems and requests while we greet you with utmost sincerity. Skip the queue by scheduling a service appointment with us.',
       ],
       imgUrl: 'https://www.autotrainingcentre.com/wp-content/uploads/2015/11/image15.jpeg',
     },
