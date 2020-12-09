@@ -116,12 +116,23 @@
       // background: url('https://media3.giphy.com/media/xUOxeYatzejqwawi4w/200.gif');
       // background: url('https://media3.giphy.com/media/xUOxf7BGcnKPNCA5kQ/giphy.gif');
       background-attachment: fixed;
-      background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
+      // background-position: center;
 
       @include respond-to(phone-only) {
         height: 60rem;
+        background-position: 85% 20px;
+      }
+
+      @include respond-to(tablet-portrait-up) {
+        background-position: 80% 5rem;
+      }
+      @include respond-to(tablet-landscape-up) {
+        background-position: 80% 5rem;
+      }
+      @include respond-to(desktop-up) {
+        background-position: center;
       }
     }
 
@@ -160,10 +171,10 @@
         margin-bottom: 4rem;
         transform: translateY(-2rem);
         width: 50rem;
-        border-radius: 20px;
         overflow: hidden;
+        padding: 1rem;
         // Glass morphism
-        // padding: 1rem;
+        // border-radius: 5px;
         // box-shadow: 0.5rem 0.5rem 2rem 0.5rem rgba(rgb(224, 219, 191), 0.5);
         // background: rgba(128, 128, 128, 0.384);
 
