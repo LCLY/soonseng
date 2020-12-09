@@ -117,6 +117,12 @@
           font-family: $font-roboto;
           font-weight: bolder;
           color: $primary-color-4;
+          // width: 65%;
+          padding-right: 1rem;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          // display: inline-block;
 
           @include respond-to(phone-only) {
             font-size: 2rem;

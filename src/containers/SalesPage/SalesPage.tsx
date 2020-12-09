@@ -19,6 +19,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Steps } from 'antd';
 
 // Util
+import { AppState } from 'src/index';
 import {
   TLocalOrderObj,
   TReceivedSalesMakesObj,
@@ -28,7 +29,7 @@ import {
   TReceivedSalesBodyMakeObj,
 } from 'src/store/types/sales';
 import * as actions from 'src/store/actions/index';
-import { TMapStateToProps } from 'src/store/types/index';
+import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BODYMAKE } from 'src/shared/constants';
 
@@ -44,6 +45,9 @@ type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
  * @category Pages
  */
 const SalesPage: React.FC<Props> = ({
+  // auth token
+  auth_token,
+  accessObj,
   // Arrays
   bodiesArray,
   bodyMakesArray,
@@ -154,6 +158,7 @@ const SalesPage: React.FC<Props> = ({
       content: (
         <BodySection
           loading={loading}
+          auth_token={auth_token}
           totalSteps={totalSteps}
           bodiesArray={bodiesArray}
           currentStep={currentStep}
@@ -177,6 +182,7 @@ const SalesPage: React.FC<Props> = ({
       content: (
         <BodyMakeSection
           loading={loading}
+          accessObj={accessObj}
           totalSteps={totalSteps}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
@@ -197,6 +203,7 @@ const SalesPage: React.FC<Props> = ({
       title: STEPS_ACCESSORY,
       content: (
         <AccessorySection
+          accessObj={accessObj}
           totalSteps={totalSteps}
           currentTyre={currentTyre}
           currentBody={currentBody}
@@ -223,6 +230,7 @@ const SalesPage: React.FC<Props> = ({
       content: (
         <OverviewSection
           loading={loading}
+          accessObj={accessObj}
           totalSteps={totalSteps}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
@@ -320,17 +328,20 @@ const SalesPage: React.FC<Props> = ({
 interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
+  // auth token
+  auth_token: string | null;
+  accessObj: TUserAccess;
   // Arrays
   bodiesArray?: TReceivedBodyObj[] | null;
   salesBrandsArray?: TReceivedSalesMakesObj[] | null;
   bodyMakesArray?: TReceivedSalesBodyMakeObj[] | null;
-  generalAccessoriesArray: TReceivedAccessoryObj[] | null;
-  dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] | null;
-  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
+  generalAccessoriesArray?: TReceivedAccessoryObj[] | null;
+  dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
+  bodyRelatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
   // length category object
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
   // array for local orders
-  localOrdersArray: TLocalOrderObj[];
+  localOrdersArray?: TLocalOrderObj[];
   // Bool for get api
   getSalesMakesSucceed?: boolean | null;
   getSalesLengthsSucceed?: boolean | null;
@@ -339,28 +350,29 @@ interface StateProps {
   getSalesAccessoriesSucceed?: boolean | null;
 }
 
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  if ('sales' in state) {
-    return {
-      loading: state.sales.loading,
-      errorMessage: state.sales.errorMessage,
-      // Arrays
-      bodiesArray: state.sales.bodiesArray,
-      bodyMakesArray: state.sales.bodyMakesArray,
-      localOrdersArray: state.sales.localOrdersArray,
-      salesBrandsArray: state.sales.salesBrandsArray,
-      lengthsCategoriesArray: state.sales.lengthsCategoriesArray,
-      generalAccessoriesArray: state.sales.generalAccessoriesArray,
-      bodyRelatedAccessoriesArray: state.sales.bodyRelatedAccessoriesArray,
-      dimensionRelatedAccessoriesArray: state.sales.dimensionRelatedAccessoriesArray,
-      // Succeed states
-      getSalesMakesSucceed: state.sales.getSalesMakesSucceed,
-      getSalesLengthsSucceed: state.sales.getSalesLengthsSucceed,
-      getSalesBodiesSucceed: state.sales.getSalesBodiesSucceed,
-      getSalesBodyMakesSucceed: state.sales.getSalesBodyMakesSucceed,
-      getSalesAccessoriesSucceed: state.sales.getSalesAccessoriesSucceed,
-    };
-  }
+const mapStateToProps = (state: AppState): StateProps | void => {
+  return {
+    loading: state.sales.loading,
+    errorMessage: state.sales.errorMessage,
+    // Arrays
+    bodiesArray: state.sales.bodiesArray,
+    bodyMakesArray: state.sales.bodyMakesArray,
+    localOrdersArray: state.sales.localOrdersArray,
+    salesBrandsArray: state.sales.salesBrandsArray,
+    lengthsCategoriesArray: state.sales.lengthsCategoriesArray,
+    generalAccessoriesArray: state.sales.generalAccessoriesArray,
+    bodyRelatedAccessoriesArray: state.sales.bodyRelatedAccessoriesArray,
+    dimensionRelatedAccessoriesArray: state.sales.dimensionRelatedAccessoriesArray,
+    // Succeed states
+    getSalesMakesSucceed: state.sales.getSalesMakesSucceed,
+    getSalesLengthsSucceed: state.sales.getSalesLengthsSucceed,
+    getSalesBodiesSucceed: state.sales.getSalesBodiesSucceed,
+    getSalesBodyMakesSucceed: state.sales.getSalesBodyMakesSucceed,
+    getSalesAccessoriesSucceed: state.sales.getSalesAccessoriesSucceed,
+    // Authentication
+    auth_token: state.auth.auth_token,
+    accessObj: state.auth.accessObj,
+  };
 };
 
 interface DispatchProps {
@@ -383,7 +395,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetSalesBodies: (length_id, tire) => dispatch(actions.getSalesBodies(length_id, tire)),
     onRemoveAnOrder: (index, localOrdersArray) => dispatch(actions.removeAnOrder(index, localOrdersArray)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
-    onGetSalesBodyMakes: (length_id, tire, body_id) => dispatch(actions.getSalesBodyMakes(length_id, tire, body_id)),
+    onGetSalesBodyMakes: (length_id, tire, body_id, auth_token) =>
+      dispatch(actions.getSalesBodyMakes(length_id, tire, body_id, auth_token)),
   };
 };
 

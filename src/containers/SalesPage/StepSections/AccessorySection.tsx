@@ -3,19 +3,21 @@ import React, { useState } from 'react';
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
-import { Breadcrumb, Button, Card, Divider, Empty, Skeleton } from 'antd';
+import NumberFormat from 'react-number-format';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { Breadcrumb, Button, Card, Divider, Empty, Skeleton } from 'antd';
 /* Util */
 import { AppActions } from 'src/store/types';
-import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
+import { TUserAccess } from 'src/store/types/auth';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
-import NumberFormat from 'react-number-format';
+import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 
 interface AccessorySectionProps {
   loading?: boolean;
   totalSteps: number;
-  localOrdersArray: TLocalOrderObj[];
+  accessObj: TUserAccess;
+  localOrdersArray?: TLocalOrderObj[];
   bodiesArray?: TReceivedBodyObj[] | null;
   currentStep: number; //for steps component
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -36,15 +38,16 @@ interface AccessorySectionProps {
   currentOrderObj: TLocalOrderObj; //to keep track of the current order
   setCurrentOrderObj: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
   totalAccessoriesArrayLength: number;
-  generalAccessoriesArray: TReceivedAccessoryObj[] | null;
-  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
-  dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] | null;
+  generalAccessoriesArray?: TReceivedAccessoryObj[] | null;
+  bodyRelatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
+  dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
   onStoreLocalOrders: (localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
 
 type Props = AccessorySectionProps;
 
 const AccessorySection: React.FC<Props> = ({
+  accessObj,
   totalSteps,
   currentTyre,
   currentBody,
@@ -181,13 +184,15 @@ const AccessorySection: React.FC<Props> = ({
                       : currentAccessory.accessoryObj.description
                   }`}</div>
                 </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Price</div>
-                  <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                    RM
-                    <NumberFormat value={currentAccessory.price} displayType={'text'} thousandSeparator={true} />
+                {accessObj.showPriceSalesPage && (
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Price</div>
+                    <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
+                      RM
+                      <NumberFormat value={currentAccessory.price} displayType={'text'} thousandSeparator={true} />
+                    </div>
                   </div>
-                </div>
+                )}
               </Card>
             ) : (
               <>
@@ -487,6 +492,7 @@ const AccessorySection: React.FC<Props> = ({
                     // At the end of the choosing phase after user done choosing brand
                     // user click on complete button and we store the current order object
                     // into the localOrdersArray in redux so we can save it in localstorage
+                    if (localOrdersArray === undefined) return;
                     let copyArray = [...localOrdersArray];
                     copyArray.push(currentOrderObj);
                     onStoreLocalOrders(copyArray);

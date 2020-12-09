@@ -6,7 +6,10 @@ import { SearchOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 import { TReceivedImageObj } from 'src/store/types/dashboard';
+import { AppActions } from 'src/store/types/index';
+
 const { Panel } = Collapse;
+
 // Containing all utilities functions
 // for reducers
 /**
@@ -184,6 +187,7 @@ export const onTableRowExpand = (
   setExpandedRowKeys(keys);
 };
 
+/* =========================================================== */
 /**
  *
  * This function takes in images array from make object and then populate the current state
@@ -192,6 +196,7 @@ export const onTableRowExpand = (
  * @param {React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>} setGalleryImages
  * @category Helper function
  */
+/* =========================================================== */
 export const onPopulateImagesArray = (
   recordImagesArray: TReceivedImageObj[],
   setGalleryImages: React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>,
@@ -218,6 +223,25 @@ export const onPopulateImagesArray = (
   recordImagesArray.map(storeValue);
 
   setGalleryImages(tempArray);
+};
+
+/* =========================================================== */
+/**
+ * Create header config that contains token
+ * @param {AppActions} action
+ * @return {*}
+ */
+/* =========================================================== */
+export const configAuthToken = (action: AppActions) => {
+  let config = {};
+  if ('auth_token' in action) {
+    config = {
+      headers: {
+        Authorization: 'Bearer ' + action.auth_token,
+      },
+    };
+  }
+  return config;
 };
 
 /* ============================================================================= */

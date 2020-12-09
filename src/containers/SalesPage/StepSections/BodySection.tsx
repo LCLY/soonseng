@@ -14,6 +14,7 @@ import { TLocalOrderObj, TReceivedSalesLengthCategoryObj, TReceivedSalesLengthOb
 interface BodySectionProps {
   loading?: boolean;
   totalSteps: number;
+  auth_token?: string | null;
   bodiesArray?: TReceivedBodyObj[] | null;
   currentStep: number; //for steps component
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -26,13 +27,14 @@ interface BodySectionProps {
   currentOrderObj: TLocalOrderObj; //to keep track of the current order
   setCurrentOrderObj: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
-  onGetSalesBodyMakes: (length_id: number, tire: number, body_id: number) => AppActions;
+  onGetSalesBodyMakes: (length_id: number, tire: number, body_id: number, auth_token: string | null) => AppActions;
 }
 
 type Props = BodySectionProps;
 
 const BodySection: React.FC<Props> = ({
   loading,
+  auth_token,
   totalSteps,
   bodiesArray,
   currentTyre,
@@ -227,8 +229,14 @@ const BodySection: React.FC<Props> = ({
                   type="primary"
                   onClick={() => {
                     // Then call the body lengths API
-                    if (currentBody === null || currentLength === null || currentTyre === null) return;
-                    onGetSalesBodyMakes(currentLength.id, currentTyre, currentBody.id);
+                    if (
+                      currentBody === null ||
+                      currentLength === null ||
+                      currentTyre === null ||
+                      auth_token === undefined
+                    )
+                      return;
+                    onGetSalesBodyMakes(currentLength.id, currentTyre, currentBody.id, auth_token);
                   }}
                   className="sales__btn"
                   loading={loading}

@@ -272,10 +272,10 @@ const NavbarComponent: React.FC<Props> = ({
                     className={`navbar__link`}
                     ref={dropdownRef}
                     onClick={() => {
-                      authenticated ? history.push('/logout') : history.push('/login');
+                      authenticated && userInfoObj ? history.push('/logout') : history.push('/login');
                     }}
                   >
-                    {authenticated ? (
+                    {authenticated && userInfoObj ? (
                       <>
                         <i className="fas fa-sign-out-alt"></i>&nbsp;Sign Out
                       </>

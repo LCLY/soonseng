@@ -9,6 +9,7 @@ import { Breadcrumb, Button, Card, Divider, Tag } from 'antd';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 /* Util */
 import { AppActions } from 'src/store/types';
+import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedBodyObj, TReceivedBodyMakeObj } from 'src/store/types/dashboard';
 import { img_loading_link, img_not_available_link } from 'src/shared/global';
 import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedSalesBodyMakeObj } from 'src/store/types/sales';
@@ -16,6 +17,7 @@ import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedSalesBodyMakeObj } fr
 interface BodyMakeSectionProps {
   loading?: boolean;
   totalSteps: number;
+  accessObj: TUserAccess;
   currentStep: number; //for steps component
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentTyre: number | null; //current picked tire count
@@ -34,6 +36,7 @@ type Props = BodyMakeSectionProps;
 const BodyMakeSection: React.FC<Props> = ({
   loading,
   totalSteps,
+  accessObj,
   currentStep,
   setCurrentStep,
   currentTyre,
@@ -52,6 +55,8 @@ const BodyMakeSection: React.FC<Props> = ({
   // For lightbox
   const [bodyMakePhotoIndex, setBodyMakePhotoIndex] = useState(0);
   const [bodyMakeLightboxOpen, setBodyMakeLightboxOpen] = useState(false);
+
+  console.log(currentBodyMake);
   return (
     <>
       <section className="sales__section sales__section-body">
@@ -217,24 +222,26 @@ const BodyMakeSection: React.FC<Props> = ({
                     </div>
                   </section>
                 </div>
-                <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
-                  <div className="sales__selectarea-card-row-left">Model Price</div>
+                {accessObj.showPriceSalesPage && (
+                  <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
+                    <div className="sales__selectarea-card-row-left">Model Price</div>
 
-                  <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
-                    {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
-                      '-'
-                    ) : (
-                      <>
-                        RM
-                        <NumberFormat
-                          value={currentBodyMake?.make.price}
-                          displayType={'text'}
-                          thousandSeparator={true}
-                        />
-                      </>
-                    )}
+                    <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
+                      {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
+                        '-'
+                      ) : (
+                        <>
+                          RM
+                          <NumberFormat
+                            value={currentBodyMake?.make.price}
+                            displayType={'text'}
+                            thousandSeparator={true}
+                          />
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
                   <div className="sales__selectarea-card-row-left">Dimension</div>
                   <div className="sales__selectarea-card-row-right">
@@ -266,21 +273,22 @@ const BodyMakeSection: React.FC<Props> = ({
                       )}
                   </div>
                 </div>
+                {accessObj.showPriceSalesPage && (
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Body Price</div>
 
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Body Price</div>
-
-                  <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                    {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
-                      '-'
-                    ) : (
-                      <>
-                        RM
-                        <NumberFormat value={currentBodyMake?.price} displayType={'text'} thousandSeparator={true} />
-                      </>
-                    )}
+                    <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
+                      {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
+                        '-'
+                      ) : (
+                        <>
+                          RM
+                          <NumberFormat value={currentBodyMake?.price} displayType={'text'} thousandSeparator={true} />
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </Card>
             ) : (
               <Card className="sales__selectarea-card" size="small" title="Selected model">
@@ -378,6 +386,7 @@ const BodyMakeSection: React.FC<Props> = ({
                 <Button
                   type="primary"
                   loading={loading}
+                  disabled={currentBodyMake === null ? true : false}
                   onClick={() => {
                     // Then call the body lengths API
                     if (currentBodyMake === null) return;

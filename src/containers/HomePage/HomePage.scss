@@ -112,7 +112,7 @@
     &-image {
       min-height: 100vh;
       // min-height: calc(100vh - 106.88px);
-      background: url('https://s29755.pcdn.co/wp-content/uploads/2019/08/2019_Top_Five_Class_5-Mack.jpg');
+      background: url('../../img/hino_homepage.jpg');
       // background: url('https://media3.giphy.com/media/xUOxeYatzejqwawi4w/200.gif');
       // background: url('https://media3.giphy.com/media/xUOxf7BGcnKPNCA5kQ/giphy.gif');
       background-attachment: fixed;
@@ -160,12 +160,33 @@
         margin-bottom: 4rem;
         transform: translateY(-2rem);
         width: 50rem;
+        border-radius: 5px;
+        overflow: hidden;
+        // Glass morphism
+        // padding: 1rem;
+        // box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
+        // background: rgba(128, 128, 128, 0.384);
 
         @include respond-to(phone-only) {
           padding-top: 0rem;
           transform: none;
           width: auto;
         }
+
+        // Glass morphism
+        // &:before {
+        //   content: '';
+        //   position: absolute;
+        //   top: 0;
+        //   left: 0;
+        //   right: 0;
+        //   bottom: 0;
+        //   z-index: -1;
+        //   background: rgba(255, 255, 255, 0.199);
+        //   backdrop-filter: blur(5px);
+        //   border-radius: 10px;
+        //   border: 1px solid rgba(255, 255, 255, 0.2);
+        // }
       }
     }
 

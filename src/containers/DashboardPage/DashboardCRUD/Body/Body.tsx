@@ -44,7 +44,13 @@ import {
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { convertHeader, getColumnSearchProps, onClearAllSelectedImages, setFilterReference } from 'src/shared/Utils';
+import {
+  convertHeader,
+  getColumnSearchProps,
+  onClearAllSelectedImages,
+  onTableRowExpand,
+  setFilterReference,
+} from 'src/shared/Utils';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import LazyLoad from 'react-lazyload';
 
@@ -402,23 +408,6 @@ const Body: React.FC<Props> = ({
 
   /**
    *
-   * helper function to only show 1 expanded row
-   * @param {*} expanded
-   * @param {*} record
-   * @category Helper function
-   */
-  const onTableRowExpand = (expanded: boolean, record: TBodyTableState) => {
-    var keys = [];
-    let key = record.key;
-    if (!expanded && key) {
-      keys.push(key.toString()); // I have set my record.id as row key. Check the documentation for more details.
-    }
-
-    setExpandedRowKeys(keys);
-  };
-
-  /**
-   *
    * This function takes in images array from make object and then populate the current state
    * of setImage
    * @param {TReceivedImageObj[]} recordImagesArray
@@ -471,7 +460,7 @@ const Body: React.FC<Props> = ({
             // clear the state first to make sure that body accessories array is reloaded
             onClearBodyAccessoryArray();
             // this allow only 1 row to expand at a time
-            onTableRowExpand(expanded, record);
+            onTableRowExpand(expanded, record, setExpandedRowKeys);
             // call the body accessories api on expand
             onGetBodyAccessories(record.bodyId);
             // this closes all the edit image gallery when user expand other row
@@ -496,7 +485,7 @@ const Body: React.FC<Props> = ({
           <Tooltip trigger={['hover', 'click']} title={tooltipIconsText.minusIcon}>
             <MinusCircleTwoTone
               onClick={() => {
-                onTableRowExpand(expanded, record);
+                onTableRowExpand(expanded, record, setExpandedRowKeys);
                 // this function is passed to imageGallery
                 //  it will simply uncheck everything
                 onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
@@ -1387,7 +1376,7 @@ const Body: React.FC<Props> = ({
                         dataSource={bodyTableState}
                         expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
                         onExpand={(expanded, record) => {
-                          onTableRowExpand(expanded, record);
+                          onTableRowExpand(expanded, record, setExpandedRowKeys);
                         }} //this allow only 1 row to expand at a time
                         expandable={{
                           expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './OrdersPage.scss';
 // component
 import Footer from 'src/components/Footer/Footer';
@@ -28,6 +28,26 @@ interface OrdersPageProps {}
 type Props = OrdersPageProps & StateProps & DispatchProps & RouteComponentProps;
 
 const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrder }) => {
+  /* ================================= */
+  // state
+  /* ================================= */
+  const [expandedModelCollapse, setExpandedModelCollapse] = useState<string[]>([]);
+  const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
+
+  /* ================================= */
+  // method
+  /* ================================= */
+  const onModelCollapsed = (key: string | string[]) => {
+    if (typeof key !== 'string') {
+      setExpandedModelCollapse(key);
+    }
+  };
+
+  const onInsuranceCollapsed = (key: string | string[]) => {
+    if (typeof key !== 'string') {
+      setExpandedInsuranceCollapse(key);
+    }
+  };
   return (
     <>
       <NavbarComponent activePage="orders" />
@@ -233,9 +253,15 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                           </div>
                           <Collapse
                             ghost
+                            activeKey={expandedModelCollapse}
+                            onChange={onModelCollapsed}
                             expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                           >
-                            <Panel className="orders__overview-panel" header="View more" key="model">
+                            <Panel
+                              className="orders__overview-panel"
+                              header={expandedModelCollapse.includes(`model${index}`) ? 'View less' : 'View more'}
+                              key={`model${index}`}
+                            >
                               <ol className="orders__overview-list">
                                 <div className="orders__overview-smalltitle">Cargo</div>
                                 <li>
@@ -498,9 +524,17 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                           </div>
                           <Collapse
                             ghost
+                            activeKey={expandedInsuranceCollapse}
+                            onChange={onInsuranceCollapsed}
                             expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                           >
-                            <Panel className="orders__overview-panel" header="View more" key="insurance">
+                            <Panel
+                              className="orders__overview-panel"
+                              header={
+                                expandedInsuranceCollapse.includes(`insurance${index}`) ? 'View less' : 'View more'
+                              }
+                              key={`insurance${index}`}
+                            >
                               <ul className="orders__overview-list">
                                 {insuranceArray.map((item) => (
                                   <li key={uuidv4()}>
