@@ -19,7 +19,6 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Steps } from 'antd';
 
 // Util
-import { AppState } from 'src/index';
 import {
   TLocalOrderObj,
   TReceivedSalesMakesObj,
@@ -350,7 +349,7 @@ interface StateProps {
   getSalesAccessoriesSucceed?: boolean | null;
 }
 
-const mapStateToProps = (state: AppState): StateProps | void => {
+const mapStateToProps = (state: any): StateProps | void => {
   return {
     loading: state.sales.loading,
     errorMessage: state.sales.errorMessage,

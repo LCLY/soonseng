@@ -19,6 +19,19 @@ export {
 } from './auth';
 
 export {
+  // Catalog Make
+  getCatalogMakes,
+  getCatalogMakesFailed,
+  getCatalogMakesStart,
+  getCatalogMakesSucceed,
+  // Catalog Body Make
+  getCatalogBodyMakes,
+  getCatalogBodyMakesFailed,
+  getCatalogBodyMakesStart,
+  getCatalogBodyMakesSucceed,
+} from './catalog';
+
+export {
   // Clear all dashboard state
   clearDashboardState,
   /* =================== */

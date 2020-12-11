@@ -1,7 +1,8 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 import { updateObject } from 'src/shared/Utils';
-import { DashboardActionTypes, DashboardInitialState } from 'src/store/types/dashboard';
+import { DashboardInitialState } from 'src/store/types/dashboard';
 import { AppActions } from 'src/store/types';
+import { Reducer } from 'redux';
 
 const initialState: DashboardInitialState = {
   loading: false,
@@ -69,11 +70,13 @@ const uploadImageSucceed = (state: DashboardInitialState, action: AppActions) =>
       imagesUploaded: true,
     });
   }
+  return state;
 };
 const uploadImageFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false, imagesUploaded: false });
   }
+  return state;
 };
 /* ============================================================================================ */
 /*   Delete Image(s)
@@ -90,11 +93,13 @@ const deleteUploadImageSucceed = (state: DashboardInitialState, action: AppActio
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const deleteUploadImageFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -116,11 +121,13 @@ const createBrandSucceed = (state: DashboardInitialState, action: AppActions) =>
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createBrandFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -133,11 +140,13 @@ const getBrandsSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('brandsArray' in action) {
     return updateObject(state, { errorMessage: null, loading: false, brandsArray: action.brandsArray });
   }
+  return state;
 };
 const getBrandsFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -155,11 +164,13 @@ const updateBrandSucceed = (state: DashboardInitialState, action: AppActions) =>
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateBrandFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -180,11 +191,13 @@ const createWheelbaseSucceed = (state: DashboardInitialState, action: AppActions
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -201,11 +214,13 @@ const getWheelbasesSucceed = (state: DashboardInitialState, action: AppActions) 
       wheelbasesArray: action.wheelbasesArray,
     });
   }
+  return state;
 };
 const getWheelbasesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -223,11 +238,13 @@ const updateWheelbaseSucceed = (state: DashboardInitialState, action: AppActions
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -248,11 +265,13 @@ const getMakesSucceed = (state: DashboardInitialState, action: AppActions) => {
       makesArray: action.makesArray,
     });
   }
+  return state;
 };
 const getMakesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -270,11 +289,13 @@ const createMakeSucceed = (state: DashboardInitialState, action: AppActions) => 
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -292,11 +313,13 @@ const updateMakeSucceed = (state: DashboardInitialState, action: AppActions) => 
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -317,11 +340,13 @@ const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
       seriesArray: action.seriesArray,
     });
   }
+  return state;
 };
 const getSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -343,11 +368,13 @@ const createBodySucceed = (state: DashboardInitialState, action: AppActions) => 
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createBodyFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 /* -------------------------- */
 /* Get Bodies  */
@@ -363,11 +390,13 @@ const getBodiesSucceed = (state: DashboardInitialState, action: AppActions) => {
       bodiesArray: action.bodiesArray,
     });
   }
+  return state;
 };
 const getBodiesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -385,11 +414,13 @@ const updateBodySucceed = (state: DashboardInitialState, action: AppActions) => 
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateBodyFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 /* -------------------------- */
 /* Delete Body  */
@@ -406,11 +437,13 @@ const deleteBodySucceed = (state: DashboardInitialState, action: AppActions) => 
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const deleteBodyFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -432,11 +465,13 @@ const createLengthSucceed = (state: DashboardInitialState, action: AppActions) =
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 /* -------------------------- */
 /* Get Lengths  */
@@ -452,11 +487,13 @@ const getLengthsSucceed = (state: DashboardInitialState, action: AppActions) => 
       lengthsArray: action.lengthsArray,
     });
   }
+  return state;
 };
 const getLengthsFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -474,11 +511,13 @@ const updateLengthSucceed = (state: DashboardInitialState, action: AppActions) =
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 /* -------------------------- */
 /* Delete Length  */
@@ -495,11 +534,13 @@ const deleteLengthSucceed = (state: DashboardInitialState, action: AppActions) =
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const deleteLengthFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -520,11 +561,13 @@ const createBodyMakeSucceed = (state: DashboardInitialState, action: AppActions)
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createBodyMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -541,11 +584,13 @@ const getBodyMakesSucceed = (state: DashboardInitialState, action: AppActions) =
       bodyMakesArray: action.bodyMakesArray,
     });
   }
+  return state;
 };
 const getBodyMakesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -563,11 +608,13 @@ const updateBodyMakeSucceed = (state: DashboardInitialState, action: AppActions)
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateBodyMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 /* -------------------------- */
 /* Delete Body Make  */
@@ -584,11 +631,13 @@ const deleteBodyMakeSucceed = (state: DashboardInitialState, action: AppActions)
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const deleteBodyMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -609,11 +658,13 @@ const createBodyAccessorySucceed = (state: DashboardInitialState, action: AppAct
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createBodyAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -630,11 +681,13 @@ const getBodyAccessoriesSucceed = (state: DashboardInitialState, action: AppActi
       bodyAccessoriesArray: action.bodyAccessoriesArray,
     });
   }
+  return state;
 };
 const getBodyAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -652,11 +705,13 @@ const updateBodyAccessorySucceed = (state: DashboardInitialState, action: AppAct
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateBodyAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 /* -------------------------- */
 /* Delete Body Accessory  */
@@ -673,11 +728,13 @@ const deleteBodyAccessorySucceed = (state: DashboardInitialState, action: AppAct
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const deleteBodyAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ------------------------ */
@@ -702,11 +759,13 @@ const getBodyAssociatedAccessoriesSucceed = (state: DashboardInitialState, actio
       bodyAssociatedAccessoriesArray: action.bodyAssociatedAccessoriesArray,
     });
   }
+  return state;
 };
 const getBodyAssociatedAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ------------------------ */
@@ -734,11 +793,13 @@ const createAccessorySucceed = (state: DashboardInitialState, action: AppActions
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const createAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -755,11 +816,13 @@ const getAccessoriesSucceed = (state: DashboardInitialState, action: AppActions)
       accessoriesArray: action.accessoriesArray,
     });
   }
+  return state;
 };
 const getAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -777,17 +840,19 @@ const updateAccessorySucceed = (state: DashboardInitialState, action: AppActions
       successMessage: action.successMessage,
     });
   }
+  return state;
 };
 const updateAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
 /* ============================================================================================ */
 
-const reducer = (state = initialState, action: DashboardActionTypes) => {
+const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
     // Clear Dashboard State
     case actionTypes.CLEAR_DASHBOARD_STATE:

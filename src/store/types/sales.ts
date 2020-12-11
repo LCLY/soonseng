@@ -10,32 +10,32 @@ import {
 
 // initialState for reducers
 export interface SalesInitialState {
-  readonly loading: boolean;
-  readonly errorMessage: string | null;
-  readonly successMessage: string | null;
+  readonly loading?: boolean;
+  readonly errorMessage?: string | null;
+  readonly successMessage?: string | null;
   // length
-  readonly lengthsCategoriesArray: TReceivedSalesLengthCategoryObj[] | null;
+  readonly lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
   // body
-  readonly bodyObj: TReceivedBodyObj | null;
-  readonly bodiesArray: TReceivedBodyObj[] | null;
+  readonly bodyObj?: TReceivedBodyObj | null;
+  readonly bodiesArray?: TReceivedBodyObj[] | null;
   // body makes
-  readonly bodyMakeObj: TReceivedSalesBodyMakeObj | null;
-  readonly bodyMakesArray: TReceivedSalesBodyMakeObj[] | null;
+  readonly bodyMakeObj?: TReceivedSalesBodyMakeObj | null;
+  readonly bodyMakesArray?: TReceivedSalesBodyMakeObj[] | null;
   // accessory
-  readonly generalAccessoriesArray: TReceivedAccessoryObj[] | null;
-  readonly dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] | null;
-  readonly bodyRelatedAccessoriesArray: TReceivedAccessoryObj[] | null;
+  readonly generalAccessoriesArray?: TReceivedAccessoryObj[] | null;
+  readonly dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
+  readonly bodyRelatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
   // brands
-  readonly salesBrandObj: TReceivedSalesMakesObj | null;
-  readonly salesBrandsArray: TReceivedSalesMakesObj[] | null;
+  readonly salesBrandObj?: TReceivedSalesMakesObj | null;
+  readonly salesBrandsArray?: TReceivedSalesMakesObj[] | null;
   // local orders array / quotation objects array
-  readonly localOrdersArray: TLocalOrderObj[];
+  readonly localOrdersArray?: TLocalOrderObj[];
   // boolean to know whether fetch successful
-  readonly getSalesLengthsSucceed: boolean | null;
-  readonly getSalesBodiesSucceed: boolean | null;
-  readonly getSalesBodyMakesSucceed: boolean | null;
-  readonly getSalesAccessoriesSucceed: boolean | null;
-  readonly getSalesMakesSucceed: boolean | null;
+  readonly getSalesLengthsSucceed?: boolean | null;
+  readonly getSalesBodiesSucceed?: boolean | null;
+  readonly getSalesBodyMakesSucceed?: boolean | null;
+  readonly getSalesAccessoriesSucceed?: boolean | null;
+  readonly getSalesMakesSucceed?: boolean | null;
 }
 
 // to further breakdown the state, use in mapStateToProps

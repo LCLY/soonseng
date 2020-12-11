@@ -2,40 +2,40 @@ import * as actionTypes from '../actions/actionTypes';
 
 // initialState for reducers
 export interface DashboardInitialState {
-  readonly loading: boolean;
-  readonly errorMessage: string | null;
-  readonly successMessage: string | null;
+  readonly loading?: boolean;
+  readonly errorMessage?: string | null;
+  readonly successMessage?: string | null;
   // make
-  readonly makeObj: TReceivedMakeObj | null;
-  readonly makesArray: TReceivedMakeObj[] | null;
+  readonly makeObj?: TReceivedMakeObj | null;
+  readonly makesArray?: TReceivedMakeObj[] | null;
   // series
-  readonly seriesObj: TReceivedSeriesObj | null;
-  readonly seriesArray: TReceivedSeriesObj[] | null;
+  readonly seriesObj?: TReceivedSeriesObj | null;
+  readonly seriesArray?: TReceivedSeriesObj[] | null;
   // brand
-  readonly brandsArray: TReceivedBrandObj[] | null;
-  readonly brandObj: TReceivedBrandObj | null;
+  readonly brandsArray?: TReceivedBrandObj[] | null;
+  readonly brandObj?: TReceivedBrandObj | null;
   // wheelbase
-  readonly wheelbaseObj: TReceivedWheelbaseObj | null;
-  readonly wheelbasesArray: TReceivedWheelbaseObj[] | null;
+  readonly wheelbaseObj?: TReceivedWheelbaseObj | null;
+  readonly wheelbasesArray?: TReceivedWheelbaseObj[] | null;
   // body
-  readonly bodyObj: TReceivedBodyObj | null;
-  readonly bodiesArray: TReceivedBodyObj[] | null;
+  readonly bodyObj?: TReceivedBodyObj | null;
+  readonly bodiesArray?: TReceivedBodyObj[] | null;
   // length
-  readonly lengthObj: TReceivedLengthObj | null;
-  readonly lengthsArray: TReceivedLengthObj[] | null;
+  readonly lengthObj?: TReceivedLengthObj | null;
+  readonly lengthsArray?: TReceivedLengthObj[] | null;
   // body length
-  readonly bodyMakeObj: TReceivedBodyMakeObj | null;
-  readonly bodyMakesArray: TReceivedBodyMakeObj[] | null;
+  readonly bodyMakeObj?: TReceivedBodyMakeObj | null;
+  readonly bodyMakesArray?: TReceivedBodyMakeObj[] | null;
   // body accessory
-  readonly bodyAccessoryObj: TReceivedBodyAccessoryObj | null;
-  readonly bodyAccessoriesArray: TReceivedBodyAccessoryObj[] | null;
-  readonly bodyAssociatedAccessoriesArray: TReceivedAccessoryObj[] | null;
+  readonly bodyAccessoryObj?: TReceivedBodyAccessoryObj | null;
+  readonly bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
+  readonly bodyAssociatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
   // accessory
-  readonly accessoryObj: TReceivedAccessoryObj | null;
-  readonly accessoriesArray: TReceivedAccessoryObj[] | null;
+  readonly accessoryObj?: TReceivedAccessoryObj | null;
+  readonly accessoriesArray?: TReceivedAccessoryObj[] | null;
   // images array
-  readonly imagesUploaded: boolean;
-  readonly imagesArray: TReceivedImageObj[] | null;
+  readonly imagesUploaded?: boolean;
+  readonly imagesArray?: TReceivedImageObj[] | null;
 }
 
 // to further breakdown the state, use in mapStateToProps

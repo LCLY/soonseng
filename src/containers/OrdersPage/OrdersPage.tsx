@@ -16,10 +16,10 @@ import { InfoCircleOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant
 
 // Util
 import * as actions from 'src/store/actions/index';
-import { TMapStateToProps } from 'src/store/types/index';
 import { img_not_available_link } from 'src/shared/global';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
+import { RootState } from 'src';
 
 const { Panel } = Collapse;
 
@@ -637,15 +637,12 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
 
 interface StateProps {
   // array for local orders
-  localOrdersArray: TLocalOrderObj[];
+  localOrdersArray?: TLocalOrderObj[];
 }
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  if ('sales' in state) {
-    // Arrays
-    return {
-      localOrdersArray: state.sales.localOrdersArray,
-    };
-  }
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    localOrdersArray: state.sales.localOrdersArray,
+  };
 };
 
 interface DispatchProps {

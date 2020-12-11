@@ -1,6 +1,7 @@
 import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
+import { setPromiseError, succeedActionWithImageUpload } from 'src/shared/Utils';
 import axios from 'axios';
 import {
   UPLOAD_TO_MAKE,
@@ -14,7 +15,6 @@ import {
 /**
  * A boolean to check whether image has been uploaded
  * only until image is uploaded then proceed with the succeed actions
- * @type {boolean}
  * */
 let imageIsUploaded = false;
 
@@ -52,24 +52,9 @@ export function* uploadImageSaga(action: AppActions) {
     window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.uploadImageFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.uploadImageFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.uploadImageFailed, 'Error');
     }
   }
 }
@@ -98,24 +83,9 @@ export function* deleteUploadImageSaga(action: AppActions) {
     window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.deleteUploadImageFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.deleteUploadImageFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.deleteUploadImageFailed, 'Error');
     }
   }
 }
@@ -137,24 +107,9 @@ export function* getBrandsSaga(_action: AppActions) {
     yield put(actions.getBrandsSucceed(response.data.brands));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getBrandsFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getBrandsFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getBrandsFailed, 'Error');
     }
   }
 }
@@ -177,46 +132,22 @@ export function* createBrandSaga(action: AppActions) {
   }
   try {
     let response = yield axios.post(url, { brand });
-
-    // Upload Image to model 'Make'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.imageTag, action.imageFiles));
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create brand succeed
-          yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
-          //reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        // receive new updated brands array
-        yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BRAND,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.brands,
+        actions.createBrandSucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createBrandFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createBrandFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createBrandFailed, 'Error');
     }
   }
 }
@@ -242,45 +173,22 @@ export function* updateBrandSaga(action: AppActions) {
   }
   try {
     let response = yield axios.put(url, { brand });
-    // Upload Image to model 'Make'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_BRAND, response.data.updated.id, action.imageTag, action.imageFiles));
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create brand succeed
-          yield put(actions.updateBrandSucceed(response.data.brands, response.data.success));
-          //reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        // receive new updated brands array
-        yield put(actions.updateBrandSucceed(response.data.brands, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BRAND,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.brands,
+        actions.updateBrandSucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateBrandFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateBrandFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateBrandFailed, 'Error');
     }
   }
 }
@@ -311,24 +219,9 @@ export function* createWheelbaseSaga(action: AppActions) {
     yield put(actions.createWheelbaseSucceed(response.data.wheelbases, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createWheelbaseFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createWheelbaseFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createWheelbaseFailed, 'Error');
     }
   }
 }
@@ -346,24 +239,9 @@ export function* getWheelbasesSaga(_action: AppActions) {
     yield put(actions.getWheelbasesSucceed(response.data.wheelbases));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getWheelbasesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getWheelbasesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getWheelbasesFailed, 'Error');
     }
   }
 }
@@ -392,24 +270,9 @@ export function* updateWheelbaseSaga(action: AppActions) {
     yield put(actions.updateWheelbaseSucceed(response.data.wheelbases, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateWheelbaseFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateWheelbaseFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateWheelbaseFailed, 'Error');
     }
   }
 }
@@ -445,45 +308,22 @@ export function* createMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { make });
-
-    // Upload Image to model 'Make'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.imageTag, action.imageFiles));
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_MAKE,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.makes,
+        actions.createMakeSucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createMakeFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createMakeFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createMakeFailed, 'Error');
     }
   }
 }
@@ -501,24 +341,9 @@ export function* getMakesSaga(_action: AppActions) {
     yield put(actions.getMakesSucceed(response.data.makes));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getMakesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getMakesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getMakesFailed, 'Error');
     }
   }
 }
@@ -551,44 +376,22 @@ export function* updateMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { make });
-
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_MAKE, response.data.updated.id, action.imageTag, action.imageFiles));
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_MAKE,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.makes,
+        actions.updateMakeSucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateMakeFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateMakeFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateMakeFailed, 'Error');
     }
   }
 }
@@ -612,24 +415,9 @@ export function* getSeriesSaga(action: AppActions) {
     yield put(actions.getSeriesSucceed(response.data.series));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getSeriesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getSeriesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getSeriesFailed, 'Error');
     }
   }
 }
@@ -657,45 +445,22 @@ export function* createBodySaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { body });
-    // Upload Image to model 'Make'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_BODY, response.data.updated.id, action.imageTag, action.imageFiles));
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.createBodySucceed(response.data.bodies, response.data.success));
-
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.createBodySucceed(response.data.bodies, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BODY,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.bodies,
+        actions.createBodySucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createBodyFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createBodyFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createBodyFailed, 'Error');
     }
   }
 }
@@ -713,24 +478,9 @@ export function* getBodiesSaga(_action: AppActions) {
     yield put(actions.getBodiesSucceed(response.data.bodies));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getBodiesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getBodiesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getBodiesFailed, 'Error');
     }
   }
 }
@@ -758,43 +508,21 @@ export function* updateBodySaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { body });
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        console.log(response.data.updated.id);
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(actions.uploadImage(UPLOAD_TO_BODY, response.data.updated.id, action.imageTag, action.imageFiles));
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.updateBodySucceed(response.data.bodies, response.data.success));
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.updateBodySucceed(response.data.bodies, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BODY,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.bodies,
+        actions.updateBodySucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateBodyFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateBodyFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateBodyFailed, 'Error');
     }
   }
 }
@@ -817,24 +545,9 @@ export function* deleteBodySaga(action: AppActions) {
     yield put(actions.deleteBodySucceed(response.data.bodies, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateBodyFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateBodyFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateBodyFailed, 'Error');
     }
   }
 }
@@ -864,24 +577,9 @@ export function* createLengthSaga(action: AppActions) {
     yield put(actions.createLengthSucceed(response.data.lengths, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createLengthFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createLengthFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createLengthFailed, 'Error');
     }
   }
 }
@@ -899,24 +597,9 @@ export function* getLengthsSaga(_action: AppActions) {
     yield put(actions.getLengthsSucceed(response.data.lengths));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getLengthsFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getLengthsFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getLengthsFailed, 'Error');
     }
   }
 }
@@ -946,24 +629,9 @@ export function* updateLengthSaga(action: AppActions) {
     yield put(actions.updateLengthSucceed(response.data.lengths, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateLengthFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateLengthFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateLengthFailed, 'Error');
     }
   }
 }
@@ -984,24 +652,9 @@ export function* deleteLengthSaga(action: AppActions) {
     yield put(actions.deleteLengthSucceed(response.data.lengths, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.deleteLengthFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.deleteLengthFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.deleteLengthFailed, 'Error');
     }
   }
 }
@@ -1034,47 +687,22 @@ export function* createBodyMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { bodymake });
-    // Upload Image to model 'BodyLength'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(
-          actions.uploadImage(UPLOAD_TO_BODY_MAKE, response.data.updated.id, action.imageTag, action.imageFiles),
-        );
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.createBodyMakeSucceed(response.data.body_makes, response.data.success));
-
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.createBodyMakeSucceed(response.data.body_makes, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BODY_MAKE,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.body_makes,
+        actions.createBodyMakeSucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createBodyMakeFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createBodyMakeFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createBodyMakeFailed, 'Error');
     }
   }
 }
@@ -1092,24 +720,9 @@ export function* getBodyMakesSaga(_action: AppActions) {
     yield put(actions.getBodyMakesSucceed(response.data.body_makes));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getBodyMakesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getBodyMakesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getBodyMakesFailed, 'Error');
     }
   }
 }
@@ -1137,48 +750,22 @@ export function* updateBodyMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { bodymake });
-
-    // Upload Image to model 'BodyLength'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(
-          actions.uploadImage(UPLOAD_TO_BODY_MAKE, response.data.updated.id, action.imageTag, action.imageFiles),
-        );
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.updateBodyMakeSucceed(response.data.body_makes, response.data.success));
-
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.updateBodyMakeSucceed(response.data.body_makes, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BODY_MAKE,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.body_makes,
+        actions.updateBodyMakeSucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateBodyMakeFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateBodyMakeFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateBodyMakeFailed, 'Error');
     }
   }
 }
@@ -1199,24 +786,9 @@ export function* deleteBodyMakeSaga(action: AppActions) {
     yield put(actions.deleteBodyMakeSucceed(response.data.body_makes, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateBodyMakeFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateBodyMakeFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateBodyMakeFailed, 'Error');
     }
   }
 }
@@ -1247,46 +819,22 @@ export function* createBodyAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { body_accessory });
-
-    // Upload Image to model 'Accessory'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(
-          actions.uploadImage(UPLOAD_TO_BODY_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
-        );
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success)); //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BODY_ACCESSORY,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.body_accessories,
+        actions.createBodyAccessorySucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createBodyAccessoryFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createBodyAccessoryFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createBodyAccessoryFailed, 'Error');
     }
   }
 }
@@ -1307,24 +855,9 @@ export function* getBodyAccessoriesSaga(action: AppActions) {
     yield put(actions.getBodyAccessoriesSucceed(response.data.body_accessories));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getBodyAccessoriesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getBodyAccessoriesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getBodyAccessoriesFailed, 'Error');
     }
   }
 }
@@ -1347,48 +880,22 @@ export function* updateBodyAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { body_accessory });
-
-    // Upload Image to model 'Accessory'
     if ('imageTag' in action && 'imageFiles' in action) {
-      //  check if they are null or not
-      if (action.imageTag && action.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(
-          actions.uploadImage(UPLOAD_TO_BODY_ACCESSORY, response.data.updated.id, action.imageTag, action.imageFiles),
-        );
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
-
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_BODY_ACCESSORY,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.body_accessories,
+        actions.updateBodyAccessorySucceed,
+        { imageTag: action.imageTag, imageFiles: action.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateBodyAccessoryFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateBodyAccessoryFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateBodyAccessoryFailed, 'Error');
     }
   }
 }
@@ -1410,24 +917,9 @@ export function* deleteBodyAccessorySaga(action: AppActions) {
     yield put(actions.deleteBodyAccessorySucceed(response.data.body_accessories, response.data.success));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.deleteBodyAccessoryFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.deleteBodyAccessoryFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.deleteBodyAccessoryFailed, 'Error');
     }
   }
 }
@@ -1445,24 +937,9 @@ export function* getBodyAssociatedAccessoriesSaga(_action: AppActions) {
     yield put(actions.getBodyAssociatedAccessoriesSucceed(response.data.body_associated));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getBodyAssociatedAccessoriesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getBodyAssociatedAccessoriesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getBodyAssociatedAccessoriesFailed, 'Error');
     }
   }
 }
@@ -1494,56 +971,26 @@ export function* createAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { accessory });
-
-    // Upload Image to model 'Accessory'
     if (
       'createAccessoryData' in action &&
       'imageTag' in action.createAccessoryData &&
       'imageFiles' in action.createAccessoryData
     ) {
-      //  check if they are null or not
-      if (action.createAccessoryData.imageTag && action.createAccessoryData.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(
-          actions.uploadImage(
-            UPLOAD_TO_ACCESSORY,
-            response.data.updated.id,
-            action.createAccessoryData.imageTag,
-            action.createAccessoryData.imageFiles,
-          ),
-        );
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.createAccessorySucceed(response.data.accessories, response.data.success));
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.createAccessorySucceed(response.data.accessories, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_ACCESSORY,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.accessories,
+        actions.createAccessorySucceed,
+        { imageTag: action.createAccessoryData.imageTag, imageFiles: action.createAccessoryData.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.createAccessoryFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.createAccessoryFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.createAccessoryFailed, 'Error');
     }
   }
 }
@@ -1561,24 +1008,9 @@ export function* getAccessoriesSaga(_action: AppActions) {
     yield put(actions.getAccessoriesSucceed(response.data.accessories));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getAccessoriesFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getAccessoriesFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getAccessoriesFailed, 'Error');
     }
   }
 }
@@ -1604,56 +1036,26 @@ export function* updateAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { accessory });
-
-    // Upload Image to model 'Accessory'
     if (
       'updateAccessoryData' in action &&
       'imageTag' in action.updateAccessoryData &&
       'imageFiles' in action.updateAccessoryData
     ) {
-      //  check if they are null or not
-      if (action.updateAccessoryData.imageTag && action.updateAccessoryData.imageFiles) {
-        // retrieve the updated individual make id on success and then call Upload Image action
-        yield put(
-          actions.uploadImage(
-            UPLOAD_TO_ACCESSORY,
-            response.data.updated.id,
-            action.updateAccessoryData.imageTag,
-            action.updateAccessoryData.imageFiles,
-          ),
-        );
-
-        if (imageIsUploaded) {
-          //wait until upload image succeed then only declare create make succeed
-          yield put(actions.updateAccessorySucceed(response.data.accessories, response.data.success));
-          //  reset imageIsUploaded boolean
-          imageIsUploaded = false;
-        }
-      } else {
-        // if user is not uploading files, then straight give success
-        yield put(actions.updateAccessorySucceed(response.data.accessories, response.data.success));
-      }
+      yield succeedActionWithImageUpload(
+        UPLOAD_TO_ACCESSORY,
+        response,
+        imageIsUploaded,
+        actions.uploadImage,
+        response.data.accessories,
+        actions.updateAccessorySucceed,
+        { imageTag: action.updateAccessoryData.imageTag, imageFiles: action.updateAccessoryData.imageFiles },
+      );
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.updateAccessoryFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.updateAccessoryFailed, error.response.data.error);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.updateAccessoryFailed, 'Error');
     }
   }
 }

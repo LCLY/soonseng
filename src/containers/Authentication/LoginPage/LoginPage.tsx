@@ -11,9 +11,10 @@ import { AnyAction, Dispatch } from 'redux';
 import { LoadingOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 /* Util */
-import { AppState } from 'src';
 import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj } from 'src/store/types/auth';
+// import { TMapStateToProps } from 'src/store/types';
+import { RootState } from 'src';
 
 interface LoginPageProps {}
 
@@ -99,13 +100,14 @@ const LoginPage: React.FC<Props> = ({
     </>
   );
 };
+
 interface StateProps {
-  loading: boolean;
-  authenticated: boolean;
-  errorMessage: string | null;
-  userInfoObj: TReceivedUserInfoObj | null;
+  loading?: boolean;
+  authenticated?: boolean;
+  errorMessage?: string | null;
+  userInfoObj?: TReceivedUserInfoObj | null;
 }
-const mapStateToProps = (state: AppState): StateProps | void => {
+const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.auth.loading,
     errorMessage: state.auth.errorMessage,

@@ -7,6 +7,8 @@ import Highlighter from 'react-highlight-words';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 import { TReceivedImageObj } from 'src/store/types/dashboard';
 import { AppActions } from 'src/store/types/index';
+import { AxiosError, AxiosResponse } from 'axios';
+import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 
 const { Panel } = Collapse;
 
@@ -34,9 +36,104 @@ export const findByTestAttribute = (component: any, attribute: string) => {
   return wrapper;
 };
 
-/* ===================================================================== */
-/* ===================================================================== */
-/* ===================================================================== */
+/* ========================================== */
+/**
+ * Setting token into the header config for axios
+ * If user is not authenticated, the bearer token will become Bearer null
+ * @param {AppActions} action
+ * @return {*}
+ */
+/* ========================================== */
+export const setAxiosHeaderConfig = (action: AppActions) => {
+  let config = {};
+  if ('auth_token' in action) {
+    config = {
+      headers: {
+        Authorization: 'Bearer ' + action.auth_token,
+      },
+    };
+  }
+  return config;
+};
+
+/* ========================================== */
+// generator function for sagas
+/* ========================================== */
+
+/* ========================================== */
+/**
+ * Pass error messages to reducer
+ * @export
+ * @param {AxiosError} error
+ * @param {(errorMessage: string) => AppActions} failedAction
+ * @param {string} errorMessage
+ */
+/* ========================================== */
+export function* setPromiseError(
+  error: AxiosError,
+  failedAction: (errorMessage: string) => AppActions,
+  errorMessage: string,
+) {
+  if (error.response) {
+    /*
+     * The request was made and the server responded with a
+     * status code that falls out of the range of 2xx
+     */
+    console.log('error response data:', error.response.data);
+    console.log('error response status:', error.response.status);
+    // console.log('error response error:', error.response.errors);
+
+    yield put(failedAction(errorMessage));
+  } else if (error.request) {
+    /*
+     * The request was made but no response was received, `error.request`
+     * is an instance of XMLHttpRequest in the browser and an instance
+     * of http.ClientRequest in Node.js
+     */
+    console.log('error response request:', error.request);
+  } else {
+    // Something happened in setting up the request and triggered an Error
+    alert('Error:' + error.message);
+  }
+}
+
+/**
+ * Generator function for determining whether upload action should be called
+ * @param {string} modelName
+ * @param {AppActions} action
+ * @param {AxiosResponse<any>} response
+ * @param {boolean} imageIsUploaded
+ * @param {unknown} responseData
+ * @param {(responseData: unknown, successMessage: string) => AppActions} succeedAction
+ * @param {(modelName: string, model_id: number, imageTag: string, imageFiles: FileList) => AppActions} uploadAction
+ */
+export function* succeedActionWithImageUpload(
+  modelName: string,
+  response: AxiosResponse<any>,
+  imageIsUploaded: boolean,
+  uploadAction: (modelName: string, model_id: number, imageTag: string, imageFiles: FileList) => AppActions,
+  responseData: unknown,
+  succeedAction: (responseData: any, successMessage: string) => AppActions,
+  image: { imageTag: string | null; imageFiles: FileList | null },
+) {
+  // Upload Image to model
+  //  check if they are null or not
+  if (image.imageTag && image.imageFiles) {
+    // retrieve the updated individual make id on success and then call Upload Image action
+    yield put(uploadAction(modelName, response.data.updated.id, image.imageTag, image.imageFiles));
+
+    if (imageIsUploaded) {
+      //wait until upload image succeed then only declare create brand succeed
+      yield put(succeedAction(responseData, response.data.success));
+      //reset imageIsUploaded boolean
+      imageIsUploaded = false;
+    }
+  } else {
+    // if user is not uploading files, then straight give success
+    // receive new response data
+    yield put(succeedAction(responseData, response.data.success));
+  }
+}
 
 /* =================================================================== */
 /**

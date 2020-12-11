@@ -1,7 +1,8 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 import { updateObject } from 'src/shared/Utils';
-import { AuthActionTypes, AuthInitialState } from 'src/store/types/auth';
+import { AuthInitialState } from 'src/store/types/auth';
 import { AppActions } from 'src/store/types';
+import { Reducer } from 'redux';
 
 const initialState: AuthInitialState = {
   loading: false,
@@ -42,6 +43,7 @@ const assignAccess = (state: AuthInitialState, action: AppActions) => {
       accessObj: action.accessObj,
     });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -58,11 +60,13 @@ const signInSucceed = (state: AuthInitialState, action: AppActions) => {
       auth_token: action.auth_token,
     });
   }
+  return state;
 };
 const signInFailed = (state: AuthInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
+  return state;
 };
 
 /* ============================================================================================ */
@@ -96,16 +100,18 @@ const getUserInfoSucceed = (state: AuthInitialState, action: AppActions) => {
       userInfoObj: action.userInfoObj,
     });
   }
+  return state;
 };
 const getUserInfoFailed = (state: AuthInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage });
   }
+  return state;
 };
 
 /* ============================================================================================ */
 /* ============================================================================================ */
-const reducer = (state = initialState, action: AuthActionTypes) => {
+const reducer: Reducer<AuthInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
     /* ---------------------- */
     //  Clear state

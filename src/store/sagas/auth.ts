@@ -2,6 +2,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import axios from 'axios';
+import { setPromiseError, setAxiosHeaderConfig } from 'src/shared/Utils';
 
 /* ================================================================== */
 //   Authentication
@@ -31,24 +32,9 @@ export function* signInSaga(action: AppActions) {
     yield put(actions.getUserInfo(response.data.auth_token));
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.signInFailed(error.response.data.messages));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.signInFailed, error.response.data.messages);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.signInFailed, 'Error');
     }
   }
 }
@@ -59,14 +45,8 @@ export function* signInSaga(action: AppActions) {
 export function* getUserInfoSaga(action: AppActions) {
   yield put(actions.getUserInfoStart());
 
-  let config = {};
-  if ('auth_token' in action) {
-    config = {
-      headers: {
-        Authorization: 'Bearer ' + action.auth_token,
-      },
-    };
-  }
+  // Setting Axios header config
+  let config = setAxiosHeaderConfig(action);
 
   let url = process.env.REACT_APP_API + `/get_user_info`;
 
@@ -91,24 +71,9 @@ export function* getUserInfoSaga(action: AppActions) {
     }
   } catch (error) {
     if (error.response) {
-      /*
-       * The request was made and the server responded with a
-       * status code that falls out of the range of 2xx
-       */
-      console.log('error response data:', error.response.data);
-      console.log('error response status:', error.response.status);
-      console.log('error response error:', error.response.errors);
-      yield put(actions.getUserInfoFailed(error.response.data.error));
-    } else if (error.request) {
-      /*
-       * The request was made but no response was received, `error.request`
-       * is an instance of XMLHttpRequest in the browser and an instance
-       * of http.ClientRequest in Node.js
-       */
-      console.log('error response request:', error.request);
+      yield setPromiseError(error, actions.getUserInfoFailed, error.response.data.messages);
     } else {
-      // Something happened in setting up the request and triggered an Error
-      alert('Error:' + error.message);
+      yield setPromiseError(error, actions.getUserInfoFailed, 'Error');
     }
   }
 }

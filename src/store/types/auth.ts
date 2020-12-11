@@ -2,15 +2,15 @@ import * as actionTypes from '../actions/actionTypes';
 
 // initialState for reducers
 export interface AuthInitialState {
-  readonly loading: boolean;
-  readonly errorMessage: string | null;
-  readonly successMessage: string | null;
+  readonly loading?: boolean;
+  readonly errorMessage?: string | null;
+  readonly successMessage?: string | null;
   // user info
-  readonly userInfoObj: TReceivedUserInfoObj | null;
+  readonly userInfoObj?: TReceivedUserInfoObj | null;
   // auth token
-  readonly auth_token: string | null;
+  readonly auth_token?: string | null;
   // access
-  readonly accessObj: TUserAccess;
+  readonly accessObj?: TUserAccess;
 }
 
 // to further breakdown the state, use in mapStateToProps

@@ -25,6 +25,22 @@ export const GET_USER_INFO_FAILED = 'GET_USER_INFO_FAILED';
 export const ASSIGN_ACCESS = 'ASSIGN_ACCESS';
 
 /* ================================================================================== */
+/*                                     Catalog                                        */
+/* ================================================================================== */
+
+// Get catalog make
+export const GET_CATALOG_MAKES = 'GET_CATALOG_MAKES';
+export const GET_CATALOG_MAKES_START = 'GET_CATALOG_MAKES_START';
+export const GET_CATALOG_MAKES_SUCCEED = 'GET_CATALOG_MAKES_SUCCEED';
+export const GET_CATALOG_MAKES_FAILED = 'GET_CATALOG_MAKES_FAILED';
+
+// Get catalog body make
+export const GET_CATALOG_BODYMAKES = 'GET_CATALOG_BODYMAKES';
+export const GET_CATALOG_BODYMAKES_START = 'GET_CATALOG_BODYMAKES_START';
+export const GET_CATALOG_BODYMAKES_SUCCEED = 'GET_CATALOG_BODYMAKES_SUCCEED';
+export const GET_CATALOG_BODYMAKES_FAILED = 'GET_CATALOG_BODYMAKES_FAILED';
+
+/* ================================================================================== */
 /*                                       Sales                                        */
 /* ================================================================================== */
 // Clear Sales State
@@ -146,8 +162,6 @@ export const UPDATE_MAKE = 'UPDATE_MAKE';
 export const UPDATE_MAKE_START = 'UPDATE_MAKE_START';
 export const UPDATE_MAKE_SUCCEED = 'UPDATE_MAKE_SUCCEED';
 export const UPDATE_MAKE_FAILED = 'UPDATE_MAKE_FAILED';
-
-/* ======================================================================================== */
 
 /* -------------------------- */
 // Get series for the dropdown

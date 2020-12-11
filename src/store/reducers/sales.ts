@@ -1,7 +1,8 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 import { updateObject } from 'src/shared/Utils';
-import { SalesActionTypes, SalesInitialState } from 'src/store/types/sales';
+import { SalesInitialState } from 'src/store/types/sales';
 import { AppActions } from 'src/store/types';
+import { Reducer } from 'redux';
 
 const initialState: SalesInitialState = {
   loading: false,
@@ -60,6 +61,7 @@ export const storeLocalOrders = (state: SalesInitialState, action: AppActions) =
       localOrdersArray: action.localOrdersArray,
     });
   }
+  return state;
 };
 /* ------------------------------- */
 // Remove a local order
@@ -72,6 +74,7 @@ export const removeAnOrder = (state: SalesInitialState, action: AppActions) => {
       localOrdersArray: deletedLocalOrdersArray,
     });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -89,11 +92,13 @@ const getSalesLengthsSucceed = (state: SalesInitialState, action: AppActions) =>
       lengthsCategoriesArray: action.lengthsCategoriesArray,
     });
   }
+  return state;
 };
 const getSalesLengthsFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false, getSalesLengthsSucceed: false });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -111,6 +116,7 @@ const getSalesBodiesSucceed = (state: SalesInitialState, action: AppActions) => 
       bodiesArray: action.bodiesArray,
     });
   }
+  return state;
 };
 const getSalesBodiesFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
@@ -120,6 +126,7 @@ const getSalesBodiesFailed = (state: SalesInitialState, action: AppActions) => {
       getSalesBodyLengthsSucceed: false,
     });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -137,6 +144,7 @@ const getSalesBodyMakesSucceed = (state: SalesInitialState, action: AppActions) 
       bodyMakesArray: action.bodyMakesArray,
     });
   }
+  return state;
 };
 const getSalesBodyMakesFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
@@ -146,6 +154,7 @@ const getSalesBodyMakesFailed = (state: SalesInitialState, action: AppActions) =
       getSalesBodyLengthsSucceed: false,
     });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -169,6 +178,7 @@ const getSalesAccessoriesSucceed = (state: SalesInitialState, action: AppActions
       dimensionRelatedAccessoriesArray: action.dimensionRelatedAccessoriesArray,
     });
   }
+  return state;
 };
 const getSalesAccessoriesFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
@@ -178,6 +188,7 @@ const getSalesAccessoriesFailed = (state: SalesInitialState, action: AppActions)
       getSalesAccessoriesSucceed: false,
     });
   }
+  return state;
 };
 
 /* -------------------------- */
@@ -195,6 +206,7 @@ const getSalesMakesSucceed = (state: SalesInitialState, action: AppActions) => {
       salesBrandsArray: action.salesBrandsArray,
     });
   }
+  return state;
 };
 const getSalesMakesFailed = (state: SalesInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
@@ -204,9 +216,10 @@ const getSalesMakesFailed = (state: SalesInitialState, action: AppActions) => {
       getSalesMakesSucceed: false,
     });
   }
+  return state;
 };
 
-const reducer = (state = initialState, action: SalesActionTypes) => {
+const reducer: Reducer<SalesInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
     /* =================================== */
     //  Clear state
