@@ -31,6 +31,7 @@ import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BODYMAKE } from 'src/shared/constants';
+import { RootState } from 'src';
 
 const { Step } = Steps;
 
@@ -328,8 +329,8 @@ interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
   // auth token
-  auth_token: string | null;
-  accessObj: TUserAccess;
+  auth_token?: string | null;
+  accessObj?: TUserAccess;
   // Arrays
   bodiesArray?: TReceivedBodyObj[] | null;
   salesBrandsArray?: TReceivedSalesMakesObj[] | null;
@@ -349,7 +350,7 @@ interface StateProps {
   getSalesAccessoriesSucceed?: boolean | null;
 }
 
-const mapStateToProps = (state: any): StateProps | void => {
+const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.sales.loading,
     errorMessage: state.sales.errorMessage,

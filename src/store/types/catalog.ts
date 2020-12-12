@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { TReceivedBodyMakeObj, TReceivedMakeObj } from './dashboard';
+import { TReceivedBodyMakeObj, TReceivedBrandObj, TReceivedMakeObj } from './dashboard';
 
 // initialState for reducers
 export interface CatalogInitialState {
@@ -7,8 +7,8 @@ export interface CatalogInitialState {
   readonly errorMessage?: string | null;
   readonly successMessage?: string | null;
   // catalogMake
-  readonly catalogMakeObj?: TReceivedMakeObj | null;
-  readonly catalogMakesArray?: TReceivedMakeObj[] | null;
+  readonly catalogMakeObj?: TReceivedCatalogMakeObj | null;
+  readonly catalogMakesArray?: TReceivedCatalogMakeObj[] | null;
   // catalogBodyMakeArray
   readonly catalogBodyMake?: TReceivedBodyMakeObj | null;
   readonly catalogBodyMakesArray?: TReceivedBodyMakeObj[] | null;
@@ -17,6 +17,16 @@ export interface CatalogInitialState {
 /* ------------------ */
 // Get Catalog Make
 /* ------------------ */
+
+type TCatalogSeries = {
+  title: string;
+  makes: TReceivedMakeObj[];
+};
+export type TReceivedCatalogMakeObj = {
+  brand: TReceivedBrandObj;
+  series: TCatalogSeries[];
+};
+
 export interface GetCatalogMakesAction {
   type: typeof actionTypes.GET_CATALOG_MAKES;
 }
@@ -25,7 +35,7 @@ export interface GetCatalogMakesStartAction {
 }
 export interface GetCatalogMakesSucceedAction {
   type: typeof actionTypes.GET_CATALOG_MAKES_SUCCEED;
-  catalogMakesArray: TReceivedMakeObj[];
+  catalogMakesArray: TReceivedCatalogMakeObj[];
 }
 export interface GetCatalogMakesFailedAction {
   type: typeof actionTypes.GET_CATALOG_MAKES_FAILED;

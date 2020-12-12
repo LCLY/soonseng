@@ -35,6 +35,14 @@
       // min-height: 10vh;
       padding: 2% 5rem !important;
     }
+    @include respond-to(tablet-portrait-up) {
+      // min-height: 10vh;
+      padding: 2rem 5rem !important;
+    }
+    @include respond-to(tablet-portrait-up) {
+      // min-height: 10vh;
+      padding: 2rem 5rem !important;
+    }
   }
 
   &__logo {
@@ -44,7 +52,13 @@
     margin-right: 3rem !important;
     object-fit: cover;
     @include respond-to(phone-only) {
-      width: 30vw;
+      width: 20vw;
+    }
+    @include respond-to(tablet-portrait-up) {
+      width: 10rem;
+    }
+    @include respond-to(tablet-landscape-up) {
+      width: 15rem;
     }
 
     &:hover {

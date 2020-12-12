@@ -1,6 +1,7 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TReceivedBodyMakeObj, TReceivedMakeObj } from '../types/dashboard';
+import { TReceivedBodyMakeObj } from '../types/dashboard';
+import { TReceivedCatalogMakeObj } from '../types/catalog';
 
 /* ============================================================================================ */
 //  Catalog
@@ -21,7 +22,7 @@ export const getCatalogMakesStart = (): AppActions => {
   };
 };
 
-export const getCatalogMakesSucceed = (catalogMakesArray: TReceivedMakeObj[]): AppActions => {
+export const getCatalogMakesSucceed = (catalogMakesArray: TReceivedCatalogMakeObj[]): AppActions => {
   return {
     type: actionTypes.GET_CATALOG_MAKES_SUCCEED,
     catalogMakesArray: catalogMakesArray,

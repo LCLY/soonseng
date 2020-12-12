@@ -19,7 +19,7 @@ const { Panel } = Collapse;
 interface OverviewSectionProps {
   loading?: boolean;
   totalSteps: number;
-  accessObj: TUserAccess;
+  accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
   currentStep: number; //for steps component
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -88,6 +88,10 @@ const OverviewSection: React.FC<Props> = ({
       setExpandedInsuranceCollapse(key);
     }
   };
+
+  if (accessObj === undefined) {
+    return null;
+  }
   /* ================================================== */
   /* ================================================== */
   return (

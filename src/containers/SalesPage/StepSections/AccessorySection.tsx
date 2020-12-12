@@ -16,7 +16,7 @@ import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 's
 interface AccessorySectionProps {
   loading?: boolean;
   totalSteps: number;
-  accessObj: TUserAccess;
+  accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
   bodiesArray?: TReceivedBodyObj[] | null;
   currentStep: number; //for steps component
@@ -83,6 +83,10 @@ const AccessorySection: React.FC<Props> = ({
 
   /* ================================================== */
   /* ================================================== */
+
+  if (accessObj === undefined) {
+    return null;
+  }
   return (
     <>
       {/*  only show if length is selected */}

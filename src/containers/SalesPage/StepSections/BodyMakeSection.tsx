@@ -17,7 +17,7 @@ import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedSalesBodyMakeObj } fr
 interface BodyMakeSectionProps {
   loading?: boolean;
   totalSteps: number;
-  accessObj: TUserAccess;
+  accessObj?: TUserAccess;
   currentStep: number; //for steps component
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   currentTyre: number | null; //current picked tire count
@@ -56,7 +56,9 @@ const BodyMakeSection: React.FC<Props> = ({
   const [bodyMakePhotoIndex, setBodyMakePhotoIndex] = useState(0);
   const [bodyMakeLightboxOpen, setBodyMakeLightboxOpen] = useState(false);
 
-  console.log(currentBodyMake);
+  if (accessObj === undefined) {
+    return null;
+  }
   return (
     <>
       <section className="sales__section sales__section-body">

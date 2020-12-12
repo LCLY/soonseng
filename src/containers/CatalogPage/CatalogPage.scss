@@ -1,0 +1,98 @@
+.catalog {
+  &__outerdiv {
+    flex: 1;
+    padding-top: $navbar-height; //height of navbar
+    background: $soonseng-grey;
+    margin-top: 2rem;
+    @include respond-to(phone-only) {
+      padding-top: 70px; //height of navbar
+    }
+  }
+
+  // div wrapping the steps and the content
+  &__innerdiv {
+    display: flex;
+    justify-content: center; // flex-direction: column;
+    padding-bottom: 10%;
+    min-height: calc(100vh - 58rem);
+    // height: calc(100vh - 58rem);
+  }
+
+  &__grid {
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+
+    display: grid;
+    grid-template-rows: auto auto auto;
+    // grid-auto-rows: 3fr;
+    grid-auto-flow: column;
+
+    @include respond-to(phone-only) {
+      grid-gap: 0.5rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @include respond-to(tablet-portrait-up) {
+      grid-gap: 2rem;
+      grid-template-columns: auto auto auto;
+    }
+  }
+
+  /* ======================= */
+  // sections
+  /* ======================= */
+  &__section {
+    &-series {
+      margin-top: 10rem;
+    }
+  }
+
+  &__banner {
+    width: 100%;
+    border: 1px solid $translucent-grey !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    &-image {
+      width: 100% !important;
+      height: 20rem !important;
+      color: white !important;
+      background: $primary-color-4 !important;
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+
+      & .ant-skeleton-image-path {
+        fill: rgb(218, 204, 204) !important;
+      }
+    }
+  }
+
+  &__card {
+    box-shadow: $shadow;
+
+    &-image {
+      width: 100% !important;
+    }
+
+    /* skeleton for cards */
+    &-skeleton {
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+
+      & .ant-skeleton-title {
+        margin: 0 !important;
+      }
+      & .ant-skeleton-paragraph {
+        margin: 1rem 0 !important;
+      }
+      & li {
+        margin: 0.5rem 0 !important;
+      }
+
+      // The image skeleton
+      &-image {
+        width: 100% !important;
+        height: 15rem !important;
+      }
+    }
+  }
+}

@@ -17,9 +17,7 @@ export function* getCatalogMakesSaga(_action: AppActions) {
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getCatalogMakesSucceed(response.data.auth_token));
-    // call get user info
-    yield put(actions.getUserInfo(response.data.auth_token));
+    yield put(actions.getCatalogMakesSucceed(response.data.makes));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.getCatalogMakesFailed, error.response.data.messages);

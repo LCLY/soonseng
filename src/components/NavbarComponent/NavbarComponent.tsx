@@ -187,7 +187,7 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="make"
           onClick={() => {
-            history.push('/');
+            history.push('/catalog');
             setSalesDropdownVisible(false);
           }}
         >
