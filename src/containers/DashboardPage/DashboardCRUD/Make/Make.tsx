@@ -463,7 +463,7 @@ const Make: React.FC<Props> = ({
     // update the form value using the 'name' attribute as target/key
     // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
     let extractedHorsepower = '';
-    let extractedPrice = '';
+    let extractedPrice: number | null = null;
     let extractedGvw = '';
     let extractedLength = '';
 
@@ -471,6 +471,11 @@ const Make: React.FC<Props> = ({
     extractedHorsepower = record.horsepower.replace('hp', '');
     extractedGvw = record.gvw.replace('kg', '');
     extractedLength = record.makeLength.replace('mm', '');
+    if (record.price !== '') {
+      extractedPrice = convertPriceToFloat(record.price);
+    } else {
+      extractedPrice = null;
+    }
 
     // remember to set this form on the Form component
     updateMakeForm.setFieldsValue({
@@ -479,7 +484,7 @@ const Make: React.FC<Props> = ({
       makeWheelbaseId: record.makeWheelbaseId,
       gvw: extractedGvw,
       year: moment(record.year),
-      price: convertPriceToFloat(extractedPrice),
+      price: extractedPrice,
       title: record.makeTitle,
       engine_cap: record.engine_cap,
       horsepower: extractedHorsepower,
@@ -626,6 +631,7 @@ const Make: React.FC<Props> = ({
 
   // Edit Make
   const onEditMakeFinish = (values: TUpdateMakeFinishValues) => {
+    console.log(values.price);
     // package the object
     let updateMakeData: TUpdateMakeData = {
       make_id: values.makeId,
@@ -1501,7 +1507,12 @@ const Make: React.FC<Props> = ({
       let concatWheelbase = make.wheelbase.title + 'mm';
       let concatHorsePower = make.horsepower + 'hp';
       let concatGvw = make.gvw + 'kg';
-      let concatPrice = 'RM' + make.price.toFixed(2);
+      let concatPrice = '';
+      if (make.price === null) {
+        concatPrice = '';
+      } else {
+        concatPrice = 'RM' + make.price.toFixed(2);
+      }
 
       // concatenate them
       detailsCombinedString +=

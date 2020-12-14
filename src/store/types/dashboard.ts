@@ -314,7 +314,7 @@ export type TUpdateMakeData = {
   make_id: number;
   gvw: string;
   year: string;
-  price: number;
+  price: number | null;
   title: string;
   length: number;
   brand_id: string;

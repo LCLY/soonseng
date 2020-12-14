@@ -229,7 +229,7 @@ const BodyMakeSection: React.FC<Props> = ({
                     <div className="sales__selectarea-card-row-left">Model Price</div>
 
                     <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
-                      {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
+                      {currentBodyMake?.make.price === 0 || currentBodyMake?.make.price === null ? (
                         '-'
                       ) : (
                         <>

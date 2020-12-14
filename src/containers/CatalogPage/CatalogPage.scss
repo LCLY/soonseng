@@ -19,22 +19,43 @@
   }
 
   &__grid {
+    // background: red;
+    width: 100%;
+    height: 100%;
     justify-content: center;
     align-items: center;
     justify-items: center;
 
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+
     display: grid;
-    grid-template-rows: auto auto auto;
-    // grid-auto-rows: 3fr;
-    grid-auto-flow: column;
+    grid-template-rows: auto auto;
+    grid-auto-rows: 3fr;
+    // grid-auto-flow: column;
+    // overflow-x: auto;
 
     @include respond-to(phone-only) {
-      grid-gap: 0.5rem;
-      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 1rem;
+      // grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: auto auto;
+      &:not(:first-child) {
+        padding-left: 1rem;
+      }
     }
     @include respond-to(tablet-portrait-up) {
       grid-gap: 2rem;
-      grid-template-columns: auto auto auto;
+      grid-template-columns: repeat(2, 1fr);
+      &:not(:first-child) {
+        padding-left: 2rem;
+      }
+    }
+    @include respond-to(tablet-landscape-up) {
+      grid-gap: 2rem;
+      grid-template-columns: repeat(3, 1fr);
+      &:not(:first-child) {
+        padding-left: 2.5rem;
+      }
     }
   }
 
@@ -43,7 +64,46 @@
   /* ======================= */
   &__section {
     &-series {
-      margin-top: 10rem;
+      margin-top: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      &-innerdiv {
+        border: 1rem solid $primary-color-4;
+        background: $primary-color-4;
+        border-radius: 1rem;
+        padding-left: 0.5rem;
+        padding-top: 1rem;
+        display: flex;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+        &::-webkit-scrollbar {
+          width: 1rem !important;
+          height: 1rem !important;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: white !important;
+          border-radius: 1rem !important;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.678) !important;
+        }
+
+        @include respond-to(phone-only) {
+          width: 95vw;
+        }
+        @include respond-to(tablet-portrait-up) {
+          width: 95vw;
+        }
+        @include respond-to(tablet-landscape-up) {
+          width: 80rem;
+        }
+      }
     }
   }
 
@@ -67,8 +127,30 @@
     }
   }
 
+  /* ====================== */
+  // Card
+  /* ====================== */
   &__card {
-    box-shadow: $shadow;
+    cursor: pointer;
+    user-select: none;
+    @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+
+    &:hover {
+      transition: all 0.2s ease;
+      @include shadow-func(0, 0.2rem, 1rem, 0.2rem, rgba(0, 0, 0, 0.219));
+    }
+    &:active {
+      transition: none;
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+    }
+
+    @include respond-to(phone-only) {
+      width: 16rem !important;
+      & .ant-card-body {
+        padding: 1rem !important;
+        text-align: center;
+      }
+    }
 
     &-image {
       width: 100% !important;
@@ -92,7 +174,65 @@
       &-image {
         width: 100% !important;
         height: 15rem !important;
+
+        @include respond-to(phone-only) {
+          height: 10rem !important;
+        }
       }
     }
   }
+
+  &__brand {
+    &-title {
+      background: $primary-color-4;
+      font-size: 4rem;
+      font-family: $font-firesans;
+      text-align: center;
+      color: white;
+    }
+  }
+  &__series {
+    &-title {
+      margin-right: auto;
+      margin-left: 2rem;
+      margin-bottom: 2rem;
+      align-self: left;
+      display: inline-block;
+      font-size: 2rem;
+      font-family: $font-roboto;
+      padding: 0.1rem 5rem 0.1rem 5rem;
+      border-left: 0.5rem solid red;
+      border-top-left-radius: 5rem;
+      background: white;
+      color: $primary-color-4;
+      border-top: 1px solid rgba(red, 0.2);
+      border-right: 1px solid rgba(red, 0.2);
+      border-bottom: 1px solid rgba(red, 0.2);
+    }
+  }
+
+  &__arrow {
+    &::before {
+      color: $primary-color-4 !important;
+    }
+  }
+}
+
+.menu-item {
+  padding: 0 40px;
+  margin: 5px 10px;
+  user-select: none;
+  cursor: pointer;
+  border: none;
+}
+.menu-item-wrapper.active {
+  border: 1px blue solid;
+}
+.menu-item.active {
+  border: 1px green solid;
+}
+
+.scroll-menu-arrow {
+  padding: 20px;
+  cursor: pointer;
 }

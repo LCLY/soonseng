@@ -156,11 +156,15 @@ export const unformatPriceString = (priceWithComma: string) => {
  */
 /* =========================================================== */
 export const convertPriceToFloat = (price: string) => {
-  if (price === undefined) return 0;
-  let extractedPrice = '';
-  extractedPrice = price.replace('RM', '');
-  extractedPrice = unformatPriceString(extractedPrice).toString();
-  return parseFloat(extractedPrice);
+  if (price === undefined || price === null) return 0;
+
+  if (typeof price === 'string') {
+    let extractedPrice = '';
+    extractedPrice = price.replace('RM', '');
+    extractedPrice = unformatPriceString(extractedPrice).toString();
+    return parseFloat(extractedPrice);
+  }
+  return 0;
 };
 
 /* =========================================================== */
@@ -339,6 +343,25 @@ export const configAuthToken = (action: AppActions) => {
     };
   }
   return config;
+};
+
+/* =========================================================== */
+/**
+ * This util function is gonna take in a huge array and break it
+ * into smaller chunks of array
+ * the size will determine the length of the smaller arrays
+ * @param {any[]} bigArray Huge array
+ * @param {number} size size to be splitted into
+ * @return {any[]} array of smaller arrays
+ */
+/* =========================================================== */
+export const splitArray = (bigArray: any[], size: number) => {
+  let tempArray = [];
+
+  for (var i = 0; i < bigArray.length; i += size) {
+    tempArray.push(bigArray.slice(i, i + size));
+  }
+  return tempArray;
 };
 
 /* ============================================================================= */

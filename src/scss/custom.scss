@@ -104,16 +104,16 @@ svg {
 
 // change the look of the scrollbar
 .ant-table-body {
-  //  &::-webkit-scrollbar {
-  //     width: 5px !important;
-  //  }
-  //  &::-webkit-scrollbar-thumb {
-  //     background: $secondary-color-3 !important;
-  //     border-radius: 10px !important;
-  //  }
-  //  &::-webkit-scrollbar-thumb:hover {
-  //     background: $secondary-color-1 !important;
-  //   }
+  &::-webkit-scrollbar {
+    width: 5px !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $secondary-color-3 !important;
+    border-radius: 10px !important;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: $secondary-color-1 !important;
+  }
 }
 
 // Text will go over to second line
@@ -184,5 +184,21 @@ svg {
   &:active {
     transition: none;
     color: #1890ff !important;
+  }
+}
+
+.custom__scrollbar {
+  &::-webkit-scrollbar {
+    width: 0.5rem !important;
+    height: 0.5rem !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $secondary-color-3 !important;
+    border-radius: 1rem !important;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: $secondary-color-2 !important;
   }
 }
