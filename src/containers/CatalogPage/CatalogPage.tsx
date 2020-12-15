@@ -5,9 +5,9 @@ import Footer from 'src/components/Footer/Footer';
 import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
-// import Slider from 'react-slick';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { AnyAction, Dispatch } from 'redux';
 import { Card, Empty, Skeleton } from 'antd';
 /* Util */
@@ -16,12 +16,13 @@ import { splitArray } from 'src/shared/Utils';
 import * as actions from 'src/store/actions/index';
 import { TReceivedCatalogMakeObj } from 'src/store/types/catalog';
 import { TReceivedMakeObj } from 'src/store/types/dashboard';
+import { ROUTE_CATALOG } from 'src/shared/routes';
 const { Meta } = Card;
 interface CatalogPageProps {}
 
-type Props = CatalogPageProps & StateProps & DispatchProps;
+type Props = CatalogPageProps & StateProps & DispatchProps & RouteComponentProps;
 
-const CatalogPage: React.FC<Props> = ({ catalogMakesArray, onGetCatalogMakes }) => {
+const CatalogPage: React.FC<Props> = ({ history, catalogMakesArray, onGetCatalogMakes }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
@@ -63,6 +64,7 @@ const CatalogPage: React.FC<Props> = ({ catalogMakesArray, onGetCatalogMakes }) 
                                       {makesArray.map((make) => {
                                         return (
                                           <Card
+                                            onClick={() => history.push(`${ROUTE_CATALOG}/${make.id}`)}
                                             key={uuidv4()}
                                             className="catalog__card"
                                             style={{ width: 240 }}
@@ -135,4 +137,4 @@ interface DispatchProps {
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return { onGetCatalogMakes: () => dispatch(actions.getCatalogMakes()) };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(CatalogPage);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CatalogPage));

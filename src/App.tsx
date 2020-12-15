@@ -80,9 +80,10 @@ const App: React.FC<Props> = ({ accessObj }) => {
         <Route exact path={ROUTE_HOME} component={Homepage} />
         <Route exact path={ROUTE_ABOUT} component={AboutPage} />
         <Route exact path={ROUTE_SALES} component={SalesPage} />
-        <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
+        <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
+        <Route exact path={`${ROUTE_CATALOG}/:make_id`} component={CatalogBodyMake} />
         {/* authentication */}
         <Route exact path={ROUTE_LOGIN} component={LoginPage} />
         <Route exact path={ROUTE_LOGOUT} component={Logout} />

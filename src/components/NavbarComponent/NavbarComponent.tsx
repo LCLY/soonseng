@@ -17,7 +17,15 @@ import SoonSengLogo from 'src/img/soonseng_logo.png';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
-import { ROUTE_CATALOG } from 'src/shared/routes';
+import {
+  ROUTE_HOME,
+  ROUTE_LOGIN,
+  ROUTE_SALES,
+  ROUTE_LOGOUT,
+  ROUTE_ORDERS,
+  ROUTE_CATALOG,
+  ROUTE_DASHBOARD,
+} from 'src/shared/routes';
 
 /**
  * Hook that alerts clicks outside of the passed ref
@@ -145,7 +153,7 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="body"
           onClick={() => {
-            history.push('/dashboard/body');
+            history.push(ROUTE_DASHBOARD.body);
             setDropdownVisible(false);
           }}
         >
@@ -154,7 +162,7 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="make"
           onClick={() => {
-            history.push('/dashboard/make');
+            history.push(ROUTE_DASHBOARD.make);
             setDropdownVisible(false);
           }}
         >
@@ -163,7 +171,7 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="accessory"
           onClick={() => {
-            history.push('/dashboard/accessory');
+            history.push(ROUTE_DASHBOARD.accessory);
             setDropdownVisible(false);
           }}
         >
@@ -172,7 +180,7 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="body_make"
           onClick={() => {
-            history.push('/dashboard/body_make');
+            history.push(ROUTE_DASHBOARD.body_make);
             setDropdownVisible(false);
           }}
         >
@@ -216,14 +224,19 @@ const NavbarComponent: React.FC<Props> = ({
       <div className="navbar__outerdiv" /*  style={{ top: visible ? '0' : '-100%' }} */>
         <Navbar className="navbar__div" bg="primary" variant="dark" expand="md">
           <Navbar.Brand className="navbar__logo" href="#home">
-            <img alt="soonseng logo" className="navbar__logo" onClick={() => history.push('/')} src={SoonSengLogo} />
+            <img
+              alt="soonseng logo"
+              className="navbar__logo"
+              onClick={() => history.push(ROUTE_HOME)}
+              src={SoonSengLogo}
+            />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto navbar__wrapper">
               <div className="navbar__left-div">
                 <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
-                  <span className="navbar__link" onClick={() => history.push('/')}>
+                  <span className="navbar__link" onClick={() => history.push(ROUTE_HOME)}>
                     <i className="fas fa-home"></i>&nbsp;Home
                   </span>
                 </div>
@@ -236,7 +249,7 @@ const NavbarComponent: React.FC<Props> = ({
                   </Dropdown>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
-                  <span className="navbar__link" onClick={() => history.push('/sales')}>
+                  <span className="navbar__link" onClick={() => history.push(ROUTE_SALES)}>
                     <i className="fas fa-balance-scale"></i>&nbsp;Sales
                   </span>
                 </div>
@@ -273,7 +286,7 @@ const NavbarComponent: React.FC<Props> = ({
                     className={`navbar__link`}
                     ref={dropdownRef}
                     onClick={() => {
-                      authenticated && userInfoObj ? history.push('/logout') : history.push('/login');
+                      authenticated && userInfoObj ? history.push(ROUTE_LOGOUT) : history.push(ROUTE_LOGIN);
                     }}
                   >
                     {authenticated && userInfoObj ? (
@@ -288,7 +301,7 @@ const NavbarComponent: React.FC<Props> = ({
                   </div>
                 </div>
                 <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
-                  <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push('/orders')}>
+                  <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push(ROUTE_ORDERS)}>
                     <ShoppingCartOutlined />
                     &nbsp;Orders
                   </div>
