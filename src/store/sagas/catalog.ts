@@ -29,16 +29,17 @@ export function* getCatalogMakesSaga(_action: AppActions) {
 /* ------------------------------- */
 //   Body Make
 /* ------------------------------- */
-export function* getCatalogBodyMakesSaga(_action: AppActions) {
+export function* getCatalogBodyMakesSaga(action: AppActions) {
   yield put(actions.getCatalogBodyMakesStart());
 
-  let url = process.env.REACT_APP_API + `/pages/catalog/makes`;
+  let url = '';
+  if ('make_id' in action) {
+    url = process.env.REACT_APP_API + `/pages/catalog/makes/${action.make_id}`;
+  }
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getCatalogBodyMakesSucceed(response.data.auth_token));
-    // call get user info
-    yield put(actions.getUserInfo(response.data.auth_token));
+    yield put(actions.getCatalogBodyMakesSucceed(response.data.body_makes));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.getCatalogBodyMakesFailed, error.response.data.messages);

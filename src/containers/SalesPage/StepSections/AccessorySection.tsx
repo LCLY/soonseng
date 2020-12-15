@@ -9,7 +9,7 @@ import { Breadcrumb, Button, Card, Divider, Empty, Skeleton } from 'antd';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
-import { img_loading_link, img_not_available_link } from 'src/shared/global';
+import { img_loading_link, img_not_available_link } from 'src/shared/links';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 

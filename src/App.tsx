@@ -10,6 +10,8 @@ import PageNotFound from './components/PageNotFound/PageNotFound';
 import SalesPage from 'src/containers/SalesPage/SalesPage';
 import OrdersPage from './containers/OrdersPage/OrdersPage';
 import LoginPage from './containers/Authentication/LoginPage/LoginPage';
+import CatalogPage from './containers/CatalogPage/CatalogPage';
+import CatalogBodyMake from './containers/CatalogPage/CatalogBodyMake/CatalogBodyMake';
 // Dashboard
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
 import Make from './containers/DashboardPage/DashboardCRUD/Make/Make';
@@ -25,7 +27,18 @@ import { RootState } from 'src';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datetime/css/react-datetime.css';
 import { TUserAccess } from './store/types/auth';
-import CatalogPage from './containers/CatalogPage/CatalogPage';
+import {
+  ROUTE_HOME,
+  ROUTE_ABOUT,
+  ROUTE_SALES,
+  ROUTE_DASHBOARD,
+  ROUTE_CONTACT,
+  ROUTE_ORDERS,
+  ROUTE_CATALOG,
+  ROUTE_LOGIN,
+  ROUTE_LOGOUT,
+  ROUTE_NOT_FOUND,
+} from './shared/routes';
 
 interface AppProps {}
 
@@ -39,23 +52,24 @@ const App: React.FC<Props> = ({ accessObj }) => {
     route = (
       <Switch>
         {/* Other main pages */}
-        <Route exact path="/" component={Homepage} />
-        <Route exact path="/about" component={AboutPage} />
-        <Route exact path="/sales" component={SalesPage} />
-        <Route exact path="/contact" component={ContactPage} />
-        <Route exact path="/orders" component={OrdersPage} />
-        <Route exact path="/catalog" component={CatalogPage} />
+        <Route exact path={ROUTE_HOME} component={Homepage} />
+        <Route exact path={ROUTE_ABOUT} component={AboutPage} />
+        <Route exact path={ROUTE_SALES} component={SalesPage} />
+        <Route exact path={ROUTE_CONTACT} component={ContactPage} />
+        <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
+        <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
+        <Route exact path={`${ROUTE_CATALOG}/:make_id`} component={CatalogBodyMake} />
         {/* dashboard */}
-        <Route exact path="/dashboard" component={DashboardPage} />
-        <Route exact path="/dashboard/make" component={Make} />
-        <Route exact path="/dashboard/body" component={Body} />
-        <Route exact path="/dashboard/body_make" component={BodyMake} />
-        <Route exact path="/dashboard/accessory" component={Accessory} />
+        <Route exact path={ROUTE_DASHBOARD.main} component={DashboardPage} />
+        <Route exact path={ROUTE_DASHBOARD.make} component={Make} />
+        <Route exact path={ROUTE_DASHBOARD.body} component={Body} />
+        <Route exact path={ROUTE_DASHBOARD.body_make} component={BodyMake} />
+        <Route exact path={ROUTE_DASHBOARD.accessory} component={Accessory} />
         {/* authentication */}
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/logout" component={Logout} />
-        <Route exact path="/404" component={PageNotFound} />
-        <Redirect from="*" to="/404" />
+        <Route exact path={ROUTE_LOGIN} component={LoginPage} />
+        <Route exact path={ROUTE_LOGOUT} component={Logout} />
+        <Route exact path={ROUTE_NOT_FOUND} component={PageNotFound} />
+        <Redirect from="*" to={ROUTE_NOT_FOUND} />
       </Switch>
     );
   } else {
@@ -63,17 +77,17 @@ const App: React.FC<Props> = ({ accessObj }) => {
     route = (
       <Switch>
         {/* Other main pages */}
-        <Route exact path="/" component={Homepage} />
-        <Route exact path="/about" component={AboutPage} />
-        <Route exact path="/sales" component={SalesPage} />
-        <Route exact path="/catalog" component={CatalogPage} />
-        <Route exact path="/contact" component={ContactPage} />
-        <Route exact path="/orders" component={OrdersPage} />
+        <Route exact path={ROUTE_HOME} component={Homepage} />
+        <Route exact path={ROUTE_ABOUT} component={AboutPage} />
+        <Route exact path={ROUTE_SALES} component={SalesPage} />
+        <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
+        <Route exact path={ROUTE_CONTACT} component={ContactPage} />
+        <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         {/* authentication */}
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/logout" component={Logout} />
-        <Route exact path="/404" component={PageNotFound} />
-        <Redirect from="*" to="/404" />
+        <Route exact path={ROUTE_LOGIN} component={LoginPage} />
+        <Route exact path={ROUTE_LOGOUT} component={Logout} />
+        <Route exact path={ROUTE_NOT_FOUND} component={PageNotFound} />
+        <Redirect from="*" to={ROUTE_NOT_FOUND} />
       </Switch>
     );
   }

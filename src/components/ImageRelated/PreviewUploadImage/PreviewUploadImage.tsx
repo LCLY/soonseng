@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Badge, Form, Select } from 'antd';
 import { CloseCircleFilled } from '@ant-design/icons';
 /* Util */
-import { img_loading_link } from 'src/shared/global';
+import { img_loading_link } from 'src/shared/links';
 
 const { Option } = Select;
 interface PreviewUploadImageProps {

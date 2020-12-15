@@ -4,8 +4,6 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import 'animate.css/animate.min.css';
 import 'react-image-lightbox/style.css';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 // 3rd party lib
 import { BrowserRouter } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';

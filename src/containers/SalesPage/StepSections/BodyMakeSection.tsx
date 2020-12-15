@@ -11,7 +11,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedBodyObj, TReceivedBodyMakeObj } from 'src/store/types/dashboard';
-import { img_loading_link, img_not_available_link } from 'src/shared/global';
+import { img_loading_link, img_not_available_link } from 'src/shared/links';
 import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedSalesBodyMakeObj } from 'src/store/types/sales';
 
 interface BodyMakeSectionProps {

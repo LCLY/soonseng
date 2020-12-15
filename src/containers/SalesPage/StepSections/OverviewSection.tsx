@@ -10,7 +10,7 @@ import { DownSquareOutlined, InfoCircleOutlined, CaretRightOutlined } from '@ant
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
-import { img_not_available_link } from 'src/shared/global';
+import { img_not_available_link } from 'src/shared/links';
 import { TReceivedBodyObj, TReceivedBodyMakeObj, TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 

@@ -42,7 +42,7 @@ import {
 } from 'src/store/types/dashboard';
 import { TMapStateToProps } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
-import { img_not_available_link, img_loading_link } from 'src/shared/global';
+import { img_not_available_link, img_loading_link } from 'src/shared/links';
 import { Button, Form, Select, Input, Layout, notification, Table, Tag, Tooltip, Modal, Card, Carousel } from 'antd';
 
 const { Option } = Select;

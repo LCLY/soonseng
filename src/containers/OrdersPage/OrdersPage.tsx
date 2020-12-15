@@ -16,7 +16,7 @@ import { InfoCircleOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant
 
 // Util
 import * as actions from 'src/store/actions/index';
-import { img_not_available_link } from 'src/shared/global';
+import { img_not_available_link } from 'src/shared/links';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { RootState } from 'src';

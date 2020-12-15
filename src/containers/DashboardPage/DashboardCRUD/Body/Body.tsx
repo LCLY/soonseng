@@ -31,7 +31,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { img_not_available_link, img_loading_link } from 'src/shared/global';
+import { img_not_available_link, img_loading_link } from 'src/shared/links';
 import { PlusCircleTwoTone, ExclamationCircleOutlined, MinusCircleTwoTone } from '@ant-design/icons';
 /* Util */
 import {

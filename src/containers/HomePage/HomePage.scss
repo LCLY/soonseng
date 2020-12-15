@@ -8,6 +8,7 @@
     /* -------------------------- */
     &-first {
       display: flex;
+      overflow-x: hidden;
       flex-direction: column;
       justify-content: center;
       padding-left: 5rem;
@@ -491,6 +492,7 @@
   /* ======================== */
   &__carousel {
     &-outerdiv {
+      overflow-x: hidden;
       background: $primary-color-4;
       & .ant-carousel .slick-dots li {
         width: 5rem !important;

@@ -17,6 +17,7 @@ import SoonSengLogo from 'src/img/soonseng_logo.png';
 import * as actions from 'src/store/actions/index';
 import { TMapStateToProps } from 'src/store/types';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
+import { ROUTE_CATALOG } from 'src/shared/routes';
 
 /**
  * Hook that alerts clicks outside of the passed ref
@@ -187,7 +188,7 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="make"
           onClick={() => {
-            history.push('/catalog');
+            history.push(ROUTE_CATALOG);
             setSalesDropdownVisible(false);
           }}
         >

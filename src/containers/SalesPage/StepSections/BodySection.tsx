@@ -8,7 +8,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TReceivedBodyObj } from 'src/store/types/dashboard';
-import { img_loading_link, img_not_available_link } from 'src/shared/global';
+import { img_loading_link, img_not_available_link } from 'src/shared/links';
 import { TLocalOrderObj, TReceivedSalesLengthCategoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
 
 interface BodySectionProps {
