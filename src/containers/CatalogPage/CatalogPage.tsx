@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './CatalogPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
-import Container from 'src/components/CustomContainer/CustomContainer';
+// import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
@@ -12,11 +12,9 @@ import { AnyAction, Dispatch } from 'redux';
 import { Card, Empty, Skeleton } from 'antd';
 /* Util */
 import { RootState } from 'src';
-import { splitArray } from 'src/shared/Utils';
+import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
 import { TReceivedCatalogMakeObj } from 'src/store/types/catalog';
-import { TReceivedMakeObj } from 'src/store/types/dashboard';
-import { ROUTE_CATALOG } from 'src/shared/routes';
 const { Meta } = Card;
 interface CatalogPageProps {}
 
@@ -47,79 +45,73 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
       <NavbarComponent />
       <div className="catalog__outerdiv">
         <div className="catalog__div">
-          <Container>
-            <div className="catalog__innerdiv">
-              {catalogMakesArray ? (
-                catalogMakesArray.length > 0 ? (
-                  catalogMakesArray.map((catalog) => {
-                    return (
-                      <div className="catalog__brand-div" key={uuidv4()}>
-                        <div className="catalog__brand-title"> {catalog.brand.title}</div>
-                        <section>
-                          {catalog.series.map((series) => {
-                            return (
-                              <div key={uuidv4()} className="catalog__section-series">
-                                <div className="catalog__series-title">{series.title}</div>
-                                <div key={uuidv4()} className="catalog__section-series-innerdiv">
-                                  {/* split makes array into smaller chunks of array of length 6 */}
-                                  {splitArray(series.makes, 6).map((makesArray: TReceivedMakeObj[]) => {
+          {/* <Container> */}
+          <div className="catalog__innerdiv">
+            {catalogMakesArray ? (
+              catalogMakesArray.length > 0 ? (
+                catalogMakesArray.map((catalog) => {
+                  return (
+                    <div className="catalog__brand-div" key={uuidv4()}>
+                      <div className="catalog__brand-title"> {catalog.brand.title}</div>
+                      <section className="catalog__section-series">
+                        {catalog.series.map((series) => {
+                          return (
+                            <div key={uuidv4()}>
+                              <div className="catalog__series-title">{series.title}</div>
+                              <div className="catalog__section-series-innerdiv">
+                                <div className="catalog__grid">
+                                  {series.makes.map((make) => {
                                     return (
-                                      <div className="catalog__grid" key={uuidv4()}>
-                                        {makesArray.map((make) => {
-                                          return (
-                                            <Card
-                                              onClick={() => history.push(`${ROUTE_CATALOG}/${make.id}`)}
-                                              key={uuidv4()}
-                                              className="catalog__card"
-                                              style={{ width: 240 }}
-                                              cover={
-                                                make.images.length > 0 ? (
-                                                  <img
-                                                    className="catalog__card-skeleton-image"
-                                                    src={make.images[0].url}
-                                                    alt={make.images[0].filename}
-                                                  />
-                                                ) : (
-                                                  <Skeleton.Image className="catalog__card-skeleton-image" />
-                                                )
-                                              }
-                                            >
-                                              <Meta title={make.title} />
-                                            </Card>
-                                          );
-                                        })}
+                                      <div
+                                        key={uuidv4()}
+                                        className="catalog__card"
+                                        onClick={() => history.push(`${ROUTE_CATALOG}/${make.id}`)}
+                                      >
+                                        {make.images.length > 0 ? (
+                                          <img
+                                            className="catalog__card-skeleton-image"
+                                            src={make.images[0].url}
+                                            alt={make.images[0].filename}
+                                          />
+                                        ) : (
+                                          <Skeleton.Image className="catalog__card-image" />
+                                        )}
+
+                                        <div className="catalog__card-label">{make.title}</div>
+                                        <div className="catalog__card-label-fold">{make.title}</div>
                                       </div>
                                     );
                                   })}
                                 </div>
                               </div>
-                            );
-                          })}
-                        </section>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <Empty />
-                )
+                            </div>
+                          );
+                        })}
+                      </section>
+                    </div>
+                  );
+                })
               ) : (
-                <div>
-                  <div className="catalog__grid">
-                    {[1, 2, 3, 4, 5, 6].map((num) => (
-                      <Card
-                        key={num + uuidv4()}
-                        className="catalog__card-skeleton"
-                        style={{ width: 240 }}
-                        cover={<Skeleton.Image className="catalog__card-skeleton-image" />}
-                      >
-                        <Meta description={<Skeleton paragraph={{ rows: 2, width: '100%' }} active />} />
-                      </Card>
-                    ))}
-                  </div>
+                <Empty />
+              )
+            ) : (
+              <div>
+                <div className="catalog__grid">
+                  {[1, 2, 3, 4, 5, 6].map((num) => (
+                    <Card
+                      key={num + uuidv4()}
+                      className="catalog__card-skeleton"
+                      style={{ width: 240 }}
+                      cover={<Skeleton.Image className="catalog__card-skeleton-image" />}
+                    >
+                      <Meta description={<Skeleton paragraph={{ rows: 2, width: '100%' }} active />} />
+                    </Card>
+                  ))}
                 </div>
-              )}
-            </div>
-          </Container>
+              </div>
+            )}
+          </div>
+          {/* </Container> */}
         </div>
       </div>
       <Footer />

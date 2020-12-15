@@ -21,11 +21,22 @@
   }
 
   &__div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 5rem 1rem 5rem 1rem;
     height: calc(100vh);
     overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 0.5rem !important;
+      height: 0.5rem !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: white !important;
+      border-radius: 1rem !important;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.678) !important;
+    }
   }
 
   // div wrapping the steps and the content
@@ -35,6 +46,7 @@
     justify-content: center;
     flex-direction: column;
     padding-bottom: 10%;
+    // height: 100%;
     // min-height: calc(100vh - 58rem);
     // height: calc(100vh - 58rem);
     // width: 80rem;
@@ -61,23 +73,23 @@
       grid-gap: 1rem;
       // grid-template-columns: repeat(2, 1fr);
       grid-template-columns: auto auto;
-      &:not(:first-child) {
-        padding-left: 1rem;
-      }
+      // &:not(:first-child) {
+      //   // padding-left: 1rem;
+      // }
     }
     @include respond-to(tablet-portrait-up) {
       grid-gap: 2rem;
       grid-template-columns: repeat(2, 1fr);
-      &:not(:first-child) {
-        padding-left: 2rem;
-      }
+      // &:not(:first-child) {
+      //   // padding-left: 2rem;
+      // }
     }
     @include respond-to(tablet-landscape-up) {
       grid-gap: 2rem;
       grid-template-columns: repeat(3, 1fr);
-      &:not(:first-child) {
-        padding-left: 2.5rem;
-      }
+      // &:not(:first-child) {
+      //   // padding-left: 2.5rem;
+      // }
     }
   }
 
@@ -85,35 +97,33 @@
   // sections
   /* ======================= */
   &__section {
+    /* --------------------- */
+    // large 2 col grid for holding the series
+    /* --------------------- */
     &-series {
       margin-top: 5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
+      display: grid;
+      grid-gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
 
       &-innerdiv {
-        border: 1rem solid $primary-color-4;
-        background: $primary-color-4;
+        // border: 1rem solid $primary-color-4;
         border-radius: 1rem;
-        padding-left: 0.5rem;
-        padding-top: 1rem;
-        display: flex;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.301);
+        backdrop-filter: blur(15px);
 
-        overflow-x: auto;
-        overflow-y: hidden;
-        &::-webkit-scrollbar {
-          width: 1rem !important;
-          height: 1rem !important;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: white !important;
-          border-radius: 1rem !important;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.678) !important;
+        /*  glass morphism */
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border-radius: 1rem;
+          z-index: -1;
+          background: rgba(131, 129, 129, 0);
         }
 
         @include respond-to(phone-only) {
@@ -123,7 +133,7 @@
           width: 95vw;
         }
         @include respond-to(tablet-landscape-up) {
-          width: 80rem;
+          width: 100%;
         }
       }
     }
@@ -136,6 +146,7 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 2rem;
+
     &-image {
       width: 100% !important;
       height: 20rem !important;
@@ -153,45 +164,100 @@
   // Card
   /* ====================== */
   &__card {
-    cursor: pointer;
-    user-select: none;
-    // @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgb(255, 255, 255));
-    border: 1px solid white !important;
-
-    & .ant-card-cover {
-      border: 1px solid white !important;
-    }
-
-    & .ant-card-body {
-      text-align: center;
-    }
-
-    &:hover {
-      transition: all 0.2s ease;
-      border: 1px solid $primary-color-4 !important;
-      & .ant-card-cover {
-        border: 1px solid $primary-color-4 !important;
-      }
-      @include shadow-func(0, 0rem, 1.2rem, 0.2rem, rgb(255, 255, 255));
-    }
-    &:active {
-      transition: none;
-      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgb(255, 255, 255));
-    }
-
-    @include respond-to(phone-only) {
-      width: 14rem !important;
-      & .ant-card-body {
-        padding: 1rem !important;
-        text-align: center;
-      }
-    }
-
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    /* =========================== */
+    // the image of the card
+    /* =========================== */
     &-image {
       width: 100% !important;
+      height: 15rem !important;
+      color: white !important;
+      background: $primary-color-4 !important;
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+
+      & .ant-skeleton-image-path {
+        fill: rgb(201, 197, 197) !important;
+      }
+    }
+    cursor: pointer;
+    & .catalog__card-label {
+      animation: labelShrinks 0.3s ease-in forwards;
+    }
+    // when hover card
+    &:hover {
+      & .catalog__card-label {
+        animation: labelExpands 0.3s ease-in-out forwards;
+      }
     }
 
+    /* ------------------------ */
+    // glass label for make title
+    /* ------------------------ */
+    &-label {
+      position: absolute;
+      color: white;
+      bottom: 1rem;
+      right: -1.5rem;
+      font-size: 1.2rem;
+      border-left: 0.5rem solid white;
+      border-top-left-radius: 5rem;
+      z-index: 2;
+      padding: 0.5rem 1rem 0.5rem 1.5rem;
+
+      // glass morphism
+      background: rgba(255, 255, 255, 0.158);
+      backdrop-filter: blur(20px);
+
+      /*  glass morphism */
+      &:before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-top-left-radius: 5rem;
+        background: rgba(255, 255, 255, 0.103);
+      }
+
+      // folded part of the label
+      &-fold {
+        position: absolute;
+        color: white;
+        bottom: 1.5rem;
+        right: -1.5rem;
+        padding: 0.5rem 1rem;
+        width: 3rem;
+        height: 2.7rem;
+        font-size: 1.2rem;
+        color: transparent;
+        transform: skewY(15deg);
+        z-index: -1;
+        background: rgba(255, 255, 255, 0.295);
+        backdrop-filter: blur(15px);
+
+        /*  glass morphism */
+        &:before {
+          content: '';
+          position: absolute;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border-top-left-radius: 5rem;
+          background: rgba(46, 46, 46, 0.103);
+        }
+      }
+    }
+
+    /* ==================== */
     /* skeleton for cards */
+    /* ==================== */
     &-skeleton {
       @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
 
@@ -208,7 +274,7 @@
       // The image skeleton
       &-image {
         width: 100% !important;
-        height: 15rem !important;
+        // height: 15rem !important;
 
         @include respond-to(phone-only) {
           height: 10rem !important;
@@ -219,26 +285,20 @@
 
   &__brand {
     &-title {
-      // background: $primary-color-4;
-      // position: absolute;
-      // top: 50%;
-      // width: 100vw;
-      // padding-top: 50rem;
-      font-size: 10rem;
+      font-size: 5rem;
       font-family: $font-firesans;
       text-align: center;
       color: white;
+      width: 30rem;
       padding: 2rem 0;
       border-radius: 1rem;
       background: rgba(255, 255, 255, 0.301);
       backdrop-filter: blur(15px);
-      // border: 1px solid white;
 
       @include respond-to(phone-only) {
         font-size: 3rem;
       }
 
-      // @include shadow-func(2rem, 2rem, 1rem, 0.05rem, rgba(255, 255, 255, 0.548));
       /*  glass morphism */
       &:before {
         content: '';
@@ -250,9 +310,6 @@
         border-radius: 1rem;
         z-index: -1;
         background: rgba(131, 129, 129, 0);
-
-        // border-radius: 20px;
-        // border: 1px solid rgba(255, 255, 255, 0.2);
       }
     }
     &-div {
@@ -310,4 +367,21 @@
 .scroll-menu-arrow {
   padding: 20px;
   cursor: pointer;
+}
+
+@keyframes labelShrinks {
+  from {
+    padding: 0.5rem 3rem 0.5rem 2rem;
+  }
+  to {
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+  }
+}
+@keyframes labelExpands {
+  from {
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+  }
+  to {
+    padding: 0.5rem 3rem 0.5rem 2rem;
+  }
 }
