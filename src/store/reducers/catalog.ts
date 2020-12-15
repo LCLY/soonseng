@@ -20,7 +20,7 @@ const initialState: CatalogInitialState = {
 /* Get Catalog Makes
 /* ============================================================================================ */
 const getCatalogMakesStart = (state: CatalogInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
+  return updateObject(state, { errorMessage: null, loading: true, catalogMakesArray: null });
 };
 const getCatalogMakesSucceed = (state: CatalogInitialState, action: AppActions) => {
   if ('catalogMakesArray' in action) {
