@@ -348,11 +348,11 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                           </span>
                                         </div>
                                       )}
-                                    {order.bodyMakeObj?.make.length !== null && (
+                                    {order.bodyMakeObj?.length !== null && (
                                       <div className="orders__overview-panel-specs-row">
                                         <span className="orders__overview-panel-specs-title">Length:</span>
                                         <span className="orders__overview-panel-specs-value">
-                                          {order.bodyMakeObj?.make.length}mm
+                                          {order.bodyMakeObj?.length}mm
                                         </span>
                                       </div>
                                     )}
@@ -374,7 +374,7 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                       </div>
                                     )}
 
-                                    {order.bodyMakeObj?.make.tire !== null && order.bodyMakeObj?.make.tire !== 0 && (
+                                    {order.bodyMakeObj?.make.tire !== null && order.bodyMakeObj?.make.tire !== '' && (
                                       <div className="orders__overview-panel-specs-row">
                                         <span className="orders__overview-panel-specs-title">Tyre Count:</span>
                                         <span className="orders__overview-panel-specs-value">
@@ -382,7 +382,7 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                         </span>
                                       </div>
                                     )}
-                                    {order.bodyMakeObj?.make.wheelbase.title !== null &&
+                                    {/* {order.bodyMakeObj?.make.wheelbase.title !== null &&
                                       order.bodyMakeObj?.make.wheelbase.title !== '' && (
                                         <div className="orders__overview-panel-specs-row">
                                           <span className="orders__overview-panel-specs-title">Wheelbase:</span>
@@ -390,7 +390,7 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                             {order.bodyMakeObj?.make.wheelbase.title}mm
                                           </span>
                                         </div>
-                                      )}
+                                      )} */}
                                     {order.bodyMakeObj?.make.transmission !== null &&
                                       order.bodyMakeObj?.make.transmission !== '' && (
                                         <div className="orders__overview-panel-specs-row">

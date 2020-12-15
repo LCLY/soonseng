@@ -305,7 +305,7 @@ export type TCreateMakeData = {
   brand_id: string;
   engine_cap: string;
   horsepower: string;
-  wheelbase_id: string;
+  // wheelbase_id: string;
   transmission: string;
 };
 
@@ -320,7 +320,7 @@ export type TUpdateMakeData = {
   brand_id: string;
   engine_cap: string;
   horsepower: string;
-  wheelbase_id: string;
+  // wheelbase_id: string;
   transmission: string;
 };
 
@@ -329,21 +329,19 @@ export type TReceivedMakeObj = {
   id: number;
   abs: any;
   torque: any;
-  tire: number;
+  tire: string;
   config: string;
   emission: any;
   gvw: string;
   year: string;
   title: string;
   price: number;
-  length: number;
   series: string;
   available: boolean;
   engine_cap: string;
   horsepower: string;
   transmission: string;
   brand: TReceivedBrandObj;
-  wheelbase: TReceivedWheelbaseObj;
   images: TReceivedImageObj[];
 };
 
@@ -812,7 +810,7 @@ export type TUpdateBodyMakeData = {
   height: string;
   price: number;
 };
-// Received body length object when action success
+// Received body make object when action success
 // Types
 export type TReceivedBodyMakeObj = {
   id: number;
@@ -822,6 +820,8 @@ export type TReceivedBodyMakeObj = {
   depth: string;
   height: string | null;
   make: TReceivedMakeObj;
+  length: number;
+  wheelbase: string;
   body: TReceivedBodyObj;
   body_make_accessories: TReceivedAccessoryObj[];
   images: TReceivedImageObj[];

@@ -428,11 +428,11 @@ const OverviewSection: React.FC<Props> = ({
                                           </span>
                                         </div>
                                       )}
-                                    {order.bodyMakeObj?.make.length !== null && (
+                                    {order.bodyMakeObj?.length !== null && (
                                       <div className="sales__overview-panel-specs-row">
                                         <span className="sales__overview-panel-specs-title">Length:</span>
                                         <span className="sales__overview-panel-specs-value">
-                                          {order.bodyMakeObj?.make.length}mm
+                                          {order.bodyMakeObj?.length}mm
                                         </span>
                                       </div>
                                     )}
@@ -454,7 +454,7 @@ const OverviewSection: React.FC<Props> = ({
                                       </div>
                                     )}
 
-                                    {order.bodyMakeObj?.make.tire !== null && order.bodyMakeObj?.make.tire !== 0 && (
+                                    {order.bodyMakeObj?.make.tire !== null && order.bodyMakeObj?.make.tire !== '' && (
                                       <div className="sales__overview-panel-specs-row">
                                         <span className="sales__overview-panel-specs-title">Tyre Count:</span>
                                         <span className="sales__overview-panel-specs-value">
@@ -462,15 +462,14 @@ const OverviewSection: React.FC<Props> = ({
                                         </span>
                                       </div>
                                     )}
-                                    {order.bodyMakeObj?.make.wheelbase.title !== null &&
-                                      order.bodyMakeObj?.make.wheelbase.title !== '' && (
-                                        <div className="sales__overview-panel-specs-row">
-                                          <span className="sales__overview-panel-specs-title">Wheelbase:</span>
-                                          <span className="sales__overview-panel-specs-value">
-                                            {order.bodyMakeObj?.make.wheelbase.title}mm
-                                          </span>
-                                        </div>
-                                      )}
+                                    {order.bodyMakeObj?.wheelbase !== null && order.bodyMakeObj?.wheelbase !== '' && (
+                                      <div className="sales__overview-panel-specs-row">
+                                        <span className="sales__overview-panel-specs-title">Wheelbase:</span>
+                                        <span className="sales__overview-panel-specs-value">
+                                          {order.bodyMakeObj?.wheelbase}mm
+                                        </span>
+                                      </div>
+                                    )}
                                     {order.bodyMakeObj?.make.transmission !== null &&
                                       order.bodyMakeObj?.make.transmission !== '' && (
                                         <div className="sales__overview-panel-specs-row">

@@ -492,10 +492,10 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
           title: 'Length',
           dataIndex: 'makeLength',
         },
-        {
-          title: 'Wheelbase',
-          dataIndex: 'makeWheelbaseTitle',
-        },
+        // {
+        //   title: 'Wheelbase',
+        //   dataIndex: 'makeWheelbaseTitle',
+        // },
       ];
 
       let makeDetailsRecordExpandable: { title: string; dataIndex: string }[] = [

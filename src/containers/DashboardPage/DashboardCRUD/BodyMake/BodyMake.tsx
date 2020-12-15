@@ -1192,7 +1192,7 @@ const BodyMake: React.FC<Props> = ({
       {createBodyMakeAccessoryModal}
       {updateBodyMakeAccessoryModal}
 
-      <Layout>
+      <Layout style={{ overflow: 'hidden' }}>
         <NavbarComponent activePage="dashboard" />
         <LayoutComponent>
           <CustomContainer>

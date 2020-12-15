@@ -301,7 +301,7 @@ export function* createMakeSaga(action: AppActions) {
       brand_id: action.createMakeData.brand_id,
       engine_cap: action.createMakeData.engine_cap,
       horsepower: action.createMakeData.horsepower,
-      wheelbase_id: action.createMakeData.wheelbase_id,
+      // wheelbase_id: action.createMakeData.wheelbase_id,
       transmission: action.createMakeData.transmission,
     };
   }
@@ -369,7 +369,7 @@ export function* updateMakeSaga(action: AppActions) {
       brand_id: action.updateMakeData.brand_id,
       engine_cap: action.updateMakeData.engine_cap,
       horsepower: action.updateMakeData.horsepower,
-      wheelbase_id: action.updateMakeData.wheelbase_id,
+      // wheelbase_id: action.updateMakeData.wheelbase_id,
       transmission: action.updateMakeData.transmission,
     };
   }

@@ -5,7 +5,7 @@ import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/Lig
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import NumberFormat from 'react-number-format';
-import { Breadcrumb, Button, Card, Divider, Tag } from 'antd';
+import { Breadcrumb, Button, Card, Divider, Empty, Tag } from 'antd';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 /* Util */
 import { AppActions } from 'src/store/types';
@@ -156,10 +156,9 @@ const BodyMakeSection: React.FC<Props> = ({
                     <div className="sales__selectarea-card-row">
                       <div className="sales__selectarea-card-row-left--make">Length</div>
                       <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.length !== null || currentBodyMake.make.length !== 0
-                          ? currentBodyMake.make.length
+                        {currentBodyMake.length !== null && currentBodyMake.length !== 0
+                          ? `${currentBodyMake.length}mm`
                           : '-'}
-                        mm
                       </div>
                     </div>
                     <div className="sales__selectarea-card-row">
@@ -190,12 +189,14 @@ const BodyMakeSection: React.FC<Props> = ({
                   <section className="sales__selectarea-card-column">
                     <div className="sales__selectarea-card-row">
                       <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
-                      <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.tire}</div>
+                      <div className="sales__selectarea-card-row-right--make">
+                        {currentBodyMake.make.tire ? currentBodyMake.make.tire : '-'}
+                      </div>
                     </div>
                     <div className="sales__selectarea-card-row">
                       <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
                       <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.wheelbase.title ? `${currentBodyMake.make.wheelbase.title}mm` : '-'}
+                        {currentBodyMake.wheelbase ? `${currentBodyMake.wheelbase}mm` : '-'}
                       </div>
                     </div>
                     <div className="sales__selectarea-card-row">
@@ -313,62 +314,66 @@ const BodyMakeSection: React.FC<Props> = ({
               <>
                 {bodyMakesArray && (
                   <>
-                    {bodyMakesArray.map((bodyMake) => {
-                      return (
-                        <div className="sales__selectarea--brand" key={uuidv4()}>
-                          <div>
-                            <Divider
-                              orientation="left"
-                              className="sales__selectarea-categorydivider sales__selectarea-categorydivider--brand"
-                            >
-                              {/* The title of the brand */}
-                              {bodyMake.brand.title}
-                            </Divider>
-                          </div>
-                          {/* Groups of different series  */}
-                          {bodyMake.series &&
-                            bodyMake.series.map((series) => {
-                              return (
-                                <React.Fragment key={uuidv4()}>
-                                  <div className="sales__selectarea-seriestitle">{series.title}</div>
+                    {bodyMakesArray.length === 0 ? (
+                      <Empty />
+                    ) : (
+                      bodyMakesArray.map((bodyMake) => {
+                        return (
+                          <div className="sales__selectarea--brand" key={uuidv4()}>
+                            <div>
+                              <Divider
+                                orientation="left"
+                                className="sales__selectarea-categorydivider sales__selectarea-categorydivider--brand"
+                              >
+                                {/* The title of the brand */}
+                                {bodyMake.brand.title}
+                              </Divider>
+                            </div>
+                            {/* Groups of different series  */}
+                            {bodyMake.series &&
+                              bodyMake.series.map((series) => {
+                                return (
+                                  <React.Fragment key={uuidv4()}>
+                                    <div className="sales__selectarea-seriestitle">{series.title}</div>
 
-                                  <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
-                                    {/* loop the makes array */}
-                                    {series.body_makes.map((body_make) => {
-                                      return (
-                                        <div
-                                          key={uuidv4()}
-                                          className={`sales__selectarea-button                                            
+                                    <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
+                                      {/* loop the makes array */}
+                                      {series.body_makes.map((body_make) => {
+                                        return (
+                                          <div
+                                            key={uuidv4()}
+                                            className={`sales__selectarea-button                                            
                                          ${currentBodyMake?.make.id === body_make.make.id ? 'active' : ''}`}
-                                          onClick={() => {
-                                            //  if currentBodyMake contains an id
-                                            if (currentBodyMake?.make.id === body_make.make.id) {
-                                              // reset the selection
-                                              setCurrentBodyMake(null); //set content to null
-                                              setCurrentOrderObj({
-                                                ...currentOrderObj,
-                                                bodyMakeObj: null,
-                                              });
-                                            } else {
-                                              setCurrentBodyMake(body_make); //select the content of the preview card
-                                              setCurrentOrderObj({
-                                                ...currentOrderObj,
-                                                bodyMakeObj: body_make,
-                                              });
-                                            }
-                                          }}
-                                        >
-                                          <div>{body_make.make.title}</div>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </React.Fragment>
-                              );
-                            })}
-                        </div>
-                      );
-                    })}
+                                            onClick={() => {
+                                              //  if currentBodyMake contains an id
+                                              if (currentBodyMake?.make.id === body_make.make.id) {
+                                                // reset the selection
+                                                setCurrentBodyMake(null); //set content to null
+                                                setCurrentOrderObj({
+                                                  ...currentOrderObj,
+                                                  bodyMakeObj: null,
+                                                });
+                                              } else {
+                                                setCurrentBodyMake(body_make); //select the content of the preview card
+                                                setCurrentOrderObj({
+                                                  ...currentOrderObj,
+                                                  bodyMakeObj: body_make,
+                                                });
+                                              }
+                                            }}
+                                          >
+                                            <div>{body_make.make.title}</div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </React.Fragment>
+                                );
+                              })}
+                          </div>
+                        );
+                      })
+                    )}
                   </>
                 )}
               </>

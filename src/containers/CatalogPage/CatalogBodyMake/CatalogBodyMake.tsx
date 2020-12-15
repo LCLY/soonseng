@@ -106,8 +106,8 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                                           <div className="sales__selectarea-card-row">
                                             <div className="sales__selectarea-card-row-left--make">Length</div>
                                             <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.length !== null || bodyMake.make.length !== 0
-                                                ? bodyMake.make.length
+                                              {bodyMake.length !== null || bodyMake.length !== 0
+                                                ? bodyMake.length
                                                 : '-'}
                                               mm
                                             </div>
@@ -147,9 +147,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                                           <div className="sales__selectarea-card-row">
                                             <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
                                             <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.wheelbase.title
-                                                ? `${bodyMake.make.wheelbase.title}mm`
-                                                : '-'}
+                                              {bodyMake.wheelbase ? `${bodyMake.wheelbase}mm` : '-'}
                                             </div>
                                           </div>
                                           <div className="sales__selectarea-card-row">

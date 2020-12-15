@@ -46,8 +46,8 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
     <>
       <NavbarComponent />
       <div className="catalog__outerdiv">
-        <Container>
-          <div className="catalog__div">
+        <div className="catalog__div">
+          <Container>
             <div className="catalog__innerdiv">
               {catalogMakesArray ? (
                 catalogMakesArray.length > 0 ? (
@@ -119,8 +119,8 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
                 </div>
               )}
             </div>
-          </div>
-        </Container>
+          </Container>
+        </div>
       </div>
       <Footer />
     </>

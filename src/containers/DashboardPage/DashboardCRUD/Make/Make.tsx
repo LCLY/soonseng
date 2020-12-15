@@ -70,15 +70,15 @@ type TMakeTableState = {
   year: string;
   makeTitle: string;
   price: string;
-  makeLength: string;
+  // makeLength: string;
   available: boolean;
   engine_cap: string;
   horsepower: string;
   transmission: string;
   makeBrandId: number;
   makeBrandTitle: string;
-  makeWheelbaseId: number;
-  makeWheelbaseTitle: string;
+  // makeWheelbaseId: number;
+  // makeWheelbaseTitle: string;
   makeAbs: string;
   makeTorque: string;
   makeTire: string;
@@ -465,12 +465,12 @@ const Make: React.FC<Props> = ({
     let extractedHorsepower = '';
     let extractedPrice: number | null = null;
     let extractedGvw = '';
-    let extractedLength = '';
+    // let extractedLength = '';
 
     // replace units with empty strings
     extractedHorsepower = record.horsepower.replace('hp', '');
     extractedGvw = record.gvw.replace('kg', '');
-    extractedLength = record.makeLength.replace('mm', '');
+    // extractedLength = record.makeLength.replace('mm', '');
     if (record.price !== '') {
       extractedPrice = convertPriceToFloat(record.price);
     } else {
@@ -481,7 +481,7 @@ const Make: React.FC<Props> = ({
     updateMakeForm.setFieldsValue({
       makeId: record.makeId,
       makeBrandId: record.makeBrandId,
-      makeWheelbaseId: record.makeWheelbaseId,
+      // makeWheelbaseId: record.makeWheelbaseId,
       gvw: extractedGvw,
       year: moment(record.year),
       price: extractedPrice,
@@ -489,7 +489,7 @@ const Make: React.FC<Props> = ({
       engine_cap: record.engine_cap,
       horsepower: extractedHorsepower,
       transmission: record.transmission,
-      makeLength: extractedLength,
+      // makeLength: extractedLength,
       makeAbs: record.makeAbs,
       makeTorque: record.makeTorque,
       makeTire: record.makeTire,
@@ -576,7 +576,7 @@ const Make: React.FC<Props> = ({
   // Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
   type TCreateMakeFinishValues = {
     makeBrandId: string;
-    makeWheelbaseId: string;
+    // makeWheelbaseId: string;
     gvw: string;
     year: string;
     price: string;
@@ -591,7 +591,7 @@ const Make: React.FC<Props> = ({
   type TUpdateMakeFinishValues = {
     makeId: number;
     makeBrandId: string;
-    makeWheelbaseId: string;
+    // makeWheelbaseId: string;
     gvw: string;
     year: string;
     price: string;
@@ -616,7 +616,7 @@ const Make: React.FC<Props> = ({
       transmission: values.transmission,
       brand_id: values.makeBrandId.toString(),
       price: convertPriceToFloat(values.price),
-      wheelbase_id: values.makeWheelbaseId.toString(),
+      // wheelbase_id: values.makeWheelbaseId.toString(),
       year: moment(values.year).year().toString(), //convert to year
     };
 
@@ -643,7 +643,7 @@ const Make: React.FC<Props> = ({
       transmission: values.transmission,
       brand_id: values.makeBrandId.toString(),
       price: convertPriceToFloat(values.price),
-      wheelbase_id: values.makeWheelbaseId.toString(),
+      // wheelbase_id: values.makeWheelbaseId.toString(),
       year: moment(values.year).year().toString(), //convert to year
     };
 
@@ -1161,7 +1161,7 @@ const Make: React.FC<Props> = ({
             </Select>
           </Form.Item>
           {/* ------- Wheelbase - value is Wheelbase id but display is Wheelbase name  -------*/}
-          <Form.Item
+          {/* <Form.Item
             className="make__form-item make__form-item--make"
             label="Wheelbase"
             name="makeWheelbaseId"
@@ -1184,7 +1184,7 @@ const Make: React.FC<Props> = ({
                   );
                 })}
             </Select>
-          </Form.Item>
+          </Form.Item> */}
           {/* ------- Length ------- */}
           <Form.Item
             className="make__form-item make__form-item--make"
@@ -1503,8 +1503,8 @@ const Make: React.FC<Props> = ({
     const storeValue = (make: TReceivedMakeObj) => {
       let detailsCombinedString = ''; //use this combined string so that filter can work
       // manipulate the strings first
-      let concatLength = make.length;
-      let concatWheelbase = make.wheelbase.title + 'mm';
+      // let concatLength = make.length;
+      // let concatWheelbase = make.wheelbase.title + 'mm';
       let concatHorsePower = make.horsepower + 'hp';
       let concatGvw = make.gvw + 'kg';
       let concatPrice = '';
@@ -1516,8 +1516,8 @@ const Make: React.FC<Props> = ({
 
       // concatenate them
       detailsCombinedString +=
-        concatLength +
-        concatWheelbase +
+        // concatLength +
+        // concatWheelbase +
         concatHorsePower +
         concatGvw +
         concatPrice +
@@ -1543,7 +1543,7 @@ const Make: React.FC<Props> = ({
               maximumFractionDigits: 2,
             });
       let makeTitle = make.title === undefined || make.title === null ? '' : make.title;
-      let makeLength = make.length === undefined || make.length === null || make.length === 0 ? '' : make.length + 'mm';
+      // let makeLength = make.length === undefined || make.length === null || make.length === 0 ? '' : make.length + 'mm';
       let makeEngineCap = make.engine_cap === undefined || make.engine_cap === null ? '' : make.engine_cap;
       let makeHorsepower =
         make.horsepower === undefined || make.horsepower === null || make.horsepower === ''
@@ -1551,8 +1551,8 @@ const Make: React.FC<Props> = ({
           : make.horsepower + 'hp';
       let makeTransmission = make.transmission === undefined || make.transmission === null ? '' : make.transmission;
       let makeBrandTitle = make.brand.title === undefined || make.brand.title === null ? '' : make.brand.title;
-      let makeWheelbaseTitle =
-        make.wheelbase.title === undefined || make.wheelbase.title === null ? '' : make.wheelbase.title + 'mm';
+      // let makeWheelbaseTitle =
+      // make.wheelbase.title === undefined || make.wheelbase.title === null ? '' : make.wheelbase.title + 'mm';
       let makeAbs = make.abs === undefined || make.abs === null ? '' : make.abs;
       let makeTorque = make.torque === undefined || make.torque === null ? '' : make.torque;
       let makeTire = make.tire === undefined || make.tire === null ? '' : make.tire;
@@ -1568,7 +1568,7 @@ const Make: React.FC<Props> = ({
           year: makeYear,
           makeId: make.id,
           price: makePrice,
-          makeLength: makeLength,
+          // makeLength: makeLength,
           makeTitle: makeTitle,
           available: make.available,
           engine_cap: makeEngineCap,
@@ -1578,8 +1578,8 @@ const Make: React.FC<Props> = ({
           makeBrandId: make.brand.id,
           makeBrandTitle: makeBrandTitle,
           makeSeries: makeSeries,
-          makeWheelbaseId: make.wheelbase.id,
-          makeWheelbaseTitle: makeWheelbaseTitle,
+          // makeWheelbaseId: make.wheelbase.id,
+          // makeWheelbaseTitle: makeWheelbaseTitle,
           makeImages: make.images, //the whole array of images
           makeAbs: makeAbs,
           makeTorque: makeTorque,

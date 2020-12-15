@@ -2,28 +2,42 @@
   &__outerdiv {
     flex: 1;
     padding-top: $navbar-height; //height of navbar
-    background: $soonseng-grey;
-    margin-top: 2rem;
+    // background: $soonseng-grey;
+
     @include respond-to(phone-only) {
       padding-top: 70px; //height of navbar
     }
+    background-color: #ffffff;
+    // background-image: url('https://wallpaperaccess.com/full/622551.jpg');
+    // background-image: url('https://images.pexels.com/photos/69932/tabby-cat-close-up-portrait-69932.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500');
+    // background-image: url('https://i.pinimg.com/originals/cf/08/5d/cf085de99662fc50d8bc78adb47cc596.gif');
+    background-image: url('https://64.media.tumblr.com/2d51b4961fc25f3d6a9c8be1293d1445/ce34d49d383263ca-10/s2048x3072_c7733,971,95348,88664/1d00624d7f705c07d29a17e0eb509119234ac722.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    // width: 100vw;
+    // height: 100vh;
+    // background-image: linear-gradient(to right, $primary-color-4 50%, black 50%);
   }
 
   &__div {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: calc(100vh);
+    overflow-y: auto;
   }
 
   // div wrapping the steps and the content
   &__innerdiv {
+    // padding-top: 5rem;
     display: flex;
     justify-content: center;
     flex-direction: column;
     padding-bottom: 10%;
-    min-height: calc(100vh - 58rem);
+    // min-height: calc(100vh - 58rem);
     // height: calc(100vh - 58rem);
-    width: 80rem;
+    // width: 80rem;
   }
 
   &__grid {
@@ -205,15 +219,40 @@
 
   &__brand {
     &-title {
-      background: $primary-color-4;
+      // background: $primary-color-4;
+      // position: absolute;
+      // top: 50%;
+      // width: 100vw;
+      // padding-top: 50rem;
       font-size: 10rem;
       font-family: $font-firesans;
       text-align: center;
       color: white;
       padding: 2rem 0;
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.301);
+      backdrop-filter: blur(15px);
+      // border: 1px solid white;
 
       @include respond-to(phone-only) {
         font-size: 3rem;
+      }
+
+      // @include shadow-func(2rem, 2rem, 1rem, 0.05rem, rgba(255, 255, 255, 0.548));
+      /*  glass morphism */
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 1rem;
+        z-index: -1;
+        background: rgba(131, 129, 129, 0);
+
+        // border-radius: 20px;
+        // border: 1px solid rgba(255, 255, 255, 0.2);
       }
     }
     &-div {
