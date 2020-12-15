@@ -44,7 +44,7 @@ export const findByTestAttribute = (component: any, attribute: string) => {
  * @return {*}
  */
 /* ========================================== */
-export const setAxiosHeaderConfig = (action: AppActions) => {
+export const setAxiosHeaderToken = (action: AppActions) => {
   let config = {};
   if ('auth_token' in action) {
     config = {

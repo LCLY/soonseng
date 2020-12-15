@@ -29,6 +29,7 @@ export type TReceivedCatalogMakeObj = {
 
 export interface GetCatalogMakesAction {
   type: typeof actionTypes.GET_CATALOG_MAKES;
+  auth_token: string | null;
 }
 export interface GetCatalogMakesStartAction {
   type: typeof actionTypes.GET_CATALOG_MAKES_START;

@@ -1,4 +1,15 @@
 .catalogbodymake {
+  &__innerdiv {
+    // div wrapping the steps and the content
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-bottom: 10%;
+    min-height: calc(100vh - 58rem);
+    // height: calc(100vh - 58rem);
+    // width: 80rem;
+  }
   &__section {
     &-div {
       background: $primary-color-4;

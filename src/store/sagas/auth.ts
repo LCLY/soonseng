@@ -2,7 +2,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import axios from 'axios';
-import { setPromiseError, setAxiosHeaderConfig } from 'src/shared/Utils';
+import { setPromiseError, setAxiosHeaderToken } from 'src/shared/Utils';
 
 /* ================================================================== */
 //   Authentication
@@ -45,8 +45,8 @@ export function* signInSaga(action: AppActions) {
 export function* getUserInfoSaga(action: AppActions) {
   yield put(actions.getUserInfoStart());
 
-  // Setting Axios header config
-  let config = setAxiosHeaderConfig(action);
+  // Setting Axios header token config
+  let config = setAxiosHeaderToken(action);
 
   let url = process.env.REACT_APP_API + `/get_user_info`;
 
