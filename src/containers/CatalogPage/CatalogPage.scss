@@ -19,20 +19,6 @@
 
   &__div {
     padding: 5rem 1rem 5rem 1rem;
-
-    &::-webkit-scrollbar {
-      width: 0.5rem !important;
-      height: 0.5rem !important;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: white !important;
-      border-radius: 1rem !important;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.678) !important;
-    }
   }
 
   // div wrapping the steps and the content
@@ -338,6 +324,7 @@
 
       @include respond-to(tablet-portrait-up) {
         margin: 0 5rem;
+        width: 30rem;
       }
       @include respond-to(tablet-landscape-up) {
         width: 30rem;
