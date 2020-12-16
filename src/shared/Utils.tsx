@@ -364,6 +364,18 @@ export const splitArray = (bigArray: any[], size: number) => {
   return tempArray;
 };
 
+/**
+ * Take strings and change empty space to desired character
+ * @param {string} incomingString
+ * @param {string} replaceWithThisChar
+ * @return {*}
+ */
+export const convertSpaceInStringWithChar = (incomingString: string, replaceWithThisChar: string) => {
+  let resultString = incomingString.replace(/\s+/g, replaceWithThisChar);
+
+  return resultString;
+};
+
 /* ============================================================================= */
 /* ============================================================================= */
 /* ============================================================================= */

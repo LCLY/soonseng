@@ -58,7 +58,7 @@ const App: React.FC<Props> = ({ accessObj }) => {
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
-        <Route exact path={`${ROUTE_CATALOG}/:make_id`} component={CatalogBodyMake} />
+        <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
         {/* dashboard */}
         <Route exact path={ROUTE_DASHBOARD.main} component={DashboardPage} />
         <Route exact path={ROUTE_DASHBOARD.make} component={Make} />
@@ -83,7 +83,7 @@ const App: React.FC<Props> = ({ accessObj }) => {
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
-        <Route exact path={`${ROUTE_CATALOG}/:make_id`} component={CatalogBodyMake} />
+        <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
         {/* authentication */}
         <Route exact path={ROUTE_LOGIN} component={LoginPage} />
         <Route exact path={ROUTE_LOGOUT} component={Logout} />

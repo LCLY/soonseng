@@ -14,6 +14,7 @@ import { Empty, Skeleton } from 'antd';
 import { RootState } from 'src';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
+import { convertSpaceInStringWithChar } from 'src/shared/Utils';
 import { TReceivedCatalogMakeObj } from 'src/store/types/catalog';
 
 interface CatalogPageProps {}
@@ -43,6 +44,7 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
   return (
     <>
       <NavbarComponent />
+      {/* background image in outerdiv */}
       <div className="catalog__outerdiv">
         <div className="catalog__div">
           {catalogMakesArray ? (
@@ -50,8 +52,11 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
               <div className="catalog__innerdiv">
                 {catalogMakesArray.map((catalog) => {
                   return (
+                    // div wrapping brand along with its series
                     <div className="catalog__brand-div" key={uuidv4()}>
+                      {/* brand title */}
                       <div className="catalog__brand-title"> {catalog.brand.title}</div>
+                      {/* series section */}
                       <section className="catalog__section-series">
                         {catalog.series.map((series, index) => {
                           // if array is odd number, on the last row, make it display flex
@@ -64,11 +69,15 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
                                 <div className="catalog__section-series-innerdiv">
                                   <div className={`catalog__grid ${arrayIsOddNumber ? 'catalog__grid--full' : ''}`}>
                                     {series.makes.map((make) => {
+                                      let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
+                                        series.title,
+                                        '',
+                                      )}-${convertSpaceInStringWithChar(make.title, '')}`;
                                       return (
                                         <div
                                           key={uuidv4()}
                                           className="catalog__card"
-                                          onClick={() => history.push(`${ROUTE_CATALOG}/${make.id}`)}
+                                          onClick={() => history.push(`${ROUTE_CATALOG}/${model_detail}/${make.id}`)}
                                         >
                                           {make.images.length > 0 ? (
                                             <img
