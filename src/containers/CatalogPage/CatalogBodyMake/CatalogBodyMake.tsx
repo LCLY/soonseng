@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CatalogBodyMake.scss';
 /*Components*/
 import Footer from 'src/components/Footer/Footer';
 import Container from 'src/components/CustomContainer/CustomContainer';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
@@ -32,17 +33,179 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
   /* ================================================== */
   /*  state */
   /* ================================================== */
+  const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
+
+  let bodyMakeDetailRowArray: { title: string; data: string }[] = [];
+  if (currentBodyMake) {
+    bodyMakeDetailRowArray = [
+      {
+        title: 'Length',
+        data: currentBodyMake.length !== null && currentBodyMake.length !== 0 ? `${currentBodyMake.length}mm` : '-',
+      },
+      {
+        title: 'Config',
+        data:
+          currentBodyMake.make.config !== null && currentBodyMake.make.config !== ''
+            ? `${currentBodyMake.make.config}`
+            : '-',
+      },
+      {
+        title: 'Torque',
+        data:
+          currentBodyMake.make.torque !== null && currentBodyMake.make.torque !== ''
+            ? `${currentBodyMake.make.torque}`
+            : '-',
+      },
+      {
+        title: 'Horsepower',
+        data:
+          currentBodyMake.make.horsepower !== null && currentBodyMake.make.horsepower !== ''
+            ? `${currentBodyMake.make.horsepower}PC`
+            : '-',
+      },
+      {
+        title: 'Emission',
+        data:
+          currentBodyMake.make.emission !== null && currentBodyMake.make.emission !== ''
+            ? `${currentBodyMake.make.emission}`
+            : '-',
+      },
+      {
+        title: 'Tire Count',
+        data: currentBodyMake.make.tire !== null && currentBodyMake.make.tire !== '' ? currentBodyMake.make.tire : '-',
+      },
+      {
+        title: 'Wheelbase',
+        data:
+          currentBodyMake.wheelbase !== null && currentBodyMake.wheelbase !== ''
+            ? `${currentBodyMake.wheelbase}mm`
+            : '-',
+      },
+      {
+        title: 'Transmission',
+        data:
+          currentBodyMake.make.transmission !== null && currentBodyMake.make.transmission !== ''
+            ? `${currentBodyMake.make.transmission}`
+            : '-',
+      },
+      {
+        title: 'Engine Capacity',
+        data:
+          currentBodyMake.make.engine_cap !== null && currentBodyMake.make.engine_cap !== ''
+            ? `${currentBodyMake.make.engine_cap}CC`
+            : '-',
+      },
+      {
+        title: 'Year',
+        data:
+          currentBodyMake.make.year !== null && currentBodyMake.make.year !== '' ? `${currentBodyMake.make.year}` : '-',
+      },
+      {
+        title: 'GVW',
+        data:
+          currentBodyMake.make.gvw !== null && currentBodyMake.make.gvw !== '' ? `${currentBodyMake.make.gvw}kg` : '-',
+      },
+    ];
+  }
+
   /* ================================================== */
-  /*  method */
+  /*  component */
   /* ================================================== */
+
+  let MakeDetailsComponent = (props: { bodyMake: TReceivedBodyMakeObj }) => {
+    const { bodyMake } = props;
+    return (
+      <div className="catalogbodymake__detail-div">
+        <div style={{ width: '100%' }}>
+          <div className="catalogbodymake__detail-model">
+            <div className="catalogbodymake__detail-model-text">{bodyMake.make.title}</div>
+          </div>
+
+          <section className="catalogbodymake__detail-body">
+            {bodyMakeDetailRowArray.length > 0 &&
+              bodyMakeDetailRowArray.map((detail) => (
+                <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
+                  <div className="catalogbodymake__detail-body-row-left">{detail.title}</div>
+                  <div className="catalogbodymake__detail-body-row-right">{detail.data}</div>
+                </div>
+              ))}
+          </section>
+        </div>
+
+        {/* {accessObj?.showPriceSalesPage && (
+          <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
+            <div className="sales__selectarea-card-row-left">Model Price</div>
+
+            <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
+              {bodyMake?.make.price === 0 || bodyMake?.make.price === null ? (
+                '-'
+              ) : (
+                <>
+                  RM
+                  <NumberFormat value={bodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
+                </>
+              )}
+            </div>
+          </div>
+        )} */}
+        {/* <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
+          <div className="sales__selectarea-card-row-left">Dimension</div>
+          <div className="sales__selectarea-card-row-right">
+            {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
+              <Tag className="flex" color="red">
+                <div className="sales__selectarea-card-dimension">Width:&nbsp;</div>
+                <div className="sales__selectarea-card-dimension">{bodyMake?.width}</div>
+              </Tag>
+            )}
+
+            {bodyMake?.depth !== null && bodyMake?.depth !== '' && bodyMake?.depth !== null && (
+              <Tag className="flex" color="orange">
+                <div className="sales__selectarea-card-dimension">Depth:&nbsp;</div>
+                <div className="sales__selectarea-card-dimension">{bodyMake?.depth}</div>
+              </Tag>
+            )}
+
+            {bodyMake?.height !== null && bodyMake?.height !== '' && bodyMake?.height !== null && (
+              <Tag className="flex" color="volcano">
+                <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
+                <div className="sales__selectarea-card-dimension">{bodyMake?.height}</div>
+              </Tag>
+            )}
+          </div> 
+        </div>*/}
+        {/* {accessObj?.showPriceSalesPage && (
+          <div className="sales__selectarea-card-row">
+            <div className="sales__selectarea-card-row-left">Body Price</div>
+
+            <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
+              {bodyMake?.price === 0 || bodyMake?.price === null ? (
+                '-'
+              ) : (
+                <>
+                  RM
+                  <NumberFormat value={bodyMake?.price} displayType={'text'} thousandSeparator={true} />
+                </>
+              )}
+            </div>
+          </div>
+        )} */}
+      </div>
+    );
+  };
+
   /* ================================================== */
   /*  useEffect */
+
+  useEffect(() => {
+    if (catalogBodyMakesArray) {
+      setCurrentBodyMake(catalogBodyMakesArray[0]);
+    }
+  }, [catalogBodyMakesArray, setCurrentBodyMake]);
+
   useEffect(() => {
     onGetCatalogBodyMakes(parseInt(match.params.make_id));
   }, [onGetCatalogBodyMakes, match.params.make_id]);
-  if (accessObj === undefined) {
-    return null;
-  }
+
   /* ================================================== */
   /* ================================================== */
   /* ================================================== */
@@ -52,237 +215,37 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
       <div className="catalog__outerdiv">
         <Container>
           <div className="catalog__div">
-            <div className="catalogbodymake__innerdiv">
-              {catalogBodyMakesArray ? (
-                catalogBodyMakesArray.length > 0 ? (
+            {catalogBodyMakesArray ? (
+              catalogBodyMakesArray.length > 0 ? (
+                <div className="catalogbodymake__innerdiv">
                   <>
                     <div>
                       <div className="catalog__brand-title"> {catalogBodyMakesArray[0].make.brand.title}</div>
-                      <div className="catalog__series-title margin_t-2"> {catalogBodyMakesArray[0].make.series}</div>
                       <section className="catalogbodymake__section-div">
+                        <div className="catalog__series-title margin_t-2"> {catalogBodyMakesArray[0].make.series}</div>
+                        <section className="catalogbodymake__section-banner">
+                          <div className="catalogbodymake__banner-div">
+                            <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
+                          </div>
+                          <MakeDetailsComponent bodyMake={catalogBodyMakesArray[0]} />
+                        </section>
                         <div className="catalog__grid">
-                          <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
                           {catalogBodyMakesArray.map((bodyMake) => {
-                            return (
-                              <Card
-                                key={uuidv4()}
-                                className="catalogbodymake__card"
-                                style={{ width: 240 }}
-                                cover={
-                                  bodyMake.images.length > 0 ? (
-                                    <img
-                                      className="catalogbodymake__card-skeleton-image"
-                                      src={bodyMake.images[0].url}
-                                      alt={bodyMake.images[0].filename}
-                                    />
-                                  ) : (
-                                    <Skeleton.Image className="catalogbodymake__card-skeleton-image" />
-                                  )
-                                }
-                              >
-                                <Meta
-                                  title={bodyMake.body.title}
-                                  description={
-                                    <>
-                                      {bodyMake.width}
-                                      {bodyMake.depth}
-                                      {bodyMake.height}
-                                      <div className="flex">
-                                        <section className="sales__selectarea-card-column">
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Model</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.title}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Series</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.series === null || bodyMake.make.series === ''
-                                                ? '-'
-                                                : bodyMake.make.series}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Length</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.length !== null || bodyMake.length !== 0
-                                                ? bodyMake.length
-                                                : '-'}
-                                              mm
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Config</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.config ? bodyMake.make.config : '-'}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Torque</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.torque ? bodyMake.make.torque : '-'}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Horsepower</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.horsepower ? `${bodyMake.make.horsepower}PC` : '-'}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Emission</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.emission ? bodyMake.make.emission : '-'}
-                                            </div>
-                                          </div>
-                                        </section>
-                                        <section className="sales__selectarea-card-column">
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.tire}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.wheelbase ? `${bodyMake.wheelbase}mm` : '-'}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Transmission</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.transmission ? bodyMake.make.transmission : '-'}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Engine Capacity</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.engine_cap ? `${bodyMake.make.engine_cap}CC` : '-'}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">Year</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.year ? bodyMake.make.year : '-'}
-                                            </div>
-                                          </div>
-                                          <div className="sales__selectarea-card-row">
-                                            <div className="sales__selectarea-card-row-left--make">GVW</div>
-                                            <div className="sales__selectarea-card-row-right--make">
-                                              {bodyMake.make.gvw ? `${bodyMake.make.gvw}kg` : '-'}
-                                            </div>
-                                          </div>
-                                        </section>
-                                      </div>
-                                      {accessObj.showPriceSalesPage && (
-                                        <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
-                                          <div className="sales__selectarea-card-row-left">Model Price</div>
-
-                                          <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
-                                            {bodyMake?.make.price === 0 || bodyMake?.make.price === null ? (
-                                              '-'
-                                            ) : (
-                                              <>
-                                                RM
-                                                <NumberFormat
-                                                  value={bodyMake?.make.price}
-                                                  displayType={'text'}
-                                                  thousandSeparator={true}
-                                                />
-                                              </>
-                                            )}
-                                          </div>
-                                        </div>
-                                      )}
-                                      <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
-                                        <div className="sales__selectarea-card-row-left">Dimension</div>
-                                        <div className="sales__selectarea-card-row-right">
-                                          {bodyMake?.width !== null &&
-                                            bodyMake?.width !== '' &&
-                                            bodyMake?.width !== null && (
-                                              <Tag className="flex" color="red">
-                                                <div className="sales__selectarea-card-dimension">Width:&nbsp;</div>
-                                                <div className="sales__selectarea-card-dimension">
-                                                  {bodyMake?.width}
-                                                </div>
-                                              </Tag>
-                                            )}
-
-                                          {bodyMake?.depth !== null &&
-                                            bodyMake?.depth !== '' &&
-                                            bodyMake?.depth !== null && (
-                                              <Tag className="flex" color="orange">
-                                                <div className="sales__selectarea-card-dimension">Depth:&nbsp;</div>
-                                                <div className="sales__selectarea-card-dimension">
-                                                  {bodyMake?.depth}
-                                                </div>
-                                              </Tag>
-                                            )}
-
-                                          {bodyMake?.height !== null &&
-                                            bodyMake?.height !== '' &&
-                                            bodyMake?.height !== null && (
-                                              <Tag className="flex" color="volcano">
-                                                <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
-                                                <div className="sales__selectarea-card-dimension">
-                                                  {bodyMake?.height}
-                                                </div>
-                                              </Tag>
-                                            )}
-                                        </div>
-                                      </div>
-                                      {accessObj.showPriceSalesPage && (
-                                        <div className="sales__selectarea-card-row">
-                                          <div className="sales__selectarea-card-row-left">Body Price</div>
-
-                                          <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                                            {bodyMake?.price === 0 || bodyMake?.price === null ? (
-                                              '-'
-                                            ) : (
-                                              <>
-                                                RM
-                                                <NumberFormat
-                                                  value={bodyMake?.price}
-                                                  displayType={'text'}
-                                                  thousandSeparator={true}
-                                                />
-                                              </>
-                                            )}
-                                          </div>
-                                        </div>
-                                      )}
-                                    </>
-                                  }
-                                />
-                              </Card>
-                            );
+                            return <div>{bodyMake.body.title}</div>;
                           })}
                         </div>
                       </section>
                     </div>
                   </>
-                ) : (
-                  <Empty />
-                )
-              ) : (
-                <div>
-                  <div className="catalog__grid">
-                    {[1, 2, 3, 4, 5, 6].map((num) => (
-                      <Card
-                        key={num + uuidv4()}
-                        className="catalog__card-skeleton"
-                        style={{ width: 240 }}
-                        cover={<Skeleton.Image className="catalog__card-skeleton-image" />}
-                      >
-                        <Meta description={<Skeleton paragraph={{ rows: 2, width: '100%' }} active />} />
-                      </Card>
-                    ))}
-                  </div>
                 </div>
-              )}
-            </div>
+              ) : (
+                <Empty />
+              )
+            ) : (
+              <div className="catalog__loading-div">
+                <Ripple />
+              </div>
+            )}
           </div>
         </Container>
       </div>

@@ -1,20 +1,28 @@
 .catalogbodymake {
   &__innerdiv {
     // div wrapping the steps and the content
-
     display: flex;
     justify-content: center;
     flex-direction: column;
     padding-bottom: 10%;
     min-height: calc(100vh - 58rem);
-    // height: calc(100vh - 58rem);
-    // width: 80rem;
   }
+
+  /* ============================ */
+  // sections
+  /* ============================ */
   &__section {
     &-div {
       background: $primary-color-4;
       padding: 1.5rem 2rem;
       border-radius: 1rem;
+
+      @include glassMorph(rgba($primary-color-4, 0.3), 20px, rgba(44, 44, 44, 0.308), 1rem);
+    }
+
+    &-banner {
+      display: flex;
+      height: 50rem;
     }
   }
 
@@ -22,9 +30,106 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    grid-row: 1 / span 2;
-    grid-column: 1 / span 2;
+    /* -------------- */
+    // div wrapping the banner
+    /* -------------- */
+    &-div {
+      width: 75%;
+    }
   }
+
+  /* ========================== */
+  // the detail beside the banner
+  /* ========================== */
+  &__detail {
+    &-div {
+      padding: 2rem;
+      width: 25%;
+      display: flex;
+      justify-content: center;
+      background: rgba($primary-color-4, 0.5);
+      // @include glassMorph(rgba(255, 255, 255, 0.103), 20px, rgba(255, 255, 255, 0.562), 0);
+      z-index: 1;
+    }
+
+    /* ------------ */
+    // The model name
+    /* ------------ */
+    &-model {
+      text-align: center;
+      transform: skew(-30deg);
+      border-top: 2px solid white;
+      background: $primary-color-4;
+      color: white;
+      font-family: $font-firesans;
+      padding: 0.5rem 0;
+      @include shadow-func(0.1rem, 0.1rem, 0.3rem, 0.2rem, rgba(233, 233, 233, 0.212));
+
+      &-text {
+        color: white;
+        transform: skew(30deg);
+        font-size: 2rem;
+      }
+    }
+
+    //* --------------- */
+    // the body containing the rest of the content
+    //* --------------- */
+    &-body {
+      margin-top: 2rem;
+      color: white;
+
+      /* each row of the details within the card*/
+      &-row {
+        display: flex;
+        align-items: center;
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+        // left part of the row
+        &-left {
+          width: 52%;
+          font-family: $font-firesans;
+          color: white;
+        }
+
+        /* right part of the row */
+        &-right {
+          display: block !important;
+          width: calc(55%);
+          display: flex;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      /* ------------- */
+      // price in the card
+      /* ------------- */
+      &-price {
+        font-weight: bolder;
+        color: $primary-color-4;
+        font-family: $font-opensans;
+        @include respond-to(phone-only) {
+          font-size: 1.2rem;
+        }
+        @include respond-to(tablet-portrait-up) {
+          font-size: 1.5rem;
+        }
+        // price for model
+        &--model {
+          color: black;
+          @include respond-to(phone-only) {
+            font-size: 1rem;
+          }
+          @include respond-to(tablet-portrait-up) {
+            font-size: 1.3rem;
+          }
+        }
+      }
+    }
+  }
+
   &__card {
     // height: 25rem;
     width: 100% !important;
