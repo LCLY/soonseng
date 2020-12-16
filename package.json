@@ -81,6 +81,8 @@
   },
   "devDependencies": {
     "@types/react-slick": "^0.23.4",
-    "craco-sass-resources-loader": "^1.1.0"
+    "craco-sass-resources-loader": "^1.1.0",
+    "typedoc": "^0.19.2",
+    "typedoc-plugin-external-module-name": "^4.0.3"
   }
 }

@@ -5,6 +5,7 @@ $break-tablet: 768px;
 $break-medium: 1200px;
 
 // if have scss intellisense it will autocomplete the variable
+$small-phone: small-phone;
 $phone-only: phone-only;
 $tablet-portrait-up: tablet-portrait-up;
 $tablet-landscape-up: tablet-landscape-up;
@@ -32,12 +33,18 @@ $big-desktop-up: big-desktop-up;
 //   }
 // }
 @mixin respond-to($range) {
+  $small-phone-upper-boundary: 576px;
   $phone-upper-boundary: 768px;
   $tablet-portrait-upper-boundary: 900px;
   $tablet-landscape-upper-boundary: 1200px;
   $desktop-upper-boundary: 1800px;
 
-  @if $range == phone-only {
+  @if $range == small-phone {
+    // <= 576px
+    @media (max-width: #{$small-phone-upper-boundary - 1}) {
+      @content;
+    }
+  } @else if $range == phone-only {
     // <= 767px
     @media (max-width: #{$phone-upper-boundary - 1}) {
       @content;

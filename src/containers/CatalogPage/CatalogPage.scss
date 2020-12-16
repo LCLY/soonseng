@@ -149,7 +149,7 @@
     @include respond-to($tablet-portrait-up) {
       grid-gap: 2rem;
       grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 15vh; //height of each row
+      grid-auto-rows: 20rem; //height of each row
     }
     @include respond-to($tablet-landscape-up) {
       grid-gap: 2rem;
