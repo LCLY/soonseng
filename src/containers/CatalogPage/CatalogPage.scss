@@ -3,6 +3,7 @@
     flex: 1;
     padding-top: $navbar-height; //height of navbar
     // background: $soonseng-grey;
+    min-height: 100vh;
 
     @include respond-to(phone-only) {
       padding-top: 51.58px; //height of navbar
@@ -18,8 +19,7 @@
 
   &__div {
     padding: 5rem 1rem 5rem 1rem;
-    // height: calc(100vh);
-    // overflow-y: auto;
+
     &::-webkit-scrollbar {
       width: 0.5rem !important;
       height: 0.5rem !important;
@@ -331,8 +331,9 @@
 
       @include respond-to(phone-only) {
         font-size: 3rem;
-        width: auto;
-        margin: 0 2.5rem;
+        width: 20rem;
+        padding: 1rem 0;
+        margin-left: 0;
       }
 
       @include respond-to(tablet-portrait-up) {
@@ -384,9 +385,19 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      height: 100%;
+
       background: white;
       @include glassMorph(rgba(255, 255, 255, 0), 20px, rgba(0, 0, 0, 0), 2rem);
+
+      @include respond-to($phone-only) {
+        height: 80vh;
+      }
+      @include respond-to($tablet-portrait-up) {
+        height: 80vh;
+      }
+      @include respond-to($tablet-landscape-up) {
+        height: 100vh;
+      }
     }
   }
 }
