@@ -2,20 +2,20 @@ import React, { useEffect } from 'react';
 import './CatalogPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
-// import Container from 'src/components/CustomContainer/CustomContainer';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { AnyAction, Dispatch } from 'redux';
-import { Card, Empty, Skeleton } from 'antd';
+import { Empty, Skeleton } from 'antd';
 /* Util */
 import { RootState } from 'src';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
 import { TReceivedCatalogMakeObj } from 'src/store/types/catalog';
-const { Meta } = Card;
+
 interface CatalogPageProps {}
 
 type Props = CatalogPageProps & StateProps & DispatchProps & RouteComponentProps;
@@ -45,11 +45,10 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
       <NavbarComponent />
       <div className="catalog__outerdiv">
         <div className="catalog__div">
-          {/* <Container> */}
-          <div className="catalog__innerdiv">
-            {catalogMakesArray ? (
-              catalogMakesArray.length > 0 ? (
-                catalogMakesArray.map((catalog) => {
+          {catalogMakesArray ? (
+            catalogMakesArray.length > 0 ? (
+              <div className="catalog__innerdiv">
+                {catalogMakesArray.map((catalog) => {
                   return (
                     <div className="catalog__brand-div" key={uuidv4()}>
                       <div className="catalog__brand-title"> {catalog.brand.title}</div>
@@ -94,28 +93,16 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
                       </section>
                     </div>
                   );
-                })
-              ) : (
-                <Empty />
-              )
-            ) : (
-              <div>
-                <div className="catalog__grid">
-                  {[1, 2, 3, 4, 5, 6].map((num) => (
-                    <Card
-                      key={num + uuidv4()}
-                      className="catalog__card-skeleton"
-                      style={{ width: 240 }}
-                      cover={<Skeleton.Image className="catalog__card-skeleton-image" />}
-                    >
-                      <Meta description={<Skeleton paragraph={{ rows: 2, width: '100%' }} active />} />
-                    </Card>
-                  ))}
-                </div>
+                })}
               </div>
-            )}
-          </div>
-          {/* </Container> */}
+            ) : (
+              <Empty />
+            )
+          ) : (
+            <div className="catalog__loading-div">
+              <Ripple />
+            </div>
+          )}
         </div>
       </div>
       <Footer />

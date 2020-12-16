@@ -175,11 +175,13 @@ $big-desktop-up: big-desktop-up;
 @mixin glassMorph(
   $frontLayerColor: rgba(255, 255, 255, 0.103),
   $blur: 20px,
-  $secondLayerColor: rgba(44, 41, 41, 0.123)
+  $secondLayerColor: rgba(44, 41, 41, 0.123),
+  $borderRadius: 0
 ) {
   // main background
   background: unquote($frontLayerColor);
   backdrop-filter: blur(unquote($blur));
+  border-radius: $borderRadius;
   // second layer behind the main background
   &:before {
     content: '';
@@ -189,6 +191,7 @@ $big-desktop-up: big-desktop-up;
     left: 0;
     right: 0;
     bottom: 0;
+    border-radius: $borderRadius;
     background: rgba(44, 41, 41, 0.123);
   }
 }
