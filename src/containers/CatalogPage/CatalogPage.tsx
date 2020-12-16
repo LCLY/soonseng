@@ -54,34 +54,38 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
                     <div className="catalog__brand-div" key={uuidv4()}>
                       <div className="catalog__brand-title"> {catalog.brand.title}</div>
                       <section className="catalog__section-series">
-                        {catalog.series.map((series) => {
-                          return (
-                            <div key={uuidv4()}>
-                              <div className="catalog__series-title">{series.title}</div>
-                              <div className="catalog__section-series-innerdiv">
-                                <div className="catalog__grid">
-                                  {series.makes.map((make) => {
-                                    return (
-                                      <div
-                                        key={uuidv4()}
-                                        className="catalog__card"
-                                        onClick={() => history.push(`${ROUTE_CATALOG}/${make.id}`)}
-                                      >
-                                        {make.images.length > 0 ? (
-                                          <img
-                                            className="catalog__card-skeleton-image"
-                                            src={make.images[0].url}
-                                            alt={make.images[0].filename}
-                                          />
-                                        ) : (
-                                          <Skeleton.Image className="catalog__card-image" />
-                                        )}
+                        {catalog.series.map((series, index) => {
+                          // if array is odd number, on the last row, make it display flex
+                          let arrayIsOddNumber = catalog.series.length % 2 !== 0 && index === catalog.series.length - 1;
 
-                                        <div className="catalog__card-label">{make.title}</div>
-                                        <div className="catalog__card-label-fold">{make.title}</div>
-                                      </div>
-                                    );
-                                  })}
+                          return (
+                            <div key={uuidv4()} className={arrayIsOddNumber ? 'fullcolspan' : ''}>
+                              <div className="catalog__section-series-outerdiv">
+                                <div className="catalog__series-title">{series.title}</div>
+                                <div className="catalog__section-series-innerdiv">
+                                  <div className={`catalog__grid ${arrayIsOddNumber ? 'catalog__grid--full' : ''}`}>
+                                    {series.makes.map((make) => {
+                                      return (
+                                        <div
+                                          key={uuidv4()}
+                                          className="catalog__card"
+                                          onClick={() => history.push(`${ROUTE_CATALOG}/${make.id}`)}
+                                        >
+                                          {make.images.length > 0 ? (
+                                            <img
+                                              className="catalog__card-image"
+                                              src={make.images[0].url}
+                                              alt={make.images[0].filename}
+                                            />
+                                          ) : (
+                                            <Skeleton.Image className="catalog__card-image" />
+                                          )}
+
+                                          <div className="catalog__card-label">{make.title}</div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
                               </div>
                             </div>

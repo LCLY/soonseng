@@ -47,7 +47,7 @@
     "react-resizable": "^1.11.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.4",
+    "react-scripts": "^3.4.0",
     "react-scroll-parallax": "^2.3.4",
     "react-slick": "^0.27.13",
     "react-transition-group": "^4.4.1",
@@ -62,8 +62,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
-    "generate-docs": "typedoc --out docs --exclude \"**/*+(index).ts\" --exclude \"**/store/actions/*+(actionTypes|sales).ts\" --exclude \"**/store/reducers/*.ts\" src"
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -82,8 +81,6 @@
   },
   "devDependencies": {
     "@types/react-slick": "^0.23.4",
-    "craco-sass-resources-loader": "^1.1.0",
-    "typedoc": "^0.19.2",
-    "typedoc-plugin-external-module-name": "^4.0.3"
+    "craco-sass-resources-loader": "^1.1.0"
   }
 }

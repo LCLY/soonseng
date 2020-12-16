@@ -5,19 +5,14 @@
     // background: $soonseng-grey;
 
     @include respond-to(phone-only) {
-      padding-top: 70px; //height of navbar
+      padding-top: 51.58px; //height of navbar
     }
     background-color: #ffffff;
-    // background-image: url('https://wallpaperaccess.com/full/622551.jpg');
-    // background-image: url('https://images.pexels.com/photos/69932/tabby-cat-close-up-portrait-69932.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500');
-    // background-image: url('https://i.pinimg.com/originals/cf/08/5d/cf085de99662fc50d8bc78adb47cc596.gif');
-    background-image: url('https://64.media.tumblr.com/2d51b4961fc25f3d6a9c8be1293d1445/ce34d49d383263ca-10/s2048x3072_c7733,971,95348,88664/1d00624d7f705c07d29a17e0eb509119234ac722.gif');
+    // background-image: url('https://i.pinimg.com/originals/af/8e/d3/af8ed3265ed9b78d34f2340b5bb42b71.jpg');
+    background-image: url('https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    // width: 100vw;
-    // height: 100vh;
-    // background-image: linear-gradient(to right, $primary-color-4 50%, black 50%);
   }
 
   &__div {
@@ -41,56 +36,10 @@
 
   // div wrapping the steps and the content
   &__innerdiv {
-    // padding-top: 5rem;
     display: flex;
     justify-content: center;
     flex-direction: column;
     padding-bottom: 10%;
-    // height: 100%;
-    // min-height: calc(100vh - 58rem);
-    // height: calc(100vh - 58rem);
-    // width: 80rem;
-  }
-
-  &__grid {
-    // background: red;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    justify-items: center;
-
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-
-    display: grid;
-    grid-template-rows: auto auto;
-    grid-auto-rows: 3fr;
-    // grid-auto-flow: column;
-    // overflow-x: auto;
-
-    @include respond-to(phone-only) {
-      grid-gap: 1rem;
-      // grid-template-columns: repeat(2, 1fr);
-      grid-template-columns: auto auto;
-      // &:not(:first-child) {
-      //   // padding-left: 1rem;
-      // }
-    }
-    @include respond-to(tablet-portrait-up) {
-      grid-gap: 2rem;
-      grid-template-columns: repeat(2, 1fr);
-      // &:not(:first-child) {
-      //   // padding-left: 2rem;
-      // }
-    }
-    @include respond-to(tablet-landscape-up) {
-      grid-gap: 2rem;
-      grid-template-columns: repeat(3, 1fr);
-      // &:not(:first-child) {
-      //   // padding-left: 2.5rem;
-      // }
-    }
   }
 
   /* ======================= */
@@ -101,19 +50,67 @@
     // large 2 col grid for holding the series
     /* --------------------- */
     &-series {
-      margin-top: 5rem;
+      margin-top: 1rem;
       display: grid;
-      grid-gap: 1rem;
-      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 2rem;
+      padding: 2rem;
+
+      @include respond-to($phone-only) {
+        display: flex;
+        flex-direction: column;
+        padding: 0 0 2rem 0;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem;
+        grid-gap: 1.5rem;
+        grid-template-columns: repeat(1, 1fr);
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
 
       &-innerdiv {
-        // border: 1rem solid $primary-color-4;
         border-radius: 1rem;
         padding: 2rem;
-        background: rgba(255, 255, 255, 0.301);
-        backdrop-filter: blur(15px);
+        padding-bottom: 5rem;
+        max-height: 80rem;
+        overflow-y: auto;
 
-        /*  glass morphism */
+        @include respond-to(phone-only) {
+          width: 100%;
+          max-height: 70vh;
+          padding-bottom: 2rem;
+          padding-top: 0;
+        }
+
+        &::-webkit-scrollbar {
+          width: 0.5rem !important;
+          height: 0.5rem !important;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: white !important;
+          border-radius: 1rem !important;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.678) !important;
+        }
+      }
+
+      &-outerdiv {
+        background: rgba(204, 204, 204, 0.062);
+        backdrop-filter: blur(15px);
+        border-radius: 2rem;
+        padding: 2rem;
+        overflow-y: hidden;
+
         &:before {
           content: '';
           position: absolute;
@@ -125,16 +122,59 @@
           z-index: -1;
           background: rgba(131, 129, 129, 0);
         }
+      }
+    }
+  }
 
-        @include respond-to(phone-only) {
-          width: 95vw;
-        }
-        @include respond-to(tablet-portrait-up) {
-          width: 95vw;
-        }
-        @include respond-to(tablet-landscape-up) {
-          width: 100%;
-        }
+  /* ============================== */
+  // Every grid within the series section
+  /* ============================== */
+  &__grid {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+
+    display: grid;
+    grid-auto-rows: 20rem; //height of each row
+    margin-bottom: auto;
+
+    @include respond-to($phone-only) {
+      grid-gap: 1rem;
+      padding: 0;
+      grid-template-columns: repeat(1, 1fr);
+      grid-auto-rows: 25vh; //height of each row
+    }
+    @include respond-to($tablet-portrait-up) {
+      grid-gap: 2rem;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 15vh; //height of each row
+    }
+    @include respond-to($tablet-landscape-up) {
+      grid-gap: 2rem;
+      grid-auto-rows: 18vh; //height of each row
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @include respond-to($desktop-up) {
+      grid-gap: 2rem;
+      grid-auto-rows: 25vh; //height of each row
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* ============================================ */
+    // number of columns when the array is odd number and last index
+    /* ============================================ */
+    &--full {
+      @include respond-to($phone-only) {
+        grid-template-columns: repeat(1, 1fr);
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @include respond-to($tablet-landscape-up) {
+        grid-template-columns: repeat(4, 1fr);
       }
     }
   }
@@ -149,7 +189,7 @@
 
     &-image {
       width: 100% !important;
-      height: 20rem !important;
+      height: 30rem !important;
       color: white !important;
       background: $primary-color-4 !important;
       @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
@@ -168,14 +208,15 @@
     height: 100%;
     position: relative;
     z-index: 1;
+
     /* =========================== */
     // the image of the card
     /* =========================== */
     &-image {
       width: 100% !important;
-      height: 15rem !important;
+      height: 100% !important;
       color: white !important;
-      background: $primary-color-4 !important;
+      background: darken($primary-color-4, 6%) !important;
       @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
 
       & .ant-skeleton-image-path {
@@ -183,14 +224,9 @@
       }
     }
     cursor: pointer;
-    & .catalog__card-label {
-      animation: labelShrinks 0.3s ease-in forwards;
-    }
-    // when hover card
     &:hover {
-      & .catalog__card-label {
-        animation: labelExpands 0.3s ease-in-out forwards;
-      }
+      transition: all 0.1s;
+      @include shadow-func(0, 0.1rem, 1.5rem, 0.8rem, rgba($primary-color-1, 0.5));
     }
 
     /* ------------------------ */
@@ -205,10 +241,10 @@
       border-left: 0.5rem solid white;
       border-top-left-radius: 5rem;
       z-index: 2;
-      padding: 0.5rem 1rem 0.5rem 1.5rem;
+      padding: 0.5rem 2rem 0.5rem 2.5rem;
 
       // glass morphism
-      background: rgba(255, 255, 255, 0.158);
+      background: rgba(rgb(224, 35, 35), 0.25);
       backdrop-filter: blur(20px);
 
       /*  glass morphism */
@@ -221,37 +257,20 @@
         right: 0;
         bottom: 0;
         border-top-left-radius: 5rem;
-        background: rgba(255, 255, 255, 0.103);
+        background: rgba(255, 255, 255, 0.1);
       }
 
-      // folded part of the label
-      &-fold {
-        position: absolute;
-        color: white;
-        bottom: 1.5rem;
-        right: -1.5rem;
-        padding: 0.5rem 1rem;
-        width: 3rem;
-        height: 2.7rem;
+      @include respond-to($phone-only) {
+        font-size: 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
         font-size: 1.2rem;
-        color: transparent;
-        transform: skewY(15deg);
-        z-index: -1;
-        background: rgba(255, 255, 255, 0.295);
-        backdrop-filter: blur(15px);
-
-        /*  glass morphism */
-        &:before {
-          content: '';
-          position: absolute;
-          z-index: 1;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          border-top-left-radius: 5rem;
-          background: rgba(46, 46, 46, 0.103);
-        }
+      }
+      @include respond-to($tablet-landscape-up) {
+        font-size: 1.2rem;
+      }
+      @include respond-to($desktop-up) {
+        font-size: 1.5rem;
       }
     }
 
@@ -289,15 +308,12 @@
       font-family: $font-firesans;
       text-align: center;
       color: white;
-      width: 30rem;
+      margin-left: 6rem;
+
       padding: 2rem 0;
       border-radius: 1rem;
-      background: rgba(255, 255, 255, 0.301);
+      background: rgba($primary-color-4, 0.6);
       backdrop-filter: blur(15px);
-
-      @include respond-to(phone-only) {
-        font-size: 3rem;
-      }
 
       /*  glass morphism */
       &:before {
@@ -309,12 +325,25 @@
         bottom: 0;
         border-radius: 1rem;
         z-index: -1;
-        background: rgba(131, 129, 129, 0);
+        background: rgba(75, 12, 12, 0.158);
+      }
+
+      @include respond-to(phone-only) {
+        font-size: 3rem;
+        width: auto;
+        margin: 0 2.5rem;
+      }
+
+      @include respond-to(tablet-portrait-up) {
+        margin: 0 5rem;
+      }
+      @include respond-to(tablet-landscape-up) {
+        width: 30rem;
       }
     }
     &-div {
       &:not(:first-child) {
-        margin-top: 5rem;
+        margin-top: 2rem;
       }
     }
   }
@@ -323,22 +352,20 @@
       margin-right: auto;
       margin-left: 2rem;
       margin-bottom: 2rem;
+      margin-top: 1.5rem;
       align-self: left;
       display: inline-block;
-      font-size: 2rem;
-      font-family: $font-roboto;
-      padding: 0.1rem 5rem 0.1rem 5rem;
-      border-left: 0.5rem solid red;
-      border-top-left-radius: 5rem;
+      font-size: 2.5rem;
+      font-family: $font-bebasneue;
+      padding: 0.5rem 4rem 0.3rem 4rem;
+      border-left: 0.5rem solid $primary-color-2;
       background: white;
       color: $primary-color-4;
-      border-top: 1px solid rgba(red, 0.2);
-      border-right: 1px solid rgba(red, 0.2);
-      border-bottom: 1px solid rgba(red, 0.2);
 
       @include respond-to(phone-only) {
-        font-size: 1.5rem;
-        padding: 0.1rem 1.5rem 0.1rem 2rem;
+        font-size: 2rem;
+        padding: 0.1rem 2rem 0.1rem 2rem;
+        margin: 0 0 2rem 2rem;
       }
     }
   }
@@ -369,19 +396,6 @@
   cursor: pointer;
 }
 
-@keyframes labelShrinks {
-  from {
-    padding: 0.5rem 3rem 0.5rem 2rem;
-  }
-  to {
-    padding: 0.5rem 1rem 0.5rem 1.5rem;
-  }
-}
-@keyframes labelExpands {
-  from {
-    padding: 0.5rem 1rem 0.5rem 1.5rem;
-  }
-  to {
-    padding: 0.5rem 3rem 0.5rem 2rem;
-  }
+.fullcolspan {
+  grid-column: 1 / span 2;
 }

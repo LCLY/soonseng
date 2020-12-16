@@ -32,3 +32,6 @@ module.exports = {
     },
   ],
 };
+
+// package.json generatedoc command
+// "generate-docs": "typedoc --out docs --exclude \"**/*+(index).ts\" --exclude \"**/store/actions/*+(actionTypes|sales).ts\" --exclude \"**/store/reducers/*.ts\" src"
