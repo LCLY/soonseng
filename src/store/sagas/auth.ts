@@ -30,6 +30,8 @@ export function* signInSaga(action: AppActions) {
     yield put(actions.signInSucceed(response.data.auth_token));
     // call get user info
     yield put(actions.getUserInfo(response.data.auth_token));
+    // clear the catalog array when login succeed, so user will fetch new array according to their status
+    yield put(actions.clearCatalogState());
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.signInFailed, error.response.data.messages);
