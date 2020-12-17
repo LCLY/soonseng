@@ -76,10 +76,11 @@
     // div wrapping the banner
     /* -------------- */
     &-div {
-      width: 75%;
-
       @include respond-to($tablet-portrait-up) {
         width: 60%;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 75%;
       }
     }
   }
@@ -98,6 +99,9 @@
 
       @include respond-to($tablet-portrait-up) {
         width: 40%;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 25%;
       }
     }
 
