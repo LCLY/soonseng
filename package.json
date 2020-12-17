@@ -47,9 +47,8 @@
     "react-resizable": "^1.11.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.0",
+    "react-scripts": "^3.4.4",
     "react-scroll-parallax": "^2.3.4",
-    "react-slick": "^0.27.13",
     "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
@@ -80,7 +79,6 @@
     ]
   },
   "devDependencies": {
-    "@types/react-slick": "^0.23.4",
     "craco-sass-resources-loader": "^1.1.0",
     "typedoc": "^0.19.2",
     "typedoc-plugin-external-module-name": "^4.0.3"

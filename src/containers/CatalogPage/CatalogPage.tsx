@@ -33,6 +33,10 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
+  // on mount, always start user at the top of the page
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (auth_token === undefined) return;
@@ -105,7 +109,9 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
                 })}
               </div>
             ) : (
-              <Empty />
+              <div className="catalogbodymake__loading-div">
+                <Empty />
+              </div>
             )
           ) : (
             <div className="catalog__loading-div">
