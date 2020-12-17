@@ -19,6 +19,8 @@ export {
 } from './auth';
 
 export {
+  // Clear catalog state
+  clearCatalogState,
   // Catalog Make
   getCatalogMakes,
   getCatalogMakesFailed,

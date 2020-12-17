@@ -11,13 +11,14 @@ interface LogoutProps {}
 
 type Props = LogoutProps & DispatchProps;
 
-const Logout: React.FC<Props> = ({ onSignOut }) => {
+const Logout: React.FC<Props> = ({ onSignOut, onClearCatalogState }) => {
   /* =========================== */
   /* useEffect */
   /* =========================== */
   useEffect(() => {
     onSignOut();
-  }, [onSignOut]);
+    onClearCatalogState();
+  }, [onSignOut, onClearCatalogState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -26,8 +27,12 @@ const Logout: React.FC<Props> = ({ onSignOut }) => {
 
 interface DispatchProps {
   onSignOut: typeof actions.signOut;
+  onClearCatalogState: typeof actions.clearCatalogState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
-  return { onSignOut: () => dispatch(actions.signOut()) };
+  return {
+    onSignOut: () => dispatch(actions.signOut()),
+    onClearCatalogState: () => dispatch(actions.clearCatalogState()),
+  };
 };
 export default connect(null, mapDispatchToProps)(Logout);

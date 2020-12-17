@@ -8,6 +8,14 @@ import { TReceivedCatalogMakeObj } from '../types/catalog';
 /* ============================================================================================ */
 
 /* ------------------------------------------- */
+// Clear state
+/* ------------------------------------------- */
+export const clearCatalogState = (): AppActions => {
+  return {
+    type: actionTypes.CLEAR_CATALOG_STATE,
+  };
+};
+/* ------------------------------------------- */
 // Make
 /* ------------------------------------------- */
 export const getCatalogMakes = (auth_token: string | null): AppActions => {

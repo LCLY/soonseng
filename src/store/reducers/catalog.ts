@@ -17,6 +17,18 @@ const initialState: CatalogInitialState = {
 };
 
 /* ============================================================================================ */
+/* Clear Catalog State
+/* ============================================================================================ */
+const clearCatalogState = (state: CatalogInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    errorMessage: null,
+    loading: false,
+    catalogMakesArray: null,
+    catalogBodyMakeArray: null,
+  });
+};
+
+/* ============================================================================================ */
 /* Get Catalog Makes
 /* ============================================================================================ */
 const getCatalogMakesStart = (state: CatalogInitialState, _action: AppActions) => {
@@ -66,6 +78,11 @@ const getCatalogBodyMakesFailed = (state: CatalogInitialState, action: AppAction
 /* ============================================================================================ */
 const reducer: Reducer<CatalogInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
+    /* ---------------------- */
+    //  Catalog Make
+    /* ---------------------- */
+    case actionTypes.CLEAR_CATALOG_STATE:
+      return clearCatalogState(state, action);
     /* ---------------------- */
     //  Catalog Make
     /* ---------------------- */

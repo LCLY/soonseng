@@ -14,6 +14,10 @@ export interface CatalogInitialState {
   readonly catalogBodyMakesArray?: TReceivedBodyMakeObj[] | null;
 }
 
+export interface ClearCatalogStateAction {
+  type: typeof actionTypes.CLEAR_CATALOG_STATE;
+}
+
 /* ------------------ */
 // Get Catalog Make
 /* ------------------ */
@@ -66,6 +70,10 @@ export interface GetCatalogBodyMakesFailedAction {
 // Combine and export all action types
 /* ============================================================== */
 export type CatalogActionTypes =
+  /* -------------------------- */
+  // Clear Catalog State
+  /* -------------------------- */
+  | ClearCatalogStateAction
   /* -------------------------- */
   // Catalog Make
   /* -------------------------- */

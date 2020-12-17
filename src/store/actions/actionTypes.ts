@@ -28,6 +28,8 @@ export const ASSIGN_ACCESS = 'ASSIGN_ACCESS';
 /*                                     Catalog                                        */
 /* ================================================================================== */
 
+// Clear catalog state
+export const CLEAR_CATALOG_STATE = 'CLEAR_CATALOG_STATE';
 // Get catalog make
 export const GET_CATALOG_MAKES = 'GET_CATALOG_MAKES';
 export const GET_CATALOG_MAKES_START = 'GET_CATALOG_MAKES_START';
