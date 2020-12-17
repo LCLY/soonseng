@@ -64,14 +64,24 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
                       <section className="catalog__section-series">
                         {catalog.series.map((series, index) => {
                           // if array is odd number, on the last row, make it display flex
-                          let arrayIsOddNumber = catalog.series.length % 2 !== 0 && index === catalog.series.length - 1;
+                          let arrayIsOddNumberAndMakeLengthLessThanThree =
+                            catalog.series.length % 2 !== 0 &&
+                            index === catalog.series.length - 1 &&
+                            catalog.series[index].makes.length > 3;
 
                           return (
-                            <div key={uuidv4()} className={arrayIsOddNumber ? 'fullcolspan' : ''}>
+                            <div
+                              key={uuidv4()}
+                              className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
+                            >
                               <div className="catalog__section-series-outerdiv">
                                 <div className="catalog__series-title">{series.title}</div>
                                 <div className="catalog__section-series-innerdiv">
-                                  <div className={`catalog__grid ${arrayIsOddNumber ? 'catalog__grid--full' : ''}`}>
+                                  <div
+                                    className={`catalog__grid ${
+                                      arrayIsOddNumberAndMakeLengthLessThanThree ? 'catalog__grid--full' : ''
+                                    }`}
+                                  >
                                     {series.makes.map((make) => {
                                       let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
                                         series.title,
