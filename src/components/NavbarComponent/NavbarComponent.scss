@@ -1,7 +1,7 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv {
-    position: absolute;
+    // position: absolute;
     transition: all 0.5s ease;
     width: 100%;
     z-index: 1000;
@@ -9,7 +9,7 @@
     & .bg-primary {
       // background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
       // background: rgba(0, 0, 0, 0.9) !important;
-      background: rgba($primary-color-4, 0.9) !important;
+      background: rgba($primary-color-4, 1) !important;
 
       /*  glass morphism */
       // background: transparent !important;

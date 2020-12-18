@@ -69,9 +69,6 @@ sagaMiddleware.run(watchSales);
 sagaMiddleware.run(watchAuth);
 sagaMiddleware.run(watchCatalog);
 
-/**
- * @ignore
- */
 const app = (
   <Provider store={store}>
     <ParallaxProvider>

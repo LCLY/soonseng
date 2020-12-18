@@ -4,13 +4,13 @@ import './HomePage.scss';
 import Footer from 'src/components/Footer/Footer';
 import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-// image
+
 // 3rd party lib
 import gsap from 'gsap';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Carousel } from 'antd';
 import ScrollAnimation from 'react-animate-on-scroll';
-
+import { Parallax, Background } from 'react-parallax';
 /**
  * Home page of the website
  * @return {*}
@@ -130,33 +130,38 @@ function HomePage() {
     <>
       <NavbarComponent activePage="home" />
 
-      <section className="homepage__section-first-parent">
-        <div className="homepage__section-first">
-          <div className="homepage__first-title-div">
-            <h1 className="homepage__first-title">
-              SOON SENG MOTORS
-              <br />
-              ENTERPRISE (1988)
-            </h1>
-            <div className="homepage__first-parallelogram">
-              <div className="homepage__first-parallelogram-text">- Your one stop commercial vehicle hub -</div>
+      <Parallax strength={500}>
+        <Background className="custom-bg">
+          <div className="homepage__background-outerdiv">
+            <div className="homepage__background-image" />
+          </div>
+        </Background>
+        <section className="homepage__section-first-parent">
+          <div className="homepage__section-first">
+            <div className="homepage__first-title-div">
+              <h1 className="homepage__first-title">
+                SOON SENG MOTORS
+                <br />
+                ENTERPRISE (1988)
+              </h1>
+              <div className="homepage__first-parallelogram">
+                <div className="homepage__first-parallelogram-text">- Your one stop commercial vehicle hub -</div>
+              </div>
+            </div>
+            <div className="homepage__first-button-outerdiv">
+              {homepageButtons.map((buttonObj, index) => (
+                <div key={index} className="homepage__first-button-div">
+                  <Button className="homepage__first-button" type="default">
+                    {buttonObj.title}
+                  </Button>
+                  <div className="homepage__first-button-description">{buttonObj.desc}</div>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="homepage__first-button-outerdiv">
-            {homepageButtons.map((buttonObj, index) => (
-              <div key={index} className="homepage__first-button-div">
-                <Button className="homepage__first-button" type="default">
-                  {buttonObj.title}
-                </Button>
-                <div className="homepage__first-button-description">{buttonObj.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="homepage__background-outerdiv">
-          <div className="homepage__background-image"></div>
-        </div>
-      </section>
+        </section>
+      </Parallax>
+
       <Container>
         <section className="homepage__section-values">
           <div className="homepage__section-values-title">Our values</div>
