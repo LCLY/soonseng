@@ -1,20 +1,39 @@
 .catalog {
-  &__outerdiv {
-    flex: 1;
-    padding-top: $navbar-height; //height of navbar
-    // background: $soonseng-grey;
-    min-height: 100vh;
+  &__background {
+    &-outerdiv {
+      min-height: 100vh;
+      @include respond-to(phone-only) {
+        padding-top: 51.58px; //height of navbar
+      }
+    }
 
+    &-image {
+      width: 100vw;
+      min-height: 100vh;
+      background-color: #ffffff;
+      // background-image: url('https://i.pinimg.com/originals/af/8e/d3/af8ed3265ed9b78d34f2340b5bb42b71.jpg');
+      background-image: url('https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+  }
+  &__outerdiv {
+    display: block;
+    // flex: 1;
+    // padding-top: $navbar-height; //height of navbar
+    // background: $soonseng-grey;
+    // min-height: 100%;
     @include respond-to(phone-only) {
       padding-top: 51.58px; //height of navbar
     }
-    background-color: #ffffff;
+    // background-color: $secondary-color-2;
     // background-image: url('https://i.pinimg.com/originals/af/8e/d3/af8ed3265ed9b78d34f2340b5bb42b71.jpg');
-    background-image: url('https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-attachment: fixed;
+    // background-image: url('https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg');
+    // background-repeat: no-repeat;
+    // background-position: center;
+    // background-size: cover;
+    // background-attachment: fixed;
   }
 
   &__div {

@@ -1,0 +1,27 @@
+.e-with-fixed-bg {
+  width: 100%;
+  height: auto;
+
+  /* Important */
+  position: relative;
+}
+
+.bg-wrap {
+  clip: rect(0, auto, auto, 0);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bg {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0);
+  will-change: transform;
+}

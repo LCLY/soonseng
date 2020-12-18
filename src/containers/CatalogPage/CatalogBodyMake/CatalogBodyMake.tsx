@@ -5,6 +5,7 @@ import Footer from 'src/components/Footer/Footer';
 // import Container from 'src/components/CustomContainer/CustomContainer';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -16,8 +17,8 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { RootState } from 'src';
 import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
-import { TReceivedBodyMakeObj } from 'src/store/types/dashboard';
 import { TUserAccess } from 'src/store/types/auth';
+import { TReceivedBodyMakeObj } from 'src/store/types/dashboard';
 
 interface MatchParams {
   make_id: string;
@@ -172,112 +173,121 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
   return (
     <>
       <NavbarComponent />
-      <div className="catalog__outerdiv">
-        <div className="catalog__div">
-          {catalogBodyMakesArray ? (
-            catalogBodyMakesArray.length > 0 ? (
-              <div className="catalogbodymake__innerdiv">
-                <>
-                  <div>
-                    <div className="catalogbodymake__brand-title"> {catalogBodyMakesArray[0].make.brand.title}</div>
-                    <section className="catalogbodymake__section-div">
-                      <div className="catalog__series-title margin_t-2"> {catalogBodyMakesArray[0].make.series}</div>
-                      <section className="catalogbodymake__section-banner">
-                        <div className="catalogbodymake__banner-div">
-                          <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
-                        </div>
-                        <MakeDetailsComponent bodyMake={catalogBodyMakesArray[0]} />
-                      </section>
-                      <div className="catalogbodymake__grid">
-                        {catalogBodyMakesArray.map((bodyMake) => {
-                          return (
-                            <div className="catalogbodymake__card" key={uuidv4()}>
-                              {bodyMake.images.length > 0 ? (
-                                <img
-                                  className="catalogbodymake__card-image"
-                                  src={bodyMake.images[0].url}
-                                  alt={bodyMake.images[0].filename}
-                                />
-                              ) : (
-                                // <img
-                                //   className="catalogbodymake__card-image"
-                                //   src="https://sc01.alicdn.com/kf/HTB1K9KNGVXXXXbFXVXXq6xXFXXXY/220577434/HTB1K9KNGVXXXXbFXVXXq6xXFXXXY.jpg"
-                                //   alt="random pic"
-                                // />
 
-                                <Skeleton.Image className="catalogbodymake__card-image" />
-                              )}
-                              <div className="catalogbodymake__card-overlay">
-                                <div className="catalogbodymake__card-overlay-content">
-                                  <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
-                                  <div>
-                                    {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
-                                      <div className="flex-align-center">
-                                        Width:&nbsp;{' '}
-                                        <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.width}</div>
-                                      </div>
-                                    )}
+      <ParallaxContainer bgImageUrl="https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg">
+        <div className="catalog__outerdiv">
+          <div className="catalog__div">
+            {catalogBodyMakesArray ? (
+              catalogBodyMakesArray.length > 0 ? (
+                <div className="catalogbodymake__innerdiv">
+                  <>
+                    <div>
+                      <div className="catalogbodymake__brand-title"> {catalogBodyMakesArray[0].make.brand.title}</div>
+                      <section className="catalogbodymake__section-div">
+                        <div className="catalog__series-title margin_t-2"> {catalogBodyMakesArray[0].make.series}</div>
+                        <section className="catalogbodymake__section-banner">
+                          <div className="catalogbodymake__banner-div">
+                            <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
+                          </div>
+                          <MakeDetailsComponent bodyMake={catalogBodyMakesArray[0]} />
+                        </section>
+                        <div className="catalogbodymake__grid">
+                          {catalogBodyMakesArray.map((bodyMake) => {
+                            return (
+                              <div className="catalogbodymake__card" key={uuidv4()}>
+                                {bodyMake.images.length > 0 ? (
+                                  <img
+                                    className="catalogbodymake__card-image"
+                                    src={bodyMake.images[0].url}
+                                    alt={bodyMake.images[0].filename}
+                                  />
+                                ) : (
+                                  // <img
+                                  //   className="catalogbodymake__card-image"
+                                  //   src="https://sc01.alicdn.com/kf/HTB1K9KNGVXXXXbFXVXXq6xXFXXXY/220577434/HTB1K9KNGVXXXXbFXVXXq6xXFXXXY.jpg"
+                                  //   alt="random pic"
+                                  // />
 
-                                    {bodyMake?.depth !== null && bodyMake?.depth !== '' && bodyMake?.depth !== null && (
-                                      <div className="flex-align-center">
-                                        Depth:&nbsp;
-                                        <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.depth}</div>
-                                      </div>
-                                    )}
-
-                                    {bodyMake?.height !== null && bodyMake?.height !== '' && bodyMake?.height !== null && (
-                                      <div className="flex-align-center">
-                                        Height:&nbsp;{' '}
-                                        <div className="catalogbodymake__card-overlay-dimension">
-                                          {bodyMake?.height}
+                                  <Skeleton.Image className="catalogbodymake__card-image" />
+                                )}
+                                <div className="catalogbodymake__card-overlay">
+                                  <div className="catalogbodymake__card-overlay-content">
+                                    <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
+                                    <div>
+                                      {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
+                                        <div className="flex-align-center">
+                                          Width:&nbsp;{' '}
+                                          <div className="catalogbodymake__card-overlay-dimension">
+                                            {bodyMake?.width}
+                                          </div>
                                         </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div>
-                                    {accessObj?.showPriceSalesPage && (
-                                      <>
-                                        <div className="margin_t-1">Body Price</div>
-                                        <div className="catalogbodymake__card-overlay-price">
-                                          {bodyMake?.price === 0 || bodyMake?.price === null ? (
-                                            '-'
-                                          ) : (
-                                            <>
-                                              RM
-                                              <NumberFormat
-                                                value={bodyMake?.price}
-                                                displayType={'text'}
-                                                thousandSeparator={true}
-                                              />
-                                            </>
-                                          )}
+                                      )}
+
+                                      {bodyMake?.depth !== null && bodyMake?.depth !== '' && bodyMake?.depth !== null && (
+                                        <div className="flex-align-center">
+                                          Depth:&nbsp;
+                                          <div className="catalogbodymake__card-overlay-dimension">
+                                            {bodyMake?.depth}
+                                          </div>
                                         </div>
-                                      </>
-                                    )}
+                                      )}
+
+                                      {bodyMake?.height !== null &&
+                                        bodyMake?.height !== '' &&
+                                        bodyMake?.height !== null && (
+                                          <div className="flex-align-center">
+                                            Height:&nbsp;{' '}
+                                            <div className="catalogbodymake__card-overlay-dimension">
+                                              {bodyMake?.height}
+                                            </div>
+                                          </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                      {accessObj?.showPriceSalesPage && (
+                                        <>
+                                          <div className="margin_t-1">Body Price</div>
+                                          <div className="catalogbodymake__card-overlay-price">
+                                            {bodyMake?.price === 0 || bodyMake?.price === null ? (
+                                              '-'
+                                            ) : (
+                                              <>
+                                                RM
+                                                <NumberFormat
+                                                  value={bodyMake?.price}
+                                                  displayType={'text'}
+                                                  thousandSeparator={true}
+                                                />
+                                              </>
+                                            )}
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
+                                <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
                               </div>
-                              <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </section>
-                  </div>
-                </>
-              </div>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    </div>
+                  </>
+                </div>
+              ) : (
+                <div className="catalogbodymake__loading-div">
+                  <Empty className="catalogbodymake__empty" />
+                </div>
+              )
             ) : (
-              <div className="catalogbodymake__loading-div">
-                <Empty className="catalogbodymake__empty" />
+              <div className="catalog__loading-div">
+                <Ripple />
               </div>
-            )
-          ) : (
-            <div className="catalog__loading-div">
-              <Ripple />
-            </div>
-          )}
-        </div>
-      </div>
+            )}
+          </div>
+        </div>{' '}
+      </ParallaxContainer>
       <Footer />
     </>
   );
