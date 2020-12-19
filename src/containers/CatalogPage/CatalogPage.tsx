@@ -4,7 +4,7 @@ import './CatalogPage.scss';
 import Footer from 'src/components/Footer/Footer';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
+// import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
