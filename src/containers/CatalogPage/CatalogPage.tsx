@@ -51,89 +51,89 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
     <>
       <NavbarComponent />
       {/* background image in outerdiv */}
-      <ParallaxContainer bgImageUrl="https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg">
-        <div className="catalog__outerdiv">
-          <div className="catalog__div">
-            {catalogMakesArray ? (
-              catalogMakesArray.length > 0 ? (
-                <div className="catalog__innerdiv">
-                  {catalogMakesArray.map((catalog) => {
-                    return (
-                      // div wrapping brand along with its series
-                      <div className="catalog__brand-div" key={uuidv4()}>
-                        {/* brand title */}
-                        <div className="catalog__brand-title"> {catalog.brand.title}</div>
-                        {/* series section */}
-                        <section className="catalog__section-series">
-                          {catalog.series.map((series, index) => {
-                            // if array is odd number, on the last row, make it display flex
-                            let arrayIsOddNumberAndMakeLengthLessThanThree =
-                              catalog.series.length % 2 !== 0 &&
-                              index === catalog.series.length - 1 &&
-                              catalog.series[index].makes.length > 3;
+      {/* <ParallaxContainer bgImageUrl="https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg"> */}
+      <div className="catalog__outerdiv">
+        <div className="catalog__div">
+          {catalogMakesArray ? (
+            catalogMakesArray.length > 0 ? (
+              <div className="catalog__innerdiv">
+                {catalogMakesArray.map((catalog) => {
+                  return (
+                    // div wrapping brand along with its series
+                    <div className="catalog__brand-div" key={uuidv4()}>
+                      {/* brand title */}
+                      <div className="catalog__brand-title"> {catalog.brand.title}</div>
+                      {/* series section */}
+                      <section className="catalog__section-series">
+                        {catalog.series.map((series, index) => {
+                          // if array is odd number, on the last row, make it display flex
+                          let arrayIsOddNumberAndMakeLengthLessThanThree =
+                            catalog.series.length % 2 !== 0 &&
+                            index === catalog.series.length - 1 &&
+                            catalog.series[index].makes.length > 3;
 
-                            return (
-                              <div
-                                key={uuidv4()}
-                                className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
-                              >
-                                <div className="catalog__section-series-outerdiv">
-                                  <div className="catalog__series-title">{series.title}</div>
-                                  <div className="catalog__section-series-innerdiv">
-                                    <div
-                                      className={`catalog__grid ${
-                                        arrayIsOddNumberAndMakeLengthLessThanThree ? 'catalog__grid--full' : ''
-                                      }`}
-                                    >
-                                      {series.makes.map((make) => {
-                                        let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
-                                          series.title,
-                                          '',
-                                        )}-${convertSpaceInStringWithChar(make.title, '')}`;
-                                        return (
-                                          <div
-                                            key={uuidv4()}
-                                            className="catalog__card"
-                                            onClick={() => history.push(`${ROUTE_CATALOG}/${model_detail}/${make.id}`)}
-                                          >
-                                            {make.images.length > 0 ? (
-                                              <img
-                                                className="catalog__card-image"
-                                                src={make.images[0].url}
-                                                alt={make.images[0].filename}
-                                              />
-                                            ) : (
-                                              <Skeleton.Image className="catalog__card-image" />
-                                            )}
+                          return (
+                            <div
+                              key={uuidv4()}
+                              className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
+                            >
+                              <div className="catalog__section-series-outerdiv">
+                                <div className="catalog__series-title">{series.title}</div>
+                                <div className="catalog__section-series-innerdiv">
+                                  <div
+                                    className={`catalog__grid ${
+                                      arrayIsOddNumberAndMakeLengthLessThanThree ? 'catalog__grid--full' : ''
+                                    }`}
+                                  >
+                                    {series.makes.map((make) => {
+                                      let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
+                                        series.title,
+                                        '',
+                                      )}-${convertSpaceInStringWithChar(make.title, '')}`;
+                                      return (
+                                        <div
+                                          key={uuidv4()}
+                                          className="catalog__card"
+                                          onClick={() => history.push(`${ROUTE_CATALOG}/${model_detail}/${make.id}`)}
+                                        >
+                                          {make.images.length > 0 ? (
+                                            <img
+                                              className="catalog__card-image"
+                                              src={make.images[0].url}
+                                              alt={make.images[0].filename}
+                                            />
+                                          ) : (
+                                            <Skeleton.Image className="catalog__card-image" />
+                                          )}
 
-                                            <div className="catalog__card-label">{make.title}</div>
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
+                                          <div className="catalog__card-label">{make.title}</div>
+                                        </div>
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               </div>
-                            );
-                          })}
-                        </section>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="catalogbodymake__loading-div">
-                  <Empty />
-                </div>
-              )
-            ) : (
-              <div className="catalog__loading-div">
-                <Ripple />
+                            </div>
+                          );
+                        })}
+                      </section>
+                    </div>
+                  );
+                })}
               </div>
-            )}
-          </div>
+            ) : (
+              <div className="catalogbodymake__loading-div">
+                <Empty />
+              </div>
+            )
+          ) : (
+            <div className="catalog__loading-div">
+              <Ripple />
+            </div>
+          )}
         </div>
-      </ParallaxContainer>
+      </div>
+      {/* </ParallaxContainer> */}
 
       <Footer />
     </>

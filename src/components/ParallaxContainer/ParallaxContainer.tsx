@@ -20,7 +20,7 @@ const ParallaxContainer: React.FC<Props> = ({ bgImageUrl, children }) => {
           }}
         ></div>
       </div>
-      {children}
+      <div className="parallax__children-container">{children}</div>
     </div>
   );
 };

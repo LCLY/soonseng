@@ -27,10 +27,10 @@ import dashboardReducer from 'src/store/reducers/dashboard';
 import catalogReducer from 'src/store/reducers/catalog';
 
 // enable browser redux extension tool
-const composeEnhancers =
-  process.env.NODE_ENV === 'development'
-    ? window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    : null || compose;
+const composeEnhancers = compose;
+// process.env.NODE_ENV === 'development'
+//   ? window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+//   : null || compose;
 
 // you want to store only a subset of your state of reducer one
 const saveSalesSubsetFilter = createFilter('sales', ['localOrdersArray']);
