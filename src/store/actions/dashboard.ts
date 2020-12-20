@@ -17,6 +17,7 @@ import {
   TUpdateAccessoryData,
   TReceivedBodyAccessoryObj,
   TReceivedSeriesObj,
+  TReceivedMakeWheelbaseObj,
 } from 'src/store/types/dashboard';
 
 /* ============================================================================================ */
@@ -436,6 +437,148 @@ export const updateMakeSucceed = (makesArray: TReceivedMakeObj[], successMessage
 export const updateMakeFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/* ============================================================================================ */
+// Make Wheelbase (Make Page) (head)
+/* ============================================================================================ */
+
+/* ----------------------------- */
+// Create Make Wheelbase(head)
+/* ----------------------------- */
+export const createMakeWheelbase = (make_id: number, wheelbase_id: number, length: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKEWHEELBASE,
+    make_id: make_id,
+    wheelbase_id: wheelbase_id,
+    length: length,
+  };
+};
+
+export const createMakeWheelbaseStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKEWHEELBASE_START,
+  };
+};
+
+export const createMakeWheelbaseSucceed = (
+  makeWheelbasesArray: TReceivedMakeWheelbaseObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKEWHEELBASE_SUCCEED,
+    makeWheelbasesArray: makeWheelbasesArray,
+    successMessage: successMessage,
+  };
+};
+export const createMakeWheelbaseFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_MAKEWHEELBASE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ------------------------- */
+// Get Make Wheelbases (head)
+/* ------------------------- */
+export const getMakeWheelbases = (make_id: number): AppActions => {
+  return {
+    type: actionTypes.GET_MAKEWHEELBASES,
+    make_id: make_id,
+  };
+};
+
+export const getMakeWheelbasesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_MAKEWHEELBASES_START,
+  };
+};
+
+export const getMakeWheelbasesSucceed = (makeWheelbasesArray: TReceivedMakeWheelbaseObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_MAKEWHEELBASES_SUCCEED,
+    makeWheelbasesArray: makeWheelbasesArray,
+  };
+};
+export const getMakeWheelbasesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_MAKEWHEELBASES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* -------------------------- */
+// Update Make Wheelbase (head)
+/* -------------------------- */
+export const updateMakeWheelbase = (
+  make_wheelbase_id: number,
+  make_id: number,
+  wheelbase_id: number,
+  length: string,
+): AppActions => {
+  return {
+    type: actionTypes.UPDATE_MAKEWHEELBASE,
+    make_wheelbase_id: make_wheelbase_id,
+    make_id: make_id,
+    wheelbase_id: wheelbase_id,
+    length: length,
+  };
+};
+
+export const updateMakeWheelbaseStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_MAKEWHEELBASE_START,
+  };
+};
+
+export const updateMakeWheelbaseSucceed = (
+  makeWheelbasesArray: TReceivedMakeWheelbaseObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.UPDATE_MAKEWHEELBASE_SUCCEED,
+    makeWheelbasesArray: makeWheelbasesArray,
+    successMessage: successMessage,
+  };
+};
+export const updateMakeWheelbaseFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_MAKEWHEELBASE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* -------------------------- */
+// Delete Make Wheelbase (head)
+/* -------------------------- */
+export const deleteMakeWheelbase = (make_id: number, make_wheelbase_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKEWHEELBASE,
+    make_id: make_id,
+    make_wheelbase_id: make_wheelbase_id,
+  };
+};
+
+export const deleteMakeWheelbaseStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKEWHEELBASE_START,
+  };
+};
+
+export const deleteMakeWheelbaseSucceed = (
+  makeWheelbasesArray: TReceivedMakeWheelbaseObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKEWHEELBASE_SUCCEED,
+    makeWheelbasesArray: makeWheelbasesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteMakeWheelbaseFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKEWHEELBASE_FAILED,
     errorMessage: errorMessage,
   };
 };

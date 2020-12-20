@@ -12,6 +12,14 @@ html {
   // This defines what 1 rem is
   font-size: 62.5%; // 1 rem = 10px; 10px/16px = 62.5%
 
+  // @include respond-to($phone-only) {
+  //   overflow: auto !important; //hidden so when modal open it wont overflows
+  // }
+
+  // @include respond-to($desktop-up) {
+  //   overflow: hidden !important; //hidden so when modal open it wont overflows
+  // }
+
   // if content is less then pages still takes full view-port height
   // and footer will stick at the bottom of page
   // min-height: 100rem !important;
@@ -27,6 +35,10 @@ body {
   font-size: 1.5rem !important;
   font-family: 'Helvetica Neue', sans-serif !important;
   text-rendering: optimizeLegibility;
+
+  // @include respond-to($desktop-up) {
+  //   overflow: auto !important; //auto so when html overflow hidden, things are still scrollable
+  // }
 
   -webkit-font-smoothing: antialiased;
   &::-webkit-scrollbar {

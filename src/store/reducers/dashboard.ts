@@ -9,6 +9,9 @@ const initialState: DashboardInitialState = {
   // makes
   makeObj: null,
   makesArray: null,
+  // makes
+  makeWheelbaseObj: null,
+  makeWheelbasesArray: null,
   // series
   seriesObj: null,
   seriesArray: null,
@@ -336,7 +339,6 @@ const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('seriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
-
       seriesArray: action.seriesArray,
     });
   }
@@ -345,6 +347,104 @@ const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
 const getSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage });
+  }
+  return state;
+};
+
+/* ============================================================================================ */
+/* Make Wheelbase (Make Page) (head) */
+/* ============================================================================================ */
+
+/* -------------------------- */
+/* Get Make Wheelbases  */
+/* -------------------------- */
+const getMakeWheelbasesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true, makeWheelbasesArray: null });
+};
+const getMakeWheelbasesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('makeWheelbasesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      makeWheelbasesArray: action.makeWheelbasesArray,
+    });
+  }
+  return state;
+};
+const getMakeWheelbasesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Create Make Wheelbase */
+/* -------------------------- */
+const createMakeWheelbaseStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createMakeWheelbaseSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'makeWheelbasesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      makeWheelbasesArray: action.makeWheelbasesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const createMakeWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update Make Wheelbase */
+/* -------------------------- */
+const updateMakeWheelbaseStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateMakeWheelbaseSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'makeWheelbasesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      makeWheelbasesArray: action.makeWheelbasesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const updateMakeWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* -------------------------- */
+/* Delete Make Wheelbase */
+/* -------------------------- */
+const deleteMakeWheelbaseStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteMakeWheelbaseSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'makeWheelbasesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      makeWheelbasesArray: action.makeWheelbasesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteMakeWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
   return state;
 };
@@ -943,13 +1043,6 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return getMakesSucceed(state, action);
     case actionTypes.GET_MAKES_FAILED:
       return getMakesFailed(state, action);
-    // Get series (make)
-    case actionTypes.GET_SERIES_START:
-      return getSeriesStart(state, action);
-    case actionTypes.GET_SERIES_SUCCEED:
-      return getSeriesSucceed(state, action);
-    case actionTypes.GET_SERIES_FAILED:
-      return getSeriesFailed(state, action);
     // Update make (head)
     case actionTypes.UPDATE_MAKE_START:
       return updateMakeStart(state, action);
@@ -957,6 +1050,45 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return updateMakeSucceed(state, action);
     case actionTypes.UPDATE_MAKE_FAILED:
       return updateMakeFailed(state, action);
+    // Get series (make)
+    case actionTypes.GET_SERIES_START:
+      return getSeriesStart(state, action);
+    case actionTypes.GET_SERIES_SUCCEED:
+      return getSeriesSucceed(state, action);
+    case actionTypes.GET_SERIES_FAILED:
+      return getSeriesFailed(state, action);
+
+    /* =================================== */
+    // Make Wheelbase (Make Page) (head)
+    /* =================================== */
+    // Create make Wheelbase (head)
+    case actionTypes.CREATE_MAKEWHEELBASE_START:
+      return createMakeWheelbaseStart(state, action);
+    case actionTypes.CREATE_MAKEWHEELBASE_SUCCEED:
+      return createMakeWheelbaseSucceed(state, action);
+    case actionTypes.CREATE_MAKEWHEELBASE_FAILED:
+      return createMakeWheelbaseFailed(state, action);
+    // Get make Wheelbases (head)
+    case actionTypes.GET_MAKEWHEELBASES_START:
+      return getMakeWheelbasesStart(state, action);
+    case actionTypes.GET_MAKEWHEELBASES_SUCCEED:
+      return getMakeWheelbasesSucceed(state, action);
+    case actionTypes.GET_MAKEWHEELBASES_FAILED:
+      return getMakeWheelbasesFailed(state, action);
+    // Update make Wheelbase (head)
+    case actionTypes.UPDATE_MAKEWHEELBASE_START:
+      return updateMakeWheelbaseStart(state, action);
+    case actionTypes.UPDATE_MAKEWHEELBASE_SUCCEED:
+      return updateMakeWheelbaseSucceed(state, action);
+    case actionTypes.UPDATE_MAKEWHEELBASE_FAILED:
+      return updateMakeWheelbaseFailed(state, action);
+    // Delete make Wheelbase (head)
+    case actionTypes.DELETE_MAKEWHEELBASE_START:
+      return deleteMakeWheelbaseStart(state, action);
+    case actionTypes.DELETE_MAKEWHEELBASE_SUCCEED:
+      return deleteMakeWheelbaseSucceed(state, action);
+    case actionTypes.DELETE_MAKEWHEELBASE_FAILED:
+      return deleteMakeWheelbaseFailed(state, action);
 
     /* =================================== */
     // Body (Body Page) (tail)

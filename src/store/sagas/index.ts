@@ -24,6 +24,11 @@ import {
   updateMakeSaga,
   // Series
   getSeriesSaga,
+  // Make
+  createMakeWheelbaseSaga,
+  getMakeWheelbasesSaga,
+  updateMakeWheelbaseSaga,
+  deleteMakeWheelbaseSaga,
   // Body
   createBodySaga,
   getBodiesSaga,
@@ -100,7 +105,11 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_MAKE, updateMakeSaga)]);
   //  Series
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_SERIES, getSeriesSaga)]);
-
+  // Make
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_MAKEWHEELBASE, createMakeWheelbaseSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_MAKEWHEELBASES, getMakeWheelbasesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_MAKEWHEELBASE, updateMakeWheelbaseSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_MAKEWHEELBASE, deleteMakeWheelbaseSaga)]);
   // Body
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODY, createBodySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODIES, getBodiesSaga)]);

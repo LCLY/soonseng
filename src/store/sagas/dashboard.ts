@@ -293,18 +293,24 @@ export function* createMakeSaga(action: AppActions) {
   // Type guard, check if the "key" exist in the action object
   if ('createMakeData' in action) {
     make = {
-      gvw: action.createMakeData.gvw,
-      year: action.createMakeData.year,
-      price: action.createMakeData.price,
       title: action.createMakeData.title,
-      length: action.createMakeData.length,
       brand_id: action.createMakeData.brand_id,
-      engine_cap: action.createMakeData.engine_cap,
+      series_id: action.createMakeData.series_id,
+      tire: action.createMakeData.tire,
       horsepower: action.createMakeData.horsepower,
-      // wheelbase_id: action.createMakeData.wheelbase_id,
+      year: action.createMakeData.year,
       transmission: action.createMakeData.transmission,
+      engine_cap: action.createMakeData.engine_cap,
+      gvw: action.createMakeData.gvw,
+      abs: action.createMakeData.abs,
+      torque: action.createMakeData.torque,
+      config: action.createMakeData.config,
+      emission: action.createMakeData.emission,
+      price: action.createMakeData.price,
     };
   }
+
+  console.log({ make });
 
   try {
     let response = yield axios.post(url, { make });
@@ -361,16 +367,20 @@ export function* updateMakeSaga(action: AppActions) {
     url = process.env.REACT_APP_API + `/head/makes/${action.updateMakeData.make_id}`;
 
     make = {
-      gvw: action.updateMakeData.gvw,
-      year: action.updateMakeData.year,
-      price: action.updateMakeData.price,
       title: action.updateMakeData.title,
-      length: action.updateMakeData.length,
       brand_id: action.updateMakeData.brand_id,
-      engine_cap: action.updateMakeData.engine_cap,
+      series_id: action.updateMakeData.series_id,
+      tire: action.updateMakeData.tire,
       horsepower: action.updateMakeData.horsepower,
-      // wheelbase_id: action.updateMakeData.wheelbase_id,
+      year: action.updateMakeData.year,
       transmission: action.updateMakeData.transmission,
+      engine_cap: action.updateMakeData.engine_cap,
+      gvw: action.updateMakeData.gvw,
+      abs: action.updateMakeData.abs,
+      torque: action.updateMakeData.torque,
+      config: action.updateMakeData.config,
+      emission: action.updateMakeData.emission,
+      price: action.updateMakeData.price,
     };
   }
 
@@ -418,6 +428,120 @@ export function* getSeriesSaga(action: AppActions) {
       yield setPromiseError(error, actions.getSeriesFailed, error.response.data.error);
     } else {
       yield setPromiseError(error, actions.getSeriesFailed, 'Error');
+    }
+  }
+}
+
+/* ================================================================== */
+/*   Make Wheelbase (Make Page) (tail) */
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Create Make Wheelbase
+/* ------------------------------- */
+export function* createMakeWheelbaseSaga(action: AppActions) {
+  yield put(actions.createMakeWheelbaseStart());
+
+  let url = '';
+
+  let data = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('make_id' in action && 'wheelbase_id' in action && 'length' in action) {
+    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase`;
+    data = {
+      wheelbase_id: action.wheelbase_id,
+      length: action.length,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, data);
+    yield put(actions.createMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createMakeWheelbaseFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createMakeWheelbaseFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Update Make Wheelbase
+/* ------------------------------- */
+export function* updateMakeWheelbaseSaga(action: AppActions) {
+  yield put(actions.updateMakeWheelbaseStart());
+
+  let url = '';
+
+  let data = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('make_wheelbase_id' in action && 'make_id' in action && 'wheelbase_id' in action && 'length' in action) {
+    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase/${action.make_wheelbase_id}`;
+    data = {
+      wheelbase_id: action.wheelbase_id,
+      length: action.length,
+    };
+  }
+
+  console.log(data);
+
+  try {
+    let response = yield axios.put(url, data);
+    yield put(actions.updateMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateMakeWheelbaseFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateMakeWheelbaseFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Get Make Wheelbases
+/* ------------------------------- */
+export function* getMakeWheelbasesSaga(action: AppActions) {
+  yield put(actions.getMakeWheelbasesStart());
+
+  let url = '';
+
+  // Type guard, check if the "key" exist in the action object
+  if ('make_id' in action) {
+    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase`;
+  }
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getMakeWheelbasesSucceed(response.data.make_wheelbase));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getMakeWheelbasesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getMakeWheelbasesFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Delete Make Wheelbase
+/* ------------------------------- */
+export function* deleteMakeWheelbaseSaga(action: AppActions) {
+  yield put(actions.deleteMakeWheelbaseStart());
+
+  let url = '';
+
+  // Type guard, check if the "key" exist in the action object
+  if ('make_wheelbase_id' in action && 'make_id' in action) {
+    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase/${action.make_wheelbase_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteMakeWheelbaseFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteMakeWheelbaseFailed, 'Error');
     }
   }
 }

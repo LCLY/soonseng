@@ -8,12 +8,15 @@ export interface DashboardInitialState {
   // make
   readonly makeObj?: TReceivedMakeObj | null;
   readonly makesArray?: TReceivedMakeObj[] | null;
+  // make
+  readonly makeWheelbaseObj?: TReceivedMakeWheelbaseObj | null;
+  readonly makeWheelbasesArray?: TReceivedMakeWheelbaseObj[] | null;
   // series
   readonly seriesObj?: TReceivedSeriesObj | null;
   readonly seriesArray?: TReceivedSeriesObj[] | null;
   // brand
-  readonly brandsArray?: TReceivedBrandObj[] | null;
   readonly brandObj?: TReceivedBrandObj | null;
+  readonly brandsArray?: TReceivedBrandObj[] | null;
   // wheelbase
   readonly wheelbaseObj?: TReceivedWheelbaseObj | null;
   readonly wheelbasesArray?: TReceivedWheelbaseObj[] | null;
@@ -297,31 +300,39 @@ export interface UpdateWheelbaseFailedAction {
 /* types */
 // Type of Objs being submitted
 export type TCreateMakeData = {
-  gvw: string;
-  year: string;
-  price: number;
   title: string;
-  length: number;
-  brand_id: string;
-  engine_cap: string;
+  brand_id: number;
+  series_id: number;
+  tire: string;
   horsepower: string;
-  // wheelbase_id: string;
+  year: string;
   transmission: string;
+  engine_cap: string;
+  gvw: string;
+  abs: string;
+  torque: string;
+  config: string;
+  emission: string;
+  price: number;
 };
 
 // for updating, it requires a extra make_id key
 export type TUpdateMakeData = {
   make_id: number;
-  gvw: string;
-  year: string;
-  price: number | null;
   title: string;
-  length: number;
-  brand_id: string;
-  engine_cap: string;
+  brand_id: number;
+  series_id: number;
+  tire: string;
   horsepower: string;
-  // wheelbase_id: string;
+  year: string;
   transmission: string;
+  engine_cap: string;
+  gvw: string;
+  abs: string;
+  torque: string;
+  config: string;
+  emission: string;
+  price: number;
 };
 
 // type of Objs received on succees
@@ -438,6 +449,110 @@ export interface UpdateMakeSucceedAction {
 }
 export interface UpdateMakeFailedAction {
   type: typeof actionTypes.UPDATE_MAKE_FAILED;
+  errorMessage: string;
+}
+
+/* ================================================================================ */
+//  Make Wheelbase (Make Page) (Head)
+/* ================================================================================ */
+// type
+export type TReceivedMakeWheelbaseObj = {
+  id: number;
+  make: TReceivedMakeObj;
+  wheelbase: TReceivedWheelbaseObj;
+  length: number;
+};
+
+/* --------------------------- */
+// Create Make Wheelbase (Head)
+/* --------------------------- */
+/*  Api call */
+export interface CreateMakeWheelbaseAction {
+  type: typeof actionTypes.CREATE_MAKEWHEELBASE;
+  make_id: number;
+  wheelbase_id: number;
+  length: string;
+}
+/*  States */
+export interface CreateMakeWheelbaseStartAction {
+  type: typeof actionTypes.CREATE_MAKEWHEELBASE_START;
+}
+export interface CreateMakeWheelbaseSucceedAction {
+  type: typeof actionTypes.CREATE_MAKEWHEELBASE_SUCCEED;
+  makeWheelbasesArray: TReceivedMakeWheelbaseObj[];
+  successMessage: string;
+}
+export interface CreateMakeWheelbaseFailedAction {
+  type: typeof actionTypes.CREATE_MAKEWHEELBASE_FAILED;
+  errorMessage: string;
+}
+/* --------------------------- */
+// Get Make Wheelbases (Head)
+/* --------------------------- */
+
+/*  Api call */
+export interface GetMakeWheelbasesAction {
+  type: typeof actionTypes.GET_MAKEWHEELBASES;
+  make_id: number;
+}
+/*  States */
+export interface GetMakeWheelbasesStartAction {
+  type: typeof actionTypes.GET_MAKEWHEELBASES_START;
+}
+export interface GetMakeWheelbasesSucceedAction {
+  type: typeof actionTypes.GET_MAKEWHEELBASES_SUCCEED;
+  makeWheelbasesArray: TReceivedMakeWheelbaseObj[];
+}
+export interface GetMakeWheelbasesFailedAction {
+  type: typeof actionTypes.GET_MAKEWHEELBASES_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Update Make Wheelbase (Head)
+/* --------------------------- */
+/*  Api call */
+export interface UpdateMakeWheelbaseAction {
+  type: typeof actionTypes.UPDATE_MAKEWHEELBASE;
+  make_wheelbase_id: number;
+  make_id: number;
+  wheelbase_id: number;
+  length: string;
+}
+/*  States */
+export interface UpdateMakeWheelbaseStartAction {
+  type: typeof actionTypes.UPDATE_MAKEWHEELBASE_START;
+}
+export interface UpdateMakeWheelbaseSucceedAction {
+  type: typeof actionTypes.UPDATE_MAKEWHEELBASE_SUCCEED;
+  makeWheelbasesArray: TReceivedMakeWheelbaseObj[];
+  successMessage: string;
+}
+export interface UpdateMakeWheelbaseFailedAction {
+  type: typeof actionTypes.UPDATE_MAKEWHEELBASE_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------- */
+// Delete Make Wheelbase (Head)
+/* --------------------------- */
+/*  Api call */
+export interface DeleteMakeWheelbaseAction {
+  type: typeof actionTypes.DELETE_MAKEWHEELBASE;
+  make_id: number;
+  make_wheelbase_id: number;
+}
+/*  States */
+export interface DeleteMakeWheelbaseStartAction {
+  type: typeof actionTypes.DELETE_MAKEWHEELBASE_START;
+}
+export interface DeleteMakeWheelbaseSucceedAction {
+  type: typeof actionTypes.DELETE_MAKEWHEELBASE_SUCCEED;
+  makeWheelbasesArray: TReceivedMakeWheelbaseObj[];
+  successMessage: string;
+}
+export interface DeleteMakeWheelbaseFailedAction {
+  type: typeof actionTypes.DELETE_MAKEWHEELBASE_FAILED;
   errorMessage: string;
 }
 
@@ -1106,6 +1221,29 @@ export type DashboardActionTypes =
   | GetSeriesStartAction
   | GetSeriesSucceedAction
   | GetSeriesFailedAction
+  /* ------------------------ */
+  // Make Wheelbase (Make Page)
+  /* ------------------------ */
+  /* Create */
+  | CreateMakeWheelbaseAction
+  | CreateMakeWheelbaseStartAction
+  | CreateMakeWheelbaseSucceedAction
+  | CreateMakeWheelbaseFailedAction
+  /* Get */
+  | GetMakeWheelbasesAction
+  | GetMakeWheelbasesStartAction
+  | GetMakeWheelbasesSucceedAction
+  | GetMakeWheelbasesFailedAction
+  /* Update */
+  | UpdateMakeWheelbaseAction
+  | UpdateMakeWheelbaseStartAction
+  | UpdateMakeWheelbaseSucceedAction
+  | UpdateMakeWheelbaseFailedAction
+  /* Delete */
+  | DeleteMakeWheelbaseAction
+  | DeleteMakeWheelbaseStartAction
+  | DeleteMakeWheelbaseSucceedAction
+  | DeleteMakeWheelbaseFailedAction
   /* ------------------------ */
   /* ======================================================================= */
   /* ------------------------ */

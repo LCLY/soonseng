@@ -150,6 +150,12 @@ svg {
   overflow-y: hidden;
 }
 
+// the scroll effect when modal is opened
+.ant-scrolling-effect {
+  overflow: auto !important;
+  width: auto !important;
+}
+
 // Select dropdown
 .ant-select {
   @include respond-to(mobile) {

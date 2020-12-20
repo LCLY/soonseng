@@ -364,16 +364,49 @@ export const splitArray = (bigArray: any[], size: number) => {
   return tempArray;
 };
 
+/* =========================================================== */
 /**
  * Take strings and change empty space to desired character
  * @param {string} incomingString
  * @param {string} replaceWithThisChar
  * @return {*}
  */
+/* =========================================================== */
 export const convertSpaceInStringWithChar = (incomingString: string, replaceWithThisChar: string) => {
   let resultString = incomingString.replace(/\s+/g, replaceWithThisChar);
 
   return resultString;
+};
+
+/* =========================================================== */
+/**
+ * A helper function that will return empty string when
+ * the value is undefined or null
+ * return the string itself otherwise
+ * @param {string} incomingString
+ * @return {*}  {string}
+ */
+/* =========================================================== */
+export const emptyStringWhenUndefinedOrNull = (incomingString: string): string => {
+  if (incomingString === undefined || incomingString === null) {
+    return '';
+  }
+  return incomingString;
+};
+/* =========================================================== */
+/**
+ * A helper function that will return 0 when
+ * the value is undefined or null
+ * return the number itself otherwise
+ * @param {number} incomingNumber
+ * @return {*}  {number}
+ */
+/* =========================================================== */
+export const zeroWhenUndefinedOrNull = (incomingNumber: number): number => {
+  if (incomingNumber === undefined || incomingNumber === null) {
+    return 0;
+  }
+  return incomingNumber;
 };
 
 /* ============================================================================= */
@@ -499,17 +532,6 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
   render: (text: any, record: any) => {
     let highlightRender: React.ReactElement | null = null;
     if ('makeDetails' in record && dataIndex === 'makeDetails') {
-      let makeDetailsRecord: { title: string; dataIndex: string }[] = [
-        {
-          title: 'Length',
-          dataIndex: 'makeLength',
-        },
-        // {
-        //   title: 'Wheelbase',
-        //   dataIndex: 'makeWheelbaseTitle',
-        // },
-      ];
-
       let makeDetailsRecordExpandable: { title: string; dataIndex: string }[] = [
         {
           title: 'Engine Cap',
@@ -560,32 +582,6 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
       ];
       highlightRender = (
         <>
-          <div>
-            {makeDetailsRecord.map((detail, index) => {
-              return (
-                <div className="flex" key={index}>
-                  <div className="make__details-left">
-                    {/* if its gvw, all uppercase, for others only capitalize the first letter */}
-                    <span className="make__details-category">{detail.title}</span>
-                  </div>
-                  :
-                  <div className="make__details-right">
-                    {record[detail.dataIndex] && record[detail.dataIndex] !== '' && filterData ? (
-                      <Highlighter
-                        highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-                        searchWords={[filterData.searchText]}
-                        autoEscape
-                        textToHighlight={record[detail.dataIndex].toString()}
-                      />
-                    ) : (
-                      '-'
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
           <Collapse ghost className="make__details-collapse">
             <Panel
               style={{ padding: 0 }}
@@ -593,7 +589,7 @@ export const getColumnSearchProps = (searchInput: any, dataIndex: string, title:
               className="make__details-panel"
               header={
                 <>
-                  <InfoCircleOutlined /> Click here to view more info
+                  <InfoCircleOutlined /> Click here to view all details
                 </>
               }
               key="model"

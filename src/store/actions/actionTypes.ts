@@ -144,7 +144,7 @@ export const UPDATE_WHEELBASE_SUCCEED = 'UPDATE_WHEELBASE_SUCCEED';
 export const UPDATE_WHEELBASE_FAILED = 'UPDATE_WHEELBASE_FAILED';
 
 /* --------------------------------------------- */
-// Make Page - Make
+// Make Page - Make / Model
 /* --------------------------------------------- */
 
 // Create Make (head)
@@ -172,6 +172,33 @@ export const GET_SERIES = 'GET_SERIES';
 export const GET_SERIES_START = 'GET_SERIES_START';
 export const GET_SERIES_SUCCEED = 'GET_SERIES_SUCCEED';
 export const GET_SERIES_FAILED = 'GET_SERIES_FAILED';
+
+/* -------------------------- */
+//  Make Page - Make Wheelbase / Configuration
+/* -------------------------- */
+// Create Make Wheelbase(head)
+export const CREATE_MAKEWHEELBASE = 'CREATE_MAKEWHEELBASE';
+export const CREATE_MAKEWHEELBASE_START = 'CREATE_MAKEWHEELBASE_START';
+export const CREATE_MAKEWHEELBASE_SUCCEED = 'CREATE_MAKEWHEELBASE_SUCCEED';
+export const CREATE_MAKEWHEELBASE_FAILED = 'CREATE_MAKEWHEELBASE_FAILED';
+
+// Get Make Wheelbase (head)
+export const GET_MAKEWHEELBASES = 'GET_MAKEWHEELBASES';
+export const GET_MAKEWHEELBASES_START = 'GET_MAKEWHEELBASES_START';
+export const GET_MAKEWHEELBASES_SUCCEED = 'GET_MAKEWHEELBASES_SUCCEED';
+export const GET_MAKEWHEELBASES_FAILED = 'GET_MAKEWHEELBASES_FAILED';
+
+// Update Make Wheelbase (head)
+export const UPDATE_MAKEWHEELBASE = 'UPDATE_MAKEWHEELBASE';
+export const UPDATE_MAKEWHEELBASE_START = 'UPDATE_MAKEWHEELBASE_START';
+export const UPDATE_MAKEWHEELBASE_SUCCEED = 'UPDATE_MAKEWHEELBASE_SUCCEED';
+export const UPDATE_MAKEWHEELBASE_FAILED = 'UPDATE_MAKEWHEELBASE_FAILED';
+
+// Delete Make Wheelbase (head)
+export const DELETE_MAKEWHEELBASE = 'DELETE_MAKEWHEELBASE';
+export const DELETE_MAKEWHEELBASE_START = 'DELETE_MAKEWHEELBASE_START';
+export const DELETE_MAKEWHEELBASE_SUCCEED = 'DELETE_MAKEWHEELBASE_SUCCEED';
+export const DELETE_MAKEWHEELBASE_FAILED = 'DELETE_MAKEWHEELBASE_FAILED';
 
 /* ======================================================================================== */
 /* --------------------------------------------- */

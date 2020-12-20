@@ -16,10 +16,11 @@ export function* getCatalogMakesSaga(action: AppActions) {
   let config = setAxiosHeaderToken(action);
 
   let url = process.env.REACT_APP_API + `/pages/catalog/makes`;
-
+  console.log('here');
   try {
     let response = yield axios.get(url, config);
     yield put(actions.getCatalogMakesSucceed(response.data.makes));
+    console.log(response);
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.getCatalogMakesFailed, error.response.data.messages);

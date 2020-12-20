@@ -9,7 +9,7 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 /*3rd party lib*/
-import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
+import { PlusCircleTwoTone, ExclamationCircleOutlined, MinusCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -17,7 +17,20 @@ import { AnyAction, Dispatch } from 'redux';
 import NumberFormat from 'react-number-format';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 
-import { Table, Form, Input, Layout, Button, Modal, Tooltip, notification, Select, DatePicker } from 'antd';
+import {
+  Table,
+  Form,
+  Input,
+  Layout,
+  Button,
+  Modal,
+  Tooltip,
+  notification,
+  Select,
+  DatePicker,
+  Card,
+  Skeleton,
+} from 'antd';
 /* Util */
 import {
   TReceivedMakeObj,
@@ -27,6 +40,7 @@ import {
   TReceivedImageObj,
   TReceivedWheelbaseObj,
   TReceivedSeriesObj,
+  TReceivedMakeWheelbaseObj,
 } from 'src/store/types/dashboard';
 // import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
@@ -38,6 +52,7 @@ import {
   getColumnSearchProps,
   convertPriceToFloat,
   onClearAllSelectedImages,
+  emptyStringWhenUndefinedOrNull,
 } from 'src/shared/Utils';
 
 const { Option } = Select;
@@ -70,7 +85,6 @@ type TMakeTableState = {
   year: string;
   makeTitle: string;
   price: string;
-  // makeLength: string;
   available: boolean;
   engine_cap: string;
   horsepower: string;
@@ -95,6 +109,11 @@ type TShowModal = {
   brand: boolean;
   wheelbase: boolean;
   series: boolean;
+  make_wheelbase: boolean;
+};
+
+type TDeleteModalContent = {
+  make_wheelbase: { make_wheelbase_id: number; make_wheelbase_title: string; length_title: string; make_title: string };
 };
 
 type Props = MakeProps & StateProps & DispatchProps;
@@ -124,6 +143,12 @@ const Make: React.FC<Props> = ({
   // series
   seriesArray,
   onGetSeries,
+  // make wheelbase
+  makeWheelbasesArray,
+  onGetMakeWheelbases,
+  onCreateMakeWheelbase,
+  onUpdateMakeWheelbase,
+  onDeleteMakeWheelbase,
   // image
   imagesUploaded,
   // delete uploaded image
@@ -141,6 +166,8 @@ const Make: React.FC<Props> = ({
   const [updateMakeForm] = Form.useForm();
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
+  const [createMakeWheelbaseForm] = Form.useForm();
+  const [updateMakeWheelbaseForm] = Form.useForm();
 
   // const { width } = useWindowDimensions();
   // Table states
@@ -162,16 +189,35 @@ const Make: React.FC<Props> = ({
     wheelbase: false,
     make: false,
     series: false,
+    make_wheelbase: false,
   });
   const [showCreateModal, setShowCreateModal] = useState<TShowModal>({
     brand: false,
     wheelbase: false,
     make: false,
     series: false,
+    make_wheelbase: false,
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState<TShowModal>({
+    brand: false,
+    wheelbase: false,
+    make: false,
+    series: false,
+    make_wheelbase: false,
   });
 
   // state to track which brand we are using
   const [selectedBrand, setSelectedBrand] = useState<{ brandId: number; brandTitle: string } | null>(null);
+  const [selectedMake, setSelectedMake] = useState<{
+    makeId: number;
+    makeTitle: string;
+    makeBrandTitle: string;
+  } | null>(null);
+
+  // this state to keep track of what to show on delete modal and what useful info to pass
+  const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
+    make_wheelbase: { make_title: '', make_wheelbase_id: -1, length_title: '', make_wheelbase_title: '' },
+  });
 
   /* ======================== */
   /*   Image related states   */
@@ -250,7 +296,7 @@ const Make: React.FC<Props> = ({
                 Delete
               </Button>
             </div>
-            <div className="flex justify-conter">
+            <div className="flex justify-center">
               <Button
                 type="default"
                 onClick={() => {
@@ -261,7 +307,7 @@ const Make: React.FC<Props> = ({
                   });
                 }}
               >
-                Create series
+                Create Series
               </Button>
             </div>
           </>
@@ -380,21 +426,52 @@ const Make: React.FC<Props> = ({
       render: (_text: any, record: TMakeTableState) => {
         return (
           <>
-            <Button
-              className="make__brand-btn--edit"
-              type="link"
-              onClick={() => {
-                // populate the editModalForm
-                onPopulateupdateMakeModal(record);
-                // show modal
-                setShowUpdateModal({ ...showUpdateModal, make: true });
-              }}
-            >
-              Edit
-            </Button>
-            <Button disabled type="link" danger>
-              Delete
-            </Button>
+            <div className="dashboard__btn-div">
+              <Button
+                className="dashboard__btn-link"
+                type="link"
+                onClick={() => {
+                  // populate the editModalForm
+                  onPopulateupdateMakeModal(record);
+                  // show modal
+                  setShowUpdateModal({ ...showUpdateModal, make: true });
+                }}
+              >
+                <i className="far fa-edit"></i>
+              </Button>
+              <Button
+                type="link"
+                className="dashboard__btn-link"
+                onClick={() => {
+                  alert('disable - supposed to set available to false');
+                }}
+              >
+                <i className="fas fa-eye-slash"></i>
+              </Button>
+              <Button className="dashboard__btn-link--danger" disabled type="link" danger>
+                <i className="far fa-trash-alt"></i>
+              </Button>
+            </div>
+            <div className="flex justify-center">
+              <Button
+                type="default"
+                onClick={() => {
+                  // get make id and title
+                  setSelectedMake({
+                    ...selectedMake,
+                    makeId: record.makeId,
+                    makeTitle: record.makeTitle,
+                    makeBrandTitle: record.makeBrandTitle,
+                  });
+                  setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
+                  createMakeWheelbaseForm.setFieldsValue({
+                    makeId: record.makeId,
+                  });
+                }}
+              >
+                Add Configuration
+              </Button>
+            </div>
           </>
         );
       },
@@ -470,7 +547,6 @@ const Make: React.FC<Props> = ({
     // replace units with empty strings
     extractedHorsepower = record.horsepower.replace('hp', '');
     extractedGvw = record.gvw.replace('kg', '');
-    // extractedLength = record.makeLength.replace('mm', '');
     if (record.price !== '') {
       extractedPrice = convertPriceToFloat(record.price);
     } else {
@@ -489,7 +565,6 @@ const Make: React.FC<Props> = ({
       engine_cap: record.engine_cap,
       horsepower: extractedHorsepower,
       transmission: record.transmission,
-      // makeLength: extractedLength,
       makeAbs: record.makeAbs,
       makeTorque: record.makeTorque,
       makeTire: record.makeTire,
@@ -575,32 +650,38 @@ const Make: React.FC<Props> = ({
   /* ===================================== */
   // Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
   type TCreateMakeFinishValues = {
-    makeBrandId: string;
-    // makeWheelbaseId: string;
-    gvw: string;
-    year: string;
-    price: string;
+    makeBrandId: number;
+    makeSeriesId: number;
     title: string;
-    engine_cap: string;
+    makeTire: string;
     horsepower: string;
-    description: string;
+    year: string;
     transmission: string;
-    length: number;
+    engine_cap: string;
+    gvw: string;
+    abs: string;
+    torque: string;
+    config: string;
+    emission: string;
+    price: string;
     imageTag: string;
   };
   type TUpdateMakeFinishValues = {
     makeId: number;
-    makeBrandId: string;
-    // makeWheelbaseId: string;
-    gvw: string;
-    year: string;
-    price: string;
+    makeBrandId: number;
+    makeSeriesId: number;
     title: string;
-    engine_cap: string;
+    makeTire: string;
     horsepower: string;
-    description: string;
+    year: string;
     transmission: string;
-    length: number;
+    engine_cap: string;
+    gvw: string;
+    abs: string;
+    torque: string;
+    config: string;
+    emission: string;
+    price: string;
     imageTag: string;
   };
 
@@ -608,16 +689,20 @@ const Make: React.FC<Props> = ({
   const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
     // package the object
     let createMakeData: TCreateMakeData = {
-      gvw: values.gvw,
       title: values.title,
-      length: values.length,
-      engine_cap: values.engine_cap,
-      horsepower: values.horsepower,
-      transmission: values.transmission,
-      brand_id: values.makeBrandId.toString(),
+      brand_id: values.makeBrandId,
+      series_id: values.makeSeriesId,
+      tire: emptyStringWhenUndefinedOrNull(values.makeTire),
+      horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
+      year: emptyStringWhenUndefinedOrNull(values.year), //convert to year
+      transmission: emptyStringWhenUndefinedOrNull(values.transmission),
+      engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
+      gvw: emptyStringWhenUndefinedOrNull(values.gvw),
+      abs: emptyStringWhenUndefinedOrNull(values.abs),
+      torque: emptyStringWhenUndefinedOrNull(values.torque),
+      config: emptyStringWhenUndefinedOrNull(values.config),
+      emission: emptyStringWhenUndefinedOrNull(values.emission),
       price: convertPriceToFloat(values.price),
-      // wheelbase_id: values.makeWheelbaseId.toString(),
-      year: moment(values.year).year().toString(), //convert to year
     };
 
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
@@ -631,20 +716,23 @@ const Make: React.FC<Props> = ({
 
   // Edit Make
   const onEditMakeFinish = (values: TUpdateMakeFinishValues) => {
-    console.log(values.price);
     // package the object
     let updateMakeData: TUpdateMakeData = {
       make_id: values.makeId,
-      gvw: values.gvw,
       title: values.title,
-      length: values.length,
-      engine_cap: values.engine_cap,
-      horsepower: values.horsepower,
-      transmission: values.transmission,
-      brand_id: values.makeBrandId.toString(),
+      brand_id: values.makeBrandId,
+      series_id: values.makeSeriesId,
+      tire: emptyStringWhenUndefinedOrNull(values.makeTire),
+      horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
+      year: emptyStringWhenUndefinedOrNull(values.year),
+      transmission: emptyStringWhenUndefinedOrNull(values.transmission),
+      engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
+      gvw: emptyStringWhenUndefinedOrNull(values.gvw),
+      abs: emptyStringWhenUndefinedOrNull(values.abs),
+      torque: emptyStringWhenUndefinedOrNull(values.torque),
+      config: emptyStringWhenUndefinedOrNull(values.config),
+      emission: emptyStringWhenUndefinedOrNull(values.emission),
       price: convertPriceToFloat(values.price),
-      // wheelbase_id: values.makeWheelbaseId.toString(),
-      year: moment(values.year).year().toString(), //convert to year
     };
 
     if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
@@ -654,6 +742,21 @@ const Make: React.FC<Props> = ({
     } else {
       onUpdateMake(updateMakeData, null, null);
     }
+  };
+
+  /* ===================================== */
+  // Make Wheelbase
+  /* ===================================== */
+  const onCreateMakeWheelbaseFinish = (values: { wheelbaseId: number; length: string; makeId: number }) => {
+    onCreateMakeWheelbase(values.makeId, values.wheelbaseId, values.length);
+  };
+  const onUpdateMakeWheelbaseFinish = (values: {
+    wheelbaseId: number;
+    length: string;
+    makeId: number;
+    makeWheelbaseId: number;
+  }) => {
+    onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId, values.length);
   };
 
   /**
@@ -700,11 +803,13 @@ const Make: React.FC<Props> = ({
     } else if ('makeImages' in record) {
       expandImageGalleryButton = (
         <PlusCircleTwoTone
-          style={{
-            opacity: record.makeImages.length === 0 ? 0.3 : 1,
-            pointerEvents: record.makeImages.length === 0 ? 'none' : 'auto',
-          }}
+          // style={{
+          //   opacity: record.makeImages.length === 0 ? 0.3 : 1,
+          //   pointerEvents: record.makeImages.length === 0 ? 'none' : 'auto',
+          // }}
           onClick={() => {
+            // Call make wheelbases here
+            onGetMakeWheelbases(record.makeId);
             // this allow only 1 row to expand at a time
             onTableRowExpand(expanded, record);
             // this closes all the edit image gallery when user expand other row
@@ -723,7 +828,7 @@ const Make: React.FC<Props> = ({
     return (
       <>
         {expanded ? (
-          <Tooltip trigger={['hover', 'click']} title="Click to hide images">
+          <Tooltip trigger={['hover', 'click']} title="Click to hide details">
             <MinusCircleTwoTone
               onClick={() => {
                 onTableRowExpand(expanded, record);
@@ -734,7 +839,7 @@ const Make: React.FC<Props> = ({
             />
           </Tooltip>
         ) : (
-          <Tooltip trigger={['hover', 'click']} title="Click to view images">
+          <Tooltip trigger={['hover', 'click']} title="Click to view more details">
             {expandImageGalleryButton}
           </Tooltip>
         )}
@@ -827,7 +932,7 @@ const Make: React.FC<Props> = ({
     <>
       <Form
         form={createBrandForm}
-        name="createBrand"
+        // name="createBrand"
         onKeyDown={(e) => handleKeyDown(e, createBrandForm)}
         onFinish={onCreateBrandFinish}
       >
@@ -861,7 +966,7 @@ const Make: React.FC<Props> = ({
     <>
       <Form
         form={updateBrandForm}
-        name="editBrand"
+        // name="editBrand"
         onKeyDown={(e) => handleKeyDown(e, updateBrandForm)}
         onFinish={onEditBrandFinish}
       >
@@ -1020,7 +1125,7 @@ const Make: React.FC<Props> = ({
     <>
       <Form
         form={createWheelbaseForm}
-        name="createWheelbase"
+        // name="createWheelbase"
         onKeyDown={(e) => handleKeyDown(e, createWheelbaseForm)}
         onFinish={onCreateWheelbaseFinish}
       >
@@ -1030,7 +1135,7 @@ const Make: React.FC<Props> = ({
           name="wheelbaseTitle"
           rules={[{ required: true, message: 'Input title here!' }]}
         >
-          <Input type="number" min={0} addonAfter={'mm'} placeholder="Type title here e.g. 3300" />
+          <Input addonAfter={'mm'} placeholder="Type title here e.g. 3300" />
         </Form.Item>
 
         <Form.Item
@@ -1068,7 +1173,7 @@ const Make: React.FC<Props> = ({
     <>
       <Form
         form={updateWheelbaseForm}
-        name="editWheelbase"
+        // name="editWheelbase"
         onKeyDown={(e) => handleKeyDown(e, updateWheelbaseForm)}
         onFinish={onEditWheelbaseFinish}
       >
@@ -1078,7 +1183,7 @@ const Make: React.FC<Props> = ({
           name="wheelbaseTitle"
           rules={[{ required: true, message: 'Input title here!' }]}
         >
-          <Input type="number" min={0} addonAfter={'mm'} placeholder="Type title here e.g. 3300" />
+          <Input addonAfter={'mm'} placeholder="Type title here e.g. 3300" />
         </Form.Item>
 
         <Form.Item
@@ -1160,45 +1265,11 @@ const Make: React.FC<Props> = ({
                 })}
             </Select>
           </Form.Item>
-          {/* ------- Wheelbase - value is Wheelbase id but display is Wheelbase name  -------*/}
-          {/* <Form.Item
-            className="make__form-item make__form-item--make"
-            label="Wheelbase"
-            name="makeWheelbaseId"
-            rules={[{ required: true, message: 'Select wheelbase!' }]}
-          >
-            <Select
-              showSearch
-              placeholder="Select a wheelbase"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {wheelbasesArray &&
-                wheelbasesArray.map((wheelbase) => {
-                  return (
-                    <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
-                      {wheelbase.title + 'mm'}
-                    </Option>
-                  );
-                })}
-            </Select>
-          </Form.Item> */}
-          {/* ------- Length ------- */}
-          <Form.Item
-            className="make__form-item make__form-item--make"
-            label="Length"
-            name="makeLength"
-            rules={[{ required: true, message: 'Input length (mm) here!' }]}
-          >
-            <Input type="number" min={0} addonAfter={'mm'} placeholder="Type length here" />
-          </Form.Item>
           {/* ------- Series ------- */}
           <Form.Item
             className="make__form-item make__form-item--make"
             label="Series"
-            name="makeSeries"
+            name="makeSeriesId"
             rules={[{ required: false, message: 'Input Series here!' }]}
           >
             {/* only render if brandsArray is not null */}
@@ -1246,8 +1317,6 @@ const Make: React.FC<Props> = ({
           >
             <DatePicker style={{ width: '100%' }} picker="year" />
           </Form.Item>
-        </div>
-        <div className="make__form-right">
           {/* ------- Transmission ------- */}
           <Form.Item
             className="make__form-item make__form-item--make"
@@ -1257,6 +1326,8 @@ const Make: React.FC<Props> = ({
           >
             <Input placeholder="Type transmission here e.g. MT" />
           </Form.Item>
+        </div>
+        <div className="make__form-right">
           {/* ------- Engine cap ------- */}
           <Form.Item
             className="make__form-item make__form-item--make"
@@ -1345,7 +1416,7 @@ const Make: React.FC<Props> = ({
             onGetSeries(value.makeBrandId);
         }}
         form={createMakeForm}
-        name="createMake"
+        // name="createMake"
         onKeyDown={(e) => handleKeyDown(e, createMakeForm)}
         onFinish={onCreateMakeFinish}
       >
@@ -1379,7 +1450,7 @@ const Make: React.FC<Props> = ({
     <>
       <Form
         form={updateMakeForm}
-        name="editMake"
+        // name="editMake"
         onKeyDown={(e) => handleKeyDown(e, updateMakeForm)}
         onFinish={onEditMakeFinish}
       >
@@ -1414,6 +1485,306 @@ const Make: React.FC<Props> = ({
     >
       {/* the content within the modal */}
       {updateMakeFormComponent}
+    </Modal>
+  );
+
+  /* Make Wheelbase Form Items */
+  let makeWheelbaseFormItems = (
+    <>
+      <Form.Item
+        className="make__form-item "
+        label="Wheelbase"
+        name="wheelbaseId"
+        rules={[{ required: true, message: 'Select wheelbase!' }]}
+      >
+        <Select
+          showSearch
+          placeholder="Select a wheelbase"
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {wheelbasesArray &&
+            wheelbasesArray.map((wheelbase) => {
+              return (
+                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
+                  {wheelbase.title + 'mm'}
+                </Option>
+              );
+            })}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        className="make__form-item"
+        label="Length"
+        name="length"
+        rules={[{ required: true, message: 'Input length here!' }]}
+      >
+        <Input addonAfter="mm" placeholder="Type length here" />
+      </Form.Item>
+
+      <Form.Item hidden label="makeId" name="makeId" rules={[{ required: true, message: 'Input body id!' }]}>
+        <Input />
+      </Form.Item>
+    </>
+  );
+
+  /* Create MakeWheelbase Form */
+  let createMakeWheelbaseFormComponent = (
+    <>
+      <Form
+        form={createMakeWheelbaseForm}
+        // name="createMakeWheelbase"
+        onKeyDown={(e) => handleKeyDown(e, createMakeWheelbaseForm)}
+        onFinish={onCreateMakeWheelbaseFinish}
+      >
+        {/* The rest of the form items */}
+        {makeWheelbaseFormItems}
+      </Form>
+    </>
+  );
+
+  /* Create MakeWheelbase Modal */
+  let createMakeWheelbaseModal = (
+    <Modal
+      title={
+        <>
+          Create Configuration
+          {selectedMake ? (
+            <>
+              &nbsp;for
+              <span className="make__modal-title--card">{` ${selectedMake.makeBrandTitle} - ${selectedMake.makeTitle}`}</span>
+            </>
+          ) : (
+            ''
+          )}
+        </>
+      }
+      centered
+      visible={showCreateModal.make_wheelbase}
+      onOk={createMakeWheelbaseForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        setShowCreateModal({ ...showCreateModal, make_wheelbase: false });
+        createMakeWheelbaseForm.resetFields();
+      }}
+    >
+      {/* the content within the modal */}
+      {createMakeWheelbaseFormComponent}
+    </Modal>
+  );
+
+  /* Update MakeWheelbase Form */
+  let updateMakeWheelbaseFormComponent = (
+    <>
+      <Form
+        form={updateMakeWheelbaseForm}
+        // name="updateMakeWheelbase"
+        onKeyDown={(e) => handleKeyDown(e, updateMakeWheelbaseForm)}
+        onFinish={onUpdateMakeWheelbaseFinish}
+      >
+        {/* The rest of the form items */}
+        {makeWheelbaseFormItems}
+        {/* Id for update */}
+        <Form.Item
+          hidden
+          label="makeWheelbaseId"
+          name="makeWheelbaseId"
+          rules={[{ required: true, message: 'Assign makewheelbase id!' }]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </>
+  );
+
+  /* Edit MakeWheelbase Modal */
+  let updateMakeWheelbaseModal = (
+    <Modal
+      centered
+      title={
+        <>
+          Edit Configuration
+          {selectedMake ? (
+            <>
+              &nbsp;for
+              <span className="make__modal-title--card">{` ${selectedMake.makeBrandTitle} - ${selectedMake.makeTitle}`}</span>
+            </>
+          ) : (
+            ''
+          )}
+        </>
+      }
+      visible={showUpdateModal.make_wheelbase}
+      onOk={updateMakeWheelbaseForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        setShowUpdateModal({ ...showUpdateModal, make_wheelbase: false });
+      }}
+    >
+      {/* the content within the modal */}
+      {updateMakeWheelbaseFormComponent}
+    </Modal>
+  );
+  /* =================================== */
+  /* Make wheelbase expanded component*/
+  /* =================================== */
+
+  const makeWheelbasesCardsComponent = (record: TMakeTableState) => {
+    return (
+      <>
+        {makeWheelbasesArray ? (
+          <>
+            {makeWheelbasesArray.length > 0 ? (
+              <>
+                <div>
+                  Configuration(s) for&nbsp;
+                  <span className="make__expand-title" style={{ textTransform: 'capitalize' }}>
+                    {record.makeBrandTitle}&nbsp;{record.makeTitle}
+                  </span>
+                  :&nbsp;
+                  <span className="make__expand-available">{makeWheelbasesArray.length} available</span>
+                </div>
+                <hr />
+                <div className="make__expand-outerdiv">
+                  {[...makeWheelbasesArray].reverse().map((makeWheelbase, index) => {
+                    return (
+                      <Card
+                        key={uuidv4()}
+                        className="make__expand-card"
+                        title={
+                          <div className="make__expand-card-title-div">
+                            <span className="make__expand-card-title">Configuration {index + 1}</span>
+                          </div>
+                        }
+                        size="small"
+                        style={{ width: 'auto' }}
+                        headStyle={{ background: '#FFF2E8' }}
+                      >
+                        <div className="make__expand-card-body">
+                          <section className="make__expand-card-description">
+                            <div>
+                              Wheelbase:&nbsp;
+                              {makeWheelbase.wheelbase.title && makeWheelbase.wheelbase.title !== ''
+                                ? `${makeWheelbase.wheelbase.title}mm`
+                                : '-'}
+                            </div>
+                            <div>
+                              Length:&nbsp;
+                              {makeWheelbase.length && makeWheelbase.length !== 0 ? `${makeWheelbase.length}mm` : '-'}
+                            </div>
+                          </section>
+                          <section className="make__expand-card-btn-section">
+                            <div className="make__expand-card-btn-div">
+                              <div>
+                                <Button
+                                  type="link"
+                                  className="blue-link-btn margin_r-1"
+                                  style={{ padding: 0 }}
+                                  onClick={() => {
+                                    // to get name and id
+                                    setSelectedMake({
+                                      ...selectedMake,
+                                      makeId: record.makeId,
+                                      makeTitle: record.makeTitle,
+                                      makeBrandTitle: record.makeBrandTitle,
+                                    });
+                                    setShowUpdateModal({ ...showUpdateModal, make_wheelbase: true });
+                                    updateMakeWheelbaseForm.setFieldsValue({
+                                      makeId: record.makeId,
+                                      length: makeWheelbase.length,
+                                      makeWheelbaseId: makeWheelbase.id,
+                                      wheelbaseId: makeWheelbase.wheelbase.id,
+                                    });
+                                  }}
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  type="link"
+                                  danger
+                                  style={{ padding: 0 }}
+                                  onClick={() => {
+                                    // to get name and id
+                                    setSelectedMake({
+                                      ...selectedMake,
+                                      makeId: record.makeId,
+                                      makeTitle: record.makeTitle,
+                                      makeBrandTitle: record.makeBrandTitle,
+                                    });
+                                    setDeleteModalContent({
+                                      ...deleteModalContent,
+                                      make_wheelbase: {
+                                        make_title: record.makeTitle,
+                                        length_title: makeWheelbase.length.toString(),
+                                        make_wheelbase_id: makeWheelbase.wheelbase.id,
+                                        make_wheelbase_title: makeWheelbase.wheelbase.title,
+                                      },
+                                    });
+                                    setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            </div>
+                          </section>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </>
+            ) : null}
+          </>
+        ) : (
+          <Skeleton active />
+        )}
+      </>
+    );
+  };
+
+  /* ================================ */
+  // Delete Modals
+  /* ================================ */
+  //  Delete Make Wheelbase Modal
+  let deleteMakeWheelbaseModal = (
+    <Modal
+      title={
+        <div className="dashboard__delete-header">
+          <ExclamationCircleOutlined className="dashboard__delete-icon" />
+          <div>
+            Delete Configuration
+            {selectedMake ? (
+              <>
+                &nbsp;for&nbsp;
+                <span className="make__modal-title--card">{` ${selectedMake.makeBrandTitle} - ${selectedMake.makeTitle}`}</span>
+              </>
+            ) : (
+              ''
+            )}
+          </div>
+        </div>
+      }
+      visible={showDeleteModal.make_wheelbase}
+      onOk={() => {
+        if (selectedMake === undefined || selectedMake === null) return;
+        onDeleteMakeWheelbase(selectedMake.makeId, deleteModalContent.make_wheelbase.make_wheelbase_id);
+      }}
+      onCancel={() => setShowDeleteModal({ ...showDeleteModal, make_wheelbase: false })}
+      okText="Yes, delete it"
+      confirmLoading={loading}
+      cancelText="Cancel"
+    >
+      You are deleting
+      {deleteModalContent.make_wheelbase.make_wheelbase_title === '' ? (
+        ' this configuration'
+      ) : (
+        <span className="dashboard__delete-message">{` Wheelbase: ${deleteModalContent.make_wheelbase.make_wheelbase_title}mm, Length: ${deleteModalContent.make_wheelbase.length_title}mm`}</span>
+      )}
+      , this action is permanent. Are you sure?
     </Modal>
   );
 
@@ -1568,7 +1939,6 @@ const Make: React.FC<Props> = ({
           year: makeYear,
           makeId: make.id,
           price: makePrice,
-          // makeLength: makeLength,
           makeTitle: makeTitle,
           available: make.available,
           engine_cap: makeEngineCap,
@@ -1578,8 +1948,6 @@ const Make: React.FC<Props> = ({
           makeBrandId: make.brand.id,
           makeBrandTitle: makeBrandTitle,
           makeSeries: makeSeries,
-          // makeWheelbaseId: make.wheelbase.id,
-          // makeWheelbaseTitle: makeWheelbaseTitle,
           makeImages: make.images, //the whole array of images
           makeAbs: makeAbs,
           makeTorque: makeTorque,
@@ -1625,18 +1993,44 @@ const Make: React.FC<Props> = ({
       createBrandForm.resetFields();
       createWheelbaseForm.resetFields();
       createMakeForm.resetFields();
+      createSeriesForm.resetFields();
+      createMakeWheelbaseForm.resetFields();
       // close all the modals if successful
-      setShowCreateModal({ ...showCreateModal, brand: false, wheelbase: false, make: false });
-      setShowUpdateModal({ ...showUpdateModal, brand: false, wheelbase: false, make: false });
+      setShowCreateModal({
+        ...showCreateModal,
+        brand: false,
+        wheelbase: false,
+        make: false,
+        series: false,
+        make_wheelbase: false,
+      });
+      setShowUpdateModal({
+        ...showUpdateModal,
+        brand: false,
+        wheelbase: false,
+        make: false,
+        series: false,
+        make_wheelbase: false,
+      });
+      setShowDeleteModal({
+        ...showDeleteModal,
+        brand: false,
+        wheelbase: false,
+        make: false,
+        series: false,
+        make_wheelbase: false,
+      });
     }
   }, [
+    successMessage,
+    showDeleteModal,
     showUpdateModal,
-    setShowUpdateModal,
+    showCreateModal,
     createMakeForm,
     createBrandForm,
     createWheelbaseForm,
-    showCreateModal,
-    successMessage,
+    createSeriesForm,
+    createMakeWheelbaseForm,
     onClearDashboardState,
   ]);
 
@@ -1679,6 +2073,9 @@ const Make: React.FC<Props> = ({
       {updateMakeModal}
       {createSeriesModal}
       {updateSeriesModal}
+      {createMakeWheelbaseModal}
+      {updateMakeWheelbaseModal}
+      {deleteMakeWheelbaseModal}
 
       <Layout>
         <NavbarComponent activePage="dashboard" />
@@ -1781,7 +2178,24 @@ const Make: React.FC<Props> = ({
                         onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
                         expandable={{
                           expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
-                          expandedRowRender: (record: TMakeTableState) => onExpandedRowRender(record),
+                          expandedRowRender: (record: TMakeTableState) => {
+                            let imageGalleryComponent = onExpandedRowRender(record);
+                            let makeWheelbaseCards = makeWheelbasesCardsComponent(record);
+
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    marginBottom:
+                                      makeWheelbasesArray && makeWheelbasesArray.length > 0 ? '2rem' : 'none',
+                                  }}
+                                >
+                                  {makeWheelbaseCards}
+                                </div>
+                                {imageGalleryComponent}
+                              </>
+                            );
+                          },
                         }}
                         // components={components}
                         dataSource={makeTableState}
@@ -1812,6 +2226,7 @@ interface StateProps {
   brandsArray?: TReceivedBrandObj[] | null;
   seriesArray?: TReceivedSeriesObj[] | null;
   wheelbasesArray?: TReceivedWheelbaseObj[] | null;
+  makeWheelbasesArray?: TReceivedMakeWheelbaseObj[] | null;
 }
 const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
   if ('dashboard' in state) {
@@ -1824,6 +2239,7 @@ const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
       imagesUploaded: state.dashboard.imagesUploaded,
       successMessage: state.dashboard.successMessage,
       wheelbasesArray: state.dashboard.wheelbasesArray,
+      makeWheelbasesArray: state.dashboard.makeWheelbasesArray,
     };
   }
 };
@@ -1843,6 +2259,11 @@ interface DispatchProps {
   onUpdateMake: typeof actions.updateMake;
   // Series
   onGetSeries: typeof actions.getSeries;
+  // Make Wheelbase
+  onGetMakeWheelbases: typeof actions.getMakeWheelbases;
+  onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
+  onUpdateMakeWheelbase: typeof actions.updateMakeWheelbase;
+  onDeleteMakeWheelbase: typeof actions.deleteMakeWheelbase;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -1869,6 +2290,14 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
     //  Series
     onGetSeries: (brand_id) => dispatch(actions.getSeries(brand_id)),
+    // Make wheelbase
+    onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
+    onCreateMakeWheelbase: (make_id, wheelbase_id, length) =>
+      dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, length)),
+    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id, length) =>
+      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id, length)),
+    onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>
+      dispatch(actions.deleteMakeWheelbase(make_id, make_wheelbase_id)),
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

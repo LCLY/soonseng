@@ -99,16 +99,39 @@ export {
   getMakesStart,
   getMakesFailed,
   getMakesSucceed,
-  // Get Series
-  getSeries,
-  getSeriesStart,
-  getSeriesFailed,
-  getSeriesSucceed,
   // Update Make
   updateMake,
   updateMakeStart,
   updateMakeFailed,
   updateMakeSucceed,
+  // Get Series
+  getSeries,
+  getSeriesStart,
+  getSeriesFailed,
+  getSeriesSucceed,
+  /* =================== */
+  //  MakeWheelbase (Make Page)
+  /* =================== */
+  // Create MakeWheelbase
+  createMakeWheelbase,
+  createMakeWheelbaseStart,
+  createMakeWheelbaseFailed,
+  createMakeWheelbaseSucceed,
+  // Get MakeWheelbase
+  getMakeWheelbases,
+  getMakeWheelbasesStart,
+  getMakeWheelbasesFailed,
+  getMakeWheelbasesSucceed,
+  // Update MakeWheelbase
+  updateMakeWheelbase,
+  updateMakeWheelbaseStart,
+  updateMakeWheelbaseFailed,
+  updateMakeWheelbaseSucceed,
+  // Delete MakeWheelbase
+  deleteMakeWheelbase,
+  deleteMakeWheelbaseStart,
+  deleteMakeWheelbaseFailed,
+  deleteMakeWheelbaseSucceed,
   /* --------------------------------------- */
   /* =================== */
   // Body (Body Page)
