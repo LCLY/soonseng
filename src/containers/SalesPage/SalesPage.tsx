@@ -6,6 +6,7 @@ import BodyMakeSection from './StepSections/BodyMakeSection';
 import OverviewSection from './StepSections/OverviewSection';
 import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 // Sales related components
 import AccessorySection from './StepSections/AccessorySection';
 import TyreSection from 'src/containers/SalesPage/StepSections/TyreSection';
@@ -293,33 +294,34 @@ const SalesPage: React.FC<Props> = ({
   return (
     <>
       <NavbarComponent activePage="sales" />
-
-      <div className="sales__outerdiv">
-        <div className="sales__innerdiv">
-          <div className="sales__steps-content">
-            <Container>
-              <div className="sales__steps-div">
-                <Steps current={currentStep}>
-                  {steps.map((item) => (
-                    <Step
-                      key={uuidv4()}
-                      // icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
-                      title={
-                        <div className="sales__steps-title">
-                          <div>{item.title}</div>
-                        </div>
-                      }
-                    />
-                  ))}
-                </Steps>
+      <ParallaxContainer bgImageUrl="https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg">
+        <div className="sales__outerdiv">
+          <div className="sales__innerdiv">
+            <div className="sales__steps-content">
+              <Container>
+                <div className="sales__steps-div">
+                  <Steps current={currentStep}>
+                    {steps.map((item) => (
+                      <Step
+                        key={uuidv4()}
+                        // icon={currentStep + 1 === item.step && loading ? <LoadingOutlined /> : null}
+                        title={
+                          <div className="sales__steps-title">
+                            <div>{item.title}</div>
+                          </div>
+                        }
+                      />
+                    ))}
+                  </Steps>
+                </div>
+              </Container>
+              <div className="sales__steps-content-outerdiv">
+                <Container>{steps[currentStep].content}</Container>
               </div>
-            </Container>
-            <div className="sales__steps-content-outerdiv">
-              <Container>{steps[currentStep].content}</Container>
             </div>
           </div>
         </div>
-      </div>
+      </ParallaxContainer>
       <Footer />
     </>
   );

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import NumberFormat from 'react-number-format';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Breadcrumb, Button, Collapse, Divider, Dropdown, Menu } from 'antd';
-import { DownSquareOutlined, InfoCircleOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, InfoCircleOutlined, CaretRightOutlined } from '@ant-design/icons';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
@@ -264,7 +264,10 @@ const OverviewSection: React.FC<Props> = ({
                       <div className="sales__overview-more">
                         <div className="sales__overview-more-icon-div">
                           <Dropdown trigger={['click']} overlay={moreOptionsDropdown} placement="bottomRight">
-                            <DownSquareOutlined className="sales__overview-more-icon" />
+                            <div className="flex-align-center">
+                              More Options&nbsp;
+                              <CaretDownOutlined className="sales__overview-more-icon" />
+                            </div>
                           </Dropdown>
                         </div>
                       </div>

@@ -134,28 +134,35 @@ const BodySection: React.FC<Props> = ({
 
             {/* Card Details */}
             {currentBody && currentLength ? (
-              <Card className="sales__selectarea-card" size="small" title="Selected body type">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Title</div>
-                  <div className="sales__selectarea-card-row-right sales__selectarea-card-row-right-title">
-                    {currentBody?.title}
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+
+                <Card className="sales__selectarea-card" size="small" title="Selected body type">
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Title</div>
+                    <div className="sales__selectarea-card-row-right sales__selectarea-card-row-right-title">
+                      {currentBody?.title}
+                    </div>
                   </div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Description</div>
-                  <div className="sales__selectarea-card-row-right">
-                    {`${currentLength.title}ft${
-                      currentBody.description === null || currentBody.description === ''
-                        ? ''
-                        : `, ${currentBody.description}`
-                    }`}
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Description</div>
+                    <div className="sales__selectarea-card-row-right">
+                      {`${currentLength.title}ft${
+                        currentBody.description === null || currentBody.description === ''
+                          ? ''
+                          : `, ${currentBody.description}`
+                      }`}
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </div>
             ) : (
-              <Card className="sales__selectarea-card" size="small" title="Selected body type">
-                None
-              </Card>
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+                <Card className="sales__selectarea-card" size="small" title="Selected body type">
+                  None
+                </Card>
+              </div>
             )}
           </div>
 
@@ -216,7 +223,7 @@ const BodySection: React.FC<Props> = ({
             </div>
             <div className="sales__btn-div">
               <Button
-                className="sales__btn margin_r-1"
+                className="sales__btn sales__btn--back margin_r-1"
                 onClick={() => {
                   setCurrentStep(currentStep - 1);
                   setCurrentBody(null);

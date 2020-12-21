@@ -58,18 +58,24 @@ const TyreSection: React.FC<Props> = ({
               alt="tire count"
             />
             {currentTyre ? (
-              <Card className="sales__selectarea-card" size="small" title="Selected tyre count">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Tyre count</div>
-                  <div>{currentTyre} tires</div>
-                </div>
-              </Card>
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+                <Card className="sales__selectarea-card" size="small" title="Selected tyre count">
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Tyre count</div>
+                    <div>{currentTyre} tires</div>
+                  </div>
+                </Card>
+              </div>
             ) : (
-              <Card className="sales__selectarea-card" size="small" title="Selected tyre count">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">None</div>
-                </div>
-              </Card>
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+                <Card className="sales__selectarea-card" size="small" title="Selected tyre count">
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">None</div>
+                  </div>
+                </Card>
+              </div>
             )}
           </div>
 

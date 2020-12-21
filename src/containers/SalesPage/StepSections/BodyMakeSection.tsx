@@ -138,167 +138,178 @@ const BodyMakeSection: React.FC<Props> = ({
               </div>
             )}
             {currentBodyMake ? (
-              <Card className="sales__selectarea-card" size="small" title="Selected model">
-                <div className="flex">
-                  <section className="sales__selectarea-card-column">
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Model</div>
-                      <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.title}</div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Series</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.series === null || currentBodyMake.make.series === ''
-                          ? '-'
-                          : currentBodyMake.make.series}
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+
+                <Card className="sales__selectarea-card" size="small" title="Selected model">
+                  <div className="flex">
+                    <section className="sales__selectarea-card-column">
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Model</div>
+                        <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.title}</div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Series</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.series === null || currentBodyMake.make.series === ''
+                            ? '-'
+                            : currentBodyMake.make.series}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Length</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.length !== null && currentBodyMake.length !== 0
+                            ? `${currentBodyMake.length}mm`
+                            : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Config</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.config ? currentBodyMake.make.config : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Torque</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.torque ? currentBodyMake.make.torque : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Horsepower</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.horsepower ? `${currentBodyMake.make.horsepower}PC` : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Emission</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.emission ? currentBodyMake.make.emission : '-'}
+                        </div>
+                      </div>
+                    </section>
+                    <section className="sales__selectarea-card-column">
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.tire ? currentBodyMake.make.tire : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.wheelbase ? `${currentBodyMake.wheelbase}mm` : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Transmission</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.transmission ? currentBodyMake.make.transmission : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Engine Capacity</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.engine_cap ? `${currentBodyMake.make.engine_cap}CC` : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">Year</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.year ? currentBodyMake.make.year : '-'}
+                        </div>
+                      </div>
+                      <div className="sales__selectarea-card-row">
+                        <div className="sales__selectarea-card-row-left--make">GVW</div>
+                        <div className="sales__selectarea-card-row-right--make">
+                          {currentBodyMake.make.gvw ? `${currentBodyMake.make.gvw}kg` : '-'}
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                  {accessObj.showPriceSalesPage && (
+                    <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
+                      <div className="sales__selectarea-card-row-left">Model Price</div>
+
+                      <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
+                        {currentBodyMake?.make.price === 0 || currentBodyMake?.make.price === null ? (
+                          '-'
+                        ) : (
+                          <>
+                            RM
+                            <NumberFormat
+                              value={currentBodyMake?.make.price}
+                              displayType={'text'}
+                              thousandSeparator={true}
+                            />
+                          </>
+                        )}
                       </div>
                     </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Length</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.length !== null && currentBodyMake.length !== 0
-                          ? `${currentBodyMake.length}mm`
-                          : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Config</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.config ? currentBodyMake.make.config : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Torque</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.torque ? currentBodyMake.make.torque : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Horsepower</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.horsepower ? `${currentBodyMake.make.horsepower}PC` : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Emission</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.emission ? currentBodyMake.make.emission : '-'}
-                      </div>
-                    </div>
-                  </section>
-                  <section className="sales__selectarea-card-column">
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.tire ? currentBodyMake.make.tire : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.wheelbase ? `${currentBodyMake.wheelbase}mm` : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Transmission</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.transmission ? currentBodyMake.make.transmission : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Engine Capacity</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.engine_cap ? `${currentBodyMake.make.engine_cap}CC` : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">Year</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.year ? currentBodyMake.make.year : '-'}
-                      </div>
-                    </div>
-                    <div className="sales__selectarea-card-row">
-                      <div className="sales__selectarea-card-row-left--make">GVW</div>
-                      <div className="sales__selectarea-card-row-right--make">
-                        {currentBodyMake.make.gvw ? `${currentBodyMake.make.gvw}kg` : '-'}
-                      </div>
-                    </div>
-                  </section>
-                </div>
-                {accessObj.showPriceSalesPage && (
+                  )}
                   <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
-                    <div className="sales__selectarea-card-row-left">Model Price</div>
+                    <div className="sales__selectarea-card-row-left">Dimension</div>
+                    <div className="sales__selectarea-card-row-right">
+                      {currentBodyMake?.width !== null &&
+                        currentBodyMake?.width !== '' &&
+                        currentBodyMake?.width !== null && (
+                          <Tag className="flex" color="red">
+                            <div className="sales__selectarea-card-dimension">Width:&nbsp;</div>
+                            <div className="sales__selectarea-card-dimension">{currentBodyMake?.width}</div>
+                          </Tag>
+                        )}
 
-                    <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
-                      {currentBodyMake?.make.price === 0 || currentBodyMake?.make.price === null ? (
-                        '-'
-                      ) : (
-                        <>
-                          RM
-                          <NumberFormat
-                            value={currentBodyMake?.make.price}
-                            displayType={'text'}
-                            thousandSeparator={true}
-                          />
-                        </>
-                      )}
+                      {currentBodyMake?.depth !== null &&
+                        currentBodyMake?.depth !== '' &&
+                        currentBodyMake?.depth !== null && (
+                          <Tag className="flex" color="orange">
+                            <div className="sales__selectarea-card-dimension">Depth:&nbsp;</div>
+                            <div className="sales__selectarea-card-dimension">{currentBodyMake?.depth}</div>
+                          </Tag>
+                        )}
+
+                      {currentBodyMake?.height !== null &&
+                        currentBodyMake?.height !== '' &&
+                        currentBodyMake?.height !== null && (
+                          <Tag className="flex" color="volcano">
+                            <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
+                            <div className="sales__selectarea-card-dimension">{currentBodyMake?.height}</div>
+                          </Tag>
+                        )}
                     </div>
                   </div>
-                )}
-                <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
-                  <div className="sales__selectarea-card-row-left">Dimension</div>
-                  <div className="sales__selectarea-card-row-right">
-                    {currentBodyMake?.width !== null &&
-                      currentBodyMake?.width !== '' &&
-                      currentBodyMake?.width !== null && (
-                        <Tag className="flex" color="red">
-                          <div className="sales__selectarea-card-dimension">Width:&nbsp;</div>
-                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.width}</div>
-                        </Tag>
-                      )}
+                  {accessObj.showPriceSalesPage && (
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left">Body Price</div>
 
-                    {currentBodyMake?.depth !== null &&
-                      currentBodyMake?.depth !== '' &&
-                      currentBodyMake?.depth !== null && (
-                        <Tag className="flex" color="orange">
-                          <div className="sales__selectarea-card-dimension">Depth:&nbsp;</div>
-                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.depth}</div>
-                        </Tag>
-                      )}
-
-                    {currentBodyMake?.height !== null &&
-                      currentBodyMake?.height !== '' &&
-                      currentBodyMake?.height !== null && (
-                        <Tag className="flex" color="volcano">
-                          <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
-                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.height}</div>
-                        </Tag>
-                      )}
-                  </div>
-                </div>
-                {accessObj.showPriceSalesPage && (
-                  <div className="sales__selectarea-card-row">
-                    <div className="sales__selectarea-card-row-left">Body Price</div>
-
-                    <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                      {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
-                        '-'
-                      ) : (
-                        <>
-                          RM
-                          <NumberFormat value={currentBodyMake?.price} displayType={'text'} thousandSeparator={true} />
-                        </>
-                      )}
+                      <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
+                        {currentBodyMake?.price === 0 || currentBodyMake?.price === null ? (
+                          '-'
+                        ) : (
+                          <>
+                            RM
+                            <NumberFormat
+                              value={currentBodyMake?.price}
+                              displayType={'text'}
+                              thousandSeparator={true}
+                            />
+                          </>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </Card>
+                  )}
+                </Card>
+              </div>
             ) : (
-              <Card className="sales__selectarea-card" size="small" title="Selected model">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">None</div>
-                </div>
-              </Card>
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+                <Card className="sales__selectarea-card" size="small" title="Selected model">
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">None</div>
+                  </div>
+                </Card>
+              </div>
             )}
           </div>
 
@@ -326,7 +337,7 @@ const BodyMakeSection: React.FC<Props> = ({
                                 className="sales__selectarea-categorydivider sales__selectarea-categorydivider--brand"
                               >
                                 {/* The title of the brand */}
-                                {bodyMake.brand.title}
+                                <div className="sales__selectarea-category">{bodyMake.brand.title}</div>
                               </Divider>
                             </div>
                             {/* Groups of different series  */}
@@ -381,7 +392,7 @@ const BodyMakeSection: React.FC<Props> = ({
 
             <div className="sales__btn-div">
               <Button
-                className="sales__btn margin_r-1"
+                className="sales__btn sales__btn--back margin_r-1"
                 onClick={() => {
                   setCurrentStep(currentStep - 1);
                   setCurrentBodyMake(null);

@@ -172,38 +172,43 @@ const AccessorySection: React.FC<Props> = ({
 
             {currentAccessory ? (
               //  The card details
-              <Card className="sales__selectarea-card" size="small" title="Selected accessory">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Title</div>
-                  <div className="sales__selectarea-card-row-right sales__selectarea-card-row-right-title">
-                    {currentAccessory.accessoryObj?.title}
-                  </div>
-                </div>
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Description</div>
-                  <div className="sales__selectarea-card-row-right">{`${
-                    currentAccessory.accessoryObj.description === null ||
-                    currentAccessory.accessoryObj.description === ''
-                      ? 'None'
-                      : currentAccessory.accessoryObj.description
-                  }`}</div>
-                </div>
-                {accessObj.showPriceSalesPage && (
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+
+                <Card className="sales__selectarea-card" size="small" title="Selected accessory">
                   <div className="sales__selectarea-card-row">
-                    <div className="sales__selectarea-card-row-left">Price</div>
-                    <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
-                      RM
-                      <NumberFormat value={currentAccessory.price} displayType={'text'} thousandSeparator={true} />
+                    <div className="sales__selectarea-card-row-left">Title</div>
+                    <div className="sales__selectarea-card-row-right sales__selectarea-card-row-right-title">
+                      {currentAccessory.accessoryObj?.title}
                     </div>
                   </div>
-                )}
-              </Card>
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Description</div>
+                    <div className="sales__selectarea-card-row-right">{`${
+                      currentAccessory.accessoryObj.description === null ||
+                      currentAccessory.accessoryObj.description === ''
+                        ? 'None'
+                        : currentAccessory.accessoryObj.description
+                    }`}</div>
+                  </div>
+                  {accessObj.showPriceSalesPage && (
+                    <div className="sales__selectarea-card-row">
+                      <div className="sales__selectarea-card-row-left">Price</div>
+                      <div className="sales__selectarea-card-row-right sales__selectarea-card-price">
+                        RM
+                        <NumberFormat value={currentAccessory.price} displayType={'text'} thousandSeparator={true} />
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </div>
             ) : (
-              <>
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
                 <Card className="sales__selectarea-card" size="small" title="Selected accessory">
                   None
                 </Card>
-              </>
+              </div>
             )}
           </div>
 
@@ -216,7 +221,7 @@ const AccessorySection: React.FC<Props> = ({
             <div className="sales__selectarea-innerdiv">
               <div className="sales__selectarea-selecttext flex space-between">
                 Select the accessory for the cargo body
-                <span className="sales__breadcrumb-highlight">
+                <span className="sales__breadcrumb-highlight sales__breadcrumb-highlight--accessory">
                   {totalAccessoriesArrayLength > 0 ? `${totalAccessoriesArrayLength} items` : null}
                 </span>
               </div>
@@ -234,7 +239,7 @@ const AccessorySection: React.FC<Props> = ({
                   {generalAccessoriesArray.length > 0 ? (
                     <div className="sales__selectarea--accessories">
                       <Divider orientation="left" className="sales__selectarea-categorydivider">
-                        <div>General Accessories</div>
+                        <div className="sales__selectarea-category">General Accessories</div>
                       </Divider>
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                         <>
@@ -319,7 +324,7 @@ const AccessorySection: React.FC<Props> = ({
                   {bodyRelatedAccessoriesArray.length > 0 ? (
                     <div className="sales__selectarea--accessories">
                       <Divider orientation="left" className="sales__selectarea-categorydivider">
-                        <div>Body Associated Accessories</div>
+                        <div className="sales__selectarea-category">Body Associated Accessories</div>
                       </Divider>
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                         <>
@@ -400,7 +405,7 @@ const AccessorySection: React.FC<Props> = ({
                   {dimensionRelatedAccessoriesArray.length > 0 ? (
                     <div className="sales__selectarea--accessories">
                       <Divider orientation="left" className="sales__selectarea-categorydivider">
-                        <div>Dimension Associated Accessories</div>
+                        <div className="sales__selectarea-category">Dimension Associated Accessories</div>
                       </Divider>
 
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
@@ -478,7 +483,7 @@ const AccessorySection: React.FC<Props> = ({
             </div>
             <div className="sales__btn-div">
               <Button
-                className="sales__btn margin_r-1"
+                className="sales__btn sales__btn--back margin_r-1"
                 onClick={() => {
                   setCurrentStep(currentStep - 1);
                   setCurrentAccessory(null);

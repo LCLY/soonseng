@@ -33,6 +33,8 @@
     flex-direction: column;
     justify-content: center;
     margin: 1rem 0;
+    padding: 2rem;
+    @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
 
     &-header {
       font-size: 3rem;
@@ -55,6 +57,11 @@
       display: flex;
       @include respond-to(phone-only) {
         flex-direction: column;
+      }
+
+      & .ant-card {
+        border: none !important;
+        background: rgba(255, 255, 255, 0.487) !important;
       }
     }
 
@@ -170,6 +177,7 @@
         align-items: center;
         justify-content: center;
         width: 100%;
+        background: rgba(255, 255, 255, 0.474);
       }
     }
   }
@@ -207,6 +215,25 @@
       border: 1px solid rgba(0, 0, 0, 0.171);
       background: $primary-color-4;
       color: white;
+
+      // main background
+      background: rgba($primary-color-4, 0.4);
+      backdrop-filter: blur(20px);
+      border-top-left-radius: 3rem;
+      border-bottom-right-radius: 3rem;
+      // second layer behind the main background
+      &:before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-top-left-radius: 3rem;
+        border-bottom-right-radius: 3rem;
+        background: rgba(121, 14, 14, 0.083);
+      }
     }
 
     /* ---------------- */
@@ -247,12 +274,12 @@
       & .active {
         // if the card is in active state
         border: 1px solid white;
-        background: $primary-color-1;
+        background: rgba(255, 255, 255, 0.25);
         color: white;
         // if card is active, when hover, shouldnt have any changes
         &:hover {
           border: 1px solid white;
-          background: $primary-color-1;
+          background: rgba(255, 255, 255, 0.25);
           color: white;
         }
       }
@@ -281,23 +308,22 @@
       text-transform: capitalize;
       white-space: normal;
       border-radius: 2px;
-      background: white;
+      // background: white;
+      border: none;
+      color: white;
       width: 100%;
       height: 100%;
       padding: 1rem 1rem;
-      border: 1px solid $translucent-grey;
+      border: 1px solid white;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: $primary-color-4;
+      // color: $primary-color-4;
 
       &:hover {
-        border: 1px solid $primary-color-1;
-        background: $primary-color-2;
+        // border: 1px solid $primary-color-1;
+        background: rgba(255, 255, 255, 0.08);
         color: white;
-      }
-      &:focus {
-        background: blue;
       }
 
       @include respond-to(phone-only) {
@@ -322,16 +348,19 @@
     /* ------------------------------------------- */
     &-card {
       width: 100%;
-      margin-top: 2rem !important;
-      min-height: 10rem !important;
+      // margin-top: 2rem !important;
+      min-height: 5rem !important;
       border-bottom-right-radius: 5rem !important;
       border-color: $translucent-grey !important;
       // background: $primary-color-4 !important;
       // color: white !important;
+
       & .ant-card-head {
-        font-family: $font-roboto;
-        color: white;
-        background: $primary-color-4 !important;
+        display: none;
+        // font-family: $font-roboto;
+        // color: white;
+        // background: $primary-color-4 !important;
+        // @include glassMorph(rgba($primary-color-4, 0.4), 20px, rgba(121, 14, 14, 0.083), 0);
       }
 
       & .ant-card-body {
@@ -433,11 +462,31 @@
           }
         }
       }
+
+      /* ============================ */
+      // the custom header of the card
+      /* ============================ */
+      &-outerdiv {
+        margin-top: 2rem;
+        &-customheader {
+          padding: 1rem 1.4rem;
+          color: white;
+          @include glassMorph(rgba($primary-color-4, 0.4), 20px, rgba(121, 14, 14, 0.083), 0);
+        }
+      }
     }
 
     /* ----------------------------------------------- */
     // different categories e.g. LCV, HCV, 300 Series
     /* ----------------------------------------------- */
+    &-category {
+      background: rgba($primary-color-4, 0.4);
+      padding: 0 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid white;
+    }
+
+    /* the divider */
     &-categorydivider {
       font-family: $font-firesans;
       border-color: white !important;
@@ -453,9 +502,9 @@
     // description on top of select area
     /* --------------------- */
     &-desc {
-      font-size: 1.4rem;
+      font-size: 1.5rem !important;
       color: black;
-      font-family: $font-roboto;
+      font-family: $font-firesans;
       margin-bottom: 2rem;
       @include respond-to(phone-only) {
         font-size: 1.2rem;
@@ -475,13 +524,13 @@
       font-size: 1.2rem;
       font-family: $font-roboto;
       padding: 0.1rem 1rem 0.1rem 2rem;
-      border-left: 0.5rem solid red;
+      border-left: 0.5rem solid $primary-color-2;
       border-top-left-radius: 5rem;
       background: white;
       color: $primary-color-4;
-      border-top: 1px solid rgba(red, 0.2);
-      border-right: 1px solid rgba(red, 0.2);
-      border-bottom: 1px solid rgba(red, 0.2);
+      border-top: 1px solid rgba($primary-color-2, 0.2);
+      border-right: 1px solid rgba($primary-color-2, 0.2);
+      border-bottom: 1px solid rgba($primary-color-2, 0.2);
     }
   }
 
@@ -491,13 +540,33 @@
   &__btn {
     margin-top: 2rem;
     padding: 0.5rem 2.5rem !important;
+    background: none !important;
+    border-color: white !important;
 
-    /* --------------------------- */
-    // the div wrapping the button
+    // if btn is disabled, border should be dimmer and when hover
+    // background should be none
+    &:disabled {
+      border-color: rgba(67, 67, 67, 0.672) !important;
+      &:hover {
+        background: none !important;
+      }
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.165) !important;
+    }
+    /* --------------------------- */ // the div wrapping the button
     /* --------------------------- */
     &-div {
       display: flex;
       justify-content: flex-end;
+    }
+
+    /* ----------------- */
+    // back button
+    /* ----------------- */
+    &--back {
+      color: white !important;
     }
   }
 
@@ -567,11 +636,12 @@
       margin-top: 8rem;
       margin-bottom: 1rem;
       // position: fixed;
-      border: 1px solid white;
+      // border: 2px solid $primary-color-3;
       border-radius: 5px;
       padding: 2rem 2rem 0 2rem;
       background: $primary-color-4;
 
+      @include glassMorph(rgba($primary-color-4, 0.4), 20px, rgba(121, 14, 14, 0.083), 1rem);
       @include respond-to(phone-only) {
         display: none;
       }
@@ -731,7 +801,10 @@
       /* ------------------------------- */
       &-content {
         width: 100%;
-        padding: 2rem;
+        margin-right: 1rem;
+        border-radius: 1rem;
+        padding: 2rem 0.5rem 2rem 2rem;
+        background: rgba(255, 255, 255, 0.344);
 
         @include respond-to(phone-only) {
           padding: 0;
@@ -776,7 +849,7 @@
         // the subheader title e.g. HINO 300 Series model name or Insurance
         &-subheader {
           font-size: 1.7rem;
-          color: rgba(68, 68, 68, 0.678);
+          color: rgba(0, 0, 0, 0.768);
           // padding-left: 1.5rem;
           font-family: $font-firesans;
 
@@ -872,9 +945,11 @@
     // small title further splitting the categories
     &-smalltitle {
       font-size: 1.4rem;
-      color: $secondary-color-3;
+      color: white;
       margin-bottom: 0.5rem;
+      padding: 0.3rem 1rem;
       font-family: $font-ubuntu;
+      background: rgba($primary-color-4, 0.5);
 
       &:not(:first-child) {
         margin-top: 1rem;
@@ -887,7 +962,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: $section-grey;
+        padding: 0 0.5rem;
+        background: rgba(255, 255, 255, 0.638);
         border-top: 1px solid $translucent-grey;
         border-bottom: 1px solid $translucent-grey;
       }
@@ -907,7 +983,7 @@
     &-more {
       display: flex;
       justify-content: flex-end;
-      margin-right: 3.5rem;
+      margin-right: 1.5rem;
       @include respond-to(phone-only) {
         margin-right: 0.5rem;
       }
@@ -915,10 +991,17 @@
       &-icon {
         &-div {
           cursor: pointer;
+          border: 1px solid white;
+          color: white;
+          padding: 0.5rem 1rem 0.5rem 2rem;
+          background: rgba($primary-color-4, 0.3);
+          margin-bottom: 1rem;
+
           &:hover {
+            transition: all 0.5s ease;
+            background: rgba($primary-color-4, 0.6);
             & .sales__overview-more-icon {
               transition: all 0.5s ease;
-              background: rgba($primary-color-4, 0.15);
               color: white;
             }
           }
@@ -932,11 +1015,27 @@
         margin-top: 3rem;
         padding-bottom: 3rem !important;
         padding-top: 1rem !important;
+
+        background: none !important;
+        color: white !important;
+        border: 1px solid white !important;
+        &:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          border: 1px solid rgba(255, 255, 255, 0.57) !important;
+        }
       }
 
       &--allorders {
         padding-bottom: 3rem !important;
         padding-top: 1rem !important;
+
+        background: rgba($primary-color-4, 0.3) !important;
+        color: white !important;
+        border: 1px solid $primary-color-4 !important;
+        &:hover {
+          background: rgba($primary-color-4, 0.4) !important;
+          border: 1px solid white !important;
+        }
       }
     }
   }
@@ -946,6 +1045,9 @@
 
     /* outer div wrapping breadcrumb to push the content to further bottom */
     &-outerdiv {
+      padding: 0.5rem 4rem 0.5rem 4rem;
+      border-left: 0.5rem solid $primary-color-2;
+      background: rgba(255, 255, 255, 0.7);
       margin-bottom: 3rem;
       @include respond-to(phone-only) {
         margin-bottom: 1rem;
@@ -967,6 +1069,9 @@
       z-index: 10;
       // display: inline-block;
       // white-space: normal;
+      &--accessory {
+        color: white;
+      }
     }
   }
 }

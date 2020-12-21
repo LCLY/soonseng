@@ -64,18 +64,24 @@ const LengthSection: React.FC<Props> = ({
               alt="length of body"
             />
             {currentLength ? (
-              <Card className="sales__selectarea-card" size="small" title="Selected body length">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">Body Length</div>
-                  <div>{currentLength.title} (ft)</div>
-                </div>
-              </Card>
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+                <Card className="sales__selectarea-card" size="small" title="Selected body length">
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">Body Length</div>
+                    <div>{currentLength.title} (ft)</div>
+                  </div>
+                </Card>
+              </div>
             ) : (
-              <Card className="sales__selectarea-card" size="small" title="Selected body length">
-                <div className="sales__selectarea-card-row">
-                  <div className="sales__selectarea-card-row-left">None</div>
-                </div>
-              </Card>
+              <div className="sales__selectarea-card-outerdiv">
+                <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
+                <Card className="sales__selectarea-card" size="small" title="Selected body length">
+                  <div className="sales__selectarea-card-row">
+                    <div className="sales__selectarea-card-row-left">None</div>
+                  </div>
+                </Card>
+              </div>
             )}
           </div>
 
@@ -110,7 +116,7 @@ const LengthSection: React.FC<Props> = ({
                               <div>
                                 <div>
                                   <Divider orientation="left" className="sales__selectarea-categorydivider">
-                                    {category.title}
+                                    <div className="sales__selectarea-category"> {category.title}</div>
                                   </Divider>
                                 </div>
                                 <div className="sales__selectarea-div">
@@ -172,7 +178,7 @@ const LengthSection: React.FC<Props> = ({
             <div className="sales__btn-div">
               <Button
                 loading={false}
-                className="sales__btn margin_r-1"
+                className="sales__btn sales__btn--back margin_r-1"
                 onClick={() => {
                   setCurrentStep(currentStep - 1);
                   setCurrentLength(null);
