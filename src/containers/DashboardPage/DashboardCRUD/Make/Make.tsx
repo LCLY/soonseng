@@ -260,16 +260,16 @@ const Make: React.FC<Props> = ({
       sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandTitle.localeCompare(b.brandTitle),
       ...getColumnSearchProps(brandSearchInput, 'brandTitle', 'Title'),
     },
-    {
-      key: 'brandDescription',
-      title: 'Description',
-      dataIndex: 'brandDescription',
-      ellipsis: true,
-      width: 'auto',
-      sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandDescription.localeCompare(b.brandDescription),
+    // {
+    //   key: 'brandDescription',
+    //   title: 'Description',
+    //   dataIndex: 'brandDescription',
+    //   ellipsis: true,
+    //   width: 'auto',
+    //   sorter: (a: TBrandTableState, b: TBrandTableState) => a.brandDescription.localeCompare(b.brandDescription),
 
-      ...getColumnSearchProps(brandSearchInput, 'brandDescription', 'Description'),
-    },
+    //   ...getColumnSearchProps(brandSearchInput, 'brandDescription', 'Description'),
+    // },
     {
       key: 'brandAction',
       title: 'Action',
@@ -327,16 +327,16 @@ const Make: React.FC<Props> = ({
       sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) => a.wheelbaseTitle.localeCompare(b.wheelbaseTitle),
       ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseTitle', 'Title'),
     },
-    {
-      key: 'wheelbaseDescription',
-      title: 'Description',
-      dataIndex: 'wheelbaseDescription',
-      ellipsis: true,
-      width: 'auto',
-      sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) =>
-        a.wheelbaseDescription.localeCompare(b.wheelbaseDescription),
-      ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseDescription', 'Description'),
-    },
+    // {
+    //   key: 'wheelbaseDescription',
+    //   title: 'Description',
+    //   dataIndex: 'wheelbaseDescription',
+    //   ellipsis: true,
+    //   width: 'auto',
+    //   sorter: (a: TWheelbaseTableState, b: TWheelbaseTableState) =>
+    //     a.wheelbaseDescription.localeCompare(b.wheelbaseDescription),
+    //   ...getColumnSearchProps(wheelbaseSearchInput, 'wheelbaseDescription', 'Description'),
+    // },
     {
       key: 'wheelbaseAction',
       title: 'Action',
@@ -2092,66 +2092,73 @@ const Make: React.FC<Props> = ({
                     {/* ====================== */}
                     {/*     Brand Section      */}
                     {/* ====================== */}
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Brands</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
-                        >
-                          Create New Brand
-                        </Button>
-                      </div>
-                      {/* ------------------ */}
-                      {/*    Brand Table     */}
-                      {/* ------------------ */}
-                      <Table
-                        bordered
-                        className="make__table"
-                        scroll={{ x: '89rem', y: 400 }}
-                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
-                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
-                        expandable={{
-                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
-                          expandedRowRender: (record: TBrandTableState) => onExpandedRowRender(record),
-                        }}
-                        // components={components}
-                        dataSource={brandTableState}
-                        columns={convertHeader(brandColumns, setBrandColumns)}
-                        pagination={false}
-                      />
-                    </section>
 
-                    {/* ====================== */}
-                    {/*   Wheelbases Section   */}
-                    {/* ====================== */}
-
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Wheelbases</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
-                        >
-                          Create New Wheelbase
-                        </Button>
+                    <div className="make__section-top">
+                      <div className="make__section-top-left">
+                        <section className="make__section">
+                          <div className="make__header-div ">
+                            <div className="make__header-title">Brands</div>
+                            <Button
+                              type="primary"
+                              className="make__brand-btn"
+                              onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
+                            >
+                              Create New Brand
+                            </Button>
+                          </div>
+                          {/* ------------------ */}
+                          {/*    Brand Table     */}
+                          {/* ------------------ */}
+                          <Table
+                            bordered
+                            className="make__table"
+                            scroll={{ y: 400 }}
+                            expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                            onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                            expandable={{
+                              expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                              expandedRowRender: (record: TBrandTableState) => onExpandedRowRender(record),
+                            }}
+                            // components={components}
+                            dataSource={brandTableState}
+                            columns={convertHeader(brandColumns, setBrandColumns)}
+                            pagination={false}
+                          />
+                        </section>
                       </div>
 
-                      {/* -------------------- */}
-                      {/*   Wheelbase Table   */}
-                      {/* -------------------- */}
-                      <Table
-                        bordered
-                        className="make__table"
-                        scroll={{ x: '89rem', y: 300 }}
-                        // components={components}
-                        dataSource={wheelbaseTableState}
-                        columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
-                        pagination={false}
-                      />
-                    </section>
+                      {/* ====================== */}
+                      {/*   Wheelbases Section   */}
+                      {/* ====================== */}
+
+                      <div className="make__section-top-right">
+                        <section className="make__section">
+                          <div className="make__header-div ">
+                            <div className="make__header-title">Wheelbases</div>
+                            <Button
+                              type="primary"
+                              className="make__brand-btn"
+                              onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
+                            >
+                              Create New Wheelbase
+                            </Button>
+                          </div>
+
+                          {/* -------------------- */}
+                          {/*   Wheelbase Table   */}
+                          {/* -------------------- */}
+                          <Table
+                            bordered
+                            className="make__table"
+                            scroll={{ y: 400 }}
+                            // components={components}
+                            dataSource={wheelbaseTableState}
+                            columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
+                            pagination={false}
+                          />
+                        </section>
+                      </div>
+                    </div>
 
                     {/* ====================== */}
                     {/*      Makes/Models Section     */}

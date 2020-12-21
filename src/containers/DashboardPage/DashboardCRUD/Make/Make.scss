@@ -6,6 +6,45 @@
     // background: $section-grey;
     padding: 1rem 2rem 2rem 2rem;
     margin-bottom: 2rem;
+
+    /* ------------------------------ */
+    // top part section for two tables
+    /* ------------------------------ */
+    &-top {
+      display: flex;
+      @include respond-to($phone-only) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+      }
+      &-left {
+        @include respond-to($phone-only) {
+          width: 100%;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 100%;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 50%;
+        }
+      }
+
+      &-right {
+        @include respond-to($phone-only) {
+          width: 100%;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 100%;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 50%;
+        }
+      }
+    }
   }
 
   /* ================= */
