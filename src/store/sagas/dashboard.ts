@@ -533,6 +533,7 @@ export function* deleteMakeWheelbaseSaga(action: AppActions) {
 
   try {
     let response = yield axios.delete(url);
+
     yield put(actions.deleteMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
   } catch (error) {
     if (error.response) {

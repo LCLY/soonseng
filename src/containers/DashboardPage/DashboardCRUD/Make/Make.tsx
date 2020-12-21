@@ -1719,7 +1719,7 @@ const Make: React.FC<Props> = ({
                                       make_wheelbase: {
                                         make_title: record.makeTitle,
                                         length_title: makeWheelbase.length.toString(),
-                                        make_wheelbase_id: makeWheelbase.wheelbase.id,
+                                        make_wheelbase_id: makeWheelbase.id,
                                         make_wheelbase_title: makeWheelbase.wheelbase.title,
                                       },
                                     });
