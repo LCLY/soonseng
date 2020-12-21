@@ -1737,7 +1737,9 @@ const Make: React.FC<Props> = ({
                   })}
                 </div>
               </>
-            ) : null}
+            ) : (
+              <>No Configurations yet</>
+            )}
           </>
         ) : (
           <Skeleton active />

@@ -36,7 +36,6 @@ export function* uploadImageSaga(action: AppActions) {
   formData.append('upload_type', 'image'); //this is always fixed for this particular API because this will always be image instead of other file types
 
   if ('model' in action && 'model_id' in action && 'imageFiles' in action && 'imageTag' in action) {
-    console.log(action.model, action.model_id, action.imageTag);
     // "images[]" is the name of the key, it forms a new object of {images[]: the image files}
     formData.append('model', action.model);
     formData.append('model_id', action.model_id.toString());
@@ -266,7 +265,7 @@ export function* updateWheelbaseSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { wheelbase });
-    console.log(response);
+
     yield put(actions.updateWheelbaseSucceed(response.data.wheelbases, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -482,8 +481,6 @@ export function* updateMakeWheelbaseSaga(action: AppActions) {
       length: action.length,
     };
   }
-
-  console.log(data);
 
   try {
     let response = yield axios.put(url, data);
