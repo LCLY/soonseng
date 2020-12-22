@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 /* components */
 /* 3rd party lib */
 import { v4 as uuidv4 } from 'uuid';
@@ -6,34 +6,43 @@ import { Breadcrumb, Button, Card, Divider } from 'antd';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TLocalOrderObj } from 'src/store/types/sales';
+import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 
-interface TyreSectionProps {
+export interface TyreSectionProps {
   loading?: boolean;
-  totalSteps: number;
-  currentStep: number; //for steps component
-  onGetSalesLengths: (tire: number) => AppActions;
-  currentTyre: number | null; //current picked tire count
-  setCurrentTyre: React.Dispatch<React.SetStateAction<number | null>>; //the setstateaction of currentTyre
-  currentOrderObj: TLocalOrderObj; //to keep track of the current order
-  setCurrentOrderObj: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
+  totalSteps?: number;
+  currentStep?: number; //for steps component
+  onGetSalesLengths?: (tire: number) => AppActions;
+  currentTyre?: number | null; //current picked tire count
+  setCurrentTyre?: React.Dispatch<React.SetStateAction<number | null>>; //the setstateaction of currentTyre
+  currentOrderObj?: TLocalOrderObj; //to keep track of the current order
+  setCurrentOrderObj?: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
 }
 
 type Props = TyreSectionProps;
 
-const TyreSection: React.FC<Props> = ({
-  loading,
-  totalSteps,
-  currentStep,
-  currentTyre,
-  setCurrentTyre,
-  currentOrderObj,
-  setCurrentOrderObj,
-  onGetSalesLengths,
-}) => {
+const TyreSection: React.FC<Props> = () => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
   let tyreCountArray = [4, 6];
+
+  const salesPageContext = useContext(SalesPageContext);
+  // let typeGuard: TyreSectionProps;
+  if (salesPageContext === null) {
+    return null;
+  }
+
+  const {
+    loading,
+    totalSteps,
+    currentStep,
+    currentTyre,
+    setCurrentTyre,
+    currentOrderObj,
+    setCurrentOrderObj,
+    onGetSalesLengths,
+  } = salesPageContext;
 
   return (
     <>
@@ -97,6 +106,13 @@ const TyreSection: React.FC<Props> = ({
                         key={uuidv4()}
                         className={`sales__selectarea-button ${currentTyre === tyre ? 'active' : ''}`}
                         onClick={() => {
+                          if (
+                            setCurrentTyre === undefined ||
+                            setCurrentOrderObj === undefined ||
+                            currentOrderObj === undefined
+                          )
+                            return;
+
                           if (currentTyre === tyre) {
                             // reset the selection
                             setCurrentTyre(null);
@@ -116,15 +132,13 @@ const TyreSection: React.FC<Props> = ({
               </div>
             </div>
             <div className="sales__btn-div">
-              {currentStep < totalSteps - 1 && (
+              {currentStep !== undefined && totalSteps !== undefined && currentStep < totalSteps - 1 && (
                 <Button
                   type="primary"
                   onClick={() => {
                     // Then call the body lengths API
-                    if (currentTyre === null) return;
-                    if (currentTyre) {
-                      onGetSalesLengths(currentTyre);
-                    }
+                    if (currentTyre === null || currentTyre === undefined || onGetSalesLengths === undefined) return;
+                    onGetSalesLengths(currentTyre);
                   }}
                   className="sales__btn"
                   loading={loading}

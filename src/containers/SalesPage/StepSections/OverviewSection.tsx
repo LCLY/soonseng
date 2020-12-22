@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 /*components*/
 /*3rd party lib*/
 import moment from 'moment';
@@ -11,29 +11,30 @@ import { CaretDownOutlined, InfoCircleOutlined, CaretRightOutlined } from '@ant-
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
 import { img_not_available_link } from 'src/shared/links';
+import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TReceivedBodyObj, TReceivedBodyMakeObj, TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 
 const { Panel } = Collapse;
 
-interface OverviewSectionProps {
+export interface OverviewSectionProps {
   loading?: boolean;
-  totalSteps: number;
+  totalSteps?: number;
   accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
-  currentStep: number; //for steps component
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentTyre: number | null; //current picked tire count
-  currentLength: TReceivedSalesLengthObj | null;
-  currentBody: TReceivedBodyObj | null;
-  currentBodyMake: TReceivedBodyMakeObj | null;
-  setCurrentBodyMake: React.Dispatch<React.SetStateAction<TReceivedBodyMakeObj | null>>;
-  currentOrderObj: TLocalOrderObj; //to keep track of the current order
-  onRemoveAnOrder: (index: number, localOrdersArray: TLocalOrderObj[]) => AppActions;
-  setCurrentLength: React.Dispatch<React.SetStateAction<TReceivedSalesLengthObj | null>>;
-  setCurrentTyre: React.Dispatch<React.SetStateAction<number | null>>;
-  setCurrentBody: React.Dispatch<React.SetStateAction<TReceivedBodyObj | null>>;
-  setCurrentAccessory: React.Dispatch<
+  currentStep?: number; //for steps component
+  setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
+  currentTyre?: number | null; //current picked tire count
+  currentLength?: TReceivedSalesLengthObj | null;
+  currentBody?: TReceivedBodyObj | null;
+  currentBodyMake?: TReceivedBodyMakeObj | null;
+  setCurrentBodyMake?: React.Dispatch<React.SetStateAction<TReceivedBodyMakeObj | null>>;
+  currentOrderObj?: TLocalOrderObj; //to keep track of the current order
+  onRemoveAnOrder?: (index: number, localOrdersArray: TLocalOrderObj[]) => AppActions;
+  setCurrentLength?: React.Dispatch<React.SetStateAction<TReceivedSalesLengthObj | null>>;
+  setCurrentTyre?: React.Dispatch<React.SetStateAction<number | null>>;
+  setCurrentBody?: React.Dispatch<React.SetStateAction<TReceivedBodyObj | null>>;
+  setCurrentAccessory?: React.Dispatch<
     React.SetStateAction<{
       accessoryObj: TReceivedAccessoryObj;
       price: number;
@@ -43,36 +44,45 @@ interface OverviewSectionProps {
 
 type Props = OverviewSectionProps & RouteComponentProps;
 
-const OverviewSection: React.FC<Props> = ({
-  // loading,
-  accessObj,
-  history,
-  currentTyre,
-  currentBody,
-  currentOrderObj,
-  currentLength,
-  // totalSteps,
-  // currentStep,
-  currentBodyMake,
-  localOrdersArray,
-  setCurrentBodyMake,
-  setCurrentStep,
-  onRemoveAnOrder,
-  setCurrentLength,
-  setCurrentTyre,
-  setCurrentBody,
-  setCurrentAccessory,
-}) => {
+const OverviewSection: React.FC<Props> = ({ history }) => {
+  const [expandedModelCollapse, setExpandedModelCollapse] = useState<string[]>([]);
+  const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
+
+  const salesPageContext = useContext(SalesPageContext);
+  if (salesPageContext === null) {
+    return null;
+  }
+
+  const {
+    // loading,
+    accessObj,
+    currentTyre,
+    currentBody,
+    currentOrderObj,
+    currentLength,
+    // totalSteps,
+    // currentStep,
+    currentBodyMake,
+    localOrdersArray,
+    setCurrentBodyMake,
+    setCurrentStep,
+    onRemoveAnOrder,
+    setCurrentLength,
+    setCurrentTyre,
+    setCurrentBody,
+    setCurrentAccessory,
+  } = salesPageContext;
+
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  let totalAccessoriesArrayLength =
-    currentOrderObj.generalAccessoriesArray.length +
-    currentOrderObj.bodyRelatedAccessoriesArray.length +
-    currentOrderObj.dimensionRelatedAccessoriesArray.length;
-
-  const [expandedModelCollapse, setExpandedModelCollapse] = useState<string[]>([]);
-  const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
+  let totalAccessoriesArrayLength = 0;
+  if (currentOrderObj !== undefined) {
+    totalAccessoriesArrayLength =
+      currentOrderObj.generalAccessoriesArray.length +
+      currentOrderObj.bodyRelatedAccessoriesArray.length +
+      currentOrderObj.dimensionRelatedAccessoriesArray.length;
+  }
 
   /* ================================================== */
   /*  method */
@@ -251,7 +261,13 @@ const OverviewSection: React.FC<Props> = ({
 
                   let moreOptionsDropdown = (
                     <Menu>
-                      <Menu.Item danger onClick={() => onRemoveAnOrder(index, localOrdersArray)}>
+                      <Menu.Item
+                        danger
+                        onClick={() => {
+                          if (onRemoveAnOrder === undefined) return;
+                          onRemoveAnOrder(index, localOrdersArray);
+                        }}
+                      >
                         Remove from order
                       </Menu.Item>
                     </Menu>
@@ -733,6 +749,16 @@ const OverviewSection: React.FC<Props> = ({
         <Button
           className="sales__overview-btn--another"
           onClick={() => {
+            if (
+              setCurrentStep === undefined ||
+              setCurrentLength === undefined ||
+              setCurrentTyre === undefined ||
+              setCurrentBody === undefined ||
+              setCurrentBodyMake === undefined ||
+              setCurrentAccessory === undefined
+            )
+              return;
+
             setCurrentStep(0);
             setCurrentLength(null);
             setCurrentTyre(null);

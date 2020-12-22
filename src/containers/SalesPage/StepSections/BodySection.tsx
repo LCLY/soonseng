@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 /*components*/
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 /*3rd party lib*/
@@ -9,44 +9,31 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { AppActions } from 'src/store/types';
 import { TReceivedBodyObj } from 'src/store/types/dashboard';
 import { img_loading_link, img_not_available_link } from 'src/shared/links';
+import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TLocalOrderObj, TReceivedSalesLengthCategoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
 
-interface BodySectionProps {
+export interface BodySectionProps {
   loading?: boolean;
-  totalSteps: number;
+  totalSteps?: number;
   auth_token?: string | null;
   bodiesArray?: TReceivedBodyObj[] | null;
-  currentStep: number; //for steps component
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentTyre: number | null; //current picked tire count
-  setCurrentTyre: React.Dispatch<React.SetStateAction<number | null>>; //the setstateaction of currentTyre
-  currentLength: TReceivedSalesLengthObj | null;
-  setCurrentLength: React.Dispatch<React.SetStateAction<TReceivedSalesLengthObj | null>>;
-  currentBody: TReceivedBodyObj | null;
-  setCurrentBody: React.Dispatch<React.SetStateAction<TReceivedBodyObj | null>>;
-  currentOrderObj: TLocalOrderObj; //to keep track of the current order
-  setCurrentOrderObj: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
+  currentStep?: number; //for steps component
+  setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
+  currentTyre?: number | null; //current picked tire count
+  setCurrentTyre?: React.Dispatch<React.SetStateAction<number | null>>; //the setstateaction of currentTyre
+  currentLength?: TReceivedSalesLengthObj | null;
+  setCurrentLength?: React.Dispatch<React.SetStateAction<TReceivedSalesLengthObj | null>>;
+  currentBody?: TReceivedBodyObj | null;
+  setCurrentBody?: React.Dispatch<React.SetStateAction<TReceivedBodyObj | null>>;
+  currentOrderObj?: TLocalOrderObj; //to keep track of the current order
+  setCurrentOrderObj?: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
-  onGetSalesBodyMakes: (length_id: number, tire: number, body_id: number, auth_token: string | null) => AppActions;
+  onGetSalesBodyMakes?: (length_id: number, tire: number, body_id: number, auth_token: string | null) => AppActions;
 }
 
 type Props = BodySectionProps;
 
-const BodySection: React.FC<Props> = ({
-  loading,
-  auth_token,
-  totalSteps,
-  bodiesArray,
-  currentTyre,
-  currentLength,
-  currentBody,
-  setCurrentBody,
-  currentStep,
-  setCurrentStep,
-  currentOrderObj,
-  setCurrentOrderObj,
-  onGetSalesBodyMakes,
-}) => {
+const BodySection: React.FC<Props> = () => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
@@ -54,6 +41,28 @@ const BodySection: React.FC<Props> = ({
   const [bodyPhotoIndex, setBodyPhotoIndex] = useState(0);
   // whether the lightbox is opened
   const [bodyLightboxOpen, setBodyLightboxOpen] = useState(false);
+
+  const salesPageContext = useContext(SalesPageContext);
+  if (salesPageContext === null) {
+    return null;
+  }
+
+  const {
+    loading,
+    auth_token,
+    totalSteps,
+    bodiesArray,
+    currentTyre,
+    currentLength,
+    currentBody,
+    setCurrentBody,
+    currentStep,
+    setCurrentStep,
+    currentOrderObj,
+    setCurrentOrderObj,
+    onGetSalesBodyMakes,
+  } = salesPageContext;
+
   return (
     <>
       {/*  only show if length is selected */}
@@ -189,6 +198,12 @@ const BodySection: React.FC<Props> = ({
                                 key={uuidv4()}
                                 className={`sales__selectarea-button  ${currentBody?.id === body.id ? 'active' : ''}`}
                                 onClick={() => {
+                                  if (
+                                    setCurrentBody === undefined ||
+                                    setCurrentOrderObj === undefined ||
+                                    currentOrderObj === undefined
+                                  )
+                                    return;
                                   //  if currentLength has an id
                                   if (currentBody?.id === body.id) {
                                     // reset the selection
@@ -225,24 +240,30 @@ const BodySection: React.FC<Props> = ({
               <Button
                 className="sales__btn sales__btn--back margin_r-1"
                 onClick={() => {
+                  if (setCurrentStep === undefined || setCurrentBody === undefined || currentStep === undefined) return;
                   setCurrentStep(currentStep - 1);
                   setCurrentBody(null);
                 }}
               >
                 Back
               </Button>
-              {currentStep < totalSteps - 1 && (
+              {currentStep !== undefined && totalSteps !== undefined && currentStep < totalSteps - 1 && (
                 <Button
                   type="primary"
                   onClick={() => {
                     // Then call the body lengths API
                     if (
                       currentBody === null ||
+                      currentBody === undefined ||
                       currentLength === null ||
+                      currentLength === undefined ||
                       currentTyre === null ||
-                      auth_token === undefined
-                    )
+                      currentTyre === undefined ||
+                      auth_token === undefined ||
+                      onGetSalesBodyMakes === undefined
+                    ) {
                       return;
+                    }
                     onGetSalesBodyMakes(currentLength.id, currentTyre, currentBody.id, auth_token);
                   }}
                   className="sales__btn"

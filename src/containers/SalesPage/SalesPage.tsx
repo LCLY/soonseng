@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import './SalesPage.scss';
 // component
 import Footer from 'src/components/Footer/Footer';
@@ -33,6 +33,7 @@ import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BODYMAKE } from 'src/shared/constants';
 import { RootState } from 'src';
+import { SalesPageContext } from './SalesPageContext';
 
 const { Step } = Steps;
 
@@ -112,6 +113,82 @@ const SalesPage: React.FC<Props> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [totalSteps, setTotalSteps] = useState(0);
 
+  // To optimize useContext
+  const value = useMemo(
+    () => ({
+      loading,
+      totalSteps,
+      auth_token,
+      accessObj,
+      currentStep,
+      currentTyre,
+      currentBody,
+      currentLength,
+      currentBodyMake,
+      currentAccessory,
+      currentOrderObj,
+      bodiesArray,
+      bodyMakesArray,
+      localOrdersArray,
+      lengthsCategoriesArray,
+      generalAccessoriesArray,
+      totalAccessoriesArrayLength,
+      bodyRelatedAccessoriesArray,
+      dimensionRelatedAccessoriesArray,
+      setCurrentStep,
+      setCurrentTyre,
+      setCurrentBody,
+      setCurrentLength,
+      setCurrentOrderObj,
+      setCurrentBodyMake,
+      setCurrentAccessory,
+      onRemoveAnOrder,
+      onStoreLocalOrders,
+      onGetSalesBodies,
+      onGetSalesLengths,
+      onGetSalesBodyMakes,
+      onGetSalesAccessories,
+    }),
+    [
+      loading,
+      totalSteps,
+      auth_token,
+      accessObj,
+      // state
+      currentStep,
+      currentTyre,
+      currentBody,
+      currentLength,
+      currentBodyMake,
+      currentOrderObj,
+      currentAccessory,
+      // arrays
+      bodiesArray,
+      bodyMakesArray,
+      localOrdersArray,
+      lengthsCategoriesArray,
+      generalAccessoriesArray,
+      totalAccessoriesArrayLength,
+      bodyRelatedAccessoriesArray,
+      dimensionRelatedAccessoriesArray,
+      // setstate
+      setCurrentStep,
+      setCurrentTyre,
+      setCurrentBody,
+      setCurrentLength,
+      setCurrentOrderObj,
+      setCurrentBodyMake,
+      setCurrentAccessory,
+      // Redux Actions
+      onRemoveAnOrder,
+      onStoreLocalOrders,
+      onGetSalesBodies,
+      onGetSalesLengths,
+      onGetSalesBodyMakes,
+      onGetSalesAccessories,
+    ],
+  );
+
   /* =========================== */
   /*         components          */
   /* =========================== */
@@ -120,135 +197,32 @@ const SalesPage: React.FC<Props> = ({
     {
       step: 1,
       title: STEPS_TYRE,
-      content: (
-        <TyreSection
-          loading={loading}
-          totalSteps={totalSteps}
-          currentStep={currentStep}
-          currentTyre={currentTyre}
-          setCurrentTyre={setCurrentTyre}
-          currentOrderObj={currentOrderObj}
-          setCurrentOrderObj={setCurrentOrderObj}
-          onGetSalesLengths={onGetSalesLengths}
-        />
-      ),
+      content: <TyreSection />,
     },
     {
       step: 2,
       title: STEPS_LENGTH,
-      content: (
-        <LengthSection
-          loading={loading}
-          totalSteps={totalSteps}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          currentTyre={currentTyre}
-          setCurrentTyre={setCurrentTyre}
-          currentLength={currentLength}
-          setCurrentLength={setCurrentLength}
-          currentOrderObj={currentOrderObj}
-          setCurrentOrderObj={setCurrentOrderObj}
-          onGetSalesBodies={onGetSalesBodies}
-          lengthsCategoriesArray={lengthsCategoriesArray}
-        />
-      ),
+      content: <LengthSection />,
     },
     {
       step: 3,
       title: STEPS_BODY,
-      content: (
-        <BodySection
-          loading={loading}
-          auth_token={auth_token}
-          totalSteps={totalSteps}
-          bodiesArray={bodiesArray}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          currentTyre={currentTyre}
-          setCurrentTyre={setCurrentTyre}
-          currentLength={currentLength}
-          setCurrentLength={setCurrentLength}
-          currentBody={currentBody}
-          setCurrentBody={setCurrentBody}
-          currentOrderObj={currentOrderObj}
-          setCurrentOrderObj={setCurrentOrderObj}
-          lengthsCategoriesArray={lengthsCategoriesArray}
-          onGetSalesBodyMakes={onGetSalesBodyMakes}
-        />
-      ),
+      content: <BodySection />,
     },
     {
       step: 5,
       title: STEPS_BODYMAKE,
-      content: (
-        <BodyMakeSection
-          loading={loading}
-          accessObj={accessObj}
-          totalSteps={totalSteps}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          currentTyre={currentTyre}
-          currentLength={currentLength}
-          currentBody={currentBody}
-          bodyMakesArray={bodyMakesArray}
-          currentBodyMake={currentBodyMake}
-          setCurrentBodyMake={setCurrentBodyMake}
-          currentOrderObj={currentOrderObj}
-          setCurrentOrderObj={setCurrentOrderObj}
-          onGetSalesAccessories={onGetSalesAccessories}
-        />
-      ),
+      content: <BodyMakeSection />,
     },
     {
       step: 4,
       title: STEPS_ACCESSORY,
-      content: (
-        <AccessorySection
-          accessObj={accessObj}
-          totalSteps={totalSteps}
-          currentTyre={currentTyre}
-          currentBody={currentBody}
-          currentLength={currentLength}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          currentOrderObj={currentOrderObj}
-          currentBodyMake={currentBodyMake}
-          currentAccessory={currentAccessory}
-          localOrdersArray={localOrdersArray}
-          onStoreLocalOrders={onStoreLocalOrders}
-          setCurrentOrderObj={setCurrentOrderObj}
-          setCurrentAccessory={setCurrentAccessory}
-          generalAccessoriesArray={generalAccessoriesArray}
-          totalAccessoriesArrayLength={totalAccessoriesArrayLength}
-          bodyRelatedAccessoriesArray={bodyRelatedAccessoriesArray}
-          dimensionRelatedAccessoriesArray={dimensionRelatedAccessoriesArray}
-        />
-      ),
+      content: <AccessorySection />,
     },
     {
       step: 6,
       title: 'Overview',
-      content: (
-        <OverviewSection
-          loading={loading}
-          accessObj={accessObj}
-          totalSteps={totalSteps}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          currentTyre={currentTyre}
-          currentLength={currentLength}
-          currentBody={currentBody}
-          currentBodyMake={currentBodyMake}
-          setCurrentBodyMake={setCurrentBodyMake}
-          currentOrderObj={currentOrderObj}
-          onRemoveAnOrder={onRemoveAnOrder}
-          localOrdersArray={localOrdersArray}
-          setCurrentLength={setCurrentLength}
-          setCurrentTyre={setCurrentTyre}
-          setCurrentBody={setCurrentBody}
-          setCurrentAccessory={setCurrentAccessory}
-        />
-      ),
+      content: <OverviewSection />,
     },
   ];
 
@@ -316,7 +290,9 @@ const SalesPage: React.FC<Props> = ({
                 </div>
               </Container>
               <div className="sales__steps-content-outerdiv">
-                <Container>{steps[currentStep].content}</Container>
+                <Container>
+                  <SalesPageContext.Provider value={value}>{steps[currentStep].content}</SalesPageContext.Provider>
+                </Container>
               </div>
             </div>
           </div>

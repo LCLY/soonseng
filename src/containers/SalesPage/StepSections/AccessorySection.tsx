@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 /*components*/
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 /*3rd party lib*/
@@ -10,62 +10,44 @@ import { Breadcrumb, Button, Card, Divider, Empty, Skeleton } from 'antd';
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
 import { img_loading_link, img_not_available_link } from 'src/shared/links';
+import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 
-interface AccessorySectionProps {
+export interface AccessorySectionProps {
   loading?: boolean;
-  totalSteps: number;
+  totalSteps?: number;
   accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
   bodiesArray?: TReceivedBodyObj[] | null;
-  currentStep: number; //for steps component
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentTyre: number | null; //current picked tire count
-  currentLength: TReceivedSalesLengthObj | null;
-  currentBody: TReceivedBodyObj | null;
-  currentBodyMake: TReceivedBodyMakeObj | null;
-  currentAccessory: {
+  currentStep?: number; //for steps component
+  setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
+  currentTyre?: number | null; //current picked tire count
+  currentLength?: TReceivedSalesLengthObj | null;
+  currentBody?: TReceivedBodyObj | null;
+  currentBodyMake?: TReceivedBodyMakeObj | null;
+  currentAccessory?: {
     accessoryObj: TReceivedAccessoryObj;
     price: number;
   } | null;
-  setCurrentAccessory: React.Dispatch<
+  setCurrentAccessory?: React.Dispatch<
     React.SetStateAction<{
       accessoryObj: TReceivedAccessoryObj;
       price: number;
     } | null>
   >;
-  currentOrderObj: TLocalOrderObj; //to keep track of the current order
-  setCurrentOrderObj: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
-  totalAccessoriesArrayLength: number;
+  currentOrderObj?: TLocalOrderObj; //to keep track of the current order
+  setCurrentOrderObj?: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
+  totalAccessoriesArrayLength?: number;
   generalAccessoriesArray?: TReceivedAccessoryObj[] | null;
   bodyRelatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
   dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
-  onStoreLocalOrders: (localOrdersArray: TLocalOrderObj[]) => AppActions;
+  onStoreLocalOrders?: (localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
 
 type Props = AccessorySectionProps;
 
-const AccessorySection: React.FC<Props> = ({
-  accessObj,
-  totalSteps,
-  currentTyre,
-  currentBody,
-  currentLength,
-  currentStep,
-  setCurrentStep,
-  currentOrderObj,
-  currentBodyMake,
-  currentAccessory,
-  localOrdersArray,
-  onStoreLocalOrders,
-  setCurrentOrderObj,
-  setCurrentAccessory,
-  generalAccessoriesArray,
-  totalAccessoriesArrayLength,
-  bodyRelatedAccessoriesArray,
-  dimensionRelatedAccessoriesArray,
-}) => {
+const AccessorySection: React.FC<Props> = () => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
@@ -83,6 +65,32 @@ const AccessorySection: React.FC<Props> = ({
 
   /* ================================================== */
   /* ================================================== */
+
+  const salesPageContext = useContext(SalesPageContext);
+  if (salesPageContext === null) {
+    return null;
+  }
+
+  const {
+    accessObj,
+    totalSteps,
+    currentTyre,
+    currentBody,
+    currentLength,
+    currentStep,
+    setCurrentStep,
+    currentOrderObj,
+    currentBodyMake,
+    currentAccessory,
+    localOrdersArray,
+    onStoreLocalOrders,
+    setCurrentOrderObj,
+    setCurrentAccessory,
+    generalAccessoriesArray,
+    totalAccessoriesArrayLength,
+    bodyRelatedAccessoriesArray,
+    dimensionRelatedAccessoriesArray,
+  } = salesPageContext;
 
   if (accessObj === undefined) {
     return null;
@@ -222,7 +230,9 @@ const AccessorySection: React.FC<Props> = ({
               <div className="sales__selectarea-selecttext flex space-between">
                 Select the accessory for the cargo body
                 <span className="sales__breadcrumb-highlight sales__breadcrumb-highlight--accessory">
-                  {totalAccessoriesArrayLength > 0 ? `${totalAccessoriesArrayLength} items` : null}
+                  {totalAccessoriesArrayLength !== undefined && totalAccessoriesArrayLength > 0
+                    ? `${totalAccessoriesArrayLength} items`
+                    : null}
                 </span>
               </div>
 
@@ -245,9 +255,9 @@ const AccessorySection: React.FC<Props> = ({
                         <>
                           {generalAccessoriesArray.map((accessory) => {
                             // Boolean
-                            let objExistInGeneralAccessoriesArray = currentOrderObj.generalAccessoriesArray.includes(
-                              accessory,
-                            );
+                            let objExistInGeneralAccessoriesArray =
+                              currentOrderObj !== undefined &&
+                              currentOrderObj.generalAccessoriesArray.includes(accessory);
                             return (
                               <div
                                 key={uuidv4()}
@@ -256,9 +266,16 @@ const AccessorySection: React.FC<Props> = ({
                                   objExistInGeneralAccessoriesArray ? 'active' : ''
                                 }`}
                                 onClick={() => {
+                                  if (
+                                    setCurrentAccessory === undefined ||
+                                    currentOrderObj === undefined ||
+                                    setCurrentOrderObj === undefined
+                                  )
+                                    return;
                                   // Whenever user clicks on an accessory, straight show that accessory
                                   // we need a separate obj to keep track of price because for dimension the price is not
                                   // in accessory
+
                                   setCurrentAccessory({
                                     ...currentAccessory,
                                     accessoryObj: accessory,
@@ -329,9 +346,9 @@ const AccessorySection: React.FC<Props> = ({
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                         <>
                           {bodyRelatedAccessoriesArray.map((accessory) => {
-                            let objExistInBodyRelatedAccessoriesArray = currentOrderObj.bodyRelatedAccessoriesArray.includes(
-                              accessory,
-                            );
+                            let objExistInBodyRelatedAccessoriesArray =
+                              currentOrderObj !== undefined &&
+                              currentOrderObj.bodyRelatedAccessoriesArray.includes(accessory);
                             return (
                               <div
                                 key={uuidv4()}
@@ -339,6 +356,13 @@ const AccessorySection: React.FC<Props> = ({
                                   objExistInBodyRelatedAccessoriesArray ? 'active' : ''
                                 }`}
                                 onClick={() => {
+                                  if (
+                                    setCurrentAccessory === undefined ||
+                                    currentOrderObj === undefined ||
+                                    setCurrentOrderObj === undefined
+                                  )
+                                    return;
+
                                   // Whenever user clicks on an accessory, straight show that accessory
                                   setCurrentAccessory({
                                     ...currentAccessory,
@@ -410,9 +434,9 @@ const AccessorySection: React.FC<Props> = ({
 
                       <div className="sales__selectarea-div sales__selectarea-div--twocolumn">
                         {dimensionRelatedAccessoriesArray.map((dimensionRelatedAccessory) => {
-                          let objExistInDimensionRelatedAccessoriesArray = currentOrderObj.dimensionRelatedAccessoriesArray.includes(
-                            dimensionRelatedAccessory,
-                          );
+                          let objExistInDimensionRelatedAccessoriesArray =
+                            currentOrderObj !== undefined &&
+                            currentOrderObj.dimensionRelatedAccessoriesArray.includes(dimensionRelatedAccessory);
                           return (
                             <div
                               key={uuidv4()}
@@ -420,6 +444,12 @@ const AccessorySection: React.FC<Props> = ({
                                 objExistInDimensionRelatedAccessoriesArray ? 'active' : ''
                               }`}
                               onClick={() => {
+                                if (
+                                  setCurrentAccessory === undefined ||
+                                  currentOrderObj === undefined ||
+                                  setCurrentOrderObj === undefined
+                                )
+                                  return;
                                 // Whenever user clicks on an accessory, straight show that accessory
                                 setCurrentAccessory({
                                   ...currentAccessory,
@@ -485,6 +515,8 @@ const AccessorySection: React.FC<Props> = ({
               <Button
                 className="sales__btn sales__btn--back margin_r-1"
                 onClick={() => {
+                  if (setCurrentStep === undefined || currentStep === undefined || setCurrentAccessory === undefined)
+                    return;
                   setCurrentStep(currentStep - 1);
                   setCurrentAccessory(null);
                 }}
@@ -492,7 +524,7 @@ const AccessorySection: React.FC<Props> = ({
                 Back
               </Button>
 
-              {currentStep < totalSteps - 1 && (
+              {currentStep !== undefined && totalSteps !== undefined && currentStep < totalSteps - 1 && (
                 <Button
                   className="sales__btn"
                   type="primary"
@@ -501,7 +533,13 @@ const AccessorySection: React.FC<Props> = ({
                     // At the end of the choosing phase after user done choosing brand
                     // user click on complete button and we store the current order object
                     // into the localOrdersArray in redux so we can save it in localstorage
-                    if (localOrdersArray === undefined) return;
+                    if (
+                      localOrdersArray === undefined ||
+                      setCurrentStep === undefined ||
+                      currentOrderObj === undefined ||
+                      onStoreLocalOrders === undefined
+                    )
+                      return;
                     let copyArray = [...localOrdersArray];
                     copyArray.push(currentOrderObj);
                     onStoreLocalOrders(copyArray);

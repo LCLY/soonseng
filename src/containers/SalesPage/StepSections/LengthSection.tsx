@@ -1,41 +1,48 @@
-import React from 'react';
+import React, { useContext } from 'react';
 /* 3rd party lib */
 import { v4 as uuidv4 } from 'uuid';
 import { Breadcrumb, Button, Card, Divider, Empty, Skeleton } from 'antd';
 /* Util */
 import { AppActions } from 'src/store/types';
+import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TLocalOrderObj, TReceivedSalesLengthCategoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
-
-interface LengthSectionProps {
+export interface LengthSectionProps {
   loading?: boolean;
-  totalSteps: number;
-  currentStep: number; //for steps component
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  currentTyre: number | null; //current picked tire count
-  setCurrentTyre: React.Dispatch<React.SetStateAction<number | null>>; //the setstateaction of currentTyre
-  currentLength: TReceivedSalesLengthObj | null;
-  setCurrentLength: React.Dispatch<React.SetStateAction<TReceivedSalesLengthObj | null>>;
-  currentOrderObj: TLocalOrderObj; //to keep track of the current order
-  setCurrentOrderObj: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
-  onGetSalesBodies: (length_id: number, tire: number) => AppActions;
+  totalSteps?: number;
+  currentStep?: number; //for steps component
+  setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
+  currentTyre?: number | null; //current picked tire count
+  setCurrentTyre?: React.Dispatch<React.SetStateAction<number | null>>; //the setstateaction of currentTyre
+  currentLength?: TReceivedSalesLengthObj | null;
+  setCurrentLength?: React.Dispatch<React.SetStateAction<TReceivedSalesLengthObj | null>>;
+  currentOrderObj?: TLocalOrderObj; //to keep track of the current order
+  setCurrentOrderObj?: React.Dispatch<React.SetStateAction<TLocalOrderObj>>;
+  onGetSalesBodies?: (length_id: number, tire: number) => AppActions;
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
 }
 
 type Props = LengthSectionProps;
 
-const LengthSection: React.FC<Props> = ({
-  loading,
-  totalSteps,
-  currentTyre,
-  currentStep,
-  setCurrentStep,
-  currentLength,
-  setCurrentLength,
-  currentOrderObj,
-  setCurrentOrderObj,
-  onGetSalesBodies,
-  lengthsCategoriesArray,
-}) => {
+const LengthSection: React.FC<Props> = () => {
+  const salesPageContext = useContext(SalesPageContext);
+  if (salesPageContext === null) {
+    return null;
+  }
+
+  const {
+    loading,
+    totalSteps,
+    currentTyre,
+    currentStep,
+    setCurrentStep,
+    currentLength,
+    setCurrentLength,
+    currentOrderObj,
+    setCurrentOrderObj,
+    onGetSalesBodies,
+    lengthsCategoriesArray,
+  } = salesPageContext;
+
   return (
     <>
       <section className="sales__section">
@@ -128,6 +135,13 @@ const LengthSection: React.FC<Props> = ({
                                           currentLength?.id === lengthObj.id ? 'active' : ''
                                         }`}
                                         onClick={() => {
+                                          if (
+                                            setCurrentLength === undefined ||
+                                            setCurrentOrderObj === undefined ||
+                                            currentOrderObj === undefined
+                                          )
+                                            return;
+
                                           //  if currentLength has an id
                                           if (currentLength?.id === lengthObj.id) {
                                             // reset the selection
@@ -180,21 +194,29 @@ const LengthSection: React.FC<Props> = ({
                 loading={false}
                 className="sales__btn sales__btn--back margin_r-1"
                 onClick={() => {
+                  if (setCurrentLength === undefined || currentStep === undefined || setCurrentStep === undefined)
+                    return;
+
                   setCurrentStep(currentStep - 1);
                   setCurrentLength(null);
                 }}
               >
                 Back
               </Button>
-              {currentStep < totalSteps - 1 && (
+              {currentStep !== undefined && totalSteps !== undefined && currentStep < totalSteps - 1 && (
                 <Button
                   type="primary"
                   onClick={() => {
                     // Then call the body lengths API
-                    if (currentLength === null || currentTyre === null) return;
-                    if (currentLength.id && currentTyre) {
-                      onGetSalesBodies(currentLength.id, currentTyre);
-                    }
+                    if (
+                      currentLength === null ||
+                      currentTyre === null ||
+                      currentTyre === undefined ||
+                      currentLength === undefined ||
+                      onGetSalesBodies === undefined
+                    )
+                      return;
+                    onGetSalesBodies(currentLength.id, currentTyre);
                   }}
                   className="sales__btn"
                   loading={loading}
