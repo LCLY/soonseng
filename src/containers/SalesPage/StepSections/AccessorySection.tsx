@@ -231,7 +231,7 @@ const AccessorySection: React.FC<Props> = () => {
                 Select the accessory for the cargo body
                 <span className="sales__breadcrumb-highlight sales__breadcrumb-highlight--accessory">
                   {totalAccessoriesArrayLength !== undefined && totalAccessoriesArrayLength > 0
-                    ? `${totalAccessoriesArrayLength} items`
+                    ? `${totalAccessoriesArrayLength} item(s)`
                     : null}
                 </span>
               </div>

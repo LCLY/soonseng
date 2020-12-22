@@ -179,8 +179,11 @@ $big-desktop-up: big-desktop-up;
   $borderRadius: 0
 ) {
   // main background
+  position: relative;
   background: $frontLayerColor;
   backdrop-filter: blur($blur);
+  -moz-backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
   border-radius: $borderRadius;
   // second layer behind the main background
   &:before {
