@@ -30,7 +30,7 @@ import {
 } from 'src/store/types/sales';
 
 import { RootState } from 'src';
-import holy5truck from 'src/img/5-trucks.jpg';
+import holy5truck from 'src/img/5-trucks-lowres.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';

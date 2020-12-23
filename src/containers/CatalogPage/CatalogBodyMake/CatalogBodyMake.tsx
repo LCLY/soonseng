@@ -15,7 +15,7 @@ import NumberFormat from 'react-number-format';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 /* Util */
 import { RootState } from 'src';
-import holy5truck from 'src/img/5-trucks.jpg';
+import holy5truck from 'src/img/5-trucks-lowres.jpg';
 import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
