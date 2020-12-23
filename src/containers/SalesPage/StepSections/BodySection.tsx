@@ -8,7 +8,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TReceivedBodyObj } from 'src/store/types/dashboard';
-import { img_loading_link, img_not_available_link } from 'src/shared/links';
+import { img_loading_link } from 'src/shared/links';
 import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TLocalOrderObj, TReceivedSalesLengthCategoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
 
@@ -118,7 +118,9 @@ const BodySection: React.FC<Props> = () => {
                   </>
                 ) : (
                   <div>
-                    <img className="sales__section-img" src={img_not_available_link} alt="no result" />
+                    <div className="sales__section-img">
+                      <Skeleton.Image className="sales__section-img-skeleton" />
+                    </div>
                     <div className="sales__section-img-unavailabletext"> No image is provided for this body</div>
                   </div>
                 )}

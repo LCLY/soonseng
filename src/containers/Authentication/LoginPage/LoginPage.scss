@@ -1,9 +1,11 @@
 .login {
   &__section {
+    padding: 3rem;
+
     &-outerdiv {
       // padding-top: $navbar-height;
-      background: rgba(255, 255, 240, 0.664);
-      border-bottom: 1px solid white;
+      // background: rgba(255, 255, 240, 0.664);
+      // border-bottom: 1px solid white;
     }
 
     &-header {
@@ -17,7 +19,7 @@
   }
   &__form {
     &-div {
-      border: 1px solid $primary-color-1;
+      // border: 1px solid $primary-color-1;
       padding: 2rem;
       width: 40rem;
       margin-bottom: 10rem;
@@ -25,7 +27,8 @@
       border-top-right-radius: 5rem;
       border-top-left-radius: 5rem;
       border-bottom-right-radius: 5rem;
-      background: $primary-color-4;
+      background: rgba($primary-color-4, 0.5);
+      @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
       @include respond-to(phone-only) {
         width: auto;
@@ -35,11 +38,15 @@
     }
 
     &-outerdiv {
-      margin-top: 5rem;
+      padding-top: 5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      min-height: 100vh;
+      @include shadow-func(0rem, 0rem, 0.5rem, 0.01rem, rgba(255, 255, 255, 0.789));
+
+      @include glassMorph(rgba(0, 0, 0, 0.07), 20px, rgba(225, 225, 225, 0.056), 2rem);
     }
     &-items {
       & label {
@@ -51,6 +58,11 @@
 
   &__btn {
     width: 100%;
-    background: $primary-color-1 !important;
+    border: 1px solid white !important;
+    background: none !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.145) !important;
+    }
   }
 }

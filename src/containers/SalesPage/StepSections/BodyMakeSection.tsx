@@ -5,12 +5,12 @@ import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/Lig
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import NumberFormat from 'react-number-format';
-import { Breadcrumb, Button, Card, Divider, Empty, Tag } from 'antd';
+import { Breadcrumb, Button, Card, Divider, Empty, Tag, Skeleton } from 'antd';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
-import { img_loading_link, img_not_available_link } from 'src/shared/links';
+import { img_loading_link } from 'src/shared/links';
 import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TReceivedBodyObj, TReceivedBodyMakeObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedSalesBodyMakeObj } from 'src/store/types/sales';
@@ -127,7 +127,9 @@ const BodyMakeSection: React.FC<Props> = () => {
                   </>
                 ) : (
                   <>
-                    <img className="sales__section-img" src={img_not_available_link} alt="no result" />
+                    <div className="sales__section-img">
+                      <Skeleton.Image className="sales__section-img-skeleton" />
+                    </div>
                     <div className="sales__section-img-unavailabletext"> No image is provided for this model</div>
                   </>
                 )}

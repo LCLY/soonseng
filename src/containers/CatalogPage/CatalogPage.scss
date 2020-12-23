@@ -11,7 +11,6 @@
       width: 100vw;
       min-height: 100vh;
       background-color: #ffffff;
-      // background-image: url('https://i.pinimg.com/originals/af/8e/d3/af8ed3265ed9b78d34f2340b5bb42b71.jpg');
       background-image: url('https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg');
       background-repeat: no-repeat;
       background-position: center;
@@ -20,20 +19,9 @@
   }
   &__outerdiv {
     display: block;
-    // flex: 1;
-    // padding-top: $navbar-height; //height of navbar
-    // background: $soonseng-grey;
-    // min-height: 100%;
     @include respond-to(phone-only) {
       padding-top: 51.58px; //height of navbar
     }
-    // background-color: $secondary-color-2;
-    // background-image: url('https://i.pinimg.com/originals/af/8e/d3/af8ed3265ed9b78d34f2340b5bb42b71.jpg');
-    // background-image: url('https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg');
-    // background-repeat: no-repeat;
-    // background-position: center;
-    // background-size: cover;
-    // background-attachment: fixed;
   }
 
   &__div {
@@ -116,6 +104,7 @@
         position: relative;
         margin-bottom: 2rem;
         @include glassMorph(rgba(237, 237, 237, 0.08), 15px, rgba(230, 230, 230, 0.09), 1.5rem);
+        @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
       }
     }
   }
@@ -342,6 +331,7 @@
 
       background: white;
       @include glassMorph(rgba(255, 255, 255, 0), 20px, rgba(0, 0, 0, 0), 2rem);
+      @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
       @include respond-to($phone-only) {
         height: 80vh;

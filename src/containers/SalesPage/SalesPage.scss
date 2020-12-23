@@ -9,8 +9,6 @@
 
   &__outerdiv {
     flex: 1;
-    // padding-top: 106.88px; //height of navbar
-    background: $soonseng-grey;
 
     @include respond-to(phone-only) {
       padding-top: 70px; //height of navbar
@@ -36,6 +34,7 @@
     margin: 1rem 0;
     padding: 2rem;
     @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
+    @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
     &-header {
       font-size: 3rem;
@@ -115,6 +114,26 @@
           padding-bottom: 1rem;
           color: rgba($secondary-color-2, 0.5);
           font-family: $font-bebasneue;
+        }
+      }
+
+      /* -------------------- */
+      // skeleton for showing no image
+      /* -------------------- */
+      &-skeleton {
+        width: 100% !important;
+        height: 100% !important;
+        color: white !important;
+        background: darken($primary-color-4, 6%) !important;
+        @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+
+        &.ant-skeleton-element .ant-skeleton-image-svg {
+          width: 20%;
+          height: 20%;
+        }
+
+        & .ant-skeleton-image-path {
+          fill: rgb(201, 197, 197) !important;
         }
       }
     }
@@ -352,7 +371,7 @@
       width: 100%;
       // margin-top: 2rem !important;
       min-height: 5rem !important;
-      border-bottom-right-radius: 5rem !important;
+      border-bottom-right-radius: 1.5rem !important;
       border-color: $translucent-grey !important;
       // background: $primary-color-4 !important;
       // color: white !important;
@@ -508,6 +527,9 @@
       color: black;
       font-family: $font-firesans;
       margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.474);
+      padding: 2rem !important;
+      border-radius: 1rem;
       @include respond-to(phone-only) {
         font-size: 1.2rem;
         padding: 1rem 1rem 0 1rem;

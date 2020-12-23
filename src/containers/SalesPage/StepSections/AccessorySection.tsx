@@ -9,7 +9,7 @@ import { Breadcrumb, Button, Card, Divider, Empty, Skeleton } from 'antd';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
-import { img_loading_link, img_not_available_link } from 'src/shared/links';
+import { img_loading_link } from 'src/shared/links';
 import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
@@ -155,7 +155,9 @@ const AccessorySection: React.FC<Props> = () => {
                 ) : (
                   <>
                     {/* if there is no image then show image not available */}
-                    <img className="sales__section-img" src={img_not_available_link} alt="no result" />
+                    <div className="sales__section-img">
+                      <Skeleton.Image className="sales__section-img-skeleton" />
+                    </div>
                     <div className="sales__section-img-unavailabletext"> No image is provided for this accessory</div>
                   </>
                 )}

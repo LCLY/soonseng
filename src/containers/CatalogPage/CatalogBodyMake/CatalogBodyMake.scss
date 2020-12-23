@@ -25,6 +25,7 @@
       border-radius: 1rem;
 
       @include glassMorph(rgba($primary-color-4, 0.3), 20px, rgba(44, 44, 44, 0.308), 1rem);
+      @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
     }
 
     &-banner {

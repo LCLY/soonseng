@@ -5,12 +5,11 @@ import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import NumberFormat from 'react-number-format';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Breadcrumb, Button, Collapse, Divider, Dropdown, Menu } from 'antd';
+import { Breadcrumb, Button, Collapse, Divider, Dropdown, Menu, Skeleton } from 'antd';
 import { CaretDownOutlined, InfoCircleOutlined, CaretRightOutlined } from '@ant-design/icons';
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
-import { img_not_available_link } from 'src/shared/links';
 import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TReceivedBodyObj, TReceivedBodyMakeObj, TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedSalesLengthObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
@@ -297,11 +296,9 @@ const OverviewSection: React.FC<Props> = ({ history }) => {
                               src={order.bodyMakeObj?.make.images[0].url}
                             />
                           ) : (
-                            <img
-                              className="sales__overview-row-image"
-                              src={img_not_available_link}
-                              alt="not available"
-                            />
+                            <div className="sales__overview-row-image">
+                              <Skeleton.Image className="sales__section-img-skeleton" />
+                            </div>
                           )}
                         </section>
 

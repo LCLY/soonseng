@@ -28,11 +28,13 @@ import {
   TReceivedSalesLengthCategoryObj,
   TReceivedSalesBodyMakeObj,
 } from 'src/store/types/sales';
+
+import { RootState } from 'src';
+import holy5truck from 'src/img/5-trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
 import { STEPS_TYRE, STEPS_LENGTH, STEPS_BODY, STEPS_ACCESSORY, STEPS_BODYMAKE } from 'src/shared/constants';
-import { RootState } from 'src';
 import { SalesPageContext } from './SalesPageContext';
 
 const { Step } = Steps;
@@ -268,7 +270,10 @@ const SalesPage: React.FC<Props> = ({
   return (
     <>
       <NavbarComponent activePage="sales" />
-      <ParallaxContainer bgImageUrl="https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg">
+      <ParallaxContainer
+        bgImageUrl={holy5truck}
+        colorSettings="radial-gradient(rgba(255, 255, 255, 0) 70%, rgba(0, 0, 0, 0.8))"
+      >
         <div className="sales__outerdiv">
           <div className="sales__innerdiv">
             <div className="sales__steps-content">

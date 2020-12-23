@@ -26,13 +26,23 @@
   will-change: transform;
 
   &:after {
+    // content: '';
+    // position: absolute;
+    // height: 100%;
+    // width: 100%;
+    // top: 0;
+    // left: 0;
+    // background-image: radial-gradient(rgba(255, 255, 255, 0) 20%, rgba(0, 0, 0, 1));
+    // background: rgba(0, 0, 0, 0.364) !important;
+  }
+  &-cover {
     content: '';
     position: absolute;
     height: 100%;
     width: 100%;
     top: 0;
     left: 0;
-    background: rgba(0, 0, 0, 0.15) !important;
+    // background-image: radial-gradient(rgba(255, 255, 255, 0) 20%, rgba(0, 0, 0, 1));
   }
 }
 

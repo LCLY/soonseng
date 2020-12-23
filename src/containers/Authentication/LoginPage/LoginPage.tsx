@@ -3,18 +3,20 @@ import './LoginPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import { Button, Form, Input, message } from 'antd';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
 import { Spin } from 'antd';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
+import { Button, Form, Input, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 /* Util */
+
+import { RootState } from 'src';
+import holy5truck from 'src/img/5-trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj } from 'src/store/types/auth';
-// import { TMapStateToProps } from 'src/store/types';
-import { RootState } from 'src';
 
 interface LoginPageProps {}
 
@@ -61,41 +63,44 @@ const LoginPage: React.FC<Props> = ({
     <>
       {authenticated && userInfoObj && <Redirect to="/" />}
       <NavbarComponent activePage="login" />
-      <section className="login__section">
-        {/* <Container> */}
-        <div className="login__section-outerdiv">
-          <div className="login__form-outerdiv">
-            <div className="login__form-div">
-              <div className="login__section-header">Sign In</div>
-              <Form name="basic" initialValues={{ remember: true }} onFinish={onSignInFinish}>
-                <Form.Item
-                  className="login__form-items"
-                  label="Email"
-                  name="email"
-                  rules={[{ required: true, message: 'Please input your email!' }]}
-                >
-                  <Input type="email" />
-                </Form.Item>
 
-                <Form.Item
-                  className="login__form-items"
-                  label="Password"
-                  name="password"
-                  rules={[{ required: true, message: 'Please input your password!' }]}
-                >
-                  <Input.Password />
-                </Form.Item>
-                <Form.Item>
-                  <Button className="login__btn" type="primary" htmlType="submit">
-                    {loading ? <Spin indicator={antIcon} /> : 'Submit'}
-                  </Button>
-                </Form.Item>
-              </Form>
+      <ParallaxContainer bgImageUrl={holy5truck}>
+        <section className="login__section">
+          {/* <Container> */}
+          <div className="login__section-outerdiv">
+            <div className="login__form-outerdiv">
+              <div className="login__form-div">
+                <div className="login__section-header">Sign In</div>
+                <Form name="basic" initialValues={{ remember: true }} onFinish={onSignInFinish}>
+                  <Form.Item
+                    className="login__form-items"
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
+                  >
+                    <Input type="email" />
+                  </Form.Item>
+
+                  <Form.Item
+                    className="login__form-items"
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                  >
+                    <Input.Password />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button className="login__btn" type="primary" htmlType="submit">
+                      {loading ? <Spin indicator={antIcon} /> : 'Submit'}
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </div>
             </div>
           </div>
-        </div>
-        {/* </Container> */}
-      </section>
+          {/* </Container> */}
+        </section>
+      </ParallaxContainer>
       <Footer />
     </>
   );

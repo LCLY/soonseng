@@ -15,6 +15,7 @@ import NumberFormat from 'react-number-format';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 /* Util */
 import { RootState } from 'src';
+import holy5truck from 'src/img/5-trucks.jpg';
 import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
@@ -240,7 +241,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
     <>
       <NavbarComponent />
 
-      <ParallaxContainer bgImageUrl="https://www.volvotrucks.com/en-en/_jcr_content/root/responsivegrid/collage/container-5/teaser_1296288429.coreimg.jpeg/1604935457488/volvo-electric-truck-range1.jpeg">
+      <ParallaxContainer bgImageUrl={holy5truck}>
         <div className="catalog__outerdiv">
           <div className="catalog__div">
             {catalogBodyMakesArray ? (
