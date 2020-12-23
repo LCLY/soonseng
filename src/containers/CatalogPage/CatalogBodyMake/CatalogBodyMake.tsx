@@ -154,6 +154,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
             </div>
 
             <section className="catalogbodymake__detail-body catalogbodymake__detail-body--mobile">
+              {/* left column */}
               <div style={{ width: '100%' }}>
                 {bodyMakeDetailRowArray.length > 0 &&
                   [...bodyMakeDetailRowArray].slice(0, 6).map((detail) => (
@@ -170,6 +171,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                     </div>
                   ))}
               </div>
+              {/* right column */}
               <div style={{ width: '100%' }}>
                 {bodyMakeDetailRowArray.length > 0 &&
                   [...bodyMakeDetailRowArray].slice(6).map((detail) => (
@@ -185,6 +187,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                       </div>
                     </div>
                   ))}
+                {/* move price to second column and bottom on mobile view */}
                 {accessObj?.showPriceSalesPage && (
                   <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
                     <div className="catalogbodymake__detail-body-row-left catalogbodymake__detail-body-row-left--mobile">
