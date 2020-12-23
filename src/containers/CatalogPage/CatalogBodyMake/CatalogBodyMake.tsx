@@ -114,38 +114,101 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
   let MakeDetailsComponent = (props: { bodyMake: TReceivedBodyMakeObj }) => {
     const { bodyMake } = props;
     return (
-      <div className="catalogbodymake__detail-div">
-        <div className="catalogbodymake__detail-innerdiv">
-          <div className="catalogbodymake__detail-model">
-            <div className="catalogbodymake__detail-model-text">{bodyMake.make.title}</div>
-          </div>
+      <>
+        <div className="catalogbodymake__detail-div">
+          <div className="catalogbodymake__detail-innerdiv">
+            <div className="catalogbodymake__detail-model">
+              <div className="catalogbodymake__detail-model-text">{bodyMake.make.title}</div>
+            </div>
 
-          <section className="catalogbodymake__detail-body">
-            {bodyMakeDetailRowArray.length > 0 &&
-              bodyMakeDetailRowArray.map((detail) => (
+            <section className="catalogbodymake__detail-body">
+              {bodyMakeDetailRowArray.length > 0 &&
+                bodyMakeDetailRowArray.map((detail) => (
+                  <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
+                    <div className="catalogbodymake__detail-body-row-left">{detail.title}</div>
+                    <div className="catalogbodymake__detail-body-row-right">{detail.data}</div>
+                  </div>
+                ))}
+              {accessObj?.showPriceSalesPage && (
                 <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
-                  <div className="catalogbodymake__detail-body-row-left">{detail.title}</div>
-                  <div className="catalogbodymake__detail-body-row-right">{detail.data}</div>
+                  <div className="catalogbodymake__detail-body-row-left">Model Price</div>
+                  <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right-price">
+                    {bodyMake?.make.price === 0 || bodyMake?.make.price === null ? (
+                      '-'
+                    ) : (
+                      <>
+                        RM
+                        <NumberFormat value={bodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
+                      </>
+                    )}
+                  </div>
                 </div>
-              ))}
-            {accessObj?.showPriceSalesPage && (
-              <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
-                <div className="catalogbodymake__detail-body-row-left">Model Price</div>
-                <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right-price">
-                  {bodyMake?.make.price === 0 || bodyMake?.make.price === null ? (
-                    '-'
-                  ) : (
-                    <>
-                      RM
-                      <NumberFormat value={bodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-          </section>
+              )}
+            </section>
+          </div>
         </div>
-      </div>
+        <div className="catalogbodymake__detail-div--mobile">
+          <div className="catalogbodymake__detail-innerdiv">
+            <div className="catalogbodymake__detail-model">
+              <div className="catalogbodymake__detail-model-text">{bodyMake.make.title}</div>
+            </div>
+
+            <section className="catalogbodymake__detail-body catalogbodymake__detail-body--mobile">
+              <div style={{ width: '100%' }}>
+                {bodyMakeDetailRowArray.length > 0 &&
+                  [...bodyMakeDetailRowArray].slice(0, 6).map((detail) => (
+                    <div
+                      className="catalogbodymake__detail-body-row catalogbodymake__detail-body-row--mobile"
+                      key={uuidv4()}
+                    >
+                      <div className="catalogbodymake__detail-body-row-left catalogbodymake__detail-body-row-left--mobile">
+                        {detail.title}
+                      </div>
+                      <div className="catalogbodymake__detail-body-row-left catalogbodymake__detail-body-row-right--mobile">
+                        {detail.data}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              <div style={{ width: '100%' }}>
+                {bodyMakeDetailRowArray.length > 0 &&
+                  [...bodyMakeDetailRowArray].slice(6).map((detail) => (
+                    <div
+                      className="catalogbodymake__detail-body-row catalogbodymake__detail-body-row--mobile"
+                      key={uuidv4()}
+                    >
+                      <div className="catalogbodymake__detail-body-row-left catalogbodymake__detail-body-row-left--mobile">
+                        {detail.title}
+                      </div>
+                      <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right--mobile">
+                        {detail.data}
+                      </div>
+                    </div>
+                  ))}
+                {accessObj?.showPriceSalesPage && (
+                  <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
+                    <div className="catalogbodymake__detail-body-row-left catalogbodymake__detail-body-row-left--mobile">
+                      Model Price
+                    </div>
+                    <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right--mobile">
+                      <div>
+                        {bodyMake?.make.price === 0 || bodyMake?.make.price === null ? (
+                          '-'
+                        ) : (
+                          <span className="catalogbodymake__detail-body-row-right-price">
+                            RM
+                            <NumberFormat value={bodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        </div>
+      </>
     );
   };
 
@@ -216,7 +279,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                                     <div>
                                       {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
                                         <div className="flex-align-center">
-                                          Width:&nbsp;{' '}
+                                          Width:&nbsp;
                                           <div className="catalogbodymake__card-overlay-dimension">
                                             {bodyMake?.width}
                                           </div>
@@ -236,7 +299,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                                         bodyMake?.height !== '' &&
                                         bodyMake?.height !== null && (
                                           <div className="flex-align-center">
-                                            Height:&nbsp;{' '}
+                                            Height:&nbsp;
                                             <div className="catalogbodymake__card-overlay-dimension">
                                               {bodyMake?.height}
                                             </div>
@@ -286,7 +349,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
               </div>
             )}
           </div>
-        </div>{' '}
+        </div>
       </ParallaxContainer>
       <Footer />
     </>

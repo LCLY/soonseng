@@ -29,7 +29,21 @@
 
     &-banner {
       display: flex;
-      height: 60rem;
+
+      @include respond-to($phone-only) {
+        flex-direction: column;
+        height: auto;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: column;
+        height: auto;
+      }
+
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+        height: 60rem;
+      }
     }
   }
 
@@ -77,10 +91,10 @@
     /* -------------- */
     &-div {
       @include respond-to($tablet-portrait-up) {
-        width: 60%;
+        width: 100%;
       }
       @include respond-to($tablet-landscape-up) {
-        width: 75%;
+        width: 100%;
       }
     }
   }
@@ -91,17 +105,41 @@
   &__detail {
     &-div {
       padding: 3rem;
-      width: 25%;
       display: flex;
       justify-content: center;
       background: rgba($primary-color-4, 0.5);
       z-index: 1;
 
-      @include respond-to($tablet-portrait-up) {
-        width: 40%;
+      @include respond-to($phone-only) {
+        display: none;
       }
+
+      @include respond-to($tablet-portrait-up) {
+        display: none;
+      }
+
       @include respond-to($tablet-landscape-up) {
-        width: 25%;
+        min-width: 30rem;
+        display: flex;
+      }
+
+      /* --------------------------- */
+      // Mobile iteration of detail div
+      /* --------------------------- */
+      &--mobile {
+        padding: 3rem;
+        background: rgba($primary-color-4, 0.5);
+
+        @include respond-to($phone-only) {
+          display: block;
+          padding: 2rem 0rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          display: block;
+        }
+        @include respond-to($tablet-landscape-up) {
+          display: none;
+        }
       }
     }
 
@@ -144,15 +182,37 @@
       flex-direction: column;
       justify-content: space-between;
 
+      /* --------------------------- */
+      // Mobile iteration of body content
+      /* --------------------------- */
+      &--mobile {
+        justify-content: center;
+        width: 100%;
+
+        @include respond-to($phone-only) {
+          flex-direction: column;
+        }
+        @include respond-to($tablet-portrait-up) {
+          flex-direction: row;
+        }
+      }
+
       /* each row of the details within the card*/
       &-row {
         display: flex;
         align-items: center;
+
         &-left {
           width: 52%;
           // font-size: 2rem;
           font-family: $font-roboto;
           color: rgb(255, 198, 198);
+          /* --------------------------- */
+          // Mobile iteration of left div
+          /* --------------------------- */
+          &--mobile {
+            width: 100%;
+          }
         }
 
         /* right part of the row */
@@ -165,6 +225,19 @@
           overflow: hidden;
           text-overflow: ellipsis;
 
+          /* --------------------------- */
+          // Mobile iteration of right div
+          /* --------------------------- */
+          &--mobile {
+            width: 100%;
+            color: white;
+            font-size: 1.8rem;
+            font-family: $font-bebasneue;
+          }
+
+          /* --------------------------- */
+          // Iteration for the price
+          /* --------------------------- */
           &-price {
             font-family: $font-anton;
             font-size: 1.6rem;
