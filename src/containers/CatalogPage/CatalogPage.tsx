@@ -13,7 +13,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 /* Util */
-import holy5truck from 'src/img/5-trucks-lowres.jpg';
+import holy5trucks from 'src/img/5-trucks-lowres.jpg';
 import { RootState } from 'src';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
@@ -52,7 +52,7 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
     <>
       <NavbarComponent />
       {/* background image in outerdiv */}
-      <ParallaxContainer bgImageUrl={holy5truck}>
+      <ParallaxContainer bgImageUrl={holy5trucks}>
         <div className="catalog__outerdiv">
           <div className="catalog__div">
             {catalogMakesArray ? (

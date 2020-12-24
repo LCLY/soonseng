@@ -11,7 +11,7 @@ type Props = ParallaxContainerProps;
 const ParallaxContainer: React.FC<Props> = ({
   bgImageUrl,
   children,
-  colorSettings = 'radial-gradient(rgba(255, 255, 255, 0) 20%, rgba(0, 0, 0, 1))',
+  colorSettings = 'radial-gradient(rgba(0,0,0,0.3) 60%, rgba(0, 0, 0, 1))',
 }) => {
   return (
     <div className="e-with-fixed-bg">
