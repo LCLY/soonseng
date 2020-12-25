@@ -37,18 +37,16 @@
     @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
     &-header {
-      font-size: 3rem;
+      font-size: 5rem;
       font-family: $font-bebasneue;
       text-align: center;
       color: $primary-color-4;
+      -webkit-text-fill-color: $primary-color-4; /* Will override color (regardless of order) */
+      -webkit-text-stroke-width: 0.3px;
+      -webkit-text-stroke-color: white;
       // changing the divider's color
       &-divider {
-        &:before {
-          border-top: 1px solid $primary-color-4 !important;
-        }
-        &:after {
-          border-top: 1px solid $primary-color-4 !important;
-        }
+        border-color: white !important;
       }
     }
 
@@ -932,7 +930,10 @@
         & .ant-collapse-header {
           padding: 0.5rem 0 0 0 !important;
 
-          color: $link-blue !important;
+          color: white !important;
+
+          // @include outlineFont($link-blue, white, 0.5px);
+          // color: $link-blue !important;
         }
       }
 

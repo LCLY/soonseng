@@ -270,10 +270,7 @@ const SalesPage: React.FC<Props> = ({
   return (
     <>
       <NavbarComponent activePage="sales" />
-      <ParallaxContainer
-        bgImageUrl={holy5truck}
-        colorSettings="radial-gradient(rgba(255, 255, 255, 0) 70%, rgba(0, 0, 0, 0.8))"
-      >
+      <ParallaxContainer bgImageUrl={holy5truck} colorSettings="radial-gradient(rgba(0,0,0,0.2) 60%, rgba(0, 0, 0, 1))">
         <div className="sales__outerdiv">
           <div className="sales__innerdiv">
             <div className="sales__steps-content">

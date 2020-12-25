@@ -44,7 +44,8 @@ export interface OverviewSectionProps {
 type Props = OverviewSectionProps & RouteComponentProps;
 
 const OverviewSection: React.FC<Props> = ({ history }) => {
-  const [expandedModelCollapse, setExpandedModelCollapse] = useState<string[]>([]);
+  // for the collapsible to be opened on load
+  const [expandedModelCollapse, setExpandedModelCollapse] = useState<string | string[]>('model0');
   const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
 
   const salesPageContext = useContext(SalesPageContext);
@@ -346,7 +347,6 @@ const OverviewSection: React.FC<Props> = ({ history }) => {
                             ghost
                             activeKey={expandedModelCollapse}
                             onChange={onModelCollapsed}
-                            defaultActiveKey={accessObj.showPriceSalesPage ? [''] : [`model${index}`]}
                             expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                           >
                             <Panel

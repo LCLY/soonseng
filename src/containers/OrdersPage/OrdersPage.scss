@@ -3,11 +3,16 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 1rem 0;
+    // margin: 1rem 0;
     padding-bottom: 5rem;
+
     &-outerdiv {
       width: auto;
-      padding-top: $navbar-height;
+      margin-top: 2rem;
+      padding: 2rem;
+      // padding-top: $navbar-height;
+      @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
+      @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
       @include respond-to(phone-only) {
         padding-top: 60px; //height of navbar
@@ -19,6 +24,10 @@
     &-text {
       color: $primary-color-4;
       font-family: $font-anton;
+    }
+
+    // the div holding the total items
+    &-items {
     }
   }
 

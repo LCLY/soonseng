@@ -222,3 +222,13 @@ $big-desktop-up: big-desktop-up;
     background: $hoverBackgroundColor !important;
   }
 }
+
+/* =============================================================== */
+// Font with outlines
+/* =============================================================== */
+@mixin outlineFont($fontColor: black, $strokeColor: white, $strokeWidth: 1px) {
+  color: $fontColor !important;
+  -webkit-text-fill-color: $fontColor !important; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: $strokeWidth !important;
+  -webkit-text-stroke-color: $strokeColor !important;
+}
