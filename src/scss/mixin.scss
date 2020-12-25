@@ -185,6 +185,8 @@ $big-desktop-up: big-desktop-up;
   -moz-backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
   border-radius: $borderRadius;
+  transform: translateZ(0);
+  will-change: translate, backdrop-filter;
   // second layer behind the main background
   &:before {
     content: '';
