@@ -12,14 +12,14 @@ import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Button, Collapse, Divider, Dropdown, Empty, Menu } from 'antd';
-import { InfoCircleOutlined, DownSquareOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { Button, Collapse, Divider, Dropdown, Empty, Menu, Skeleton } from 'antd';
+import { InfoCircleOutlined, CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 
 // Util
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
 import holy5truck from 'src/img/5-trucks-lowres.jpg';
-import { img_not_available_link } from 'src/shared/links';
+import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 
@@ -29,7 +29,7 @@ interface OrdersPageProps {}
 
 type Props = OrdersPageProps & StateProps & DispatchProps & RouteComponentProps;
 
-const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrder }) => {
+const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onRemoveAnOrder }) => {
   /* ================================= */
   // state
   /* ================================= */
@@ -40,8 +40,12 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
   // method
   /* ================================= */
   const onModelCollapsed = (key: string | string[]) => {
+    // only set the state when user is admin
+    if (accessObj === undefined) return null;
     if (typeof key !== 'string') {
-      setExpandedModelCollapse(key);
+      if (accessObj.showPriceSalesPage) {
+        setExpandedModelCollapse(key);
+      }
     }
   };
 
@@ -50,6 +54,10 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
       setExpandedInsuranceCollapse(key);
     }
   };
+
+  if (accessObj === undefined) {
+    return null;
+  }
   return (
     <>
       <NavbarComponent activePage="orders" />
@@ -190,6 +198,8 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                         </Menu.Item>
                       </Menu>
                     );
+
+                    let collpaseKeyArray = [`model${index}`];
                     /* ==================================================== */
                     // RENDER
                     /* ==================================================== */
@@ -198,7 +208,10 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                         <div className="orders__overview-more">
                           <div className="orders__overview-more-icon-div">
                             <Dropdown trigger={['click']} overlay={moreOptionsDropdown} placement="bottomRight">
-                              <DownSquareOutlined className="orders__overview-more-icon" />
+                              <div className="flex-align-center">
+                                More Options&nbsp;
+                                <CaretDownOutlined className="sales__overview-more-icon" />
+                              </div>
                             </Dropdown>
                           </div>
                         </div>
@@ -212,11 +225,9 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                 src={order.bodyMakeObj?.make.images[0].url}
                               />
                             ) : (
-                              <img
-                                className="orders__overview-row-image"
-                                src={img_not_available_link}
-                                alt="not available"
-                              />
+                              <div className="orders__overview-row-image">
+                                <Skeleton.Image className="sales__section-img-skeleton" />
+                              </div>
                             )}
                           </section>
 
@@ -227,14 +238,16 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                               <span className="orders__overview-row-content-header">
                                 {order.lengthObj?.title}ft {order.bodyMakeObj?.body.title}
                               </span>
-                              <span className="orders__overview-row-content-header-price--prediscount">
-                                RM&nbsp;
-                                <NumberFormat
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                  value={prediscountTotalPrice.toFixed(2)}
-                                />
-                              </span>
+                              {accessObj.showPriceSalesPage && (
+                                <span className="orders__overview-row-content-header-price--prediscount">
+                                  RM&nbsp;
+                                  <NumberFormat
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    value={prediscountTotalPrice.toFixed(2)}
+                                  />
+                                </span>
+                              )}
                             </div>
 
                             <div className="flex space-between">
@@ -246,23 +259,37 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                   {`${order.bodyMakeObj?.make.brand.title} ${order.bodyMakeObj?.make.series} ${order.bodyMakeObj?.make.title}`}
                                 </span>
                               </div>
-                              <span className="orders__overview-row-content-subheader-price">
-                                <NumberFormat
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                  value={modelSubtotalPrice.toFixed(2)}
-                                />
-                              </span>
+                              {accessObj.showPriceSalesPage && (
+                                <span className="orders__overview-row-content-subheader-price">
+                                  <NumberFormat
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    value={modelSubtotalPrice.toFixed(2)}
+                                  />
+                                </span>
+                              )}
                             </div>
                             <Collapse
                               ghost
-                              activeKey={expandedModelCollapse}
                               onChange={onModelCollapsed}
+                              activeKey={
+                                accessObj.showPriceSalesPage
+                                  ? expandedModelCollapse
+                                  : [...collpaseKeyArray, `model${index}`]
+                              }
+                              // defaultActiveKey={[...collpaseKeyArray, `model${index}`]}
                               expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                             >
                               <Panel
                                 className="orders__overview-panel"
-                                header={expandedModelCollapse.includes(`model${index}`) ? 'View less' : 'View more'}
+                                showArrow={accessObj.showPriceSalesPage ? true : false}
+                                header={
+                                  accessObj.showPriceSalesPage
+                                    ? expandedModelCollapse.includes(`model${index}`)
+                                      ? 'View less'
+                                      : 'View more'
+                                    : ''
+                                }
                                 key={`model${index}`}
                               >
                                 <ol className="orders__overview-list">
@@ -286,13 +313,15 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                               `MODEL ${order.bodyMakeObj.make.year} ${order.bodyMakeObj.make.title}`}
                                         </span>
                                       </span>
-                                      <span>
-                                        <NumberFormat
-                                          displayType={'text'}
-                                          thousandSeparator={true}
-                                          value={order.bodyMakeObj?.make.price.toFixed(2)}
-                                        />
-                                      </span>
+                                      {accessObj.showPriceSalesPage && (
+                                        <span>
+                                          <NumberFormat
+                                            displayType={'text'}
+                                            thousandSeparator={true}
+                                            value={order.bodyMakeObj?.make.price.toFixed(2)}
+                                          />
+                                        </span>
+                                      )}
                                     </div>
                                   </li>
                                   <li>
@@ -304,13 +333,15 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                           {`${order.lengthObj?.title}ft ${order.bodyMakeObj?.body.title}`}
                                         </span>
                                       </span>
-                                      <span>
-                                        <NumberFormat
-                                          value={order.bodyMakeObj?.price.toFixed(2)}
-                                          displayType={'text'}
-                                          thousandSeparator={true}
-                                        />
-                                      </span>
+                                      {accessObj.showPriceSalesPage && (
+                                        <span>
+                                          <NumberFormat
+                                            value={order.bodyMakeObj?.price.toFixed(2)}
+                                            displayType={'text'}
+                                            thousandSeparator={true}
+                                          />
+                                        </span>
+                                      )}
                                     </div>
                                   </li>
                                   {/* more info for model */}
@@ -435,13 +466,15 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                         <li key={uuidv4()}>
                                           <div className="flex space-between">
                                             <span>{accessory.title} </span>
-                                            <span>
-                                              <NumberFormat
-                                                displayType={'text'}
-                                                thousandSeparator={true}
-                                                value={accessory.price.toFixed(2)}
-                                              />
-                                            </span>
+                                            {accessObj.showPriceSalesPage && (
+                                              <span>
+                                                <NumberFormat
+                                                  displayType={'text'}
+                                                  thousandSeparator={true}
+                                                  value={accessory.price.toFixed(2)}
+                                                />
+                                              </span>
+                                            )}
                                           </div>
                                         </li>
                                       ))}
@@ -453,13 +486,15 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                         <li key={uuidv4()}>
                                           <div className="flex space-between">
                                             <span>{accessory.title} </span>
-                                            <span>
-                                              <NumberFormat
-                                                displayType={'text'}
-                                                thousandSeparator={true}
-                                                value={accessory.price.toFixed(2)}
-                                              />
-                                            </span>
+                                            {accessObj.showPriceSalesPage && (
+                                              <span>
+                                                <NumberFormat
+                                                  displayType={'text'}
+                                                  thousandSeparator={true}
+                                                  value={accessory.price.toFixed(2)}
+                                                />
+                                              </span>
+                                            )}
                                           </div>
                                         </li>
                                       ))}
@@ -471,154 +506,180 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
                                         <li key={uuidv4()}>
                                           <div className="flex space-between">
                                             <span> {dimension.accessory.title} </span>
-                                            <span>
-                                              <NumberFormat
-                                                displayType={'text'}
-                                                thousandSeparator={true}
-                                                value={dimension.price.toFixed(2)}
-                                              />
-                                            </span>
+                                            {accessObj.showPriceSalesPage && (
+                                              <span>
+                                                <NumberFormat
+                                                  displayType={'text'}
+                                                  thousandSeparator={true}
+                                                  value={dimension.price.toFixed(2)}
+                                                />
+                                              </span>
+                                            )}
                                           </div>
                                         </li>
                                       ))}
                                   </>
 
                                   {/* Processing fees section */}
-                                  <div className="orders__overview-smalltitle">Processing fees</div>
-                                  {miscellaneousArray.map((item) => (
-                                    <li key={uuidv4()}>
-                                      <div className="flex space-between">
-                                        <span>{item.title}</span>
-                                        <span>
-                                          <NumberFormat
-                                            value={item.price.toFixed(2)}
-                                            displayType={'text'}
-                                            thousandSeparator={true}
-                                          />
-                                        </span>
-                                      </div>
-                                    </li>
-                                  ))}
+                                  {accessObj.showPriceSalesPage && (
+                                    <>
+                                      <div className="orders__overview-smalltitle">Processing fees</div>
+                                      {miscellaneousArray.map((item) => (
+                                        <li key={uuidv4()}>
+                                          <div className="flex space-between">
+                                            <span>{item.title}</span>
+                                            <span>
+                                              <NumberFormat
+                                                value={item.price.toFixed(2)}
+                                                displayType={'text'}
+                                                thousandSeparator={true}
+                                              />
+                                            </span>
+                                          </div>
+                                        </li>
+                                      ))}
+                                    </>
+                                  )}
                                 </ol>
                                 {/* Cargo subtotal */}
-                                <div className="orders__overview-subtotal-outerdiv">
-                                  <span className="orders__overview-subtotal-text">SUBTOTAL</span>
-                                  <div className="orders__overview-subtotal">
-                                    <NumberFormat
-                                      value={modelSubtotalPrice.toFixed(2)}
-                                      displayType={'text'}
-                                      thousandSeparator={true}
-                                    />
+                                {accessObj.showPriceSalesPage && (
+                                  <div className="orders__overview-subtotal-outerdiv">
+                                    <span className="orders__overview-subtotal-text">SUBTOTAL</span>
+                                    <div className="orders__overview-subtotal">
+                                      <NumberFormat
+                                        value={modelSubtotalPrice.toFixed(2)}
+                                        displayType={'text'}
+                                        thousandSeparator={true}
+                                      />
+                                    </div>
                                   </div>
-                                </div>
+                                )}
                               </Panel>
                             </Collapse>
 
                             {/* ======================== */}
                             {/* Road Tax and Insurance */}
                             {/* ======================== */}
-                            <div className="flex space-between">
-                              <span className="orders__overview-row-content-subheader">Road Tax and Insurance</span>
-                              <span className="orders__overview-row-content-subheader-price">
-                                <NumberFormat
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                  value={insuranceSubtotalPrice.toFixed(2)}
-                                />
-                              </span>
-                            </div>
-                            <Collapse
-                              ghost
-                              activeKey={expandedInsuranceCollapse}
-                              onChange={onInsuranceCollapsed}
-                              expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-                            >
-                              <Panel
-                                className="orders__overview-panel"
-                                header={
-                                  expandedInsuranceCollapse.includes(`insurance${index}`) ? 'View less' : 'View more'
-                                }
-                                key={`insurance${index}`}
-                              >
-                                <ul className="orders__overview-list">
-                                  {insuranceArray.map((item) => (
-                                    <li key={uuidv4()}>
-                                      <div className="flex space-between">
-                                        <span> {item.title}</span>
-                                        <span>
-                                          <NumberFormat
-                                            displayType={'text'}
-                                            thousandSeparator={true}
-                                            value={item.price.toFixed(2)}
-                                          />
-                                        </span>
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
-                                {/* Insurance subtotal */}
-                                <div className="orders__overview-subtotal-outerdiv">
-                                  <span className="orders__overview-subtotal-text">SUBTOTAL</span>
-                                  <div className="orders__overview-subtotal">
+                            {accessObj.showPriceSalesPage && (
+                              <>
+                                <div className="flex space-between">
+                                  <span className="orders__overview-row-content-subheader">Road Tax and Insurance</span>
+                                  <span className="orders__overview-row-content-subheader-price">
                                     <NumberFormat
-                                      value={insuranceSubtotalPrice.toFixed(2)}
                                       displayType={'text'}
                                       thousandSeparator={true}
+                                      value={insuranceSubtotalPrice.toFixed(2)}
                                     />
-                                  </div>
+                                  </span>
                                 </div>
-                              </Panel>
-                            </Collapse>
+                                <Collapse
+                                  ghost
+                                  activeKey={expandedInsuranceCollapse}
+                                  onChange={onInsuranceCollapsed}
+                                  expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+                                >
+                                  <Panel
+                                    className="orders__overview-panel"
+                                    header={
+                                      expandedInsuranceCollapse.includes(`insurance${index}`)
+                                        ? 'View less'
+                                        : 'View more'
+                                    }
+                                    key={`insurance${index}`}
+                                  >
+                                    <ul className="orders__overview-list">
+                                      {insuranceArray.map((item) => (
+                                        <li key={uuidv4()}>
+                                          <div className="flex space-between">
+                                            <span> {item.title}</span>
+                                            {accessObj.showPriceSalesPage && (
+                                              <span>
+                                                <NumberFormat
+                                                  displayType={'text'}
+                                                  thousandSeparator={true}
+                                                  value={item.price.toFixed(2)}
+                                                />
+                                              </span>
+                                            )}
+                                          </div>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                    {/* Insurance subtotal */}
+                                    {accessObj.showPriceSalesPage && (
+                                      <div className="orders__overview-subtotal-outerdiv">
+                                        <span className="orders__overview-subtotal-text">SUBTOTAL</span>
+                                        <div className="orders__overview-subtotal">
+                                          <NumberFormat
+                                            value={insuranceSubtotalPrice.toFixed(2)}
+                                            displayType={'text'}
+                                            thousandSeparator={true}
+                                          />
+                                        </div>
+                                      </div>
+                                    )}
+                                  </Panel>
+                                </Collapse>
 
-                            <hr />
+                                <hr />
+                              </>
+                            )}
                             {/* ======================== */}
                             {/* Total Price */}
                             {/* ======================== */}
-                            <div className="flex space-between">
-                              <span className="orders__overview-row-content-subheader">Total Price</span>
-                              <span className="orders__overview-row-content-subheader-price--prediscount">
-                                <NumberFormat
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                  value={prediscountTotalPrice.toFixed(2)}
-                                />
-                              </span>
-                            </div>
+                            {accessObj.showPriceSalesPage && (
+                              <div className="flex space-between">
+                                <span className="orders__overview-row-content-subheader">Total Price</span>
+                                <span className="orders__overview-row-content-subheader-price--prediscount">
+                                  <NumberFormat
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    value={prediscountTotalPrice.toFixed(2)}
+                                  />
+                                </span>
+                              </div>
+                            )}
 
                             {/* ======================== */}
                             {/* DISCOUNT */}
                             {/* ======================== */}
-                            <div className="flex space-between">
-                              <span className="orders__overview-row-content-subheader orders__overview-row-content-subheader--discount">
-                                Discount
-                              </span>
-                              <span className="orders__overview-row-content-subheader-price">
-                                -&nbsp;
-                                <NumberFormat
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                  value={Math.abs(discountPrice).toFixed(2)}
-                                />
-                              </span>
-                            </div>
-                            <hr />
+                            {accessObj.showPriceSalesPage && (
+                              <>
+                                <div className="flex space-between">
+                                  <span className="orders__overview-row-content-subheader orders__overview-row-content-subheader--discount">
+                                    Discount
+                                  </span>
+                                  <span className="orders__overview-row-content-subheader-price">
+                                    -&nbsp;
+                                    <NumberFormat
+                                      displayType={'text'}
+                                      thousandSeparator={true}
+                                      value={Math.abs(discountPrice).toFixed(2)}
+                                    />
+                                  </span>
+                                </div>
+                                <hr />
+                              </>
+                            )}
                             {/* ======================== */}
                             {/* TOTAL ON THE ROAD PRICE */}
                             {/* ======================== */}
-                            <div className="flex-align-center space-between">
-                              <span className="orders__overview-row-content-subheader--totalroadprice">
-                                TOTAL ON THE ROAD PRICE
-                              </span>
+                            {accessObj.showPriceSalesPage && (
+                              <div className="flex-align-center space-between">
+                                <span className="orders__overview-row-content-subheader--totalroadprice">
+                                  TOTAL ON THE ROAD PRICE
+                                </span>
 
-                              <span className="orders__overview-row-content-header-price">
-                                RM&nbsp;
-                                <NumberFormat
-                                  displayType={'text'}
-                                  thousandSeparator={true}
-                                  value={grandTotalPrice.toFixed(2)}
-                                />
-                              </span>
-                            </div>
+                                <span className="orders__overview-row-content-header-price">
+                                  RM&nbsp;
+                                  <NumberFormat
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    value={grandTotalPrice.toFixed(2)}
+                                  />
+                                </span>
+                              </div>
+                            )}
                           </section>
                         </div>
                       </div>
@@ -643,10 +704,12 @@ const OrdersPage: React.FC<Props> = ({ history, localOrdersArray, onRemoveAnOrde
 
 interface StateProps {
   // array for local orders
+  accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
+    accessObj: state.auth.accessObj,
     localOrdersArray: state.sales.localOrdersArray,
   };
 };

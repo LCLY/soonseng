@@ -85,7 +85,6 @@ const SalesPage: React.FC<Props> = ({
    * Getting index of clicked vehicle length card to know which one is selected,
    * set to null because initially nothing is being selected   *
    */
-
   const [currentTyre, setCurrentTyre] = useState<number | null>(null);
   const [currentLength, setCurrentLength] = useState<TReceivedSalesLengthObj | null>(null);
   const [currentBody, setCurrentBody] = useState<TReceivedBodyObj | null>(null);

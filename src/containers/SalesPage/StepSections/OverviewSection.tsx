@@ -88,8 +88,12 @@ const OverviewSection: React.FC<Props> = ({ history }) => {
   /*  method */
   /* ================================================== */
   const onModelCollapsed = (key: string | string[]) => {
+    // only set the state when user is admin
+    if (accessObj === undefined) return null;
     if (typeof key !== 'string') {
-      setExpandedModelCollapse(key);
+      if (accessObj.showPriceSalesPage) {
+        setExpandedModelCollapse(key);
+      }
     }
   };
 
@@ -272,6 +276,8 @@ const OverviewSection: React.FC<Props> = ({ history }) => {
                       </Menu.Item>
                     </Menu>
                   );
+
+                  let collpaseKeyArray = [`model${index}`];
                   /* ==================================================== */
                   // RENDER
                   /* ==================================================== */
@@ -345,13 +351,23 @@ const OverviewSection: React.FC<Props> = ({ history }) => {
                           {/* expand the collpase for normal user */}
                           <Collapse
                             ghost
-                            activeKey={expandedModelCollapse}
+                            activeKey={
+                              accessObj.showPriceSalesPage
+                                ? expandedModelCollapse
+                                : [...collpaseKeyArray, `model${index}`]
+                            }
                             onChange={onModelCollapsed}
                             expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                           >
                             <Panel
                               className="sales__overview-panel"
-                              header={expandedModelCollapse.includes(`model${index}`) ? 'View less' : 'View more'}
+                              header={
+                                accessObj.showPriceSalesPage
+                                  ? expandedModelCollapse.includes(`model${index}`)
+                                    ? 'View less'
+                                    : 'View more'
+                                  : ''
+                              }
                               key={`model${index}`}
                             >
                               <ol className="sales__overview-list">
