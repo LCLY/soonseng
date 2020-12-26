@@ -1,6 +1,12 @@
 // to ignore this whole file for typedoc
 // The name of action types
 /* ================================================================================== */
+/*                                      General                                       */
+/* ================================================================================== */
+export const SAVE_PROJECT_VERSION = 'SAVE_PROJECT_VERSION';
+export const CLEAR_LOCALSTORAGE = 'CLEAR_LOCALSTORAGE';
+
+/* ================================================================================== */
 /*                                  Authentication                                    */
 /* ================================================================================== */
 // Clear Auth State

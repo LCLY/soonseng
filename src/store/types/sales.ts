@@ -38,11 +38,6 @@ export interface SalesInitialState {
   readonly getSalesMakesSucceed?: boolean | null;
 }
 
-// to further breakdown the state, use in mapStateToProps
-export interface ISalesMapStateToProps {
-  readonly sales: SalesInitialState;
-}
-
 /* ============================================================== */
 // Clear all the sales state
 /* ============================================================== */

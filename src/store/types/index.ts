@@ -1,10 +1,13 @@
-import { AuthActionTypes, IAuthMapStateToProps } from './auth';
-import { SalesActionTypes, ISalesMapStateToProps } from './sales';
-import { DashboardActionTypes, IDashboardMapStateToProps } from './dashboard';
+import { AuthActionTypes } from './auth';
+import { SalesActionTypes } from './sales';
+import { DashboardActionTypes } from './dashboard';
 import { CatalogActionTypes } from './catalog';
+import { GeneralActionTypes } from './general';
 
 // Export all action types under one AppActions type var
-export type AppActions = DashboardActionTypes | SalesActionTypes | AuthActionTypes | CatalogActionTypes;
-
-// For mapstatetoprops
-export type TMapStateToProps = IDashboardMapStateToProps | ISalesMapStateToProps | IAuthMapStateToProps;
+export type AppActions =
+  | DashboardActionTypes
+  | GeneralActionTypes
+  | SalesActionTypes
+  | AuthActionTypes
+  | CatalogActionTypes;

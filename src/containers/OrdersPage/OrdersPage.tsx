@@ -25,12 +25,16 @@ interface OrdersPageProps {}
 type Props = OrdersPageProps & StateProps & DispatchProps & RouteComponentProps;
 
 const OrdersPage: React.FC<Props> = ({ accessObj, localOrdersArray }) => {
+  // show the whole array
+  let displayOrdersAmount = localOrdersArray?.length;
+
   const value = useMemo(
     () => ({
       accessObj,
       localOrdersArray,
+      displayOrdersAmount,
     }),
-    [accessObj, localOrdersArray],
+    [accessObj, localOrdersArray, displayOrdersAmount],
   );
 
   if (accessObj === undefined) {

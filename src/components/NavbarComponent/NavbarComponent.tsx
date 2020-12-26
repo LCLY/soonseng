@@ -2,21 +2,17 @@ import React, { useRef, useEffect, useState } from 'react';
 import './NavbarComponent.scss';
 // components
 // 3rd party lib
-// import { debounce } from 'lodash';
+import { Dropdown, Menu } from 'antd';
 import { connect } from 'react-redux';
+import { AnyAction, Dispatch } from 'redux';
 import { Navbar, Nav } from 'react-bootstrap';
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import { AnyAction, Dispatch } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 // image
-import { Dropdown, Menu } from 'antd';
 import SoonSengLogo from 'src/img/soonseng_logo.png';
 
 // Util
-import * as actions from 'src/store/actions/index';
-import { TMapStateToProps } from 'src/store/types';
-import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 import {
   ROUTE_HOME,
   ROUTE_LOGIN,
@@ -26,6 +22,9 @@ import {
   ROUTE_CATALOG,
   ROUTE_DASHBOARD,
 } from 'src/shared/routes';
+import { RootState } from 'src';
+import * as actions from 'src/store/actions/index';
+import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 
 /**
  * Hook that alerts clicks outside of the passed ref
@@ -321,15 +320,13 @@ interface StateProps {
   accessObj?: TUserAccess;
   userInfoObj?: TReceivedUserInfoObj | null;
 }
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  if ('auth' in state) {
-    return {
-      accessObj: state.auth.accessObj,
-      auth_token: state.auth.auth_token,
-      userInfoObj: state.auth.userInfoObj,
-      authenticated: state.auth.auth_token !== null,
-    };
-  }
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    accessObj: state.auth.accessObj,
+    auth_token: state.auth.auth_token,
+    userInfoObj: state.auth.userInfoObj,
+    authenticated: state.auth.auth_token !== null,
+  };
 };
 
 interface DispatchProps {

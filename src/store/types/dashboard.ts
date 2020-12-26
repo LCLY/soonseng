@@ -41,11 +41,6 @@ export interface DashboardInitialState {
   readonly imagesArray?: TReceivedImageObj[] | null;
 }
 
-// to further breakdown the state, use in mapStateToProps
-export interface IDashboardMapStateToProps {
-  readonly dashboard: DashboardInitialState;
-}
-
 /* ============================================================== */
 // Clear all the dashboard state
 /* ============================================================== */

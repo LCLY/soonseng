@@ -19,6 +19,7 @@ const { Panel } = Collapse;
 export interface OverviewComponentProps {
   accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
+  displayOrdersAmount?: number; //determine how many orders there should be
   onRemoveAnOrder?: (index: number, localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
 
@@ -26,7 +27,7 @@ type Props = OverviewComponentProps & RouteComponentProps;
 
 const OverviewComponent: React.FC<Props> = ({ history }) => {
   // for the collapsible to be opened on load
-  const [expandedModelCollapse, setExpandedModelCollapse] = useState<string | string[]>('model0');
+  const [expandedModelCollapse, setExpandedModelCollapse] = useState<string | string[]>([]);
   const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
 
   const salesPageContext = useContext(SalesPageContext);
@@ -34,7 +35,9 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
     return null;
   }
 
-  const { accessObj, localOrdersArray, onRemoveAnOrder } = salesPageContext;
+  const { accessObj, localOrdersArray, displayOrdersAmount = 1, onRemoveAnOrder } = salesPageContext;
+
+  console.log('localOrdersArray', localOrdersArray);
 
   /* ================================================== */
   /*  method */
@@ -66,7 +69,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
         {localOrdersArray && localOrdersArray.length > 0 ? (
           [...localOrdersArray]
             .reverse()
-            .slice(0, 1)
+            .slice(0, displayOrdersAmount) //here it would display how many orders based on second param in slice
             .map((order, index) => {
               type miscellaneousType = {
                 title: string;
@@ -96,7 +99,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               ];
 
               let bodyMakeDetailRowArray: { title: string; data: string }[] = [];
-              if (order.bodyMakeObj) {
+              if (order.bodyMakeObj !== null && order.bodyMakeObj !== undefined) {
                 const { make, length, wheelbase } = order.bodyMakeObj.make_wheelbase;
 
                 bodyMakeDetailRowArray = [
@@ -327,6 +330,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                         expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                       >
                         <Panel
+                          showArrow={accessObj.showPriceSalesPage ? true : false}
                           className="sales__overview-panel"
                           header={
                             accessObj.showPriceSalesPage
@@ -402,7 +406,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                     </span>
                                   </div>
                                 }
-                                key="model"
+                                key="specs"
                               >
                                 <div key={uuidv4()} className="sales__overview-panel-specs-div">
                                   <div className="sales__overview-panel-specs-innerdiv">
@@ -654,11 +658,13 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               );
             })
         ) : (
-          <Empty description={<span>You have no order currently</span>}>
-            <Button type="primary" onClick={() => history.push('/sales')}>
-              Make a new order
-            </Button>
-          </Empty>
+          <div className="sales__overview-empty-div">
+            <Empty description={<span>You have no order currently</span>}>
+              <Button className="sales__overview-empty-btn" type="primary" onClick={() => history.push('/sales')}>
+                Make a new order
+              </Button>
+            </Empty>
+          </div>
         )}
       </div>
     </>

@@ -922,6 +922,28 @@
       }
     }
 
+    /* ------------------------- */
+    // the empty div in overview
+    /* -------------------------- */
+    &-empty {
+      &-div {
+        padding: 5rem 0;
+        border-radius: 1rem;
+        margin: 3rem 0;
+        background: rgba(131, 9, 9, 0.5);
+        color: white !important;
+      }
+
+      &-btn {
+        background: transparent !important;
+        border-color: white !important;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15) !important;
+        }
+      }
+    }
+
     // the collapsible panels
     &-panel {
       & .ant-collapse-header {

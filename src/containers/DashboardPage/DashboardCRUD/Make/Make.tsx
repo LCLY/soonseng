@@ -9,14 +9,6 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 /*3rd party lib*/
-import { PlusCircleTwoTone, ExclamationCircleOutlined, MinusCircleTwoTone } from '@ant-design/icons';
-import moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
-import { connect } from 'react-redux';
-import { AnyAction, Dispatch } from 'redux';
-import NumberFormat from 'react-number-format';
-import { FormInstance } from 'antd/lib/form/hooks/useForm';
-
 import {
   Table,
   Form,
@@ -31,6 +23,13 @@ import {
   Card,
   Skeleton,
 } from 'antd';
+import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
+import { connect } from 'react-redux';
+import { AnyAction, Dispatch } from 'redux';
+import NumberFormat from 'react-number-format';
+import { FormInstance } from 'antd/lib/form/hooks/useForm';
+import { PlusCircleTwoTone, ExclamationCircleOutlined, MinusCircleTwoTone } from '@ant-design/icons';
 /* Util */
 import {
   TReceivedMakeObj,
@@ -42,10 +41,6 @@ import {
   TReceivedSeriesObj,
   TReceivedMakeWheelbaseObj,
 } from 'src/store/types/dashboard';
-// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
-import * as actions from 'src/store/actions/index';
-import { TMapStateToProps } from 'src/store/types';
 import {
   setFilterReference,
   convertHeader,
@@ -54,6 +49,9 @@ import {
   onClearAllSelectedImages,
   emptyStringWhenUndefinedOrNull,
 } from 'src/shared/Utils';
+import { RootState } from 'src';
+import * as actions from 'src/store/actions/index';
+import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -2237,20 +2235,18 @@ interface StateProps {
   wheelbasesArray?: TReceivedWheelbaseObj[] | null;
   makeWheelbasesArray?: TReceivedMakeWheelbaseObj[] | null;
 }
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  if ('dashboard' in state) {
-    return {
-      loading: state.dashboard.loading,
-      makesArray: state.dashboard.makesArray,
-      seriesArray: state.dashboard.seriesArray,
-      brandsArray: state.dashboard.brandsArray,
-      errorMessage: state.dashboard.errorMessage,
-      imagesUploaded: state.dashboard.imagesUploaded,
-      successMessage: state.dashboard.successMessage,
-      wheelbasesArray: state.dashboard.wheelbasesArray,
-      makeWheelbasesArray: state.dashboard.makeWheelbasesArray,
-    };
-  }
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    loading: state.dashboard.loading,
+    makesArray: state.dashboard.makesArray,
+    seriesArray: state.dashboard.seriesArray,
+    brandsArray: state.dashboard.brandsArray,
+    errorMessage: state.dashboard.errorMessage,
+    imagesUploaded: state.dashboard.imagesUploaded,
+    successMessage: state.dashboard.successMessage,
+    wheelbasesArray: state.dashboard.wheelbasesArray,
+    makeWheelbasesArray: state.dashboard.makeWheelbasesArray,
+  };
 };
 
 interface DispatchProps {

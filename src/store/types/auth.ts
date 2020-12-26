@@ -13,11 +13,6 @@ export interface AuthInitialState {
   readonly accessObj?: TUserAccess;
 }
 
-// to further breakdown the state, use in mapStateToProps
-export interface IAuthMapStateToProps {
-  readonly auth: AuthInitialState;
-}
-
 /* ============================================================== */
 // Clear all the auth state
 /* ============================================================== */

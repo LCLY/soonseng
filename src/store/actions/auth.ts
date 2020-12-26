@@ -9,7 +9,7 @@ import { TReceivedUserInfoObj, TUserAccess } from '../types/auth';
 /* ------------------- */
 // clear state
 /* ------------------- */
-export const clearAuthState = () => {
+export const clearAuthState = (): AppActions => {
   return {
     type: actionTypes.CLEAR_AUTH_STATE,
   };
@@ -18,7 +18,7 @@ export const clearAuthState = () => {
 /* ------------------- */
 // Assign Access
 /* ------------------- */
-export const assignAccess = (accessObj: TUserAccess) => {
+export const assignAccess = (accessObj: TUserAccess): AppActions => {
   return {
     type: actionTypes.ASSIGN_ACCESS,
     accessObj: accessObj,

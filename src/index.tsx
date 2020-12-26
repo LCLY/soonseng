@@ -25,6 +25,7 @@ import authReducer from 'src/store/reducers/auth';
 import salesReducer from 'src/store/reducers/sales';
 import dashboardReducer from 'src/store/reducers/dashboard';
 import catalogReducer from 'src/store/reducers/catalog';
+import generalReducer from 'src/store/reducers/general';
 
 // enable browser redux extension tool
 const composeEnhancers =
@@ -35,13 +36,14 @@ const composeEnhancers =
 // you want to store only a subset of your state of reducer one
 const saveSalesSubsetFilter = createFilter('sales', ['localOrdersArray']);
 const saveAuthSubsetFilter = createFilter('auth', ['auth_token', 'accessObj']);
+const saveGeneralSubsetFilter = createFilter('general', ['projectVersion']);
 
 // redux persist config
 const persistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: ['sales', 'auth'], // which reducer want to store - name of reducer
-  transforms: [saveSalesSubsetFilter, saveAuthSubsetFilter],
+  whitelist: ['sales', 'auth', 'general'], // which reducer want to store - name of reducer
+  transforms: [saveSalesSubsetFilter, saveAuthSubsetFilter, saveGeneralSubsetFilter],
   stateReconciler: autoMergeLevel2,
 };
 
@@ -51,6 +53,7 @@ const rootReducer = combineReducers({
   sales: salesReducer,
   auth: authReducer,
   catalog: catalogReducer,
+  general: generalReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

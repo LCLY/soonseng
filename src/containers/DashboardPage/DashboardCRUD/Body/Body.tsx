@@ -41,9 +41,7 @@ import {
   TReceivedImageObj,
   TReceivedLengthObj,
 } from 'src/store/types/dashboard';
-import { TMapStateToProps } from 'src/store/types';
-import * as actions from 'src/store/actions/index';
-// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+import { RootState } from 'src';
 import {
   convertHeader,
   getColumnSearchProps,
@@ -51,6 +49,8 @@ import {
   onTableRowExpand,
   setFilterReference,
 } from 'src/shared/Utils';
+import * as actions from 'src/store/actions/index';
+// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import LazyLoad from 'react-lazyload';
 
@@ -1426,18 +1426,16 @@ interface StateProps {
   bodyAssociatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
 }
 
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  if ('dashboard' in state) {
-    return {
-      loading: state.dashboard.loading,
-      bodiesArray: state.dashboard.bodiesArray,
-      lengthsArray: state.dashboard.lengthsArray,
-      errorMessage: state.dashboard.errorMessage,
-      successMessage: state.dashboard.successMessage,
-      bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
-      bodyAssociatedAccessoriesArray: state.dashboard.bodyAssociatedAccessoriesArray,
-    };
-  }
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    loading: state.dashboard.loading,
+    bodiesArray: state.dashboard.bodiesArray,
+    lengthsArray: state.dashboard.lengthsArray,
+    errorMessage: state.dashboard.errorMessage,
+    successMessage: state.dashboard.successMessage,
+    bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
+    bodyAssociatedAccessoriesArray: state.dashboard.bodyAssociatedAccessoriesArray,
+  };
 };
 interface DispatchProps {
   // Body

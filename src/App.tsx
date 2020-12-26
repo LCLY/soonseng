@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 /* containers */
 // Authentication
 import Logout from './containers/Authentication/Logout/Logout';
@@ -20,6 +20,7 @@ import BodyMake from './containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake
 import Accessory from './containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
 // 3rd party lib
 import { connect } from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
 // Util
 import './App.less';
@@ -27,6 +28,7 @@ import { RootState } from 'src';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datetime/css/react-datetime.css';
 import { TUserAccess } from './store/types/auth';
+import * as actions from 'src/store/actions/index';
 import {
   ROUTE_HOME,
   ROUTE_ABOUT,
@@ -42,10 +44,25 @@ import {
 
 interface AppProps {}
 
-type Props = AppProps & StateProps;
+type Props = AppProps & StateProps & DispatchProps;
 
-const App: React.FC<Props> = ({ accessObj }) => {
+const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion, onClearLocalStorage }) => {
   let route = null;
+
+  useEffect(() => {
+    // set the version of the project so we can know which version we at and what should we do at which point
+    // in this point of time, at version 1, we are clearing up all the localstorage
+    if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
+      onSaveProjectVersion('v1.0');
+    }
+  }, [projectVersion, onSaveProjectVersion]);
+
+  useEffect(() => {
+    if (projectVersion === 'v1.0') {
+      //if the project is v1.0 then clear out the localstorage, update the version to v1.01
+      onClearLocalStorage('v1.01');
+    }
+  }, [projectVersion, onClearLocalStorage]);
 
   if (accessObj?.showSalesDashboard) {
     // if user has access to dashboard
@@ -102,11 +119,25 @@ const App: React.FC<Props> = ({ accessObj }) => {
 
 interface StateProps {
   accessObj?: TUserAccess;
+  projectVersion?: string;
 }
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {
     accessObj: state.auth.accessObj,
+    projectVersion: state.general.projectVersion,
   };
 };
-export default connect(mapStateToProps, null)(App);
+
+interface DispatchProps {
+  onSaveProjectVersion: typeof actions.saveProjectVersion;
+  onClearLocalStorage: typeof actions.clearLocalStorage;
+}
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
+  return {
+    onSaveProjectVersion: (projectVersion) => dispatch(actions.saveProjectVersion(projectVersion)),
+    onClearLocalStorage: (projectVersion) => dispatch(actions.clearLocalStorage(projectVersion)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

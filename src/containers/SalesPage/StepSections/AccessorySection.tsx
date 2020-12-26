@@ -544,6 +544,7 @@ const AccessorySection: React.FC<Props> = () => {
                       return;
                     let copyArray = [...localOrdersArray];
                     copyArray.push(currentOrderObj);
+
                     onStoreLocalOrders(copyArray);
                     setCurrentStep(currentStep + 1);
                   }}
@@ -558,4 +559,5 @@ const AccessorySection: React.FC<Props> = () => {
     </>
   );
 };
+
 export default AccessorySection;

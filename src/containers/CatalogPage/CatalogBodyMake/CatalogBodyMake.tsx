@@ -84,9 +84,9 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
       {
         title: 'Wheelbase',
         data:
-          currentBodyMake.make_wheelbase.wheelbase.value !== null &&
-          currentBodyMake.make_wheelbase.wheelbase.value !== 0
-            ? `${currentBodyMake.make_wheelbase.wheelbase.value}mm`
+          currentBodyMake.make_wheelbase.wheelbase.title !== null &&
+          currentBodyMake.make_wheelbase.wheelbase.title !== ''
+            ? `${currentBodyMake.make_wheelbase.wheelbase.title}mm`
             : '-',
       },
       {

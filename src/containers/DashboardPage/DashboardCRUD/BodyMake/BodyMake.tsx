@@ -40,7 +40,7 @@ import {
   TReceivedAccessoryObj,
   TReceivedMakeObj,
 } from 'src/store/types/dashboard';
-import { TMapStateToProps } from 'src/store/types';
+import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
 import { img_not_available_link, img_loading_link } from 'src/shared/links';
 import { Button, Form, Select, Input, Layout, notification, Table, Tag, Tooltip, Modal, Card, Carousel } from 'antd';
@@ -1272,18 +1272,16 @@ interface StateProps {
   lengthsArray?: TReceivedLengthObj[] | null;
   bodyMakesArray?: TReceivedBodyMakeObj[] | null;
 }
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  if ('dashboard' in state) {
-    return {
-      loading: state.dashboard.loading,
-      errorMessage: state.dashboard.errorMessage,
-      successMessage: state.dashboard.successMessage,
-      makesArray: state.dashboard.makesArray,
-      bodiesArray: state.dashboard.bodiesArray,
-      lengthsArray: state.dashboard.lengthsArray,
-      bodyMakesArray: state.dashboard.bodyMakesArray,
-    };
-  }
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    loading: state.dashboard.loading,
+    errorMessage: state.dashboard.errorMessage,
+    successMessage: state.dashboard.successMessage,
+    makesArray: state.dashboard.makesArray,
+    bodiesArray: state.dashboard.bodiesArray,
+    lengthsArray: state.dashboard.lengthsArray,
+    bodyMakesArray: state.dashboard.bodyMakesArray,
+  };
 };
 interface DispatchProps {
   // Make

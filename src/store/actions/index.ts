@@ -1,4 +1,6 @@
 // export all the actions
+export { saveProjectVersion, clearLocalStorage } from './general';
+
 export {
   // clear state
   clearAuthState,

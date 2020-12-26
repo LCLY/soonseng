@@ -19,10 +19,6 @@ import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 
 /* Util */
-import * as actions from 'src/store/actions/index';
-import { TMapStateToProps } from 'src/store/types';
-// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { TReceivedAccessoryObj, TReceivedImageObj } from 'src/store/types/dashboard';
 import {
   convertHeader,
   convertPriceToFloat,
@@ -31,6 +27,9 @@ import {
   setFilterReference,
   unformatPriceString,
 } from 'src/shared/Utils';
+import { RootState } from 'src';
+import * as actions from 'src/store/actions/index';
+import { TReceivedAccessoryObj, TReceivedImageObj } from 'src/store/types/dashboard';
 import { GENERAL_ACCESSORY, BODY_ACCESSORY, DIMENSION_ACCESSORY } from 'src/shared/constants';
 
 const { TextArea } = Input;
@@ -848,16 +847,14 @@ interface StateProps {
   successMessage?: string | null;
   accessoriesArray?: TReceivedAccessoryObj[] | null;
 }
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
-  if ('dashboard' in state) {
-    return {
-      loading: state.dashboard.loading,
-      errorMessage: state.dashboard.errorMessage,
-      successMessage: state.dashboard.successMessage,
-      imagesUploaded: state.dashboard.imagesUploaded,
-      accessoriesArray: state.dashboard.accessoriesArray,
-    };
-  }
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    loading: state.dashboard.loading,
+    errorMessage: state.dashboard.errorMessage,
+    successMessage: state.dashboard.successMessage,
+    imagesUploaded: state.dashboard.imagesUploaded,
+    accessoriesArray: state.dashboard.accessoriesArray,
+  };
 };
 interface DispatchProps {
   // Accessory

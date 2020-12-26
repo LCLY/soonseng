@@ -122,6 +122,8 @@ const SalesPage: React.FC<Props> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [totalSteps, setTotalSteps] = useState(0);
 
+  // only display 1 order in sales page
+  let displayOrdersAmount = 1;
   // To optimize useContext
   const value = useMemo(
     () => ({
@@ -129,6 +131,7 @@ const SalesPage: React.FC<Props> = ({
       totalSteps,
       auth_token,
       accessObj,
+      displayOrdersAmount,
       currentStep,
       currentTyre,
       currentBody,
@@ -163,6 +166,7 @@ const SalesPage: React.FC<Props> = ({
       totalSteps,
       auth_token,
       accessObj,
+      displayOrdersAmount,
       // state
       currentStep,
       currentTyre,
