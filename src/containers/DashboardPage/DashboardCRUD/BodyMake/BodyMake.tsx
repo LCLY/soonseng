@@ -1100,7 +1100,10 @@ const BodyMake: React.FC<Props> = ({
 
       // for filter
       let bodyMakeDetails =
-        bodyMake.make.brand.title + bodyMake.make.title + bodyMake.make.series + bodyMake.body.title;
+        bodyMake.make_wheelbase.make.brand.title +
+        bodyMake.make_wheelbase.make.title +
+        bodyMake.make_wheelbase.make.series +
+        bodyMake.body.title;
 
       let body_make_height = bodyMake.height ? bodyMake.height : ' -';
       let body_make_width = bodyMake.width ? bodyMake.width : ' -';
@@ -1111,7 +1114,7 @@ const BodyMake: React.FC<Props> = ({
           key: uuidv4(),
           bodyMakeId: bodyMake.id,
           bodyObj: bodyMake.body,
-          makeObj: bodyMake.make,
+          makeObj: bodyMake.make_wheelbase.make,
           bodyMakeDetails: bodyMakeDetails,
           bodyMakeWidth: body_make_width,
           bodyMakeHeight: body_make_height,

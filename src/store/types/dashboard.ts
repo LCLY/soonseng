@@ -929,17 +929,15 @@ export type TUpdateBodyMakeData = {
 // Types
 export type TReceivedBodyMakeObj = {
   id: number;
-  available: true;
-  price: number;
+  make_wheelbase: TReceivedMakeWheelbaseObj;
+  body: TReceivedBodyObj;
   width: string;
   depth: string;
   height: string | null;
-  make: TReceivedMakeObj;
-  length: number;
-  wheelbase: string;
-  body: TReceivedBodyObj;
+  price: number;
   body_make_accessories: TReceivedAccessoryObj[];
   images: TReceivedImageObj[];
+  available: true;
 };
 
 /* --------------------------- */

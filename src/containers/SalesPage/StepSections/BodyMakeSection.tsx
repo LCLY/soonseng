@@ -64,6 +64,104 @@ const BodyMakeSection: React.FC<Props> = () => {
     onGetSalesAccessories,
   } = salesPageContext;
 
+  let bodyMakeDetailRowArray: { title: string; data: string }[] = [];
+  if (currentBodyMake) {
+    bodyMakeDetailRowArray = [
+      {
+        title: 'Model',
+        data: currentBodyMake.make_wheelbase.make.title,
+      },
+      {
+        title: 'Series',
+        data:
+          currentBodyMake.make_wheelbase.make.series === null || currentBodyMake.make_wheelbase.make.series === ''
+            ? '-'
+            : currentBodyMake.make_wheelbase.make.series,
+      },
+      {
+        title: 'Length',
+        data:
+          currentBodyMake.make_wheelbase.length !== null && currentBodyMake.make_wheelbase.length !== 0
+            ? `${currentBodyMake.make_wheelbase.length}mm`
+            : '-',
+      },
+      {
+        title: 'Config',
+        data:
+          currentBodyMake.make_wheelbase.make.config !== null && currentBodyMake.make_wheelbase.make.config !== ''
+            ? `${currentBodyMake.make_wheelbase.make.config}`
+            : '-',
+      },
+      {
+        title: 'Torque',
+        data:
+          currentBodyMake.make_wheelbase.make.torque !== null && currentBodyMake.make_wheelbase.make.torque !== ''
+            ? `${currentBodyMake.make_wheelbase.make.torque}`
+            : '-',
+      },
+      {
+        title: 'Horsepower',
+        data:
+          currentBodyMake.make_wheelbase.make.horsepower !== null &&
+          currentBodyMake.make_wheelbase.make.horsepower !== ''
+            ? `${currentBodyMake.make_wheelbase.make.horsepower}PC`
+            : '-',
+      },
+      {
+        title: 'Emission',
+        data:
+          currentBodyMake.make_wheelbase.make.emission !== null && currentBodyMake.make_wheelbase.make.emission !== ''
+            ? `${currentBodyMake.make_wheelbase.make.emission}`
+            : '-',
+      },
+      {
+        title: 'Tire Count',
+        data:
+          currentBodyMake.make_wheelbase.make.tire !== null && currentBodyMake.make_wheelbase.make.tire !== ''
+            ? currentBodyMake.make_wheelbase.make.tire
+            : '-',
+      },
+      {
+        title: 'Wheelbase',
+        data:
+          currentBodyMake.make_wheelbase.wheelbase.title !== null &&
+          currentBodyMake.make_wheelbase.wheelbase.title !== ''
+            ? `${currentBodyMake.make_wheelbase.wheelbase.title}mm`
+            : '-',
+      },
+      {
+        title: 'Transmission',
+        data:
+          currentBodyMake.make_wheelbase.make.transmission !== null &&
+          currentBodyMake.make_wheelbase.make.transmission !== ''
+            ? `${currentBodyMake.make_wheelbase.make.transmission}`
+            : '-',
+      },
+      {
+        title: 'Engine Capacity',
+        data:
+          currentBodyMake.make_wheelbase.make.engine_cap !== null &&
+          currentBodyMake.make_wheelbase.make.engine_cap !== ''
+            ? `${currentBodyMake.make_wheelbase.make.engine_cap}CC`
+            : '-',
+      },
+      {
+        title: 'Year',
+        data:
+          currentBodyMake.make_wheelbase.make.year !== null && currentBodyMake.make_wheelbase.make.year !== ''
+            ? `${currentBodyMake.make_wheelbase.make.year}`
+            : '-',
+      },
+      {
+        title: 'GVW',
+        data:
+          currentBodyMake.make_wheelbase.make.gvw !== null && currentBodyMake.make_wheelbase.make.gvw !== ''
+            ? `${currentBodyMake.make_wheelbase.make.gvw}kg`
+            : '-',
+      },
+    ];
+  }
+
   if (accessObj === undefined) {
     return null;
   }
@@ -88,8 +186,8 @@ const BodyMakeSection: React.FC<Props> = () => {
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Option</span>
               {currentBodyMake && (
-                <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make.brand.title} ${currentBodyMake?.make.title} ${currentBodyMake?.make.series})`}</span>
-              )}{' '}
+                <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make_wheelbase.make.brand.title} ${currentBodyMake?.make_wheelbase.make.title} ${currentBodyMake?.make_wheelbase.make.series})`}</span>
+              )}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -103,18 +201,18 @@ const BodyMakeSection: React.FC<Props> = () => {
             {currentBodyMake ? (
               <>
                 {/* if there is no image then show image not available */}
-                {currentBodyMake.make.images.length > 0 ? (
+                {currentBodyMake.make_wheelbase.make.images.length > 0 ? (
                   <>
                     <div className="sales__lightbox-parent" onClick={() => setBodyMakeLightboxOpen(true)}>
                       {/* Clickable image to show lightbox */}
                       <LazyLoadImage
                         className="sales__section-img"
-                        src={currentBodyMake.make.images[0].url}
-                        alt={currentBodyMake.make.images[0].filename}
+                        src={currentBodyMake.make_wheelbase.make.images[0].url}
+                        alt={currentBodyMake.make_wheelbase.make.images[0].filename}
                         placeholderSrc={img_loading_link}
                       />
                       <LightboxComponent
-                        images={currentBodyMake?.make.images}
+                        images={currentBodyMake?.make_wheelbase.make.images}
                         photoIndex={bodyMakePhotoIndex}
                         isOpen={bodyMakeLightboxOpen}
                         setPhotoIndex={setBodyMakePhotoIndex}
@@ -152,91 +250,26 @@ const BodyMakeSection: React.FC<Props> = () => {
               <div className="sales__selectarea-card-outerdiv">
                 <div className="sales__selectarea-card-outerdiv-customheader">Selected tyre count</div>
 
+                {/* Card on lower left showing body make details */}
                 <Card className="sales__selectarea-card" size="small" title="Selected model">
                   <div className="flex">
                     <section className="sales__selectarea-card-column">
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Model</div>
-                        <div className="sales__selectarea-card-row-right--make">{currentBodyMake.make.title}</div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Series</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.series === null || currentBodyMake.make.series === ''
-                            ? '-'
-                            : currentBodyMake.make.series}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Length</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.length !== null && currentBodyMake.length !== 0
-                            ? `${currentBodyMake.length}mm`
-                            : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Config</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.config ? currentBodyMake.make.config : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Torque</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.torque ? currentBodyMake.make.torque : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Horsepower</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.horsepower ? `${currentBodyMake.make.horsepower}PC` : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Emission</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.emission ? currentBodyMake.make.emission : '-'}
-                        </div>
-                      </div>
+                      {bodyMakeDetailRowArray.length > 0 &&
+                        bodyMakeDetailRowArray.slice(0, 7).map((detail) => (
+                          <div key={uuidv4()} className="sales__selectarea-card-row">
+                            <div className="sales__selectarea-card-row-left--make">{detail.title}</div>
+                            <div className="sales__selectarea-card-row-right--make">{detail.data}</div>
+                          </div>
+                        ))}
                     </section>
                     <section className="sales__selectarea-card-column">
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Tyre Count</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.tire ? currentBodyMake.make.tire : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Wheelbase</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.wheelbase ? `${currentBodyMake.wheelbase}mm` : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Transmission</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.transmission ? currentBodyMake.make.transmission : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Engine Capacity</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.engine_cap ? `${currentBodyMake.make.engine_cap}CC` : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">Year</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.year ? currentBodyMake.make.year : '-'}
-                        </div>
-                      </div>
-                      <div className="sales__selectarea-card-row">
-                        <div className="sales__selectarea-card-row-left--make">GVW</div>
-                        <div className="sales__selectarea-card-row-right--make">
-                          {currentBodyMake.make.gvw ? `${currentBodyMake.make.gvw}kg` : '-'}
-                        </div>
-                      </div>
+                      {bodyMakeDetailRowArray.length > 0 &&
+                        bodyMakeDetailRowArray.slice(7).map((detail) => (
+                          <div key={uuidv4()} className="sales__selectarea-card-row">
+                            <div className="sales__selectarea-card-row-left--make">{detail.title}</div>
+                            <div className="sales__selectarea-card-row-right--make">{detail.data}</div>
+                          </div>
+                        ))}
                     </section>
                   </div>
                   {accessObj.showPriceSalesPage && (
@@ -244,13 +277,14 @@ const BodyMakeSection: React.FC<Props> = () => {
                       <div className="sales__selectarea-card-row-left">Model Price</div>
 
                       <div className="sales__selectarea-card-row-right sales__selectarea-card-price--model">
-                        {currentBodyMake?.make.price === 0 || currentBodyMake?.make.price === null ? (
+                        {currentBodyMake?.make_wheelbase.make.price === 0 ||
+                        currentBodyMake?.make_wheelbase.make.price === null ? (
                           '-'
                         ) : (
                           <>
                             RM
                             <NumberFormat
-                              value={currentBodyMake?.make.price}
+                              value={currentBodyMake?.make_wheelbase.make.price}
                               displayType={'text'}
                               thousandSeparator={true}
                             />
@@ -365,7 +399,11 @@ const BodyMakeSection: React.FC<Props> = () => {
                                           <div
                                             key={uuidv4()}
                                             className={`sales__selectarea-button                                            
-                                         ${currentBodyMake?.make.id === body_make.make.id ? 'active' : ''}`}
+                                         ${
+                                           currentBodyMake?.make_wheelbase.make.id === body_make.make_wheelbase.make.id
+                                             ? 'active'
+                                             : ''
+                                         }`}
                                             onClick={() => {
                                               if (
                                                 setCurrentBodyMake === undefined ||
@@ -375,7 +413,10 @@ const BodyMakeSection: React.FC<Props> = () => {
                                                 return;
 
                                               //  if currentBodyMake contains an id
-                                              if (currentBodyMake?.make.id === body_make.make.id) {
+                                              if (
+                                                currentBodyMake?.make_wheelbase.make.id ===
+                                                body_make.make_wheelbase.make.id
+                                              ) {
                                                 // reset the selection
                                                 setCurrentBodyMake(null); //set content to null
                                                 setCurrentOrderObj({
@@ -391,7 +432,7 @@ const BodyMakeSection: React.FC<Props> = () => {
                                               }
                                             }}
                                           >
-                                            <div>{body_make.make.title}</div>
+                                            <div>{body_make.make_wheelbase.make.title}</div>
                                           </div>
                                         );
                                       })}

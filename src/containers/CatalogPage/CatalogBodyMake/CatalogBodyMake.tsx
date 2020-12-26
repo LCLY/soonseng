@@ -40,70 +40,84 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
     bodyMakeDetailRowArray = [
       {
         title: 'Length',
-        data: currentBodyMake.length !== null && currentBodyMake.length !== 0 ? `${currentBodyMake.length}mm` : '-',
+        data:
+          currentBodyMake.make_wheelbase.length !== null && currentBodyMake.make_wheelbase.length !== 0
+            ? `${currentBodyMake.make_wheelbase.length}mm`
+            : '-',
       },
       {
         title: 'Config',
         data:
-          currentBodyMake.make.config !== null && currentBodyMake.make.config !== ''
-            ? `${currentBodyMake.make.config}`
+          currentBodyMake.make_wheelbase.make.config !== null && currentBodyMake.make_wheelbase.make.config !== ''
+            ? `${currentBodyMake.make_wheelbase.make.config}`
             : '-',
       },
       {
         title: 'Torque',
         data:
-          currentBodyMake.make.torque !== null && currentBodyMake.make.torque !== ''
-            ? `${currentBodyMake.make.torque}`
+          currentBodyMake.make_wheelbase.make.torque !== null && currentBodyMake.make_wheelbase.make.torque !== ''
+            ? `${currentBodyMake.make_wheelbase.make.torque}`
             : '-',
       },
       {
         title: 'Horsepower',
         data:
-          currentBodyMake.make.horsepower !== null && currentBodyMake.make.horsepower !== ''
-            ? `${currentBodyMake.make.horsepower}PC`
+          currentBodyMake.make_wheelbase.make.horsepower !== null &&
+          currentBodyMake.make_wheelbase.make.horsepower !== ''
+            ? `${currentBodyMake.make_wheelbase.make.horsepower}PC`
             : '-',
       },
       {
         title: 'Emission',
         data:
-          currentBodyMake.make.emission !== null && currentBodyMake.make.emission !== ''
-            ? `${currentBodyMake.make.emission}`
+          currentBodyMake.make_wheelbase.make.emission !== null && currentBodyMake.make_wheelbase.make.emission !== ''
+            ? `${currentBodyMake.make_wheelbase.make.emission}`
             : '-',
       },
       {
         title: 'Tire Count',
-        data: currentBodyMake.make.tire !== null && currentBodyMake.make.tire !== '' ? currentBodyMake.make.tire : '-',
+        data:
+          currentBodyMake.make_wheelbase.make.tire !== null && currentBodyMake.make_wheelbase.make.tire !== ''
+            ? currentBodyMake.make_wheelbase.make.tire
+            : '-',
       },
       {
         title: 'Wheelbase',
         data:
-          currentBodyMake.wheelbase !== null && currentBodyMake.wheelbase !== ''
-            ? `${currentBodyMake.wheelbase}mm`
+          currentBodyMake.make_wheelbase.wheelbase.value !== null &&
+          currentBodyMake.make_wheelbase.wheelbase.value !== 0
+            ? `${currentBodyMake.make_wheelbase.wheelbase.value}mm`
             : '-',
       },
       {
         title: 'Transmission',
         data:
-          currentBodyMake.make.transmission !== null && currentBodyMake.make.transmission !== ''
-            ? `${currentBodyMake.make.transmission}`
+          currentBodyMake.make_wheelbase.make.transmission !== null &&
+          currentBodyMake.make_wheelbase.make.transmission !== ''
+            ? `${currentBodyMake.make_wheelbase.make.transmission}`
             : '-',
       },
       {
         title: 'Engine Capacity',
         data:
-          currentBodyMake.make.engine_cap !== null && currentBodyMake.make.engine_cap !== ''
-            ? `${currentBodyMake.make.engine_cap}CC`
+          currentBodyMake.make_wheelbase.make.engine_cap !== null &&
+          currentBodyMake.make_wheelbase.make.engine_cap !== ''
+            ? `${currentBodyMake.make_wheelbase.make.engine_cap}CC`
             : '-',
       },
       {
         title: 'Year',
         data:
-          currentBodyMake.make.year !== null && currentBodyMake.make.year !== '' ? `${currentBodyMake.make.year}` : '-',
+          currentBodyMake.make_wheelbase.make.year !== null && currentBodyMake.make_wheelbase.make.year !== ''
+            ? `${currentBodyMake.make_wheelbase.make.year}`
+            : '-',
       },
       {
         title: 'GVW',
         data:
-          currentBodyMake.make.gvw !== null && currentBodyMake.make.gvw !== '' ? `${currentBodyMake.make.gvw}kg` : '-',
+          currentBodyMake.make_wheelbase.make.gvw !== null && currentBodyMake.make_wheelbase.make.gvw !== ''
+            ? `${currentBodyMake.make_wheelbase.make.gvw}kg`
+            : '-',
       },
     ];
   }
@@ -119,7 +133,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
         <div className="catalogbodymake__detail-div">
           <div className="catalogbodymake__detail-innerdiv">
             <div className="catalogbodymake__detail-model">
-              <div className="catalogbodymake__detail-model-text">{bodyMake.make.title}</div>
+              <div className="catalogbodymake__detail-model-text">{bodyMake.make_wheelbase.make.title}</div>
             </div>
 
             <section className="catalogbodymake__detail-body">
@@ -134,12 +148,16 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                 <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
                   <div className="catalogbodymake__detail-body-row-left">Model Price</div>
                   <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right-price">
-                    {bodyMake?.make.price === 0 || bodyMake?.make.price === null ? (
+                    {bodyMake?.make_wheelbase.make.price === 0 || bodyMake?.make_wheelbase.make.price === null ? (
                       '-'
                     ) : (
                       <>
                         RM
-                        <NumberFormat value={bodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
+                        <NumberFormat
+                          value={bodyMake?.make_wheelbase.make.price}
+                          displayType={'text'}
+                          thousandSeparator={true}
+                        />
                       </>
                     )}
                   </div>
@@ -151,7 +169,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
         <div className="catalogbodymake__detail-div--mobile">
           <div className="catalogbodymake__detail-innerdiv">
             <div className="catalogbodymake__detail-model">
-              <div className="catalogbodymake__detail-model-text">{bodyMake.make.title}</div>
+              <div className="catalogbodymake__detail-model-text">{bodyMake.make_wheelbase.make.title}</div>
             </div>
 
             <section className="catalogbodymake__detail-body catalogbodymake__detail-body--mobile">
@@ -196,12 +214,16 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                     </div>
                     <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right--mobile">
                       <div>
-                        {bodyMake?.make.price === 0 || bodyMake?.make.price === null ? (
+                        {bodyMake?.make_wheelbase.make.price === 0 || bodyMake?.make_wheelbase.make.price === null ? (
                           '-'
                         ) : (
                           <span className="catalogbodymake__detail-body-row-right-price">
                             RM
-                            <NumberFormat value={bodyMake?.make.price} displayType={'text'} thousandSeparator={true} />
+                            <NumberFormat
+                              value={bodyMake?.make_wheelbase.make.price}
+                              displayType={'text'}
+                              thousandSeparator={true}
+                            />
                           </span>
                         )}
                       </div>
@@ -249,9 +271,15 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                 <div className="catalogbodymake__innerdiv">
                   <>
                     <div>
-                      <div className="catalogbodymake__brand-title"> {catalogBodyMakesArray[0].make.brand.title}</div>
+                      <div className="catalogbodymake__brand-title">
+                        {' '}
+                        {catalogBodyMakesArray[0].make_wheelbase.make.brand.title}
+                      </div>
                       <section className="catalogbodymake__section-div">
-                        <div className="catalog__series-title margin_t-2"> {catalogBodyMakesArray[0].make.series}</div>
+                        <div className="catalog__series-title margin_t-2">
+                          {' '}
+                          {catalogBodyMakesArray[0].make_wheelbase.make.series}
+                        </div>
                         <section className="catalogbodymake__section-banner">
                           <div className="catalogbodymake__banner-div">
                             <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />

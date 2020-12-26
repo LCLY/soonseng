@@ -116,7 +116,7 @@ const AccessorySection: React.FC<Props> = () => {
             <Breadcrumb.Item>
               <span className="sales__breadcrumb-text">Option</span>
               {currentBodyMake && (
-                <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make.brand.title} ${currentBodyMake?.make.title} ${currentBodyMake?.make.series})`}</span>
+                <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make_wheelbase.make.brand.title} ${currentBodyMake?.make_wheelbase.wheelbase.title} ${currentBodyMake?.make_wheelbase.make.series})`}</span>
               )}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
