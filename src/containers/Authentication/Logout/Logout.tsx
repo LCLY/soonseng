@@ -6,12 +6,14 @@ import { AnyAction, Dispatch } from 'redux';
 /* Util */
 import * as actions from 'src/store/actions/index';
 import { Redirect } from 'react-router-dom';
+import { TReceivedUserInfoObj } from 'src/store/types/auth';
+import { RootState } from 'src';
 
 interface LogoutProps {}
 
-type Props = LogoutProps & DispatchProps;
+type Props = LogoutProps & StateProps & DispatchProps;
 
-const Logout: React.FC<Props> = ({ onSignOut, onClearCatalogState }) => {
+const Logout: React.FC<Props> = ({ userInfoObj, onSignOut, onClearCatalogState }) => {
   /* =========================== */
   /* useEffect */
   /* =========================== */
@@ -22,7 +24,25 @@ const Logout: React.FC<Props> = ({ onSignOut, onClearCatalogState }) => {
 
   /* ================================================== */
   /* ================================================== */
-  return <Redirect to="/" />;
+
+  // only redirect to home after userInfoObj is cleared
+
+  let redirectToRedirect = null;
+  if (userInfoObj === null) {
+    redirectToRedirect = <Redirect to="/" />;
+  }
+
+  return <>{redirectToRedirect}</>;
+};
+
+interface StateProps {
+  userInfoObj?: TReceivedUserInfoObj | null;
+}
+
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    userInfoObj: state.auth.userInfoObj,
+  };
 };
 
 interface DispatchProps {
@@ -35,4 +55,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onClearCatalogState: () => dispatch(actions.clearCatalogState()),
   };
 };
-export default connect(null, mapDispatchToProps)(Logout);
+export default connect(mapStateToProps, mapDispatchToProps)(Logout);

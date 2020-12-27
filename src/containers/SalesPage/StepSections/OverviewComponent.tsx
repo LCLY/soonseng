@@ -229,11 +229,11 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               /* ====================== */
               // Discount Price
               /* ====================== */
-              let discountPrice = -6000;
+              // let discountPrice = -6000;
 
               let prediscountTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice;
 
-              let grandTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice + discountPrice;
+              let grandTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice;
 
               let moreOptionsDropdown = (
                 <Menu>
@@ -592,14 +592,14 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                               )}
                             </Panel>
                           </Collapse>
-
-                          <hr />
                         </>
                       )}
+                      {/* <hr /> */}
+
                       {/* ======================== */}
                       {/* Total Price */}
                       {/* ======================== */}
-                      {accessObj.showPriceSalesPage && (
+                      {/* {accessObj.showPriceSalesPage && (
                         <div className="flex space-between">
                           <span className="sales__overview-row-content-subheader">Total Price</span>
                           <span className="sales__overview-row-content-subheader-price--prediscount">
@@ -610,12 +610,12 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                             />
                           </span>
                         </div>
-                      )}
+                      )} */}
 
                       {/* ======================== */}
                       {/* DISCOUNT */}
                       {/* ======================== */}
-                      {accessObj.showPriceSalesPage && (
+                      {/* {accessObj.showPriceSalesPage && (
                         <>
                           <div className="flex space-between">
                             <span className="sales__overview-row-content-subheader sales__overview-row-content-subheader--discount">
@@ -630,16 +630,16 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                               />
                             </span>
                           </div>
-                          {/* <hr /> */}
                         </>
-                      )}
+                      )} */}
                       {/* ======================== */}
-                      {/* TOTAL ON THE ROAD PRICE */}
+                      {/* TOTAL ON THE ROAD PRICE  */}
                       {/* ======================== */}
+                      {/* change to total price because there's no more final discount */}
                       {accessObj.showPriceSalesPage && (
                         <div className="flex-align-center space-between sales__overview-row-content-subheader--totalroadprice">
                           <span className="sales__overview-row-content-subheader--totalroadprice-text">
-                            TOTAL ON THE ROAD PRICE
+                            TOTAL PRICE
                           </span>
 
                           <span className="sales__overview-row-content-header-price">

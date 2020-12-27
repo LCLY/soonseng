@@ -2,10 +2,8 @@
   &__section {
     padding: 3rem;
 
-    &-outerdiv {
-      // padding-top: $navbar-height;
-      // background: rgba(255, 255, 240, 0.664);
-      // border-bottom: 1px solid white;
+    @include respond-to($phone-only) {
+      padding: 1rem;
     }
 
     &-header {
@@ -31,9 +29,8 @@
       @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
       @include respond-to(phone-only) {
-        width: auto;
-        margin-right: 1rem;
-        margin-left: 1rem;
+        width: 90%;
+        padding: 2rem;
       }
     }
 
@@ -43,15 +40,33 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      min-height: 80vh;
       @include shadow-func(0rem, 0rem, 0.5rem, 0.01rem, rgba(255, 255, 255, 0.789));
-
       @include glassMorph(rgba(0, 0, 0, 0.07), 20px, rgba(225, 225, 225, 0.056), 2rem);
+
+      @include respond-to($phone-only) {
+        min-height: 80vh;
+        // padding-top: 0;
+      }
     }
+
+    /* ------------------------------- */
+    // inputs form items
+    /* ------------------------------- */
     &-items {
+      &:first-child {
+        margin-bottom: 0.5rem !important;
+      }
+      & .ant-input {
+        width: 100% !important;
+      }
+
       & label {
         color: white !important;
         width: 10rem;
+        @include respond-to($phone-only) {
+          display: none !important;
+        }
       }
     }
   }

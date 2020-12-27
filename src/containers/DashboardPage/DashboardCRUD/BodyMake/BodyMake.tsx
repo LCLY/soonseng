@@ -35,7 +35,6 @@ import {
   TUpdateBodyMakeData,
   TReceivedBodyObj,
   TReceivedImageObj,
-  TReceivedLengthObj,
   TReceivedBodyMakeObj,
   TReceivedAccessoryObj,
   TReceivedMakeObj,
@@ -46,7 +45,6 @@ import { img_not_available_link, img_loading_link } from 'src/shared/links';
 import { Button, Form, Select, Input, Layout, notification, Table, Tag, Tooltip, Modal, Card, Carousel } from 'antd';
 
 const { Option } = Select;
-// const { TextArea } = Input;
 
 interface bodyMakeProps {}
 
@@ -104,11 +102,9 @@ const BodyMake: React.FC<Props> = ({
   successMessage,
   makesArray,
   bodiesArray,
-  lengthsArray,
   bodyMakesArray,
   onGetMakes,
   onGetBodies,
-  onGetLengths,
   onGetBodyMakes,
   onCreateBodyMake,
   onUpdateBodyMake,
@@ -675,31 +671,6 @@ const BodyMake: React.FC<Props> = ({
         onKeyDown={(e) => handleFormKeyDown(e, createBodyMakeForm)}
         onFinish={onCreateBodyMakeFinish}
       >
-        {/* ------- Length - value is brand id but display is brand name -------*/}
-        <Form.Item
-          className="make__form-item"
-          label="Length"
-          name="lengthId"
-          style={{ marginBottom: '0.8rem' }}
-          rules={[{ required: true, message: 'Select a Length!' }]}
-        >
-          {/* only render if lengthsArray is not null */}
-          <Select
-            showSearch
-            placeholder="Select a length"
-            optionFilterProp="children"
-            filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {lengthsArray &&
-              lengthsArray.map((length) => {
-                return (
-                  <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={length.id}>
-                    {length.title}
-                  </Option>
-                );
-              })}
-          </Select>
-        </Form.Item>
         {/* reuse the component */}
         {bodyMakeFormItems}
       </Form>
@@ -1071,9 +1042,6 @@ const BodyMake: React.FC<Props> = ({
     onGetBodyMakes();
   }, [onGetBodyMakes]);
   useEffect(() => {
-    onGetLengths();
-  }, [onGetLengths]);
-  useEffect(() => {
     onGetMakes();
   }, [onGetMakes]);
   useEffect(() => {
@@ -1246,7 +1214,6 @@ const BodyMake: React.FC<Props> = ({
                           },
                         }}
                         columns={convertHeader(bodyMakeColumns, setbodyMakeColumns)}
-                        pagination={false}
                       />
                     </section>
                   </>
@@ -1269,7 +1236,6 @@ interface StateProps {
   successMessage?: string | null;
   makesArray?: TReceivedMakeObj[] | null;
   bodiesArray?: TReceivedBodyObj[] | null;
-  lengthsArray?: TReceivedLengthObj[] | null;
   bodyMakesArray?: TReceivedBodyMakeObj[] | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
@@ -1279,7 +1245,6 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     successMessage: state.dashboard.successMessage,
     makesArray: state.dashboard.makesArray,
     bodiesArray: state.dashboard.bodiesArray,
-    lengthsArray: state.dashboard.lengthsArray,
     bodyMakesArray: state.dashboard.bodyMakesArray,
   };
 };
@@ -1288,8 +1253,6 @@ interface DispatchProps {
   onGetMakes: typeof actions.getMakes;
   // Body
   onGetBodies: typeof actions.getBodies;
-  // Length
-  onGetLengths: typeof actions.getLengths;
   // Body Make
   onGetBodyMakes: typeof actions.getBodyMakes;
   onCreateBodyMake: typeof actions.createBodyMake;
@@ -1304,7 +1267,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onGetMakes: () => dispatch(actions.getMakes()),
     onGetBodies: () => dispatch(actions.getBodies()),
-    onGetLengths: () => dispatch(actions.getLengths()),
     // Body Make
     onGetBodyMakes: () => dispatch(actions.getBodyMakes()),
     onCreateBodyMake: (createBodyMakeData, imageTag, imageFiles) =>

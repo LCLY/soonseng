@@ -2207,7 +2207,7 @@ const Make: React.FC<Props> = ({
                         // components={components}
                         dataSource={makeTableState}
                         columns={convertHeader(makeColumn, setMakeColumn)}
-                        pagination={false}
+                        // pagination={false}
                       />
                     </section>
                   </>

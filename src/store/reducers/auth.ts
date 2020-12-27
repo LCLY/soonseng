@@ -76,6 +76,7 @@ const signInFailed = (state: AuthInitialState, action: AppActions) => {
 const signOut = (state: AuthInitialState, _action: AppActions) => {
   return updateObject(state, {
     auth_token: null,
+    userInfoObj: null,
     accessObj: {
       showAdminDashboard: false,
       allowEditSalesDashboard: false,

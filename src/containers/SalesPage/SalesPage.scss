@@ -9,9 +9,11 @@
 
   &__outerdiv {
     flex: 1;
+    // max-height: 100vh;
+    // overflow: auto;
 
     @include respond-to(phone-only) {
-      padding-top: 70px; //height of navbar
+      padding-top: 0; //height of navbar
     }
   }
 
@@ -48,6 +50,11 @@
       &-divider {
         border-color: white !important;
       }
+
+      @include respond-to($phone-only) {
+        -webkit-text-stroke-width: 0.3px;
+        font-size: 3.2rem;
+      }
     }
 
     // the innerdiv wrapping the description on the left and choices on the right
@@ -70,10 +77,13 @@
       width: 100%;
       object-fit: cover;
 
-      @include respond-to(tablet-portrait-up) {
+      @include respond-to($phone-only) {
+        height: 25vh;
+      }
+      @include respond-to($tablet-portrait-up) {
         height: 22rem;
       }
-      @include respond-to(tablet-landscape-up) {
+      @include respond-to($tablet-landscape-up) {
         height: 30rem;
       }
 
@@ -769,6 +779,10 @@
         background: rgba($primary-color-4, 0.15);
         cursor: default;
       }
+
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+      }
     }
 
     // each row of orders
@@ -834,7 +848,7 @@
         background: rgba(255, 255, 255, 0.5);
 
         @include respond-to(phone-only) {
-          padding: 0;
+          padding: 1rem;
         }
 
         // the header title e.g. 15ft wooden cargo
@@ -845,7 +859,11 @@
           color: $primary-color-4;
 
           @include respond-to(phone-only) {
-            font-size: 2rem;
+            font-size: 1.4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 1rem;
           }
 
           // the grand total price at the bottom
@@ -857,7 +875,7 @@
             // margin-bottom: 0.5rem;
             color: $primary-color-4;
             @include respond-to(phone-only) {
-              font-size: 1.8rem;
+              font-size: 1.5rem;
             }
 
             // the prediscount on the top
@@ -867,7 +885,8 @@
               padding-right: 1.5rem;
               font-weight: bolder;
               @include respond-to(phone-only) {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
+                padding-right: 0;
               }
             }
           }
@@ -893,28 +912,39 @@
             background: white;
             margin-top: 1rem;
             margin-right: 1.5rem;
-            padding: 0.5rem 1.5rem;
+            padding: 0.5rem 1rem;
+
+            @include respond-to($phone-only) {
+              margin-right: 0;
+            }
+
             &-text {
               font-size: 2.2rem;
               color: black;
               // padding-left: 1.5rem;
               font-family: $font-firesans;
               @include respond-to(phone-only) {
-                font-size: 1.7rem;
+                font-size: 1.5rem;
               }
             }
           }
 
           &-price {
             padding-right: 1.5rem;
+            @include respond-to($phone-only) {
+              padding-right: 0;
+              font-size: 1.2rem;
+            }
 
             // the prediscount price at bottom
             &--prediscount {
               font-size: 1.7rem;
               font-weight: bolder;
               padding-right: 1.5rem;
+
               @include respond-to(phone-only) {
-                font-size: 1.5rem;
+                padding-right: 0;
+                font-size: 1.2rem;
               }
             }
           }
@@ -950,6 +980,7 @@
         color: $primary-color-3 !important;
 
         @include respond-to(phone-only) {
+          font-size: 1.1rem !important;
           padding: 0.5rem 0.5rem 0.5rem 4rem !important;
         }
       }
@@ -957,6 +988,11 @@
       & .ant-collapse-content-box {
         padding-top: 0 !important;
         padding-left: 4rem !important;
+
+        @include respond-to($phone-only) {
+          padding-left: 2rem !important;
+          padding-right: 0 !important;
+        }
       }
 
       &--modeldetails {
@@ -985,6 +1021,10 @@
           margin-top: 1rem;
           padding: 1rem 2rem;
           border-radius: 1rem;
+
+          @include respond-to($phone-only) {
+            font-size: 1rem;
+          }
         }
 
         &-column {
@@ -1038,14 +1078,23 @@
       padding: 0.3rem 1rem;
       font-family: $font-ubuntu;
       background: rgba($primary-color-4, 0.5);
-
       &:not(:first-child) {
         margin-top: 1rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: -1.8rem;
       }
     }
 
     // subtotal on every last
     &-subtotal {
+      font-size: 1.7rem;
+      padding-left: 2rem;
+      font-weight: bolder;
+      @include respond-to($phone-only) {
+        font-size: 1.3rem;
+      }
+
       &-outerdiv {
         display: flex;
         align-items: center;
@@ -1060,11 +1109,11 @@
         color: black;
         font-size: 1.6rem;
         font-family: $font-opensans;
+
+        @include respond-to($phone-only) {
+          font-size: 1.3rem;
+        }
       }
-      font-size: 1.7rem;
-      // border-top: 1px solid black;
-      padding-left: 2rem;
-      font-weight: bolder;
     }
 
     // The dropdown to show more options button
@@ -1085,6 +1134,10 @@
           padding: 0.5rem 1rem 0.5rem 2rem;
           background: rgba($primary-color-4, 0.3);
           margin-bottom: 1rem;
+
+          @include respond-to($phone-only) {
+            font-size: 1.2rem;
+          }
 
           &:hover {
             transition: all 0.5s ease;
@@ -1138,15 +1191,18 @@
       border-left: 0.5rem solid $primary-color-2;
       background: rgba(255, 255, 255, 0.7);
       margin-bottom: 3rem;
+
       @include respond-to(phone-only) {
         margin-bottom: 1rem;
-        margin-top: 3rem;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem 0.5rem 1rem;
       }
     }
 
     /* the text within the breadcrumbs */
     &-text {
       color: rgba(0, 0, 0, 0.603);
+      white-space: nowrap;
     }
     /* the result text when user chooses something */
     &-highlight {

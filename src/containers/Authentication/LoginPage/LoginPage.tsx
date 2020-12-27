@@ -78,7 +78,7 @@ const LoginPage: React.FC<Props> = ({
                     name="email"
                     rules={[{ required: true, message: 'Please input your email!' }]}
                   >
-                    <Input type="email" />
+                    <Input type="email" placeholder="Enter email here e.g. example@gmail.com" />
                   </Form.Item>
 
                   <Form.Item
@@ -87,7 +87,7 @@ const LoginPage: React.FC<Props> = ({
                     name="password"
                     rules={[{ required: true, message: 'Please input your password!' }]}
                   >
-                    <Input.Password />
+                    <Input.Password placeholder="Enter password here" />
                   </Form.Item>
                   <Form.Item>
                     <Button className="login__btn" type="primary" htmlType="submit">

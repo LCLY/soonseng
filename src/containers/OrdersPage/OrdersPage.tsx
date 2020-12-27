@@ -43,29 +43,31 @@ const OrdersPage: React.FC<Props> = ({ accessObj, localOrdersArray }) => {
   return (
     <>
       <NavbarComponent activePage="orders" />
-      <ParallaxContainer bgImageUrl={holy5truck}>
-        <section className="orders__section">
-          <Container>
-            <div className="orders__section-outerdiv">
-              <Divider className="sales__section-header-divider" orientation="left">
-                <div className="sales__section-header">Your Orders</div>
-              </Divider>
+      <section>
+        <ParallaxContainer bgImageUrl={holy5truck}>
+          <section className="orders__section">
+            <Container>
+              <div className="orders__section-outerdiv">
+                <Divider className="sales__section-header-divider" orientation="left">
+                  <div className="sales__section-header">Your Orders</div>
+                </Divider>
 
-              <div>
-                {localOrdersArray && (
-                  <div className="orders__total-items">
-                    Total:&nbsp;<span className="orders__total-text">{localOrdersArray.length}&nbsp;items</span>
-                  </div>
-                )}
-                {/* Provider to pass props into overview component, since overviewcomponent is using salespage context */}
-                <SalesPageContext.Provider value={value}>
-                  <OverviewComponent />
-                </SalesPageContext.Provider>
+                <div>
+                  {localOrdersArray && (
+                    <div className="orders__total-items">
+                      Total:&nbsp;<span className="orders__total-text">{localOrdersArray.length}&nbsp;items</span>
+                    </div>
+                  )}
+                  {/* Provider to pass props into overview component, since overviewcomponent is using salespage context */}
+                  <SalesPageContext.Provider value={value}>
+                    <OverviewComponent />
+                  </SalesPageContext.Provider>
+                </div>
               </div>
-            </div>
-          </Container>
-        </section>
-      </ParallaxContainer>
+            </Container>
+          </section>
+        </ParallaxContainer>
+      </section>
       <Footer />
     </>
   );
