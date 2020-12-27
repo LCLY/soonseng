@@ -14,7 +14,7 @@ import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 /* Util */
 
 import { RootState } from 'src';
-import holy5truck from 'src/img/5-trucks-lowres.jpg';
+import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj } from 'src/store/types/auth';
 

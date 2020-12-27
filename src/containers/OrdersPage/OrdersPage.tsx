@@ -14,7 +14,7 @@ import { Divider } from 'antd';
 // Util
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
-import holy5truck from 'src/img/5-trucks-lowres.jpg';
+import holy5truck from 'src/img/5trucks.jpg';
 import { TUserAccess } from 'src/store/types/auth';
 import { TLocalOrderObj } from 'src/store/types/sales';
 import OverviewComponent from '../SalesPage/StepSections/OverviewComponent';

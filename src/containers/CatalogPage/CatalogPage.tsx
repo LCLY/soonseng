@@ -13,7 +13,7 @@ import { AnyAction, Dispatch } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 /* Util */
-import holy5trucks from 'src/img/5-trucks-lowres.jpg';
+import holy5trucks from 'src/img/5trucks.jpg';
 import { RootState } from 'src';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
