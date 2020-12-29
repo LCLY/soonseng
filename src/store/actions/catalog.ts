@@ -1,7 +1,7 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { TReceivedBodyMakeObj } from '../types/dashboard';
-import { TReceivedCatalogMakeObj } from '../types/catalog';
+import { TReceivedMakeObj } from '../types/dashboard';
+import { TReceivedCatalogBodyMake, TReceivedCatalogMakeObj } from '../types/catalog';
 
 /* ============================================================================================ */
 //  Catalog
@@ -60,9 +60,13 @@ export const getCatalogBodyMakesStart = (): AppActions => {
   };
 };
 
-export const getCatalogBodyMakesSucceed = (catalogBodyMakesArray: TReceivedBodyMakeObj[]): AppActions => {
+export const getCatalogBodyMakesSucceed = (
+  makeFromCatalogBodyMake: TReceivedMakeObj,
+  catalogBodyMakesArray: TReceivedCatalogBodyMake[],
+): AppActions => {
   return {
     type: actionTypes.GET_CATALOG_BODYMAKES_SUCCEED,
+    makeFromCatalogBodyMake: makeFromCatalogBodyMake,
     catalogBodyMakesArray: catalogBodyMakesArray,
   };
 };

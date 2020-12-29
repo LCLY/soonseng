@@ -14,6 +14,7 @@ const initialState: CatalogInitialState = {
   // catalogBodyMakeArray
   catalogBodyMake: null,
   catalogBodyMakesArray: null,
+  makeFromCatalogBodyMake: null,
 };
 
 /* ============================================================================================ */
@@ -58,10 +59,11 @@ const getCatalogBodyMakesStart = (state: CatalogInitialState, _action: AppAction
   return updateObject(state, { errorMessage: null, loading: true, catalogBodyMakesArray: null });
 };
 const getCatalogBodyMakesSucceed = (state: CatalogInitialState, action: AppActions) => {
-  if ('catalogBodyMakesArray' in action) {
+  if ('catalogBodyMakesArray' in action && 'makeFromCatalogBodyMake' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
+      makeFromCatalogBodyMake: action.makeFromCatalogBodyMake,
       catalogBodyMakesArray: action.catalogBodyMakesArray,
     });
   }

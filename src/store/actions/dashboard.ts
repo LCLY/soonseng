@@ -447,12 +447,11 @@ export const updateMakeFailed = (errorMessage: string): AppActions => {
 /* ----------------------------- */
 // Create Make Wheelbase(head)
 /* ----------------------------- */
-export const createMakeWheelbase = (make_id: number, wheelbase_id: number, length: string): AppActions => {
+export const createMakeWheelbase = (make_id: number, wheelbase_id: number): AppActions => {
   return {
     type: actionTypes.CREATE_MAKEWHEELBASE,
     make_id: make_id,
     wheelbase_id: wheelbase_id,
-    length: length,
   };
 };
 
@@ -511,18 +510,12 @@ export const getMakeWheelbasesFailed = (errorMessage: string): AppActions => {
 /* -------------------------- */
 // Update Make Wheelbase (head)
 /* -------------------------- */
-export const updateMakeWheelbase = (
-  make_wheelbase_id: number,
-  make_id: number,
-  wheelbase_id: number,
-  length: string,
-): AppActions => {
+export const updateMakeWheelbase = (make_wheelbase_id: number, make_id: number, wheelbase_id: number): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKEWHEELBASE,
     make_wheelbase_id: make_wheelbase_id,
     make_id: make_id,
     wheelbase_id: wheelbase_id,
-    length: length,
   };
 };
 

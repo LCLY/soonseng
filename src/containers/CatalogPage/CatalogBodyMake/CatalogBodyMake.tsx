@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './CatalogBodyMake.scss';
 /*Components*/
 import Footer from 'src/components/Footer/Footer';
-// import Container from 'src/components/CustomContainer/CustomContainer';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
@@ -13,13 +12,15 @@ import { Dispatch, AnyAction } from 'redux';
 import { Empty, Skeleton } from 'antd';
 import NumberFormat from 'react-number-format';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { LeftCircleOutlined } from '@ant-design/icons';
 /* Util */
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
-import { TReceivedBodyMakeObj } from 'src/store/types/dashboard';
+import { TReceivedMakeObj } from 'src/store/types/dashboard';
+import { TReceivedCatalogBodyMake } from 'src/store/types/catalog';
 
 interface MatchParams {
   make_id: string;
@@ -29,95 +30,58 @@ interface CatalogBodyMakeProps {}
 
 type Props = CatalogBodyMakeProps & StateProps & DispatchProps & RouteComponentProps<MatchParams>;
 
-const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesArray, onGetCatalogBodyMakes }) => {
+const CatalogBodyMake: React.FC<Props> = ({
+  match,
+  history,
+  accessObj,
+  bodyMakeWithWheelbase,
+  onGetCatalogBodyMakes,
+  makeFromCatalogBodyMake,
+}) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
+  const [catalogMake, setCatalogMake] = useState<TReceivedMakeObj | null>(null);
 
   let bodyMakeDetailRowArray: { title: string; data: string }[] = [];
-  if (currentBodyMake) {
+  if (catalogMake) {
     bodyMakeDetailRowArray = [
       {
-        title: 'Length',
-        data:
-          currentBodyMake.make_wheelbase.length !== null && currentBodyMake.make_wheelbase.length !== 0
-            ? `${currentBodyMake.make_wheelbase.length}mm`
-            : '-',
-      },
-      {
         title: 'Config',
-        data:
-          currentBodyMake.make_wheelbase.make.config !== null && currentBodyMake.make_wheelbase.make.config !== ''
-            ? `${currentBodyMake.make_wheelbase.make.config}`
-            : '-',
+        data: catalogMake.config !== null && catalogMake.config !== '' ? `${catalogMake.config}` : '-',
       },
       {
         title: 'Torque',
-        data:
-          currentBodyMake.make_wheelbase.make.torque !== null && currentBodyMake.make_wheelbase.make.torque !== ''
-            ? `${currentBodyMake.make_wheelbase.make.torque}`
-            : '-',
+        data: catalogMake.torque !== null && catalogMake.torque !== '' ? `${catalogMake.torque}` : '-',
       },
       {
         title: 'Horsepower',
-        data:
-          currentBodyMake.make_wheelbase.make.horsepower !== null &&
-          currentBodyMake.make_wheelbase.make.horsepower !== ''
-            ? `${currentBodyMake.make_wheelbase.make.horsepower}PC`
-            : '-',
+        data: catalogMake.horsepower !== null && catalogMake.horsepower !== '' ? `${catalogMake.horsepower}PC` : '-',
       },
       {
         title: 'Emission',
-        data:
-          currentBodyMake.make_wheelbase.make.emission !== null && currentBodyMake.make_wheelbase.make.emission !== ''
-            ? `${currentBodyMake.make_wheelbase.make.emission}`
-            : '-',
+        data: catalogMake.emission !== null && catalogMake.emission !== '' ? `${catalogMake.emission}` : '-',
       },
       {
         title: 'Tire Count',
-        data:
-          currentBodyMake.make_wheelbase.make.tire !== null && currentBodyMake.make_wheelbase.make.tire !== ''
-            ? currentBodyMake.make_wheelbase.make.tire
-            : '-',
-      },
-      {
-        title: 'Wheelbase',
-        data:
-          currentBodyMake.make_wheelbase.wheelbase.title !== null &&
-          currentBodyMake.make_wheelbase.wheelbase.title !== ''
-            ? `${currentBodyMake.make_wheelbase.wheelbase.title}mm`
-            : '-',
+        data: catalogMake.tire !== null && catalogMake.tire !== '' ? catalogMake.tire : '-',
       },
       {
         title: 'Transmission',
         data:
-          currentBodyMake.make_wheelbase.make.transmission !== null &&
-          currentBodyMake.make_wheelbase.make.transmission !== ''
-            ? `${currentBodyMake.make_wheelbase.make.transmission}`
-            : '-',
+          catalogMake.transmission !== null && catalogMake.transmission !== '' ? `${catalogMake.transmission}` : '-',
       },
       {
         title: 'Engine Capacity',
-        data:
-          currentBodyMake.make_wheelbase.make.engine_cap !== null &&
-          currentBodyMake.make_wheelbase.make.engine_cap !== ''
-            ? `${currentBodyMake.make_wheelbase.make.engine_cap}CC`
-            : '-',
+        data: catalogMake.engine_cap !== null && catalogMake.engine_cap !== '' ? `${catalogMake.engine_cap}CC` : '-',
       },
       {
         title: 'Year',
-        data:
-          currentBodyMake.make_wheelbase.make.year !== null && currentBodyMake.make_wheelbase.make.year !== ''
-            ? `${currentBodyMake.make_wheelbase.make.year}`
-            : '-',
+        data: catalogMake.year !== null && catalogMake.year !== '' ? `${catalogMake.year}` : '-',
       },
       {
         title: 'GVW',
-        data:
-          currentBodyMake.make_wheelbase.make.gvw !== null && currentBodyMake.make_wheelbase.make.gvw !== ''
-            ? `${currentBodyMake.make_wheelbase.make.gvw}kg`
-            : '-',
+        data: catalogMake.gvw !== null && catalogMake.gvw !== '' ? `${catalogMake.gvw}kg` : '-',
       },
     ];
   }
@@ -126,14 +90,14 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
   /*  component */
   /* ================================================== */
 
-  let MakeDetailsComponent = (props: { bodyMake: TReceivedBodyMakeObj }) => {
-    const { bodyMake } = props;
+  let MakeDetailsComponent = (props: { catalogMake: TReceivedMakeObj }) => {
+    const { catalogMake } = props;
     return (
       <>
         <div className="catalogbodymake__detail-div">
           <div className="catalogbodymake__detail-innerdiv">
             <div className="catalogbodymake__detail-model">
-              <div className="catalogbodymake__detail-model-text">{bodyMake.make_wheelbase.make.title}</div>
+              <div className="catalogbodymake__detail-model-text">{catalogMake.title}</div>
             </div>
 
             <section className="catalogbodymake__detail-body">
@@ -148,16 +112,12 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                 <div className="catalogbodymake__detail-body-row" key={uuidv4()}>
                   <div className="catalogbodymake__detail-body-row-left">Model Price</div>
                   <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right-price">
-                    {bodyMake?.make_wheelbase.make.price === 0 || bodyMake?.make_wheelbase.make.price === null ? (
+                    {catalogMake.price === 0 || catalogMake.price === null ? (
                       '-'
                     ) : (
                       <>
                         RM
-                        <NumberFormat
-                          value={bodyMake?.make_wheelbase.make.price}
-                          displayType={'text'}
-                          thousandSeparator={true}
-                        />
+                        <NumberFormat value={catalogMake.price} displayType={'text'} thousandSeparator={true} />
                       </>
                     )}
                   </div>
@@ -169,14 +129,14 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
         <div className="catalogbodymake__detail-div--mobile">
           <div className="catalogbodymake__detail-innerdiv">
             <div className="catalogbodymake__detail-model">
-              <div className="catalogbodymake__detail-model-text">{bodyMake.make_wheelbase.make.title}</div>
+              <div className="catalogbodymake__detail-model-text">{catalogMake.title}</div>
             </div>
 
             <section className="catalogbodymake__detail-body catalogbodymake__detail-body--mobile">
               {/* left column */}
               <div style={{ width: '100%' }}>
                 {bodyMakeDetailRowArray.length > 0 &&
-                  [...bodyMakeDetailRowArray].slice(0, 6).map((detail) => (
+                  [...bodyMakeDetailRowArray].slice(0, 5).map((detail) => (
                     <div
                       className="catalogbodymake__detail-body-row catalogbodymake__detail-body-row--mobile"
                       key={uuidv4()}
@@ -193,7 +153,7 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
               {/* right column */}
               <div style={{ width: '100%' }}>
                 {bodyMakeDetailRowArray.length > 0 &&
-                  [...bodyMakeDetailRowArray].slice(6).map((detail) => (
+                  [...bodyMakeDetailRowArray].slice(5).map((detail) => (
                     <div
                       className="catalogbodymake__detail-body-row catalogbodymake__detail-body-row--mobile"
                       key={uuidv4()}
@@ -214,16 +174,12 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
                     </div>
                     <div className="catalogbodymake__detail-body-row-right catalogbodymake__detail-body-row-right--mobile">
                       <div>
-                        {bodyMake?.make_wheelbase.make.price === 0 || bodyMake?.make_wheelbase.make.price === null ? (
+                        {catalogMake.price === 0 || catalogMake.price === null ? (
                           '-'
                         ) : (
                           <span className="catalogbodymake__detail-body-row-right-price">
                             RM
-                            <NumberFormat
-                              value={bodyMake?.make_wheelbase.make.price}
-                              displayType={'text'}
-                              thousandSeparator={true}
-                            />
+                            <NumberFormat value={catalogMake.price} displayType={'text'} thousandSeparator={true} />
                           </span>
                         )}
                       </div>
@@ -247,10 +203,10 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
   }, []);
 
   useEffect(() => {
-    if (catalogBodyMakesArray) {
-      setCurrentBodyMake(catalogBodyMakesArray[0]);
+    if (makeFromCatalogBodyMake) {
+      setCatalogMake(makeFromCatalogBodyMake);
     }
-  }, [catalogBodyMakesArray, setCurrentBodyMake]);
+  }, [makeFromCatalogBodyMake, setCatalogMake]);
 
   useEffect(() => {
     onGetCatalogBodyMakes(parseInt(match.params.make_id));
@@ -266,115 +222,124 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
       <ParallaxContainer bgImageUrl={holy5truck}>
         <div className="catalog__outerdiv">
           <div className="catalog__div">
-            {catalogBodyMakesArray ? (
-              catalogBodyMakesArray.length > 0 ? (
-                <div className="catalogbodymake__innerdiv">
-                  <>
-                    <div>
-                      <div className="catalogbodymake__brand-title">
-                        {' '}
-                        {catalogBodyMakesArray[0].make_wheelbase.make.brand.title}
+            {bodyMakeWithWheelbase && catalogMake ? (
+              <>
+                {bodyMakeWithWheelbase.length > 0 ? (
+                  <section className="catalogbodymake__section-div">
+                    <LeftCircleOutlined
+                      className="catalogbodymake__backarrow"
+                      onClick={() => history.push('/catalog')}
+                    />
+                    <div className="catalogbodymake__series-title">{catalogMake.series}</div>
+                    <section className="catalogbodymake__section-banner">
+                      <div className="catalogbodymake__banner-div">
+                        <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
                       </div>
-                      <section className="catalogbodymake__section-div">
-                        <div className="catalog__series-title margin_t-2">
-                          {' '}
-                          {catalogBodyMakesArray[0].make_wheelbase.make.series}
+                      <MakeDetailsComponent catalogMake={catalogMake} />
+                    </section>
+
+                    {bodyMakeWithWheelbase.map((wheelbaseBodyMake) => (
+                      <section className="catalogbodymake__wheelbase-div">
+                        <div>
+                          {wheelbaseBodyMake.wheelbase.title && wheelbaseBodyMake.wheelbase.title !== '' ? (
+                            <div className="catalogbodymake__wheelbase-title">
+                              {wheelbaseBodyMake.wheelbase.title}mm Wheelbase
+                            </div>
+                          ) : (
+                            ''
+                          )}
                         </div>
-                        <section className="catalogbodymake__section-banner">
-                          <div className="catalogbodymake__banner-div">
-                            <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
-                          </div>
-                          <MakeDetailsComponent bodyMake={catalogBodyMakesArray[0]} />
-                        </section>
-                        <div className="catalogbodymake__grid">
-                          {catalogBodyMakesArray.map((bodyMake) => {
-                            return (
-                              <div className="catalogbodymake__card" key={uuidv4()}>
-                                {bodyMake.images.length > 0 ? (
-                                  <img
-                                    className="catalogbodymake__card-image"
-                                    src={bodyMake.images[0].url}
-                                    alt={bodyMake.images[0].filename}
-                                  />
-                                ) : (
-                                  // <img
-                                  //   className="catalogbodymake__card-image"
-                                  //   src="https://sc01.alicdn.com/kf/HTB1K9KNGVXXXXbFXVXXq6xXFXXXY/220577434/HTB1K9KNGVXXXXbFXVXXq6xXFXXXY.jpg"
-                                  //   alt="random pic"
-                                  // />
 
-                                  <Skeleton.Image className="catalogbodymake__card-image" />
-                                )}
-                                <div className="catalogbodymake__card-overlay">
-                                  <div className="catalogbodymake__card-overlay-content">
-                                    <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
-                                    <div>
-                                      {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
-                                        <div className="flex-align-center">
-                                          Width:&nbsp;
-                                          <div className="catalogbodymake__card-overlay-dimension">
-                                            {bodyMake?.width}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {bodyMake?.depth !== null && bodyMake?.depth !== '' && bodyMake?.depth !== null && (
-                                        <div className="flex-align-center">
-                                          Depth:&nbsp;
-                                          <div className="catalogbodymake__card-overlay-dimension">
-                                            {bodyMake?.depth}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {bodyMake?.height !== null &&
-                                        bodyMake?.height !== '' &&
-                                        bodyMake?.height !== null && (
-                                          <div className="flex-align-center">
-                                            Height:&nbsp;
-                                            <div className="catalogbodymake__card-overlay-dimension">
-                                              {bodyMake?.height}
+                        <div className="catalogbodymake__innerdiv">
+                          <div className="catalogbodymake__grid">
+                            {wheelbaseBodyMake.body_makes.map((bodyMake) => {
+                              return (
+                                <div className="catalogbodymake__card" key={uuidv4()}>
+                                  {bodyMake.images.length > 0 ? (
+                                    <img
+                                      className="catalogbodymake__card-image"
+                                      src={bodyMake.images[0].url}
+                                      alt={bodyMake.images[0].filename}
+                                    />
+                                  ) : (
+                                    <Skeleton.Image className="catalog__card-image" />
+                                  )}
+                                  <div className="catalogbodymake__card-overlay">
+                                    <div className="catalogbodymake__card-overlay-content">
+                                      <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
+                                      <div className="catalogbodymake__card-overlay-moreinfo-content">
+                                        {bodyMake?.width !== null &&
+                                          bodyMake?.width !== '' &&
+                                          bodyMake?.width !== null && (
+                                            <div className="flex-align-center">
+                                              Width:&nbsp;
+                                              <div className="catalogbodymake__card-overlay-dimension">
+                                                {bodyMake?.width}
+                                              </div>
                                             </div>
-                                          </div>
+                                          )}
+
+                                        {bodyMake?.depth !== null &&
+                                          bodyMake?.depth !== '' &&
+                                          bodyMake?.depth !== null && (
+                                            <div className="flex-align-center">
+                                              Depth:&nbsp;
+                                              <div className="catalogbodymake__card-overlay-dimension">
+                                                {bodyMake?.depth}
+                                              </div>
+                                            </div>
+                                          )}
+
+                                        {bodyMake?.height !== null &&
+                                          bodyMake?.height !== '' &&
+                                          bodyMake?.height !== null && (
+                                            <div className="flex-align-center">
+                                              Height:&nbsp;
+                                              <div className="catalogbodymake__card-overlay-dimension">
+                                                {bodyMake?.height}
+                                              </div>
+                                            </div>
+                                          )}
+                                      </div>
+                                      <div>
+                                        {accessObj?.showPriceSalesPage && (
+                                          <>
+                                            <div>Body Price</div>
+                                            <div className="catalogbodymake__card-overlay-price">
+                                              {bodyMake?.price === 0 || bodyMake?.price === null ? (
+                                                '-'
+                                              ) : (
+                                                <div>
+                                                  RM
+                                                  <NumberFormat
+                                                    value={bodyMake?.price}
+                                                    displayType={'text'}
+                                                    thousandSeparator={true}
+                                                  />
+                                                </div>
+                                              )}
+                                            </div>
+                                          </>
                                         )}
-                                    </div>
-                                    <div>
-                                      {accessObj?.showPriceSalesPage && (
-                                        <>
-                                          <div className="margin_t-1">Body Price</div>
-                                          <div className="catalogbodymake__card-overlay-price">
-                                            {bodyMake?.price === 0 || bodyMake?.price === null ? (
-                                              '-'
-                                            ) : (
-                                              <>
-                                                RM
-                                                <NumberFormat
-                                                  value={bodyMake?.price}
-                                                  displayType={'text'}
-                                                  thousandSeparator={true}
-                                                />
-                                              </>
-                                            )}
-                                          </div>
-                                        </>
-                                      )}
+                                      </div>
                                     </div>
                                   </div>
+
+                                  <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
                                 </div>
-                                <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
                         </div>
                       </section>
-                    </div>
-                  </>
-                </div>
-              ) : (
-                <div className="catalogbodymake__loading-div">
-                  <Empty className="catalogbodymake__empty" />
-                </div>
-              )
+                    ))}
+                  </section>
+                ) : (
+                  <div className="catalogbodymake__loading-div">
+                    <Empty className="catalogbodymake__empty" />
+                  </div>
+                )}
+              </>
             ) : (
               <div className="catalog__loading-div">
                 <Ripple />
@@ -389,13 +354,15 @@ const CatalogBodyMake: React.FC<Props> = ({ match, accessObj, catalogBodyMakesAr
 };
 
 interface StateProps {
-  catalogBodyMakesArray?: TReceivedBodyMakeObj[] | null;
   accessObj?: TUserAccess;
+  bodyMakeWithWheelbase?: TReceivedCatalogBodyMake[] | null;
+  makeFromCatalogBodyMake?: TReceivedMakeObj | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
-    catalogBodyMakesArray: state.catalog.catalogBodyMakesArray,
+    bodyMakeWithWheelbase: state.catalog.catalogBodyMakesArray,
+    makeFromCatalogBodyMake: state.catalog.makeFromCatalogBodyMake,
   };
 };
 

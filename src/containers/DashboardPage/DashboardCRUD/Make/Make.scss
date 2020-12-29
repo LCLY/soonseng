@@ -149,6 +149,7 @@
     // the category item
     /* ---------- */
     &-item {
+      flex-wrap: nowrap !important;
       /* for create make overwrite label width */
       &--make {
         margin-bottom: 0.5rem !important;

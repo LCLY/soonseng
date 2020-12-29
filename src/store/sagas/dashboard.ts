@@ -445,11 +445,10 @@ export function* createMakeWheelbaseSaga(action: AppActions) {
 
   let data = {};
   // Type guard, check if the "key" exist in the action object
-  if ('make_id' in action && 'wheelbase_id' in action && 'length' in action) {
+  if ('make_id' in action && 'wheelbase_id' in action) {
     url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase`;
     data = {
       wheelbase_id: action.wheelbase_id,
-      length: action.length,
     };
   }
 
@@ -474,11 +473,10 @@ export function* updateMakeWheelbaseSaga(action: AppActions) {
 
   let data = {};
   // Type guard, check if the "key" exist in the action object
-  if ('make_wheelbase_id' in action && 'make_id' in action && 'wheelbase_id' in action && 'length' in action) {
+  if ('make_wheelbase_id' in action && 'make_id' in action && 'wheelbase_id' in action) {
     url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase/${action.make_wheelbase_id}`;
     data = {
       wheelbase_id: action.wheelbase_id,
-      length: action.length,
     };
   }
 
@@ -793,12 +791,13 @@ export function* createBodyMakeSaga(action: AppActions) {
 
   let url = process.env.REACT_APP_API + `/products/body_make`;
 
-  let bodymake = {};
+  let body_make = {};
   // Type guard, check if the "key" exist in the action object
   if ('createBodyMakeData' in action) {
-    bodymake = {
+    body_make = {
       body_id: action.createBodyMakeData.body_id,
       length_id: action.createBodyMakeData.length_id,
+      make_wheelbase_id: action.createBodyMakeData.make_wheelbase_id,
       make_id: action.createBodyMakeData.make_id,
       depth: action.createBodyMakeData.depth,
       width: action.createBodyMakeData.width,
@@ -808,7 +807,7 @@ export function* createBodyMakeSaga(action: AppActions) {
   }
 
   try {
-    let response = yield axios.post(url, { bodymake });
+    let response = yield axios.post(url, { body_make });
     if ('imageTag' in action && 'imageFiles' in action) {
       yield succeedActionWithImageUpload(
         UPLOAD_TO_BODY_MAKE,
@@ -856,13 +855,15 @@ export function* updateBodyMakeSaga(action: AppActions) {
   yield put(actions.updateBodyMakeStart());
 
   let url = '';
-  let bodymake = {};
+  let body_make = {};
   if ('updateBodyMakeData' in action) {
     url = process.env.REACT_APP_API + `/products/body_make/${action.updateBodyMakeData.body_make_id}`;
 
-    bodymake = {
+    body_make = {
       body_id: action.updateBodyMakeData.body_id,
       make_id: action.updateBodyMakeData.make_id,
+      length_id: action.updateBodyMakeData.length_id,
+      make_wheelbase_id: action.updateBodyMakeData.make_wheelbase_id,
       depth: action.updateBodyMakeData.depth,
       width: action.updateBodyMakeData.width,
       height: action.updateBodyMakeData.height,
@@ -871,7 +872,7 @@ export function* updateBodyMakeSaga(action: AppActions) {
   }
 
   try {
-    let response = yield axios.put(url, { bodymake });
+    let response = yield axios.put(url, { body_make });
     if ('imageTag' in action && 'imageFiles' in action) {
       yield succeedActionWithImageUpload(
         UPLOAD_TO_BODY_MAKE,

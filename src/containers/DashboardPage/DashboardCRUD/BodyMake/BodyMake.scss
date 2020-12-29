@@ -1,4 +1,37 @@
 .bodymake {
+  &__form {
+    &-item {
+      flex-wrap: nowrap !important;
+      // label {
+      //   min-width: 30% !important;
+      // }
+
+      & .ant-form-item-label {
+        min-width: 25% !important;
+        text-align: left;
+      }
+      & .ant-form-item-control {
+        min-width: 75% !important;
+      }
+
+      // push to right abit for error message
+      .ant-form-item-explain.ant-form-item-explain-error {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+      // same thing applies to success message
+      .ant-form-item-explain.ant-form-item-explain-success {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+    }
+  }
   &__details {
     &-category {
       color: $primary-color-3;
@@ -61,5 +94,12 @@
         }
       }
     }
+  }
+
+  &__select {
+    width: 100% !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }

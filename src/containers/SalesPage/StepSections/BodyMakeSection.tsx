@@ -81,8 +81,8 @@ const BodyMakeSection: React.FC<Props> = () => {
       {
         title: 'Length',
         data:
-          currentBodyMake.make_wheelbase.length !== null && currentBodyMake.make_wheelbase.length !== 0
-            ? `${currentBodyMake.make_wheelbase.length}mm`
+          currentBodyMake.length !== null
+            ? `${currentBodyMake.length.title}ft - ${currentBodyMake.length.description}`
             : '-',
       },
       {

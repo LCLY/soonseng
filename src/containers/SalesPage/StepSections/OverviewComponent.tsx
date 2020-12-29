@@ -100,12 +100,12 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
 
               let bodyMakeDetailRowArray: { title: string; data: string }[] = [];
               if (order.bodyMakeObj !== null && order.bodyMakeObj !== undefined) {
-                const { make, length, wheelbase } = order.bodyMakeObj.make_wheelbase;
-
+                const { make, wheelbase } = order.bodyMakeObj.make_wheelbase;
+                const { length } = order.bodyMakeObj;
                 bodyMakeDetailRowArray = [
                   {
                     title: 'Length:',
-                    data: length !== null && length !== 0 ? length : '-',
+                    data: length !== null ? `${length.title}ft - ${length.description}` : '-',
                   },
                   {
                     title: 'Torque:',

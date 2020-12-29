@@ -41,12 +41,12 @@ $big-desktop-up: big-desktop-up;
 
   @if $range == small-phone {
     // <= 576px
-    @media (max-width: #{$small-phone-upper-boundary - 1}) {
+    @media (max-width: #{$small-phone-upper-boundary}) {
       @content;
     }
   } @else if $range == phone-only {
-    // <= 767px
-    @media (max-width: #{$phone-upper-boundary - 1}) {
+    // >= 576px
+    @media (min-width: #{$small-phone-upper-boundary}) {
       @content;
     }
   } @else if $range == tablet-portrait-up {

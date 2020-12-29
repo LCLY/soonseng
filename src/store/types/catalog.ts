@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { TReceivedBodyMakeObj, TReceivedBrandObj, TReceivedMakeObj } from './dashboard';
+import { TReceivedBodyMakeObj, TReceivedBrandObj, TReceivedMakeObj, TReceivedWheelbaseObj } from './dashboard';
 
 // initialState for reducers
 export interface CatalogInitialState {
@@ -10,8 +10,9 @@ export interface CatalogInitialState {
   readonly catalogMakeObj?: TReceivedCatalogMakeObj | null;
   readonly catalogMakesArray?: TReceivedCatalogMakeObj[] | null;
   // catalogBodyMakeArray
-  readonly catalogBodyMake?: TReceivedBodyMakeObj | null;
-  readonly catalogBodyMakesArray?: TReceivedBodyMakeObj[] | null;
+  readonly catalogBodyMake?: TReceivedCatalogBodyMake | null;
+  readonly catalogBodyMakesArray?: TReceivedCatalogBodyMake[] | null;
+  readonly makeFromCatalogBodyMake?: TReceivedMakeObj | null;
 }
 
 export interface ClearCatalogStateAction {
@@ -50,6 +51,13 @@ export interface GetCatalogMakesFailedAction {
 /* ------------------ */
 // Get Catalog Body Make
 /* ------------------ */
+
+// catalog body make array contains a main wheelbase object and a body make array
+export type TReceivedCatalogBodyMake = {
+  wheelbase: TReceivedWheelbaseObj;
+  body_makes: TReceivedBodyMakeObj[];
+};
+
 export interface GetCatalogBodyMakesAction {
   type: typeof actionTypes.GET_CATALOG_BODYMAKES;
   make_id: number;
@@ -59,7 +67,8 @@ export interface GetCatalogBodyMakesStartAction {
 }
 export interface GetCatalogBodyMakesSucceedAction {
   type: typeof actionTypes.GET_CATALOG_BODYMAKES_SUCCEED;
-  catalogBodyMakesArray: TReceivedBodyMakeObj[];
+  makeFromCatalogBodyMake: TReceivedMakeObj;
+  catalogBodyMakesArray: TReceivedCatalogBodyMake[];
 }
 export interface GetCatalogBodyMakesFailedAction {
   type: typeof actionTypes.GET_CATALOG_BODYMAKES_FAILED;

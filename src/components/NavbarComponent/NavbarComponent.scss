@@ -13,6 +13,10 @@
 
   &__div {
     padding: 2rem 5rem !important;
+    @include respond-to($small-phone) {
+      // min-height: 10vh;
+      padding: 2% 5rem !important;
+    }
     @include respond-to(phone-only) {
       // min-height: 10vh;
       padding: 2% 5rem !important;
@@ -33,6 +37,9 @@
     border-radius: 0.5rem;
     margin-right: 3rem !important;
     object-fit: cover;
+    @include respond-to($small-phone) {
+      width: 20vw;
+    }
     @include respond-to(phone-only) {
       width: 20vw;
     }
@@ -87,8 +94,14 @@
       color: white;
     }
 
+    @include respond-to($small-phone) {
+      font-size: 1.3rem !important;
+    }
     @include respond-to(phone-only) {
       font-size: 1.3rem !important;
+    }
+    @include respond-to($tablet-portrait-up) {
+      font-size: 1.5rem !important;
     }
     // div of the nav links
     &-div {
@@ -101,12 +114,17 @@
         border-radius: 0.5rem;
       }
 
+      @include respond-to($small-phone) {
+        // font-size: 1.2rem !important;
+        padding: 0.5rem 0;
+      }
       @include respond-to(phone-only) {
         // font-size: 1.2rem !important;
         padding: 0.5rem 0;
       }
       @include respond-to(tablet-portrait-up) {
         margin: 0.3rem 0;
+        padding: 0 1rem;
       }
     }
   }
@@ -120,8 +138,14 @@
   &__left {
     &-div {
       display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
       @include respond-to(phone-only) {
         flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
       }
     }
   }
@@ -133,11 +157,23 @@
   &__right {
     &-div {
       display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        border-top: 1px solid $translucent-grey;
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
       @include respond-to(phone-only) {
         flex-direction: column;
         border-top: 1px solid $translucent-grey;
         margin-top: 1rem;
         padding-top: 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
       }
     }
   }

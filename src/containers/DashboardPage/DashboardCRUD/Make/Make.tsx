@@ -111,7 +111,7 @@ type TShowModal = {
 };
 
 type TDeleteModalContent = {
-  make_wheelbase: { make_wheelbase_id: number; make_wheelbase_title: string; length_title: string; make_title: string };
+  make_wheelbase: { make_wheelbase_id: number; make_wheelbase_title: string; make_title: string };
 };
 
 type Props = MakeProps & StateProps & DispatchProps;
@@ -214,7 +214,7 @@ const Make: React.FC<Props> = ({
 
   // this state to keep track of what to show on delete modal and what useful info to pass
   const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
-    make_wheelbase: { make_title: '', make_wheelbase_id: -1, length_title: '', make_wheelbase_title: '' },
+    make_wheelbase: { make_title: '', make_wheelbase_id: -1, make_wheelbase_title: '' },
   });
 
   /* ======================== */
@@ -745,16 +745,11 @@ const Make: React.FC<Props> = ({
   /* ===================================== */
   // Make Wheelbase
   /* ===================================== */
-  const onCreateMakeWheelbaseFinish = (values: { wheelbaseId: number; length: string; makeId: number }) => {
-    onCreateMakeWheelbase(values.makeId, values.wheelbaseId, values.length);
+  const onCreateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number }) => {
+    onCreateMakeWheelbase(values.makeId, values.wheelbaseId);
   };
-  const onUpdateMakeWheelbaseFinish = (values: {
-    wheelbaseId: number;
-    length: string;
-    makeId: number;
-    makeWheelbaseId: number;
-  }) => {
-    onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId, values.length);
+  const onUpdateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number; makeWheelbaseId: number }) => {
+    onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId);
   };
 
   /**
@@ -1669,10 +1664,6 @@ const Make: React.FC<Props> = ({
                                 ? `${makeWheelbase.wheelbase.title}mm`
                                 : '-'}
                             </div>
-                            <div>
-                              Length:&nbsp;
-                              {makeWheelbase.length && makeWheelbase.length !== 0 ? `${makeWheelbase.length}mm` : '-'}
-                            </div>
                           </section>
                           <section className="make__expand-card-btn-section">
                             <div className="make__expand-card-btn-div">
@@ -1692,7 +1683,6 @@ const Make: React.FC<Props> = ({
                                     setShowUpdateModal({ ...showUpdateModal, make_wheelbase: true });
                                     updateMakeWheelbaseForm.setFieldsValue({
                                       makeId: record.makeId,
-                                      length: makeWheelbase.length,
                                       makeWheelbaseId: makeWheelbase.id,
                                       wheelbaseId: makeWheelbase.wheelbase.id,
                                     });
@@ -1716,7 +1706,6 @@ const Make: React.FC<Props> = ({
                                       ...deleteModalContent,
                                       make_wheelbase: {
                                         make_title: record.makeTitle,
-                                        length_title: makeWheelbase.length.toString(),
                                         make_wheelbase_id: makeWheelbase.id,
                                         make_wheelbase_title: makeWheelbase.wheelbase.title,
                                       },
@@ -1782,7 +1771,7 @@ const Make: React.FC<Props> = ({
       {deleteModalContent.make_wheelbase.make_wheelbase_title === '' ? (
         ' this configuration'
       ) : (
-        <span className="dashboard__delete-message">{` Wheelbase: ${deleteModalContent.make_wheelbase.make_wheelbase_title}mm, Length: ${deleteModalContent.make_wheelbase.length_title}mm`}</span>
+        <span className="dashboard__delete-message">{` Wheelbase: ${deleteModalContent.make_wheelbase.make_wheelbase_title}mm`}</span>
       )}
       , this action is permanent. Are you sure?
     </Modal>
@@ -2297,10 +2286,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetSeries: (brand_id) => dispatch(actions.getSeries(brand_id)),
     // Make wheelbase
     onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
-    onCreateMakeWheelbase: (make_id, wheelbase_id, length) =>
-      dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, length)),
-    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id, length) =>
-      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id, length)),
+    onCreateMakeWheelbase: (make_id, wheelbase_id) => dispatch(actions.createMakeWheelbase(make_id, wheelbase_id)),
+    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id) =>
+      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id)),
     onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>
       dispatch(actions.deleteMakeWheelbase(make_id, make_wheelbase_id)),
     // Image

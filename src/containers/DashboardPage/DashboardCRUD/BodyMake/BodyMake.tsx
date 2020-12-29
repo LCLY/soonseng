@@ -38,6 +38,8 @@ import {
   TReceivedBodyMakeObj,
   TReceivedAccessoryObj,
   TReceivedMakeObj,
+  TReceivedMakeWheelbaseObj,
+  TReceivedLengthObj,
 } from 'src/store/types/dashboard';
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
@@ -62,12 +64,15 @@ type TBodyMakeTableState = {
   bodyMakeImages: TReceivedImageObj[];
   bodyMakeAccessoriesArrayLength: number;
   bodyMakeAccessories: TReceivedAccessoryObj[] | null;
+  bodyMakeWheelbase: string;
+  bodyMakeConfiguration: string;
 };
 
 type TCreateBodyMakeForm = {
-  lengthId: number; // length id
   bodyId: number; //body id
   makeId: number; //make id
+  lengthId: number; //length id
+  makeWheelbaseId: number; //make wheelbase id
   bodyMakeWidth: { feet: string; inch: string };
   bodyMakeHeight: { feet: string; inch: string };
   bodyMakeDepth: { feet: string; inch: string };
@@ -77,7 +82,9 @@ type TCreateBodyMakeForm = {
 type TUpdateBodyMakeForm = {
   bodyId: number; //body id
   makeId: number; //make id
+  lengthId: number; //length id
   bodyMakeId: number; //body make id
+  makeWheelbaseId: number; //make wheelbase id
   bodyMakeWidth: { feet: string; inch: string };
   bodyMakeHeight: { feet: string; inch: string };
   bodyMakeDepth: { feet: string; inch: string };
@@ -102,13 +109,17 @@ const BodyMake: React.FC<Props> = ({
   successMessage,
   makesArray,
   bodiesArray,
+  lengthsArray,
   bodyMakesArray,
+  makeWheelbasesArray,
   onGetMakes,
   onGetBodies,
+  onGetLengths,
   onGetBodyMakes,
   onCreateBodyMake,
   onUpdateBodyMake,
   onDeleteBodyMake,
+  onGetMakeWheelbases,
   onDeleteUploadImage,
   onClearDashboardState,
 }) => {
@@ -207,6 +218,25 @@ const BodyMake: React.FC<Props> = ({
                   :<div className="bodymake__details-right">{detail.content}</div>
                 </div>
               ))}
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      key: 'bodyMakeConfiguration',
+      title: 'Configuration',
+      dataIndex: 'bodyMakeConfiguration',
+      ellipsis: true,
+      width: '15rem',
+      sorter: (a: TBodyMakeTableState, b: TBodyMakeTableState) =>
+        a.bodyMakeWheelbase.localeCompare(b.bodyMakeWheelbase),
+      ...getColumnSearchProps(bodyMakeSearchInput, 'bodyMakeConfiguration', 'Configuration'),
+      render: (_text: any, record: TBodyMakeTableState) => {
+        return (
+          <>
+            <div>
+              <div>Wheelbase: {record.bodyMakeWheelbase}</div>
             </div>
           </>
         );
@@ -473,6 +503,7 @@ const BodyMake: React.FC<Props> = ({
     let createBodyMakeData: TCreateBodyMakeData = {
       body_id: values.bodyId,
       length_id: values.lengthId,
+      make_wheelbase_id: values.makeWheelbaseId,
       make_id: values.makeId,
       width: concatWidth,
       height: concatHeight,
@@ -496,8 +527,10 @@ const BodyMake: React.FC<Props> = ({
     let concatDepth = formatFeetInch(values.bodyMakeDepth.feet, values.bodyMakeDepth.inch);
 
     let updateBodyMakeData: TUpdateBodyMakeData = {
-      body_make_id: values.bodyMakeId,
       body_id: values.bodyId,
+      body_make_id: values.bodyMakeId,
+      length_id: values.lengthId,
+      make_wheelbase_id: values.makeWheelbaseId,
       make_id: values.makeId,
       width: concatWidth,
       height: concatHeight,
@@ -524,7 +557,7 @@ const BodyMake: React.FC<Props> = ({
     <>
       {/* ------- Make/Model - value is make id but display is make title -------*/}
       <Form.Item
-        className="make__form-item"
+        className="bodymake__form-item"
         label="Model"
         name="makeId"
         style={{ marginBottom: '0.8rem' }}
@@ -535,7 +568,7 @@ const BodyMake: React.FC<Props> = ({
           showSearch
           placeholder="Select a Body"
           optionFilterProp="children"
-          className="body__select-updatebodyMake"
+          className="bodymake__select"
           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {makesArray &&
@@ -548,11 +581,40 @@ const BodyMake: React.FC<Props> = ({
             })}
         </Select>
       </Form.Item>
+      {/* ------- Make Wheelbase ------- */}
+
+      <Form.Item
+        className="bodymake__form-item"
+        label="Configuration"
+        name="makeWheelbaseId"
+        style={{ marginBottom: '0.8rem' }}
+        rules={[{ required: true, message: 'Select a configuration!' }]}
+      >
+        {/* only render if makeWheelbase is not null */}
+        <Select
+          showSearch
+          placeholder="Select a configuration"
+          optionFilterProp="children"
+          className="bodymake__select"
+          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {makeWheelbasesArray &&
+            makeWheelbasesArray.map((makeWheelbase) => {
+              return (
+                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={makeWheelbase.id}>
+                  Wheelbase: {makeWheelbase.wheelbase.title}
+                </Option>
+              );
+            })}
+        </Select>
+      </Form.Item>
+
       {/* ------- Body - value is brand id but display is brand name -------*/}
       <Form.Item
-        className="make__form-item"
+        className="bodymake__form-item"
         label="Body"
         name="bodyId"
+        style={{ marginBottom: '0.8rem' }}
         rules={[{ required: true, message: 'Select a Body!' }]}
       >
         {/* only render if bodiesArray is not null */}
@@ -560,7 +622,7 @@ const BodyMake: React.FC<Props> = ({
           showSearch
           placeholder="Select a Body"
           optionFilterProp="children"
-          className="body__select-updatebodyMake"
+          className="bodymake__select"
           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {bodiesArray &&
@@ -575,6 +637,31 @@ const BodyMake: React.FC<Props> = ({
               })}
         </Select>
       </Form.Item>
+      {/* ------- Length - value is brand id but display is brand name -------*/}
+      <Form.Item
+        className="bodymake__form-item"
+        label="Length"
+        name="lengthId"
+        rules={[{ required: true, message: 'Select a Length!' }]}
+      >
+        {/* only render if lengthsArray is not null */}
+        <Select
+          showSearch
+          placeholder="Select a length"
+          optionFilterProp="children"
+          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {lengthsArray &&
+            lengthsArray.map((length) => {
+              return (
+                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={length.id}>
+                  {length.title}ft - {length.description}
+                </Option>
+              );
+            })}
+        </Select>
+      </Form.Item>
+
       {/* Dimensions */}
       <div style={{ marginBottom: '1rem' }}>Dimensions - W x H x D</div>
       {/* Body Length Width */}
@@ -666,6 +753,12 @@ const BodyMake: React.FC<Props> = ({
   let createBodyMakeFormComponent = (
     <>
       <Form
+        onValuesChange={(value) => {
+          // check if brand id is chosen
+          if (typeof value.makeId === 'number')
+            // call get series array
+            onGetMakeWheelbases(value.makeId);
+        }}
         form={createBodyMakeForm}
         name="createBodyMake"
         onKeyDown={(e) => handleFormKeyDown(e, createBodyMakeForm)}
@@ -1042,6 +1135,9 @@ const BodyMake: React.FC<Props> = ({
     onGetBodyMakes();
   }, [onGetBodyMakes]);
   useEffect(() => {
+    onGetLengths();
+  }, [onGetLengths]);
+  useEffect(() => {
     onGetMakes();
   }, [onGetMakes]);
   useEffect(() => {
@@ -1090,8 +1186,11 @@ const BodyMake: React.FC<Props> = ({
           bodyMakePrice: formattedPrice,
           bodyMakeAccessories: bodyMake.body_make_accessories, //pass the bodyaccessory array
           bodyMakeAccessoriesArrayLength: bodyMake.body_make_accessories.length, //pass in the body make accessory array length for rowSpan
+          bodyMakeWheelbase: bodyMake.make_wheelbase.wheelbase.title,
+
           available: bodyMake.available,
           bodyMakeImages: bodyMake.images,
+          bodyMakeConfiguration: bodyMake.make_wheelbase.wheelbase.title,
         });
       }
     };
@@ -1236,7 +1335,9 @@ interface StateProps {
   successMessage?: string | null;
   makesArray?: TReceivedMakeObj[] | null;
   bodiesArray?: TReceivedBodyObj[] | null;
+  lengthsArray?: TReceivedLengthObj[] | null;
   bodyMakesArray?: TReceivedBodyMakeObj[] | null;
+  makeWheelbasesArray?: TReceivedMakeWheelbaseObj[] | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
@@ -1245,7 +1346,9 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     successMessage: state.dashboard.successMessage,
     makesArray: state.dashboard.makesArray,
     bodiesArray: state.dashboard.bodiesArray,
+    lengthsArray: state.dashboard.lengthsArray,
     bodyMakesArray: state.dashboard.bodyMakesArray,
+    makeWheelbasesArray: state.dashboard.makeWheelbasesArray,
   };
 };
 interface DispatchProps {
@@ -1253,11 +1356,15 @@ interface DispatchProps {
   onGetMakes: typeof actions.getMakes;
   // Body
   onGetBodies: typeof actions.getBodies;
+  // Length
+  onGetLengths: typeof actions.getLengths;
   // Body Make
   onGetBodyMakes: typeof actions.getBodyMakes;
   onCreateBodyMake: typeof actions.createBodyMake;
   onUpdateBodyMake: typeof actions.updateBodyMake;
   onDeleteBodyMake: typeof actions.deleteBodyMake;
+  // Get make wheelbase
+  onGetMakeWheelbases: typeof actions.getMakeWheelbases;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -1267,6 +1374,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onGetMakes: () => dispatch(actions.getMakes()),
     onGetBodies: () => dispatch(actions.getBodies()),
+    onGetLengths: () => dispatch(actions.getLengths()),
     // Body Make
     onGetBodyMakes: () => dispatch(actions.getBodyMakes()),
     onCreateBodyMake: (createBodyMakeData, imageTag, imageFiles) =>
@@ -1274,6 +1382,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onUpdateBodyMake: (updateBodyMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateBodyMake(updateBodyMakeData, imageTag, imageFiles)),
     onDeleteBodyMake: (body_make_id) => dispatch(actions.deleteBodyMake(body_make_id)),
+    // make wheelbases
+    onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

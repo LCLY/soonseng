@@ -455,7 +455,6 @@ export type TReceivedMakeWheelbaseObj = {
   id: number;
   make: TReceivedMakeObj;
   wheelbase: TReceivedWheelbaseObj;
-  length: number;
 };
 
 /* --------------------------- */
@@ -466,7 +465,6 @@ export interface CreateMakeWheelbaseAction {
   type: typeof actionTypes.CREATE_MAKEWHEELBASE;
   make_id: number;
   wheelbase_id: number;
-  length: string;
 }
 /*  States */
 export interface CreateMakeWheelbaseStartAction {
@@ -512,7 +510,6 @@ export interface UpdateMakeWheelbaseAction {
   make_wheelbase_id: number;
   make_id: number;
   wheelbase_id: number;
-  length: string;
 }
 /*  States */
 export interface UpdateMakeWheelbaseStartAction {
@@ -904,8 +901,9 @@ export interface DeleteLengthFailedAction {
 // Body make data when creating
 export type TCreateBodyMakeData = {
   body_id: number;
-  length_id: number;
   make_id: number;
+  length_id: number;
+  make_wheelbase_id: number;
   depth: string;
   width: string;
   height: string;
@@ -915,6 +913,8 @@ export type TUpdateBodyMakeData = {
   body_make_id: number;
   body_id: number;
   make_id: number;
+  length_id: number;
+  make_wheelbase_id: number;
   depth: string;
   width: string;
   height: string;
@@ -924,6 +924,7 @@ export type TUpdateBodyMakeData = {
 // Types
 export type TReceivedBodyMakeObj = {
   id: number;
+  length: TReceivedLengthObj;
   make_wheelbase: TReceivedMakeWheelbaseObj;
   body: TReceivedBodyObj;
   width: string;

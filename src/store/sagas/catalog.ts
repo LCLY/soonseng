@@ -41,7 +41,7 @@ export function* getCatalogBodyMakesSaga(action: AppActions) {
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getCatalogBodyMakesSucceed(response.data.body_makes));
+    yield put(actions.getCatalogBodyMakesSucceed(response.data.make, response.data.wheelbase));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.getCatalogBodyMakesFailed, error.response.data.messages);
