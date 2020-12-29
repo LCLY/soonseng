@@ -123,12 +123,9 @@
     &-outerdiv {
       overflow: hidden;
       @include respond-to($small-phone) {
-        height: 60rem;
         overflow: hidden;
       }
       @include respond-to($phone-only) {
-        // height: 60rem;
-        height: 1rem;
         min-height: 100vh;
         overflow: hidden;
       }

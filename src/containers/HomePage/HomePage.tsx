@@ -10,7 +10,11 @@ import gsap from 'gsap';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Carousel } from 'antd';
 import ScrollAnimation from 'react-animate-on-scroll';
-import { Parallax, Background } from 'react-parallax';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
+
+/* Util */
+import homepageImage from 'src/img/hino_homepage.jpg';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 /**
  * Home page of the website
  * @return {*}
@@ -18,6 +22,7 @@ import { Parallax, Background } from 'react-parallax';
  */
 function HomePage() {
   const [animationIsMoving, setAnimationIsMoving] = useState(false);
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     gsap.to('.homepage__first-button', {
@@ -129,13 +134,8 @@ function HomePage() {
   return (
     <>
       <NavbarComponent activePage="home" />
-
-      <Parallax strength={500}>
-        <Background className="custom-bg">
-          <div className="homepage__background-outerdiv">
-            <div className="homepage__background-image" />
-          </div>
-        </Background>
+  
+      <ParallaxContainer bgImageUrl={homepageImage} colorSettings="none" bgPosition={width < 576 ? '80% 0' : 'center'}>
         <section className="homepage__section-first-parent">
           <div className="homepage__section-first">
             <div className="homepage__first-title-div">
@@ -160,7 +160,7 @@ function HomePage() {
             </div>
           </div>
         </section>
-      </Parallax>
+      </ParallaxContainer>
 
       <Container>
         <section className="homepage__section-values">

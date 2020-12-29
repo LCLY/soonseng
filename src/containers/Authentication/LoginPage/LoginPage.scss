@@ -1,9 +1,13 @@
 .login {
   &__section {
-    padding: 3rem;
-
+    @include respond-to($small-phone) {
+      padding: 1rem;
+    }
     @include respond-to($phone-only) {
       padding: 1rem;
+    }
+    @include respond-to($tablet-portrait-up) {
+      padding: 3rem;
     }
 
     &-header {
@@ -19,7 +23,7 @@
     &-div {
       // border: 1px solid $primary-color-1;
       padding: 2rem;
-      width: 40rem;
+
       margin-bottom: 10rem;
       margin-top: 2rem;
       border-top-right-radius: 5rem;
@@ -28,9 +32,14 @@
       background: rgba($primary-color-4, 0.5);
       @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
-      @include respond-to(phone-only) {
+      @include respond-to($small-phone) {
         width: 90%;
-        padding: 2rem;
+      }
+      @include respond-to($phone-only) {
+        width: 90%;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 40rem;
       }
     }
 
@@ -44,9 +53,8 @@
       @include shadow-func(0rem, 0rem, 0.5rem, 0.01rem, rgba(255, 255, 255, 0.789));
       @include glassMorph(rgba(0, 0, 0, 0.07), 20px, rgba(225, 225, 225, 0.056), 2rem);
 
-      @include respond-to($phone-only) {
+      @include respond-to($small-phone) {
         min-height: 80vh;
-        // padding-top: 0;
       }
     }
 
@@ -64,8 +72,14 @@
       & label {
         color: white !important;
         width: 10rem;
+        @include respond-to($small-phone) {
+          display: none !important;
+        }
         @include respond-to($phone-only) {
           display: none !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          display: flex !important;
         }
       }
     }

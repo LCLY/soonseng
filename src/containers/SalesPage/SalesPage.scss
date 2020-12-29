@@ -38,30 +38,47 @@
     @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
     @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
+    @include respond-to($small-phone) {
+      margin: 1rem 0.5rem;
+    }
+
     &-header {
-      font-size: 5rem;
       font-family: $font-bebasneue;
       text-align: center;
       color: $primary-color-4;
       -webkit-text-fill-color: $primary-color-4; /* Will override color (regardless of order) */
-      -webkit-text-stroke-width: 0.3px;
+      -webkit-text-stroke-width: 0.5px;
       -webkit-text-stroke-color: white;
       // changing the divider's color
       &-divider {
         border-color: white !important;
       }
 
-      @include respond-to($phone-only) {
-        -webkit-text-stroke-width: 0.3px;
+      @include respond-to($small-phone) {
+        -webkit-text-stroke-width: 0.5px;
         font-size: 3.2rem;
+      }
+      @include respond-to($phone-only) {
+        -webkit-text-stroke-width: 0.5px;
+        font-size: 3.2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        -webkit-text-stroke-width: 0.5px;
+        font-size: 5rem;
       }
     }
 
     // the innerdiv wrapping the description on the left and choices on the right
     &-innerdiv {
       display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
       @include respond-to(phone-only) {
         flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
       }
 
       & .ant-card {
@@ -77,6 +94,9 @@
       width: 100%;
       object-fit: cover;
 
+      @include respond-to($small-phone) {
+        height: 25rem;
+      }
       @include respond-to($phone-only) {
         height: 25vh;
       }
@@ -84,7 +104,10 @@
         height: 22rem;
       }
       @include respond-to($tablet-landscape-up) {
-        height: 30rem;
+        height: 30vh;
+      }
+      @include respond-to($desktop-up) {
+        height: 40vh;
       }
 
       &-unavailabletext {
@@ -153,13 +176,17 @@
       color: $secondary-color-2;
       margin-bottom: 1rem;
       margin-right: 2rem;
-      width: 45%;
       padding-right: 3rem;
 
-      @include respond-to(tablet-portrait-up) {
+      @include respond-to($phone-only) {
+        width: 100%;
+        padding-right: 0;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 45%;
         padding-right: 1rem;
       }
-      @include respond-to(phone-only) {
+      @include respond-to($small-phone) {
         width: 100%;
         padding-right: 0;
       }
@@ -170,10 +197,16 @@
     &-right {
       display: flex;
       flex-direction: column;
-      width: 55%;
+
       border-radius: 5px;
-      @include respond-to(phone-only) {
+      @include respond-to($small-phone) {
         width: 100%;
+      }
+      @include respond-to($phone-only) {
+        width: 100%;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 55%;
       }
     }
 
@@ -277,11 +310,27 @@
       grid-auto-rows: 3fr;
       justify-items: center;
 
-      @include respond-to(phone-only) {
+      @include respond-to($small-phone) {
+        max-height: 50vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        grid-gap: 0.5rem;
+        padding-right: 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        @include customScrollbar(0.2rem, 0.2rem, 0.5rem, white, rgba(255, 255, 255, 0.44));
+      }
+      @include respond-to($phone-only) {
         grid-gap: 0.5rem;
         grid-template-columns: repeat(2, 1fr);
+        max-height: 50vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        grid-gap: 0.5rem;
+        padding: 0 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        @include customScrollbar(0.2rem, 0.2rem, 0.5rem, white, rgba(255, 255, 255, 0.44));
       }
-      @include respond-to(tablet-portrait-up) {
+      @include respond-to($tablet-portrait-up) {
         grid-gap: 2rem;
         grid-template-columns: repeat(3, 1fr);
       }
@@ -289,10 +338,10 @@
       &--twocolumn {
         grid-template-columns: repeat(2, 1fr);
 
-        @include respond-to(tablet-landscape-up) {
+        @include respond-to($tablet-landscape-up) {
           font-size: 1.3rem;
         }
-        @include respond-to(tablet-portrait-up) {
+        @include respond-to($tablet-portrait-up) {
           font-size: 1.2rem;
         }
       }
@@ -318,6 +367,9 @@
     // the select text above the small button
     /* ---------------------- */
     &-selecttext {
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
       @include respond-to(phone-only) {
         font-size: 1.2rem;
       }
@@ -355,10 +407,12 @@
         color: white;
       }
 
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
       @include respond-to(phone-only) {
         font-size: 1.2rem;
       }
-
       @include respond-to(tablet-portrait-up) {
         font-size: 1.5rem;
       }
@@ -412,10 +466,13 @@
           width: 25%;
           font-family: $font-firesans;
           // color: white;
-          @include respond-to(phone-only) {
+          @include respond-to($small-phone) {
             font-size: 1.2rem;
           }
-          @include respond-to(tablet-portrait-up) {
+          @include respond-to($phone-only) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($tablet-portrait-up) {
             font-size: 1.5rem;
           }
 
@@ -424,10 +481,13 @@
             width: 52%;
             font-family: $font-firesans;
             color: rgba(0, 0, 0, 0.514);
-            @include respond-to(phone-only) {
+            @include respond-to($small-phone) {
               font-size: 1.2rem;
             }
-            @include respond-to(tablet-portrait-up) {
+            @include respond-to($phone-only) {
+              font-size: 1.2rem;
+            }
+            @include respond-to($tablet-portrait-up) {
               font-size: 1.5rem;
             }
           }
@@ -450,20 +510,26 @@
             overflow: hidden;
             text-overflow: ellipsis;
             // white-space: nowrap;
-            @include respond-to(phone-only) {
+            @include respond-to($small-phone) {
               font-size: 1rem;
             }
-            @include respond-to(tablet-portrait-up) {
+            @include respond-to($phone-only) {
+              font-size: 1rem;
+            }
+            @include respond-to($tablet-portrait-up) {
               font-size: 1.3rem;
             }
           }
         }
       }
       &-dimension {
-        @include respond-to(phone-only) {
+        @include respond-to($small-phone) {
           font-size: 1rem !important;
         }
-        @include respond-to(tablet-portrait-up) {
+        @include respond-to($phone-only) {
+          font-size: 1rem !important;
+        }
+        @include respond-to($tablet-portrait-up) {
           font-size: 1.2rem;
         }
       }
@@ -474,19 +540,25 @@
         font-weight: bolder;
         color: $primary-color-4;
         font-family: $font-opensans;
-        @include respond-to(phone-only) {
+        @include respond-to($small-phone) {
           font-size: 1.2rem;
         }
-        @include respond-to(tablet-portrait-up) {
+        @include respond-to($phone-only) {
+          font-size: 1.2rem;
+        }
+        @include respond-to($tablet-portrait-up) {
           font-size: 1.5rem;
         }
         // price for model
         &--model {
           color: black;
-          @include respond-to(phone-only) {
+          @include respond-to($small-phone) {
             font-size: 1rem;
           }
-          @include respond-to(tablet-portrait-up) {
+          @include respond-to($phone-only) {
+            font-size: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
             font-size: 1.3rem;
           }
         }
@@ -538,11 +610,15 @@
       background: rgba(255, 255, 255, 0.474);
       padding: 2rem !important;
       border-radius: 1rem;
-      @include respond-to(phone-only) {
+      @include respond-to($small-phone) {
         font-size: 1.2rem;
         padding: 1rem 1rem 0 1rem;
       }
-      @include respond-to(tablet-portrait-up) {
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+        padding: 1rem 1rem 0 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
         font-size: 1.4rem;
         padding: 0;
       }
@@ -674,8 +750,14 @@
       background: $primary-color-4;
 
       @include glassMorph(rgba($primary-color-4, 0.4), 20px, rgba(121, 14, 14, 0.083), 1rem);
-      @include respond-to(phone-only) {
+      @include respond-to($small-phone) {
         display: none;
+      }
+      @include respond-to($phone-only) {
+        display: none;
+      }
+      @include respond-to($tablet-portrait-up) {
+        display: block;
       }
 
       // overwrite the divider color to white in steps
@@ -780,8 +862,14 @@
         cursor: default;
       }
 
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
       @include respond-to($phone-only) {
         font-size: 1.2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem;
       }
     }
 
@@ -790,18 +878,21 @@
       display: flex;
       width: 100%;
 
-      @include respond-to(phone-only) {
+      @include respond-to($small-phone) {
         flex-direction: column;
+      }
+      @include respond-to($phone-only) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
       }
 
       // most outerdiv
       &-outerdiv {
-        // background: $primary-color-4;
-        // border-top-left-radius: 10rem;
-        // border-top-right-radius: 10rem;
-        // border-bottom-right-radius: 10rem;
-        // border: 1px solid $primary-color-4;
-        // padding: 5rem;
         &:not(:first-child) {
           padding-top: 5rem;
         }
@@ -815,25 +906,43 @@
       // image on every row
       /* ------------------------------- */
       &-image {
-        width: 20rem;
-        height: 15rem;
         object-fit: cover;
 
-        @include respond-to(phone-only) {
+        @include respond-to($small-phone) {
           width: 100%;
           height: 20rem;
         }
-        @include respond-to(desktop-up) {
-          width: 40rem;
+        @include respond-to($phone-only) {
+          width: 100%;
+          height: 20rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 100%;
           height: 30rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 30rem;
+          height: 20rem;
         }
 
         &-div {
           user-select: none;
-          padding: 2rem;
+
+          @include respond-to($small-phone) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
           @include respond-to(phone-only) {
             padding: 0;
             margin-bottom: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
+          @include respond-to($tablet-landscape-up) {
+            padding: 2rem;
+            margin-bottom: 0;
           }
         }
       }
@@ -844,11 +953,20 @@
         width: 100%;
         margin-right: 1rem;
         border-radius: 1rem;
-        padding: 2rem 0.5rem 2rem 2rem;
         background: rgba(255, 255, 255, 0.5);
 
-        @include respond-to(phone-only) {
+        @include respond-to($small-phone) {
           padding: 1rem;
+        }
+        @include respond-to($phone-only) {
+          padding: 1rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          padding: 1rem;
+          // padding: 2rem 0.5rem 2rem 2rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          padding: 2rem;
         }
 
         // the header title e.g. 15ft wooden cargo
@@ -858,6 +976,14 @@
           font-weight: bolder;
           color: $primary-color-4;
 
+          @include respond-to($small-phone) {
+            font-size: 1.4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 1rem;
+          }
+
           @include respond-to(phone-only) {
             font-size: 1.4rem;
             overflow: hidden;
@@ -866,26 +992,45 @@
             margin-right: 1rem;
           }
 
+          @include respond-to($tablet-portrait-up) {
+            font-size: 2.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 0;
+          }
+
           // the grand total price at the bottom
           &-price {
-            font-size: 2.5rem;
             font-family: $font-roboto;
             font-weight: bolder;
             // padding-right: 1.5rem;
             // margin-bottom: 0.5rem;
             color: $primary-color-4;
+            @include respond-to($small-phone) {
+              font-size: 1.5rem;
+            }
             @include respond-to(phone-only) {
               font-size: 1.5rem;
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 2.5rem;
             }
 
             // the prediscount on the top
             &--prediscount {
-              font-size: 1.8rem;
               font-family: $font-roboto;
-              padding-right: 1.5rem;
               font-weight: bolder;
+              @include respond-to($small-phone) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
               @include respond-to(phone-only) {
                 font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 1.8rem;
                 padding-right: 0;
               }
             }
@@ -894,13 +1039,16 @@
 
         // the subheader title e.g. HINO 300 Series model name or Insurance
         &-subheader {
-          font-size: 1.7rem;
           color: rgba(0, 0, 0, 0.768);
-          // padding-left: 1.5rem;
           font-family: $font-firesans;
-
-          @include respond-to(phone-only) {
+          @include respond-to($small-phone) {
             font-size: 1.3rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.3rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.7rem;
           }
 
           &--discount {
@@ -911,40 +1059,47 @@
           &--totalroadprice {
             background: white;
             margin-top: 1rem;
-            margin-right: 1.5rem;
             padding: 0.5rem 1rem;
 
-            @include respond-to($phone-only) {
-              margin-right: 0;
-            }
-
             &-text {
-              font-size: 2.2rem;
               color: black;
-              // padding-left: 1.5rem;
               font-family: $font-firesans;
-              @include respond-to(phone-only) {
+              @include respond-to($small-phone) {
                 font-size: 1.5rem;
+              }
+              @include respond-to($phone-only) {
+                font-size: 1.5rem;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 2.2rem;
               }
             }
           }
 
           &-price {
-            padding-right: 1.5rem;
+            font-size: 1.2rem;
+            @include respond-to($small-phone) {
+            }
             @include respond-to($phone-only) {
-              padding-right: 0;
-              font-size: 1.2rem;
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 1.5rem;
             }
 
             // the prediscount price at bottom
             &--prediscount {
-              font-size: 1.7rem;
               font-weight: bolder;
-              padding-right: 1.5rem;
-
-              @include respond-to(phone-only) {
-                padding-right: 0;
+              @include respond-to($small-phone) {
                 font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($phone-only) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 1.7rem;
+                padding-right: 0;
               }
             }
           }
@@ -979,19 +1134,32 @@
       & .ant-collapse-header {
         color: $primary-color-3 !important;
 
-        @include respond-to(phone-only) {
+        @include respond-to($small-phone) {
           font-size: 1.1rem !important;
+          padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.1rem !important;
+          padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.5rem !important;
           padding: 0.5rem 0.5rem 0.5rem 4rem !important;
         }
       }
 
       & .ant-collapse-content-box {
-        padding-top: 0 !important;
-        padding-left: 4rem !important;
-
+        @include respond-to($small-phone) {
+          padding-left: 2rem !important;
+          padding-right: 0 !important;
+        }
         @include respond-to($phone-only) {
           padding-left: 2rem !important;
           padding-right: 0 !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          padding-top: 0 !important;
+          padding-left: 4rem !important;
         }
       }
 
@@ -1022,8 +1190,14 @@
           padding: 1rem 2rem;
           border-radius: 1rem;
 
+          @include respond-to($small-phone) {
+            font-size: 1rem;
+          }
           @include respond-to($phone-only) {
             font-size: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.5rem;
           }
         }
 
@@ -1081,8 +1255,14 @@
       &:not(:first-child) {
         margin-top: 1rem;
       }
+      @include respond-to($small-phone) {
+        margin-left: -1.8rem;
+      }
       @include respond-to($phone-only) {
         margin-left: -1.8rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-left: 0;
       }
     }
 
@@ -1091,8 +1271,14 @@
       font-size: 1.7rem;
       padding-left: 2rem;
       font-weight: bolder;
+      @include respond-to($small-phone) {
+        font-size: 1.3rem;
+      }
       @include respond-to($phone-only) {
         font-size: 1.3rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.7rem;
       }
 
       &-outerdiv {
@@ -1107,11 +1293,17 @@
 
       &-text {
         color: black;
-        font-size: 1.6rem;
+
         font-family: $font-opensans;
 
+        @include respond-to($small-phone) {
+          font-size: 1.3rem;
+        }
         @include respond-to($phone-only) {
           font-size: 1.3rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.6rem;
         }
       }
     }
@@ -1120,9 +1312,15 @@
     &-more {
       display: flex;
       justify-content: flex-end;
-      margin-right: 1.5rem;
-      @include respond-to(phone-only) {
+
+      @include respond-to($small-phone) {
         margin-right: 0.5rem;
+      }
+      @include respond-to($phone-only) {
+        margin-right: 0.5rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-right: 1.5rem;
       }
 
       &-icon {
@@ -1135,8 +1333,14 @@
           background: rgba($primary-color-4, 0.3);
           margin-bottom: 1rem;
 
+          @include respond-to($small-phone) {
+            font-size: 1.2rem;
+          }
           @include respond-to($phone-only) {
             font-size: 1.2rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.5rem;
           }
 
           &:hover {
@@ -1187,15 +1391,22 @@
 
     /* outer div wrapping breadcrumb to push the content to further bottom */
     &-outerdiv {
-      padding: 0.5rem 4rem 0.5rem 4rem;
       border-left: 0.5rem solid $primary-color-2;
       background: rgba(255, 255, 255, 0.7);
-      margin-bottom: 3rem;
-
+      @include respond-to($small-phone) {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem 0.5rem 1rem;
+      }
       @include respond-to(phone-only) {
         margin-bottom: 1rem;
         margin-top: 1rem;
         padding: 0.5rem 1rem 0.5rem 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-top: 1rem;
+        margin-bottom: 3rem;
+        padding: 0.5rem 4rem 0.5rem 4rem;
       }
     }
 

@@ -4,6 +4,7 @@ import './ParallaxContainer.scss';
 interface ParallaxContainerProps {
   bgImageUrl: string;
   colorSettings?: string;
+  bgPosition?: string;
 }
 
 type Props = ParallaxContainerProps;
@@ -12,6 +13,7 @@ const ParallaxContainer: React.FC<Props> = ({
   bgImageUrl,
   children,
   colorSettings = 'radial-gradient(rgba(0,0,0,0.3) 60%, rgba(0, 0, 0, 1))',
+  bgPosition = 'center center',
 }) => {
   return (
     <div className="e-with-fixed-bg">
@@ -20,7 +22,7 @@ const ParallaxContainer: React.FC<Props> = ({
           className="bg"
           style={{
             backgroundSize: 'cover',
-            backgroundPosition: 'center center',
+            backgroundPosition: bgPosition,
             backgroundImage: `url(${bgImageUrl})`,
           }}
         >
