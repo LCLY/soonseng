@@ -1,5 +1,8 @@
 .customcontainer {
   &__div {
+    @include respond-to($small-phone) {
+      margin: 0 1rem;
+    }
     @include respond-to(phone-only) {
       margin: 0 1rem;
     }

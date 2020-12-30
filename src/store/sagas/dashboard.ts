@@ -9,7 +9,6 @@ import {
   UPLOAD_TO_BODY,
   UPLOAD_TO_BODY_MAKE,
   UPLOAD_TO_ACCESSORY,
-  UPLOAD_TO_BODY_ACCESSORY,
 } from 'src/shared/constants';
 
 /**
@@ -671,6 +670,138 @@ export function* deleteBodySaga(action: AppActions) {
     }
   }
 }
+
+/* ================================================================== */
+/*   Body Accessory (Body Page) (tail) */
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Create Body Accessory
+/* ------------------------------- */
+export function* createBodyAccessorySaga(action: AppActions) {
+  yield put(actions.createBodyAccessoryStart());
+
+  let url = '';
+
+  if ('body_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
+  }
+
+  let body_accessory = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('body_id' in action && 'accessory_id' in action) {
+    body_accessory = {
+      body_id: action.body_id,
+      accessory_id: action.accessory_id,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { body_accessory });
+    yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createBodyAccessoryFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createBodyAccessoryFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Get Body Accessories
+/* ------------------------------- */
+export function* getBodyAccessoriesSaga(action: AppActions) {
+  yield put(actions.getBodyAccessoriesStart());
+
+  let url = '';
+  if ('body_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
+  }
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getBodyAccessoriesSucceed(response.data.body_accessories));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getBodyAccessoriesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getBodyAccessoriesFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Update Body Accessory
+/* ------------------------------- */
+export function* updateBodyAccessorySaga(action: AppActions) {
+  yield put(actions.updateBodyAccessoryStart());
+
+  let url = '';
+  let body_accessory = {};
+  if ('body_id' in action && 'accessory_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
+    body_accessory = {
+      body_id: action.body_id,
+      accessory_id: action.accessory_id,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { body_accessory });
+    yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateBodyAccessoryFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateBodyAccessoryFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Delete Body Accessory
+/* ------------------------------- */
+export function* deleteBodyAccessorySaga(action: AppActions) {
+  yield put(actions.deleteBodyAccessoryStart());
+
+  let url = '';
+  if ('body_id' in action && 'body_accessory_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory/${action.body_accessory_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteBodyAccessoryFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteBodyAccessoryFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------------------ */
+//    Get Body Associated Accessories
+/* ------------------------------------------ */
+export function* getBodyAssociatedAccessoriesSaga(_action: AppActions) {
+  yield put(actions.getBodyAssociatedAccessoriesStart());
+
+  let url = process.env.REACT_APP_API + `/pages/dashboard/get_body_associated_accessories`;
+
+  try {
+    let response = yield axios.get(url);
+    // if user is not uploading files, then straight give success
+    yield put(actions.getBodyAssociatedAccessoriesSucceed(response.data.body_associated));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getBodyAssociatedAccessoriesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getBodyAssociatedAccessoriesFailed, 'Error');
+    }
+  }
+}
+
 /* ================================================================== */
 /*   Length (Body Page) (tail) */
 /* ================================================================== */
@@ -916,153 +1047,140 @@ export function* deleteBodyMakeSaga(action: AppActions) {
   }
 }
 /* ================================================================== */
-/*   Body Accessory (Body Page) (tail) */
+/*   Body Make Accessory  */
 /* ================================================================== */
 
 /* ------------------------------- */
-//    Create Body Accessory
+//    Create Body Make Accessory
 /* ------------------------------- */
-export function* createBodyAccessorySaga(action: AppActions) {
-  yield put(actions.createBodyAccessoryStart());
+export function* createBodyMakeAccessorySaga(action: AppActions) {
+  yield put(actions.createBodyMakeAccessoryStart());
 
   let url = '';
 
-  if ('body_id' in action) {
-    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
+  if ('body_make_id' in action) {
+    url = process.env.REACT_APP_API + `/products/body_make/${action.body_make_id}/body_make_accessories`;
   }
 
-  let body_accessory = {};
+  let formData = {};
   // Type guard, check if the "key" exist in the action object
-  if ('body_id' in action && 'accessory_id' in action) {
-    body_accessory = {
-      body_id: action.body_id,
+  if ('accessory_id' in action && 'price' in action) {
+    formData = {
+      price: action.price,
       accessory_id: action.accessory_id,
     };
   }
 
   try {
-    let response = yield axios.post(url, { body_accessory });
-    if ('imageTag' in action && 'imageFiles' in action) {
-      yield succeedActionWithImageUpload(
-        UPLOAD_TO_BODY_ACCESSORY,
-        response,
-        imageIsUploaded,
-        actions.uploadImage,
-        response.data.body_accessories,
-        actions.createBodyAccessorySucceed,
-        { imageTag: action.imageTag, imageFiles: action.imageFiles },
-      );
-    }
+    let response = yield axios.post(url, formData);
+    yield put(actions.createBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.createBodyAccessoryFailed, error.response.data.error);
+      yield setPromiseError(error, actions.createBodyMakeAccessoryFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.createBodyAccessoryFailed, 'Error');
+      yield setPromiseError(error, actions.createBodyMakeAccessoryFailed, 'Error');
     }
   }
 }
 
 /* ------------------------------- */
-//    Get Body Accessories
+//    Get Body Make Accessories
 /* ------------------------------- */
-export function* getBodyAccessoriesSaga(action: AppActions) {
-  yield put(actions.getBodyAccessoriesStart());
+export function* getBodyMakeAccessoriesSaga(action: AppActions) {
+  yield put(actions.getBodyMakeAccessoriesStart());
 
   let url = '';
-  if ('body_id' in action) {
-    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
+  if ('body_make_id' in action) {
+    url = process.env.REACT_APP_API + `/products/body_make/${action.body_make_id}/body_make_accessories`;
   }
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getBodyAccessoriesSucceed(response.data.body_accessories));
+    yield put(actions.getBodyMakeAccessoriesSucceed(response.data.body_make_accessories));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.getBodyAccessoriesFailed, error.response.data.error);
+      yield setPromiseError(error, actions.getBodyMakeAccessoriesFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.getBodyAccessoriesFailed, 'Error');
+      yield setPromiseError(error, actions.getBodyMakeAccessoriesFailed, 'Error');
     }
   }
 }
 
 /* ------------------------------- */
-//    Update Body Accessory
+//    Update Body Make Accessory
 /* ------------------------------- */
-export function* updateBodyAccessorySaga(action: AppActions) {
-  yield put(actions.updateBodyAccessoryStart());
+export function* updateBodyMakeAccessorySaga(action: AppActions) {
+  yield put(actions.updateBodyMakeAccessoryStart());
 
   let url = '';
-  let body_accessory = {};
-  if ('body_id' in action && 'accessory_id' in action) {
-    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory`;
-    body_accessory = {
-      body_id: action.body_id,
+  if ('body_make_id' in action && 'body_make_accessory_id' in action) {
+    url =
+      process.env.REACT_APP_API +
+      `/products/body_make/${action.body_make_id}/body_make_accessories/${action.body_make_accessory_id}`;
+  }
+
+  let formData = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('accessory_id' in action && 'price' in action) {
+    formData = {
+      price: action.price,
       accessory_id: action.accessory_id,
     };
   }
 
   try {
-    let response = yield axios.put(url, { body_accessory });
-    if ('imageTag' in action && 'imageFiles' in action) {
-      yield succeedActionWithImageUpload(
-        UPLOAD_TO_BODY_ACCESSORY,
-        response,
-        imageIsUploaded,
-        actions.uploadImage,
-        response.data.body_accessories,
-        actions.updateBodyAccessorySucceed,
-        { imageTag: action.imageTag, imageFiles: action.imageFiles },
-      );
-    }
+    let response = yield axios.put(url, formData);
+    yield put(actions.updateBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.updateBodyAccessoryFailed, error.response.data.error);
+      yield setPromiseError(error, actions.updateBodyMakeAccessoryFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.updateBodyAccessoryFailed, 'Error');
+      yield setPromiseError(error, actions.updateBodyMakeAccessoryFailed, 'Error');
     }
   }
 }
 
 /* ------------------------------- */
-//    Delete Body Accessory
+//    Delete Body Make Accessory
 /* ------------------------------- */
-export function* deleteBodyAccessorySaga(action: AppActions) {
-  yield put(actions.deleteBodyAccessoryStart());
+export function* deleteBodyMakeAccessorySaga(action: AppActions) {
+  yield put(actions.deleteBodyMakeAccessoryStart());
 
   let url = '';
-  if ('body_id' in action && 'body_accessory_id' in action) {
-    url = process.env.REACT_APP_API + `/tail/bodies/${action.body_id}/body_accessory/${action.body_accessory_id}`;
+  if ('body_make_id' in action && 'body_make_accessory_id' in action) {
+    url =
+      process.env.REACT_APP_API +
+      `/products/body_make/${action.body_make_id}/body_make_accessories/${action.body_make_accessory_id}`;
   }
 
   try {
     let response = yield axios.delete(url);
-    // if user is not uploading files, then straight give success
-    yield put(actions.deleteBodyAccessorySucceed(response.data.body_accessories, response.data.success));
+    yield put(actions.deleteBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.deleteBodyAccessoryFailed, error.response.data.error);
+      yield setPromiseError(error, actions.deleteBodyMakeAccessoryFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.deleteBodyAccessoryFailed, 'Error');
+      yield setPromiseError(error, actions.deleteBodyMakeAccessoryFailed, 'Delete Body Make Accessory Failed');
     }
   }
 }
-/* ------------------------------- */
-//    Get Body Associated Accessories
-/* ------------------------------- */
-export function* getBodyAssociatedAccessoriesSaga(_action: AppActions) {
-  yield put(actions.getBodyAssociatedAccessoriesStart());
 
-  let url = process.env.REACT_APP_API + `/pages/dashboard/get_body_associated_accessories`;
+/* ------------------------------------------ */
+//    Get Dimension Associated Accessories
+/* ------------------------------------------ */
+export function* getDimensionAssociatedAccessoriesSaga(_action: AppActions) {
+  yield put(actions.getDimensionAssociatedAccessoriesStart());
+
+  let url = process.env.REACT_APP_API + `/pages/dashboard/get_dimension_associated_accessories`;
 
   try {
     let response = yield axios.get(url);
-    // if user is not uploading files, then straight give success
-    yield put(actions.getBodyAssociatedAccessoriesSucceed(response.data.body_associated));
+    yield put(actions.getDimensionAssociatedAccessoriesSucceed(response.data.dimension_associated));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.getBodyAssociatedAccessoriesFailed, error.response.data.error);
+      yield setPromiseError(error, actions.getDimensionAssociatedAccessoriesFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.getBodyAssociatedAccessoriesFailed, 'Error');
+      yield setPromiseError(error, actions.getDimensionAssociatedAccessoriesFailed, 'Error');
     }
   }
 }

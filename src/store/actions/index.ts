@@ -36,193 +36,164 @@ export {
 } from './catalog';
 
 export {
+  /* =========================================== */
+  // Miscellaneous
+  /* =========================================== */
   // Clear all dashboard state
   clearDashboardState,
-  /* =================== */
-  //   Image(s)
-  /* =================== */
-  // Upload
+  // Upload Image(s)
   uploadImage,
   uploadImageStart,
   uploadImageFailed,
   uploadImageSucceed,
-  // Delete
+  // Delete Image(s)
   deleteUploadImage,
   deleteUploadImageStart,
   deleteUploadImageFailed,
   deleteUploadImageSucceed,
-  /* --------------------------------------- */
-  /* =================== */
+  /* =========================================== */
   //  Brand (Make Page)
-  /* =================== */
-  // Create brand
+  /* =========================================== */
   createBrand,
   createBrandStart,
   createBrandFailed,
   createBrandSucceed,
-  // Get brands
   getBrands,
   getBrandsStart,
   getBrandsSucceed,
   getBrandsFailed,
-  // Update brand
   updateBrand,
   updateBrandStart,
   updateBrandSucceed,
   updateBrandFailed,
-  /* =================== */
+  /* =========================================== */
   // Wheelbase (Make Page)
-  /* =================== */
-  // Create Wheelbase
+  /* =========================================== */
   createWheelbase,
   createWheelbaseStart,
   createWheelbaseFailed,
   createWheelbaseSucceed,
-  // Get Wheelbases
   getWheelbases,
   getWheelbasesStart,
   getWheelbasesFailed,
   getWheelbasesSucceed,
-  // Get Wheelbases
   updateWheelbase,
   updateWheelbaseStart,
   updateWheelbaseFailed,
   updateWheelbaseSucceed,
-  /* =================== */
+  /* =========================================== */
   //  Make (Make Page)
-  /* =================== */
-  // Create Make
+  /* =========================================== */
   createMake,
   createMakeStart,
   createMakeFailed,
   createMakeSucceed,
-  // Get Make
   getMakes,
   getMakesStart,
   getMakesFailed,
   getMakesSucceed,
-  // Update Make
   updateMake,
   updateMakeStart,
   updateMakeFailed,
   updateMakeSucceed,
-  // Get Series
+  /* =========================================== */
+  // Series (Make Page)
+  /* =========================================== */
   getSeries,
   getSeriesStart,
   getSeriesFailed,
   getSeriesSucceed,
-  /* =================== */
+  /* =========================================== */
   //  MakeWheelbase (Make Page)
-  /* =================== */
-  // Create MakeWheelbase
+  /* =========================================== */
   createMakeWheelbase,
   createMakeWheelbaseStart,
   createMakeWheelbaseFailed,
   createMakeWheelbaseSucceed,
-  // Get MakeWheelbase
   getMakeWheelbases,
   getMakeWheelbasesStart,
   getMakeWheelbasesFailed,
   getMakeWheelbasesSucceed,
-  // Update MakeWheelbase
   updateMakeWheelbase,
   updateMakeWheelbaseStart,
   updateMakeWheelbaseFailed,
   updateMakeWheelbaseSucceed,
-  // Delete MakeWheelbase
   deleteMakeWheelbase,
   deleteMakeWheelbaseStart,
   deleteMakeWheelbaseFailed,
   deleteMakeWheelbaseSucceed,
-  /* --------------------------------------- */
-  /* =================== */
+  /* =========================================== */
   // Body (Body Page)
-  /* =================== */
-  // Create Body
+  /* =========================================== */
   createBody,
   createBodyStart,
   createBodyFailed,
   createBodySucceed,
-  // Get Bodies
   getBodies,
   getBodiesStart,
   getBodiesFailed,
   getBodiesSucceed,
-  // Update Body
   updateBody,
   updateBodyStart,
   updateBodyFailed,
   updateBodySucceed,
-  // Delete Body
   deleteBody,
   deleteBodyStart,
   deleteBodyFailed,
   deleteBodySucceed,
-  /* =================== */
+  /* =========================================== */
   // Length (Body Page)
-  /* =================== */
-  // Create Length
+  /* =========================================== */
   createLength,
   createLengthStart,
   createLengthFailed,
   createLengthSucceed,
-  // Get Lengths
   getLengths,
   getLengthsStart,
   getLengthsFailed,
   getLengthsSucceed,
-  // Update Length
   updateLength,
   updateLengthStart,
   updateLengthFailed,
   updateLengthSucceed,
-  // Delete Length
   deleteLength,
   deleteLengthStart,
   deleteLengthFailed,
   deleteLengthSucceed,
-  /* =================== */
+  /* =========================================== */
   //  Body Make (Body Page)
-  /* =================== */
-  // Create Body Make
+  /* =========================================== */
   createBodyMake,
   createBodyMakeStart,
   createBodyMakeFailed,
   createBodyMakeSucceed,
-  // Get Body Makes
   getBodyMakes,
   getBodyMakesStart,
   getBodyMakesFailed,
   getBodyMakesSucceed,
-  // Update Body Make
   updateBodyMake,
   updateBodyMakeStart,
   updateBodyMakeFailed,
   updateBodyMakeSucceed,
-  // Delete Body Make
   deleteBodyMake,
   deleteBodyMakeStart,
   deleteBodyMakeFailed,
   deleteBodyMakeSucceed,
-  /* =================== */
+  /* =========================================== */
   //  Body Accessory (Body Page)
-  /* =================== */
-  // Create Body Accessory
+  /* =========================================== */
   createBodyAccessory,
   createBodyAccessoryStart,
   createBodyAccessoryFailed,
   createBodyAccessorySucceed,
-  // Get Body Accessories
   getBodyAccessories,
   getBodyAccessoriesStart,
   getBodyAccessoriesFailed,
   getBodyAccessoriesSucceed,
-  // Update Body Accessory
   updateBodyAccessory,
   updateBodyAccessoryStart,
   updateBodyAccessoryFailed,
   updateBodyAccessorySucceed,
-  // Delete Body Accessory
   deleteBodyAccessory,
   deleteBodyAccessoryStart,
   deleteBodyAccessoryFailed,
@@ -234,12 +205,14 @@ export {
   getBodyAssociatedAccessoriesStart,
   getBodyAssociatedAccessoriesSucceed,
   getBodyAssociatedAccessoriesFailed,
-  // Clear body associated accessories
-  clearBodyAssociatedAccessoriesArray,
-  /* ------------------------------------- */
-  /* =================== */
+  // Get Dimension associated Accessories
+  getDimensionAssociatedAccessories,
+  getDimensionAssociatedAccessoriesStart,
+  getDimensionAssociatedAccessoriesSucceed,
+  getDimensionAssociatedAccessoriesFailed,
+  /* =========================================== */
   //  Accessory (Accessory Page)
-  /* =================== */
+  /* =========================================== */
   // Create Accessory
   createAccessory,
   createAccessoryStart,
@@ -255,7 +228,26 @@ export {
   updateAccessoryStart,
   updateAccessoryFailed,
   updateAccessorySucceed,
-} from './dashboard';
+  /* =========================================== */
+  //  Body Make Accessory (Body make Page)
+  /* =========================================== */
+  createBodyMakeAccessory,
+  createBodyMakeAccessoryStart,
+  createBodyMakeAccessoryFailed,
+  createBodyMakeAccessorySucceed,
+  getBodyMakeAccessories,
+  getBodyMakeAccessoriesStart,
+  getBodyMakeAccessoriesFailed,
+  getBodyMakeAccessoriesSucceed,
+  updateBodyMakeAccessory,
+  updateBodyMakeAccessoryStart,
+  updateBodyMakeAccessoryFailed,
+  updateBodyMakeAccessorySucceed,
+  deleteBodyMakeAccessory,
+  deleteBodyMakeAccessoryStart,
+  deleteBodyMakeAccessoryFailed,
+  deleteBodyMakeAccessorySucceed,
+} from './dashboard/index';
 
 export {
   // clear sales state

@@ -18,4 +18,3 @@ export const UPLOAD_TO_BRAND = 'Brand';
 export const UPLOAD_TO_BODY = 'Body';
 export const UPLOAD_TO_BODY_MAKE = 'BodyMake';
 export const UPLOAD_TO_ACCESSORY = 'Accessory';
-export const UPLOAD_TO_BODY_ACCESSORY = 'BodyAccessory';

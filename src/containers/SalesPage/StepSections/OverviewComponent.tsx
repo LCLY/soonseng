@@ -109,7 +109,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                   },
                   {
                     title: 'Torque:',
-                    data: make.torque !== null && make.torque !== '' ? make.torque : '-',
+                    data: make.torque !== null && make.torque !== '' ? `${make.torque}Nm` : '-',
                   },
                   {
                     title: 'Config:',
@@ -136,15 +136,15 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                     data: wheelbase.title !== null && wheelbase.title !== '' ? `${wheelbase.title}mm` : '-',
                   },
                   {
-                    title: 'Transmission',
+                    title: 'Transmission:',
                     data: make.transmission !== null && make.transmission !== '' ? `${make.transmission}` : '-',
                   },
                   {
-                    title: 'Engine Capacity',
+                    title: 'Engine Capacity:',
                     data: make.engine_cap !== null && make.engine_cap !== '' ? `${make.engine_cap}CC` : '-',
                   },
                   {
-                    title: 'GVW',
+                    title: 'GVW:',
                     data: make.gvw !== null && make.gvw !== '' ? `${make.gvw}kg` : '-',
                   },
                 ];

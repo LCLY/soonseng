@@ -23,7 +23,6 @@ import {
   notification,
   Checkbox,
   Skeleton,
-  Empty,
   Card,
   Carousel,
 } from 'antd';
@@ -452,10 +451,6 @@ const Body: React.FC<Props> = ({
     if ('bodyImages' in record && 'bodyId' in record) {
       expandImageGalleryButton = (
         <PlusCircleTwoTone
-          // style={{
-          //   opacity: record.bodyImages.length === 0 ? 0.3 : 1,
-          //   pointerEvents: record.bodyImages.length === 0 ? 'none' : 'auto',
-          // }}
           onClick={() => {
             // clear the state first to make sure that body accessories array is reloaded
             onClearBodyAccessoryArray();
@@ -626,23 +621,11 @@ const Body: React.FC<Props> = ({
   };
 
   /* --------- BODY ACCESSORY ---------- */
-  const onCreateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number; imageTag: string }) => {
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onCreateBodyAccessory(values.bodyId, values.accessoryId, values.imageTag, uploadSelectedFiles);
-    } else {
-      onCreateBodyAccessory(values.bodyId, values.accessoryId, null, null);
-    }
+  const onCreateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number }) => {
+    onCreateBodyAccessory(values.bodyId, values.accessoryId);
   };
-  // const onUpdateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number; imageTag: string }) => {
-  //   if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-  //     // if there are files being selected to be uploaded
-  //     // then send the tag and image files to the api call
-  //     onUpdateBodyAccessory(values.bodyId, values.accessoryId, values.imageTag, uploadSelectedFiles);
-  //   } else {
-  //     onUpdateBodyAccessory(values.bodyId, values.accessoryId, null, null);
-  //   }
+  // const onUpdateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number }) => {
+  //   onUpdateBodyAccessory(values.bodyId, values.accessoryId);
   // };
 
   /* ================================================== */
@@ -900,6 +883,7 @@ const Body: React.FC<Props> = ({
         rules={[{ required: true, message: 'Select an Accessory!' }]}
       >
         {/* only render if accessoriesArray is not null */}
+        {/* also if user already created a new body accessory using body associated accessories */}
         {bodyAssociatedAccessoriesArray && bodyAccessoriesArray ? (
           <Select placeholder="Select an Accessory">
             {bodyAssociatedAccessoriesArray
@@ -1050,7 +1034,7 @@ const Body: React.FC<Props> = ({
   );
 
   /* =================================== */
-  /* Body make accessory expanded component*/
+  /* Body accessory expanded component*/
   /* =================================== */
   const bodyAccessoriesCardsComponent = (record: TBodyTableState) => {
     return (
@@ -1158,7 +1142,7 @@ const Body: React.FC<Props> = ({
                 </div>
               </>
             ) : (
-              <Empty />
+              <div>No accessory has been created yet for this body.</div>
             )}
           </>
         ) : (
@@ -1451,7 +1435,7 @@ interface DispatchProps {
   // Body Accessory
   onGetBodyAccessories: typeof actions.getBodyAccessories;
   onCreateBodyAccessory: typeof actions.createBodyAccessory;
-  onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
+  // onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
   onDeleteBodyAccessory: typeof actions.deleteBodyAccessory;
   onGetBodyAssociatedAccessories: typeof actions.getBodyAssociatedAccessories;
   onClearBodyAccessoryArray: typeof actions.clearBodyAccessoryArray;
@@ -1476,10 +1460,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onDeleteLength: (length_id) => dispatch(actions.deleteLength(length_id)),
     // Body Accessory
     onGetBodyAccessories: (body_id) => dispatch(actions.getBodyAccessories(body_id)),
-    onCreateBodyAccessory: (body_id, accessory_id, imageTag, imageFiles) =>
-      dispatch(actions.createBodyAccessory(body_id, accessory_id, imageTag, imageFiles)),
-    onUpdateBodyAccessory: (body_id, accessory_id, imageTag, imageFiles) =>
-      dispatch(actions.updateBodyAccessory(body_id, accessory_id, imageTag, imageFiles)),
+    onCreateBodyAccessory: (body_id, accessory_id) => dispatch(actions.createBodyAccessory(body_id, accessory_id)),
+    // onUpdateBodyAccessory: (body_id, accessory_id, imageTag, imageFiles) =>
+    //   dispatch(actions.updateBodyAccessory(body_id, accessory_id, imageTag, imageFiles)),
     onDeleteBodyAccessory: (body_id, body_make_id) => dispatch(actions.deleteBodyAccessory(body_id, body_make_id)),
     onGetBodyAssociatedAccessories: () => dispatch(actions.getBodyAssociatedAccessories()),
     onClearBodyAccessoryArray: () => dispatch(actions.clearBodyAccessoryArray()),

@@ -30,10 +30,13 @@ const initialState: DashboardInitialState = {
   // body make
   bodyMakeObj: null,
   bodyMakesArray: null,
-  // body accessory length
+  // body accessory
   bodyAccessoryObj: null,
   bodyAccessoriesArray: null,
   bodyAssociatedAccessoriesArray: null,
+  // body make accessory
+  bodyMakeAccessoryObj: null,
+  bodyMakeAccessoriesArray: null,
   // accessory
   accessoryObj: null,
   accessoriesArray: null,
@@ -868,13 +871,6 @@ const getBodyAssociatedAccessoriesFailed = (state: DashboardInitialState, action
   return state;
 };
 
-/* ------------------------ */
-// Clear body associated accessories array
-/* ------------------------ */
-const clearBodyAssociatedAccessoriesArray = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { bodyAssociatedAccessoriesArray: null });
-};
-
 /* ============================================================================================ */
 /* Accessory (Accessory Page) (tail) */
 /* ============================================================================================ */
@@ -943,6 +939,126 @@ const updateAccessorySucceed = (state: DashboardInitialState, action: AppActions
   return state;
 };
 const updateAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* ============================================================================================ */
+/* Body Make Accessory */
+/* ============================================================================================ */
+/* -------------------------- */
+/* Create Body Make Accessory  */
+/* -------------------------- */
+const createBodyMakeAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createBodyMakeAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyMakeAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyMakeAccessoriesArray: action.bodyMakeAccessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const createBodyMakeAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get Body Make Accessories  */
+/* -------------------------- */
+const getBodyMakeAccessoriesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true, bodyMakeAccessoriesArray: null });
+};
+const getBodyMakeAccessoriesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('bodyMakeAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyMakeAccessoriesArray: action.bodyMakeAccessoriesArray,
+    });
+  }
+  return state;
+};
+const getBodyMakeAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update Body Make Accessory  */
+/* -------------------------- */
+const updateBodyMakeAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateBodyMakeAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyMakeAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyMakeAccessoriesArray: action.bodyMakeAccessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const updateBodyMakeAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* -------------------------- */
+/* Delete Body Make Accessory  */
+/* -------------------------- */
+const deleteBodyMakeAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteBodyMakeAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'bodyMakeAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      bodyMakeAccessoriesArray: action.bodyMakeAccessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteBodyMakeAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* --------------------------------------- */
+// Get dimension associated accessories
+/* --------------------------------------- */
+const getDimensionAssociatedAccessoriesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getDimensionAssociatedAccessoriesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('dimensionAssociatedAccessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      dimensionAssociatedAccessoriesArray: action.dimensionAssociatedAccessoriesArray,
+    });
+  }
+  return state;
+};
+const getDimensionAssociatedAccessoriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -1123,6 +1239,48 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return deleteBodyFailed(state, action);
 
     /* =================================== */
+    //  Body Accessory (Body Page)(tail)
+    /* =================================== */
+    // Get all Accessories (tail)
+    case actionTypes.GET_BODYACCESSORIES_START:
+      return getBodyAccessoriesStart(state, action);
+    case actionTypes.GET_BODYACCESSORIES_SUCCEED:
+      return getBodyAccessoriesSucceed(state, action);
+    case actionTypes.GET_BODYACCESSORIES_FAILED:
+      return getBodyAccessoriesFailed(state, action);
+    // Create body Accessory (tail)
+    case actionTypes.CREATE_BODYACCESSORY_START:
+      return createBodyAccessoryStart(state, action);
+    case actionTypes.CREATE_BODYACCESSORY_SUCCEED:
+      return createBodyAccessorySucceed(state, action);
+    case actionTypes.CREATE_BODYACCESSORY_FAILED:
+      return createBodyAccessoryFailed(state, action);
+    // Update body Accessory (tail)
+    case actionTypes.UPDATE_BODYACCESSORY_START:
+      return updateBodyAccessoryStart(state, action);
+    case actionTypes.UPDATE_BODYACCESSORY_SUCCEED:
+      return updateBodyAccessorySucceed(state, action);
+    case actionTypes.UPDATE_BODYACCESSORY_FAILED:
+      return updateBodyAccessoryFailed(state, action);
+    // Delete body Accessory (tail)
+    case actionTypes.DELETE_BODYACCESSORY_START:
+      return deleteBodyAccessoryStart(state, action);
+    case actionTypes.DELETE_BODYACCESSORY_SUCCEED:
+      return deleteBodyAccessorySucceed(state, action);
+    case actionTypes.DELETE_BODYACCESSORY_FAILED:
+      return deleteBodyAccessoryFailed(state, action);
+    // clear body accessory array
+    case actionTypes.CLEAR_BODYACCESSORY_ARRAY:
+      return clearBodyAccessoryArray(state, action);
+    // Get body associated accessories (tail)
+    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_START:
+      return getBodyAssociatedAccessoriesStart(state, action);
+    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_SUCCEED:
+      return getBodyAssociatedAccessoriesSucceed(state, action);
+    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_FAILED:
+      return getBodyAssociatedAccessoriesFailed(state, action);
+
+    /* =================================== */
     // Length (Body Page) (tail)
     /* =================================== */
     // Get all lengths (tail)
@@ -1187,49 +1345,43 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return deleteBodyMakeFailed(state, action);
 
     /* =================================== */
-    //  Body Accessory (Body Page)(tail)
+    //  Body Make Accessory
     /* =================================== */
-    // Get all Accessories (tail)
-    case actionTypes.GET_BODYACCESSORIES_START:
-      return getBodyAccessoriesStart(state, action);
-    case actionTypes.GET_BODYACCESSORIES_SUCCEED:
-      return getBodyAccessoriesSucceed(state, action);
-    case actionTypes.GET_BODYACCESSORIES_FAILED:
-      return getBodyAccessoriesFailed(state, action);
-    // Create body Accessory (tail)
-    case actionTypes.CREATE_BODYACCESSORY_START:
-      return createBodyAccessoryStart(state, action);
-    case actionTypes.CREATE_BODYACCESSORY_SUCCEED:
-      return createBodyAccessorySucceed(state, action);
-    case actionTypes.CREATE_BODYACCESSORY_FAILED:
-      return createBodyAccessoryFailed(state, action);
-    // Update body Accessory (tail)
-    case actionTypes.UPDATE_BODYACCESSORY_START:
-      return updateBodyAccessoryStart(state, action);
-    case actionTypes.UPDATE_BODYACCESSORY_SUCCEED:
-      return updateBodyAccessorySucceed(state, action);
-    case actionTypes.UPDATE_BODYACCESSORY_FAILED:
-      return updateBodyAccessoryFailed(state, action);
-    // Delete body Accessory (tail)
-    case actionTypes.DELETE_BODYACCESSORY_START:
-      return deleteBodyAccessoryStart(state, action);
-    case actionTypes.DELETE_BODYACCESSORY_SUCCEED:
-      return deleteBodyAccessorySucceed(state, action);
-    case actionTypes.DELETE_BODYACCESSORY_FAILED:
-      return deleteBodyAccessoryFailed(state, action);
-    // clear body accessory array
-    case actionTypes.CLEAR_BODYACCESSORY_ARRAY:
-      return clearBodyAccessoryArray(state, action);
-    // Delete body Accessory (tail)
-    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_START:
-      return getBodyAssociatedAccessoriesStart(state, action);
-    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_SUCCEED:
-      return getBodyAssociatedAccessoriesSucceed(state, action);
-    case actionTypes.GET_BODYASSOCIATED_ACCESSORIES_FAILED:
-      return getBodyAssociatedAccessoriesFailed(state, action);
-    // clear body associatead accessories array
-    case actionTypes.CLEAR_BODYASSOCIATED_ACCESSORIES_ARRAY:
-      return clearBodyAssociatedAccessoriesArray(state, action);
+    // Get all body make accessories
+    case actionTypes.GET_BODYMAKE_ACCESSORIES_START:
+      return getBodyMakeAccessoriesStart(state, action);
+    case actionTypes.GET_BODYMAKE_ACCESSORIES_SUCCEED:
+      return getBodyMakeAccessoriesSucceed(state, action);
+    case actionTypes.GET_BODYMAKE_ACCESSORIES_FAILED:
+      return getBodyMakeAccessoriesFailed(state, action);
+    // Create body make accessory
+    case actionTypes.CREATE_BODYMAKE_ACCESSORY_START:
+      return createBodyMakeAccessoryStart(state, action);
+    case actionTypes.CREATE_BODYMAKE_ACCESSORY_SUCCEED:
+      return createBodyMakeAccessorySucceed(state, action);
+    case actionTypes.CREATE_BODYMAKE_ACCESSORY_FAILED:
+      return createBodyMakeAccessoryFailed(state, action);
+    // Update body make accessory
+    case actionTypes.UPDATE_BODYMAKE_ACCESSORY_START:
+      return updateBodyMakeAccessoryStart(state, action);
+    case actionTypes.UPDATE_BODYMAKE_ACCESSORY_SUCCEED:
+      return updateBodyMakeAccessorySucceed(state, action);
+    case actionTypes.UPDATE_BODYMAKE_ACCESSORY_FAILED:
+      return updateBodyMakeAccessoryFailed(state, action);
+    // Delete body make accessory
+    case actionTypes.DELETE_BODYMAKE_ACCESSORY_START:
+      return deleteBodyMakeAccessoryStart(state, action);
+    case actionTypes.DELETE_BODYMAKE_ACCESSORY_SUCCEED:
+      return deleteBodyMakeAccessorySucceed(state, action);
+    case actionTypes.DELETE_BODYMAKE_ACCESSORY_FAILED:
+      return deleteBodyMakeAccessoryFailed(state, action);
+    // Get dimension associated accessories
+    case actionTypes.GET_DIMENSIONASSOCIATED_ACCESSORIES_START:
+      return getDimensionAssociatedAccessoriesStart(state, action);
+    case actionTypes.GET_DIMENSIONASSOCIATED_ACCESSORIES_SUCCEED:
+      return getDimensionAssociatedAccessoriesSucceed(state, action);
+    case actionTypes.GET_DIMENSIONASSOCIATED_ACCESSORIES_FAILED:
+      return getDimensionAssociatedAccessoriesFailed(state, action);
 
     /* =================================== */
     //  Accessory (Accessory Page)(tail)

@@ -34,6 +34,12 @@ import {
   getBodiesSaga,
   updateBodySaga,
   deleteBodySaga,
+  // Body Accessory
+  createBodyAccessorySaga,
+  getBodyAccessoriesSaga,
+  updateBodyAccessorySaga,
+  deleteBodyAccessorySaga,
+  getBodyAssociatedAccessoriesSaga,
   // Length
   createLengthSaga,
   getLengthsSaga,
@@ -44,12 +50,12 @@ import {
   getBodyMakesSaga,
   updateBodyMakeSaga,
   deleteBodyMakeSaga,
-  // Body Accessory
-  createBodyAccessorySaga,
-  getBodyAccessoriesSaga,
-  updateBodyAccessorySaga,
-  deleteBodyAccessorySaga,
-  getBodyAssociatedAccessoriesSaga,
+  // Body Make Accessory
+  createBodyMakeAccessorySaga,
+  getBodyMakeAccessoriesSaga,
+  updateBodyMakeAccessorySaga,
+  deleteBodyMakeAccessorySaga,
+  getDimensionAssociatedAccessoriesSaga,
   // Accessory
   createAccessorySaga,
   getAccessoriesSaga,
@@ -115,6 +121,14 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODIES, getBodiesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODY, updateBodySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODY, deleteBodySaga)]);
+  // Body Accessory
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYACCESSORY, createBodyAccessorySaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYACCESSORIES, getBodyAccessoriesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYACCESSORY, updateBodyAccessorySaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODYACCESSORY, deleteBodyAccessorySaga)]);
+  yield all([
+    takeEvery<DashboardActionTypes>(actionTypes.GET_BODYASSOCIATED_ACCESSORIES, getBodyAssociatedAccessoriesSaga),
+  ]);
   // Length
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_LENGTH, createLengthSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_LENGTHS, getLengthsSaga)]);
@@ -125,13 +139,16 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYMAKES, getBodyMakesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYMAKE, updateBodyMakeSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODYMAKE, deleteBodyMakeSaga)]);
-  // Body Accessory
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYACCESSORY, createBodyAccessorySaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYACCESSORIES, getBodyAccessoriesSaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYACCESSORY, updateBodyAccessorySaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODYACCESSORY, deleteBodyAccessorySaga)]);
+  // Body Make Accessory
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BODYMAKE_ACCESSORY, createBodyMakeAccessorySaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BODYMAKE_ACCESSORIES, getBodyMakeAccessoriesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BODYMAKE_ACCESSORY, updateBodyMakeAccessorySaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BODYMAKE_ACCESSORY, deleteBodyMakeAccessorySaga)]);
   yield all([
-    takeEvery<DashboardActionTypes>(actionTypes.GET_BODYASSOCIATED_ACCESSORIES, getBodyAssociatedAccessoriesSaga),
+    takeEvery<DashboardActionTypes>(
+      actionTypes.GET_DIMENSIONASSOCIATED_ACCESSORIES,
+      getDimensionAssociatedAccessoriesSaga,
+    ),
   ]);
   // Accessory
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_ACCESSORY, createAccessorySaga)]);

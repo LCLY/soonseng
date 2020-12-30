@@ -36,15 +36,30 @@ import {
   TReceivedBodyObj,
   TReceivedImageObj,
   TReceivedBodyMakeObj,
-  TReceivedAccessoryObj,
   TReceivedMakeObj,
   TReceivedMakeWheelbaseObj,
   TReceivedLengthObj,
+  TReceivedAccessoryObj,
+  TReceivedBodyMakeAccessoryObj,
 } from 'src/store/types/dashboard';
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
 import { img_not_available_link, img_loading_link } from 'src/shared/links';
-import { Button, Form, Select, Input, Layout, notification, Table, Tag, Tooltip, Modal, Card, Carousel } from 'antd';
+import {
+  Button,
+  Form,
+  Select,
+  Input,
+  Layout,
+  notification,
+  Table,
+  Tag,
+  Tooltip,
+  Modal,
+  Card,
+  Carousel,
+  Skeleton,
+} from 'antd';
 
 const { Option } = Select;
 
@@ -62,10 +77,7 @@ type TBodyMakeTableState = {
   bodyMakePrice: string;
   available?: boolean;
   bodyMakeImages: TReceivedImageObj[];
-  bodyMakeAccessoriesArrayLength: number;
-  bodyMakeAccessories: TReceivedAccessoryObj[] | null;
   bodyMakeWheelbase: string;
-  bodyMakeConfiguration: string;
 };
 
 type TCreateBodyMakeForm = {
@@ -99,6 +111,7 @@ type TShowModal = {
 
 type TDeleteModalContent = {
   body_make: { body_make_id: number; makeObj: TReceivedMakeObj | null; bodyObj: TReceivedBodyObj | null };
+  body_make_accessory: { body_make_accessory_id: number; body_make_id: number; accessoryTitle: string | null };
 };
 
 type Props = bodyMakeProps & StateProps & DispatchProps;
@@ -112,6 +125,8 @@ const BodyMake: React.FC<Props> = ({
   lengthsArray,
   bodyMakesArray,
   makeWheelbasesArray,
+  bodyMakeAccessoriesArray,
+  dimensionAssociatedAccessoriesArray,
   onGetMakes,
   onGetBodies,
   onGetLengths,
@@ -122,6 +137,11 @@ const BodyMake: React.FC<Props> = ({
   onGetMakeWheelbases,
   onDeleteUploadImage,
   onClearDashboardState,
+  onGetBodyMakeAccessories,
+  onCreateBodyMakeAccessory,
+  // onUpdateBodyMakeAccessory,
+  onDeleteBodyMakeAccessory,
+  onGetDimensionAssociatedAccessories,
 }) => {
   /* ================================================== */
   /*  state */
@@ -130,7 +150,7 @@ const BodyMake: React.FC<Props> = ({
   const [createBodyMakeForm] = Form.useForm();
   const [updateBodyMakeForm] = Form.useForm();
   const [createBodyMakeAccessoryForm] = Form.useForm();
-  const [updateBodyMakeAccessoryForm] = Form.useForm();
+  // const [updateBodyMakeAccessoryForm] = Form.useForm();
   /*  Table states */
   const [bodyMakeTableState, setBodyMakeTableState] = useState<TBodyMakeTableState[]>([]);
 
@@ -153,6 +173,7 @@ const BodyMake: React.FC<Props> = ({
   // this state to keep track of what to show on delete modal and what useful info to pass
   const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
     body_make: { body_make_id: -1, makeObj: null, bodyObj: null },
+    body_make_accessory: { body_make_id: -1, body_make_accessory_id: -1, accessoryTitle: '' },
   });
 
   // for table search input
@@ -205,6 +226,7 @@ const BodyMake: React.FC<Props> = ({
           { title: 'Model', content: record.makeObj.title },
           { title: 'Series', content: record.makeObj.series },
           { title: 'Body', content: record.bodyObj.title },
+          { title: 'Wheelbase', content: `${record.bodyMakeWheelbase}mm` },
         ];
         return (
           <>
@@ -218,25 +240,6 @@ const BodyMake: React.FC<Props> = ({
                   :<div className="bodymake__details-right">{detail.content}</div>
                 </div>
               ))}
-            </div>
-          </>
-        );
-      },
-    },
-    {
-      key: 'bodyMakeConfiguration',
-      title: 'Configuration',
-      dataIndex: 'bodyMakeConfiguration',
-      ellipsis: true,
-      width: '15rem',
-      sorter: (a: TBodyMakeTableState, b: TBodyMakeTableState) =>
-        a.bodyMakeWheelbase.localeCompare(b.bodyMakeWheelbase),
-      ...getColumnSearchProps(bodyMakeSearchInput, 'bodyMakeConfiguration', 'Configuration'),
-      render: (_text: any, record: TBodyMakeTableState) => {
-        return (
-          <>
-            <div>
-              <div>Wheelbase: {record.bodyMakeWheelbase}</div>
             </div>
           </>
         );
@@ -404,13 +407,13 @@ const BodyMake: React.FC<Props> = ({
     if ('bodyMakeImages' in record && 'bodyMakeId' in record) {
       expandImageGalleryButton = (
         <PlusCircleTwoTone
-          style={{
-            opacity: record.bodyMakeImages.length === 0 ? 0.3 : 1,
-            pointerEvents: record.bodyMakeImages.length === 0 ? 'none' : 'auto',
-          }}
           onClick={() => {
             // this allow only 1 row to expand at a time
             onTableRowExpand(expanded, record, setExpandedRowKeys);
+
+            // call the body make accessories api on expand
+            onGetBodyMakeAccessories(record.bodyMakeId);
+
             // this closes all the edit image gallery when user expand other row
             // clearing out all the booleans
             setShowEditImageGallery({});
@@ -546,9 +549,41 @@ const BodyMake: React.FC<Props> = ({
       onUpdateBodyMake(updateBodyMakeData, null, null);
     }
   };
+
+  /* --------- BODY Make ACCESSORY ---------- */
+  const onCreateBodyMakeAccessoryFinish = (values: { accessoryId: number; price: string; bodyMakeId: number }) => {
+    onCreateBodyMakeAccessory(convertPriceToFloat(values.price), values.bodyMakeId, values.accessoryId);
+  };
+  // const onUpdateBodyMakeAccessoryFinish = (values: {
+  //   accessoryId: number;
+  //   price: string;
+  //   bodyMakeId: number;
+  //   bodyMakeAccessoryId: number;
+  // }) => {
+  //   onUpdateBodyMakeAccessory(
+  //     values.bodyMakeId,
+  //     values.accessoryId,
+  //     values.bodyMakeAccessoryId,
+  //     convertPriceToFloat(values.price),
+  //   );
+  // };
+
+  /**
+   * Extract accessories only from each body accessory and form a new
+   * accessory array so can filter
+   * @param {TReceivedBodyAccessoryObj[]} bodyAccessoriesArray
+   * @return {*}
+   */
+  const extractAccessoriesArray = (bodyAccessoriesArray: TReceivedBodyMakeAccessoryObj[]) => {
+    let resultArray: TReceivedAccessoryObj[] = [];
+    bodyAccessoriesArray.forEach((bodyAccessory) => resultArray.push(bodyAccessory.accessory));
+    return resultArray;
+  };
+
   /* ====================================================== */
   // components
   /* ====================================================== */
+
   /* ---------------------------- */
   // Body Make
   /* ---------------------------- */
@@ -840,30 +875,24 @@ const BodyMake: React.FC<Props> = ({
   /* =================================== */
   /* Body make accessory expanded component*/
   /* =================================== */
-  const renderBodyMakeAccessoriesCardsComponent = (record: TBodyMakeTableState) => {
+  const bodyMakeAccessoriesCardsComponent = (record: TBodyMakeTableState) => {
     return (
       <>
-        {record.bodyMakeAccessoriesArrayLength > 0 && (
-          //  only show this when length of body accesosry array is greater than 0
+        {bodyMakeAccessoriesArray ? (
           <>
-            <div>
-              Attachable accessories for&nbsp;
-              <span style={{ textTransform: 'capitalize' }}>
-                {record.makeObj.brand.title} {record.makeObj.series} {record.bodyObj.title}
-              </span>
-              :&nbsp;
-              <span className="body__expand-available">{record.bodyMakeAccessoriesArrayLength} available</span>
-            </div>
-            <hr />
-          </>
-        )}
-        <div className="body__expand-outerdiv">
-          {record.bodyMakeAccessories && (
-            <>
-              {/* if no accessory then show nothing */}
-              {record.bodyMakeAccessoriesArrayLength === 0
-                ? null
-                : record.bodyMakeAccessories.map((bodyMakeAccessory) => {
+            {bodyMakeAccessoriesArray.length > 0 ? (
+              <>
+                <div>
+                  Attachable accessories for&nbsp;
+                  <span style={{ textTransform: 'capitalize' }}>
+                    {record.makeObj.brand.title} {record.makeObj.series} {record.bodyObj.title}
+                  </span>
+                  :&nbsp;
+                  <span className="body__expand-available">{bodyMakeAccessoriesArray.length} available</span>
+                </div>
+                <hr />
+                <div className="body__expand-outerdiv">
+                  {[...bodyMakeAccessoriesArray].reverse().map((bodyMakeAccessory) => {
                     if (bodyMakeAccessory.available) {
                       return (
                         <Card
@@ -871,9 +900,9 @@ const BodyMake: React.FC<Props> = ({
                           className="body__expand-card"
                           title={
                             <div className="body__expand-card-title-div">
-                              <span className="body__expand-card-title">{bodyMakeAccessory.title}</span>
+                              <span className="body__expand-card-title">{bodyMakeAccessory.accessory.title}</span>
                               <Tag color="geekblue" style={{ marginRight: 0 }}>
-                                RM{bodyMakeAccessory.price}
+                                RM{bodyMakeAccessory.accessory.price}
                               </Tag>
                             </div>
                           }
@@ -881,12 +910,12 @@ const BodyMake: React.FC<Props> = ({
                           style={{ width: 'auto' }}
                           headStyle={{ background: '#FFF2E8' }}
                         >
-                          {bodyMakeAccessory.images ? (
+                          {bodyMakeAccessory.accessory.images ? (
                             <>
                               <Carousel autoplay>
                                 {/* render all images if array more than 0 else render 'image not available' image */}
-                                {bodyMakeAccessory.images.length > 0 ? (
-                                  bodyMakeAccessory.images.map((image) => {
+                                {bodyMakeAccessory.accessory.images.length > 0 ? (
+                                  bodyMakeAccessory.accessory.images.map((image) => {
                                     return (
                                       <React.Fragment key={uuidv4()}>
                                         <LazyLoad
@@ -917,10 +946,14 @@ const BodyMake: React.FC<Props> = ({
                             <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
                           )}
                           <div className="body__expand-card-body">
+                            <section className="body__expand-card-description">
+                              Description:&nbsp;
+                              {bodyMakeAccessory.accessory.description ? bodyMakeAccessory.accessory.description : '-'}
+                            </section>
                             <section className="body__expand-card-btn-section">
                               <div className="body__expand-card-btn-div">
                                 <div>
-                                  <Button
+                                  {/* <Button
                                     className="body__expand-card-btn-edit"
                                     style={{ padding: 0 }}
                                     type="link"
@@ -928,19 +961,31 @@ const BodyMake: React.FC<Props> = ({
                                       // show the update modal
                                       setShowUpdateModal({ ...showUpdateModal, body_make_accessory: true });
                                       // fill in the updateBodyAccessoryform
-                                      // updateBodyMakeAccessoryForm.setFieldsValue({
-                                      //   bodyAccessoryId: bodyAccessory.id, //the id for update
-                                      //   accessoryId: bodyAccessory.accessory.id,
-                                      //   bodyAccessoryPrice: bodyAccessory.accessory.price,
-                                      //   bodyAccessoryDescription: bodyAccessory.body_length.body.description,
-                                      //   bodyMakeId: bodyAccessory.body_length.id,
-                                      // });
-                                      alert('open up a modal!');
+                                      updateBodyMakeAccessoryForm.setFieldsValue({
+                                        accessoryId: bodyMakeAccessory.accessory.id,
+                                        accessoryPrice: bodyMakeAccessory.accessory.price,
+                                        bodyMakeAccessoryId: bodyMakeAccessory.id,
+                                      });
                                     }}
                                   >
                                     Edit
-                                  </Button>
-                                  <Button disabled type="link" danger style={{ padding: 0 }}>
+                                  </Button> */}
+                                  <Button
+                                    type="link"
+                                    danger
+                                    style={{ padding: 0 }}
+                                    onClick={() => {
+                                      setDeleteModalContent({
+                                        ...deleteModalContent,
+                                        body_make_accessory: {
+                                          body_make_id: record.bodyMakeId,
+                                          body_make_accessory_id: bodyMakeAccessory.id,
+                                          accessoryTitle: bodyMakeAccessory.accessory.title,
+                                        },
+                                      });
+                                      setShowDeleteModal({ ...showDeleteModal, body_make_accessory: true });
+                                    }}
+                                  >
                                     Delete
                                   </Button>
                                 </div>
@@ -950,11 +995,17 @@ const BodyMake: React.FC<Props> = ({
                         </Card>
                       );
                     }
-                    return <></>;
+                    return <React.Fragment key={uuidv4()}></React.Fragment>;
                   })}
-            </>
-          )}
-        </div>
+                </div>
+              </>
+            ) : (
+              <div>No accessory has been created yet for this body make.</div>
+            )}
+          </>
+        ) : (
+          <Skeleton active />
+        )}
       </>
     );
   };
@@ -966,28 +1017,41 @@ const BodyMake: React.FC<Props> = ({
     <>
       <Form.Item
         className="make__form-item"
-        label="Model"
-        name="makeId"
+        label="Accessory"
+        name="accessoryId"
         style={{ marginBottom: '0.8rem' }}
-        rules={[{ required: true, message: 'Select a Model!' }]}
+        rules={[{ required: true, message: 'Select an Accessory!' }]}
       >
-        {/* only render if bodiesArray is not null */}
-        <Select
-          showSearch
-          placeholder="Select a Body"
-          optionFilterProp="children"
-          className="body__select-updatebodyMake"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {makesArray &&
-            makesArray.map((make) => {
-              return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={make.id}>
-                  {`${make.brand.title} ${make.title} ${make.series}`}
-                </Option>
-              );
-            })}
-        </Select>
+        {/* only render if accessoriesArray is not null */}
+        {/* also if user already created a new body accessory using body associated accessories */}
+        {dimensionAssociatedAccessoriesArray && bodyMakeAccessoriesArray ? (
+          <Select placeholder="Select an Accessory">
+            {dimensionAssociatedAccessoriesArray
+              .filter((mainArrayChild) =>
+                extractAccessoriesArray(bodyMakeAccessoriesArray).every(
+                  (filterArrayChild) => filterArrayChild.id !== mainArrayChild.id,
+                ),
+              )
+              .map((accessory) => {
+                return (
+                  <Option key={uuidv4()} value={accessory.id}>
+                    {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
+                  </Option>
+                );
+              })}
+          </Select>
+        ) : (
+          <Skeleton.Input className="body__form-item-skeleton" style={{ width: '100%' }} active={true} />
+        )}
+      </Form.Item>
+
+      <Form.Item
+        className="make__form-item"
+        label="Price"
+        name="accessoryPrice"
+        rules={[{ required: true, message: 'Input price here!' }]}
+      >
+        <NumberFormat className="ant-input" placeholder="Type price here" thousandSeparator={true} prefix={'RM '} />
       </Form.Item>
 
       {/* Body Make ID */}
@@ -1012,7 +1076,7 @@ const BodyMake: React.FC<Props> = ({
         form={createBodyMakeAccessoryForm}
         name="createBodyMakeAccessory"
         onKeyDown={(e) => handleFormKeyDown(e, createBodyMakeAccessoryForm)}
-        onFinish={onUpdateBodyMakeFinish}
+        onFinish={onCreateBodyMakeAccessoryFinish}
       >
         {/* reuse form items */}
         {bodyMakeAccessoryFormItems}
@@ -1048,53 +1112,53 @@ const BodyMake: React.FC<Props> = ({
   /* ----------------------------------------- */
   /* Update Body Make Accessory Form */
   /* ----------------------------------------- */
-  let updateBodyMakeAccessoryFormComponent = (
-    <>
-      <Form
-        form={updateBodyMakeAccessoryForm}
-        name="updateBodyMakeAccessory"
-        onKeyDown={(e) => handleFormKeyDown(e, updateBodyMakeAccessoryForm)}
-        onFinish={onUpdateBodyMakeFinish}
-      >
-        {/* reuse form items */}
-        {bodyMakeAccessoryFormItems}
-        {/* Getting the Body Make Accessory ID */}
-        <Form.Item
-          className="make__form-item"
-          label="id"
-          name="bodyMakeAccessoryId"
-          hidden
-          rules={[{ required: true, message: 'Get body make accessory id!' }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
-    </>
-  );
+  // let updateBodyMakeAccessoryFormComponent = (
+  //   <>
+  //     <Form
+  //       form={updateBodyMakeAccessoryForm}
+  //       name="updateBodyMakeAccessory"
+  //       onKeyDown={(e) => handleFormKeyDown(e, updateBodyMakeAccessoryForm)}
+  //       onFinish={onUpdateBodyMakeAccessoryFinish}
+  //     >
+  //       {/* reuse form items */}
+  //       {bodyMakeAccessoryFormItems}
+  //       {/* Getting the Body Make Accessory ID */}
+  //       <Form.Item
+  //         className="make__form-item"
+  //         label="id"
+  //         name="bodyMakeAccessoryId"
+  //         hidden
+  //         rules={[{ required: true, message: 'Get body make accessory id!' }]}
+  //       >
+  //         <Input />
+  //       </Form.Item>
+  //     </Form>
+  //   </>
+  // );
 
   /* ----------------------------------------- */
   /* Update Body Make Accessory Modal */
   /* ----------------------------------------- */
-  let updateBodyMakeAccessoryModal = (
-    <Modal
-      centered
-      title="Update Body Make Accessory"
-      visible={showUpdateModal.body_make_accessory}
-      onOk={updateBodyMakeAccessoryForm.submit}
-      confirmLoading={loading}
-      onCancel={() => {
-        // close edit body modal
-        setShowUpdateModal({
-          ...showUpdateModal,
-          body_make_accessory: false,
-        });
-        setImagesPreviewUrls([]); //clear the image preview when oncancel
-      }}
-    >
-      {/* the content within the modal */}
-      {updateBodyMakeAccessoryFormComponent}
-    </Modal>
-  );
+  // let updateBodyMakeAccessoryModal = (
+  //   <Modal
+  //     centered
+  //     title="Update Body Make Accessory"
+  //     visible={showUpdateModal.body_make_accessory}
+  //     onOk={updateBodyMakeAccessoryForm.submit}
+  //     confirmLoading={loading}
+  //     onCancel={() => {
+  //       // close edit body modal
+  //       setShowUpdateModal({
+  //         ...showUpdateModal,
+  //         body_make_accessory: false,
+  //       });
+  //       setImagesPreviewUrls([]); //clear the image preview when oncancel
+  //     }}
+  //   >
+  //     {/* the content within the modal */}
+  //     {updateBodyMakeAccessoryFormComponent}
+  //   </Modal>
+  // );
 
   /* ================================== */
   //  Delete Body Make Modal
@@ -1126,6 +1190,37 @@ const BodyMake: React.FC<Props> = ({
     </Modal>
   );
 
+  //  Delete Body Make Accessory Modal
+  let deleteBodyMakeAccessoryModal = (
+    <Modal
+      title={
+        <div className="dashboard__delete-header">
+          <ExclamationCircleOutlined className="dashboard__delete-icon" />
+          Delete Body Make Accessory
+        </div>
+      }
+      visible={showDeleteModal.body_make_accessory}
+      onOk={() =>
+        onDeleteBodyMakeAccessory(
+          deleteModalContent.body_make_accessory.body_make_id,
+          deleteModalContent.body_make_accessory.body_make_accessory_id,
+        )
+      }
+      onCancel={() => setShowDeleteModal({ ...showDeleteModal, body_make_accessory: false })}
+      okText="Yes, delete it"
+      confirmLoading={loading}
+      cancelText="Cancel"
+    >
+      You are deleting
+      {deleteModalContent.body_make_accessory.accessoryTitle === '' ? (
+        ' this body accessory'
+      ) : (
+        <span className="dashboard__delete-message">{` ${deleteModalContent.body_make_accessory.accessoryTitle}`}</span>
+      )}
+      , this action is permanent. Are you sure?
+    </Modal>
+  );
+
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
@@ -1137,6 +1232,9 @@ const BodyMake: React.FC<Props> = ({
   useEffect(() => {
     onGetLengths();
   }, [onGetLengths]);
+  useEffect(() => {
+    onGetDimensionAssociatedAccessories();
+  }, [onGetDimensionAssociatedAccessories]);
   useEffect(() => {
     onGetMakes();
   }, [onGetMakes]);
@@ -1167,7 +1265,9 @@ const BodyMake: React.FC<Props> = ({
         bodyMake.make_wheelbase.make.brand.title +
         bodyMake.make_wheelbase.make.title +
         bodyMake.make_wheelbase.make.series +
-        bodyMake.body.title;
+        bodyMake.body.title +
+        bodyMake.make_wheelbase.wheelbase.title +
+        'mm';
 
       let body_make_height = bodyMake.height ? bodyMake.height : ' -';
       let body_make_width = bodyMake.width ? bodyMake.width : ' -';
@@ -1184,13 +1284,9 @@ const BodyMake: React.FC<Props> = ({
           bodyMakeHeight: body_make_height,
           bodyMakeDepth: body_make_depth,
           bodyMakePrice: formattedPrice,
-          bodyMakeAccessories: bodyMake.body_make_accessories, //pass the bodyaccessory array
-          bodyMakeAccessoriesArrayLength: bodyMake.body_make_accessories.length, //pass in the body make accessory array length for rowSpan
-          bodyMakeWheelbase: bodyMake.make_wheelbase.wheelbase.title,
-
           available: bodyMake.available,
           bodyMakeImages: bodyMake.images,
-          bodyMakeConfiguration: bodyMake.make_wheelbase.wheelbase.title,
+          bodyMakeWheelbase: bodyMake.make_wheelbase.wheelbase.title,
         });
       }
     };
@@ -1217,11 +1313,12 @@ const BodyMake: React.FC<Props> = ({
       onClearDashboardState();
       // clear the form inputs using the form reference
       createBodyMakeForm.resetFields();
+      createBodyMakeAccessoryForm.resetFields();
 
       // close all the modals if successful
-      setShowCreateModal({ ...showCreateModal, body_make: false });
-      setShowUpdateModal({ ...showUpdateModal, body_make: false });
-      setShowDeleteModal({ ...showDeleteModal, body_make: false });
+      setShowCreateModal({ ...showCreateModal, body_make: false, body_make_accessory: false });
+      setShowUpdateModal({ ...showUpdateModal, body_make: false, body_make_accessory: false });
+      setShowDeleteModal({ ...showDeleteModal, body_make: false, body_make_accessory: false });
     }
   }, [
     successMessage,
@@ -1229,6 +1326,7 @@ const BodyMake: React.FC<Props> = ({
     showCreateModal,
     showDeleteModal,
     createBodyMakeForm,
+    createBodyMakeAccessoryForm,
     onClearDashboardState,
     setShowUpdateModal,
     setShowCreateModal,
@@ -1259,8 +1357,9 @@ const BodyMake: React.FC<Props> = ({
       {createBodyMakeModal}
       {updateBodyMakeModal}
       {deleteBodyMakeModal}
+      {deleteBodyMakeAccessoryModal}
       {createBodyMakeAccessoryModal}
-      {updateBodyMakeAccessoryModal}
+      {/* {updateBodyMakeAccessoryModal} */}
 
       <Layout style={{ overflow: 'hidden' }}>
         <NavbarComponent activePage="dashboard" />
@@ -1300,7 +1399,7 @@ const BodyMake: React.FC<Props> = ({
                         expandable={{
                           expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
                           expandedRowRender: (record: TBodyMakeTableState) => {
-                            let bodyMakeAccessoriesCards = renderBodyMakeAccessoriesCardsComponent(record);
+                            let bodyMakeAccessoriesCards = bodyMakeAccessoriesCardsComponent(record);
                             let imageGalleryComponent = onExpandedRowRender(record);
                             return (
                               <>
@@ -1338,6 +1437,8 @@ interface StateProps {
   lengthsArray?: TReceivedLengthObj[] | null;
   bodyMakesArray?: TReceivedBodyMakeObj[] | null;
   makeWheelbasesArray?: TReceivedMakeWheelbaseObj[] | null;
+  bodyMakeAccessoriesArray?: TReceivedBodyMakeAccessoryObj[] | null;
+  dimensionAssociatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
@@ -1349,6 +1450,8 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     lengthsArray: state.dashboard.lengthsArray,
     bodyMakesArray: state.dashboard.bodyMakesArray,
     makeWheelbasesArray: state.dashboard.makeWheelbasesArray,
+    bodyMakeAccessoriesArray: state.dashboard.bodyMakeAccessoriesArray,
+    dimensionAssociatedAccessoriesArray: state.dashboard.dimensionAssociatedAccessoriesArray,
   };
 };
 interface DispatchProps {
@@ -1358,11 +1461,19 @@ interface DispatchProps {
   onGetBodies: typeof actions.getBodies;
   // Length
   onGetLengths: typeof actions.getLengths;
+  // Accessory
+  onGetAccessories: typeof actions.getAccessories;
   // Body Make
   onGetBodyMakes: typeof actions.getBodyMakes;
   onCreateBodyMake: typeof actions.createBodyMake;
   onUpdateBodyMake: typeof actions.updateBodyMake;
   onDeleteBodyMake: typeof actions.deleteBodyMake;
+  // Body Make Accessories
+  onGetBodyMakeAccessories: typeof actions.getBodyMakeAccessories;
+  onCreateBodyMakeAccessory: typeof actions.createBodyMakeAccessory;
+  onUpdateBodyMakeAccessory: typeof actions.updateBodyMakeAccessory;
+  onDeleteBodyMakeAccessory: typeof actions.deleteBodyMakeAccessory;
+  onGetDimensionAssociatedAccessories: typeof actions.getDimensionAssociatedAccessories;
   // Get make wheelbase
   onGetMakeWheelbases: typeof actions.getMakeWheelbases;
   // Images
@@ -1375,6 +1486,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetMakes: () => dispatch(actions.getMakes()),
     onGetBodies: () => dispatch(actions.getBodies()),
     onGetLengths: () => dispatch(actions.getLengths()),
+    onGetAccessories: () => dispatch(actions.getAccessories()),
     // Body Make
     onGetBodyMakes: () => dispatch(actions.getBodyMakes()),
     onCreateBodyMake: (createBodyMakeData, imageTag, imageFiles) =>
@@ -1382,6 +1494,15 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onUpdateBodyMake: (updateBodyMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateBodyMake(updateBodyMakeData, imageTag, imageFiles)),
     onDeleteBodyMake: (body_make_id) => dispatch(actions.deleteBodyMake(body_make_id)),
+    // Body Make Accessories
+    onGetBodyMakeAccessories: (body_make_id) => dispatch(actions.getBodyMakeAccessories(body_make_id)),
+    onCreateBodyMakeAccessory: (price, body_make_id, accessory_id) =>
+      dispatch(actions.createBodyMakeAccessory(price, body_make_id, accessory_id)),
+    onUpdateBodyMakeAccessory: (price, body_make_id, accessory_id, body_make_accessory_id) =>
+      dispatch(actions.updateBodyMakeAccessory(price, body_make_id, accessory_id, body_make_accessory_id)),
+    onDeleteBodyMakeAccessory: (body_make_id, body_make_accessory_id) =>
+      dispatch(actions.deleteBodyMakeAccessory(body_make_id, body_make_accessory_id)),
+    onGetDimensionAssociatedAccessories: () => dispatch(actions.getDimensionAssociatedAccessories()),
     // make wheelbases
     onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
     // Image
