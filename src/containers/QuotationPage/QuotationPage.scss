@@ -15,13 +15,18 @@
     border: 1px solid darken($translucent-grey, 30%);
     width: 95rem;
     padding: 3rem;
+    background: white;
+
     &-outerdiv {
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      margin-top: 3rem;
-      margin-bottom: 5rem;
+      padding-top: 3rem;
+      width: 100%;
+      padding-bottom: 5rem;
+      @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
     }
 
     &-innerdiv {
@@ -88,7 +93,11 @@
       text-align: center;
       // font-family: $font-;
       font-family: Arial, Helvetica, sans-serif;
-      text-decoration: underline;
+      text-decoration: none;
+
+      &-text {
+        border-bottom: 2px solid black;
+      }
     }
   }
 
@@ -234,11 +243,8 @@
     // the table on the right
     /* ------------------------------ */
     &-table {
-      & td,
-      th {
+      & td {
         border: 1px solid black;
-        text-align: left;
-        padding: 8px;
       }
 
       &-left {
@@ -285,7 +291,7 @@
     &-date {
       margin-top: 0.5rem;
       font-weight: bolder;
-      font-family: $font-firesans;
+      // font-family: $font-firesans;
     }
   }
 }

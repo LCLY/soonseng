@@ -2,22 +2,25 @@ import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import './QuotationPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
-import Container from 'src/components/CustomContainer/CustomContainer';
+// import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 
 /* 3rd party lib */
 import { Button } from 'antd';
 import moment from 'moment';
 import { jsPDF } from 'jspdf';
 import { Location } from 'history';
+
 import { v4 as uuidv4 } from 'uuid';
 import html2canvas from 'html2canvas';
 import NumberFormat from 'react-number-format';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 /* Util */
+import holy5truck from 'src/img/5trucks.jpg';
+import hinologo from 'src/img/quotation1.jpg';
 import warranty from 'src/img/quotation3.jpg';
 import hinoconnect from 'src/img/quotation2.jpg';
-import hinologo from 'src/img/quotation1.jpg';
 import { TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedLengthObj } from 'src/store/types/dashboard';
 
@@ -62,20 +65,22 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
   /* ================================================== */
   const captureHandler = () => {
     if (captureRef !== null) {
-      html2canvas(captureRef.current).then((canvas) => {
-        let width = canvas.width;
-        let height = canvas.height;
-        let millimeters = { width: 0, height: 0 };
-        millimeters.width = Math.floor(width * 0.264583);
-        millimeters.height = Math.floor(height * 0.264583);
-
-        let imgData = canvas.toDataURL('image/png');
-        let pdf = new jsPDF('p', 'mm', 'a4');
-        pdf.deletePage(1);
-        pdf.addPage([millimeters.width, millimeters.height]);
-        pdf.addImage(imgData, 'PNG', 0, 0, millimeters.width, millimeters.height);
-
-        pdf.save('quotation.pdf');
+      html2canvas(captureRef.current, { scale: 1 }).then((_canvas) => {
+        let pdf = new jsPDF('p', 'px', 'a4');
+        let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
+        let srcWidth = captureRef.current.scrollWidth;
+        let margin = 18; // narrow margin - 1.27 cm (36);
+        let scale = (pWidth - margin * 2) / srcWidth;
+        pdf.html(captureRef.current, {
+          x: margin,
+          y: margin,
+          html2canvas: {
+            scale: scale,
+          },
+          callback: function () {
+            pdf.save('quotation.pdf');
+          },
+        });
       });
     }
   };
@@ -93,7 +98,8 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
   return (
     <>
       <NavbarComponent />
-      <Container>
+      <ParallaxContainer bgImageUrl={holy5truck}>
+        {/* <Container> */}
         <div className="quotation__section-outerdiv">
           <div className="quotation__button-div">
             <Button type="primary" onClick={() => captureHandler()}>
@@ -129,7 +135,9 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                 </div>
               </div>
 
-              <div className="quotation__header-2">QUOTATION</div>
+              <div className="quotation__header-2">
+                <span className="quotation__header-2-text">QUOTATION</span>
+              </div>
               <div className="quotation__subheader">
                 We are pleased to append here with our quotation for the following commercial vehicle for your perusal
               </div>
@@ -418,7 +426,8 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
             </div>
           </section>
         </div>
-      </Container>
+        {/* </Container> */}
+      </ParallaxContainer>
       <Footer />
     </>
   );
