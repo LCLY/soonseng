@@ -152,13 +152,13 @@ svg {
 
 // the scroll effect when modal is opened
 .ant-scrolling-effect {
-  overflow: auto !important;
-  width: auto !important;
+  // 0.5rem is the scrollbar
+  width: calc(100vw - 0.5rem) !important;
 }
 
 // Select dropdown
 .ant-select {
-  @include respond-to(mobile) {
+  @include respond-to($small-phone) {
     // fill up the whole page width on mobile devices
     width: 100% !important;
   }

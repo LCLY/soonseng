@@ -12,6 +12,9 @@
     /* ------------------------------ */
     &-top {
       display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
       @include respond-to($phone-only) {
         flex-direction: column;
       }
@@ -22,6 +25,9 @@
         flex-direction: row;
       }
       &-left {
+        @include respond-to($small-phone) {
+          width: 100%;
+        }
         @include respond-to($phone-only) {
           width: 100%;
         }
@@ -34,6 +40,9 @@
       }
 
       &-right {
+        @include respond-to($small-phone) {
+          width: 100%;
+        }
         @include respond-to($phone-only) {
           width: 100%;
         }
@@ -150,6 +159,11 @@
     /* ---------- */
     &-item {
       flex-wrap: nowrap !important;
+
+      @include respond-to($small-phone) {
+        flex-wrap: wrap !important;
+      }
+
       /* for create make overwrite label width */
       &--make {
         margin-bottom: 0.5rem !important;
@@ -165,7 +179,7 @@
       // push to right abit for error message
       .ant-form-item-explain.ant-form-item-explain-error {
         margin-left: 1.3rem;
-        @include respond-to(mobile) {
+        @include respond-to($small-phone) {
           content: none !important;
           margin-left: 0;
         }
@@ -173,7 +187,7 @@
       // same thing applies to success message
       .ant-form-item-explain.ant-form-item-explain-success {
         margin-left: 1.3rem;
-        @include respond-to(mobile) {
+        @include respond-to($small-phone) {
           content: none !important;
           margin-left: 0;
         }

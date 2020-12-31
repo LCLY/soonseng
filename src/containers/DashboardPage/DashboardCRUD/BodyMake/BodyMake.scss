@@ -17,7 +17,7 @@
       // push to right abit for error message
       .ant-form-item-explain.ant-form-item-explain-error {
         margin-left: 1.3rem;
-        @include respond-to(mobile) {
+        @include respond-to($small-phone) {
           content: none !important;
           margin-left: 0;
         }
@@ -25,7 +25,7 @@
       // same thing applies to success message
       .ant-form-item-explain.ant-form-item-explain-success {
         margin-left: 1.3rem;
-        @include respond-to(mobile) {
+        @include respond-to($small-phone) {
           content: none !important;
           margin-left: 0;
         }
