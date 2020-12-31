@@ -63,18 +63,19 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
   const captureHandler = () => {
     if (captureRef !== null) {
       html2canvas(captureRef.current).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        console.log(imgData);
-        const pdf = new jsPDF('p', 'px', 'a4');
-        // let width = pdf.internal.pageSize.getWidth();
-        // let height = pdf.internal.pageSize.getHeight();
-        canvas.width = document.body.clientWidth;
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, 'FAST');
+        let width = canvas.width;
+        let height = canvas.height;
+        let millimeters = { width: 0, height: 0 };
+        millimeters.width = Math.floor(width * 0.264583);
+        millimeters.height = Math.floor(height * 0.264583);
+
+        let imgData = canvas.toDataURL('image/png');
+        let pdf = new jsPDF('p', 'mm', 'a4');
+        pdf.deletePage(1);
+        pdf.addPage([millimeters.width, millimeters.height]);
+        pdf.addImage(imgData, 'PNG', 0, 0, millimeters.width, millimeters.height);
+
         pdf.save('quotation.pdf');
-        // captureRef.current.appendChild(canvas);
       });
     }
   };
@@ -96,7 +97,7 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
         <div className="quotation__section-outerdiv">
           <div className="quotation__button-div">
             <Button type="primary" onClick={() => captureHandler()}>
-              Save as pdf
+              Download as PDF
             </Button>
           </div>
           <section className="quotation__section">
@@ -355,22 +356,24 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                     </div>
                     <div>
                       <table className="quotation__salesprogram-table">
-                        <tr>
-                          <td className="quotation__salesprogram-table-left">Down Payment</td>
-                          <td className="quotation__salesprogram-table-right"></td>
-                        </tr>
-                        <tr>
-                          <td className="quotation__salesprogram-table-left">Account Finance</td>
-                          <td className="quotation__salesprogram-table-right"></td>
-                        </tr>
-                        <tr>
-                          <td className="quotation__salesprogram-table-left">Payment Period</td>
-                          <td className="quotation__salesprogram-table-right"></td>
-                        </tr>
-                        <tr>
-                          <td className="quotation__salesprogram-table-left">Months Finance</td>
-                          <td className="quotation__salesprogram-table-right"></td>
-                        </tr>
+                        <tbody>
+                          <tr>
+                            <td className="quotation__salesprogram-table-left">Down Payment</td>
+                            <td className="quotation__salesprogram-table-right"></td>
+                          </tr>
+                          <tr>
+                            <td className="quotation__salesprogram-table-left">Account Finance</td>
+                            <td className="quotation__salesprogram-table-right"></td>
+                          </tr>
+                          <tr>
+                            <td className="quotation__salesprogram-table-left">Payment Period</td>
+                            <td className="quotation__salesprogram-table-right"></td>
+                          </tr>
+                          <tr>
+                            <td className="quotation__salesprogram-table-left">Months Finance</td>
+                            <td className="quotation__salesprogram-table-right"></td>
+                          </tr>
+                        </tbody>
                       </table>
                     </div>
                   </div>

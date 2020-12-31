@@ -38,8 +38,6 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
 
   const { accessObj, localOrdersArray, displayOrdersAmount = 1, onRemoveAnOrder } = salesPageContext;
 
-  console.log('localOrdersArray', localOrdersArray);
-
   /* ================================================== */
   /*  method */
   /* ================================================== */
