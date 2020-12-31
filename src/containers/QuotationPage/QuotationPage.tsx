@@ -120,7 +120,7 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                     <div className="margin_r-1">Tel: 09-741 8836</div>
                     <div className="margin_r-1">Fax: 09-747 9836</div>
                     <div>
-                      H/P: <span className="quotation__top-contacts-highlight">016-9535780 Shahrul Reza</span>
+                      H/P: <span className="quotation__top-contacts-highlight">012-900 8765 Jason</span>
                     </div>
                   </div>
                 </div>
