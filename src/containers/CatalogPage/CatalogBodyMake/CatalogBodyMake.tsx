@@ -226,11 +226,15 @@ const CatalogBodyMake: React.FC<Props> = ({
               <>
                 {bodyMakeWithWheelbase.length > 0 ? (
                   <section className="catalogbodymake__section-div">
-                    <LeftCircleOutlined
-                      className="catalogbodymake__backarrow"
-                      onClick={() => history.push('/catalog')}
-                    />
-                    <div className="catalogbodymake__series-title">{catalogMake.series}</div>
+                    <div className="catalogbodymake__series-outerdiv">
+                      {/* <div> */}
+                      <LeftCircleOutlined
+                        className="catalogbodymake__backarrow"
+                        onClick={() => history.push('/catalog')}
+                      />
+                      {/* </div> */}
+                      <div className="catalogbodymake__series-title">{catalogMake.series}</div>
+                    </div>
                     <section className="catalogbodymake__section-banner">
                       <div className="catalogbodymake__banner-div">
                         <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
@@ -239,7 +243,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                     </section>
 
                     {bodyMakeWithWheelbase.map((wheelbaseBodyMake) => (
-                      <section className="catalogbodymake__wheelbase-div">
+                      <section key={uuidv4()} className="catalogbodymake__wheelbase-div">
                         <div>
                           {wheelbaseBodyMake.wheelbase.title && wheelbaseBodyMake.wheelbase.title !== '' ? (
                             <div className="catalogbodymake__wheelbase-title">

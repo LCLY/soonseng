@@ -3,6 +3,7 @@ export const ROUTE_ABOUT = '/about';
 export const ROUTE_SALES = '/sales';
 export const ROUTE_CONTACT = '/contact';
 export const ROUTE_CATALOG = '/catalog';
+export const ROUTE_QUOTATION = '/quotation';
 export const ROUTE_ORDERS = '/orders';
 export const ROUTE_LOGIN = '/login';
 export const ROUTE_LOGOUT = '/logout';

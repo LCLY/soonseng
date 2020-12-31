@@ -10,6 +10,7 @@ import { CaretDownOutlined, InfoCircleOutlined, CaretRightOutlined } from '@ant-
 /* Util */
 import { AppActions } from 'src/store/types';
 import { TUserAccess } from 'src/store/types/auth';
+import { convertSpaceInStringWithChar } from 'src/shared/Utils';
 import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
@@ -237,6 +238,32 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
 
               let moreOptionsDropdown = (
                 <Menu>
+                  <Menu.Item
+                    onClick={() => {
+                      if (order.bodyMakeObj) {
+                        const { length, make_wheelbase, body } = order.bodyMakeObj;
+                        history.push({
+                          pathname: `/quotation/${convertSpaceInStringWithChar(
+                            `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
+                            '',
+                          )}`,
+                          state: {
+                            lengthObj: order.lengthObj,
+                            bodyMakeObj: order.bodyMakeObj,
+                            insuranceArray: insuranceArray,
+                            grandTotalPrice: grandTotalPrice,
+                            modelSubtotalPrice: modelSubtotalPrice,
+                            processingFeesArray: processingFeesArray,
+                            generalAccessoriesArray: order.generalAccessoriesArray,
+                            bodyRelatedAccessoriesArray: order.bodyRelatedAccessoriesArray,
+                            dimensionRelatedAccessoriesArray: order.dimensionRelatedAccessoriesArray,
+                          },
+                        });
+                      }
+                    }}
+                  >
+                    Generate quotation
+                  </Menu.Item>
                   <Menu.Item
                     danger
                     onClick={() => {

@@ -323,22 +323,28 @@
   /* ==================== */
   &__series {
     &-title {
-      margin-right: auto;
-      // margin-left: 2rem;
-      margin-bottom: 2rem;
-      margin-top: 1.5rem;
       align-self: left;
       display: inline-block;
       font-size: 2.5rem;
       font-family: $font-bebasneue;
-      padding: 0.5rem 4rem 0.3rem 4rem;
+      padding: 1rem 4rem 0.3rem 4rem;
       border-left: 0.5rem solid $primary-color-2;
       background: white;
       color: $primary-color-4;
 
       @include respond-to($small-phone) {
         font-size: 2rem;
+        margin-left: 1rem;
         padding: 0.1rem 2rem 0.1rem 2rem;
+      }
+    }
+
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+
+      @include respond-to($small-phone) {
         margin: 0 0 1rem 0.5rem;
       }
     }
@@ -584,6 +590,9 @@
       background: white;
       @include glassMorph(rgba($primary-color-4, 0.3), 20px, rgba(0, 0, 0, 0), 2rem);
 
+      @include respond-to($small-phone) {
+        height: 80vh;
+      }
       @include respond-to($phone-only) {
         height: 80vh;
       }
@@ -635,8 +644,10 @@
   &__backarrow {
     color: white !important;
     margin: 0 2rem 0 1rem;
+    font-size: 3.5rem;
 
     @include respond-to($small-phone) {
+      font-size: 2.5rem;
       margin: 0 0.5rem 0 1rem;
     }
 

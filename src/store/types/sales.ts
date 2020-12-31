@@ -165,9 +165,10 @@ export interface GetSalesBodyMakesFailedAction {
 // Types
 export type TReceivedDimensionAccessoryObj = {
   id: number;
-  accessory: TReceivedAccessoryObj;
-  body_length: TReceivedBodyMakeObj;
   price: number;
+  available: boolean;
+  accessory: TReceivedAccessoryObj;
+  body_make: TReceivedBodyMakeObj;
 };
 
 export interface GetSalesAccessoriesAction {

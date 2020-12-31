@@ -1,23 +1,24 @@
 import React, { Suspense, useEffect } from 'react';
 /* containers */
 // Authentication
-import Logout from './containers/Authentication/Logout/Logout';
+import Logout from 'src/containers/Authentication/Logout/Logout';
 // General pages
 import Homepage from 'src/containers/HomePage/HomePage';
 import AboutPage from 'src/containers/AboutPage/AboutPage';
-import ContactPage from 'src/containers/ContactPage/ContactPage';
-import PageNotFound from './components/PageNotFound/PageNotFound';
 import SalesPage from 'src/containers/SalesPage/SalesPage';
-import OrdersPage from './containers/OrdersPage/OrdersPage';
-import LoginPage from './containers/Authentication/LoginPage/LoginPage';
-import CatalogPage from './containers/CatalogPage/CatalogPage';
-import CatalogBodyMake from './containers/CatalogPage/CatalogBodyMake/CatalogBodyMake';
+import OrdersPage from 'src/containers/OrdersPage/OrdersPage';
+import CatalogPage from 'src/containers/CatalogPage/CatalogPage';
+import ContactPage from 'src/containers/ContactPage/ContactPage';
+import PageNotFound from 'src/components/PageNotFound/PageNotFound';
+import QuotationPage from 'src/containers/QuotationPage/QuotationPage';
+import LoginPage from 'src/containers/Authentication/LoginPage/LoginPage';
+import CatalogBodyMake from 'src/containers/CatalogPage/CatalogBodyMake/CatalogBodyMake';
 // Dashboard
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
-import Make from './containers/DashboardPage/DashboardCRUD/Make/Make';
-import Body from './containers/DashboardPage/DashboardCRUD/Body/Body';
-import BodyMake from './containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
-import Accessory from './containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
+import Make from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
+import Body from 'src/containers/DashboardPage/DashboardCRUD/Body/Body';
+import BodyMake from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
+import Accessory from 'src/containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
 // 3rd party lib
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
@@ -40,6 +41,7 @@ import {
   ROUTE_LOGIN,
   ROUTE_LOGOUT,
   ROUTE_NOT_FOUND,
+  ROUTE_QUOTATION,
 } from './shared/routes';
 
 interface AppProps {}
@@ -75,6 +77,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
+        <Route exact path={`${ROUTE_QUOTATION}/:model_details`} component={QuotationPage} />
         <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
         {/* dashboard */}
         <Route exact path={ROUTE_DASHBOARD.main} component={DashboardPage} />
@@ -100,6 +103,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
+        <Route exact path={`${ROUTE_QUOTATION}/:model_details`} component={QuotationPage} />
         <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
         {/* authentication */}
         <Route exact path={ROUTE_LOGIN} component={LoginPage} />

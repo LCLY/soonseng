@@ -102,7 +102,8 @@ const Footer: React.FC<Props> = () => {
           </Row>
         </Container>
         <div className="footer__copyright-div">
-          © 2020 Soon Seng Motors Enterprise (1988) Sdn Bhd
+          {/* © 2020 Soon Seng Motors Enterprise (1988) Sdn Bhd */}Copyright © 2020 SSME (1988) Sdn. Bhd. All Rights
+          Reserved
           <span className="footer__copyright-policy">
             <a
               className="footer__copyright-policy-link"

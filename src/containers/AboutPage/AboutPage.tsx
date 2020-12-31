@@ -1,7 +1,6 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import './AboutPage.scss';
 /* component */
-import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
 /* 3rd party lib */
@@ -22,7 +21,7 @@ const AboutPage = () => {
     if (captureRef !== null) {
       html2canvas(captureRef.current).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdf = new jsPDF('p', 'px', 'a4');
         // let width = pdf.internal.pageSize.getWidth();
         // let height = pdf.internal.pageSize.getHeight();
 
@@ -50,77 +49,154 @@ const AboutPage = () => {
       <button onClick={() => captureHandler()}>Print</button>
       AboutPage
       <div className="test" ref={divRef}>
-        <Container>
-          <section className="homepage__section-values">
-            <div className="homepage__section-values-title">Our values</div>
-            <div className="homepage__values-top">
-              <div className="homepage__values-outerdiv">
-                <div className="homepage__values-div">
-                  <div className="homepage__values-icon-div">
-                    <i className="homepage__values-icon fas fa-chart-line"></i>
-                  </div>
-                  <div className="homepage__values-text">
-                    <div className="homepage__values-title">Customers First</div>
-                    <div className="homepage__values-desc">
-                      Generating profit for customers through consistent logistic performance.
-                    </div>
-                  </div>
+        <section className="quotation__section">
+          {/* Top div */}
+          <div className="quotation__top-div">
+            <div>
+              <img
+                alt="hinologo"
+                className="quotation__logo"
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/Hino-logo.png/220px-Hino-logo.png"
+              />
+            </div>
+            <div>
+              <div className="quotation__top-title">
+                SOON SENG MOTORS ENTERPRISE (1988) SDN BHD
+                <br />
+                HINO 3S DEALER KELANTAN
+              </div>
+              <div className="quotation__top-address">
+                Lot 2776, Jalan Long Yunus, Kawasan MIEL Lundang, 15200 Kota Bharu, Kel.
+              </div>
+              <div className="quotation__top-contacts">
+                <div className="margin_r-1">Tel: 09-741 8836</div>
+                <div className="margin_r-1">Fax: 09-747 9836</div>
+                <div>
+                  H/P: <span className="quotation__top-contacts-highlight">016-9535780 Shahrul Reza</span>
                 </div>
               </div>
-              <div className="homepage__values-outerdiv">
-                <div className="homepage__values-div">
-                  <div className="homepage__values-icon-div">
-                    <i className="homepage__values-icon fas fa-smile-beam"></i>
-                  </div>
-                  <div className="homepage__values-text">
-                    <div className="homepage__values-title">Product Reliability</div>
-                    <div className="homepage__values-desc">Turning uncertainties into predictabilities.</div>
-                  </div>
-                </div>
+            </div>
+            <div>
+              <img
+                alt="hinologo"
+                className="quotation__logo"
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/Hino-logo.png/220px-Hino-logo.png"
+              />
+            </div>
+          </div>
+
+          <div className="quotation__header-2">QUOTATION</div>
+          <div className="quotation__subheader">
+            We are pleased to append here with our quotation for the following commercial vehicle for your perusal
+          </div>
+
+          <section className="quotation__content-div">
+            <div className="quotation__makedetail-div">
+              <div className="quotation__makedetail-div-left">
+                <div>Make / Model : XZC710R-WKFRL3</div>
+                <div>Engine capacity : 4,009CC (EURO3)</div>
+                <div>Horsepower : 156PS</div>
               </div>
-              <div className="homepage__values-outerdiv homepage__values-outerdiv--efficiency">
-                <div className="homepage__values-div">
-                  <div className="homepage__values-icon-div">
-                    <i className="homepage__values-icon fas fa-business-time"></i>
-                  </div>
-                  <div className="homepage__values-text">
-                    <div className="homepage__values-title">Efficiency</div>
-                    <div className="homepage__values-desc">Using less resources to get more done.</div>
-                  </div>
-                </div>
+              <div>
+                <div>Year : 2020</div>
+                <div>Wheelbase : 3500mm</div>
+                <div>GVW : 7,500KG</div>
               </div>
             </div>
 
-            <div className="homepage__values-bottom">
-              <div className="homepage__values-outerdiv homepage__values-outerdiv--bottom">
-                <div className="homepage__values-div">
-                  <div style={{ cursor: 'pointer' }} className="homepage__values-icon-div">
-                    <i style={{ zIndex: 10 }} id="truckicon" className="homepage__values-icon fas fa-truck-moving"></i>
+            <div className="quotation__price-div">
+              <div className="quotation__price-unit">RM</div>
+              <ol type="a" className="quotation__orderedlist">
+                <li>
+                  <div className="quotation__orderedlist-row--chassis quotation__orderedlist-row">
+                    <div>Chassis Price : New Model Year 2020 - WKFRL3</div>
+                    <div>114,500.00</div>
                   </div>
-                  <div className="homepage__values-text">
-                    <div className="homepage__values-title">Performance</div>
-                    <div className="homepage__values-desc">
-                      Variety of vehicle selections that strive to perform on every situations possible.
-                    </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>Body Price : 15 ft Wooden Body Cargo c/w Railing & Canvas</div>
+                    <div>13,000.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>Lapik Lantai Besi</div>
+                    <div>1,500.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>Admin fees, handling charges, weighing</div>
+                    <div>500.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>Signwriting & luminous sticker</div>
+                    <div>250.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>Weighing / Inspection Fee (Puspakom)</div>
+                    <div>650.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>JPJ Booking Number</div>
+                    <div>325.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>HQS Final Inspection</div>
+                    <div>200.00</div>
+                  </div>
+                </li>
+
+                <div>
+                  <div className="quotation__orderedlist-row">
+                    <div>SUBTOTAL</div>
+                    <div>130,925.00</div>
                   </div>
                 </div>
+
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>Road tax (1 year)</div>
+                    <div>1,015.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>JPJ Registration & E Hak Milik</div>
+                    <div>110.00</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="quotation__orderedlist-row">
+                    <div>INSURANCE PREMIUM (windscreen included)</div>
+                    <div>4,733.96</div>
+                  </div>
+                </li>
+              </ol>
+              <div>
+                <div>TOTAL PRICE</div>
+                <div>136,783.96</div>
               </div>
-              <div className="homepage__values-outerdiv homepage__values-outerdiv--bottom">
-                <div className="homepage__values-div">
-                  <div className="homepage__values-icon-div">
-                    <i className="homepage__values-icon fas fa-leaf"></i>
-                  </div>
-                  <div className="homepage__values-text">
-                    <div className="homepage__values-title">Growth</div>
-                    <div className="homepage__values-desc">
-                      Taking part in growth, may it be our employees or customers.
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <div>DISCOUNT</div>
+                <div>2,783.96</div>
+              </div>
+              <div>
+                <div>TOTAL ON THE ROAD PRICE</div>
+                <div>134,000.00</div>
               </div>
             </div>
           </section>
-        </Container>
+        </section>
       </div>
     </div>
   );
