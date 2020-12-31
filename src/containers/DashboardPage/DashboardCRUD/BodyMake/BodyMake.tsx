@@ -347,6 +347,7 @@ const BodyMake: React.FC<Props> = ({
                   setShowCreateModal({ ...showCreateModal, body_make_accessory: true });
                   //  set the body make id
                   createBodyMakeAccessoryForm.setFieldsValue({ bodyMakeId: record.bodyMakeId });
+                  onGetBodyMakeAccessories(record.bodyMakeId); //get body accessories so we can know what to filter
                 }}
               >
                 Create Accessory
@@ -410,10 +411,8 @@ const BodyMake: React.FC<Props> = ({
           onClick={() => {
             // this allow only 1 row to expand at a time
             onTableRowExpand(expanded, record, setExpandedRowKeys);
-
             // call the body make accessories api on expand
             onGetBodyMakeAccessories(record.bodyMakeId);
-
             // this closes all the edit image gallery when user expand other row
             // clearing out all the booleans
             setShowEditImageGallery({});
@@ -901,9 +900,9 @@ const BodyMake: React.FC<Props> = ({
                           title={
                             <div className="body__expand-card-title-div">
                               <span className="body__expand-card-title">{bodyMakeAccessory.accessory.title}</span>
-                              <Tag color="geekblue" style={{ marginRight: 0 }}>
+                              {/* <Tag color="geekblue" style={{ marginRight: 0 }}>
                                 RM{bodyMakeAccessory.accessory.price}
-                              </Tag>
+                              </Tag> */}
                             </div>
                           }
                           size="small"

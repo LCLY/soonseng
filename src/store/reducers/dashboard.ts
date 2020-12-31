@@ -774,7 +774,7 @@ const createBodyAccessoryFailed = (state: DashboardInitialState, action: AppActi
 /* Get Body Accessories  */
 /* -------------------------- */
 const getBodyAccessoriesStart = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
+  return updateObject(state, { errorMessage: null, loading: true, bodyAccessoriesArray: null });
 };
 const getBodyAccessoriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('bodyAccessoriesArray' in action) {

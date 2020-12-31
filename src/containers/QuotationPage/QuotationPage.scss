@@ -206,8 +206,15 @@
       position: relative;
       padding-left: 3rem;
       border-top: 2px solid black;
-      border-bottom: 4px solid black;
-      border-bottom-style: double;
+      border-bottom: 2px solid black;
+      &:after {
+        position: absolute;
+        content: '';
+        bottom: -0.5rem;
+        left: 0;
+        width: 100%;
+        border-bottom: 2px solid black;
+      }
     }
   }
 

@@ -113,7 +113,7 @@ const Body: React.FC<Props> = ({
   // onUpdateBodyAccessory,
   onDeleteBodyAccessory,
   onGetBodyAssociatedAccessories,
-  onClearBodyAccessoryArray,
+  // onClearBodyAccessoryArray,
   // delete upload iamges
   onDeleteUploadImage,
   // clear states
@@ -270,7 +270,7 @@ const Body: React.FC<Props> = ({
                 type="default"
                 onClick={() => {
                   // everytime when user open the modal clear the body accessory array first
-                  onClearBodyAccessoryArray();
+                  // onClearBodyAccessoryArray();
                   //  set the body id
                   createBodyAccessoryForm.setFieldsValue({ bodyId: record.bodyId });
                   setShowCreateModal({ ...showCreateModal, body_accessory: true });
@@ -453,7 +453,7 @@ const Body: React.FC<Props> = ({
         <PlusCircleTwoTone
           onClick={() => {
             // clear the state first to make sure that body accessories array is reloaded
-            onClearBodyAccessoryArray();
+            // onClearBodyAccessoryArray();
             // this allow only 1 row to expand at a time
             onTableRowExpand(expanded, record, setExpandedRowKeys);
             // call the body accessories api on expand
