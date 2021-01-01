@@ -214,12 +214,12 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                             <span>
                               {bodyMakeObj.make_wheelbase.make.year === null
                                 ? /* if year doesnt exist, dont show anything except the model name*/
-                                  ` ${bodyMakeObj.make_wheelbase.make.title}`
+                                  `${bodyMakeObj.make_wheelbase.make.title}`
                                 : /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
                                 parseInt(bodyMakeObj.make_wheelbase.make.year) === parseInt(moment().year().toString())
-                                ? ` NEW MODEL YEAR ${bodyMakeObj.make_wheelbase.make.year} - ${bodyMakeObj.make_wheelbase.make.title}`
+                                ? `NEW MODEL YEAR ${bodyMakeObj.make_wheelbase.make.year} - ${bodyMakeObj.make_wheelbase.make.title}`
                                 : /* else show MODEL YEAR - model name */
-                                  ` MODEL ${bodyMakeObj.make_wheelbase.make.year} ${bodyMakeObj.make_wheelbase.make.title}`}
+                                  `MODEL ${bodyMakeObj.make_wheelbase.make.year} ${bodyMakeObj.make_wheelbase.make.title}`}
                             </span>
                           </div>
                           <div>
@@ -331,7 +331,12 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                       {insuranceArray.map((insurance) => (
                         <li key={uuidv4()}>
                           <div className="flex space-between">
-                            <span> {insurance.title}</span>
+                            <span>
+                              {insurance.title.split(' ').map((word) => (
+                                <React.Fragment key={uuidv4()}>{word}&nbsp;</React.Fragment>
+                              ))}
+                            </span>
+                            {/* <span> {insurance.title}</span> */}
                             <span>
                               <NumberFormat
                                 displayType={'text'}
@@ -536,16 +541,16 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                       <li>
                         <div className="hiddenquotation__orderedlist-row--chassis hiddenquotation__orderedlist-row">
                           <div>
-                            Chassis&nbsp;Price&nbsp;:&nbsp;
+                            Chassis&nbsp;Price&nbsp;:&nbsp;&nbsp;
                             <span>
                               {bodyMakeObj.make_wheelbase.make.year === null
                                 ? /* if year doesnt exist, dont show anything except the model name*/
-                                  bodyMakeObj.make_wheelbase.make.title
+                                  ` ${bodyMakeObj.make_wheelbase.make.title}`
                                 : /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
                                 parseInt(bodyMakeObj.make_wheelbase.make.year) === parseInt(moment().year().toString())
-                                ? `NEW MODEL YEAR ${bodyMakeObj.make_wheelbase.make.year} - ${bodyMakeObj.make_wheelbase.make.title}`
+                                ? ` NEW MODEL YEAR ${bodyMakeObj.make_wheelbase.make.year} - ${bodyMakeObj.make_wheelbase.make.title}`
                                 : /* else show MODEL YEAR - model name */
-                                  `MODEL ${bodyMakeObj.make_wheelbase.make.year} ${bodyMakeObj.make_wheelbase.make.title}`}
+                                  ` MODEL ${bodyMakeObj.make_wheelbase.make.year} ${bodyMakeObj.make_wheelbase.make.title}`}
                             </span>
                           </div>
                           <div>
@@ -657,7 +662,13 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                       {insuranceArray.map((insurance) => (
                         <li key={uuidv4()}>
                           <div className="flex space-between">
-                            <span> {insurance.title}</span>
+                            <span>
+                              {insurance.title.split(' ').map((word) => (
+                                <React.Fragment key={uuidv4()}>
+                                  {word === 'INSURANCE' ? <>{word}&nbsp;&nbsp;</> : <>{word}&nbsp;</>}
+                                </React.Fragment>
+                              ))}
+                            </span>
                             <span>
                               <NumberFormat
                                 displayType={'text'}
@@ -696,19 +707,19 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                       <table className="hiddenquotation__salesprogram-table">
                         <tbody>
                           <tr>
-                            <td className="hiddenquotation__salesprogram-table-left">Down Payment</td>
+                            <td className="hiddenquotation__salesprogram-table-left">Down&nbsp;Payment</td>
                             <td className="hiddenquotation__salesprogram-table-right"></td>
                           </tr>
                           <tr>
-                            <td className="hiddenquotation__salesprogram-table-left">Account Finance</td>
+                            <td className="hiddenquotation__salesprogram-table-left">Account&nbsp;Finance</td>
                             <td className="hiddenquotation__salesprogram-table-right"></td>
                           </tr>
                           <tr>
-                            <td className="hiddenquotation__salesprogram-table-left">Payment Period</td>
+                            <td className="hiddenquotation__salesprogram-table-left">Payment&nbsp;Period</td>
                             <td className="hiddenquotation__salesprogram-table-right"></td>
                           </tr>
                           <tr>
-                            <td className="hiddenquotation__salesprogram-table-left">Months Finance</td>
+                            <td className="hiddenquotation__salesprogram-table-left">Months&nbsp;Finance</td>
                             <td className="hiddenquotation__salesprogram-table-right"></td>
                           </tr>
                         </tbody>
@@ -720,26 +731,26 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                   {/* ========================= */}
                   <div className="hiddenquotation__accessorieslist">
                     <div className="hiddenquotation__accessorieslist-standard">
-                      <span>Standard&nbsp;accessories:</span>
+                      <span>Standard&nbsp;Accessories:</span>
                     </div>
                     <div className="hiddenquotation__accessorieslist-content">
                       <div>
                         <div>Air-Container</div>
-                        <div>Radio CD Player</div>
-                        <div>Cab Floor Mat</div>
+                        <div>Radio&nbsp;CD&nbsp;Player</div>
+                        <div>Cab&nbsp;Floor&nbsp;Mat</div>
                         <div>Mudguards</div>
                       </div>
                       <div>
-                        <div>First Aid Kit</div>
-                        <div>Safety Triangle</div>
-                        <div>Fire Extinguisher</div>
-                        <div>Tubeless tires</div>
+                        <div>First&nbsp;Aid&nbsp;Kit</div>
+                        <div>Safety&nbsp;Triangle</div>
+                        <div>Fire&nbsp;Extinguisher</div>
+                        <div>Tubeless&nbsp;tires</div>
                       </div>
                       <div>
-                        <div>Rubber Mats</div>
-                        <div>Alarm System</div>
-                        <div>Central Locking</div>
-                        <div>Kangaroo Bar</div>
+                        <div>Rubber&nbsp;Mats</div>
+                        <div>Alarm&nbsp;System</div>
+                        <div>Central&nbsp;Locking</div>
+                        <div>Kangaroo&nbsp;Bar</div>
                       </div>
                       <div>
                         <img className="hiddenquotation__accessorieslist-img" src={warranty} alt="warranty" />
