@@ -56,7 +56,7 @@ const CatalogBodyMake: React.FC<Props> = ({
       },
       {
         title: 'Horsepower',
-        data: catalogMake.horsepower !== null && catalogMake.horsepower !== '' ? `${catalogMake.horsepower}PC` : '-',
+        data: catalogMake.horsepower !== null && catalogMake.horsepower !== '' ? `${catalogMake.horsepower}PS` : '-',
       },
       {
         title: 'Emission',

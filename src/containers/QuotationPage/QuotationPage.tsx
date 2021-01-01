@@ -11,10 +11,10 @@ import { Button } from 'antd';
 import moment from 'moment';
 import { jsPDF } from 'jspdf';
 import { Location } from 'history';
-
 import { v4 as uuidv4 } from 'uuid';
 import html2canvas from 'html2canvas';
 import NumberFormat from 'react-number-format';
+import { DownloadOutlined } from '@ant-design/icons';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 /* Util */
 import holy5truck from 'src/img/5trucks.jpg';
@@ -102,8 +102,9 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
         {/* <Container> */}
         <div className="quotation__section-outerdiv">
           <div className="quotation__button-div">
-            <Button type="primary" onClick={() => captureHandler()}>
-              Download as PDF
+            <Button type="primary" className="quotation__button" onClick={() => captureHandler()}>
+              <DownloadOutlined />
+              &nbsp;Download as PDF
             </Button>
           </div>
           <section className="quotation__section">

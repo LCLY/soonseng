@@ -11,6 +11,7 @@ import CatalogPage from 'src/containers/CatalogPage/CatalogPage';
 import ContactPage from 'src/containers/ContactPage/ContactPage';
 import PageNotFound from 'src/components/PageNotFound/PageNotFound';
 import QuotationPage from 'src/containers/QuotationPage/QuotationPage';
+import ComparisonPage from './containers/ComparisonPage/ComparisonPage';
 import LoginPage from 'src/containers/Authentication/LoginPage/LoginPage';
 import CatalogBodyMake from 'src/containers/CatalogPage/CatalogBodyMake/CatalogBodyMake';
 // Dashboard
@@ -42,6 +43,7 @@ import {
   ROUTE_LOGOUT,
   ROUTE_NOT_FOUND,
   ROUTE_QUOTATION,
+  ROUTE_COMPARISON,
 } from './shared/routes';
 
 interface AppProps {}
@@ -77,6 +79,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
+        <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         <Route exact path={`${ROUTE_QUOTATION}/:model_details`} component={QuotationPage} />
         <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
         {/* dashboard */}
@@ -103,6 +106,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
+        <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         <Route exact path={`${ROUTE_QUOTATION}/:model_details`} component={QuotationPage} />
         <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
         {/* authentication */}

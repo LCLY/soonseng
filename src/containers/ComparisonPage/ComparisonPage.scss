@@ -1,0 +1,107 @@
+.comparison {
+  &__section {
+    border: 1px solid darken($translucent-grey, 30%);
+    width: 120rem;
+    padding: 3rem;
+    background: white;
+
+    &-outerdiv {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      // justify-content: center;
+      flex-direction: column;
+      padding-top: 3rem;
+      width: 100%;
+      padding-bottom: 5rem;
+      @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
+    }
+  }
+
+  /* ================ */
+  // Button
+  /* ================ */
+  &__button {
+    border: 1px solid white !important;
+    background: rgba($primary-color-4, 0.8) !important;
+    padding: 0 2rem !important;
+    height: 4rem !important;
+
+    &-div {
+      width: 120rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 3rem;
+    }
+
+    &-title {
+      color: $primary-color-3;
+      font-family: $font-archivo;
+      font-size: 2rem;
+      padding: 1rem 3rem;
+      border-left: 5px solid $primary-color-3;
+      background: white;
+    }
+  }
+  /* ================ */
+  // table
+  /* ================ */
+  &__table {
+    width: 100%;
+    height: 100%;
+    & th,
+    td {
+      border: 1px solid black;
+    }
+
+    & tr:nth-child(even) {
+      background-color: #d5dbe867;
+    }
+
+    & tr {
+      &:hover {
+        background: rgba($primary-color-4, 0.15);
+      }
+    }
+
+    & td {
+      width: auto;
+      text-align: center;
+      min-width: 15rem;
+    }
+
+    /* ========================= */
+    // header on the left
+    /* ========================= */
+    &-header {
+      padding: 0.5rem 2rem;
+      font-weight: normal;
+      font-family: $font-firesans;
+      background: white;
+      white-space: nowrap;
+      width: 5rem;
+
+      &--model {
+        font-weight: bolder;
+        font-family: $font-roboto;
+        font-size: 1.5rem;
+        text-align: center;
+      }
+    }
+
+    &-price {
+      font-family: $font-firesans;
+      font-weight: bolder;
+      font-size: 1.8rem;
+      color: $primary-color-4;
+    }
+    &-brand {
+      color: white;
+      font-size: 1.8rem;
+      font-weight: bolder;
+      font-family: $font-archivo;
+      background: rgba($primary-color-4, 0.8);
+    }
+  }
+}

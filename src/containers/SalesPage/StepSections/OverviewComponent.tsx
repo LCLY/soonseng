@@ -236,32 +236,34 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
 
               let moreOptionsDropdown = (
                 <Menu>
-                  <Menu.Item
-                    onClick={() => {
-                      if (order.bodyMakeObj) {
-                        const { length, make_wheelbase, body } = order.bodyMakeObj;
-                        history.push({
-                          pathname: `/quotation/${convertSpaceInStringWithChar(
-                            `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
-                            '',
-                          )}`,
-                          state: {
-                            lengthObj: order.lengthObj,
-                            bodyMakeObj: order.bodyMakeObj,
-                            insuranceArray: insuranceArray,
-                            grandTotalPrice: grandTotalPrice,
-                            modelSubtotalPrice: modelSubtotalPrice,
-                            processingFeesArray: processingFeesArray,
-                            generalAccessoriesArray: order.generalAccessoriesArray,
-                            bodyRelatedAccessoriesArray: order.bodyRelatedAccessoriesArray,
-                            dimensionRelatedAccessoriesArray: order.dimensionRelatedAccessoriesArray,
-                          },
-                        });
-                      }
-                    }}
-                  >
-                    Generate quotation
-                  </Menu.Item>
+                  {accessObj.showPriceSalesPage && (
+                    <Menu.Item
+                      onClick={() => {
+                        if (order.bodyMakeObj) {
+                          const { length, make_wheelbase, body } = order.bodyMakeObj;
+                          history.push({
+                            pathname: `/quotation/${convertSpaceInStringWithChar(
+                              `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
+                              '',
+                            )}`,
+                            state: {
+                              lengthObj: order.lengthObj,
+                              bodyMakeObj: order.bodyMakeObj,
+                              insuranceArray: insuranceArray,
+                              grandTotalPrice: grandTotalPrice,
+                              modelSubtotalPrice: modelSubtotalPrice,
+                              processingFeesArray: processingFeesArray,
+                              generalAccessoriesArray: order.generalAccessoriesArray,
+                              bodyRelatedAccessoriesArray: order.bodyRelatedAccessoriesArray,
+                              dimensionRelatedAccessoriesArray: order.dimensionRelatedAccessoriesArray,
+                            },
+                          });
+                        }
+                      }}
+                    >
+                      Generate quotation
+                    </Menu.Item>
+                  )}
                   <Menu.Item
                     danger
                     onClick={() => {
@@ -457,6 +459,12 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                             </Collapse>
                             {/* Accessories section */}
                             <div className="sales__overview-smalltitle">Accessories</div>
+                            {order.generalAccessoriesArray &&
+                              order.bodyRelatedAccessoriesArray &&
+                              order.dimensionRelatedAccessoriesArray &&
+                              order.generalAccessoriesArray.length === 0 &&
+                              order.bodyRelatedAccessoriesArray.length === 0 &&
+                              order.dimensionRelatedAccessoriesArray.length === 0 && <span>None</span>}
                             <>
                               {order.generalAccessoriesArray &&
                                 order.generalAccessoriesArray.length > 0 &&
