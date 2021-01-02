@@ -36,12 +36,10 @@ export interface CreateBrandFailedAction {
   type: typeof actionTypes.CREATE_BRAND_FAILED;
   errorMessage: string;
 }
-
 /* --------------------------------------------------------- */
 // Update Brand
 /* --------------------------------------------------------- */
-
-/* Api call */
+/*  Api call */
 export interface UpdateBrandAction {
   type: typeof actionTypes.UPDATE_BRAND;
   brand_id: number;
@@ -50,7 +48,7 @@ export interface UpdateBrandAction {
   imageTag: string | null; //for upload images
   imageFiles: FileList | null; //for upload images
 }
-/* States */
+/*  States */
 export interface UpdateBrandStartAction {
   type: typeof actionTypes.UPDATE_BRAND_START;
 }
@@ -61,6 +59,29 @@ export interface UpdateBrandSucceedAction {
 }
 export interface UpdateBrandFailedAction {
   type: typeof actionTypes.UPDATE_BRAND_FAILED;
+  errorMessage: string;
+}
+
+/* --------------------------------------------------------- */
+// Delete Brand
+/* --------------------------------------------------------- */
+
+/* Api call */
+export interface DeleteBrandAction {
+  type: typeof actionTypes.DELETE_BRAND;
+  brand_id: number;
+}
+/* States */
+export interface DeleteBrandStartAction {
+  type: typeof actionTypes.DELETE_BRAND_START;
+}
+export interface DeleteBrandSucceedAction {
+  type: typeof actionTypes.DELETE_BRAND_SUCCEED;
+  brandsArray: TReceivedBrandObj[];
+  successMessage: string;
+}
+export interface DeleteBrandFailedAction {
+  type: typeof actionTypes.DELETE_BRAND_FAILED;
   errorMessage: string;
 }
 

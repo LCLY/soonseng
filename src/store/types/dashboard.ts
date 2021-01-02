@@ -133,6 +133,10 @@ import {
   UpdateBrandStartAction,
   UpdateBrandSucceedAction,
   UpdateBrandFailedAction,
+  DeleteBrandAction,
+  DeleteBrandStartAction,
+  DeleteBrandSucceedAction,
+  DeleteBrandFailedAction,
   //Wheelbase
   CreateWheelbaseAction,
   CreateWheelbaseStartAction,
@@ -568,6 +572,10 @@ export type DashboardActionTypes =
   | UpdateBrandStartAction
   | UpdateBrandSucceedAction
   | UpdateBrandFailedAction
+  | DeleteBrandAction
+  | DeleteBrandStartAction
+  | DeleteBrandSucceedAction
+  | DeleteBrandFailedAction
   /* ======================================================================= */
   // Wheelbase (Make Page)
   /* ======================================================================= */

@@ -66,6 +66,10 @@ export {
   updateBrandStart,
   updateBrandSucceed,
   updateBrandFailed,
+  deleteBrand,
+  deleteBrandStart,
+  deleteBrandSucceed,
+  deleteBrandFailed,
   /* =========================================== */
   // Wheelbase (Make Page)
   /* =========================================== */

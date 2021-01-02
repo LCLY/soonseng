@@ -119,6 +119,35 @@ export const updateBrandFailed = (errorMessage: string): AppActions => {
     errorMessage: errorMessage,
   };
 };
+/* ------------------------------ */
+// Delete Brand
+/* ------------------------------ */
+export const deleteBrand = (brand_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_BRAND,
+    brand_id: brand_id,
+  };
+};
+
+export const deleteBrandStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_BRAND_START,
+  };
+};
+
+export const deleteBrandSucceed = (brandsArray: TReceivedBrandObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_BRAND_SUCCEED,
+    brandsArray: brandsArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteBrandFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_BRAND_FAILED,
+    errorMessage: errorMessage,
+  };
+};
 
 /* ============================================================================================ */
 /* Wheelbase  */

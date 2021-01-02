@@ -127,6 +127,11 @@ export const UPDATE_BRAND_START = 'UPDATE_BRAND_START';
 export const UPDATE_BRAND_SUCCEED = 'UPDATE_BRAND_SUCCEED';
 export const UPDATE_BRAND_FAILED = 'UPDATE_BRAND_FAILED';
 
+// Delete brand (head)
+export const DELETE_BRAND = 'DELETE_BRAND';
+export const DELETE_BRAND_START = 'DELETE_BRAND_START';
+export const DELETE_BRAND_SUCCEED = 'DELETE_BRAND_SUCCEED';
+export const DELETE_BRAND_FAILED = 'DELETE_BRAND_FAILED';
 /* --------------------------------------------- */
 // Make Page - Wheelbase
 /* --------------------------------------------- */

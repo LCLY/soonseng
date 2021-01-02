@@ -112,6 +112,7 @@ type TShowModal = {
 
 type TDeleteModalContent = {
   make_wheelbase: { make_wheelbase_id: number; make_wheelbase_title: string; make_title: string };
+  brand: { brand_id: number; brand_title: string };
 };
 
 type Props = MakeProps & StateProps & DispatchProps;
@@ -128,6 +129,7 @@ const Make: React.FC<Props> = ({
   onGetBrands,
   onCreateBrand,
   onUpdateBrand,
+  onDeleteBrand,
   // wheelbase
   wheelbasesArray,
   onGetWheelbases,
@@ -215,6 +217,7 @@ const Make: React.FC<Props> = ({
   // this state to keep track of what to show on delete modal and what useful info to pass
   const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
     make_wheelbase: { make_title: '', make_wheelbase_id: -1, make_wheelbase_title: '' },
+    brand: { brand_title: '', brand_id: -1 },
   });
 
   /* ======================== */
@@ -290,7 +293,18 @@ const Make: React.FC<Props> = ({
               >
                 Edit
               </Button>
-              <Button disabled type="link" danger>
+              <Button
+                type="link"
+                danger
+                onClick={() => {
+                  // delete modal
+                  setShowDeleteModal({ ...showDeleteModal, brand: true });
+                  setDeleteModalContent({
+                    ...deleteModalContent,
+                    brand: { brand_id: record.brandId, brand_title: record.brandTitle },
+                  });
+                }}
+              >
                 Delete
               </Button>
             </div>
@@ -1777,6 +1791,32 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
+  //  Delete Brand Modal
+  let deleteBrandModal = (
+    <Modal
+      title={
+        <div className="dashboard__delete-header">
+          <ExclamationCircleOutlined className="dashboard__delete-icon" />
+          Delete Brand
+        </div>
+      }
+      visible={showDeleteModal.brand}
+      onOk={() => onDeleteBrand(deleteModalContent.brand.brand_id)}
+      onCancel={() => setShowDeleteModal({ ...showDeleteModal, brand: false })}
+      okText="Yes, delete it"
+      confirmLoading={loading}
+      cancelText="Cancel"
+    >
+      You are deleting
+      {deleteModalContent.brand.brand_title === '' ? (
+        ' this brand'
+      ) : (
+        <span className="dashboard__delete-message">{` ${deleteModalContent.brand.brand_title}`}</span>
+      )}
+      , this action is permanent. Are you sure?
+    </Modal>
+  );
+
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
@@ -2065,6 +2105,7 @@ const Make: React.FC<Props> = ({
       {createMakeWheelbaseModal}
       {updateMakeWheelbaseModal}
       {deleteMakeWheelbaseModal}
+      {deleteBrandModal}
 
       <Layout>
         <NavbarComponent activePage="dashboard" />
@@ -2243,6 +2284,7 @@ interface DispatchProps {
   onGetBrands: typeof actions.getBrands;
   onCreateBrand: typeof actions.createBrand;
   onUpdateBrand: typeof actions.updateBrand;
+  onDeleteBrand: typeof actions.deleteBrand;
   // Wheelbase
   onGetWheelbases: typeof actions.getWheelbases;
   onCreateWheelbase: typeof actions.createWheelbase;
@@ -2271,6 +2313,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.createBrand(title, description, tag, imageFiles)),
     onUpdateBrand: (brand_id, title, description, imageTag, imageFiles) =>
       dispatch(actions.updateBrand(brand_id, title, description, imageTag, imageFiles)),
+    onDeleteBrand: (brand_id) => dispatch(actions.deleteBrand(brand_id)),
     // Wheelbase
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
     onCreateWheelbase: (title, description) => dispatch(actions.createWheelbase(title, description)),

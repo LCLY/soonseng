@@ -14,6 +14,7 @@ import {
   createBrandSaga,
   getBrandsSaga,
   updateBrandSaga,
+  deleteBrandSaga,
   // Wheelbase
   createWheelbaseSaga,
   getWheelbasesSaga,
@@ -101,6 +102,8 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BRAND, createBrandSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BRANDS, getBrandsSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_BRAND, updateBrandSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_BRAND, deleteBrandSaga)]);
+
   // Wheelbase
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_WHEELBASE, createWheelbaseSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_WHEELBASES, getWheelbasesSaga)]);

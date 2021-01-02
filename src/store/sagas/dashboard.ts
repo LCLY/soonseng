@@ -190,6 +190,28 @@ export function* updateBrandSaga(action: AppActions) {
     }
   }
 }
+/* ------------------------------- */
+//    Delete brand
+/* ------------------------------- */
+export function* deleteBrandSaga(action: AppActions) {
+  yield put(actions.deleteBrandStart());
+
+  let url = '';
+  if ('brand_id' in action) {
+    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteBrandSucceed(response.data.brands, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteBrandFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteBrandFailed, 'Error');
+    }
+  }
+}
 
 /* ================================================================== */
 /*   Wheelbase (Make Page) (head) */

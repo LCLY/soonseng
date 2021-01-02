@@ -178,6 +178,29 @@ const updateBrandFailed = (state: DashboardInitialState, action: AppActions) => 
   }
   return state;
 };
+/* -------------------------- */
+/* Delete Brand  */
+/* -------------------------- */
+const deleteBrandStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteBrandSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('brandsArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      brandsArray: action.brandsArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteBrandFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 /*  Wheelbase (Make Page) (head) */
@@ -1116,6 +1139,13 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return updateBrandSucceed(state, action);
     case actionTypes.UPDATE_BRAND_FAILED:
       return updateBrandFailed(state, action);
+    // Delete brand (head)
+    case actionTypes.DELETE_BRAND_START:
+      return deleteBrandStart(state, action);
+    case actionTypes.DELETE_BRAND_SUCCEED:
+      return deleteBrandSucceed(state, action);
+    case actionTypes.DELETE_BRAND_FAILED:
+      return deleteBrandFailed(state, action);
 
     /* =================================== */
     // Wheelbase (Make Page) (head)
