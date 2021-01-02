@@ -21,6 +21,7 @@ import holy5truck from 'src/img/5trucks.jpg';
 import hinologo from 'src/img/quotation1.jpg';
 import warranty from 'src/img/quotation3.jpg';
 import hinoconnect from 'src/img/quotation2.jpg';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedLengthObj } from 'src/store/types/dashboard';
 
@@ -58,6 +59,7 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
 
   const divRef = useRef() as MutableRefObject<HTMLDivElement>;
 
+  const { width } = useWindowDimensions();
   const [captureRef, setCaptureRef] = useState<{ current: HTMLElement } | null>(null);
 
   /* ================================================== */
@@ -74,7 +76,7 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
         let scale = (pWidth - margin * 2) / srcWidth;
         pdf.html(captureRef.current, {
           x: margin,
-          y: margin,
+          y: 0,
           html2canvas: {
             scale: scale,
           },
@@ -436,10 +438,16 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
               </section>
             </div>
           </section>
+
+          {/* ================================================================================= */}
+          {/* ================================================================================= */}
+          {/* ================================================================================= */}
+          {/* ================================================================================= */}
+
+          {/* ================================================================================= */}
+          {/* Hidden version so that it always stays the same */}
+          {/* ================================================================================= */}
           <section className="hiddenquotation__section">
-            {/* ================================================= */}
-            {/* Hidden version so that it always stays the same */}
-            {/* ================================================= */}
             <div className="hiddenquotation__section-innerdiv" ref={divRef}>
               {/* Top div */}
               <div className="hiddenquotation__top-div">
@@ -665,7 +673,7 @@ const QuotationPage: React.FC<Props> = ({ location }) => {
                             <span>
                               {insurance.title.split(' ').map((word) => (
                                 <React.Fragment key={uuidv4()}>
-                                  {word === 'INSURANCE' ? <>{word}&nbsp;&nbsp;</> : <>{word}&nbsp;</>}
+                                  {word === 'INSURANCE' && width <= 576 ? <>{word}&nbsp;&nbsp;</> : <>{word}&nbsp;</>}
                                 </React.Fragment>
                               ))}
                             </span>

@@ -236,7 +236,7 @@ const SalesPage: React.FC<Props> = ({
             </Breadcrumb>
           </div>
           <Divider className="sales__section-header-divider" orientation="left">
-            <div className="sales__section-header">Overview</div>
+            <div className="sales__section-header">Current Configuration</div>
           </Divider>
         </div>
 

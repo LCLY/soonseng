@@ -13,6 +13,7 @@ import { Location } from 'history';
 import { v4 as uuidv4 } from 'uuid';
 import html2canvas from 'html2canvas';
 import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
 import { DownloadOutlined } from '@ant-design/icons';
 // import NumberFormat from 'react-number-format';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -20,7 +21,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import { TLocalOrderObj } from 'src/store/types/sales';
-import NumberFormat from 'react-number-format';
 
 type TIncomingLocationState = {
   checkedConfigurations: string[];
@@ -50,14 +50,12 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
     if (captureRef !== null) {
       html2canvas(captureRef.current, { scale: 1 }).then((_canvas) => {
         let pdf = new jsPDF('l', 'mm', 'a4');
-        pdf.text('Specifications', 15, 20);
         autoTable(pdf, {
           theme: 'grid',
           html: '#my-table',
-          margin: { top: 25 },
           alternateRowStyles: { fillColor: '#dfe2e9' },
           headStyles: { fillColor: '#830e0e', valign: 'middle' },
-          bodyStyles: { overflow: 'linebreak', halign: 'center', valign: 'middle' },
+          bodyStyles: { overflow: 'linebreak', halign: 'center', valign: 'middle', fontSize: 8 },
           columnStyles: {
             // column 0
             0: {
@@ -65,43 +63,50 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
               font: 'helvetica',
               halign: 'left',
               valign: 'middle',
-              cellWidth: 35,
+              cellWidth: 25,
               cellPadding: { left: 5 },
             },
             // column 1
-            1: { fillColor: 'white', font: 'helvetica', cellWidth: 45 },
+            1: { fillColor: 'white', font: 'helvetica', cellWidth: 35 },
           },
           didParseCell(data) {
             // the index starts after header
             if (data.row.index === 0) {
               data.cell.styles.halign = 'center';
             }
-            // "Brand" and "Model" and "Price"
+            // "Brand" and "Model" and "Total Price"
             if (
               (data.row.index === 0 && data.column.index === 0) ||
-              (data.row.index === 1 && data.column.index === 0) ||
-              (data.row.index === 18 && data.column.index === 0)
+              (data.row.index === 1 && data.column.index === 0)
             ) {
               data.cell.styles.halign = 'center';
-              data.cell.styles.fontStyle = 'bold';
               data.cell.styles.cellPadding = 0;
             }
-            // last row bold the text
-            if (data.row.index === 18) {
-              data.cell.styles.fontStyle = 'bold';
+
+            // LAST row 1st column
+            if (data.row.index === 22 && data.column.index === 0) {
+              data.cell.styles.cellPadding = 2;
+              data.cell.styles.halign = 'center';
             }
+            // LAST row, the rest of the columns
+            if (data.row.index === 22 && data.column.index !== 0) {
+              data.cell.styles.fontStyle = 'bold';
+              data.cell.styles.fontSize = 9;
+              data.cell.styles.textColor = '#830e0e';
+            }
+
             // The first row, second columns onward
             if (data.row.index === 0 && data.column.index !== 0) {
               data.cell.styles.fillColor = '#830e0e';
               data.cell.styles.textColor = 'white';
               data.cell.styles.fontStyle = 'bold';
-              data.cell.styles.fontSize = 14;
+              data.cell.styles.fontSize = 10;
             }
 
             // "Drive System" OR "ENGINE"
             if (
-              (data.row.index === 5 && data.column.index === 0) ||
-              (data.row.index === 9 && data.column.index === 0)
+              (data.row.index === 6 && data.column.index === 0) ||
+              (data.row.index === 10 && data.column.index === 0)
             ) {
               data.cell.styles.halign = 'center';
               data.cell.styles.cellPadding = 0;
@@ -146,10 +151,10 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
       <ParallaxContainer bgImageUrl={holy5truck}>
         <div className="comparison__section-outerdiv">
           <div className="comparison__button-div">
-            <div className="comparison__button-title">SPECIFICATION</div>
+            <div className="comparison__button-title">SPECIFICATIONS</div>
             <Button type="primary" className="comparison__button" onClick={() => captureHandler()}>
               <DownloadOutlined />
-              &nbsp;Download as PDF
+              &nbsp;Download<span className="comparison__button-mobile">&nbsp;as PDF</span>
             </Button>
           </div>
           <section className="comparison__section">
@@ -195,7 +200,39 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 3 */}
+                      {/* ROW 4 */}
+                      <tr>
+                        <th colSpan={2} className="comparison__table-header">
+                          Dimension
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.width !== '' && order.bodyMakeObj?.width !== null && (
+                              <>
+                                Width:&nbsp;
+                                {order.bodyMakeObj?.width}
+                                <br />
+                              </>
+                            )}
+
+                            {order.bodyMakeObj?.depth !== '' && order.bodyMakeObj?.depth !== null && (
+                              <>
+                                Depth:&nbsp;
+                                {order.bodyMakeObj?.depth}
+                              </>
+                            )}
+
+                            {order.bodyMakeObj?.height !== '' && order.bodyMakeObj?.height !== null && (
+                              <>
+                                <br />
+                                <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
+                                <div className="sales__selectarea-card-dimension">{order.bodyMakeObj?.height}</div>
+                              </>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 5 */}
                       <tr>
                         <th colSpan={2} className="comparison__table-header">
                           Body
@@ -208,7 +245,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 3 */}
+                      {/* ROW 6 */}
                       <tr>
                         <th colSpan={2} className="comparison__table-header">
                           GVW (Kg)
@@ -222,7 +259,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 4 */}
+                      {/* ROW 7 */}
                       <tr>
                         <th rowSpan={2} className="comparison__table-header text-center">
                           DRIVE SYSTEM
@@ -237,7 +274,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 5 */}
+                      {/* ROW 8 */}
                       <tr>
                         <th className="comparison__table-header">NO. OF WHEEL</th>
                         {filteredLocalOrdersArray.map((order) => (
@@ -249,7 +286,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 6 */}
+                      {/* ROW 9 */}
                       <tr>
                         <th colSpan={2} className="comparison__table-header">
                           CAB STYLE
@@ -258,7 +295,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           <td key={uuidv4()}>-</td>
                         ))}
                       </tr>
-                      {/* ROW 7 */}
+                      {/* ROW 10 */}
                       <tr>
                         <th colSpan={2} className="comparison__table-header">
                           STANDARD WHEELBASE (mm)
@@ -272,7 +309,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 8 */}
+                      {/* ROW 11 */}
                       <tr>
                         <th rowSpan={6} className="comparison__table-header text-center">
                           ENGINE
@@ -282,7 +319,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           <td key={uuidv4()}>-</td>
                         ))}
                       </tr>
-                      {/* ROW 9 */}
+                      {/* ROW 12 */}
                       <tr>
                         <th className="comparison__table-header">DISPLACEMENT (cc)</th>
                         {filteredLocalOrdersArray.map((order) => (
@@ -294,7 +331,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 10 */}
+                      {/* ROW 13 */}
                       <tr>
                         <th className="comparison__table-header">EMISSION</th>
                         {filteredLocalOrdersArray.map((order) => (
@@ -306,14 +343,14 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 11 */}
+                      {/* ROW 14 */}
                       <tr>
                         <th className="comparison__table-header">TYPE</th>
                         {filteredLocalOrdersArray.map((_order) => (
                           <td key={uuidv4()}>-</td>
                         ))}
                       </tr>
-                      {/* ROW 12 */}
+                      {/* ROW 15 */}
                       <tr>
                         <th className="comparison__table-header">MAX OUTPUT (PS)</th>
                         {filteredLocalOrdersArray.map((order) => (
@@ -325,7 +362,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 13 */}
+                      {/* ROW 16 */}
                       <tr>
                         <th className="comparison__table-header">MAX TORQUE (Nm)</th>
                         {filteredLocalOrdersArray.map((order) => (
@@ -337,7 +374,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 14 */}
+                      {/* ROW 17 */}
                       <tr>
                         <th colSpan={2} className="comparison__table-header">
                           TRANSMISSION / MODEL
@@ -351,7 +388,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           </td>
                         ))}
                       </tr>
-                      {/* ROW 15 */}
+                      {/* ROW 18 */}
                       <tr>
                         <th colSpan={2} className="comparison__table-header">
                           SERVICE BRAKES
@@ -360,7 +397,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           <td key={uuidv4()}>-</td>
                         ))}
                       </tr>
-                      {/* ROW 16 */}
+                      {/* ROW 19 */}
                       <tr>
                         <th colSpan={2} className="comparison__table-header">
                           REAR AXLE MODEL
@@ -369,21 +406,438 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                           <td key={uuidv4()}>-</td>
                         ))}
                       </tr>
+                      {/* ROW 20 */}
                       <tr>
-                        <th
-                          colSpan={2}
-                          className="comparison__table-header comparison__table-header--price comparison__table-header--model"
-                        >
-                          PRICE
+                        <th colSpan={2} className="comparison__table-header">
+                          ACCESSORIES
                         </th>
                         {filteredLocalOrdersArray.map((order) => (
-                          <td className="comparison__table-price" key={uuidv4()}>
+                          <td key={uuidv4()}>
+                            {order.bodyRelatedAccessoriesArray.length +
+                              order.generalAccessoriesArray.length +
+                              order.dimensionRelatedAccessoriesArray.length}
+                            &nbsp;attached
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 21 */}
+                      <tr>
+                        <th colSpan={2} className="comparison__table-header">
+                          MODEL PRICE
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
                             {order.bodyMakeObj?.make_wheelbase.make.price &&
                             order.bodyMakeObj?.make_wheelbase.make.price !== 0 ? (
                               <span>
                                 RM&nbsp;
                                 <NumberFormat
                                   value={order.bodyMakeObj?.make_wheelbase.make.price}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </span>
+                            ) : (
+                              '-'
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 22 */}
+                      <tr>
+                        <th colSpan={2} className="comparison__table-header">
+                          BODY PRICE
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.price && order.bodyMakeObj?.price !== 0 ? (
+                              <span>
+                                RM&nbsp;
+                                <NumberFormat
+                                  value={order.bodyMakeObj?.price}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </span>
+                            ) : (
+                              '-'
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 23 */}
+                      <tr>
+                        <th
+                          colSpan={2}
+                          className="comparison__table-header comparison__table-header--price comparison__table-header--model"
+                        >
+                          TOTAL PRICE <br />
+                          <span className="comparison__table-insurance">(With Road Tax and Insurance)</span>
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td className="comparison__table-price" key={uuidv4()}>
+                            {order.bodyMakeObj?.price || order.bodyMakeObj?.make_wheelbase.make.price ? (
+                              <span>
+                                RM&nbsp;
+                                <NumberFormat
+                                  value={order.bodyMakeObj?.price + order.bodyMakeObj?.make_wheelbase.make.price}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </span>
+                            ) : (
+                              '-'
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
+              ) : (
+                <Empty />
+              )}
+            </div>
+          </section>
+
+          {/* ================================================================================= */}
+          {/* ================================================================================= */}
+          {/* ================================================================================= */}
+          {/* ================================================================================= */}
+
+          {/* ================================================================================= */}
+          {/* Hidden version so that it always stays the same */}
+          {/* ================================================================================= */}
+          <section className="hiddencomparison__section">
+            <div className="hiddencomparison__section-innerdiv" ref={divRef}>
+              {filteredLocalOrdersArray ? (
+                <>
+                  <table id="my-table" className="hiddencomparison__table">
+                    {/* <thead> */}
+                    {/* ROW 1 */}
+                    {/* </thead> */}
+                    <tbody>
+                      <tr>
+                        <th
+                          colSpan={2}
+                          className="hiddencomparison__table-header hiddencomparison__table-header--model"
+                        >
+                          BRAND
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td className="text-center hiddencomparison__table-brand" key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.brand.title}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 2 */}
+                      <tr>
+                        <th
+                          colSpan={2}
+                          className="hiddencomparison__table-header hiddencomparison__table-header--model"
+                        >
+                          MODEL
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td className="text-center" key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.title}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 3 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          Length (ft)
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.length.title && order.bodyMakeObj?.length.title !== ''
+                              ? order.bodyMakeObj?.length.title
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 3 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          Dimension
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.width !== '' && order.bodyMakeObj?.width !== null && (
+                              <>
+                                Width:&nbsp;
+                                {order.bodyMakeObj?.width}
+                                <br />
+                              </>
+                            )}
+
+                            {order.bodyMakeObj?.depth !== '' && order.bodyMakeObj?.depth !== null && (
+                              <>
+                                Depth:&nbsp;
+                                {order.bodyMakeObj?.depth}
+                              </>
+                            )}
+
+                            {order.bodyMakeObj?.height !== '' && order.bodyMakeObj?.height !== null && (
+                              <>
+                                {' '}
+                                <br />
+                                <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
+                                <div className="sales__selectarea-card-dimension">{order.bodyMakeObj?.height}</div>
+                              </>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 3 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          Body
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.body.title && order.bodyMakeObj?.body.title !== ''
+                              ? order.bodyMakeObj?.body.title
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 3 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          GVW (Kg)
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.gvw &&
+                            order.bodyMakeObj?.make_wheelbase.make.gvw !== ''
+                              ? order.bodyMakeObj?.make_wheelbase.make.gvw
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 4 */}
+                      <tr>
+                        <th rowSpan={2} className="hiddencomparison__table-header text-center">
+                          DRIVE SYSTEM
+                        </th>
+                        <th className="hiddencomparison__table-header">CONFIGURATION</th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.config &&
+                            order.bodyMakeObj?.make_wheelbase.make.config !== ''
+                              ? order.bodyMakeObj?.make_wheelbase.make.config
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 5 */}
+                      <tr>
+                        <th className="hiddencomparison__table-header">NO. OF WHEEL</th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.tire &&
+                            order.bodyMakeObj?.make_wheelbase.make.tire !== ''
+                              ? `${order.bodyMakeObj?.make_wheelbase.make.tire} Wheeler`
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 6 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          CAB STYLE
+                        </th>
+                        {filteredLocalOrdersArray.map((_order) => (
+                          <td key={uuidv4()}>-</td>
+                        ))}
+                      </tr>
+                      {/* ROW 7 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          STANDARD WHEELBASE (mm)
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.wheelbase.title &&
+                            order.bodyMakeObj?.make_wheelbase.wheelbase.title !== ''
+                              ? `${order.bodyMakeObj?.make_wheelbase.wheelbase.title}`
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 8 */}
+                      <tr>
+                        <th rowSpan={6} className="hiddencomparison__table-header text-center">
+                          ENGINE
+                        </th>
+                        <th className="hiddencomparison__table-header">MODEL</th>
+                        {filteredLocalOrdersArray.map((_order) => (
+                          <td key={uuidv4()}>-</td>
+                        ))}
+                      </tr>
+                      {/* ROW 9 */}
+                      <tr>
+                        <th className="hiddencomparison__table-header">DISPLACEMENT (cc)</th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.engine_cap &&
+                            order.bodyMakeObj?.make_wheelbase.make.engine_cap !== ''
+                              ? `${order.bodyMakeObj?.make_wheelbase.make.engine_cap}`
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 10 */}
+                      <tr>
+                        <th className="hiddencomparison__table-header">EMISSION</th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.emission &&
+                            order.bodyMakeObj?.make_wheelbase.make.emission !== ''
+                              ? `${order.bodyMakeObj?.make_wheelbase.make.emission}`
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 11 */}
+                      <tr>
+                        <th className="hiddencomparison__table-header">TYPE</th>
+                        {filteredLocalOrdersArray.map((_order) => (
+                          <td key={uuidv4()}>-</td>
+                        ))}
+                      </tr>
+                      {/* ROW 12 */}
+                      <tr>
+                        <th className="hiddencomparison__table-header">MAX OUTPUT (PS)</th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.horsepower &&
+                            order.bodyMakeObj?.make_wheelbase.make.horsepower !== ''
+                              ? `${order.bodyMakeObj?.make_wheelbase.make.horsepower}`
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 13 */}
+                      <tr>
+                        <th className="hiddencomparison__table-header">MAX TORQUE (Nm)</th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.torque &&
+                            order.bodyMakeObj?.make_wheelbase.make.torque !== ''
+                              ? `${order.bodyMakeObj?.make_wheelbase.make.torque}`
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 14 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          TRANSMISSION / MODEL
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.transmission &&
+                            order.bodyMakeObj?.make_wheelbase.make.transmission !== ''
+                              ? `${order.bodyMakeObj?.make_wheelbase.make.transmission}`
+                              : '-'}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 15 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          SERVICE BRAKES
+                        </th>
+                        {filteredLocalOrdersArray.map((_order) => (
+                          <td key={uuidv4()}>-</td>
+                        ))}
+                      </tr>
+                      {/* ROW 16 */}
+                      <tr>
+                        <th colSpan={2} className="hiddencomparison__table-header">
+                          REAR AXLE MODEL
+                        </th>
+                        {filteredLocalOrdersArray.map((_order) => (
+                          <td key={uuidv4()}>-</td>
+                        ))}
+                      </tr>
+                      {/* ROW 20 */}
+                      <tr>
+                        <th colSpan={2} className="comparison__table-header">
+                          ACCESSORIES
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyRelatedAccessoriesArray.length +
+                              order.generalAccessoriesArray.length +
+                              order.dimensionRelatedAccessoriesArray.length}
+                            &nbsp;attached
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 21 */}
+                      <tr>
+                        <th colSpan={2} className="comparison__table-header">
+                          MODEL PRICE
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.make_wheelbase.make.price &&
+                            order.bodyMakeObj?.make_wheelbase.make.price !== 0 ? (
+                              <span>
+                                RM&nbsp;
+                                <NumberFormat
+                                  value={order.bodyMakeObj?.make_wheelbase.make.price}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </span>
+                            ) : (
+                              '-'
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                      {/* ROW 22 */}
+                      <tr>
+                        <th colSpan={2} className="comparison__table-header">
+                          BODY PRICE
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td key={uuidv4()}>
+                            {order.bodyMakeObj?.price && order.bodyMakeObj?.price !== 0 ? (
+                              <span>
+                                RM&nbsp;
+                                <NumberFormat
+                                  value={order.bodyMakeObj?.price}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </span>
+                            ) : (
+                              '-'
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <th
+                          colSpan={2}
+                          className="comparison__table-header comparison__table-header--price comparison__table-header--model"
+                        >
+                          TOTAL PRICE <br />
+                          <span className="comparison__table-insurance">(With Road Tax and Insurance)</span>
+                        </th>
+                        {filteredLocalOrdersArray.map((order) => (
+                          <td className="comparison__table-price" key={uuidv4()}>
+                            {order.bodyMakeObj?.price || order.bodyMakeObj?.make_wheelbase.make.price ? (
+                              <span>
+                                RM&nbsp;
+                                <NumberFormat
+                                  value={order.bodyMakeObj?.price + order.bodyMakeObj?.make_wheelbase.make.price}
                                   displayType={'text'}
                                   thousandSeparator={true}
                                 />

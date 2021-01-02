@@ -617,21 +617,22 @@
       display: flex;
       position: relative;
       justify-content: space-between;
-      border-bottom: 2px solid black;
-      margin: 0 2rem 2rem 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid black;
+      margin: 0 2rem 0 2rem;
 
       &:after {
         position: absolute;
         content: '';
-        bottom: -0.9rem;
+        bottom: -0.6rem;
         width: 100%;
-        border-bottom: 5px solid black;
+        border-bottom: 3px solid black;
       }
     }
 
     &-title {
       font-style: italic;
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       font-weight: bolder;
       text-align: center;
       font-family: Arial, Helvetica, sans-serif;
@@ -639,7 +640,7 @@
 
     &-address {
       font-family: $font-roboto;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       margin-top: 1rem;
     }
 
@@ -648,25 +649,24 @@
       align-items: center;
       margin-top: 1rem;
       justify-content: center;
-
+      font-size: 1.4rem;
       &-highlight {
         font-weight: bolder;
-        font-size: 1.6rem;
-        // font-family: $font-anton;
+        font-size: 1.4rem;
       }
     }
   }
 
   &__logo {
-    height: 100%;
-    width: 12.5rem;
+    height: 13rem;
+    width: 13.5rem;
     object-fit: cover;
     border: 1px solid $translucent-grey;
   }
 
   &__header {
     &-2 {
-      font-size: 2.5rem;
+      font-size: 1.8rem;
       margin-top: 3rem;
       font-weight: bolder;
       text-align: center;
@@ -675,7 +675,7 @@
       text-decoration: none;
 
       &-text {
-        border-bottom: 2px solid black;
+        border-bottom: 1px solid black;
       }
     }
   }
@@ -704,11 +704,12 @@
   &__makedetail {
     &-div {
       display: flex;
-      margin-top: 2rem;
+      margin-top: 1rem;
       border: 1px solid black;
       padding: 1rem 1rem;
       min-width: 60rem;
       justify-content: space-around;
+      font-size: 1.3rem;
 
       &-left {
         margin-right: 2rem;
@@ -721,6 +722,7 @@
   /* ============================== */
   &__orderedlist {
     margin-left: 2rem;
+    font-size: 1.3rem;
 
     & li {
       &:not(:last-child) {
@@ -743,11 +745,12 @@
   &__price {
     &-div {
       min-width: 65rem;
-      margin-top: 2rem;
+      margin-top: 1rem;
+      font-size: 1.3rem;
     }
     &-unit {
       text-align: right;
-      margin-bottom: 1rem;
+      margin-bottom: rem;
       margin-right: 2rem;
     }
   }
@@ -757,6 +760,7 @@
   /* ================================= */
   &__subtotal {
     &-outerdiv {
+      font-size: 1.3rem;
       font-weight: bolder;
       display: flex;
       justify-content: space-between;
@@ -768,7 +772,7 @@
     }
 
     &-price {
-      border-top: 2px solid black;
+      border-top: 1px solid black;
       padding-left: 3rem;
     }
   }
@@ -783,17 +787,18 @@
     }
 
     &-price {
+      font-size: 1.3rem;
       position: relative;
       padding-left: 3rem;
-      border-top: 2px solid black;
-      border-bottom: 2px solid black;
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
       &:after {
         position: absolute;
         content: '';
         bottom: -0.5rem;
         left: 0;
         width: 100%;
-        border-bottom: 2px solid black;
+        border-bottom: 1.2px solid black;
       }
     }
   }
@@ -803,6 +808,7 @@
   /* ================================= */
   &__salesprogram {
     &-div {
+      font-size: 1.3rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -814,6 +820,7 @@
     // the after sales programme title
     /* ------------------------------ */
     &-title {
+      font-size: 1.4rem;
       font-weight: bolder;
       // text-decoration: underline;
       margin-bottom: 0.5rem;
@@ -827,7 +834,7 @@
     // the smaller text
     /* ---------------- */
     &-contract {
-      font-size: 1.3rem;
+      font-size: 1rem;
     }
 
     /* ------------------------------ */
@@ -835,6 +842,7 @@
     /* ------------------------------ */
     &-table {
       & td {
+        font-size: 1.2rem;
         // border: 1px solid black;
         &:first-child {
           border-left: 1px solid black;
@@ -869,6 +877,7 @@
     // the title
     /* ---------------- */
     &-standard {
+      font-size: 1.4rem;
       font-weight: bolder;
       & span {
         padding-bottom: 0.1rem;
@@ -884,16 +893,18 @@
 
     &-content {
       display: flex;
+      font-size: 1.3rem;
       justify-content: space-between;
       align-items: center;
     }
   }
 
   &__note {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-style: italic;
     margin-top: 2rem;
     &-date {
+      font-size: 1.2rem;
       margin-top: 0.5rem;
       font-weight: bolder;
       // font-family: $font-firesans;

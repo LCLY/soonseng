@@ -296,32 +296,26 @@ const BodyMakeSection: React.FC<Props> = () => {
                   <div className="sales__selectarea-card-row" style={{ marginTop: '0.5rem' }}>
                     <div className="sales__selectarea-card-row-left">Dimension</div>
                     <div className="sales__selectarea-card-row-right">
-                      {currentBodyMake?.width !== null &&
-                        currentBodyMake?.width !== '' &&
-                        currentBodyMake?.width !== null && (
-                          <Tag className="flex" color="red">
-                            <div className="sales__selectarea-card-dimension">Width:&nbsp;</div>
-                            <div className="sales__selectarea-card-dimension">{currentBodyMake?.width}</div>
-                          </Tag>
-                        )}
+                      {currentBodyMake?.width !== '' && currentBodyMake?.width !== null && (
+                        <Tag className="flex" color="red">
+                          <div className="sales__selectarea-card-dimension">Width:&nbsp;</div>
+                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.width}</div>
+                        </Tag>
+                      )}
 
-                      {currentBodyMake?.depth !== null &&
-                        currentBodyMake?.depth !== '' &&
-                        currentBodyMake?.depth !== null && (
-                          <Tag className="flex" color="orange">
-                            <div className="sales__selectarea-card-dimension">Depth:&nbsp;</div>
-                            <div className="sales__selectarea-card-dimension">{currentBodyMake?.depth}</div>
-                          </Tag>
-                        )}
+                      {currentBodyMake?.depth !== '' && currentBodyMake?.depth !== null && (
+                        <Tag className="flex" color="orange">
+                          <div className="sales__selectarea-card-dimension">Depth:&nbsp;</div>
+                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.depth}</div>
+                        </Tag>
+                      )}
 
-                      {currentBodyMake?.height !== null &&
-                        currentBodyMake?.height !== '' &&
-                        currentBodyMake?.height !== null && (
-                          <Tag className="flex" color="volcano">
-                            <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
-                            <div className="sales__selectarea-card-dimension">{currentBodyMake?.height}</div>
-                          </Tag>
-                        )}
+                      {currentBodyMake?.height !== '' && currentBodyMake?.height !== null && (
+                        <Tag className="flex" color="volcano">
+                          <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
+                          <div className="sales__selectarea-card-dimension">{currentBodyMake?.height}</div>
+                        </Tag>
+                      )}
                     </div>
                   </div>
                   {accessObj.showPriceSalesPage && (

@@ -149,25 +149,6 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                 ];
               }
 
-              type insuranceType = {
-                title: string;
-                price: number;
-              };
-              let insuranceArray = [
-                {
-                  title: 'Road tax (1year)',
-                  price: 1015,
-                },
-                {
-                  title: 'JPJ Registration & E Hak Milik ',
-                  price: 110,
-                },
-                {
-                  title: 'INSURANCE PREMIUM (windscreen included)  ',
-                  price: 4733.96,
-                },
-              ];
-
               let totalAccessoriesPrice = 0;
 
               // get total of general accessories
@@ -214,6 +195,32 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                   totalAccessoriesPrice +
                   processingFees;
               }
+
+              type insuranceType = {
+                title: string;
+                price: number;
+              };
+
+              modelSubtotalPrice = (modelSubtotalPrice * 95) / 100;
+              let roundedModelSubtotalPrice = -Math.round(-modelSubtotalPrice / 1000) * 1000;
+              roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
+              roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
+
+              let insuranceArray = [
+                {
+                  title: 'Road tax (1year)',
+                  price: 1015,
+                },
+                {
+                  title: 'JPJ Registration & E Hak Milik ',
+                  price: 110,
+                },
+                {
+                  title: 'INSURANCE PREMIUM (windscreen included)  ',
+                  // price: 4733.96,
+                  price: roundedModelSubtotalPrice,
+                },
+              ];
 
               /* ======================== */
               // Insurance subtotal price
