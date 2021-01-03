@@ -29,7 +29,7 @@ import './App.less';
 import { RootState } from 'src';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datetime/css/react-datetime.css';
-import { TUserAccess } from './store/types/auth';
+import { TUserAccess } from 'src/store/types/auth';
 import * as actions from 'src/store/actions/index';
 import {
   ROUTE_HOME,
@@ -44,7 +44,8 @@ import {
   ROUTE_NOT_FOUND,
   ROUTE_QUOTATION,
   ROUTE_COMPARISON,
-} from './shared/routes';
+} from 'src/shared/routes';
+import { persistor } from 'src';
 
 interface AppProps {}
 
@@ -62,9 +63,10 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
   }, [projectVersion, onSaveProjectVersion]);
 
   useEffect(() => {
-    if (projectVersion === 'v1.0') {
-      //if the project is v1.0 then clear out the localstorage, update the version to v1.01
-      onClearLocalStorage('v1.01');
+    if (projectVersion !== 'v1.02') {
+      //if the project is v1.0 then clear out the localstorage, update the version to v1.02
+      onClearLocalStorage('v1.02');
+      persistor.purge();
     }
   }, [projectVersion, onClearLocalStorage]);
 
@@ -79,9 +81,9 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
-        <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
-        <Route exact path={`${ROUTE_QUOTATION}/:model_details`} component={QuotationPage} />
         <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
+        <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
+        <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         {/* dashboard */}
         <Route exact path={ROUTE_DASHBOARD.main} component={DashboardPage} />
         <Route exact path={ROUTE_DASHBOARD.make} component={Make} />
@@ -106,9 +108,9 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
-        <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
-        <Route exact path={`${ROUTE_QUOTATION}/:model_details`} component={QuotationPage} />
         <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
+        <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
+        <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         {/* authentication */}
         <Route exact path={ROUTE_LOGIN} component={LoginPage} />
         <Route exact path={ROUTE_LOGOUT} component={Logout} />

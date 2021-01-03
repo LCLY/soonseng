@@ -186,6 +186,7 @@ import {
   DeleteMakeWheelbaseSucceedAction,
   DeleteMakeWheelbaseFailedAction,
 } from 'src/store/types/dashboard/make';
+import { PURGE } from 'redux-persist';
 
 // initialState for reducers
 export interface DashboardInitialState {
@@ -232,6 +233,12 @@ export interface DashboardInitialState {
   readonly imagesArray?: TReceivedImageObj[] | null;
 }
 
+/* =============================================================================================== */
+// Redux Persist Purge
+/* =============================================================================================== */
+export interface ReduxPersistPurgeAction {
+  type: typeof PURGE;
+}
 /* =============================================================================================== */
 // Clear all the dashboard state
 /* =============================================================================================== */
@@ -546,6 +553,7 @@ export type DashboardActionTypes =
   /* ======================================================================= */
   // Miscellaneous
   /* ======================================================================= */
+  | ReduxPersistPurgeAction
   | ClearDashboardStateAction
   // Upload Image(s)
   | UploadImageAction

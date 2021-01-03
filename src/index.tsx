@@ -68,7 +68,7 @@ const sagaMiddleware = createSagaMiddleware();
 // use the new persistreducer in creating store
 const store = createStore(pReducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
 
-const persistor = persistStore(store);
+export const persistor = persistStore(store);
 
 sagaMiddleware.run(watchDashboard);
 sagaMiddleware.run(watchSales);

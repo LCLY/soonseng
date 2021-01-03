@@ -21,7 +21,7 @@ export interface OverviewComponentProps {
   accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
   displayOrdersAmount?: number; //determine how many orders there should be
-  onRemoveAnOrder?: (index: number, localOrdersArray: TLocalOrderObj[]) => AppActions;
+  onRemoveAnOrder?: (orderId: string, localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
 
 type Props = OverviewComponentProps & RouteComponentProps;
@@ -201,8 +201,9 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                 price: number;
               };
 
-              modelSubtotalPrice = (modelSubtotalPrice * 95) / 100;
-              let roundedModelSubtotalPrice = -Math.round(-modelSubtotalPrice / 1000) * 1000;
+              let tempModelSubtotalPrice = modelSubtotalPrice;
+              tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
+              let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
               roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
               roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
 
@@ -216,8 +217,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                   price: 110,
                 },
                 {
-                  title: 'INSURANCE PREMIUM (windscreen included)  ',
-                  // price: 4733.96,
+                  title: 'INSURANCE PREMIUM (windscreen included)',
                   price: roundedModelSubtotalPrice,
                 },
               ];
@@ -252,18 +252,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                             pathname: `/quotation/${convertSpaceInStringWithChar(
                               `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
                               '',
-                            )}`,
-                            state: {
-                              lengthObj: order.lengthObj,
-                              bodyMakeObj: order.bodyMakeObj,
-                              insuranceArray: insuranceArray,
-                              grandTotalPrice: grandTotalPrice,
-                              modelSubtotalPrice: modelSubtotalPrice,
-                              processingFeesArray: processingFeesArray,
-                              generalAccessoriesArray: order.generalAccessoriesArray,
-                              bodyRelatedAccessoriesArray: order.bodyRelatedAccessoriesArray,
-                              dimensionRelatedAccessoriesArray: order.dimensionRelatedAccessoriesArray,
-                            },
+                            )}/${order.id}`,
                           });
                         }
                       }}
@@ -275,7 +264,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                     danger
                     onClick={() => {
                       if (onRemoveAnOrder === undefined) return;
-                      onRemoveAnOrder(index, localOrdersArray);
+                      onRemoveAnOrder(order.id, localOrdersArray);
                     }}
                   >
                     Remove from order
@@ -389,7 +378,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                       : order.bodyMakeObj &&
                                         /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
                                         parseInt(order.bodyMakeObj.make_wheelbase.make.year) ===
-                                          parseInt(moment().year().toString())
+                                          parseInt(moment().format('YYYY').toString())
                                       ? `NEW MODEL YEAR ${order.bodyMakeObj.make_wheelbase.make.year} - ${order.bodyMakeObj.make_wheelbase.make.title}`
                                       : /* else show MODEL YEAR - model name */
                                         order.bodyMakeObj &&
@@ -398,11 +387,16 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                 </span>
                                 {accessObj.showPriceSalesPage && (
                                   <span>
-                                    <NumberFormat
-                                      displayType={'text'}
-                                      thousandSeparator={true}
-                                      value={order.bodyMakeObj?.make_wheelbase.make.price.toFixed(2)}
-                                    />
+                                    {order.bodyMakeObj?.make_wheelbase.make.price &&
+                                    order.bodyMakeObj?.make_wheelbase.make.price !== 0 ? (
+                                      <NumberFormat
+                                        displayType={'text'}
+                                        thousandSeparator={true}
+                                        value={order.bodyMakeObj?.make_wheelbase.make.price.toFixed(2)}
+                                      />
+                                    ) : (
+                                      <span className="sales__overview-dash">-</span>
+                                    )}
                                   </span>
                                 )}
                               </div>
@@ -418,11 +412,15 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                 </span>
                                 {accessObj.showPriceSalesPage && (
                                   <span>
-                                    <NumberFormat
-                                      value={order.bodyMakeObj?.price.toFixed(2)}
-                                      displayType={'text'}
-                                      thousandSeparator={true}
-                                    />
+                                    {order.bodyMakeObj?.price && order.bodyMakeObj?.price !== 0 ? (
+                                      <NumberFormat
+                                        value={order.bodyMakeObj?.price.toFixed(2)}
+                                        displayType={'text'}
+                                        thousandSeparator={true}
+                                      />
+                                    ) : (
+                                      <span className="sales__overview-dash">-</span>
+                                    )}
                                   </span>
                                 )}
                               </div>
@@ -481,11 +479,15 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                       <span>{accessory.title} </span>
                                       {accessObj.showPriceSalesPage && (
                                         <span>
-                                          <NumberFormat
-                                            displayType={'text'}
-                                            thousandSeparator={true}
-                                            value={accessory.price.toFixed(2)}
-                                          />
+                                          {accessory.price && accessory.price !== 0 ? (
+                                            <NumberFormat
+                                              displayType={'text'}
+                                              thousandSeparator={true}
+                                              value={accessory.price.toFixed(2)}
+                                            />
+                                          ) : (
+                                            <span className="sales__overview-dash">-</span>
+                                          )}
                                         </span>
                                       )}
                                     </div>
@@ -501,11 +503,15 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                       <span>{accessory.title} </span>
                                       {accessObj.showPriceSalesPage && (
                                         <span>
-                                          <NumberFormat
-                                            displayType={'text'}
-                                            thousandSeparator={true}
-                                            value={accessory.price.toFixed(2)}
-                                          />
+                                          {accessory.price && accessory.price !== 0 ? (
+                                            <NumberFormat
+                                              displayType={'text'}
+                                              thousandSeparator={true}
+                                              value={accessory.price.toFixed(2)}
+                                            />
+                                          ) : (
+                                            <span className="sales__overview-dash">-</span>
+                                          )}
                                         </span>
                                       )}
                                     </div>
@@ -521,11 +527,15 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                       <span> {dimension.accessory.title} </span>
                                       {accessObj.showPriceSalesPage && (
                                         <span>
-                                          <NumberFormat
-                                            displayType={'text'}
-                                            thousandSeparator={true}
-                                            value={dimension.price.toFixed(2)}
-                                          />
+                                          {dimension.price && dimension.price !== 0 ? (
+                                            <NumberFormat
+                                              displayType={'text'}
+                                              thousandSeparator={true}
+                                              value={dimension.price.toFixed(2)}
+                                            />
+                                          ) : (
+                                            <span className="sales__overview-dash">-</span>
+                                          )}
                                         </span>
                                       )}
                                     </div>

@@ -543,7 +543,8 @@ const AccessorySection: React.FC<Props> = () => {
                     )
                       return;
                     let copyArray = [...localOrdersArray];
-                    copyArray.push(currentOrderObj);
+                    // add an id field to the localorderarray
+                    copyArray.push({ ...currentOrderObj, id: uuidv4() });
 
                     onStoreLocalOrders(copyArray);
                     setCurrentStep(currentStep + 1);

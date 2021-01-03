@@ -104,6 +104,7 @@ const SalesPage: React.FC<Props> = ({
 
   /** Current order object to track what user has added to the current order  */
   const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj>({
+    id: '',
     tireCount: -1,
     bodyObj: null,
     lengthObj: null,
@@ -242,7 +243,6 @@ const SalesPage: React.FC<Props> = ({
 
         {/* Add overview component in here */}
         <OverviewComponent />
-
         <Button
           className="sales__overview-btn--another"
           onClick={() => {
@@ -461,7 +461,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onGetSalesBodies: (length_id, tire) => dispatch(actions.getSalesBodies(length_id, tire)),
-    onRemoveAnOrder: (index, localOrdersArray) => dispatch(actions.removeAnOrder(index, localOrdersArray)),
+    onRemoveAnOrder: (orderId, localOrdersArray) => dispatch(actions.removeAnOrder(orderId, localOrdersArray)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
     onGetSalesBodyMakes: (length_id, tire, body_id, auth_token) =>
       dispatch(actions.getSalesBodyMakes(length_id, tire, body_id, auth_token)),

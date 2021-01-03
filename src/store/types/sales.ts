@@ -53,6 +53,7 @@ export interface ClearSalesStateAction {
 /* ---------------------------- */
 // Quotation object should contain as much info as possible about a product
 export type TLocalOrderObj = {
+  id: string;
   tireCount: number;
   bodyObj: TReceivedBodyObj | null;
   lengthObj: TReceivedSalesLengthObj | null;
@@ -67,10 +68,10 @@ export interface StoreLocalOrdersAction {
   localOrdersArray: TLocalOrderObj[];
 }
 
-/* Remove one quotation / order using index  */
+/* Remove one quotation / order using order unique ID  */
 export interface RemoveAnOrderAction {
   type: typeof actionTypes.REMOVE_AN_ORDER;
-  index: number;
+  orderId: string;
   localOrdersArray: TLocalOrderObj[];
 }
 

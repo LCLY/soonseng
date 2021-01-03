@@ -569,7 +569,6 @@ const Make: React.FC<Props> = ({
     updateMakeForm.setFieldsValue({
       makeId: record.makeId,
       makeBrandId: record.makeBrandId,
-      // makeWheelbaseId: record.makeWheelbaseId,
       gvw: extractedGvw,
       year: moment(record.year),
       price: extractedPrice,
@@ -706,7 +705,7 @@ const Make: React.FC<Props> = ({
       series_id: values.makeSeriesId,
       tire: emptyStringWhenUndefinedOrNull(values.makeTire),
       horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
-      year: emptyStringWhenUndefinedOrNull(values.year), //convert to year
+      year: emptyStringWhenUndefinedOrNull(moment(values.year).format('YYYY').toString()), //convert to year
       transmission: emptyStringWhenUndefinedOrNull(values.transmission),
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
       gvw: emptyStringWhenUndefinedOrNull(values.gvw),
@@ -736,7 +735,7 @@ const Make: React.FC<Props> = ({
       series_id: values.makeSeriesId,
       tire: emptyStringWhenUndefinedOrNull(values.makeTire),
       horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
-      year: emptyStringWhenUndefinedOrNull(values.year),
+      year: emptyStringWhenUndefinedOrNull(moment(values.year).format('YYYY').toString()),
       transmission: emptyStringWhenUndefinedOrNull(values.transmission),
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
       gvw: emptyStringWhenUndefinedOrNull(values.gvw),
@@ -1933,7 +1932,7 @@ const Make: React.FC<Props> = ({
 
       // check if undefined
       let makeGVW = make.gvw === undefined || make.gvw === null || make.gvw === '' ? '' : make.gvw + 'kg';
-      let makeYear = make.year === undefined || make.year === null ? moment().year().toString() : make.year;
+      let makeYear = make.year === undefined || make.year === null ? '' : make.year;
       let makePrice =
         make.price === undefined || make.price === null || make.price === 0
           ? ''

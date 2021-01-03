@@ -30,6 +30,7 @@ const clearLocalStorage = (state: GeneralInitialState, action: AppActions) => {
     // update the latest version
     localStorage.clear();
     localStorage.setItem('projectVersion', action.projectVersion);
+
     return updateObject(state, {
       projectVersion: action.projectVersion,
     });

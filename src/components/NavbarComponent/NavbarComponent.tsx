@@ -150,15 +150,6 @@ const NavbarComponent: React.FC<Props> = ({
     <div ref={dropdownRef}>
       <Menu>
         <Menu.Item
-          key="body"
-          onClick={() => {
-            history.push(ROUTE_DASHBOARD.body);
-            setDropdownVisible(false);
-          }}
-        >
-          Body
-        </Menu.Item>
-        <Menu.Item
           key="make"
           onClick={() => {
             history.push(ROUTE_DASHBOARD.make);
@@ -166,6 +157,15 @@ const NavbarComponent: React.FC<Props> = ({
           }}
         >
           Model
+        </Menu.Item>
+        <Menu.Item
+          key="body"
+          onClick={() => {
+            history.push(ROUTE_DASHBOARD.body);
+            setDropdownVisible(false);
+          }}
+        >
+          Body
         </Menu.Item>
         <Menu.Item
           key="accessory"

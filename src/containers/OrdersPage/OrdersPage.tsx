@@ -16,6 +16,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
 import holy5truck from 'src/img/5trucks.jpg';
+import { ROUTE_COMPARISON } from 'src/shared/routes';
 import { TUserAccess } from 'src/store/types/auth';
 import { TLocalOrderObj } from 'src/store/types/sales';
 import OverviewComponent from '../SalesPage/StepSections/OverviewComponent';
@@ -26,7 +27,7 @@ interface OrdersPageProps {}
 
 type Props = OrdersPageProps & StateProps & DispatchProps & RouteComponentProps;
 
-const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray }) => {
+const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onRemoveAnOrder }) => {
   /* ============================= */
   /* useState */
   /* ============================= */
@@ -38,25 +39,26 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray }) =
       accessObj,
       localOrdersArray,
       displayOrdersAmount,
+      onRemoveAnOrder,
     }),
-    [accessObj, localOrdersArray, displayOrdersAmount],
+    [accessObj, localOrdersArray, displayOrdersAmount, onRemoveAnOrder],
   );
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMoreThanFour, setSelectedMoreThanFour] = useState(false);
   const [totalChecked, setTotalChecked] = useState(0);
-  const [checkedConfigurations, setCheckedConfigurations] = useState<{ [key: string]: boolean } | null>(null);
+  const [checkedConfigurations, setCheckedConfigurations] = useState<{ [orderId: string]: boolean } | null>(null);
 
   // use the index as key and set true or false value to it
-  const onCheckedChanged = (e: CheckboxChangeEvent, index: number) => {
-    setCheckedConfigurations({ ...checkedConfigurations, [index]: e.target.checked });
+  const onCheckedChanged = (e: CheckboxChangeEvent, orderId: string) => {
+    setCheckedConfigurations({ ...checkedConfigurations, [orderId]: e.target.checked });
   };
 
   useEffect(() => {
     if (localOrdersArray) {
-      localOrdersArray.map((_order, index) =>
+      localOrdersArray.map((order) =>
         setCheckedConfigurations((prevState) => {
-          return { ...prevState, [index]: false };
+          return { ...prevState, [order.id]: false };
         }),
       );
     }
@@ -96,26 +98,35 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray }) =
         onOk={() => {
           // filter out array that has true
           if (checkedConfigurations) {
-            let tempArray: string[] = [];
+            let tempOrderIdArray: string[] = [];
             // check if value is true then push the index into the array
-            for (let i in checkedConfigurations) {
-              if (checkedConfigurations[i] === true) {
-                tempArray.push(i);
+            for (let orderId in checkedConfigurations) {
+              if (checkedConfigurations[orderId] === true) {
+                tempOrderIdArray.push(orderId);
               }
             }
-            history.push({
-              pathname: '/comparison',
-              state: {
-                checkedConfigurations: tempArray,
-              },
+
+            let order_ids_combination = '';
+
+            tempOrderIdArray.forEach((orderId, index) => {
+              // if its the first then just straight add the id
+              if (index === 0) {
+                order_ids_combination = order_ids_combination + `order${index + 1}=${orderId}`;
+              } else {
+                // if its after the first then add & infront of the string
+                order_ids_combination = order_ids_combination + `&order${index + 1}=${orderId}`;
+              }
             });
+
+            //adding the ids to the route as params
+            history.push(`${ROUTE_COMPARISON}?${order_ids_combination}`);
           }
         }}
         onCancel={() => setModalOpen(false)}
       >
         {localOrdersArray !== undefined &&
           checkedConfigurations &&
-          localOrdersArray.map((order, index) => {
+          localOrdersArray.map((order) => {
             const { bodyMakeObj } = order;
             return (
               <React.Fragment key={uuidv4()}>
@@ -123,10 +134,10 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray }) =
                   <div>
                     <Checkbox
                       // whenever user selected more than four, the rest that are not checked will be disabled
-                      disabled={selectedMoreThanFour && checkedConfigurations[index] === false}
+                      disabled={selectedMoreThanFour && checkedConfigurations[order.id] === false}
                       className="orders__compare-checkbox"
-                      checked={checkedConfigurations[index]}
-                      onChange={(e) => onCheckedChanged(e, index)}
+                      checked={checkedConfigurations[order.id]}
+                      onChange={(e) => onCheckedChanged(e, order.id)}
                     >
                       <div>
                         {bodyMakeObj.length.title}ft&nbsp;
@@ -172,8 +183,8 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray }) =
                   </SalesPageContext.Provider>
                 </div>
                 <div className="orders__btn-comparison-div--bottom">
-                  <Button className="orders__btn-comparison" type="primary" onClick={() => setModalOpen(true)}>
-                    Compare Specifications
+                  <Button className="orders__btn-comparison" type="primary" onClick={() => history.push('/sales')}>
+                    Add More Orders
                   </Button>
                 </div>
               </div>

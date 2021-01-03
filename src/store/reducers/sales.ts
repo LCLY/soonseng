@@ -1,8 +1,9 @@
-import * as actionTypes from 'src/store/actions/actionTypes';
+import { Reducer } from 'redux';
+import { PURGE } from 'redux-persist';
+import { AppActions } from 'src/store/types';
 import { updateObject } from 'src/shared/Utils';
 import { SalesInitialState } from 'src/store/types/sales';
-import { AppActions } from 'src/store/types';
-import { Reducer } from 'redux';
+import * as actionTypes from 'src/store/actions/actionTypes';
 
 const initialState: SalesInitialState = {
   loading: false,
@@ -68,8 +69,10 @@ export const storeLocalOrders = (state: SalesInitialState, action: AppActions) =
 /* ------------------------------- */
 // Take the index and use that index to remove item from the localOrdersArray
 export const removeAnOrder = (state: SalesInitialState, action: AppActions) => {
-  if ('index' in action && 'localOrdersArray' in action) {
-    let deletedLocalOrdersArray = action.localOrdersArray.filter((_localOrderObj, index) => action.index !== index);
+  if ('orderId' in action && 'localOrdersArray' in action) {
+    let deletedLocalOrdersArray = action.localOrdersArray.filter(
+      (localOrderObj) => action.orderId !== localOrderObj.id,
+    );
     return updateObject(state, {
       localOrdersArray: deletedLocalOrdersArray,
     });
@@ -221,6 +224,8 @@ const getSalesMakesFailed = (state: SalesInitialState, action: AppActions) => {
 
 const reducer: Reducer<SalesInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
+    case PURGE:
+      return initialState;
     /* =================================== */
     //  Clear state
     /* =================================== */

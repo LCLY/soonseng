@@ -55,8 +55,8 @@
       }
 
       @include respond-to($small-phone) {
-        -webkit-text-stroke-width: 0.5px;
-        font-size: 3.2rem;
+        -webkit-text-stroke-width: 0.2px;
+        font-size: 2.5rem;
       }
       @include respond-to($phone-only) {
         -webkit-text-stroke-width: 0.5px;
@@ -1413,6 +1413,10 @@
         }
       }
     }
+
+    &-dash {
+      padding-right: 2rem;
+    }
   }
 
   &__breadcrumb {
@@ -1423,6 +1427,9 @@
       border-left: 0.5rem solid $primary-color-2;
       background: rgba(255, 255, 255, 0.7);
       @include respond-to($small-phone) {
+        & .ant-breadcrumb {
+          font-size: 1rem !important;
+        }
         margin-bottom: 1rem;
         margin-top: 1rem;
         padding: 0.5rem 1rem 0.5rem 1rem;
@@ -1452,6 +1459,9 @@
       color: $primary-color-4;
       font-size: 1.3rem;
       z-index: 10;
+      @include respond-to($small-phone) {
+        font-size: 1rem !important;
+      }
       // display: inline-block;
       // white-space: normal;
       &--accessory {
