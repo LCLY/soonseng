@@ -212,9 +212,9 @@ const BodyMake: React.FC<Props> = ({
   /* Body Make column initialization */
   const [bodyMakeColumns, setbodyMakeColumns] = useState([
     {
-      key: 'bodyMakeModelDetails',
+      key: 'bodyMakeDetails',
       title: 'Option Details',
-      dataIndex: 'bodyMakeModelDetails',
+      dataIndex: 'bodyMakeDetails',
       className: 'body__table-header--title',
       ellipsis: true,
       width: 'auto',
@@ -616,33 +616,32 @@ const BodyMake: React.FC<Props> = ({
         </Select>
       </Form.Item>
       {/* ------- Make Wheelbase ------- */}
-
-      <Form.Item
-        className="bodymake__form-item"
-        label="Configuration"
-        name="makeWheelbaseId"
-        style={{ marginBottom: '0.8rem' }}
-        rules={[{ required: true, message: 'Select a configuration!' }]}
-      >
-        {/* only render if makeWheelbase is not null */}
-        <Select
-          showSearch
-          placeholder="Select a configuration"
-          optionFilterProp="children"
-          className="bodymake__select"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+      {makeWheelbasesArray && (
+        <Form.Item
+          className="bodymake__form-item"
+          label="Configuration"
+          name="makeWheelbaseId"
+          style={{ marginBottom: '0.8rem' }}
+          rules={[{ required: true, message: 'Select a configuration!' }]}
         >
-          {makeWheelbasesArray &&
-            makeWheelbasesArray.map((makeWheelbase) => {
+          {/* only render if makeWheelbase is not null */}
+          <Select
+            showSearch
+            placeholder="Select a configuration"
+            optionFilterProp="children"
+            className="bodymake__select"
+            filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
+            {makeWheelbasesArray.map((makeWheelbase) => {
               return (
                 <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={makeWheelbase.id}>
-                  Wheelbase: {makeWheelbase.wheelbase.title}
+                  {`Wheelbase: ${makeWheelbase.wheelbase.title}`}
                 </Option>
               );
             })}
-        </Select>
-      </Form.Item>
-
+          </Select>
+        </Form.Item>
+      )}
       {/* ------- Body - value is brand id but display is brand name -------*/}
       <Form.Item
         className="bodymake__form-item"

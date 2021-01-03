@@ -179,10 +179,26 @@ export const UPDATE_MAKE_FAILED = 'UPDATE_MAKE_FAILED';
 /* -------------------------- */
 // Get series for the dropdown
 /* -------------------------- */
+// Create Series
+export const CREATE_SERIES = 'CREATE_SERIES';
+export const CREATE_SERIES_START = 'CREATE_SERIES_START';
+export const CREATE_SERIES_SUCCEED = 'CREATE_SERIES_SUCCEED';
+export const CREATE_SERIES_FAILED = 'CREATE_SERIES_FAILED';
+// Get Series
 export const GET_SERIES = 'GET_SERIES';
 export const GET_SERIES_START = 'GET_SERIES_START';
 export const GET_SERIES_SUCCEED = 'GET_SERIES_SUCCEED';
 export const GET_SERIES_FAILED = 'GET_SERIES_FAILED';
+// Update Series
+export const UPDATE_SERIES = 'UPDATE_SERIES';
+export const UPDATE_SERIES_START = 'UPDATE_SERIES_START';
+export const UPDATE_SERIES_SUCCEED = 'UPDATE_SERIES_SUCCEED';
+export const UPDATE_SERIES_FAILED = 'UPDATE_SERIES_FAILED';
+// Delete Series
+export const DELETE_SERIES = 'DELETE_SERIES';
+export const DELETE_SERIES_START = 'DELETE_SERIES_START';
+export const DELETE_SERIES_SUCCEED = 'DELETE_SERIES_SUCCEED';
+export const DELETE_SERIES_FAILED = 'DELETE_SERIES_FAILED';
 
 /* -------------------------- */
 //  Make Page - Make Wheelbase / Configuration

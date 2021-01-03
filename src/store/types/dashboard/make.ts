@@ -277,6 +277,69 @@ export interface GetSeriesFailedAction {
   type: typeof actionTypes.GET_SERIES_FAILED;
   errorMessage: string;
 }
+/* --------------------------------------------------------- */
+// Create Series (Make)
+/* --------------------------------------------------------- */
+
+/*  Api call */
+export interface CreateSeriesAction {
+  type: typeof actionTypes.GET_SERIES;
+  brand_id: number;
+}
+/*  States */
+export interface CreateSeriesStartAction {
+  type: typeof actionTypes.GET_SERIES_START;
+}
+export interface CreateSeriesSucceedAction {
+  type: typeof actionTypes.GET_SERIES_SUCCEED;
+  seriesArray: TReceivedSeriesObj[];
+}
+export interface CreateSeriesFailedAction {
+  type: typeof actionTypes.GET_SERIES_FAILED;
+  errorMessage: string;
+}
+/* --------------------------------------------------------- */
+// Update Series (Make)
+/* --------------------------------------------------------- */
+
+/*  Api call */
+export interface GetSeriesAction {
+  type: typeof actionTypes.GET_SERIES;
+  brand_id: number;
+}
+/*  States */
+export interface GetSeriesStartAction {
+  type: typeof actionTypes.GET_SERIES_START;
+}
+export interface GetSeriesSucceedAction {
+  type: typeof actionTypes.GET_SERIES_SUCCEED;
+  seriesArray: TReceivedSeriesObj[];
+}
+export interface GetSeriesFailedAction {
+  type: typeof actionTypes.GET_SERIES_FAILED;
+  errorMessage: string;
+}
+/* --------------------------------------------------------- */
+// Delete Series (Make)
+/* --------------------------------------------------------- */
+
+/*  Api call */
+export interface GetSeriesAction {
+  type: typeof actionTypes.GET_SERIES;
+  brand_id: number;
+}
+/*  States */
+export interface GetSeriesStartAction {
+  type: typeof actionTypes.GET_SERIES_START;
+}
+export interface GetSeriesSucceedAction {
+  type: typeof actionTypes.GET_SERIES_SUCCEED;
+  seriesArray: TReceivedSeriesObj[];
+}
+export interface GetSeriesFailedAction {
+  type: typeof actionTypes.GET_SERIES_FAILED;
+  errorMessage: string;
+}
 
 /* ============================================================================================== */
 //  Make Wheelbase (Make Page)

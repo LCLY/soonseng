@@ -393,11 +393,7 @@ const BodyMakeSection: React.FC<Props> = () => {
                                           <div
                                             key={uuidv4()}
                                             className={`sales__selectarea-button                                            
-                                         ${
-                                           currentBodyMake?.make_wheelbase.make.id === body_make.make_wheelbase.make.id
-                                             ? 'active'
-                                             : ''
-                                         }`}
+                                         ${currentBodyMake?.id === body_make.id ? 'active' : ''}`}
                                             onClick={() => {
                                               if (
                                                 setCurrentBodyMake === undefined ||
@@ -407,10 +403,7 @@ const BodyMakeSection: React.FC<Props> = () => {
                                                 return;
 
                                               //  if currentBodyMake contains an id
-                                              if (
-                                                currentBodyMake?.make_wheelbase.make.id ===
-                                                body_make.make_wheelbase.make.id
-                                              ) {
+                                              if (currentBodyMake?.id === body_make.id) {
                                                 // reset the selection
                                                 setCurrentBodyMake(null); //set content to null
                                                 setCurrentOrderObj({
