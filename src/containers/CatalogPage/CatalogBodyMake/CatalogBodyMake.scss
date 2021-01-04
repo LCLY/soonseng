@@ -359,6 +359,14 @@
     align-items: center;
     justify-content: center;
     justify-items: center;
+
+    @include respond-to($small-phone) {
+      grid-gap: 1rem;
+      padding: 0;
+      margin: 0;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 15vh; //height of each row
+    }
     @include respond-to($phone-only) {
       grid-gap: 1rem;
       padding: 0;
@@ -385,14 +393,6 @@
       grid-gap: 2rem;
       grid-auto-rows: 28vh; //height of each row
       grid-template-columns: repeat(4, 1fr);
-    }
-
-    @include respond-to($small-phone) {
-      grid-gap: 1rem;
-      padding: 0;
-      margin: 0;
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 10rem; //height of each row
     }
   }
 
@@ -453,7 +453,7 @@
         font-size: 1rem;
       }
       @include respond-to($tablet-portrait-up) {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
       }
       @include respond-to($tablet-landscape-up) {
         font-size: 1.3rem;
