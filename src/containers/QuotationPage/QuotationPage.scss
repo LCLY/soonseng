@@ -439,7 +439,10 @@
 
     &-text {
       @include respond-to($small-phone) {
-        margin-left: 1rem;
+        margin-left: 3rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: 4rem;
       }
     }
   }
@@ -821,6 +824,10 @@
         width: 100%;
         border-bottom: 1.2px solid black;
       }
+    }
+
+    &-text {
+      margin-left: 4rem;
     }
   }
 
