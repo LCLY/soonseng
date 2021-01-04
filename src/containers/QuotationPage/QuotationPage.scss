@@ -129,9 +129,12 @@
         font-size: 0.8rem;
       }
       @include respond-to($phone-only) {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
       }
       @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem;
+      }
+      @include respond-to($tablet-landscape-up) {
         font-size: 1.8rem;
       }
     }
@@ -154,6 +157,11 @@
       }
 
       @include respond-to($tablet-portrait-up) {
+        font-size: 1.4rem;
+        padding: 0 1rem;
+      }
+
+      @include respond-to($tablet-landscape-up) {
         font-size: 1.6rem;
         padding: 0;
       }
@@ -173,6 +181,9 @@
         font-size: 1.2rem;
       }
       @include respond-to($tablet-portrait-up) {
+        font-size: 1.3rem;
+      }
+      @include respond-to($tablet-landscape-up) {
         font-size: 1.5rem;
       }
 
@@ -188,6 +199,9 @@
           font-size: 1.2rem;
         }
         @include respond-to($tablet-portrait-up) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($tablet-landscape-up) {
           font-size: 1.6rem;
         }
       }
