@@ -139,7 +139,7 @@ const BodyMake: React.FC<Props> = ({
   onClearDashboardState,
   onGetBodyMakeAccessories,
   onCreateBodyMakeAccessory,
-  // onUpdateBodyMakeAccessory,
+  onUpdateBodyMakeAccessory,
   onDeleteBodyMakeAccessory,
   onGetDimensionAssociatedAccessories,
 }) => {
@@ -150,7 +150,7 @@ const BodyMake: React.FC<Props> = ({
   const [createBodyMakeForm] = Form.useForm();
   const [updateBodyMakeForm] = Form.useForm();
   const [createBodyMakeAccessoryForm] = Form.useForm();
-  // const [updateBodyMakeAccessoryForm] = Form.useForm();
+  const [updateBodyMakeAccessoryForm] = Form.useForm();
   /*  Table states */
   const [bodyMakeTableState, setBodyMakeTableState] = useState<TBodyMakeTableState[]>([]);
 
@@ -550,22 +550,24 @@ const BodyMake: React.FC<Props> = ({
   };
 
   /* --------- BODY Make ACCESSORY ---------- */
-  const onCreateBodyMakeAccessoryFinish = (values: { accessoryId: number; price: string; bodyMakeId: number }) => {
-    onCreateBodyMakeAccessory(convertPriceToFloat(values.price), values.bodyMakeId, values.accessoryId);
+  const onCreateBodyMakeAccessoryFinish = (values: {
+    accessoryId: number;
+    accessoryPrice: string;
+    bodyMakeId: number;
+  }) => {
+    onCreateBodyMakeAccessory(convertPriceToFloat(values.accessoryPrice), values.bodyMakeId, values.accessoryId);
   };
-  // const onUpdateBodyMakeAccessoryFinish = (values: {
-  //   accessoryId: number;
-  //   price: string;
-  //   bodyMakeId: number;
-  //   bodyMakeAccessoryId: number;
-  // }) => {
-  //   onUpdateBodyMakeAccessory(
-  //     values.bodyMakeId,
-  //     values.accessoryId,
-  //     values.bodyMakeAccessoryId,
-  //     convertPriceToFloat(values.price),
-  //   );
-  // };
+  const onUpdateBodyMakeAccessoryFinish = (values: {
+    accessoryPrice: string;
+    bodyMakeId: number;
+    bodyMakeAccessoryId: number;
+  }) => {
+    onUpdateBodyMakeAccessory(
+      values.bodyMakeId,
+      values.bodyMakeAccessoryId,
+      convertPriceToFloat(values.accessoryPrice),
+    );
+  };
 
   /**
    * Extract accessories only from each body accessory and form a new
@@ -899,9 +901,14 @@ const BodyMake: React.FC<Props> = ({
                           title={
                             <div className="body__expand-card-title-div">
                               <span className="body__expand-card-title">{bodyMakeAccessory.accessory.title}</span>
-                              {/* <Tag color="geekblue" style={{ marginRight: 0 }}>
-                                RM{bodyMakeAccessory.accessory.price}
-                              </Tag> */}
+
+                              <Tag color="geekblue" style={{ marginRight: 0 }}>
+                                <div>
+                                  {bodyMakeAccessory.price && bodyMakeAccessory.price !== 0
+                                    ? ` RM${bodyMakeAccessory.price.toFixed(2)}`
+                                    : '-'}
+                                </div>
+                              </Tag>
                             </div>
                           }
                           size="small"
@@ -951,7 +958,7 @@ const BodyMake: React.FC<Props> = ({
                             <section className="body__expand-card-btn-section">
                               <div className="body__expand-card-btn-div">
                                 <div>
-                                  {/* <Button
+                                  <Button
                                     className="body__expand-card-btn-edit"
                                     style={{ padding: 0 }}
                                     type="link"
@@ -960,14 +967,14 @@ const BodyMake: React.FC<Props> = ({
                                       setShowUpdateModal({ ...showUpdateModal, body_make_accessory: true });
                                       // fill in the updateBodyAccessoryform
                                       updateBodyMakeAccessoryForm.setFieldsValue({
-                                        accessoryId: bodyMakeAccessory.accessory.id,
-                                        accessoryPrice: bodyMakeAccessory.accessory.price,
+                                        bodyMakeId: record.bodyMakeId,
+                                        accessoryPrice: bodyMakeAccessory.price,
                                         bodyMakeAccessoryId: bodyMakeAccessory.id,
                                       });
                                     }}
                                   >
                                     Edit
-                                  </Button> */}
+                                  </Button>
                                   <Button
                                     type="link"
                                     danger
@@ -1015,36 +1022,6 @@ const BodyMake: React.FC<Props> = ({
     <>
       <Form.Item
         className="make__form-item"
-        label="Accessory"
-        name="accessoryId"
-        style={{ marginBottom: '0.8rem' }}
-        rules={[{ required: true, message: 'Select an Accessory!' }]}
-      >
-        {/* only render if accessoriesArray is not null */}
-        {/* also if user already created a new body accessory using body associated accessories */}
-        {dimensionAssociatedAccessoriesArray && bodyMakeAccessoriesArray ? (
-          <Select placeholder="Select an Accessory">
-            {dimensionAssociatedAccessoriesArray
-              .filter((mainArrayChild) =>
-                extractAccessoriesArray(bodyMakeAccessoriesArray).every(
-                  (filterArrayChild) => filterArrayChild.id !== mainArrayChild.id,
-                ),
-              )
-              .map((accessory) => {
-                return (
-                  <Option key={uuidv4()} value={accessory.id}>
-                    {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
-                  </Option>
-                );
-              })}
-          </Select>
-        ) : (
-          <Skeleton.Input className="body__form-item-skeleton" style={{ width: '100%' }} active={true} />
-        )}
-      </Form.Item>
-
-      <Form.Item
-        className="make__form-item"
         label="Price"
         name="accessoryPrice"
         rules={[{ required: true, message: 'Input price here!' }]}
@@ -1076,6 +1053,35 @@ const BodyMake: React.FC<Props> = ({
         onKeyDown={(e) => handleFormKeyDown(e, createBodyMakeAccessoryForm)}
         onFinish={onCreateBodyMakeAccessoryFinish}
       >
+        <Form.Item
+          className="make__form-item"
+          label="Accessory"
+          name="accessoryId"
+          style={{ marginBottom: '0.8rem' }}
+          rules={[{ required: true, message: 'Select an Accessory!' }]}
+        >
+          {/* only render if accessoriesArray is not null */}
+          {/* also if user already created a new body accessory using body associated accessories */}
+          {dimensionAssociatedAccessoriesArray && bodyMakeAccessoriesArray ? (
+            <Select placeholder="Select an Accessory">
+              {dimensionAssociatedAccessoriesArray
+                .filter((mainArrayChild) =>
+                  extractAccessoriesArray(bodyMakeAccessoriesArray).every(
+                    (filterArrayChild) => filterArrayChild.id !== mainArrayChild.id,
+                  ),
+                )
+                .map((accessory) => {
+                  return (
+                    <Option key={uuidv4()} value={accessory.id}>
+                      {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
+                    </Option>
+                  );
+                })}
+            </Select>
+          ) : (
+            <Skeleton.Input className="body__form-item-skeleton" style={{ width: '100%' }} active={true} />
+          )}
+        </Form.Item>
         {/* reuse form items */}
         {bodyMakeAccessoryFormItems}
       </Form>
@@ -1110,53 +1116,54 @@ const BodyMake: React.FC<Props> = ({
   /* ----------------------------------------- */
   /* Update Body Make Accessory Form */
   /* ----------------------------------------- */
-  // let updateBodyMakeAccessoryFormComponent = (
-  //   <>
-  //     <Form
-  //       form={updateBodyMakeAccessoryForm}
-  //       name="updateBodyMakeAccessory"
-  //       onKeyDown={(e) => handleFormKeyDown(e, updateBodyMakeAccessoryForm)}
-  //       onFinish={onUpdateBodyMakeAccessoryFinish}
-  //     >
-  //       {/* reuse form items */}
-  //       {bodyMakeAccessoryFormItems}
-  //       {/* Getting the Body Make Accessory ID */}
-  //       <Form.Item
-  //         className="make__form-item"
-  //         label="id"
-  //         name="bodyMakeAccessoryId"
-  //         hidden
-  //         rules={[{ required: true, message: 'Get body make accessory id!' }]}
-  //       >
-  //         <Input />
-  //       </Form.Item>
-  //     </Form>
-  //   </>
-  // );
+  let updateBodyMakeAccessoryFormComponent = (
+    <>
+      <Form
+        form={updateBodyMakeAccessoryForm}
+        name="updateBodyMakeAccessory"
+        onKeyDown={(e) => handleFormKeyDown(e, updateBodyMakeAccessoryForm)}
+        onFinish={onUpdateBodyMakeAccessoryFinish}
+      >
+        {/* reuse form items */}
+        {bodyMakeAccessoryFormItems}
+
+        {/* Getting the Body Make Accessory ID */}
+        <Form.Item
+          className="make__form-item"
+          label="id"
+          name="bodyMakeAccessoryId"
+          hidden
+          rules={[{ required: true, message: 'Get body make accessory id!' }]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </>
+  );
 
   /* ----------------------------------------- */
   /* Update Body Make Accessory Modal */
   /* ----------------------------------------- */
-  // let updateBodyMakeAccessoryModal = (
-  //   <Modal
-  //     centered
-  //     title="Update Body Make Accessory"
-  //     visible={showUpdateModal.body_make_accessory}
-  //     onOk={updateBodyMakeAccessoryForm.submit}
-  //     confirmLoading={loading}
-  //     onCancel={() => {
-  //       // close edit body modal
-  //       setShowUpdateModal({
-  //         ...showUpdateModal,
-  //         body_make_accessory: false,
-  //       });
-  //       setImagesPreviewUrls([]); //clear the image preview when oncancel
-  //     }}
-  //   >
-  //     {/* the content within the modal */}
-  //     {updateBodyMakeAccessoryFormComponent}
-  //   </Modal>
-  // );
+  let updateBodyMakeAccessoryModal = (
+    <Modal
+      centered
+      title="Update Body Make Accessory"
+      visible={showUpdateModal.body_make_accessory}
+      onOk={updateBodyMakeAccessoryForm.submit}
+      confirmLoading={loading}
+      onCancel={() => {
+        // close edit body modal
+        setShowUpdateModal({
+          ...showUpdateModal,
+          body_make_accessory: false,
+        });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
+      }}
+    >
+      {/* the content within the modal */}
+      {updateBodyMakeAccessoryFormComponent}
+    </Modal>
+  );
 
   /* ================================== */
   //  Delete Body Make Modal
@@ -1355,9 +1362,9 @@ const BodyMake: React.FC<Props> = ({
       {createBodyMakeModal}
       {updateBodyMakeModal}
       {deleteBodyMakeModal}
-      {deleteBodyMakeAccessoryModal}
       {createBodyMakeAccessoryModal}
-      {/* {updateBodyMakeAccessoryModal} */}
+      {updateBodyMakeAccessoryModal}
+      {deleteBodyMakeAccessoryModal}
 
       <Layout style={{ overflow: 'hidden' }}>
         <NavbarComponent activePage="dashboard" />
@@ -1496,8 +1503,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetBodyMakeAccessories: (body_make_id) => dispatch(actions.getBodyMakeAccessories(body_make_id)),
     onCreateBodyMakeAccessory: (price, body_make_id, accessory_id) =>
       dispatch(actions.createBodyMakeAccessory(price, body_make_id, accessory_id)),
-    onUpdateBodyMakeAccessory: (price, body_make_id, accessory_id, body_make_accessory_id) =>
-      dispatch(actions.updateBodyMakeAccessory(price, body_make_id, accessory_id, body_make_accessory_id)),
+    onUpdateBodyMakeAccessory: (body_make_id, body_make_accessory_id, price) =>
+      dispatch(actions.updateBodyMakeAccessory(body_make_id, body_make_accessory_id, price)),
     onDeleteBodyMakeAccessory: (body_make_id, body_make_accessory_id) =>
       dispatch(actions.deleteBodyMakeAccessory(body_make_id, body_make_accessory_id)),
     onGetDimensionAssociatedAccessories: () => dispatch(actions.getDimensionAssociatedAccessories()),

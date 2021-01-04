@@ -356,14 +356,14 @@ export const getBodyMakeAccessoriesFailed = (errorMessage: string): AppActions =
 /* ---------------------------------- */
 export const updateBodyMakeAccessory = (
   body_make_id: number,
-  accessory_id: number,
+  // accessory_id: number,
   body_make_accessory_id: number,
   price: number,
 ): AppActions => {
   return {
     type: actionTypes.UPDATE_BODYMAKE_ACCESSORY,
     price: price,
-    accessory_id: accessory_id,
+    // accessory_id: accessory_id,
     body_make_id: body_make_id,
     body_make_accessory_id: body_make_accessory_id,
   };

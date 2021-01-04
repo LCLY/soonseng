@@ -78,24 +78,22 @@
         grid-template-columns: repeat(2, 1fr) !important;
       }
 
+      /* ----------------------- */
+      // series innerdiv
+      /* ----------------------- */
       &-innerdiv {
         border-radius: 1rem;
-
         overflow-y: auto;
         overflow-x: hidden;
 
         @include respond-to($small-phone) {
           max-height: 70vh;
-          padding: 0 0.5rem 2rem 0.5rem;
+          padding: 0 0.5rem 1rem 0.5rem;
         }
 
         @include respond-to($phone-only) {
           max-height: 80rem;
-          padding: 2rem 2rem 5rem 2rem;
-        }
-        @include respond-to($tablet-portrait-up) {
-          padding: 2rem 2rem 5rem 2rem;
-          max-height: 80rem;
+          padding: 2rem 2rem 0 2rem;
         }
 
         &::-webkit-scrollbar {
@@ -125,6 +123,7 @@
       }
 
       &-outerdiv {
+        height: 100%;
         padding: 2rem;
         overflow-y: hidden;
         position: relative;

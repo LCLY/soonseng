@@ -164,7 +164,14 @@ const getSalesBodyMakesFailed = (state: SalesInitialState, action: AppActions) =
 /* Get all Body Accessories  */
 /* -------------------------- */
 const getSalesAccessoriesStart = (state: SalesInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true, getSalesAccessoriesSucceed: null });
+  return updateObject(state, {
+    errorMessage: null,
+    loading: true,
+    generalAccessoriesArray: null,
+    bodyRelatedAccessoriesArray: null,
+    dimensionRelatedAccessoriesArray: null,
+    getSalesAccessoriesSucceed: null,
+  });
 };
 const getSalesAccessoriesSucceed = (state: SalesInitialState, action: AppActions) => {
   if (

@@ -476,7 +476,6 @@ export type TReceivedBodyMakeObj = {
   depth: string;
   height: string | null;
   price: number;
-  body_make_accessories: TReceivedAccessoryObj[];
   images: TReceivedImageObj[];
   available: true;
 };
@@ -540,10 +539,10 @@ export type TReceivedBodyAccessoryObj = {
 // Body accessory data when creating
 export type TReceivedBodyMakeAccessoryObj = {
   id: number;
-  available: boolean;
-  body: TReceivedBodyObj;
-  make: TReceivedMakeObj;
   accessory: TReceivedAccessoryObj;
+  body_make: TReceivedBodyMakeObj;
+  price: number;
+  available: boolean;
 };
 
 /* ================================================================================================= */

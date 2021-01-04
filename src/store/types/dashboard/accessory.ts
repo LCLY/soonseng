@@ -234,7 +234,7 @@ export interface CreateBodyMakeAccessoryFailedAction {
 export interface UpdateBodyMakeAccessoryAction {
   type: typeof actionTypes.UPDATE_BODYMAKE_ACCESSORY;
   price: number;
-  accessory_id: number;
+  // accessory_id: number;
   body_make_id: number;
   body_make_accessory_id: number;
 }

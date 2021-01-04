@@ -20,7 +20,9 @@ const { Panel } = Collapse;
 export interface OverviewComponentProps {
   accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
+  currentStep?: number; //for steps component
   displayOrdersAmount?: number; //determine how many orders there should be
+  setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
   onRemoveAnOrder?: (orderId: string, localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
 
@@ -36,7 +38,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
     return null;
   }
 
-  const { accessObj, localOrdersArray, displayOrdersAmount = 1, onRemoveAnOrder } = salesPageContext;
+  const { accessObj, onRemoveAnOrder, localOrdersArray, displayOrdersAmount = 1 } = salesPageContext;
 
   /* ================================================== */
   /*  method */
@@ -703,6 +705,17 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                         </div>
                       )}
                     </section>
+                    {/* <div className="sales__btn-div">
+                      <Button
+                        className="sales__btn sales__btn--back margin_r-1"
+                        onClick={() => {
+                          if (setCurrentStep === undefined || currentStep === undefined) return;
+                          setCurrentStep(currentStep - 1);
+                        }}
+                      >
+                        Back
+                      </Button>
+                    </div> */}
                   </div>
                 </div>
               );

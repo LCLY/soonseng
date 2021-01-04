@@ -1093,6 +1093,8 @@ export function* createBodyMakeAccessorySaga(action: AppActions) {
     };
   }
 
+  console.log(formData);
+
   try {
     let response = yield axios.post(url, formData);
     yield put(actions.createBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
@@ -1143,15 +1145,16 @@ export function* updateBodyMakeAccessorySaga(action: AppActions) {
 
   let formData = {};
   // Type guard, check if the "key" exist in the action object
-  if ('accessory_id' in action && 'price' in action) {
+  if ('price' in action) {
     formData = {
       price: action.price,
-      accessory_id: action.accessory_id,
     };
   }
 
   try {
     let response = yield axios.put(url, formData);
+    console.log(response);
+
     yield put(actions.updateBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
   } catch (error) {
     if (error.response) {
