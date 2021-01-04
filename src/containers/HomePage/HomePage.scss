@@ -25,21 +25,32 @@
       bottom: 0;
 
       @include respond-to($small-phone) {
-        height: 60rem;
+        // height: calc(100vh - 5.6rem);
+        min-height: calc(100vh - 5.6rem);
       }
-      @include respond-to(phone-only) {
-        height: 60rem;
+      @include respond-to($phone-only) {
+        min-height: calc(100vh - 5.6rem);
       }
 
       @include respond-to($tablet-portrait-up) {
-        min-height: 100vh;
-        height: auto;
+        min-height: calc(100vh - 10vh);
+        // height: auto;
         padding: 0 5rem 5rem 5rem;
       }
 
       &-parent {
         min-height: 100vh;
         position: relative;
+
+        @include respond-to($small-phone) {
+          min-height: calc(100vh - 5.6rem);
+        }
+        @include respond-to($phone-only) {
+          min-height: calc(100vh - 5.6rem);
+        }
+        @include respond-to($tablet-portrait-up) {
+          min-height: calc(100vh - 10vh);
+        }
       }
     }
 
@@ -87,54 +98,6 @@
     }
   }
 
-  /* ========================= */
-  // the background image
-  /* ========================= */
-  &__background {
-    &-image {
-      width: 100vw;
-      background: url('../../img/hino_homepage.jpg');
-      background-repeat: no-repeat;
-      background-size: cover;
-
-      @include respond-to($small-phone) {
-        // height: 60rem;
-        min-height: 100vh;
-        background-position: 85% 0;
-      }
-      @include respond-to($phone-only) {
-        // height: 60rem;
-        min-height: 100vh;
-        background-position: 85% 0;
-      }
-      @include respond-to($tablet-portrait-up) {
-        min-height: 100vh;
-        background-position: 80% 0;
-      }
-      @include respond-to($tablet-landscape-up) {
-        background-position: 80% 0;
-      }
-      @include respond-to($desktop-up) {
-        background-position: center;
-      }
-    }
-
-    /* outerdiv wrapping the background image */
-    &-outerdiv {
-      overflow: hidden;
-      @include respond-to($small-phone) {
-        overflow: hidden;
-      }
-      @include respond-to($phone-only) {
-        min-height: 100vh;
-        overflow: hidden;
-      }
-      @include respond-to($tablet-portrait-up) {
-        min-height: 100vh;
-        overflow: hidden;
-      }
-    }
-  }
   /*================================= */
   // The first
   /*================================= */
@@ -149,12 +112,18 @@
         font-size: 4rem;
         text-align: center;
       }
-      @include respond-to(phone-only) {
-        font-size: 4rem;
+      @include respond-to($phone-only) {
+        font-size: 6rem;
         text-align: center;
       }
 
       @include respond-to($tablet-portrait-up) {
+        font-size: 6rem;
+        text-align: left;
+        margin-bottom: 2rem;
+      }
+
+      @include respond-to($desktop-up) {
         font-size: 8rem;
         text-align: left;
         margin-bottom: 2rem;
@@ -169,7 +138,7 @@
           transform: none;
           width: auto;
         }
-        @include respond-to(phone-only) {
+        @include respond-to($phone-only) {
           padding-top: 0rem;
           transform: none;
           width: auto;
@@ -194,13 +163,20 @@
         width: 15rem !important;
         height: 4rem !important;
       }
-      @include respond-to(phone-only) {
+      @include respond-to($phone-only) {
         margin-right: 0;
-        font-size: 1.2rem !important;
+        font-size: 1.5rem !important;
         width: 15rem !important;
         height: 4rem !important;
       }
       @include respond-to($tablet-portrait-up) {
+        margin-left: 3rem;
+        font-size: 1.5rem !important;
+        width: 15rem !important;
+        height: 5rem !important;
+      }
+
+      @include respond-to($desktop-up) {
         margin-right: 3rem;
         font-size: 2rem !important;
         width: 20rem !important;
@@ -307,11 +283,17 @@
         margin-right: auto;
       }
       @include respond-to($phone-only) {
-        width: 23rem;
+        width: 30rem;
         margin-left: auto;
         margin-right: auto;
       }
       @include respond-to($tablet-portrait-up) {
+        width: 70%;
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      @include respond-to($desktop-up) {
         width: 90%;
       }
 
@@ -324,8 +306,8 @@
           font-size: 1rem;
         }
 
-        @include respond-to(phone-only) {
-          font-size: 1rem;
+        @include respond-to($phone-only) {
+          font-size: 1.3rem;
         }
 
         @include respond-to($tablet-portrait-up) {

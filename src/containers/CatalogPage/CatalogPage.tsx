@@ -52,7 +52,7 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
     <>
       <NavbarComponent />
       {/* background image in outerdiv */}
-      <ParallaxContainer bgImageUrl={holy5trucks}>
+      <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
         <div className="catalog__outerdiv">
           <div className="catalog__div">
             {catalogMakesArray ? (

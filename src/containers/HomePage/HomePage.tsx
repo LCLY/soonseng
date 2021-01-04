@@ -135,7 +135,7 @@ function HomePage() {
     <>
       <NavbarComponent activePage="home" />
 
-      <ParallaxContainer bgImageUrl={homepageImage} colorSettings="none" bgPosition={width < 576 ? '80% 0' : 'center'}>
+      <ParallaxContainer bgImageUrl={homepageImage} colorSettings="none" bgPosition={width < 768 ? '80% 0' : 'center'}>
         <section className="homepage__section-first-parent">
           <div className="homepage__section-first">
             <div className="homepage__first-title-div">

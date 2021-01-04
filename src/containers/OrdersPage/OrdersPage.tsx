@@ -163,7 +163,7 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
       </Modal>
       <NavbarComponent activePage="orders" />
       <section>
-        <ParallaxContainer bgImageUrl={holy5truck}>
+        <ParallaxContainer overlayColor="rgba(0, 0, 0, 0.3)" bgImageUrl={holy5truck}>
           <section className="orders__section">
             <Container>
               <div className="orders__section-outerdiv">

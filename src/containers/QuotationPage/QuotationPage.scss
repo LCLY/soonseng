@@ -263,6 +263,12 @@
       font-size: 0.8rem;
       padding: 0 2rem;
     }
+    @include respond-to($tablet-portrait-up) {
+      padding: 0 2rem;
+    }
+    @include respond-to($tablet-landscape-up) {
+      padding: 0;
+    }
   }
 
   &__content {
@@ -590,6 +596,7 @@
     font-size: 1.5rem;
     font-style: italic;
     margin-top: 2rem;
+    word-wrap: break-word;
 
     @include respond-to($small-phone) {
       font-size: 0.8rem;

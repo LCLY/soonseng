@@ -130,37 +130,43 @@ const CatalogBodyMake: React.FC<Props> = ({
   /*  method */
   /* ================================================== */
   const onGenerateQuotation = () => {
+    let tempGeneralAccessoriesArray: TReceivedAccessoryObj[] = [];
+    let tempBodyRelatedAccessoriesArray: TReceivedAccessoryObj[] = [];
+    let tempDimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] = [];
+
+    // push the accessories into each respective arrays
     if (currentCheckedGeneralAccessories) {
-      let tempGeneralAccessoriesArray: TReceivedAccessoryObj[] = [];
       for (let uniqueId in currentCheckedGeneralAccessories) {
         if (currentCheckedGeneralAccessories[uniqueId].checked === true) {
           tempGeneralAccessoriesArray.push(currentCheckedGeneralAccessories[uniqueId].accessory);
         }
       }
-      setOrderObj({ ...orderObj, generalAccessoriesArray: tempGeneralAccessoriesArray });
     }
     if (currentCheckedBodyAccessories) {
-      let tempBodyRelatedAccessoriesArray: TReceivedAccessoryObj[] = [];
       for (let uniqueId in currentCheckedBodyAccessories) {
         if (currentCheckedBodyAccessories[uniqueId].checked === true) {
           tempBodyRelatedAccessoriesArray.push(currentCheckedBodyAccessories[uniqueId].accessory);
         }
       }
-      setOrderObj({ ...orderObj, bodyRelatedAccessoriesArray: tempBodyRelatedAccessoriesArray });
     }
     if (currentCheckedDimensionAccessories) {
-      let tempDimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] = [];
       for (let uniqueId in currentCheckedDimensionAccessories) {
         if (currentCheckedDimensionAccessories[uniqueId].checked === true) {
           tempDimensionRelatedAccessoriesArray.push(currentCheckedDimensionAccessories[uniqueId].accessory);
         }
       }
-      setOrderObj({ ...orderObj, dimensionRelatedAccessoriesArray: tempDimensionRelatedAccessoriesArray });
     }
 
     if (localOrdersArray !== undefined) {
       let copyArray = [...localOrdersArray];
-      copyArray.push(orderObj);
+      let tempOrderObj = { ...orderObj };
+      tempOrderObj.generalAccessoriesArray = tempGeneralAccessoriesArray;
+      tempOrderObj.bodyRelatedAccessoriesArray = tempBodyRelatedAccessoriesArray;
+      tempOrderObj.dimensionRelatedAccessoriesArray = tempDimensionRelatedAccessoriesArray;
+
+      // push that updated orderObj with the latest accessories array
+      copyArray.push(tempOrderObj);
+
       onStoreLocalOrders(copyArray);
       history.push(ROUTE_ORDERS);
     }
@@ -480,7 +486,7 @@ const CatalogBodyMake: React.FC<Props> = ({
         )}
       </Modal>
       <NavbarComponent />
-      <ParallaxContainer bgImageUrl={holy5truck}>
+      <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
         <div className="catalog__outerdiv">
           <div className="catalog__div">
             {bodyMakeWithWheelbase && catalogMake ? (

@@ -5,6 +5,7 @@ interface ParallaxContainerProps {
   bgImageUrl: string;
   colorSettings?: string;
   bgPosition?: string;
+  overlayColor?: string;
 }
 
 type Props = ParallaxContainerProps;
@@ -12,11 +13,13 @@ type Props = ParallaxContainerProps;
 const ParallaxContainer: React.FC<Props> = ({
   bgImageUrl,
   children,
-  colorSettings = 'radial-gradient(rgba(0,0,0,0.3) 60%, rgba(0, 0, 0, 1))',
+  overlayColor = 'none',
   bgPosition = 'center center',
+  colorSettings = 'radial-gradient(rgba(0,0,0,0.3) 60%, rgba(0, 0, 0, 1))',
 }) => {
   return (
     <div className="e-with-fixed-bg">
+      <div className="parallax__overlay" style={{ background: overlayColor }} />
       <div className="bg-wrap">
         <div
           className="bg"

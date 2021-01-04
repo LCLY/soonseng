@@ -64,7 +64,7 @@ const LoginPage: React.FC<Props> = ({
       {authenticated && userInfoObj && <Redirect to="/" />}
       <NavbarComponent activePage="login" />
 
-      <ParallaxContainer bgImageUrl={holy5truck}>
+      <ParallaxContainer overlayColor="rgba(0, 0, 0, 0.3)" bgImageUrl={holy5truck}>
         <section className="login__section">
           {/* <Container> */}
           <div className="login__section-outerdiv">
