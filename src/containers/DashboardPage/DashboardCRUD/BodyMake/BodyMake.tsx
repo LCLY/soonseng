@@ -69,6 +69,8 @@ type TBodyMakeTableState = {
   key?: string;
   bodyObj: TReceivedBodyObj;
   makeObj: TReceivedMakeObj;
+  makeWheelbaseId: number;
+  lengthId: number;
   bodyMakeId: number;
   bodyMakeDetails: string;
   bodyMakeWidth: string;
@@ -136,6 +138,7 @@ const BodyMake: React.FC<Props> = ({
   onDeleteBodyMake,
   onGetMakeWheelbases,
   onDeleteUploadImage,
+  onClearMakeWheelbase,
   onClearDashboardState,
   onGetBodyMakeAccessories,
   onCreateBodyMakeAccessory,
@@ -369,6 +372,7 @@ const BodyMake: React.FC<Props> = ({
    * @param {TBodyMakeTableState} record
    */
   const onPopulateEditbodyMakeModal = (record: TBodyMakeTableState) => {
+    onGetMakeWheelbases(record.makeObj.id);
     let formattedPrice = '';
     formattedPrice = record.bodyMakePrice.replace('RM', '');
     formattedPrice = unformatPriceString(formattedPrice).toString();
@@ -378,6 +382,8 @@ const BodyMake: React.FC<Props> = ({
       makeId: record.makeObj.id,
       bodyId: record.bodyObj.id, // body id
       bodyMakeId: record.bodyMakeId, // length id
+      makeWheelbaseId: record.makeWheelbaseId,
+      lengthId: record.lengthId,
       bodyMakeWidth: {
         feet: checkInchExist(record.bodyMakeWidth).feet,
         inch: checkInchExist(record.bodyMakeWidth).inch,
@@ -605,6 +611,12 @@ const BodyMake: React.FC<Props> = ({
           placeholder="Select a Body"
           optionFilterProp="children"
           className="bodymake__select"
+          onChange={(value: number) => {
+            // reset the makewheelbase Id everytime when user changes the make
+            createBodyMakeForm.setFieldsValue({ makeWheelbaseId: null });
+            updateBodyMakeForm.setFieldsValue({ makeWheelbaseId: null });
+            onGetMakeWheelbases(value);
+          }}
           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {makesArray &&
@@ -627,17 +639,11 @@ const BodyMake: React.FC<Props> = ({
           rules={[{ required: true, message: 'Select a configuration!' }]}
         >
           {/* only render if makeWheelbase is not null */}
-          <Select
-            showSearch
-            placeholder="Select a configuration"
-            optionFilterProp="children"
-            className="bodymake__select"
-            filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
+          <Select placeholder="Select a configuration" className="bodymake__select">
             {makeWheelbasesArray.map((makeWheelbase) => {
               return (
                 <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={makeWheelbase.id}>
-                  {`Wheelbase: ${makeWheelbase.wheelbase.title}`}
+                  {`Wheelbase: ${makeWheelbase.wheelbase.title}mm`}
                 </Option>
               );
             })}
@@ -790,9 +796,10 @@ const BodyMake: React.FC<Props> = ({
       <Form
         onValuesChange={(value) => {
           // check if brand id is chosen
-          if (typeof value.makeId === 'number')
+          if (typeof value.makeId === 'number') {
             // call get series array
             onGetMakeWheelbases(value.makeId);
+          }
         }}
         form={createBodyMakeForm}
         name="createBodyMake"
@@ -1284,6 +1291,8 @@ const BodyMake: React.FC<Props> = ({
           bodyMakeId: bodyMake.id,
           bodyObj: bodyMake.body,
           makeObj: bodyMake.make_wheelbase.make,
+          makeWheelbaseId: bodyMake.make_wheelbase.id,
+          lengthId: bodyMake.length.id,
           bodyMakeDetails: bodyMakeDetails,
           bodyMakeWidth: body_make_width,
           bodyMakeHeight: body_make_height,
@@ -1384,7 +1393,11 @@ const BodyMake: React.FC<Props> = ({
                         <Button
                           type="primary"
                           className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, body_make: true })}
+                          onClick={() => {
+                            // clear the make wheelbase first to start clean everything when user starts to create a new body make
+                            onClearMakeWheelbase();
+                            setShowCreateModal({ ...showCreateModal, body_make: true });
+                          }}
                         >
                           Create Body Make
                         </Button>
@@ -1479,6 +1492,8 @@ interface DispatchProps {
   onUpdateBodyMakeAccessory: typeof actions.updateBodyMakeAccessory;
   onDeleteBodyMakeAccessory: typeof actions.deleteBodyMakeAccessory;
   onGetDimensionAssociatedAccessories: typeof actions.getDimensionAssociatedAccessories;
+  // Clear make wheelbase array
+  onClearMakeWheelbase: typeof actions.clearMakeWheelbase;
   // Get make wheelbase
   onGetMakeWheelbases: typeof actions.getMakeWheelbases;
   // Images
@@ -1509,6 +1524,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.deleteBodyMakeAccessory(body_make_id, body_make_accessory_id)),
     onGetDimensionAssociatedAccessories: () => dispatch(actions.getDimensionAssociatedAccessories()),
     // make wheelbases
+    onClearMakeWheelbase: () => dispatch(actions.clearMakeWheelbase()),
     onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),

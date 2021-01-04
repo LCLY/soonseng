@@ -110,6 +110,7 @@ export {
   /* =========================================== */
   //  MakeWheelbase (Make Page)
   /* =========================================== */
+  clearMakeWheelbase,
   createMakeWheelbase,
   createMakeWheelbaseStart,
   createMakeWheelbaseFailed,

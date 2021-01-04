@@ -169,6 +169,7 @@ import {
   GetSeriesSucceedAction,
   GetSeriesFailedAction,
   // Make Wheelbase
+  ClearMakeWheelbaseAction,
   CreateMakeWheelbaseAction,
   CreateMakeWheelbaseStartAction,
   CreateMakeWheelbaseSucceedAction,
@@ -623,6 +624,7 @@ export type DashboardActionTypes =
   /* ======================================================================= */
   // Make Wheelbase (Make Page)
   /* ======================================================================= */
+  | ClearMakeWheelbaseAction
   | CreateMakeWheelbaseAction
   | CreateMakeWheelbaseStartAction
   | CreateMakeWheelbaseSucceedAction

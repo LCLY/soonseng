@@ -405,6 +405,12 @@ const getMakeWheelbasesFailed = (state: DashboardInitialState, action: AppAction
 };
 
 /* -------------------------- */
+/* Clear Make Wheelbase Array */
+/* -------------------------- */
+const clearMakeWheelbase = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { makeWheelbasesArray: null });
+};
+/* -------------------------- */
 /* Create Make Wheelbase */
 /* -------------------------- */
 const createMakeWheelbaseStart = (state: DashboardInitialState, _action: AppActions) => {
@@ -1207,6 +1213,9 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
     /* =================================== */
     // Make Wheelbase (Make Page) (head)
     /* =================================== */
+    // Clear Make wheelbase array
+    case actionTypes.CLEAR_MAKEWHEELBASE:
+      return clearMakeWheelbase(state, action);
     // Create make Wheelbase (head)
     case actionTypes.CREATE_MAKEWHEELBASE_START:
       return createMakeWheelbaseStart(state, action);

@@ -203,6 +203,8 @@ export const DELETE_SERIES_FAILED = 'DELETE_SERIES_FAILED';
 /* -------------------------- */
 //  Make Page - Make Wheelbase / Configuration
 /* -------------------------- */
+// Clear Make Wheelbase
+export const CLEAR_MAKEWHEELBASE = 'CLEAR_MAKEWHEELBASE';
 // Create Make Wheelbase(head)
 export const CREATE_MAKEWHEELBASE = 'CREATE_MAKEWHEELBASE';
 export const CREATE_MAKEWHEELBASE_START = 'CREATE_MAKEWHEELBASE_START';

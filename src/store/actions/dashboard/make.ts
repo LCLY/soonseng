@@ -386,6 +386,11 @@ export const updateMakeFailed = (errorMessage: string): AppActions => {
 /* ============================================================================================ */
 // Make Wheelbase
 /* ============================================================================================ */
+export const clearMakeWheelbase = (): AppActions => {
+  return {
+    type: actionTypes.CLEAR_MAKEWHEELBASE,
+  };
+};
 
 /* ----------------------------- */
 // Create Make Wheelbase(head)

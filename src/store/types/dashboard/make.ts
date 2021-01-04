@@ -345,6 +345,13 @@ export interface GetSeriesFailedAction {
 //  Make Wheelbase (Make Page)
 /* ============================================================================================== */
 /* --------------------------------------------------------- */
+// Clear Make Wheelbase
+/* --------------------------------------------------------- */
+/*  Api call */
+export interface ClearMakeWheelbaseAction {
+  type: typeof actionTypes.CLEAR_MAKEWHEELBASE;
+}
+/* --------------------------------------------------------- */
 // Create Make Wheelbase
 /* --------------------------------------------------------- */
 /*  Api call */

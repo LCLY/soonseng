@@ -140,6 +140,7 @@ export {
   /* ---------------- */
   // Make Wheelbase
   /* ---------------- */
+  clearMakeWheelbase,
   createMakeWheelbase,
   createMakeWheelbaseStart,
   createMakeWheelbaseFailed,
