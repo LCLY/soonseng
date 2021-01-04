@@ -54,6 +54,15 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
     setCheckedConfigurations({ ...checkedConfigurations, [orderId]: e.target.checked });
   };
 
+  /* ================================================== */
+  /*  useEffect */
+  /* ================================================== */
+
+  // on mount, always start user at the top of the page
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     if (localOrdersArray) {
       localOrdersArray.map((order) =>

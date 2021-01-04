@@ -335,7 +335,7 @@ const CatalogBodyMake: React.FC<Props> = ({
         className="catalogbodymake__modal"
         title="Select accessories for this configuration"
         visible={pickAccessoryModalOpen}
-        okText="Generate Quotation"
+        okText="Add To Orders"
         onOk={onGenerateQuotation}
         onCancel={() => {
           // close the modal
@@ -614,9 +614,13 @@ const CatalogBodyMake: React.FC<Props> = ({
                                               tireCount: parseInt(bodyMake?.make_wheelbase.make.tire),
                                             });
                                             setPickAccessoryModalOpen(true);
+                                            // clear the states
+                                            setCurrentCheckedBodyAccessories({});
+                                            setCurrentCheckedGeneralAccessories({});
+                                            setCurrentCheckedDimensionAccessories({});
                                           }}
                                         >
-                                          Quotation&nbsp;&nbsp;
+                                          Add To Orders&nbsp;&nbsp;
                                           <i className="fas fa-file-invoice-dollar"></i>
                                         </Button>
                                       </div>
