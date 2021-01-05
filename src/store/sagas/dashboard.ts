@@ -452,6 +452,94 @@ export function* getSeriesSaga(action: AppActions) {
   }
 }
 
+/* ------------------------------- */
+//    Create Series
+/* ------------------------------- */
+export function* createSeriesSaga(action: AppActions) {
+  yield put(actions.createSeriesStart());
+
+  let url = '';
+
+  // Type guard, check if the "key" exist in the action object
+  if ('brand_id' in action) {
+    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}/series`;
+  }
+
+  let formData = {};
+  if ('title' in action) {
+    formData = {
+      title: action.title,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, formData);
+    yield put(actions.createSeriesSucceed(response.data.brand.series, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createSeriesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createSeriesFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Update Series
+/* ------------------------------- */
+export function* updateSeriesSaga(action: AppActions) {
+  yield put(actions.updateSeriesStart());
+
+  let url = '';
+
+  // Type guard, check if the "key" exist in the action object
+  if ('brand_id' in action) {
+    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}/series`;
+  }
+
+  let formData = {};
+
+  if ('title' in action) {
+    formData = { title: action.title };
+  }
+
+  try {
+    let response = yield axios.put(url, formData);
+
+    yield put(actions.updateSeriesSucceed(response.data.brand.series, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateSeriesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateSeriesFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete Series
+/* ------------------------------- */
+export function* deleteSeriesSaga(action: AppActions) {
+  yield put(actions.deleteSeriesStart());
+
+  let url = '';
+
+  // Type guard, check if the "key" exist in the action object
+  if ('brand_id' in action && 'series_id' in action) {
+    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}/series/${action.series_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+
+    yield put(actions.deleteSeriesSucceed(response.data.brand.series, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteSeriesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteSeriesFailed, 'Error');
+    }
+  }
+}
+
 /* ================================================================== */
 /*   Make Wheelbase (Make Page) (tail) */
 /* ================================================================== */
@@ -537,35 +625,6 @@ export function* getMakeWheelbasesSaga(action: AppActions) {
   }
 }
 
-/* ------------------------------- */
-//    Delete Make Wheelbase
-/* ------------------------------- */
-export function* deleteMakeWheelbaseSaga(action: AppActions) {
-  yield put(actions.deleteMakeWheelbaseStart());
-
-  let url = '';
-
-  // Type guard, check if the "key" exist in the action object
-  if ('make_wheelbase_id' in action && 'make_id' in action) {
-    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase/${action.make_wheelbase_id}`;
-  }
-
-  try {
-    let response = yield axios.delete(url);
-
-    yield put(actions.deleteMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
-  } catch (error) {
-    if (error.response) {
-      yield setPromiseError(error, actions.deleteMakeWheelbaseFailed, error.response.data.error);
-    } else {
-      yield setPromiseError(error, actions.deleteMakeWheelbaseFailed, 'Error');
-    }
-  }
-}
-
-/* ================================================================== */
-/*   Series (Make Page) (tail) */
-/* ================================================================== */
 /* ------------------------------- */
 //    Delete Make Wheelbase
 /* ------------------------------- */

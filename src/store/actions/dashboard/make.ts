@@ -319,35 +319,6 @@ export const getMakesFailed = (errorMessage: string): AppActions => {
 };
 
 /* ------------------ */
-// Get Series (for make)
-/* ------------------ */
-export const getSeries = (brand_id: number): AppActions => {
-  return {
-    type: actionTypes.GET_SERIES,
-    brand_id: brand_id,
-  };
-};
-
-export const getSeriesStart = (): AppActions => {
-  return {
-    type: actionTypes.GET_SERIES_START,
-  };
-};
-
-export const getSeriesSucceed = (seriesArray: TReceivedSeriesObj[]): AppActions => {
-  return {
-    type: actionTypes.GET_SERIES_SUCCEED,
-    seriesArray: seriesArray,
-  };
-};
-export const getSeriesFailed = (errorMessage: string): AppActions => {
-  return {
-    type: actionTypes.GET_SERIES_FAILED,
-    errorMessage: errorMessage,
-  };
-};
-
-/* ------------------ */
 // Update Make
 /* ------------------ */
 export const updateMake = (
@@ -379,6 +350,128 @@ export const updateMakeSucceed = (makesArray: TReceivedMakeObj[], successMessage
 export const updateMakeFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+// Series
+/* ============================================================================================ */
+/* ------------------ */
+// Get Series (for make)
+/* ------------------ */
+export const getSeries = (brand_id: number): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES,
+    brand_id: brand_id,
+  };
+};
+
+export const getSeriesStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES_START,
+  };
+};
+
+export const getSeriesSucceed = (seriesArray: TReceivedSeriesObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES_SUCCEED,
+    seriesArray: seriesArray,
+  };
+};
+export const getSeriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_SERIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/* ------------------ */
+// Create Series (for make)
+/* ------------------ */
+export const createSeries = (brand_id: number, title: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERIES,
+    brand_id: brand_id,
+    title: title,
+  };
+};
+
+export const createSeriesStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERIES_START,
+  };
+};
+
+export const createSeriesSucceed = (seriesArray: TReceivedSeriesObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERIES_SUCCEED,
+    seriesArray: seriesArray,
+    successMessage: successMessage,
+  };
+};
+export const createSeriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/* ------------------ */
+// Update Series (for make)
+/* ------------------ */
+export const updateSeries = (brand_id: number, series_id: number, title: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERIES,
+    brand_id: brand_id,
+    series_id: series_id,
+    title: title,
+  };
+};
+
+export const updateSeriesStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERIES_START,
+  };
+};
+
+export const updateSeriesSucceed = (seriesArray: TReceivedSeriesObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERIES_SUCCEED,
+    seriesArray: seriesArray,
+    successMessage: successMessage,
+  };
+};
+export const updateSeriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERIES_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/* ------------------ */
+// Delete Series (for make)
+/* ------------------ */
+export const deleteSeries = (series_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERIES,
+    series_id: series_id,
+  };
+};
+
+export const deleteSeriesStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERIES_START,
+  };
+};
+
+export const deleteSeriesSucceed = (seriesArray: TReceivedSeriesObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERIES_SUCCEED,
+    seriesArray: seriesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteSeriesFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERIES_FAILED,
     errorMessage: errorMessage,
   };
 };

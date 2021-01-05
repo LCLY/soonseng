@@ -179,7 +179,12 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
                       </div>
 
                       <div className="orders__btn-comparison-div">
-                        <Button className="orders__btn-comparison" type="primary" onClick={() => setModalOpen(true)}>
+                        <Button
+                          disabled={totalChecked <= 1}
+                          className="orders__btn-comparison"
+                          type="primary"
+                          onClick={() => setModalOpen(true)}
+                        >
                           Compare Specifications
                         </Button>
                       </div>

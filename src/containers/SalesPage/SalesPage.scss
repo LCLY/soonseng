@@ -1134,6 +1134,7 @@
         margin: 3rem 0;
         background: rgba(131, 9, 9, 0.5);
         color: white !important;
+        @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
       }
 
       &-btn {

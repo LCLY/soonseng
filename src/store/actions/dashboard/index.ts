@@ -137,6 +137,18 @@ export {
   getSeriesStart,
   getSeriesFailed,
   getSeriesSucceed,
+  createSeries,
+  createSeriesStart,
+  createSeriesFailed,
+  createSeriesSucceed,
+  updateSeries,
+  updateSeriesStart,
+  updateSeriesFailed,
+  updateSeriesSucceed,
+  deleteSeries,
+  deleteSeriesStart,
+  deleteSeriesFailed,
+  deleteSeriesSucceed,
   /* ---------------- */
   // Make Wheelbase
   /* ---------------- */

@@ -283,40 +283,46 @@ export interface GetSeriesFailedAction {
 
 /*  Api call */
 export interface CreateSeriesAction {
-  type: typeof actionTypes.GET_SERIES;
+  type: typeof actionTypes.CREATE_SERIES;
   brand_id: number;
+  title: string;
 }
 /*  States */
 export interface CreateSeriesStartAction {
-  type: typeof actionTypes.GET_SERIES_START;
+  type: typeof actionTypes.CREATE_SERIES_START;
 }
 export interface CreateSeriesSucceedAction {
-  type: typeof actionTypes.GET_SERIES_SUCCEED;
+  type: typeof actionTypes.CREATE_SERIES_SUCCEED;
   seriesArray: TReceivedSeriesObj[];
+  successMessage: string;
 }
 export interface CreateSeriesFailedAction {
-  type: typeof actionTypes.GET_SERIES_FAILED;
+  type: typeof actionTypes.CREATE_SERIES_FAILED;
   errorMessage: string;
 }
+
 /* --------------------------------------------------------- */
 // Update Series (Make)
 /* --------------------------------------------------------- */
 
 /*  Api call */
-export interface GetSeriesAction {
-  type: typeof actionTypes.GET_SERIES;
+export interface UpdateSeriesAction {
+  type: typeof actionTypes.UPDATE_SERIES;
   brand_id: number;
+  series_id: number;
+  title: string;
 }
 /*  States */
-export interface GetSeriesStartAction {
-  type: typeof actionTypes.GET_SERIES_START;
+export interface UpdateSeriesStartAction {
+  type: typeof actionTypes.UPDATE_SERIES_START;
 }
-export interface GetSeriesSucceedAction {
-  type: typeof actionTypes.GET_SERIES_SUCCEED;
+export interface UpdateSeriesSucceedAction {
+  type: typeof actionTypes.UPDATE_SERIES_SUCCEED;
   seriesArray: TReceivedSeriesObj[];
+  successMessage: string;
 }
-export interface GetSeriesFailedAction {
-  type: typeof actionTypes.GET_SERIES_FAILED;
+export interface UpdateSeriesFailedAction {
+  type: typeof actionTypes.UPDATE_SERIES_FAILED;
   errorMessage: string;
 }
 /* --------------------------------------------------------- */
@@ -324,20 +330,21 @@ export interface GetSeriesFailedAction {
 /* --------------------------------------------------------- */
 
 /*  Api call */
-export interface GetSeriesAction {
-  type: typeof actionTypes.GET_SERIES;
-  brand_id: number;
+export interface DeleteSeriesAction {
+  type: typeof actionTypes.DELETE_SERIES;
+  series_id: number;
 }
 /*  States */
-export interface GetSeriesStartAction {
-  type: typeof actionTypes.GET_SERIES_START;
+export interface DeleteSeriesStartAction {
+  type: typeof actionTypes.DELETE_SERIES_START;
 }
-export interface GetSeriesSucceedAction {
-  type: typeof actionTypes.GET_SERIES_SUCCEED;
+export interface DeleteSeriesSucceedAction {
+  type: typeof actionTypes.DELETE_SERIES_SUCCEED;
   seriesArray: TReceivedSeriesObj[];
+  successMessage: string;
 }
-export interface GetSeriesFailedAction {
-  type: typeof actionTypes.GET_SERIES_FAILED;
+export interface DeleteSeriesFailedAction {
+  type: typeof actionTypes.DELETE_SERIES_FAILED;
   errorMessage: string;
 }
 

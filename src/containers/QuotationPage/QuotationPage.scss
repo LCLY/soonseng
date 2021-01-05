@@ -35,7 +35,7 @@
       padding-top: 3rem;
       width: auto;
       padding-bottom: 5rem;
-      @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
+      @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 0);
     }
 
     &-innerdiv {

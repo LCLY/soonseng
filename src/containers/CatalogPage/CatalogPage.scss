@@ -86,6 +86,17 @@
         overflow-y: auto;
         overflow-x: hidden;
 
+        & .ant-empty-description {
+          color: white;
+        }
+
+        & .ant-empty {
+          transform: translateY(-2rem);
+          @include respond-to($small-phone) {
+            transform: translateY(0);
+          }
+        }
+
         @include respond-to($small-phone) {
           max-height: 70vh;
           padding: 0 0.5rem 1rem 0.5rem;
@@ -277,30 +288,24 @@
       color: white;
       bottom: 1rem;
       right: -1.5rem;
-      font-size: 1.2rem;
+
       border-left: 0.5rem solid white;
       border-top-left-radius: 5rem;
       z-index: 2;
       padding: 0.5rem 2rem 0.5rem 2.5rem;
       background: rgba(rgb(224, 35, 35), 0.4);
 
-      @include respond-to($phone-only) {
-        font-size: 1rem;
-      }
-      @include respond-to($tablet-portrait-up) {
-        font-size: 1.2rem;
-      }
-      @include respond-to($tablet-landscape-up) {
-        font-size: 1.5rem;
-      }
-      @include respond-to($desktop-up) {
-        font-size: 1.5rem;
-      }
-
       @include respond-to($small-phone) {
         font-size: 0.8rem;
         padding: 0.2rem 0.5rem 0.2rem 1.5rem;
         right: -0.3rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+      }
+
+      @include respond-to($desktop-up) {
+        font-size: 1.5rem;
       }
     }
   }
@@ -320,7 +325,9 @@
       padding: 2rem 0;
       position: relative;
       border-radius: 1rem;
-      background: rgba($primary-color-4, 0.6);
+      background: rgba($primary-color-4, 0.4);
+      @include shadow-func(0rem, 0rem, 1rem, 0.1rem, rgba(199, 199, 199, 0.583));
+
       backdrop-filter: blur(15px);
 
       /*  glass morphism */
@@ -350,7 +357,7 @@
       }
 
       @include respond-to($tablet-portrait-up) {
-        margin: 0 5rem;
+        margin-left: 1rem;
         padding: 2rem 0;
         width: 30rem;
       }
@@ -363,6 +370,24 @@
         margin-top: 2rem;
       }
     }
+
+    &-innerdiv {
+      display: flex;
+      align-items: center;
+
+      @include respond-to($small-phone) {
+        justify-content: space-between;
+      }
+      @include respond-to($phone-only) {
+        justify-content: space-between;
+      }
+      @include respond-to($tablet-portrait-up) {
+        justify-content: space-between;
+      }
+      @include respond-to($tablet-landscape-up) {
+        justify-content: start;
+      }
+    }
   }
 
   /* ==================== */
@@ -370,15 +395,10 @@
   /* ==================== */
   &__series {
     &-title {
-      margin-right: auto;
-      // margin-left: 2rem;
-      margin-bottom: 2rem;
-      margin-top: 1.5rem;
-      align-self: left;
-      display: inline-block;
-      font-size: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: $font-bebasneue;
-      padding: 0.5rem 4rem 0.3rem 4rem;
       border-left: 0.5rem solid $primary-color-2;
       background: white;
       color: $primary-color-4;
@@ -386,7 +406,48 @@
       @include respond-to($small-phone) {
         font-size: 2rem;
         padding: 0.1rem 2rem 0.1rem 2rem;
-        margin: 0 0 2rem 0.5rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 2.5rem;
+        padding: 0.1rem 2rem 0.1rem 2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        padding: 0.5rem 4rem 0.3rem 4rem;
+      }
+      @include respond-to($tablet-landscape-up) {
+        padding: 0.5rem 4rem 0.3rem 4rem;
+      }
+
+      /* ------------------------------------------------------ */
+      // the outerdiv wrapping only series title and the log
+      /* ------------------------------------------------------ */
+      &-outerdiv {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    &-top {
+      /* --------------------------------------------------------- */
+      // the top portion div wrapping series title, the log potentially other buttons
+      /* --------------------------------------------------------- */
+      &-div {
+        display: flex;
+        align-items: center;
+
+        @include respond-to($small-phone) {
+          margin: 0 0 1.5rem 0.5rem;
+        }
+        @include respond-to($phone-only) {
+          margin: 1rem 0 1.5rem 2rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          margin: 0 0 1.5rem 2rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          margin-top: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
       }
     }
   }
@@ -414,6 +475,75 @@
       }
       @include respond-to($tablet-landscape-up) {
         height: 100vh;
+      }
+    }
+  }
+
+  /* ========================== */
+  // all types of buttons
+  /* ========================== */
+  &__button {
+    &-series {
+      padding: 0.5rem 2rem;
+      user-select: none;
+      color: white;
+      font-size: 2rem;
+      font-family: $font-firesans;
+      cursor: pointer;
+      border: 1px solid white;
+      @include glassMorph(rgba(162, 162, 162, 0.289), 20px, rgba(182, 182, 182, 0.473), 0.5rem);
+
+      &:hover {
+        transition: all 0.5s ease;
+        @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+      }
+
+      &:active {
+        transition: all 0.2s ease;
+        box-shadow: none;
+        @include glassMorph(rgba(162, 162, 162, 0.289), 20px, rgba(182, 182, 182, 0.268), 0.5rem);
+      }
+
+      @include respond-to($small-phone) {
+        margin-left: 1rem;
+        font-size: 1.3rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-left: 1rem;
+        margin-right: 1rem;
+      }
+    }
+
+    &-icon {
+      margin-right: 1rem;
+    }
+  }
+
+  /* =================================== */
+  // the dropdown for series
+  /* =================================== */
+  &__dropdown {
+    &-series {
+      cursor: pointer;
+      background: white;
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 1rem;
+      &:hover {
+        transition: all 0.5s ease;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid white;
+      }
+      &:active {
+        transition: none;
+        background: white;
       }
     }
   }

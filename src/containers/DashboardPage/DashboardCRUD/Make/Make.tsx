@@ -119,7 +119,6 @@ type Props = MakeProps & StateProps & DispatchProps;
 
 const Make: React.FC<Props> = ({
   // Miscellaneous
-
   loading,
   errorMessage,
   successMessage,
@@ -788,11 +787,12 @@ const Make: React.FC<Props> = ({
     if ('brandImages' in record) {
       expandImageGalleryButton = (
         <PlusCircleTwoTone
-          style={{
-            opacity: record.brandImages.length === 0 ? 0.3 : 1,
-            pointerEvents: record.brandImages.length === 0 ? 'none' : 'auto',
-          }}
+          // style={{
+          //   opacity: record.brandImages.length === 0 ? 0.3 : 1,
+          //   pointerEvents: record.brandImages.length === 0 ? 'none' : 'auto',
+          // }}
           onClick={() => {
+            onGetSeries(record.brandId);
             // this allow only 1 row to expand at a time
             onTableRowExpand(expanded, record);
             // this closes all the edit image gallery when user expand other row
@@ -870,6 +870,7 @@ const Make: React.FC<Props> = ({
 
     return (
       <>
+        {seriesArray && seriesArray.map((series) => <div>{series.title}</div>)}
         <TableImageViewer
           record={record}
           loading={loading}
@@ -2119,7 +2120,6 @@ const Make: React.FC<Props> = ({
                     {/* ====================== */}
                     {/*     Brand Section      */}
                     {/* ====================== */}
-
                     <div className="make__section-top">
                       <div className="make__section-top-left">
                         <section className="make__section">

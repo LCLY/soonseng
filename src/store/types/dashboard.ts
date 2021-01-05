@@ -168,6 +168,18 @@ import {
   GetSeriesStartAction,
   GetSeriesSucceedAction,
   GetSeriesFailedAction,
+  CreateSeriesAction,
+  CreateSeriesStartAction,
+  CreateSeriesSucceedAction,
+  CreateSeriesFailedAction,
+  UpdateSeriesAction,
+  UpdateSeriesStartAction,
+  UpdateSeriesSucceedAction,
+  UpdateSeriesFailedAction,
+  DeleteSeriesAction,
+  DeleteSeriesStartAction,
+  DeleteSeriesSucceedAction,
+  DeleteSeriesFailedAction,
   // Make Wheelbase
   ClearMakeWheelbaseAction,
   CreateMakeWheelbaseAction,
@@ -342,8 +354,9 @@ export type TReceivedBrandObj = {
   id: number;
   title: string;
   description: string;
-  available: boolean;
+  series: TReceivedSeriesObj[];
   images: TReceivedImageObj[];
+  available: boolean;
 };
 
 /* ---------------------------------------- */
@@ -621,6 +634,18 @@ export type DashboardActionTypes =
   | GetSeriesStartAction
   | GetSeriesSucceedAction
   | GetSeriesFailedAction
+  | CreateSeriesAction
+  | CreateSeriesStartAction
+  | CreateSeriesSucceedAction
+  | CreateSeriesFailedAction
+  | UpdateSeriesAction
+  | UpdateSeriesStartAction
+  | UpdateSeriesSucceedAction
+  | UpdateSeriesFailedAction
+  | DeleteSeriesAction
+  | DeleteSeriesStartAction
+  | DeleteSeriesSucceedAction
+  | DeleteSeriesFailedAction
   /* ======================================================================= */
   // Make Wheelbase (Make Page)
   /* ======================================================================= */

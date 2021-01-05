@@ -359,9 +359,78 @@ const updateMakeFailed = (state: DashboardInitialState, action: AppActions) => {
 /* Get Series  */
 /* -------------------------- */
 const getSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null });
+  return updateObject(state, { errorMessage: null, loading: true });
 };
 const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('seriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      seriesArray: action.seriesArray,
+      loading: false,
+    });
+  }
+  return state;
+};
+const getSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Create Series  */
+/* -------------------------- */
+const createSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('seriesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      seriesArray: action.seriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const createSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update Series  */
+/* -------------------------- */
+const updateSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('seriesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      seriesArray: action.seriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const updateSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Delete Series  */
+/* -------------------------- */
+const deleteSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null });
+};
+const deleteSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('seriesArray' in action) {
     return updateObject(state, {
       errorMessage: null,
@@ -370,7 +439,7 @@ const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   }
   return state;
 };
-const getSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
+const deleteSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage });
   }
@@ -1202,6 +1271,10 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return updateMakeSucceed(state, action);
     case actionTypes.UPDATE_MAKE_FAILED:
       return updateMakeFailed(state, action);
+
+    /* =================================== */
+    // Series (Make Page) (head)
+    /* =================================== */
     // Get series (make)
     case actionTypes.GET_SERIES_START:
       return getSeriesStart(state, action);
@@ -1209,6 +1282,27 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return getSeriesSucceed(state, action);
     case actionTypes.GET_SERIES_FAILED:
       return getSeriesFailed(state, action);
+    // Create series (make)
+    case actionTypes.CREATE_SERIES_START:
+      return createSeriesStart(state, action);
+    case actionTypes.CREATE_SERIES_SUCCEED:
+      return createSeriesSucceed(state, action);
+    case actionTypes.CREATE_SERIES_FAILED:
+      return createSeriesFailed(state, action);
+    // Update series (make)
+    case actionTypes.UPDATE_SERIES_START:
+      return updateSeriesStart(state, action);
+    case actionTypes.UPDATE_SERIES_SUCCEED:
+      return updateSeriesSucceed(state, action);
+    case actionTypes.UPDATE_SERIES_FAILED:
+      return updateSeriesFailed(state, action);
+    // Delete series (make)
+    case actionTypes.DELETE_SERIES_START:
+      return deleteSeriesStart(state, action);
+    case actionTypes.DELETE_SERIES_SUCCEED:
+      return deleteSeriesSucceed(state, action);
+    case actionTypes.DELETE_SERIES_FAILED:
+      return deleteSeriesFailed(state, action);
 
     /* =================================== */
     // Make Wheelbase (Make Page) (head)
