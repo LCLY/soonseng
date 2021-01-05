@@ -63,7 +63,10 @@ const CatalogPage: React.FC<Props> = ({ history, auth_token, catalogMakesArray, 
                       // div wrapping brand along with its series
                       <div className="catalog__brand-div" key={uuidv4()}>
                         {/* brand title */}
-                        <div className="catalog__brand-title"> {catalog.brand.title}</div>
+                        <div>
+                          <div className="catalog__brand-title"> {catalog.brand.title}</div>
+                          <div>Add Series</div>
+                        </div>
                         {/* series section */}
                         <section className="catalog__section-series">
                           {catalog.series.map((series, index) => {

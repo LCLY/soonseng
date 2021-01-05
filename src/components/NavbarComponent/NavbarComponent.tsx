@@ -152,38 +152,42 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="make"
           onClick={() => {
-            history.push(ROUTE_DASHBOARD.make);
             setDropdownVisible(false);
           }}
         >
-          Model
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
+            Model
+          </a>
         </Menu.Item>
         <Menu.Item
           key="body"
           onClick={() => {
-            history.push(ROUTE_DASHBOARD.body);
             setDropdownVisible(false);
           }}
         >
-          Body
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.body}>
+            Body
+          </a>
         </Menu.Item>
         <Menu.Item
           key="accessory"
           onClick={() => {
-            history.push(ROUTE_DASHBOARD.accessory);
             setDropdownVisible(false);
           }}
         >
-          Accessory
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.accessory}>
+            Accessory
+          </a>
         </Menu.Item>
         <Menu.Item
           key="body_make"
           onClick={() => {
-            history.push(ROUTE_DASHBOARD.body_make);
             setDropdownVisible(false);
           }}
         >
-          Model with body
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.body_make}>
+            Model with body
+          </a>
         </Menu.Item>
       </Menu>
     </div>
@@ -195,11 +199,12 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item
           key="make"
           onClick={() => {
-            history.push(ROUTE_CATALOG);
             setSalesDropdownVisible(false);
           }}
         >
-          Vehicle Catalog
+          <a className="navbar__dropdown-link" href={ROUTE_CATALOG}>
+            Vehicle Catalog
+          </a>
         </Menu.Item>
       </Menu>
     </div>
@@ -235,9 +240,9 @@ const NavbarComponent: React.FC<Props> = ({
             <Nav className="mr-auto navbar__wrapper">
               <div className="navbar__left-div">
                 <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
-                  <span className="navbar__link" onClick={() => history.push(ROUTE_HOME)}>
+                  <a className="navbar__link" href={ROUTE_HOME}>
                     <i className="fas fa-home"></i>&nbsp;Home
-                  </span>
+                  </a>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
                   <Dropdown visible={salesDropdownVisible} overlay={salesMenu} trigger={['click']}>
@@ -248,9 +253,9 @@ const NavbarComponent: React.FC<Props> = ({
                   </Dropdown>
                 </div>
                 <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
-                  <span className="navbar__link" onClick={() => history.push(ROUTE_SALES)}>
+                  <a className="navbar__link" href={ROUTE_SALES}>
                     <i className="fas fa-balance-scale"></i>&nbsp;Sales
-                  </span>
+                  </a>
                 </div>
                 {/* ABOUT US */}
                 {/* <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
@@ -281,29 +286,27 @@ const NavbarComponent: React.FC<Props> = ({
                 {/* only show if user info exist or not a normal user */}
                 {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>}
                 <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
-                  <div
-                    className={`navbar__link`}
-                    ref={dropdownRef}
-                    onClick={() => {
-                      authenticated && userInfoObj ? history.push(ROUTE_LOGOUT) : history.push(ROUTE_LOGIN);
-                    }}
-                  >
+                  <div className={`navbar__link`}>
                     {authenticated && userInfoObj ? (
                       <>
-                        <i className="fas fa-sign-out-alt"></i>&nbsp;Sign Out
+                        <a className={`navbar__link`} href={ROUTE_LOGOUT}>
+                          <i className="fas fa-sign-out-alt"></i>&nbsp;Sign Out
+                        </a>
                       </>
                     ) : (
                       <>
-                        <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
+                        <a className={`navbar__link`} href={ROUTE_LOGIN}>
+                          <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
+                        </a>
                       </>
                     )}
                   </div>
                 </div>
                 <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
-                  <div className={`navbar__link`} ref={dropdownRef} onClick={() => history.push(ROUTE_ORDERS)}>
+                  <a className={`navbar__link`} href={ROUTE_ORDERS}>
                     <ShoppingCartOutlined />
                     &nbsp;Orders
-                  </div>
+                  </a>
                 </div>
               </div>
             </Nav>

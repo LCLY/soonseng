@@ -564,6 +564,35 @@ export function* deleteMakeWheelbaseSaga(action: AppActions) {
 }
 
 /* ================================================================== */
+/*   Series (Make Page) (tail) */
+/* ================================================================== */
+/* ------------------------------- */
+//    Delete Make Wheelbase
+/* ------------------------------- */
+export function* deleteMakeWheelbaseSaga(action: AppActions) {
+  yield put(actions.deleteMakeWheelbaseStart());
+
+  let url = '';
+
+  // Type guard, check if the "key" exist in the action object
+  if ('make_wheelbase_id' in action && 'make_id' in action) {
+    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase/${action.make_wheelbase_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+
+    yield put(actions.deleteMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteMakeWheelbaseFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteMakeWheelbaseFailed, 'Error');
+    }
+  }
+}
+
+/* ================================================================== */
 /*   Body (Body Page) (tail) */
 /* ================================================================== */
 

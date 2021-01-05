@@ -414,8 +414,8 @@ export type TReceivedMakeObj = {
 // type
 export type TReceivedSeriesObj = {
   id: number;
-  brand_id: number;
   title: string;
+  brand_id: number;
   available: boolean;
 };
 

@@ -9,6 +9,11 @@
     & .bg-primary {
       background: rgba($primary-color-4, 1) !important;
     }
+
+    // set style for all the a tag
+    & a {
+      text-decoration: none !important;
+    }
   }
 
   &__div {
@@ -132,6 +137,10 @@
   &__dropdown {
     &-item {
       font-size: 1.5rem !important;
+    }
+
+    &-link {
+      text-decoration: none !important;
     }
   }
 
