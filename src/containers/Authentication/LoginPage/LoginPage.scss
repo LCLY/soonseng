@@ -36,7 +36,7 @@
         width: 90%;
       }
       @include respond-to($phone-only) {
-        width: 90%;
+        width: 40rem;
       }
       @include respond-to($tablet-portrait-up) {
         width: 40rem;

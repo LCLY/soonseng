@@ -36,8 +36,11 @@ svg {
 }
 
 /* ===================================== */
-/* AntD Table */
+/* AntD Components */
 /* ===================================== */
+.ant-modal {
+  animation-duration: 0s !important;
+}
 
 .ant-table-thead tr th {
   color: white !important;

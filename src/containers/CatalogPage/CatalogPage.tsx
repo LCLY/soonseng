@@ -4,15 +4,15 @@ import './CatalogPage.scss';
 import Footer from 'src/components/Footer/Footer';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import SeriesModal from 'src/components/Modal/Series/SeriesModal';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { Empty, Form, Input, Modal, Skeleton, notification, Menu, Dropdown } from 'antd';
-import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Empty, Form, Skeleton, notification, Menu, Dropdown } from 'antd';
 
 /* Util */
 import holy5trucks from 'src/img/5trucks.jpg';
@@ -43,10 +43,10 @@ const CatalogPage: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  const [showCreateModal, setShowCreateModal] = useState({
+  const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
     series: false,
   });
-  const [showUpdateModal, setShowUpdateModal] = useState({
+  const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
     series: false,
   });
   const [modalContent, setModalContent] = useState({ series: { brand_title: '', series_title: '' } });
@@ -64,17 +64,6 @@ const CatalogPage: React.FC<Props> = ({
     console.log(values);
     /* !!!!!!!!!!!!!!!!!!!!!!!!! CONTINUE HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!  */
     onUpdateSeries(values.brand_id, values.series_id, values.title);
-  };
-
-  /**
-   * For user to be able to press enter and submit the form
-   * @param {React.KeyboardEvent<HTMLFormElement>} e
-   * @param {FormInstance<any>} form form instance created at initialization using useForm
-   */
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, formRef: FormInstance<any>) => {
-    if (e.key === 'Enter') {
-      formRef.submit();
-    }
   };
 
   /* ================================================== */
@@ -100,94 +89,6 @@ const CatalogPage: React.FC<Props> = ({
     </Menu>
   );
 
-  /* -------------------------- */
-  // Series
-  /* -------------------------- */
-  let seriesFormItems = (
-    <>
-      <Form.Item
-        className="make__form-item"
-        label="Title"
-        name="title"
-        rules={[{ required: true, message: 'Input series title here!' }]}
-      >
-        <Input placeholder="Type series title here" />
-      </Form.Item>
-
-      {/* Getting the brand id */}
-      <Form.Item hidden name="brand_id" rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-    </>
-  );
-
-  let createSeriesFormComponent = (
-    <>
-      <Form
-        form={createSeriesForm}
-        // name="createBrand"
-        onKeyDown={(e) => handleKeyDown(e, createSeriesForm)}
-        onFinish={onCreateSeriesFinish}
-      >
-        {/* The rest of the form items */}
-        {seriesFormItems}
-      </Form>
-    </>
-  );
-
-  /* Create Series Modal */
-  let createSeriesModal = (
-    <Modal
-      centered
-      title={`Create Series for ${modalContent.series.brand_title}`}
-      visible={showCreateModal.series}
-      onOk={createSeriesForm.submit}
-      confirmLoading={dashboardLoading}
-      onCancel={() => {
-        createSeriesForm.resetFields();
-        setShowCreateModal({ ...showCreateModal, series: false }); //close modal on cancel
-      }}
-    >
-      {/* the content within the modal */}
-      {createSeriesFormComponent}
-    </Modal>
-  );
-  let updateSeriesFormComponent = (
-    <>
-      <Form
-        form={updateSeriesForm}
-        // name="createBrand"
-        onKeyDown={(e) => handleKeyDown(e, updateSeriesForm)}
-        onFinish={onUpdateSeriesFinish}
-      >
-        {/* The rest of the form items */}
-        {seriesFormItems}
-
-        {/* Getting the series id */}
-        <Form.Item hidden name="series_id" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-      </Form>
-    </>
-  );
-
-  /* Update Series Modal */
-  let updateSeriesModal = (
-    <Modal
-      centered
-      title={`Update for ${modalContent.series.series_title}`}
-      visible={showUpdateModal.series}
-      onOk={updateSeriesForm.submit}
-      confirmLoading={dashboardLoading}
-      onCancel={() => {
-        updateSeriesForm.resetFields();
-        setShowUpdateModal({ ...showUpdateModal, series: false }); //close modal on cancel
-      }}
-    >
-      {/* the content within the modal */}
-      {updateSeriesFormComponent}
-    </Modal>
-  );
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
@@ -249,8 +150,31 @@ const CatalogPage: React.FC<Props> = ({
   return (
     <>
       {/* Modals */}
-      {createSeriesModal}
-      {updateSeriesModal}
+
+      <SeriesModal
+        crud="create"
+        indexKey={'series'}
+        antdForm={createSeriesForm}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        showModal={showCreateModal}
+        onFinish={onCreateSeriesFinish}
+        visible={showCreateModal.series}
+        setShowModal={setShowCreateModal}
+        title={`Create Series for ${modalContent.series.brand_title}`}
+      />
+
+      <SeriesModal
+        crud="update"
+        indexKey={'series'}
+        antdForm={createSeriesForm}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        showModal={showUpdateModal}
+        onFinish={onUpdateSeriesFinish}
+        visible={showUpdateModal.series}
+        setShowModal={setShowUpdateModal}
+        title={`Update for ${modalContent.series.series_title}`}
+      />
+
       <NavbarComponent />
       {/* background image in outerdiv */}
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
@@ -277,7 +201,7 @@ const CatalogPage: React.FC<Props> = ({
                                 seriesModalContent.series.brand_title = catalog.brand.title;
                                 setModalContent(seriesModalContent);
                                 // show the modal
-                                setShowCreateModal({ ...createSeriesModal, series: true });
+                                setShowCreateModal({ ...showCreateModal, series: true });
                               }}
                             >
                               <PlusCircleOutlined className="catalog__button-icon" />
@@ -370,7 +294,11 @@ const CatalogPage: React.FC<Props> = ({
                                   <>
                                     {series.makes.length > 0 && (
                                       <div className="catalog__section-series-outerdiv">
-                                        <div className="catalog__series-title">{series.title}</div>
+                                        <div className="catalog__series-top-div">
+                                          <div className="catalog__series-title-outerdiv">
+                                            <div className="catalog__series-title">{series.title}</div>
+                                          </div>
+                                        </div>
                                         {/* if user is admin show everything, if not only show those that the length is greater than 0 */}
                                         <div className="catalog__section-series-innerdiv">
                                           <div
