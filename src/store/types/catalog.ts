@@ -24,7 +24,10 @@ export interface ClearCatalogStateAction {
 /* ------------------ */
 
 type TCatalogSeries = {
+  id: number;
   title: string;
+  brand_id: number;
+  available: boolean;
   makes: TReceivedMakeObj[];
 };
 export type TReceivedCatalogMakeObj = {

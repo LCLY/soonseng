@@ -492,8 +492,8 @@ export function* updateSeriesSaga(action: AppActions) {
   let url = '';
 
   // Type guard, check if the "key" exist in the action object
-  if ('brand_id' in action) {
-    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}/series`;
+  if ('brand_id' in action && 'series_id' in action) {
+    url = process.env.REACT_APP_API + `/head/brands/${action.brand_id}/series/${action.series_id}`;
   }
 
   let formData = {};
@@ -501,9 +501,11 @@ export function* updateSeriesSaga(action: AppActions) {
   if ('title' in action) {
     formData = { title: action.title };
   }
+  console.log(formData);
 
   try {
     let response = yield axios.put(url, formData);
+    console.log(response);
 
     yield put(actions.updateSeriesSucceed(response.data.brand.series, response.data.success));
   } catch (error) {

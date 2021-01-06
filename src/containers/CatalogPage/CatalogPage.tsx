@@ -73,7 +73,11 @@ const CatalogPage: React.FC<Props> = ({
     <Menu>
       <Menu.Item
         onClick={() => {
-          updateSeriesForm.setFieldsValue({ brand_id: props.brandId, series_id: props.seriesId });
+          updateSeriesForm.setFieldsValue({
+            brand_id: props.brandId,
+            series_id: props.seriesId,
+            title: props.seriesTitle,
+          });
           let seriesModalContent = { ...modalContent };
           seriesModalContent.series.series_title = props.seriesTitle;
           setModalContent(seriesModalContent);
@@ -122,8 +126,12 @@ const CatalogPage: React.FC<Props> = ({
         ...showCreateModal,
         series: false,
       });
+      setShowUpdateModal({
+        ...showUpdateModal,
+        series: false,
+      });
     }
-  }, [createSeriesForm, onClearDashboardState, showCreateModal, successMessage]);
+  }, [createSeriesForm, onClearDashboardState, showUpdateModal, showCreateModal, successMessage]);
 
   useEffect(() => {
     if (successMessage) {
@@ -166,7 +174,7 @@ const CatalogPage: React.FC<Props> = ({
       <SeriesModal
         crud="update"
         indexKey={'series'}
-        antdForm={createSeriesForm}
+        antdForm={updateSeriesForm}
         loading={dashboardLoading !== undefined && dashboardLoading}
         showModal={showUpdateModal}
         onFinish={onUpdateSeriesFinish}
@@ -238,7 +246,7 @@ const CatalogPage: React.FC<Props> = ({
                                             <SeriesMenu
                                               seriesTitle={series.title}
                                               brandId={catalog.brand.id}
-                                              seriesId={9999999999999999999}
+                                              seriesId={series.id}
                                             />
                                           }
                                           trigger={['click']}

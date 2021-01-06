@@ -100,7 +100,7 @@
         height: 25rem;
       }
       @include respond-to($phone-only) {
-        height: 25vh;
+        height: 35rem;
       }
       @include respond-to($tablet-portrait-up) {
         height: 22rem;
