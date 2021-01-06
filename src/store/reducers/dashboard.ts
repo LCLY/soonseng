@@ -524,20 +524,21 @@ const updateSeriesFailed = (state: DashboardInitialState, action: AppActions) =>
 /* Delete Series  */
 /* -------------------------- */
 const deleteSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null });
+  return updateObject(state, { errorMessage: null, loading: true });
 };
 const deleteSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('seriesArray' in action) {
+  if ('seriesArray' in action && 'successMessage' in action) {
     return updateObject(state, {
-      errorMessage: null,
+      loading: false,
       seriesArray: action.seriesArray,
+      successMessage: action.successMessage,
     });
   }
   return state;
 };
 const deleteSeriesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage });
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
   return state;
 };

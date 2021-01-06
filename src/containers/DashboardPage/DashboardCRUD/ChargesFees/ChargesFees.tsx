@@ -6,7 +6,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
-import FeesModal from 'src/components/Modal/Fees/FeesModal';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -104,11 +104,17 @@ const ChargesFees: React.FC<Props> = ({
               type="link"
               className="make__brand-btn--edit"
               onClick={() => {
+                let formattedFeesPrice = null;
+                if (record.feesPrice === '-') {
+                  formattedFeesPrice = null;
+                } else {
+                  formattedFeesPrice = convertPriceToFloat(record.feesPrice);
+                }
                 // populate the accessory modal
                 updateFeesForm.setFieldsValue({
                   feesId: record.feesId,
                   feesTitle: record.feesTitle,
-                  feesPrice: convertPriceToFloat(record.feesPrice),
+                  feesPrice: formattedFeesPrice,
                 });
                 // show modal
                 setShowUpdateModal({ ...showUpdateModal, fees: true });
@@ -242,38 +248,42 @@ const ChargesFees: React.FC<Props> = ({
   return (
     <>
       {/* Modal*/}
-      <FeesModal
+      <CrudModal
+        category={'fees'}
         crud={'create'}
-        title={'Create Standard Charges and Fees'}
-        visible={showCreateModal.fees}
         indexKey={'fees'}
         antdForm={createFeesForm}
-        loading={loading !== undefined && loading}
         showModal={showCreateModal}
         onFinish={onCreateFeesFinish}
+        visible={showCreateModal.fees}
         setShowModal={setShowCreateModal}
-      />
-      <FeesModal
-        crud={'update'}
-        title={'Update Standard Fees and Charges'}
-        visible={showUpdateModal.fees}
-        indexKey={'fees'}
-        antdForm={updateFeesForm}
         loading={loading !== undefined && loading}
+        modalTitle={'Create Standard Charges and Fees'}
+      />
+      <CrudModal
+        category={'fees'}
+        crud={'update'}
+        indexKey={'fees'}
+        visible={showUpdateModal.fees}
+        antdForm={updateFeesForm}
         showModal={showUpdateModal}
         onFinish={onUpdateFeesFinish}
         setShowModal={setShowUpdateModal}
+        loading={loading !== undefined && loading}
+        modalTitle={'Update Standard Fees and Charges'}
       />
-      <FeesModal
+      <CrudModal
+        category={'fees'}
         crud={'delete'}
-        title={'Delete Standard Fees and Charges'}
         visible={showDeleteModal.fees}
         indexKey={'fees'}
-        loading={loading !== undefined && loading}
         showModal={showDeleteModal}
         onDelete={onDeleteFinish}
         setShowModal={setShowDeleteModal}
-        feesTitle={deleteModalContent.fees.feesTitle}
+        loading={loading !== undefined && loading}
+        modalTitle={'Delete Standard Fees and Charges'}
+        warningText={deleteModalContent.fees.feesTitle}
+        backupWarningText={'this standard charges / fees'}
       />
       <Layout>
         <NavbarComponent activePage="dashboard" />

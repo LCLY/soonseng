@@ -4,8 +4,8 @@ import './CatalogPage.scss';
 import Footer from 'src/components/Footer/Footer';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import SeriesModal from 'src/components/Modal/Series/SeriesModal';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -36,6 +36,7 @@ const CatalogPage: React.FC<Props> = ({
   dashboardLoading,
   catalogMakesArray,
   onCreateSeries,
+  onDeleteSeries,
   onUpdateSeries,
   onGetCatalogMakes,
   onClearDashboardState,
@@ -49,7 +50,13 @@ const CatalogPage: React.FC<Props> = ({
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
     series: false,
   });
+  const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
+    series: false,
+  });
   const [modalContent, setModalContent] = useState({ series: { brand_title: '', series_title: '' } });
+  const [deleteModalContent, setDeleteModalContent] = useState({
+    series: { brandId: -1, seriesId: -1, warningText: '', backupWarningText: 'this series' },
+  });
 
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
@@ -62,6 +69,9 @@ const CatalogPage: React.FC<Props> = ({
   };
   const onUpdateSeriesFinish = (values: { brand_id: number; series_id: number; title: string }) => {
     onUpdateSeries(values.brand_id, values.series_id, values.title);
+  };
+  const onDeleteSeriesFinish = () => {
+    onDeleteSeries(deleteModalContent.series.brandId, deleteModalContent.series.seriesId);
   };
 
   /* ================================================== */
@@ -85,7 +95,21 @@ const CatalogPage: React.FC<Props> = ({
         <i className="fas fa-edit" />
         &nbsp;Edit Series
       </Menu.Item>
-      <Menu.Item danger>
+      <Menu.Item
+        danger
+        onClick={() => {
+          setDeleteModalContent({
+            ...deleteModalContent,
+            series: {
+              brandId: props.brandId,
+              seriesId: props.seriesId,
+              warningText: props.seriesTitle,
+              backupWarningText: 'this series',
+            },
+          });
+          setShowDeleteModal({ ...showDeleteModal, series: true });
+        }}
+      >
         <i className="fas fa-trash-alt" /> &nbsp; Delete Series
       </Menu.Item>
     </Menu>
@@ -128,8 +152,12 @@ const CatalogPage: React.FC<Props> = ({
         ...showUpdateModal,
         series: false,
       });
+      setShowDeleteModal({
+        ...showDeleteModal,
+        series: false,
+      });
     }
-  }, [createSeriesForm, onClearDashboardState, showUpdateModal, showCreateModal, successMessage]);
+  }, [createSeriesForm, onClearDashboardState, showDeleteModal, showUpdateModal, showCreateModal, successMessage]);
 
   useEffect(() => {
     if (successMessage) {
@@ -157,28 +185,43 @@ const CatalogPage: React.FC<Props> = ({
     <>
       {/* Modals */}
 
-      <SeriesModal
-        crud="create"
+      <CrudModal
+        crud={'create'}
         indexKey={'series'}
+        category={'series'}
+        modalTitle={'Create Series'}
         antdForm={createSeriesForm}
-        loading={dashboardLoading !== undefined && dashboardLoading}
         showModal={showCreateModal}
-        onFinish={onCreateSeriesFinish}
         visible={showCreateModal.series}
+        onFinish={onCreateSeriesFinish}
         setShowModal={setShowCreateModal}
-        title={`Create Series for ${modalContent.series.brand_title}`}
+        loading={dashboardLoading !== undefined && dashboardLoading}
       />
 
-      <SeriesModal
-        crud="update"
+      <CrudModal
+        crud={'update'}
         indexKey={'series'}
+        category={'series'}
+        modalTitle={`Update Series - ${modalContent.series.series_title}`}
         antdForm={updateSeriesForm}
-        loading={dashboardLoading !== undefined && dashboardLoading}
         showModal={showUpdateModal}
-        onFinish={onUpdateSeriesFinish}
         visible={showUpdateModal.series}
+        onFinish={onUpdateSeriesFinish}
         setShowModal={setShowUpdateModal}
-        title={`Update for ${modalContent.series.series_title}`}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+      />
+      <CrudModal
+        crud={'delete'}
+        indexKey={'series'}
+        category={'series'}
+        modalTitle={`Delete Series`}
+        showModal={showDeleteModal}
+        visible={showDeleteModal.series}
+        onDelete={onDeleteSeriesFinish}
+        setShowModal={setShowDeleteModal}
+        warningText={deleteModalContent.series.warningText}
+        backupWarningText={deleteModalContent.series.backupWarningText}
+        loading={dashboardLoading !== undefined && dashboardLoading}
       />
 
       <NavbarComponent />
@@ -393,6 +436,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 interface DispatchProps {
   onCreateSeries: typeof actions.createSeries;
   onUpdateSeries: typeof actions.updateSeries;
+  onDeleteSeries: typeof actions.deleteSeries;
   onGetCatalogMakes: typeof actions.getCatalogMakes;
   onClearDashboardState: typeof actions.clearDashboardState;
 }
@@ -401,6 +445,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
     onGetCatalogMakes: (auth_token) => dispatch(actions.getCatalogMakes(auth_token)),
     onCreateSeries: (brand_id, title) => dispatch(actions.createSeries(brand_id, title)),
+    onDeleteSeries: (brand_id, series_id) => dispatch(actions.deleteSeries(brand_id, series_id)),
     onUpdateSeries: (brand_id, series_id, title) => dispatch(actions.updateSeries(brand_id, series_id, title)),
   };
 };

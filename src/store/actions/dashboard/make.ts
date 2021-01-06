@@ -449,9 +449,10 @@ export const updateSeriesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Delete Series (for make)
 /* ------------------ */
-export const deleteSeries = (series_id: number): AppActions => {
+export const deleteSeries = (brand_id: number, series_id: number): AppActions => {
   return {
     type: actionTypes.DELETE_SERIES,
+    brand_id: brand_id,
     series_id: series_id,
   };
 };

@@ -332,6 +332,7 @@ export interface UpdateSeriesFailedAction {
 /*  Api call */
 export interface DeleteSeriesAction {
   type: typeof actionTypes.DELETE_SERIES;
+  brand_id: number;
   series_id: number;
 }
 /*  States */
