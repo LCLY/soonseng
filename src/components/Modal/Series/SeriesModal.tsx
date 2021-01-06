@@ -3,6 +3,7 @@ import React from 'react';
 /* 3rd party lib */
 import { Form, Input, Modal } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
+import { handleKeyDown } from 'src/shared/Utils';
 
 interface SeriesModalProps {
   title: string;
@@ -41,16 +42,6 @@ const SeriesModal: React.FC<Props> = ({
   /* ================================================== */
   /*  method */
   /* ================================================== */
-  /**
-   * For user to be able to press enter and submit the form
-   * @param {React.KeyboardEvent<HTMLFormElement>} e
-   * @param {FormInstance<any>} form form instance created at initialization using useForm
-   */
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, formRef: FormInstance<any>) => {
-    if (e.key === 'Enter') {
-      formRef.submit();
-    }
-  };
 
   /* ================================================== */
   /* ================================================== */

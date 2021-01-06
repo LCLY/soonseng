@@ -107,6 +107,31 @@ export const DELETE_UPLOAD_IMAGE_FAILED = 'DELETE_UPLOAD_IMAGE_FAILED';
 
 /* ======================================================================================== */
 /* --------------------------------------------- */
+// Standard Charges and fees
+/* --------------------------------------------- */
+// Getting all Standard Charges and fees Fees
+export const GET_CHARGES_FEES = 'GET_CHARGES_FEES';
+export const GET_CHARGES_FEES_START = 'GET_CHARGES_FEES_START';
+export const GET_CHARGES_FEES_SUCCEED = 'GET_CHARGES_FEES_SUCCEED';
+export const GET_CHARGES_FEES_FAILED = 'GET_CHARGES_FEES_FAILED';
+// Create Standard Charges and fees Fees
+export const CREATE_CHARGES_FEES = 'CREATE_CHARGES_FEES';
+export const CREATE_CHARGES_FEES_START = 'CREATE_CHARGES_FEES_START';
+export const CREATE_CHARGES_FEES_SUCCEED = 'CREATE_CHARGES_FEES_SUCCEED';
+export const CREATE_CHARGES_FEES_FAILED = 'CREATE_CHARGES_FEES_FAILED';
+// Update Standard Charges and fees Fees
+export const UPDATE_CHARGES_FEES = 'UPDATE_CHARGES_FEES';
+export const UPDATE_CHARGES_FEES_START = 'UPDATE_CHARGES_FEES_START';
+export const UPDATE_CHARGES_FEES_SUCCEED = 'UPDATE_CHARGES_FEES_SUCCEED';
+export const UPDATE_CHARGES_FEES_FAILED = 'UPDATE_CHARGES_FEES_FAILED';
+// Delete Standard Charges and fees Fees
+export const DELETE_CHARGES_FEES = 'DELETE_CHARGES_FEES';
+export const DELETE_CHARGES_FEES_START = 'DELETE_CHARGES_FEES_START';
+export const DELETE_CHARGES_FEES_SUCCEED = 'DELETE_CHARGES_FEES_SUCCEED';
+export const DELETE_CHARGES_FEES_FAILED = 'DELETE_CHARGES_FEES_FAILED';
+
+/* ======================================================================================== */
+/* --------------------------------------------- */
 // Make Page - Brand
 /* --------------------------------------------- */
 // Getting all brands (head)

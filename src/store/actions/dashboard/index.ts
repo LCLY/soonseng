@@ -82,6 +82,28 @@ export const deleteUploadImageFailed = (errorMessage: string): AppActions => {
 
 export {
   /* ---------------- */
+  // Standard charges and fees
+  /* ---------------- */
+  getChargesFees,
+  getChargesFeesStart,
+  getChargesFeesFailed,
+  getChargesFeesSucceed,
+  createChargesFees,
+  createChargesFeesFailed,
+  createChargesFeesStart,
+  createChargesFeesSucceed,
+  updateChargesFees,
+  updateChargesFeesFailed,
+  updateChargesFeesStart,
+  updateChargesFeesSucceed,
+  deleteChargesFees,
+  deleteChargesFeesFailed,
+  deleteChargesFeesStart,
+  deleteChargesFeesSucceed,
+} from './fees';
+
+export {
+  /* ---------------- */
   // Brands
   /* ---------------- */
   getBrands,

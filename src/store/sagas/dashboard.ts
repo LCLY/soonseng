@@ -89,6 +89,111 @@ export function* deleteUploadImageSaga(action: AppActions) {
 }
 
 /* ================================================================== */
+//   Standard Charges and fees
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Get All fees
+/* ------------------------------- */
+export function* getChargesFeesSaga(_action: AppActions) {
+  yield put(actions.getChargesFeesStart());
+
+  let url = process.env.REACT_APP_API + `/products/standard_charges`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getChargesFeesSucceed(response.data.standard_charges));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getChargesFeesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getChargesFeesFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Create fees
+/* ------------------------------- */
+export function* createChargesFeesSaga(action: AppActions) {
+  yield put(actions.createChargesFeesStart());
+
+  let url = process.env.REACT_APP_API + `/products/standard_charges`;
+
+  let formData = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('title' in action && 'price' in action) {
+    formData = {
+      title: action.title,
+      price: action.price,
+    };
+  }
+  try {
+    let response = yield axios.post(url, formData);
+    yield put(actions.createChargesFeesSucceed(response.data.standard_charges, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createChargesFeesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createChargesFeesFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Update fees
+/* ------------------------------- */
+export function* updateChargesFeesSaga(action: AppActions) {
+  yield put(actions.updateChargesFeesStart());
+
+  let url = '';
+  if ('fee_id' in action) {
+    url = process.env.REACT_APP_API + `/products/standard_charges/${action.fee_id}`;
+  }
+
+  let formData = {};
+  // Type guard, check if the "key" exist in the action object
+  if ('title' in action && 'price' in action) {
+    formData = {
+      title: action.title,
+      price: action.price,
+    };
+  }
+  try {
+    let response = yield axios.put(url, formData);
+    yield put(actions.updateChargesFeesSucceed(response.data.standard_charges, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateChargesFeesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateChargesFeesFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete Fees
+/* ------------------------------- */
+export function* deleteChargesFeesSaga(action: AppActions) {
+  yield put(actions.deleteChargesFeesStart());
+
+  let url = '';
+  if ('fee_id' in action) {
+    url = process.env.REACT_APP_API + `/products/standard_charges/${action.fee_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteChargesFeesSucceed(response.data.standard_charges, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteChargesFeesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteChargesFeesFailed, 'Error');
+    }
+  }
+}
+
+/* ================================================================== */
 //   Brands (Make Page)(Head)
 /* ================================================================== */
 

@@ -61,8 +61,6 @@ const CatalogPage: React.FC<Props> = ({
     onCreateSeries(values.brand_id, values.title);
   };
   const onUpdateSeriesFinish = (values: { brand_id: number; series_id: number; title: string }) => {
-    console.log(values);
-    /* !!!!!!!!!!!!!!!!!!!!!!!!! CONTINUE HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!  */
     onUpdateSeries(values.brand_id, values.series_id, values.title);
   };
 

@@ -6,6 +6,9 @@ import { Reducer } from 'redux';
 
 const initialState: DashboardInitialState = {
   loading: false,
+  // fees
+  chargesFeesObj: null,
+  chargesFeesArray: null,
   // makes
   makeObj: null,
   makesArray: null,
@@ -102,6 +105,99 @@ const deleteUploadImageSucceed = (state: DashboardInitialState, action: AppActio
   return state;
 };
 const deleteUploadImageFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* ============================================================================================ */
+/* Fees 
+/* ============================================================================================ */
+/* -------------------------- */
+/* Create fees */
+/* -------------------------- */
+const createChargesFeesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createChargesFeesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'chargesFeesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      chargesFeesArray: action.chargesFeesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const createChargesFeesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get all fees  */
+/* -------------------------- */
+const getChargesFeesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getChargesFeesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('chargesFeesArray' in action) {
+    return updateObject(state, { errorMessage: null, loading: false, chargesFeesArray: action.chargesFeesArray });
+  }
+  return state;
+};
+const getChargesFeesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update fees  */
+/* -------------------------- */
+const updateChargesFeesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateChargesFeesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('chargesFeesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      chargesFeesArray: action.chargesFeesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const updateChargesFeesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* -------------------------- */
+/* Delete fees  */
+/* -------------------------- */
+const deleteChargesFeesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteChargesFeesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('chargesFeesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      chargesFeesArray: action.chargesFeesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteChargesFeesFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -1189,6 +1285,38 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return deleteUploadImageSucceed(state, action);
     case actionTypes.DELETE_UPLOAD_IMAGE_FAILED:
       return deleteUploadImageFailed(state, action);
+
+    /* =================================== */
+    // Standard charges and fees
+    /* =================================== */
+    // Get all fees
+    case actionTypes.GET_CHARGES_FEES_START:
+      return getChargesFeesStart(state, action);
+    case actionTypes.GET_CHARGES_FEES_SUCCEED:
+      return getChargesFeesSucceed(state, action);
+    case actionTypes.GET_CHARGES_FEES_FAILED:
+      return getChargesFeesFailed(state, action);
+    // Create fees
+    case actionTypes.CREATE_CHARGES_FEES_START:
+      return createChargesFeesStart(state, action);
+    case actionTypes.CREATE_CHARGES_FEES_SUCCEED:
+      return createChargesFeesSucceed(state, action);
+    case actionTypes.CREATE_CHARGES_FEES_FAILED:
+      return createChargesFeesFailed(state, action);
+    // Update fees
+    case actionTypes.UPDATE_CHARGES_FEES_START:
+      return updateChargesFeesStart(state, action);
+    case actionTypes.UPDATE_CHARGES_FEES_SUCCEED:
+      return updateChargesFeesSucceed(state, action);
+    case actionTypes.UPDATE_CHARGES_FEES_FAILED:
+      return updateChargesFeesFailed(state, action);
+    // Delete fees
+    case actionTypes.DELETE_CHARGES_FEES_START:
+      return deleteChargesFeesStart(state, action);
+    case actionTypes.DELETE_CHARGES_FEES_SUCCEED:
+      return deleteChargesFeesSucceed(state, action);
+    case actionTypes.DELETE_CHARGES_FEES_FAILED:
+      return deleteChargesFeesFailed(state, action);
 
     /* =================================== */
     // Brand (Make Page) (head)

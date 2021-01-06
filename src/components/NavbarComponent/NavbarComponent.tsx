@@ -189,6 +189,16 @@ const NavbarComponent: React.FC<Props> = ({
             Model with body
           </a>
         </Menu.Item>
+        <Menu.Item
+          key="fees"
+          onClick={() => {
+            setDropdownVisible(false);
+          }}
+        >
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.fees}>
+            Processing Fees
+          </a>
+        </Menu.Item>
       </Menu>
     </div>
   );

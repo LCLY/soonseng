@@ -1846,7 +1846,6 @@ const Make: React.FC<Props> = ({
       if (brand.available) {
         tempArray.push({
           key: uuidv4(),
-
           brandId: brand.id,
           brandTitle: brand.title,
           brandDescription: descriptionIsNullOrEmpty ? '-' : brand.description,

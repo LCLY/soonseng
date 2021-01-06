@@ -20,6 +20,7 @@ import Make from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
 import Body from 'src/containers/DashboardPage/DashboardCRUD/Body/Body';
 import BodyMake from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
 import Accessory from 'src/containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
+import ChargesFees from './containers/DashboardPage/DashboardCRUD/ChargesFees/ChargesFees';
 // 3rd party lib
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
@@ -84,12 +85,13 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
         <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
-        {/* dashboard */}
-        <Route exact path={ROUTE_DASHBOARD.main} component={DashboardPage} />
+        {/* Dashboard */}
         <Route exact path={ROUTE_DASHBOARD.make} component={Make} />
         <Route exact path={ROUTE_DASHBOARD.body} component={Body} />
         <Route exact path={ROUTE_DASHBOARD.body_make} component={BodyMake} />
         <Route exact path={ROUTE_DASHBOARD.accessory} component={Accessory} />
+        <Route exact path={ROUTE_DASHBOARD.fees} component={ChargesFees} />
+        <Route exact path={ROUTE_DASHBOARD.main} component={DashboardPage} />
         {/* authentication */}
         <Route exact path={ROUTE_LOGIN} component={LoginPage} />
         <Route exact path={ROUTE_LOGOUT} component={Logout} />

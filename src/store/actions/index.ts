@@ -52,6 +52,25 @@ export {
   deleteUploadImageFailed,
   deleteUploadImageSucceed,
   /* =========================================== */
+  //  Standard Charges and Fees
+  /* =========================================== */
+  createChargesFees,
+  createChargesFeesFailed,
+  createChargesFeesStart,
+  createChargesFeesSucceed,
+  getChargesFees,
+  getChargesFeesFailed,
+  getChargesFeesStart,
+  getChargesFeesSucceed,
+  updateChargesFees,
+  updateChargesFeesSucceed,
+  updateChargesFeesStart,
+  updateChargesFeesFailed,
+  deleteChargesFees,
+  deleteChargesFeesSucceed,
+  deleteChargesFeesStart,
+  deleteChargesFeesFailed,
+  /* =========================================== */
   //  Brand (Make Page)
   /* =========================================== */
   createBrand,

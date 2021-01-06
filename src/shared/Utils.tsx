@@ -409,6 +409,19 @@ export const zeroWhenUndefinedOrNull = (incomingNumber: number): number => {
   return incomingNumber;
 };
 
+/* ========================================== */
+/*
+ * For user to be able to press enter and submit the form
+ * @param {React.KeyboardEvent<HTMLFormElement>} e
+ * @param {FormInstance<any>} form form instance created at initialization using useForm
+ */
+/* ========================================== */
+export const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, formRef: FormInstance<any>) => {
+  if (e.key === 'Enter') {
+    formRef.submit();
+  }
+};
+
 /* ============================================================================= */
 /* ============================================================================= */
 /* ============================================================================= */

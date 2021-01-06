@@ -64,6 +64,11 @@ import {
   createAccessorySaga,
   getAccessoriesSaga,
   updateAccessorySaga,
+  // charges and fees
+  createChargesFeesSaga,
+  getChargesFeesSaga,
+  updateChargesFeesSaga,
+  deleteChargesFeesSaga,
 } from './dashboard';
 
 import {
@@ -101,6 +106,11 @@ export function* watchDashboard() {
   // Upload Images
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPLOAD_IMAGE, uploadImageSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_UPLOAD_IMAGE, deleteUploadImageSaga)]);
+  // Fees
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_CHARGES_FEES, createChargesFeesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_CHARGES_FEES, getChargesFeesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_CHARGES_FEES, updateChargesFeesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_CHARGES_FEES, deleteChargesFeesSaga)]);
   // Brand
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_BRAND, createBrandSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_BRANDS, getBrandsSaga)]);

@@ -1,6 +1,24 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 // Central hub for all the types and actionTypes
 import {
+  CreateChargesFeesAction,
+  CreateChargesFeesFailedAction,
+  CreateChargesFeesStartAction,
+  CreateChargesFeesSucceedAction,
+  DeleteChargesFeesAction,
+  DeleteChargesFeesFailedAction,
+  DeleteChargesFeesStartAction,
+  DeleteChargesFeesSucceedAction,
+  GetChargesFeesAction,
+  GetChargesFeesFailedAction,
+  GetChargesFeesStartAction,
+  GetChargesFeesSucceedAction,
+  UpdateChargesFeesAction,
+  UpdateChargesFeesFailedAction,
+  UpdateChargesFeesStartAction,
+  UpdateChargesFeesSucceedAction,
+} from 'src/store/types/dashboard/fees';
+import {
   // Length
   CreateLengthAction,
   CreateLengthStartAction,
@@ -206,6 +224,9 @@ export interface DashboardInitialState {
   readonly loading?: boolean;
   readonly errorMessage?: string | null;
   readonly successMessage?: string | null;
+  // charges fees
+  readonly chargesFeesObj?: TReceivedChargesFeesObj | null;
+  readonly chargesFeesArray?: TReceivedChargesFeesObj[] | null;
   // make
   readonly makeObj?: TReceivedMakeObj | null;
   readonly makesArray?: TReceivedMakeObj[] | null;
@@ -324,6 +345,12 @@ export interface DeleteUploadImageFailedAction {
 }
 
 // All the general types used by the actions
+
+/* =============================================================================================== */
+// Standard Charges and Fees
+/* =============================================================================================== */
+// type
+export type TReceivedChargesFeesObj = { id: number; title: string; price: number; available: boolean };
 
 /* =============================================================================================== */
 //  Length
@@ -578,9 +605,28 @@ export type DashboardActionTypes =
   | DeleteUploadImageStartAction
   | DeleteUploadImageSucceedAction
   | DeleteUploadImageFailedAction
-  /* ======================================================================= */
+  /* ======================================================================== */
+  // Standard Charges and fees
+  /* ====================================================================== */
+  | CreateChargesFeesAction
+  | CreateChargesFeesFailedAction
+  | CreateChargesFeesStartAction
+  | CreateChargesFeesSucceedAction
+  | DeleteChargesFeesAction
+  | DeleteChargesFeesFailedAction
+  | DeleteChargesFeesStartAction
+  | DeleteChargesFeesSucceedAction
+  | GetChargesFeesAction
+  | GetChargesFeesFailedAction
+  | GetChargesFeesStartAction
+  | GetChargesFeesSucceedAction
+  | UpdateChargesFeesAction
+  | UpdateChargesFeesFailedAction
+  | UpdateChargesFeesStartAction
+  | UpdateChargesFeesSucceedAction
+  /* ======================================================================== */
   // Brand (Make Page)
-  /* ======================================================================= */
+  /* ====================================================================== */
   | GetBrandsAction
   | GetBrandsStartAction
   | GetBrandsSucceedAction
