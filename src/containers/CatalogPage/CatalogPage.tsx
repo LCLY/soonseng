@@ -7,6 +7,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import CrudModal from 'src/components/Modal/Crud/CrudModal';
 /*3rd party lib*/
+import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
@@ -15,13 +16,15 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Empty, Form, Skeleton, notification, Menu, Dropdown } from 'antd';
 
 /* Util */
-import holy5trucks from 'src/img/5trucks.jpg';
 import { RootState } from 'src';
+import holy5trucks from 'src/img/5trucks.jpg';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
-import { convertSpaceInStringWithChar } from 'src/shared/Utils';
-import { TReceivedCatalogMakeObj } from 'src/store/types/catalog';
 import { TUserAccess } from 'src/store/types/auth';
+import { TReceivedCatalogMakeObj } from 'src/store/types/catalog';
+import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
+import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
+import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
 interface CatalogPageProps {}
 
@@ -38,6 +41,8 @@ const CatalogPage: React.FC<Props> = ({
   onCreateSeries,
   onDeleteSeries,
   onUpdateSeries,
+  onCreateMake,
+  onUpdateMake,
   onGetCatalogMakes,
   onClearDashboardState,
 }) => {
@@ -46,24 +51,45 @@ const CatalogPage: React.FC<Props> = ({
   /* ================================================== */
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
     series: false,
+    make: false,
   });
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
     series: false,
+    make: false,
   });
   const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
     series: false,
+    make: false,
   });
-  const [modalContent, setModalContent] = useState({ series: { brand_title: '', series_title: '' } });
+  const [modalContent, setModalContent] = useState({
+    make: { make_title: '' },
+    series: { brand_title: '', series_title: '' },
+  });
   const [deleteModalContent, setDeleteModalContent] = useState({
     series: { brandId: -1, seriesId: -1, warningText: '', backupWarningText: 'this series' },
+    make: { makeId: -1, seriesId: -1, warningText: '', backupWarningText: 'this model' },
   });
 
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
+  const [createMakeForm] = Form.useForm();
+  const [updateMakeForm] = Form.useForm();
+
+  /* ======================== */
+  /*   Image related states   */
+  /* ======================== */
+  // Upload states
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  // state to store temporary images before user uploads
+  const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
 
+  /* ---------------- */
+  //  Series
+  /* ---------------- */
   const onCreateSeriesFinish = (values: { brand_id: number; title: string }) => {
     onCreateSeries(values.brand_id, values.title);
   };
@@ -72,6 +98,67 @@ const CatalogPage: React.FC<Props> = ({
   };
   const onDeleteSeriesFinish = () => {
     onDeleteSeries(deleteModalContent.series.brandId, deleteModalContent.series.seriesId);
+  };
+  /* ---------------- */
+  //  Make
+  /* ---------------- */
+  // Create Make
+  const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
+    // package the object
+    let createMakeData: TCreateMakeData = {
+      title: values.title,
+      brand_id: values.makeBrandId,
+      series_id: values.makeSeriesId,
+      tire: emptyStringWhenUndefinedOrNull(values.makeTire),
+      horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
+      year: emptyStringWhenUndefinedOrNull(moment(values.year).format('YYYY').toString()), //convert to year
+      transmission: emptyStringWhenUndefinedOrNull(values.transmission),
+      engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
+      gvw: emptyStringWhenUndefinedOrNull(values.gvw),
+      abs: emptyStringWhenUndefinedOrNull(values.abs),
+      torque: emptyStringWhenUndefinedOrNull(values.torque),
+      config: emptyStringWhenUndefinedOrNull(values.config),
+      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      price: convertPriceToFloat(values.price),
+    };
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateMake(createMakeData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateMake(createMakeData, null, null); //call create make api
+    }
+  };
+
+  // Update Make
+  const onUpdateMakeFinish = (values: TUpdateMakeFinishValues) => {
+    // package the object
+    let updateMakeData: TUpdateMakeData = {
+      make_id: values.makeId,
+      title: values.title,
+      brand_id: values.makeBrandId,
+      series_id: values.makeSeriesId,
+      price: convertPriceToFloat(values.price),
+      gvw: emptyStringWhenUndefinedOrNull(values.gvw),
+      abs: emptyStringWhenUndefinedOrNull(values.abs),
+      torque: emptyStringWhenUndefinedOrNull(values.torque),
+      tire: emptyStringWhenUndefinedOrNull(values.makeTire),
+      config: emptyStringWhenUndefinedOrNull(values.config),
+      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
+      transmission: emptyStringWhenUndefinedOrNull(values.transmission),
+      engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
+      year: emptyStringWhenUndefinedOrNull(moment(values.year).format('YYYY').toString()),
+    };
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateMake(updateMakeData, null, null);
+    }
   };
 
   /* ================================================== */
@@ -115,6 +202,56 @@ const CatalogPage: React.FC<Props> = ({
     </Menu>
   );
 
+  const MakeMenu = (props: { makeObj: TReceivedMakeObj; seriesObj: TReceivedSeriesObj }) => (
+    <Menu>
+      <Menu.Item
+        onClick={() => {
+          updateMakeForm.setFieldsValue({
+            makeId: props.makeObj.id,
+            gvw: props.makeObj.gvw,
+            price: props.makeObj.price,
+            title: props.makeObj.title,
+            makeAbs: props.makeObj.abs,
+            makeTire: props.makeObj.tire,
+            makeTorque: props.makeObj.torque,
+            makeConfig: props.makeObj.config,
+            makeSeriesId: props.seriesObj.id,
+            makeBrandId: props.makeObj.brand.id,
+            horsepower: props.makeObj.horsepower,
+            engine_cap: props.makeObj.engine_cap,
+            makeEmission: props.makeObj.emission,
+            transmission: props.makeObj.transmission,
+            year: props.makeObj.year ? moment(props.makeObj.year) : null,
+          });
+          let makeModalContent = { ...modalContent };
+          makeModalContent.make.make_title = props.makeObj.title;
+          setModalContent(makeModalContent);
+          setShowUpdateModal({ ...showUpdateModal, make: true });
+        }}
+      >
+        <i className="fas fa-edit" />
+        &nbsp;Edit Model
+      </Menu.Item>
+      <Menu.Item
+        danger
+        onClick={() => {
+          setDeleteModalContent({
+            ...deleteModalContent,
+            make: {
+              makeId: props.makeObj.id,
+              seriesId: props.seriesObj.id,
+              warningText: props.makeObj.title,
+              backupWarningText: 'this model',
+            },
+          });
+          setShowDeleteModal({ ...showDeleteModal, series: true });
+        }}
+      >
+        <i className="fas fa-trash-alt" /> &nbsp; Delete Model
+      </Menu.Item>
+    </Menu>
+  );
+
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
@@ -142,22 +279,34 @@ const CatalogPage: React.FC<Props> = ({
       onClearDashboardState();
       // clear the form inputs using the form reference
       createSeriesForm.resetFields();
+      createMakeForm.resetFields();
 
       // close all the modals if successful
       setShowCreateModal({
         ...showCreateModal,
         series: false,
+        make: false,
       });
       setShowUpdateModal({
         ...showUpdateModal,
         series: false,
+        make: false,
       });
       setShowDeleteModal({
         ...showDeleteModal,
         series: false,
+        make: false,
       });
     }
-  }, [createSeriesForm, onClearDashboardState, showDeleteModal, showUpdateModal, showCreateModal, successMessage]);
+  }, [
+    successMessage,
+    showDeleteModal,
+    showUpdateModal,
+    showCreateModal,
+    createMakeForm,
+    createSeriesForm,
+    onClearDashboardState,
+  ]);
 
   useEffect(() => {
     if (successMessage) {
@@ -185,6 +334,9 @@ const CatalogPage: React.FC<Props> = ({
     <>
       {/* Modals */}
 
+      {/* -------------------------------- */}
+      {/* Series */}
+      {/* -------------------------------- */}
       <CrudModal
         crud={'create'}
         indexKey={'series'}
@@ -221,6 +373,43 @@ const CatalogPage: React.FC<Props> = ({
         setShowModal={setShowDeleteModal}
         warningText={deleteModalContent.series.warningText}
         backupWarningText={deleteModalContent.series.backupWarningText}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+      />
+
+      {/* -------------------------------- */}
+      {/* Model/Make */}
+      {/* -------------------------------- */}
+      <CrudModal
+        crud={'create'}
+        indexKey={'make'}
+        category={'make'}
+        modalWidth={800}
+        modalTitle={'Create Model'}
+        antdForm={createMakeForm}
+        showModal={showCreateModal}
+        visible={showCreateModal.make}
+        onFinish={onCreateMakeFinish}
+        setShowModal={setShowCreateModal}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+      />
+
+      <CrudModal
+        crud={'update'}
+        indexKey={'make'}
+        category={'make'}
+        modalWidth={800}
+        modalTitle={'Update Model'}
+        antdForm={updateMakeForm}
+        showModal={showUpdateModal}
+        visible={showUpdateModal.make}
+        onFinish={onUpdateMakeFinish}
+        setShowModal={setShowUpdateModal}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+        setUploadSelectedFiles={setUploadSelectedFiles}
         loading={dashboardLoading !== undefined && dashboardLoading}
       />
 
@@ -295,6 +484,18 @@ const CatalogPage: React.FC<Props> = ({
                                           <i className="fas fa-cogs" />
                                         </Dropdown>
                                       </div>
+
+                                      <div
+                                        className="catalog__button-series"
+                                        onClick={() => {
+                                          createMakeForm.setFieldsValue({ makeSeriesId: series.id });
+                                          // show the modal
+                                          setShowCreateModal({ ...showCreateModal, make: true });
+                                        }}
+                                      >
+                                        <PlusCircleOutlined className="catalog__button-icon" />
+                                        Add Model
+                                      </div>
                                     </div>
                                     <div className="catalog__section-series-innerdiv">
                                       {series.makes.length > 0 ? (
@@ -308,25 +509,35 @@ const CatalogPage: React.FC<Props> = ({
                                               series.title,
                                               '',
                                             )}-${convertSpaceInStringWithChar(make.title, '')}`;
-                                            return (
-                                              <div
-                                                key={uuidv4()}
-                                                className="catalog__card"
-                                                onClick={() =>
-                                                  history.push(`${ROUTE_CATALOG}/${model_detail}/${make.id}`)
-                                                }
-                                              >
-                                                {make.images.length > 0 ? (
-                                                  <img
-                                                    className="catalog__card-image"
-                                                    src={make.images[0].url}
-                                                    alt={make.images[0].filename}
-                                                  />
-                                                ) : (
-                                                  <Skeleton.Image className="catalog__card-image" />
-                                                )}
 
-                                                <div className="catalog__card-label">{make.title}</div>
+                                            return (
+                                              <div key={uuidv4()} className="catalog__card-outerdiv">
+                                                <div
+                                                  className="catalog__card"
+                                                  onClick={() =>
+                                                    history.push(`${ROUTE_CATALOG}/${model_detail}/${make.id}`)
+                                                  }
+                                                >
+                                                  {make.images.length > 0 ? (
+                                                    <img
+                                                      className="catalog__card-image"
+                                                      src={make.images[0].url}
+                                                      alt={make.images[0].filename}
+                                                    />
+                                                  ) : (
+                                                    <Skeleton.Image className="catalog__card-image" />
+                                                  )}
+                                                  <div className="catalog__card-label">{make.title}</div>
+                                                </div>
+                                                <Dropdown
+                                                  className="catalog__dropdown-series catalog__dropdown-series--make"
+                                                  overlay={<MakeMenu makeObj={make} seriesObj={series} />}
+                                                  trigger={['click']}
+                                                >
+                                                  {/* <i className="fas fa-caret-down"></i> */}
+                                                  <i className="fas fa-ellipsis-h"></i>
+                                                  {/* <i className="fas fa-cog"></i> */}
+                                                </Dropdown>
                                               </div>
                                             );
                                           })}
@@ -377,8 +588,6 @@ const CatalogPage: React.FC<Props> = ({
                                                   ) : (
                                                     <Skeleton.Image className="catalog__card-image" />
                                                   )}
-
-                                                  <div className="catalog__card-label">{make.title}</div>
                                                 </div>
                                               );
                                             })}
@@ -434,6 +643,8 @@ const mapStateToProps = (state: RootState): StateProps | void => {
   };
 };
 interface DispatchProps {
+  onCreateMake: typeof actions.createMake;
+  onUpdateMake: typeof actions.updateMake;
   onCreateSeries: typeof actions.createSeries;
   onUpdateSeries: typeof actions.updateSeries;
   onDeleteSeries: typeof actions.deleteSeries;
@@ -442,6 +653,10 @@ interface DispatchProps {
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
+    onCreateMake: (createMakeData, imageTag, uploadSelectedFiles) =>
+      dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
+    onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
+      dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
     onGetCatalogMakes: (auth_token) => dispatch(actions.getCatalogMakes(auth_token)),
     onCreateSeries: (brand_id, title) => dispatch(actions.createSeries(brand_id, title)),

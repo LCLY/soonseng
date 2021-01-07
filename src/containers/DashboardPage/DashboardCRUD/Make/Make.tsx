@@ -115,6 +115,43 @@ type TDeleteModalContent = {
   brand: { brand_id: number; brand_title: string };
 };
 
+// Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
+export type TCreateMakeFinishValues = {
+  makeBrandId: number;
+  makeSeriesId: number;
+  title: string;
+  makeTire: string;
+  horsepower: string;
+  year: string;
+  transmission: string;
+  engine_cap: string;
+  gvw: string;
+  abs: string;
+  torque: string;
+  config: string;
+  emission: string;
+  price: string;
+  imageTag: string;
+};
+export type TUpdateMakeFinishValues = {
+  makeId: number;
+  makeBrandId: number;
+  makeSeriesId: number;
+  title: string;
+  makeTire: string;
+  horsepower: string;
+  year: string;
+  transmission: string;
+  engine_cap: string;
+  gvw: string;
+  abs: string;
+  torque: string;
+  config: string;
+  emission: string;
+  price: string;
+  imageTag: string;
+};
+
 type Props = MakeProps & StateProps & DispatchProps;
 
 const Make: React.FC<Props> = ({
@@ -443,7 +480,7 @@ const Make: React.FC<Props> = ({
                 type="link"
                 onClick={() => {
                   // populate the editModalForm
-                  onPopulateupdateMakeModal(record);
+                  onPopulateUpdateMakeModal(record);
                   // show modal
                   setShowUpdateModal({ ...showUpdateModal, make: true });
                 }}
@@ -547,7 +584,7 @@ const Make: React.FC<Props> = ({
    * and then reformat the important information and pass into the current modal / form
    * @param {*} record
    */
-  const onPopulateupdateMakeModal = (record: TMakeTableState) => {
+  const onPopulateUpdateMakeModal = (record: TMakeTableState) => {
     // update the form value using the 'name' attribute as target/key
     // e.g. record.length = ("10 ' 11 '' ")-> splitting using " '" so we will get ["100"," 11","' "]
     let extractedHorsepower = '';
@@ -658,42 +695,6 @@ const Make: React.FC<Props> = ({
   /* ===================================== */
   // Make
   /* ===================================== */
-  // Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
-  type TCreateMakeFinishValues = {
-    makeBrandId: number;
-    makeSeriesId: number;
-    title: string;
-    makeTire: string;
-    horsepower: string;
-    year: string;
-    transmission: string;
-    engine_cap: string;
-    gvw: string;
-    abs: string;
-    torque: string;
-    config: string;
-    emission: string;
-    price: string;
-    imageTag: string;
-  };
-  type TUpdateMakeFinishValues = {
-    makeId: number;
-    makeBrandId: number;
-    makeSeriesId: number;
-    title: string;
-    makeTire: string;
-    horsepower: string;
-    year: string;
-    transmission: string;
-    engine_cap: string;
-    gvw: string;
-    abs: string;
-    torque: string;
-    config: string;
-    emission: string;
-    price: string;
-    imageTag: string;
-  };
 
   // Create Make
   const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
@@ -889,7 +890,7 @@ const Make: React.FC<Props> = ({
           setShowEditImageGallery={setShowEditImageGallery}
           onPopulateEditModal={(record) => {
             if ('makeImages' in record && 'makeId' in record) {
-              onPopulateupdateMakeModal(record);
+              onPopulateUpdateMakeModal(record);
             } else if ('brandImages' in record && 'brandId' in record) {
               onPopulateUpdateBrandModal(record);
             }

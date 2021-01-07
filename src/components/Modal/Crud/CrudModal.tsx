@@ -1,16 +1,17 @@
 import React from 'react';
 /* components */
+import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
+import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
+import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
 /* 3rd party lib */
-import { Form, Input, Modal } from 'antd';
+import { Modal } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-/* Util */
-import { handleKeyDown } from 'src/shared/Utils';
-import NumberFormat from 'react-number-format';
 
-interface CrudModalProps {
+interface CrudModalProps extends ICategory {
   /** The title of the modal on top  */
   modalTitle: string;
+  modalWidth?: number;
   /** To show or hide the modal  */
   visible: boolean;
   /** for spinner of the modal to show loading  */
@@ -35,12 +36,21 @@ interface CrudModalProps {
   onFinish?: (values: any) => void;
   /** onDelete method when user is deleting*/
   onDelete?: () => void;
-  /** crud method*/
+  /** setState action to set the selected files to upload*/
+  setUploadSelectedFiles?: React.Dispatch<React.SetStateAction<FileList | null | undefined>>;
+  /** url for preview images */
+  imagesPreviewUrls?: string[];
+  /** set action for image preview urls */
+  setImagesPreviewUrls?: React.Dispatch<React.SetStateAction<string[]>>;
+  /** crud method - create | update | delete */
   crud: 'create' | 'update' | 'delete';
-  /** Categories - e.g. make, body, wheelbase......*/
-  category: 'fees' | 'series';
 }
 type Props = CrudModalProps;
+
+/** Categories - e.g. make, body, wheelbase......*/
+export interface ICategory {
+  category: 'fees' | 'series' | 'make' | 'body' | 'make_wheelbase' | 'body_make';
+}
 
 const CrudModal: React.FC<Props> = ({
   crud,
@@ -51,99 +61,16 @@ const CrudModal: React.FC<Props> = ({
   antdForm,
   loading,
   showModal,
+  warningText,
+  modalWidth = 520,
+  imagesPreviewUrls,
+  backupWarningText = 'this item',
   onFinish,
   onDelete,
   setShowModal,
-  warningText,
-  backupWarningText = 'this item',
+  setImagesPreviewUrls,
+  setUploadSelectedFiles,
 }) => {
-  /* ================================================== */
-  /*  component */
-  /* ================================================== */
-
-  let formItems = null;
-
-  /* ================================================================================================ */
-  //  FEES form items
-  /* ================================================================================================ */
-  if (category === 'fees') {
-    formItems = (
-      <>
-        {/* The rest of the form items */}
-        <Form.Item
-          className="make__form-item"
-          label="Title"
-          name="feesTitle"
-          rules={[{ required: true, message: 'Input fees title here!' }]}
-        >
-          <Input placeholder="Type fees title here" />
-        </Form.Item>
-        <Form.Item
-          className="make__form-item"
-          label="Price"
-          name="feesPrice"
-          rules={[{ required: true, message: 'Input fees price here!' }]}
-        >
-          <NumberFormat
-            placeholder="Type fees price here"
-            className="ant-input"
-            thousandSeparator={true}
-            prefix={'RM '}
-          />
-        </Form.Item>
-        {crud === 'update' && (
-          <>
-            <Form.Item hidden name="feesId" rules={[{ required: true }]}>
-              <Input />
-            </Form.Item>
-          </>
-        )}
-      </>
-    );
-  }
-
-  /* ================================================================================================ */
-  //  SERIES form items
-  /* ================================================================================================ */
-  if (category === 'series') {
-    formItems = (
-      <>
-        {/* the content within the modal */}
-        <Form
-          form={antdForm}
-          // name="createBrand"
-          onKeyDown={(e) => {
-            if (antdForm !== undefined) handleKeyDown(e, antdForm);
-          }}
-          onFinish={(values) => {
-            if (onFinish !== undefined) onFinish(values);
-          }}
-        >
-          {/* The rest of the form items */}
-          <Form.Item
-            className="make__form-item"
-            label="Title"
-            name="title"
-            rules={[{ required: true, message: 'Input series title here!' }]}
-          >
-            <Input placeholder="Type series title here" />
-          </Form.Item>
-
-          {/* Getting the brand id */}
-          <Form.Item hidden name="brand_id" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-
-          {crud === 'update' && (
-            <Form.Item hidden name="series_id" rules={[{ required: true }]}>
-              <Input />
-            </Form.Item>
-          )}
-        </Form>
-      </>
-    );
-  }
-
   /* ================================================== */
   /* ================================================== */
   return (
@@ -153,7 +80,7 @@ const CrudModal: React.FC<Props> = ({
           title={
             <div className="dashboard__delete-header">
               <ExclamationCircleOutlined className="dashboard__delete-icon" />
-              Delete Standard Charges and Fees
+              {modalTitle}
             </div>
           }
           visible={visible}
@@ -181,6 +108,7 @@ const CrudModal: React.FC<Props> = ({
         <Modal
           className="catalog__modal"
           centered
+          width={modalWidth}
           title={modalTitle}
           visible={visible}
           onOk={() => {
@@ -194,22 +122,34 @@ const CrudModal: React.FC<Props> = ({
             if (crud === 'create') {
               antdForm.resetFields();
             }
+            if (setImagesPreviewUrls !== undefined) {
+              setImagesPreviewUrls([]); //clear the image preview when oncancel
+            }
             setShowModal({ ...showModal, [indexKey]: false }); //close modal on cancel
           }}
         >
           {/* the content within the modal */}
-          <Form
-            form={antdForm}
-            // name="createBrand"
-            onKeyDown={(e) => {
-              if (antdForm !== undefined) handleKeyDown(e, antdForm);
-            }}
-            onFinish={(values) => {
-              if (onFinish !== undefined) onFinish(values);
-            }}
-          >
-            {formItems}
-          </Form>
+          {category === 'fees' && antdForm !== undefined && onFinish !== undefined && (
+            <FeesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'series' && antdForm !== undefined && onFinish !== undefined && (
+            <SeriesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'make' &&
+            antdForm !== undefined &&
+            onFinish !== undefined &&
+            imagesPreviewUrls !== undefined &&
+            setImagesPreviewUrls !== undefined &&
+            setUploadSelectedFiles !== undefined && (
+              <MakeFormItems
+                crud={crud}
+                antdForm={antdForm}
+                onFinish={onFinish}
+                imagesPreviewUrls={imagesPreviewUrls}
+                setImagesPreviewUrls={setImagesPreviewUrls}
+                setUploadSelectedFiles={setUploadSelectedFiles}
+              />
+            )}
         </Modal>
       )}
     </>
