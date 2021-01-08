@@ -446,6 +446,29 @@ const updateMakeFailed = (state: DashboardInitialState, action: AppActions) => {
   }
   return state;
 };
+/* -------------------------- */
+/* Delete Make  */
+/* -------------------------- */
+const deleteMakeStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteMakeSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'makesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      makesArray: action.makesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteMakeFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 /*  Series (Make Page) */
@@ -1399,6 +1422,13 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return updateMakeSucceed(state, action);
     case actionTypes.UPDATE_MAKE_FAILED:
       return updateMakeFailed(state, action);
+    // Delete make (head)
+    case actionTypes.DELETE_MAKE_START:
+      return deleteMakeStart(state, action);
+    case actionTypes.DELETE_MAKE_SUCCEED:
+      return deleteMakeSucceed(state, action);
+    case actionTypes.DELETE_MAKE_FAILED:
+      return deleteMakeFailed(state, action);
 
     /* =================================== */
     // Series (Make Page) (head)

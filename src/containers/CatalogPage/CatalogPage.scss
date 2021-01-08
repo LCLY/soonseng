@@ -409,6 +409,9 @@
       border-left: 0.5rem solid $primary-color-2;
       background: white;
       color: $primary-color-4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       @include respond-to($small-phone) {
         font-size: 2rem;
@@ -423,6 +426,12 @@
       }
       @include respond-to($tablet-landscape-up) {
         padding: 0.5rem 4rem 0.3rem 4rem;
+        display: inline-block;
+        max-width: 25vw;
+      }
+      @include respond-to($desktop-up) {
+        padding: 0.5rem 4rem 0.3rem 4rem;
+        max-width: none;
       }
 
       /* ------------------------------------------------------ */
@@ -491,13 +500,19 @@
   /* ========================== */
   &__button {
     &-series {
+      display: flex;
+      align-items: center;
       padding: 0.5rem 2rem;
       user-select: none;
       color: white;
       font-size: 2rem;
-      font-family: $font-firesans;
+      font-family: $font-pragati;
       cursor: pointer;
       border: 1px solid white;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
       @include glassMorph(rgba(162, 162, 162, 0.289), 20px, rgba(182, 182, 182, 0.473), 0.5rem);
 
       &:hover {
@@ -526,6 +541,18 @@
 
     &-icon {
       margin-right: 1rem;
+
+      &--make {
+        @include respond-to($tablet-portrait-up) {
+          margin-right: 0;
+        }
+        @include respond-to($tablet-landscape-up) {
+          margin-right: 0;
+        }
+        @include respond-to($desktop-up) {
+          margin-right: 1rem;
+        }
+      }
     }
 
     /* --------------------- */
@@ -542,6 +569,18 @@
         top: 0;
         position: absolute;
         color: white;
+      }
+    }
+
+    &-title {
+      @include respond-to($tablet-portrait-up) {
+        display: flex;
+      }
+      @include respond-to($tablet-landscape-up) {
+        display: none;
+      }
+      @include respond-to($desktop-up) {
+        display: block;
       }
     }
   }
@@ -578,13 +617,27 @@
         background: white;
       }
 
+      /* ----------------------------------------------- */
+      // variation of the dropdown for each make card
+      /* ----------------------------------------------- */
       &--make {
         position: absolute;
         top: 1rem;
         right: 1rem;
         z-index: 2;
-        background: darken($primary-color-3, 5%);
-        color: white;
+        background: white;
+        color: $primary-color-4;
+
+        &:hover {
+          transition: all 0.5s ease;
+          border: 1px solid white;
+          color: white;
+          background: darken($primary-color-3, 5%);
+        }
+        &:active {
+          transition: none;
+          background: $primary-color-2;
+        }
       }
     }
   }

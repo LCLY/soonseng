@@ -201,6 +201,12 @@ export const UPDATE_MAKE_START = 'UPDATE_MAKE_START';
 export const UPDATE_MAKE_SUCCEED = 'UPDATE_MAKE_SUCCEED';
 export const UPDATE_MAKE_FAILED = 'UPDATE_MAKE_FAILED';
 
+// Delete Make (head)
+export const DELETE_MAKE = 'DELETE_MAKE';
+export const DELETE_MAKE_START = 'DELETE_MAKE_START';
+export const DELETE_MAKE_SUCCEED = 'DELETE_MAKE_SUCCEED';
+export const DELETE_MAKE_FAILED = 'DELETE_MAKE_FAILED';
+
 /* -------------------------- */
 // Get series for the dropdown
 /* -------------------------- */

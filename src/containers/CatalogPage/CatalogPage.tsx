@@ -42,6 +42,7 @@ const CatalogPage: React.FC<Props> = ({
   onDeleteSeries,
   onUpdateSeries,
   onCreateMake,
+  onDeleteMake,
   onUpdateMake,
   onGetCatalogMakes,
   onClearDashboardState,
@@ -62,12 +63,12 @@ const CatalogPage: React.FC<Props> = ({
     make: false,
   });
   const [modalContent, setModalContent] = useState({
-    make: { make_title: '' },
+    make: { make_title: '', series_title: '' },
     series: { brand_title: '', series_title: '' },
   });
   const [deleteModalContent, setDeleteModalContent] = useState({
     series: { brandId: -1, seriesId: -1, warningText: '', backupWarningText: 'this series' },
-    make: { makeId: -1, seriesId: -1, warningText: '', backupWarningText: 'this model' },
+    make: { makeId: -1, warningText: '', backupWarningText: 'this model' },
   });
 
   const [createSeriesForm] = Form.useForm();
@@ -161,6 +162,10 @@ const CatalogPage: React.FC<Props> = ({
     }
   };
 
+  const onDeleteMakeFinish = () => {
+    onDeleteMake(deleteModalContent.make.makeId);
+  };
+
   /* ================================================== */
   /*  components  */
   /* ================================================== */
@@ -173,9 +178,9 @@ const CatalogPage: React.FC<Props> = ({
             series_id: props.seriesId,
             title: props.seriesTitle,
           });
-          let seriesModalContent = { ...modalContent };
-          seriesModalContent.series.series_title = props.seriesTitle;
-          setModalContent(seriesModalContent);
+          // let seriesModalContent = { ...modalContent };
+          // seriesModalContent.series.series_title = props.seriesTitle;
+          // setModalContent(seriesModalContent);
           setShowUpdateModal({ ...showUpdateModal, series: true });
         }}
       >
@@ -239,12 +244,11 @@ const CatalogPage: React.FC<Props> = ({
             ...deleteModalContent,
             make: {
               makeId: props.makeObj.id,
-              seriesId: props.seriesObj.id,
               warningText: props.makeObj.title,
               backupWarningText: 'this model',
             },
           });
-          setShowDeleteModal({ ...showDeleteModal, series: true });
+          setShowDeleteModal({ ...showDeleteModal, make: true });
         }}
       >
         <i className="fas fa-trash-alt" /> &nbsp; Delete Model
@@ -354,7 +358,7 @@ const CatalogPage: React.FC<Props> = ({
         crud={'update'}
         indexKey={'series'}
         category={'series'}
-        modalTitle={`Update Series - ${modalContent.series.series_title}`}
+        modalTitle={`Update Series`}
         antdForm={updateSeriesForm}
         showModal={showUpdateModal}
         visible={showUpdateModal.series}
@@ -384,7 +388,7 @@ const CatalogPage: React.FC<Props> = ({
         indexKey={'make'}
         category={'make'}
         modalWidth={800}
-        modalTitle={'Create Model'}
+        modalTitle={`Create Model for ${modalContent.make.series_title}`}
         antdForm={createMakeForm}
         showModal={showCreateModal}
         visible={showCreateModal.make}
@@ -410,6 +414,20 @@ const CatalogPage: React.FC<Props> = ({
         imagesPreviewUrls={imagesPreviewUrls}
         setImagesPreviewUrls={setImagesPreviewUrls}
         setUploadSelectedFiles={setUploadSelectedFiles}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+      />
+
+      <CrudModal
+        crud={'delete'}
+        indexKey={'make'}
+        category={'make'}
+        modalTitle={`Delete Model`}
+        showModal={showDeleteModal}
+        visible={showDeleteModal.make}
+        onDelete={onDeleteMakeFinish}
+        setShowModal={setShowDeleteModal}
+        warningText={deleteModalContent.make.warningText}
+        backupWarningText={deleteModalContent.make.backupWarningText}
         loading={dashboardLoading !== undefined && dashboardLoading}
       />
 
@@ -488,13 +506,17 @@ const CatalogPage: React.FC<Props> = ({
                                       <div
                                         className="catalog__button-series"
                                         onClick={() => {
+                                          setModalContent({
+                                            ...modalContent,
+                                            make: { series_title: series.title, make_title: '' },
+                                          });
                                           createMakeForm.setFieldsValue({ makeSeriesId: series.id });
                                           // show the modal
                                           setShowCreateModal({ ...showCreateModal, make: true });
                                         }}
                                       >
-                                        <PlusCircleOutlined className="catalog__button-icon" />
-                                        Add Model
+                                        <PlusCircleOutlined className="catalog__button-icon catalog__button-icon--make" />
+                                        <span className="catalog__button-title">Add Model</span>
                                       </div>
                                     </div>
                                     <div className="catalog__section-series-innerdiv">
@@ -645,6 +667,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 interface DispatchProps {
   onCreateMake: typeof actions.createMake;
   onUpdateMake: typeof actions.updateMake;
+  onDeleteMake: typeof actions.deleteMake;
   onCreateSeries: typeof actions.createSeries;
   onUpdateSeries: typeof actions.updateSeries;
   onDeleteSeries: typeof actions.deleteSeries;
@@ -657,6 +680,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
     onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    onDeleteMake: (make_id) => dispatch(actions.deleteMake(make_id)),
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
     onGetCatalogMakes: (auth_token) => dispatch(actions.getCatalogMakes(auth_token)),
     onCreateSeries: (brand_id, title) => dispatch(actions.createSeries(brand_id, title)),

@@ -119,6 +119,10 @@ export {
   updateMakeStart,
   updateMakeFailed,
   updateMakeSucceed,
+  deleteMake,
+  deleteMakeStart,
+  deleteMakeFailed,
+  deleteMakeSucceed,
   /* =========================================== */
   // Series (Make Page)
   /* =========================================== */

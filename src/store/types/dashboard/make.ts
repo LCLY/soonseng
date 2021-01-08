@@ -252,6 +252,27 @@ export interface UpdateMakeFailedAction {
   type: typeof actionTypes.UPDATE_MAKE_FAILED;
   errorMessage: string;
 }
+/* --------------------------------------------------------- */
+// Delete Make
+/* --------------------------------------------------------- */
+/*  Api call */
+export interface DeleteMakeAction {
+  type: typeof actionTypes.DELETE_MAKE;
+  make_id: number;
+}
+/*  States */
+export interface DeleteMakeStartAction {
+  type: typeof actionTypes.DELETE_MAKE_START;
+}
+export interface DeleteMakeSucceedAction {
+  type: typeof actionTypes.DELETE_MAKE_SUCCEED;
+  makesArray: TReceivedMakeObj[];
+  successMessage: string;
+}
+export interface DeleteMakeFailedAction {
+  type: typeof actionTypes.DELETE_MAKE_FAILED;
+  errorMessage: string;
+}
 
 /* ============================================================================================== */
 //  Series (Make Page)

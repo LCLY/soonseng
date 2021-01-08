@@ -181,6 +181,10 @@ import {
   UpdateMakeStartAction,
   UpdateMakeSucceedAction,
   UpdateMakeFailedAction,
+  DeleteMakeAction,
+  DeleteMakeStartAction,
+  DeleteMakeSucceedAction,
+  DeleteMakeFailedAction,
   // Series
   GetSeriesAction,
   GetSeriesStartAction,
@@ -673,6 +677,10 @@ export type DashboardActionTypes =
   | UpdateMakeStartAction
   | UpdateMakeSucceedAction
   | UpdateMakeFailedAction
+  | DeleteMakeAction
+  | DeleteMakeStartAction
+  | DeleteMakeSucceedAction
+  | DeleteMakeFailedAction
   /* ======================================================================= */
   // Series
   /* ======================================================================= */

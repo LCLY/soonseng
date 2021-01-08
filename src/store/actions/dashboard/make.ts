@@ -353,6 +353,35 @@ export const updateMakeFailed = (errorMessage: string): AppActions => {
     errorMessage: errorMessage,
   };
 };
+/* ------------------ */
+// Delete Make
+/* ------------------ */
+export const deleteMake = (make_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKE,
+    make_id: make_id,
+  };
+};
+
+export const deleteMakeStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKE_START,
+  };
+};
+
+export const deleteMakeSucceed = (makesArray: TReceivedMakeObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKE_SUCCEED,
+    makesArray: makesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteMakeFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_MAKE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
 
 /* ============================================================================================ */
 // Series

@@ -531,6 +531,27 @@ export function* updateMakeSaga(action: AppActions) {
   }
 }
 
+/* ------------------------------- */
+//    Delete make
+/* ------------------------------- */
+export function* deleteMakeSaga(action: AppActions) {
+  yield put(actions.deleteMakeStart());
+  let url = '';
+  if ('make_id' in action) {
+    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}`;
+  }
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteMakeSucceed(response.data.makes, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteMakeFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteMakeFailed, 'Error');
+    }
+  }
+}
+
 /* ================================================= */
 // Series (Make)
 /* ================================================= */
