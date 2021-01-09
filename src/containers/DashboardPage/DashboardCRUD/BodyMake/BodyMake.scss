@@ -2,6 +2,10 @@
   &__form {
     &-item {
       flex-wrap: nowrap !important;
+      @include respond-to($small-phone) {
+        flex-wrap: wrap !important;
+      }
+
       // label {
       //   min-width: 30% !important;
       // }
@@ -28,6 +32,22 @@
         @include respond-to($small-phone) {
           content: none !important;
           margin-left: 0;
+        }
+      }
+
+      /* -------------------------- */
+      // the dimensions feet and inch
+      /* -------------------------- */
+      &-left {
+        width: 62% !important;
+        @include respond-to($small-phone) {
+          width: 50% !important;
+        }
+      }
+      &-right {
+        width: 38% !important;
+        @include respond-to($small-phone) {
+          width: 50% !important;
         }
       }
     }

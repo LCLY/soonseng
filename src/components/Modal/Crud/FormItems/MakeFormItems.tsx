@@ -18,16 +18,18 @@ const { Option } = Select;
 
 interface MakeFormItemsProps {
   crud: 'create' | 'update' | 'delete';
-  /** setState action to set the selected files to upload*/
-  setUploadSelectedFiles: React.Dispatch<React.SetStateAction<FileList | null | undefined>>;
+  /** boolean to know if this modal is for dashboard or other place */
+  isDashboard?: boolean;
   /** url for preview images */
   imagesPreviewUrls: string[];
-  /** set action for image preview urls */
-  setImagesPreviewUrls: React.Dispatch<React.SetStateAction<string[]>>;
   /** The form instance from antd  */
   antdForm: FormInstance<any>;
   /** onFinish method when user click ok*/
   onFinish: (values: any) => void;
+  /** set action for image preview urls */
+  setImagesPreviewUrls: React.Dispatch<React.SetStateAction<string[]>>;
+  /** setState action to set the selected files to upload*/
+  setUploadSelectedFiles: React.Dispatch<React.SetStateAction<FileList | null | undefined>>;
 }
 
 type Props = MakeFormItemsProps & StateProps & DispatchProps;
@@ -36,11 +38,12 @@ const MakeFormItems: React.FC<Props> = ({
   crud,
   antdForm,
   brandsArray,
-  //   seriesArray,
+  isDashboard,
+  seriesArray,
   imagesPreviewUrls,
   onFinish,
   onGetBrands,
-  //   onGetSeries,
+  onGetSeries,
   setImagesPreviewUrls,
   setUploadSelectedFiles,
 }) => {
@@ -61,6 +64,12 @@ const MakeFormItems: React.FC<Props> = ({
         onFinish={(values) => {
           if (onFinish !== undefined) onFinish(values);
         }}
+        onValuesChange={(value) => {
+          // check if brand id is chosen
+          if (typeof value.makeBrandId === 'number')
+            // call get series array
+            onGetSeries(value.makeBrandId);
+        }}
       >
         <div className="flex">
           <div className="make__form-left">
@@ -73,68 +82,85 @@ const MakeFormItems: React.FC<Props> = ({
             >
               <Input placeholder="Type title here e.g. XZA200" />
             </Form.Item>
-            {/* ------- Brand - value is brand id but display is brand name -------*/}
-            <Form.Item
-              className="make__form-item make__form-item--make"
-              label="Brand"
-              name="makeBrandId"
-              rules={[{ required: true, message: 'Select Brand!' }]}
-            >
-              {/* only render if brandsArray is not null */}
-              <Select
-                showSearch
-                placeholder="Select a brand"
-                optionFilterProp="children"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {brandsArray &&
-                  brandsArray.map((brand) => {
-                    return (
-                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={brand.id}>
-                        {brand.title}
-                      </Option>
-                    );
-                  })}
-              </Select>
-            </Form.Item>
-            {/* ------- Series ------- */}
-            {/* <Form.Item
-              className="make__form-item make__form-item--make"
-              label="Series"
-              name="makeSeriesId"
-              rules={[{ required: false, message: 'Input Series here!' }]}
-            >
 
-         
-              <Select
-                showSearch
-                placeholder="Select a series"
-                optionFilterProp="children"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            {isDashboard !== undefined && isDashboard ? (
+              <>
+                {/* ------- Brand - value is brand id but display is brand name -------*/}
+                <Form.Item
+                  className="make__form-item make__form-item--make"
+                  label="Brand"
+                  name="makeBrandId"
+                  rules={[{ required: true, message: 'Select Brand!' }]}
+                >
+                  {/* only render if brandsArray is not null */}
+                  <Select
+                    showSearch
+                    placeholder="Select a brand"
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    {brandsArray &&
+                      brandsArray.map((brand) => {
+                        return (
+                          <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={brand.id}>
+                            {brand.title}
+                          </Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
+              </>
+            ) : (
+              <Form.Item
+                hidden
+                className="make__form-item make__form-item--make"
+                name="makeBrandId"
+                rules={[{ required: true }]}
               >
-                {seriesArray &&
-                  seriesArray.map((seriesObj) => {
-                    return (
-                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={seriesObj.id}>
-                        {seriesObj.title}
-                      </Option>
-                    );
-                  })}
-              </Select>
-            </Form.Item> */}
-            {/* Hidden series id */}
-            {/* IN FUTURE HERE MUST ADD A CHECK FOR DASHBOARD if want to use this 
+                <Input />
+              </Form.Item>
+            )}
+            {/* ------- Series ------- */}
+            {isDashboard !== undefined && isDashboard ? (
+              <Form.Item
+                className="make__form-item make__form-item--make"
+                label="Series"
+                name="makeSeriesId"
+                rules={[{ required: false, message: 'Input Series here!' }]}
+              >
+                <Select
+                  showSearch
+                  placeholder="Select a series"
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {seriesArray &&
+                    seriesArray.map((seriesObj) => {
+                      return (
+                        <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={seriesObj.id}>
+                          {seriesObj.title}
+                        </Option>
+                      );
+                    })}
+                </Select>
+              </Form.Item>
+            ) : (
+              <>
+                {/* Hidden series id */}
+                {/* IN FUTURE HERE MUST ADD A CHECK FOR DASHBOARD if want to use this 
             reusable component in the dashboard section
             because on dashboard, you need to choose the series first */}
-            <Form.Item
-              className="make__form-item"
-              label="id"
-              name="makeSeriesId"
-              hidden
-              rules={[{ required: false, message: 'Get make id!' }]}
-            >
-              <Input />
-            </Form.Item>
+                <Form.Item
+                  className="make__form-item"
+                  label="id"
+                  name="makeSeriesId"
+                  hidden
+                  rules={[{ required: false, message: 'Get series id!' }]}
+                >
+                  <Input />
+                </Form.Item>
+              </>
+            )}
 
             {/* ------- Tire ------- */}
             <Form.Item

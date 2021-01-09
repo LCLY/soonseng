@@ -82,7 +82,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
-        <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
+        <Route exact path={`${ROUTE_CATALOG}/:series_id/:make_detail/:make_id`} component={CatalogBodyMake} />
         <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         {/* Dashboard */}
@@ -110,7 +110,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
-        <Route exact path={`${ROUTE_CATALOG}/:make_detail/:make_id`} component={CatalogBodyMake} />
+        <Route exact path={`${ROUTE_CATALOG}/:series_id/:make_detail:make_id`} component={CatalogBodyMake} />
         <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         {/* authentication */}

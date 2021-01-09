@@ -106,31 +106,7 @@
           max-height: 80rem;
           padding: 2rem 2rem 0 2rem;
         }
-
-        &::-webkit-scrollbar {
-          @include respond-to($small-phone) {
-            width: 0.2rem !important;
-            height: 0.2rem !important;
-          }
-
-          @include respond-to($phone-only) {
-            width: 0.5rem !important;
-            height: 0.5rem !important;
-          }
-          @include respond-to($tablet-portrait-up) {
-            width: 0.5rem !important;
-            height: 0.5rem !important;
-          }
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: white !important;
-          border-radius: 1rem !important;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.678) !important;
-        }
+        @include customScrollbar(0.2rem, 0.2rem, 1rem, white, rgba(255, 255, 255, 0.604));
       }
 
       &-outerdiv {
@@ -536,22 +512,6 @@
       @include respond-to($tablet-portrait-up) {
         margin-left: 1rem;
         margin-right: 1rem;
-      }
-    }
-
-    &-icon {
-      margin-right: 1rem;
-
-      &--make {
-        @include respond-to($tablet-portrait-up) {
-          margin-right: 0;
-        }
-        @include respond-to($tablet-landscape-up) {
-          margin-right: 0;
-        }
-        @include respond-to($desktop-up) {
-          margin-right: 1rem;
-        }
       }
     }
 

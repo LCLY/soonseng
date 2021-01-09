@@ -23,7 +23,7 @@ export interface ClearCatalogStateAction {
 // Get Catalog Make
 /* ------------------ */
 
-type TCatalogSeries = {
+export type TCatalogSeries = {
   id: number;
   title: string;
   brand_id: number;
@@ -57,7 +57,7 @@ export interface GetCatalogMakesFailedAction {
 
 // catalog body make array contains a main wheelbase object and a body make array
 export type TReceivedCatalogBodyMake = {
-  wheelbase: TReceivedWheelbaseObj;
+  make_wheelbase: { id: number; wheelbase: TReceivedWheelbaseObj };
   body_makes: TReceivedBodyMakeObj[];
 };
 

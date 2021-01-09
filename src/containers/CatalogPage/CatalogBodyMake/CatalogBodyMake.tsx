@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './CatalogBodyMake.scss';
 /*Components*/
 import Footer from 'src/components/Footer/Footer';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
@@ -10,9 +11,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
-import { LeftCircleOutlined } from '@ant-design/icons';
+import { LeftCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Button, Empty, Modal, Checkbox, Divider, Skeleton } from 'antd';
+import { Button, Empty, Modal, Form, Checkbox, Divider, Skeleton, notification, Dropdown, Tooltip, Menu } from 'antd';
 /* Util */
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
@@ -21,11 +22,23 @@ import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
 import { TReceivedCatalogBodyMake } from 'src/store/types/catalog';
-import { TReceivedAccessoryObj, TReceivedMakeObj } from 'src/store/types/dashboard';
+import {
+  TCreateBodyMakeData,
+  TReceivedAccessoryObj,
+  TReceivedBodyMakeObj,
+  TReceivedMakeObj,
+  TUpdateBodyMakeData,
+  TUpdateMakeData,
+} from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
+import moment from 'moment';
+import { TUpdateMakeFinishValues } from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
+import { checkInchExist, convertPriceToFloat, emptyStringWhenUndefinedOrNull, formatFeetInch } from 'src/shared/Utils';
+import { TCreateBodyMakeForm, TUpdateBodyMakeForm } from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
 
 interface MatchParams {
   make_id: string;
+  series_id: string;
 }
 
 interface ICheckedAccessories {
@@ -43,14 +56,27 @@ const CatalogBodyMake: React.FC<Props> = ({
   match,
   history,
   accessObj,
+  errorMessage,
+  successMessage,
+  dashboardLoading,
   localOrdersArray,
   bodyMakeWithWheelbase,
   makeFromCatalogBodyMake,
   generalAccessoriesArray,
   bodyRelatedAccessoriesArray,
   dimensionRelatedAccessoriesArray,
+  onUpdateMake,
+  onGetBodies,
+  onGetLengths,
+  onGetWheelbases,
+  onUpdateBodyMake,
+  onDeleteBodyMake,
+  onCreateBodyMake,
   onStoreLocalOrders,
   onGetSalesAccessories,
+  onCreateMakeWheelbase,
+  onDeleteMakeWheelbase,
+  onClearDashboardState,
   onGetCatalogBodyMakes,
 }) => {
   /* ================================================== */
@@ -58,6 +84,44 @@ const CatalogBodyMake: React.FC<Props> = ({
   /* ================================================== */
   const [catalogMake, setCatalogMake] = useState<TReceivedMakeObj | null>(null);
   const [pickAccessoryModalOpen, setPickAccessoryModalOpen] = useState(false);
+
+  /* ======================== */
+  /*   Image related states   */
+  /* ======================== */
+  // Upload states
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  // state to store temporary images before user uploads
+  const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+
+  const [updateMakeForm] = Form.useForm();
+  const [createMakeWheelbaseForm] = Form.useForm();
+  const [createBodyMakeForm] = Form.useForm();
+  const [updateBodyMakeForm] = Form.useForm();
+
+  const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
+    make: false,
+    make_wheelbase: false,
+    body_make: false,
+  });
+  const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
+    make: false,
+    body_make: false,
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
+    make_wheelbase: false,
+    body_make: false,
+  });
+
+  const [modalContent, setModalContent] = useState({
+    make: { makeTitle: '', seriesTitle: '' },
+    make_wheelbase: { seriesTitle: '' },
+    body_make: { makeWheelbaseTitle: '' },
+  });
+  const [deleteModalContent, setDeleteModalContent] = useState({
+    make_wheelbase: { makeWheelbaseId: -1, makeId: -1, warningText: '', backupWarningText: 'this configuration' },
+    body_make: { bodyMakeId: -1, warningText: '', backupWarningText: 'this configuration' },
+  });
+
   const [orderObj, setOrderObj] = useState<TLocalOrderObj>({
     id: '',
     tireCount: -1,
@@ -172,6 +236,115 @@ const CatalogBodyMake: React.FC<Props> = ({
     }
   };
 
+  /* ======================================== */
+  // method after click ok on modal
+  /* ======================================== */
+  /* --------------------- */
+  // Make
+  /* --------------------- */
+
+  // Update Make
+  const onUpdateMakeFinish = (values: TUpdateMakeFinishValues) => {
+    // package the object
+    let updateMakeData: TUpdateMakeData = {
+      make_id: values.makeId,
+      title: values.title,
+      brand_id: values.makeBrandId,
+      series_id: values.makeSeriesId,
+      price: convertPriceToFloat(values.price),
+      gvw: emptyStringWhenUndefinedOrNull(values.gvw),
+      abs: emptyStringWhenUndefinedOrNull(values.abs),
+      torque: emptyStringWhenUndefinedOrNull(values.torque),
+      tire: emptyStringWhenUndefinedOrNull(values.makeTire),
+      config: emptyStringWhenUndefinedOrNull(values.config),
+      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
+      transmission: emptyStringWhenUndefinedOrNull(values.transmission),
+      engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
+      year: emptyStringWhenUndefinedOrNull(moment(values.year).format('YYYY').toString()),
+    };
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateMake(updateMakeData, null, null);
+    }
+  };
+  /* --------------------- */
+  // Make Wheelbase
+  /* --------------------- */
+  const onCreateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number }) => {
+    onCreateMakeWheelbase(values.makeId, values.wheelbaseId);
+  };
+
+  const onDeleteMakeWheelbaseFinish = () => {
+    onDeleteMakeWheelbase(deleteModalContent.make_wheelbase.makeId, deleteModalContent.make_wheelbase.makeWheelbaseId);
+  };
+  /* --------------------- */
+  // Body Make
+  /* --------------------- */
+
+  /* --------- BODY Make ---------- */
+  const onCreateBodyMakeFinish = (values: TCreateBodyMakeForm) => {
+    // if inch has no input then only display feet
+    let concatWidth = formatFeetInch(values.bodyMakeWidth.feet, values.bodyMakeWidth.inch);
+    let concatHeight = formatFeetInch(values.bodyMakeHeight.feet, values.bodyMakeHeight.inch);
+    let concatDepth = formatFeetInch(values.bodyMakeDepth.feet, values.bodyMakeDepth.inch);
+
+    // if inch has no input then only display length
+    let createBodyMakeData: TCreateBodyMakeData = {
+      body_id: values.bodyId,
+      length_id: values.lengthId,
+      make_wheelbase_id: values.makeWheelbaseId,
+      make_id: values.makeId,
+      width: concatWidth,
+      height: concatHeight,
+      depth: concatDepth,
+      price: convertPriceToFloat(values.bodyMakePrice),
+    };
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBodyMake(createBodyMakeData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateBodyMake(createBodyMakeData, null, null);
+    }
+  };
+
+  const onUpdateBodyMakeFinish = (values: TUpdateBodyMakeForm) => {
+    // if inch has no input then only display feet
+    let concatWidth = formatFeetInch(values.bodyMakeWidth.feet, values.bodyMakeWidth.inch);
+    let concatHeight = formatFeetInch(values.bodyMakeHeight.feet, values.bodyMakeHeight.inch);
+    let concatDepth = formatFeetInch(values.bodyMakeDepth.feet, values.bodyMakeDepth.inch);
+
+    let updateBodyMakeData: TUpdateBodyMakeData = {
+      body_id: values.bodyId,
+      body_make_id: values.bodyMakeId,
+      length_id: values.lengthId,
+      make_wheelbase_id: values.makeWheelbaseId,
+      make_id: values.makeId,
+      width: concatWidth,
+      height: concatHeight,
+      depth: concatDepth,
+      price: convertPriceToFloat(values.bodyMakePrice),
+    };
+
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateBodyMake(updateBodyMakeData, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateBodyMake(updateBodyMakeData, null, null);
+    }
+  };
+
+  const onDeleteBodyMakeFinish = () => {
+    onDeleteBodyMake(deleteModalContent.body_make.bodyMakeId);
+  };
+
   /* ================================================== */
   /*  component */
   /* ================================================== */
@@ -211,6 +384,41 @@ const CatalogBodyMake: React.FC<Props> = ({
               )}
             </section>
           </div>
+          {accessObj?.showAdminDashboard && (
+            <Tooltip title="Edit Model">
+              <div
+                className="catalogbodymake__button-make"
+                onClick={() => {
+                  setModalContent({
+                    ...modalContent,
+                    make: { seriesTitle: catalogMake.series, makeTitle: catalogMake.title },
+                  });
+
+                  updateMakeForm.setFieldsValue({
+                    makeId: catalogMake.id,
+                    gvw: catalogMake.gvw,
+                    price: catalogMake.price,
+                    title: catalogMake.title,
+                    makeAbs: catalogMake.abs,
+                    makeTire: catalogMake.tire,
+                    makeTorque: catalogMake.torque,
+                    makeConfig: catalogMake.config,
+                    makeSeriesId: match.params.series_id,
+                    makeBrandId: catalogMake.brand.id,
+                    horsepower: catalogMake.horsepower,
+                    engine_cap: catalogMake.engine_cap,
+                    makeEmission: catalogMake.emission,
+                    transmission: catalogMake.transmission,
+                    year: catalogMake.year ? moment(catalogMake.year) : '',
+                  });
+                  // show the modal
+                  setShowUpdateModal({ ...showUpdateModal, make: true });
+                }}
+              >
+                <i className="fas fa-pen" />
+              </div>
+            </Tooltip>
+          )}
         </div>
         <div className="catalogbodymake__detail-div--mobile">
           <div className="catalogbodymake__detail-innerdiv">
@@ -237,7 +445,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                   ))}
               </div>
               {/* right column */}
-              <div style={{ width: '100%' }}>
+              <div style={{ width: '100%' }} className="catalogbodymake__detail-div-right">
                 {bodyMakeDetailRowArray.length > 0 &&
                   [...bodyMakeDetailRowArray].slice(5).map((detail) => (
                     <div
@@ -272,6 +480,25 @@ const CatalogBodyMake: React.FC<Props> = ({
                     </div>
                   </div>
                 )}
+
+                {accessObj?.showAdminDashboard && (
+                  <Tooltip title="Edit Model">
+                    <div
+                      className="catalogbodymake__button-make catalogbodymake__button-make--mobile"
+                      onClick={() => {
+                        setModalContent({
+                          ...modalContent,
+                          make: { seriesTitle: catalogMake.series, makeTitle: catalogMake.title },
+                        });
+                        updateMakeForm.setFieldsValue({ makeSeriesId: match.params.series_id });
+                        // show the modal
+                        setShowCreateModal({ ...showCreateModal, make: true });
+                      }}
+                    >
+                      <i className="fas fa-pen" />
+                    </div>
+                  </Tooltip>
+                )}
               </div>
             </section>
           </div>
@@ -280,6 +507,260 @@ const CatalogBodyMake: React.FC<Props> = ({
     );
   };
 
+  const WheelbaseBodyMakeGrid = ({
+    makeObj,
+    seriesTitle,
+    wheelbaseBodyMake,
+  }: {
+    seriesTitle?: string;
+    makeObj?: TReceivedMakeObj;
+    wheelbaseBodyMake: TReceivedCatalogBodyMake;
+  }) => (
+    <>
+      <div className="catalogbodymake__wheelbase-outerdiv">
+        {wheelbaseBodyMake.make_wheelbase.wheelbase.title && wheelbaseBodyMake.make_wheelbase.wheelbase.title !== '' ? (
+          <>
+            <div className="catalogbodymake__wheelbase-innerdiv">
+              <div className="catalogbodymake__wheelbase-title">
+                {wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm Wheelbase
+              </div>
+              {accessObj?.showAdminDashboard && (
+                <Tooltip title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${seriesTitle}`}>
+                  {makeObj !== undefined && seriesTitle !== undefined && (
+                    <div
+                      className="catalog__dropdown-series"
+                      onClick={() => {
+                        setDeleteModalContent({
+                          ...deleteModalContent,
+                          make_wheelbase: {
+                            makeId: makeObj.id,
+                            makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+                            warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${seriesTitle} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
+                            backupWarningText: `this configuration from ${seriesTitle}`,
+                          },
+                        });
+                        setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
+                      }}
+                    >
+                      <i className="fas fa-trash-alt"></i>
+                    </div>
+                  )}
+                </Tooltip>
+              )}
+            </div>
+          </>
+        ) : (
+          ''
+        )}
+
+        {/* Add Body Make Button */}
+        {accessObj?.showAdminDashboard && (
+          <Tooltip title={`Add Body for ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm configuration`}>
+            <span
+              className="catalog__button-series"
+              onClick={() => {
+                setModalContent({
+                  ...modalContent,
+                  body_make: { makeWheelbaseTitle: wheelbaseBodyMake.make_wheelbase.wheelbase.title },
+                });
+                if (makeObj !== undefined) {
+                  createBodyMakeForm.setFieldsValue({
+                    makeId: makeObj.id,
+                    makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+                  });
+                }
+                // show the modal
+                setShowCreateModal({ ...showCreateModal, body_make: true });
+              }}
+            >
+              <PlusCircleOutlined className="catalog__button-icon catalog__button-icon--make" />
+              <span className="catalog__button-title">&nbsp;&nbsp;Add Body</span>
+            </span>
+          </Tooltip>
+        )}
+      </div>
+      <div className="catalogbodymake__innerdiv">
+        {wheelbaseBodyMake.body_makes.length > 0 ? (
+          <div className="catalogbodymake__grid">
+            <>
+              {wheelbaseBodyMake.body_makes.map((bodyMake) => {
+                return (
+                  <div key={uuidv4()} className="catalogbodymake__card-parent">
+                    <div className="catalogbodymake__card" key={uuidv4()}>
+                      {bodyMake.images.length > 0 ? (
+                        <img
+                          className="catalogbodymake__card-image"
+                          src={bodyMake.images[0].url}
+                          alt={bodyMake.images[0].filename}
+                        />
+                      ) : (
+                        <Skeleton.Image className="catalog__card-image" />
+                      )}
+                      <div className="catalogbodymake__card-overlay">
+                        <div className="catalogbodymake__card-overlay-content">
+                          <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
+                          <div className="catalogbodymake__card-overlay-moreinfo-content">
+                            {bodyMake?.length && (
+                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                Length:&nbsp;
+                                <div className="catalogbodymake__card-overlay-dimension">
+                                  {bodyMake?.length.title} - {bodyMake?.length.description}
+                                </div>
+                              </div>
+                            )}
+                            {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
+                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                Width:&nbsp;
+                                <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.width}</div>
+                              </div>
+                            )}
+
+                            {bodyMake?.depth !== null && bodyMake?.depth !== '' && bodyMake?.depth !== null && (
+                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                Depth:&nbsp;
+                                <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.depth}</div>
+                              </div>
+                            )}
+
+                            {bodyMake?.height !== null && bodyMake?.height !== '' && bodyMake?.height !== null && (
+                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                Height:&nbsp;
+                                <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.height}</div>
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            {accessObj?.showPriceSalesPage && (
+                              <div>
+                                <div className="flex-align-center">
+                                  <div className="catalogbodymake__card-overlay-price-title">Body Price:</div>
+                                  <div className="catalogbodymake__card-overlay-price">
+                                    {bodyMake?.price === 0 || bodyMake?.price === null ? (
+                                      '-'
+                                    ) : (
+                                      <div>
+                                        RM
+                                        <NumberFormat
+                                          value={bodyMake?.price}
+                                          displayType={'text'}
+                                          thousandSeparator={true}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="catalogbodymake__card-overlay-quotation-div">
+                            <Button
+                              type="default"
+                              className="catalogbodymake__card-overlay-quotation-btn"
+                              onClick={() => {
+                                onGetSalesAccessories(bodyMake?.id);
+                                setOrderObj({
+                                  ...orderObj,
+                                  id: uuidv4(),
+                                  bodyMakeObj: bodyMake,
+                                  bodyObj: bodyMake.body,
+                                  lengthObj: bodyMake.length,
+                                  tireCount: parseInt(bodyMake?.make_wheelbase.make.tire),
+                                });
+                                setPickAccessoryModalOpen(true);
+                                // clear the states
+                                setCurrentCheckedBodyAccessories({});
+                                setCurrentCheckedGeneralAccessories({});
+                                setCurrentCheckedDimensionAccessories({});
+                              }}
+                            >
+                              Add To Orders&nbsp;&nbsp;
+                              <i className="fas fa-file-invoice-dollar"></i>
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
+                    </div>
+                    {accessObj?.showAdminDashboard && (
+                      <Tooltip title={`Edit / Delete ${bodyMake.body.title}`}>
+                        <Dropdown
+                          className="catalog__dropdown-series catalog__dropdown-series--make"
+                          overlay={<BodyMakeMenu bodyMakeObj={bodyMake} />}
+                          trigger={['click']}
+                        >
+                          <i className="fas fa-ellipsis-h"></i>
+                        </Dropdown>
+                      </Tooltip>
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          </div>
+        ) : (
+          <div className="catalogbodymake__empty-bodymake">
+            <Empty />
+          </div>
+        )}
+      </div>
+    </>
+  );
+
+  const BodyMakeMenu = ({ bodyMakeObj }: { bodyMakeObj: TReceivedBodyMakeObj }) => (
+    <Menu>
+      <Menu.Item
+        onClick={() => {
+          setModalContent({
+            ...modalContent,
+            body_make: { makeWheelbaseTitle: bodyMakeObj.make_wheelbase.wheelbase.title },
+          });
+          // update the form value using the 'name' attribute as target/key
+          updateBodyMakeForm.setFieldsValue({
+            makeId: bodyMakeObj.make_wheelbase.make.id,
+            bodyId: bodyMakeObj.body.id, // body id
+            bodyMakeId: bodyMakeObj.id, // length id
+            makeWheelbaseId: bodyMakeObj.make_wheelbase.id,
+            lengthId: bodyMakeObj.length.id,
+            bodyMakeWidth: {
+              feet: checkInchExist(bodyMakeObj.width).feet,
+              inch: checkInchExist(bodyMakeObj.width).inch,
+            },
+            bodyMakeHeight: {
+              feet: bodyMakeObj.height ? checkInchExist(bodyMakeObj.height).feet : '',
+              inch: bodyMakeObj.height ? checkInchExist(bodyMakeObj.height).inch : '',
+            },
+            bodyMakeDepth: {
+              feet: checkInchExist(bodyMakeObj.depth).feet,
+              inch: checkInchExist(bodyMakeObj.depth).inch,
+            },
+            bodyMakePrice: bodyMakeObj.price,
+          });
+
+          setShowUpdateModal({ ...showUpdateModal, body_make: true });
+        }}
+      >
+        <i className="fas fa-edit" />
+        &nbsp;Edit Body
+      </Menu.Item>
+      <Menu.Item
+        danger
+        onClick={() => {
+          setDeleteModalContent({
+            ...deleteModalContent,
+            body_make: {
+              bodyMakeId: bodyMakeObj.id,
+              warningText: `${bodyMakeObj.make_wheelbase.make.brand.title} ${bodyMakeObj.make_wheelbase.make.title} ${bodyMakeObj.body.title}`,
+              backupWarningText: 'this body',
+            },
+          });
+          setShowDeleteModal({ ...showDeleteModal, body_make: true });
+        }}
+      >
+        <i className="fas fa-trash-alt" /> &nbsp; Delete Body
+      </Menu.Item>
+    </Menu>
+  );
+
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
@@ -287,6 +768,18 @@ const CatalogBodyMake: React.FC<Props> = ({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    onGetWheelbases();
+  }, [onGetWheelbases]);
+
+  useEffect(() => {
+    onGetBodies();
+  }, [onGetBodies]);
+
+  useEffect(() => {
+    onGetLengths();
+  }, [onGetLengths]);
 
   useEffect(() => {
     if (makeFromCatalogBodyMake) {
@@ -331,12 +824,182 @@ const CatalogBodyMake: React.FC<Props> = ({
     onGetCatalogBodyMakes(parseInt(match.params.make_id));
   }, [onGetCatalogBodyMakes, match.params.make_id]);
 
+  /* -------------------- */
+  // success notification
+  /* -------------------- */
+  useEffect(() => {
+    if (successMessage) {
+      // show success notification
+      notification['success']({
+        message: 'Success',
+        description: successMessage,
+      });
+      // clear the successMessage object, set to null
+      onClearDashboardState();
+      // clear the form inputs using the form reference
+      createMakeWheelbaseForm.resetFields();
+      createBodyMakeForm.resetFields();
+
+      // close all the modals if successful
+      setShowCreateModal({
+        ...showCreateModal,
+        make: false,
+        body_make: false,
+        make_wheelbase: false,
+      });
+      setShowUpdateModal({
+        ...showUpdateModal,
+        make: false,
+        body_make: false,
+        make_wheelbase: false,
+      });
+      setShowDeleteModal({
+        ...showDeleteModal,
+        make: false,
+        body_make: false,
+        make_wheelbase: false,
+      });
+    }
+  }, [
+    successMessage,
+    showDeleteModal,
+    showUpdateModal,
+    showCreateModal,
+    createBodyMakeForm,
+    createMakeWheelbaseForm,
+    onClearDashboardState,
+  ]);
+
+  /* ------------------ */
+  // error notification
+  /* ------------------ */
+  useEffect(() => {
+    if (errorMessage) {
+      notification['error']({
+        message: 'Failed',
+        duration: 2.5,
+        description: errorMessage,
+      });
+
+      onClearDashboardState();
+    }
+  }, [errorMessage, onClearDashboardState]);
+
+  useEffect(() => {
+    if (successMessage) {
+      onGetCatalogBodyMakes(parseInt(match.params.make_id));
+    }
+  }, [successMessage, onGetCatalogBodyMakes, match.params.make_id]);
+
   /* ================================================== */
   /* ================================================== */
   /* ================================================== */
   return (
     <>
+      {/* ====================================== */}
       {/* Modal */}
+      {/* ====================================== */}
+      {/* -------------------------------- */}
+      {/* Model/Make */}
+      {/* -------------------------------- */}
+      <CrudModal
+        crud={'update'}
+        indexKey={'make'}
+        category={'make'}
+        modalWidth={800}
+        antdForm={updateMakeForm}
+        showModal={showUpdateModal}
+        visible={showUpdateModal.make}
+        onFinish={onUpdateMakeFinish}
+        setShowModal={setShowUpdateModal}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        modalTitle={`Update Model for ${modalContent.make.seriesTitle}`}
+      />
+
+      {/* -------------------------------- */}
+      {/* Make Wheelbase / Configuration */}
+      {/* -------------------------------- */}
+      <CrudModal
+        crud={'create'}
+        indexKey={'make_wheelbase'}
+        category={'make_wheelbase'}
+        showModal={showCreateModal}
+        antdForm={createMakeWheelbaseForm}
+        setShowModal={setShowCreateModal}
+        onFinish={onCreateMakeWheelbaseFinish}
+        visible={showCreateModal.make_wheelbase}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        modalTitle={`Create Configuration for ${modalContent.make_wheelbase.seriesTitle}`}
+      />
+
+      <CrudModal
+        crud={'delete'}
+        indexKey={'make_wheelbase'}
+        category={'make_wheelbase'}
+        modalTitle={`Delete Configuration`}
+        showModal={showDeleteModal}
+        visible={showDeleteModal.make_wheelbase}
+        onDelete={onDeleteMakeWheelbaseFinish}
+        setShowModal={setShowDeleteModal}
+        warningText={deleteModalContent.make_wheelbase.warningText}
+        backupWarningText={deleteModalContent.make_wheelbase.backupWarningText}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+      />
+
+      {/* -------------------------------- */}
+      {/* Body Make */}
+      {/* -------------------------------- */}
+      <CrudModal
+        crud={'create'}
+        indexKey={'body_make'}
+        category={'body_make'}
+        showModal={showCreateModal}
+        antdForm={createBodyMakeForm}
+        setShowModal={setShowCreateModal}
+        onFinish={onCreateBodyMakeFinish}
+        visible={showCreateModal.body_make}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        modalTitle={`Create Body for ${modalContent.body_make.makeWheelbaseTitle}mm wheelbase`}
+      />
+      <CrudModal
+        crud={'update'}
+        indexKey={'body_make'}
+        category={'body_make'}
+        showModal={showUpdateModal}
+        antdForm={updateBodyMakeForm}
+        setShowModal={setShowUpdateModal}
+        onFinish={onUpdateBodyMakeFinish}
+        visible={showUpdateModal.body_make}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        modalTitle={`Update Body with ${modalContent.body_make.makeWheelbaseTitle}mm wheelbase`}
+      />
+
+      <CrudModal
+        crud={'delete'}
+        indexKey={'body_make'}
+        category={'body_make'}
+        modalTitle={`Delete Body`}
+        showModal={showDeleteModal}
+        visible={showDeleteModal.body_make}
+        onDelete={onDeleteBodyMakeFinish}
+        setShowModal={setShowDeleteModal}
+        warningText={deleteModalContent.body_make.warningText}
+        backupWarningText={deleteModalContent.body_make.backupWarningText}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+      />
+
+      {/* -------------------------------- */}
+      {/* Quotation modal */}
+      {/* -------------------------------- */}
       <Modal
         className="catalogbodymake__modal"
         title="Select accessories for this configuration"
@@ -491,166 +1154,95 @@ const CatalogBodyMake: React.FC<Props> = ({
           <div className="catalog__div">
             {bodyMakeWithWheelbase && catalogMake ? (
               <>
-                {bodyMakeWithWheelbase.length > 0 ? (
-                  <section className="catalogbodymake__section-div">
-                    <div className="catalogbodymake__series-outerdiv">
-                      {/* <div> */}
+                <section className="catalogbodymake__section-div">
+                  <div className="catalogbodymake__series-outerdiv">
+                    <div className="catalogbodymake__series-innerdiv">
                       <LeftCircleOutlined
                         className="catalogbodymake__backarrow"
                         onClick={() => history.push('/catalog')}
                       />
-                      {/* </div> */}
                       <div className="catalogbodymake__series-title">{catalogMake.series}</div>
                     </div>
-                    <section className="catalogbodymake__section-banner">
-                      <div className="catalogbodymake__banner-div">
-                        <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
+
+                    {accessObj?.showAdminDashboard && (
+                      <div
+                        className="catalog__button-series"
+                        onClick={() => {
+                          // get make id and title
+                          setModalContent({
+                            ...modalContent,
+                            make_wheelbase: {
+                              seriesTitle: catalogMake.series,
+                            },
+                          });
+                          setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
+                          createMakeWheelbaseForm.setFieldsValue({
+                            makeId: catalogMake.id,
+                          });
+                        }}
+                      >
+                        <PlusCircleOutlined className="catalog__button-icon" />
+                        &nbsp;&nbsp;Add Configuration
                       </div>
-                      <MakeDetailsComponent catalogMake={catalogMake} />
-                    </section>
-
-                    {bodyMakeWithWheelbase.map((wheelbaseBodyMake) => (
-                      <section key={uuidv4()} className="catalogbodymake__wheelbase-div">
-                        <div>
-                          {wheelbaseBodyMake.wheelbase.title && wheelbaseBodyMake.wheelbase.title !== '' ? (
-                            <div className="catalogbodymake__wheelbase-title">
-                              {wheelbaseBodyMake.wheelbase.title}mm Wheelbase
-                            </div>
-                          ) : (
-                            ''
-                          )}
-                        </div>
-
-                        <div className="catalogbodymake__innerdiv">
-                          <div className="catalogbodymake__grid">
-                            {wheelbaseBodyMake.body_makes.map((bodyMake) => {
-                              return (
-                                <div className="catalogbodymake__card" key={uuidv4()}>
-                                  {bodyMake.images.length > 0 ? (
-                                    <img
-                                      className="catalogbodymake__card-image"
-                                      src={bodyMake.images[0].url}
-                                      alt={bodyMake.images[0].filename}
-                                    />
-                                  ) : (
-                                    <Skeleton.Image className="catalog__card-image" />
-                                  )}
-                                  <div className="catalogbodymake__card-overlay">
-                                    <div className="catalogbodymake__card-overlay-content">
-                                      <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
-                                      <div className="catalogbodymake__card-overlay-moreinfo-content">
-                                        {bodyMake?.length && (
-                                          <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                            Length:&nbsp;
-                                            <div className="catalogbodymake__card-overlay-dimension">
-                                              {bodyMake?.length.title} - {bodyMake?.length.description}
-                                            </div>
-                                          </div>
-                                        )}
-                                        {bodyMake?.width !== null &&
-                                          bodyMake?.width !== '' &&
-                                          bodyMake?.width !== null && (
-                                            <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                              Width:&nbsp;
-                                              <div className="catalogbodymake__card-overlay-dimension">
-                                                {bodyMake?.width}
-                                              </div>
-                                            </div>
-                                          )}
-
-                                        {bodyMake?.depth !== null &&
-                                          bodyMake?.depth !== '' &&
-                                          bodyMake?.depth !== null && (
-                                            <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                              Depth:&nbsp;
-                                              <div className="catalogbodymake__card-overlay-dimension">
-                                                {bodyMake?.depth}
-                                              </div>
-                                            </div>
-                                          )}
-
-                                        {bodyMake?.height !== null &&
-                                          bodyMake?.height !== '' &&
-                                          bodyMake?.height !== null && (
-                                            <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                              Height:&nbsp;
-                                              <div className="catalogbodymake__card-overlay-dimension">
-                                                {bodyMake?.height}
-                                              </div>
-                                            </div>
-                                          )}
-                                      </div>
-                                      <div>
-                                        {accessObj?.showPriceSalesPage && (
-                                          <>
-                                            <div className="flex-align-center">
-                                              <div className="catalogbodymake__card-overlay-price-title">
-                                                Body Price:
-                                              </div>
-                                              <div className="catalogbodymake__card-overlay-price">
-                                                {bodyMake?.price === 0 || bodyMake?.price === null ? (
-                                                  '-'
-                                                ) : (
-                                                  <div>
-                                                    RM
-                                                    <NumberFormat
-                                                      value={bodyMake?.price}
-                                                      displayType={'text'}
-                                                      thousandSeparator={true}
-                                                    />
-                                                  </div>
-                                                )}
-                                              </div>
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                      <div className="catalogbodymake__card-overlay-quotation-div">
-                                        <Button
-                                          type="default"
-                                          className="catalogbodymake__card-overlay-quotation-btn"
-                                          onClick={() => {
-                                            onGetSalesAccessories(bodyMake?.id);
-                                            setOrderObj({
-                                              ...orderObj,
-                                              id: uuidv4(),
-                                              bodyMakeObj: bodyMake,
-                                              bodyObj: bodyMake.body,
-                                              lengthObj: bodyMake.length,
-                                              tireCount: parseInt(bodyMake?.make_wheelbase.make.tire),
-                                            });
-                                            setPickAccessoryModalOpen(true);
-                                            // clear the states
-                                            setCurrentCheckedBodyAccessories({});
-                                            setCurrentCheckedGeneralAccessories({});
-                                            setCurrentCheckedDimensionAccessories({});
-                                          }}
-                                        >
-                                          Add To Orders&nbsp;&nbsp;
-                                          <i className="fas fa-file-invoice-dollar"></i>
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </section>
-                    ))}
-                  </section>
-                ) : (
-                  <div className="catalogbodymake__empty-div">
-                    <div className="catalogbodymake__empty-backarrow-div" onClick={() => history.push('/catalog')}>
-                      <LeftCircleOutlined className="catalogbodymake__backarrow" />
-                      Go Back
-                    </div>
-                    <Empty className="catalogbodymake__empty" />
+                    )}
                   </div>
-                )}
+                  <section className="catalogbodymake__section-banner">
+                    <div className="catalogbodymake__banner-div">
+                      <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
+                    </div>
+                    <MakeDetailsComponent catalogMake={catalogMake} />
+                  </section>
+
+                  {/*  ================================================================ */}
+                  {/*    ADMIN - if user is admin show everything, if not only show
+                        those that the length is greater than 0 */}
+                  {/*  ================================================================ */}
+                  {bodyMakeWithWheelbase.length > 0 ? (
+                    <>
+                      {bodyMakeWithWheelbase.map((wheelbaseBodyMake) => (
+                        <section key={uuidv4()} className="catalogbodymake__wheelbase-div">
+                          {
+                            /* ================================================================ */
+                            // ADMIN - shows everything
+                            /* ================================================================ */
+                          }
+                          {accessObj?.showAdminDashboard ? (
+                            <WheelbaseBodyMakeGrid
+                              makeObj={catalogMake}
+                              seriesTitle={catalogMake.series}
+                              wheelbaseBodyMake={wheelbaseBodyMake}
+                            />
+                          ) : (
+                            <>
+                              {
+                                /* ================================================================ */
+                                // NORMAL USER - only show the body makes that has length > 0
+                                /* ================================================================ */
+                              }
+                              {wheelbaseBodyMake.body_makes.length > 0 && (
+                                <WheelbaseBodyMakeGrid wheelbaseBodyMake={wheelbaseBodyMake} />
+                              )}
+                            </>
+                          )}
+                        </section>
+                      ))}
+                    </>
+                  ) : (
+                    <div className="catalogbodymake__empty-div">
+                      <div>
+                        <Empty
+                          description={
+                            <span>
+                              No configurations available
+                              <br />
+                              Contact Jason for business inquiries
+                            </span>
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
+                </section>
               </>
             ) : (
               <div className="catalog__loading-div">
@@ -667,6 +1259,9 @@ const CatalogBodyMake: React.FC<Props> = ({
 
 interface StateProps {
   accessObj?: TUserAccess;
+  dashboardLoading?: boolean;
+  errorMessage?: string | null;
+  successMessage?: string | null;
   localOrdersArray?: TLocalOrderObj[];
   bodyMakeWithWheelbase?: TReceivedCatalogBodyMake[] | null;
   makeFromCatalogBodyMake?: TReceivedMakeObj | null;
@@ -677,6 +1272,9 @@ interface StateProps {
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
+    dashboardLoading: state.dashboard.loading,
+    errorMessage: state.dashboard.errorMessage,
+    successMessage: state.dashboard.successMessage,
     localOrdersArray: state.sales.localOrdersArray,
     bodyMakeWithWheelbase: state.catalog.catalogBodyMakesArray,
     makeFromCatalogBodyMake: state.catalog.makeFromCatalogBodyMake,
@@ -687,15 +1285,39 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 };
 
 interface DispatchProps {
+  onGetBodies: typeof actions.getBodies;
+  onGetLengths: typeof actions.getLengths;
+  onUpdateMake: typeof actions.updateMake;
+  onGetWheelbases: typeof actions.getWheelbases;
+  onCreateBodyMake: typeof actions.createBodyMake;
+  onUpdateBodyMake: typeof actions.updateBodyMake;
+  onDeleteBodyMake: typeof actions.deleteBodyMake;
   onStoreLocalOrders: typeof actions.storeLocalOrders;
   onGetCatalogBodyMakes: typeof actions.getCatalogBodyMakes;
   onGetSalesAccessories: typeof actions.getSalesAccessories;
+  onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
+  onDeleteMakeWheelbase: typeof actions.deleteMakeWheelbase;
+  onClearDashboardState: typeof actions.clearDashboardState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
+    onGetBodies: () => dispatch(actions.getBodies()),
+    onGetLengths: () => dispatch(actions.getLengths()),
+    onGetWheelbases: () => dispatch(actions.getWheelbases()),
+    onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
+      dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    onCreateBodyMake: (createBodyMakeData, imageTag, imageFiles) =>
+      dispatch(actions.createBodyMake(createBodyMakeData, imageTag, imageFiles)),
+    onUpdateBodyMake: (updateBodyMakeData, imageTag, imageFiles) =>
+      dispatch(actions.updateBodyMake(updateBodyMakeData, imageTag, imageFiles)),
+    onDeleteBodyMake: (body_make_id) => dispatch(actions.deleteBodyMake(body_make_id)),
+    onClearDashboardState: () => dispatch(actions.clearDashboardState()),
     onGetCatalogBodyMakes: (make_id) => dispatch(actions.getCatalogBodyMakes(make_id)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
+    onCreateMakeWheelbase: (make_id, wheelbase_id) => dispatch(actions.createMakeWheelbase(make_id, wheelbase_id)),
+    onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>
+      dispatch(actions.deleteMakeWheelbase(make_id, make_wheelbase_id)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CatalogBodyMake));

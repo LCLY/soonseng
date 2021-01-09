@@ -82,7 +82,7 @@ type TBodyMakeTableState = {
   bodyMakeWheelbase: string;
 };
 
-type TCreateBodyMakeForm = {
+export type TCreateBodyMakeForm = {
   bodyId: number; //body id
   makeId: number; //make id
   lengthId: number; //length id
@@ -93,7 +93,7 @@ type TCreateBodyMakeForm = {
   bodyMakePrice: string;
   imageTag: string;
 };
-type TUpdateBodyMakeForm = {
+export type TUpdateBodyMakeForm = {
   bodyId: number; //body id
   makeId: number; //make id
   lengthId: number; //length id
@@ -705,70 +705,64 @@ const BodyMake: React.FC<Props> = ({
 
       {/* Dimensions */}
       <div style={{ marginBottom: '1rem' }}>Dimensions - W x H x D</div>
-      {/* Body Length Width */}
+      {/* Body Make Width */}
       <div className="flex">
         <Form.Item
-          className="make__form-item body__item margin_r-1"
+          className="make__form-item body__item bodymake__form-item-left margin_r-1"
           label="Width"
           name={['bodyMakeWidth', 'feet']}
           rules={[{ required: false, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
         >
           {/* width - ft */}
           <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
         </Form.Item>
 
         <Form.Item
-          className="make__form-item--make body__item make__form-item--inch"
+          className="make__form-item--make body__item make__form-item--inch bodymake__form-item-right"
           name={['bodyMakeWidth', 'inch']}
           rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
         >
           {/* height - inch */}
           <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
         </Form.Item>
       </div>
-      {/* Body Length Height */}
+      {/* Body Make Height */}
       <div className="flex">
         <Form.Item
-          className="make__form-item body__item margin_r-1"
+          className="make__form-item body__item margin_r-1 bodymake__form-item-left"
           label="Height"
           name={['bodyMakeHeight', 'feet']}
           rules={[{ required: false, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
         >
           {/* height - ft */}
           <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
         </Form.Item>
 
         <Form.Item
-          className="make__form-item--make body__item make__form-item--inch"
+          className="make__form-item--make body__item make__form-item--inch bodymake__form-item-right"
           name={['bodyMakeHeight', 'inch']}
           rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
         >
           {/* height - inch */}
           <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
         </Form.Item>
       </div>
-      {/* Body Length Depth */}
+      {/* Body Make Depth */}
       <div className="flex">
         <Form.Item
-          className="make__form-item margin_r-1"
+          className="make__form-item body__item margin_r-1 bodymake__form-item-left"
           label="Depth"
           name={['bodyMakeDepth', 'feet']}
           rules={[{ required: false, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
         >
           {/* height - ft */}
           <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
         </Form.Item>
 
         <Form.Item
-          className="make__form-item--make make__form-item--inch"
+          className="make__form-item--make body__item make__form-item--inch bodymake__form-item-right"
           name={['bodyMakeDepth', 'inch']}
           rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
         >
           {/* height - inch */}
           <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
@@ -812,7 +806,7 @@ const BodyMake: React.FC<Props> = ({
     </>
   );
 
-  /* Create Body Length Modal */
+  /* Create Body Make Modal */
   let createBodyMakeModal = (
     <Modal
       centered
@@ -832,7 +826,7 @@ const BodyMake: React.FC<Props> = ({
   );
 
   /* ----------------------------------------- */
-  /* Edit/Update Body Length Form */
+  /* Edit/Update Body Make Form */
   let updateBodyMakeFormComponent = (
     <>
       <Form
@@ -857,7 +851,7 @@ const BodyMake: React.FC<Props> = ({
     </>
   );
 
-  /* Edit Body Length Modal */
+  /* Edit Body Make Modal */
   let updateBodyMakeModal = (
     <Modal
       centered

@@ -3,6 +3,8 @@ import React from 'react';
 import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
 import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
 import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
+import BodyMakeFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeFormItems';
+import MakeWheelbaseFormItems from 'src/components/Modal/Crud/FormItems/MakeWheelbaseFormItems';
 /* 3rd party lib */
 import { Modal } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
@@ -12,6 +14,8 @@ interface CrudModalProps extends ICategory {
   /** The title of the modal on top  */
   modalTitle: string;
   modalWidth?: number;
+  /** boolean to know if this modal is for dashboard or other place */
+  isDashboard?: boolean;
   /** To show or hide the modal  */
   visible: boolean;
   /** for spinner of the modal to show loading  */
@@ -61,6 +65,7 @@ const CrudModal: React.FC<Props> = ({
   antdForm,
   loading,
   showModal,
+  isDashboard,
   warningText,
   modalWidth = 520,
   imagesPreviewUrls,
@@ -145,6 +150,26 @@ const CrudModal: React.FC<Props> = ({
                 crud={crud}
                 antdForm={antdForm}
                 onFinish={onFinish}
+                isDashboard={isDashboard}
+                imagesPreviewUrls={imagesPreviewUrls}
+                setImagesPreviewUrls={setImagesPreviewUrls}
+                setUploadSelectedFiles={setUploadSelectedFiles}
+              />
+            )}
+          {category === 'make_wheelbase' && antdForm !== undefined && onFinish !== undefined && (
+            <MakeWheelbaseFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'body_make' &&
+            antdForm !== undefined &&
+            onFinish !== undefined &&
+            imagesPreviewUrls !== undefined &&
+            setImagesPreviewUrls !== undefined &&
+            setUploadSelectedFiles !== undefined && (
+              <BodyMakeFormItems
+                crud={crud}
+                antdForm={antdForm}
+                onFinish={onFinish}
+                isDashboard={isDashboard}
                 imagesPreviewUrls={imagesPreviewUrls}
                 setImagesPreviewUrls={setImagesPreviewUrls}
                 setUploadSelectedFiles={setUploadSelectedFiles}

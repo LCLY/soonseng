@@ -172,6 +172,14 @@
         }
       }
 
+      &--inch {
+        @include respond-to($small-phone) {
+          & .ant-form-item-control-input {
+            margin-top: auto;
+          }
+        }
+      }
+
       label {
         min-width: 9rem;
       }

@@ -234,7 +234,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                               <NumberFormat
                                 displayType={'text'}
                                 thousandSeparator={true}
-                                value={bodyMakeObj.make_wheelbase.make.price.toFixed(2)}
+                                value={bodyMakeObj.price.toFixed(2)}
                               />
                             ) : (
                               <span className="sales__overview-dash">-</span>
