@@ -5,7 +5,6 @@
     justify-content: center;
     flex-direction: column;
     min-height: calc(100vh - 58rem);
-    padding: 0.5rem 3rem;
     overflow-y: auto;
     overflow-x: hidden;
     @include customScrollbar(0.2rem, 0.2rem, 1rem, white, rgba(255, 255, 255, 0.604));
@@ -23,7 +22,7 @@
     }
 
     @include respond-to($tablet-landscape-up) {
-      padding: 0.5rem 3rem;
+      padding: 0.5rem;
     }
   }
 
@@ -153,6 +152,7 @@
       /* --------------------------- */
       &--mobile {
         padding: 3rem;
+        position: relative;
         background: rgba($primary-color-4, 0.5);
 
         @include respond-to($small-phone) {
@@ -725,6 +725,7 @@
     /* ------------------------------------------------ */
     &-outerdiv {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       margin-bottom: 2rem;
       margin-top: 2rem;
@@ -843,6 +844,14 @@
         font-size: 1.3rem !important;
       }
     }
+
+    &-title {
+      &-highlight {
+        font-weight: bolder;
+        color: $primary-color-4;
+        font-family: $font-firesans;
+      }
+    }
   }
 
   /* =================== */
@@ -875,7 +884,7 @@
         background: rgba(255, 255, 255, 0.75);
       }
       &:active {
-        transition: none;
+        transition: all 0.5s ease;
         background: white;
       }
 
@@ -883,6 +892,36 @@
         width: 3rem;
         height: 3rem;
         font-size: 1.5rem;
+      }
+    }
+
+    &-title {
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($phone-only) {
+        display: flex;
+      }
+      @include respond-to($tablet-portrait-up) {
+        display: flex;
+      }
+      @include respond-to($tablet-landscape-up) {
+        display: flex;
+      }
+      @include respond-to($desktop-up) {
+        display: block;
+      }
+    }
+
+    &-body {
+      @include respond-to($small-phone) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.7rem;
+        padding: 0;
       }
     }
   }

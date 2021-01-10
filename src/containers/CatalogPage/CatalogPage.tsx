@@ -185,7 +185,7 @@ const CatalogPage: React.FC<Props> = ({
         }}
       >
         <i className="fas fa-edit" />
-        &nbsp;Edit Series
+        &nbsp;&nbsp;Edit Series
       </Menu.Item>
       <Menu.Item
         danger
@@ -202,7 +202,8 @@ const CatalogPage: React.FC<Props> = ({
           setShowDeleteModal({ ...showDeleteModal, series: true });
         }}
       >
-        <i className="fas fa-trash-alt" /> &nbsp; Delete Series
+        <i className="fas fa-trash-alt" />
+        &nbsp;&nbsp;Delete Series
       </Menu.Item>
     </Menu>
   );
@@ -236,7 +237,7 @@ const CatalogPage: React.FC<Props> = ({
         }}
       >
         <i className="fas fa-edit" />
-        &nbsp;Edit Model
+        &nbsp;&nbsp;Edit Model
       </Menu.Item>
       <Menu.Item
         danger
@@ -252,7 +253,7 @@ const CatalogPage: React.FC<Props> = ({
           setShowDeleteModal({ ...showDeleteModal, make: true });
         }}
       >
-        <i className="fas fa-trash-alt" /> &nbsp; Delete Model
+        <i className="fas fa-trash-alt" /> &nbsp;&nbsp;Delete Model
       </Menu.Item>
     </Menu>
   );

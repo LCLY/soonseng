@@ -4,7 +4,10 @@ import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
 import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
 import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
 import BodyMakeFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeFormItems';
+import AccessoryMakeFormItems from 'src/components/Modal/Crud/FormItems/AccessoryMakeFormItems';
+import BodyAccessoryFormItems from 'src/components/Modal/Crud/FormItems/BodyAccessoryFormItems';
 import MakeWheelbaseFormItems from 'src/components/Modal/Crud/FormItems/MakeWheelbaseFormItems';
+import BodyMakeAccessoryFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeAccessoryFormItems';
 /* 3rd party lib */
 import { Modal } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
@@ -53,7 +56,16 @@ type Props = CrudModalProps;
 
 /** Categories - e.g. make, body, wheelbase......*/
 export interface ICategory {
-  category: 'fees' | 'series' | 'make' | 'body' | 'make_wheelbase' | 'body_make';
+  category:
+    | 'fees'
+    | 'series'
+    | 'make'
+    | 'body'
+    | 'make_wheelbase'
+    | 'body_make'
+    | 'accessory'
+    | 'body_accessory'
+    | 'body_make_accessory';
 }
 
 const CrudModal: React.FC<Props> = ({
@@ -103,7 +115,7 @@ const CrudModal: React.FC<Props> = ({
               {warningText === '' ? (
                 { backupWarningText }
               ) : (
-                <span className="dashboard__delete-message">{` ${warningText}`}</span>
+                <span className="dashboard__delete-message">{`${warningText}`}</span>
               )}
             </>
           )}
@@ -175,6 +187,30 @@ const CrudModal: React.FC<Props> = ({
                 setUploadSelectedFiles={setUploadSelectedFiles}
               />
             )}
+
+          {category === 'accessory' &&
+            antdForm !== undefined &&
+            onFinish !== undefined &&
+            imagesPreviewUrls !== undefined &&
+            setImagesPreviewUrls !== undefined &&
+            setUploadSelectedFiles !== undefined && (
+              <AccessoryMakeFormItems
+                crud={crud}
+                antdForm={antdForm}
+                onFinish={onFinish}
+                isDashboard={isDashboard}
+                imagesPreviewUrls={imagesPreviewUrls}
+                setImagesPreviewUrls={setImagesPreviewUrls}
+                setUploadSelectedFiles={setUploadSelectedFiles}
+              />
+            )}
+
+          {category === 'body_accessory' && antdForm !== undefined && onFinish !== undefined && (
+            <BodyAccessoryFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'body_make_accessory' && antdForm !== undefined && onFinish !== undefined && (
+            <BodyMakeAccessoryFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
         </Modal>
       )}
     </>

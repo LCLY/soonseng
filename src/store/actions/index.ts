@@ -268,6 +268,11 @@ export {
   updateAccessoryStart,
   updateAccessoryFailed,
   updateAccessorySucceed,
+  // Delete Accessory
+  deleteAccessory,
+  deleteAccessoryStart,
+  deleteAccessoryFailed,
+  deleteAccessorySucceed,
   /* =========================================== */
   //  Body Make Accessory (Body make Page)
   /* =========================================== */

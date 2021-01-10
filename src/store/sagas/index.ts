@@ -65,6 +65,7 @@ import {
   createAccessorySaga,
   getAccessoriesSaga,
   updateAccessorySaga,
+  deleteAccessorySaga,
   // charges and fees
   createChargesFeesSaga,
   getChargesFeesSaga,
@@ -175,4 +176,5 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_ACCESSORY, createAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_ACCESSORIES, getAccessoriesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_ACCESSORY, updateAccessorySaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_ACCESSORY, deleteAccessorySaga)]);
 }

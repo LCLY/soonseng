@@ -205,6 +205,9 @@
           border: 1px solid white !important;
         }
       }
+      & a {
+        text-decoration: none !important;
+      }
 
       // most outerdiv wrapping all buttons
       &-outerdiv {
@@ -255,13 +258,14 @@
           font-size: 1rem;
           padding-top: 0.5rem;
         }
-        @include respond-to(phone-only) {
+        @include respond-to($phone-only) {
           font-size: 1rem;
           padding-top: 0.5rem;
         }
         @include respond-to($tablet-portrait-up) {
           font-size: 1.5rem;
           padding-top: 0;
+          margin-left: 1rem;
         }
       }
     }

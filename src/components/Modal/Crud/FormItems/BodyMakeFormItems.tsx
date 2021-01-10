@@ -253,7 +253,7 @@ const BodyMakeFormItems: React.FC<Props> = ({
           </Form.Item>
         </div>
         <Form.Item
-          className="make__form-item"
+          className="make__form-item margin_t-1"
           label="Price"
           name="bodyMakePrice"
           rules={[{ required: false, message: 'Input price here!' }]}

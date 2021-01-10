@@ -1463,7 +1463,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onCreateBodyAccessory: (body_id, accessory_id) => dispatch(actions.createBodyAccessory(body_id, accessory_id)),
     // onUpdateBodyAccessory: (body_id, accessory_id, imageTag, imageFiles) =>
     //   dispatch(actions.updateBodyAccessory(body_id, accessory_id, imageTag, imageFiles)),
-    onDeleteBodyAccessory: (body_id, body_make_id) => dispatch(actions.deleteBodyAccessory(body_id, body_make_id)),
+    onDeleteBodyAccessory: (body_id, body_accessory_id) =>
+      dispatch(actions.deleteBodyAccessory(body_id, body_accessory_id)),
     onGetBodyAssociatedAccessories: () => dispatch(actions.getBodyAssociatedAccessories()),
     onClearBodyAccessoryArray: () => dispatch(actions.clearBodyAccessoryArray()),
 

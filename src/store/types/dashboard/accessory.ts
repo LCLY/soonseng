@@ -54,6 +54,27 @@ export interface UpdateAccessoryFailedAction {
   type: typeof actionTypes.UPDATE_ACCESSORY_FAILED;
   errorMessage: string;
 }
+/* --------------------------- */
+// Delete Accessory (Tail)
+/* --------------------------- */
+/* Api call */
+export interface DeleteAccessoryAction {
+  type: typeof actionTypes.DELETE_ACCESSORY;
+  accessory_id: number;
+}
+/* States */
+export interface DeleteAccessoryStartAction {
+  type: typeof actionTypes.DELETE_ACCESSORY_START;
+}
+export interface DeleteAccessorySucceedAction {
+  type: typeof actionTypes.DELETE_ACCESSORY_SUCCEED;
+  accessoriesArray: TReceivedAccessoryObj[];
+  successMessage: string;
+}
+export interface DeleteAccessoryFailedAction {
+  type: typeof actionTypes.DELETE_ACCESSORY_FAILED;
+  errorMessage: string;
+}
 
 /* --------------------------- */
 // Get All Accessories (tail)

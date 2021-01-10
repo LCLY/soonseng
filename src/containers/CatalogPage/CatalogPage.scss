@@ -106,6 +106,10 @@
           max-height: 80rem;
           padding: 2rem 2rem 0 2rem;
         }
+
+        @include respond-to($tablet-portrait-up) {
+          padding: 2rem;
+        }
         @include customScrollbar(0.2rem, 0.2rem, 1rem, white, rgba(255, 255, 255, 0.604));
       }
 
@@ -573,7 +577,7 @@
         background: rgb(194, 194, 194);
       }
       &:active {
-        transition: none;
+        transition: all 0.2s ease;
         background: white;
       }
 

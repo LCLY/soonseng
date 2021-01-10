@@ -434,9 +434,6 @@ export function* createMakeSaga(action: AppActions) {
       price: action.createMakeData.price,
     };
   }
-
-  console.log({ make });
-
   try {
     let response = yield axios.post(url, { make });
     if ('imageTag' in action && 'imageFiles' in action) {
@@ -627,11 +624,9 @@ export function* updateSeriesSaga(action: AppActions) {
   if ('title' in action) {
     formData = { title: action.title };
   }
-  console.log(formData);
 
   try {
     let response = yield axios.put(url, formData);
-    console.log(response);
 
     yield put(actions.updateSeriesSucceed(response.data.brand.series, response.data.success));
   } catch (error) {
@@ -1309,8 +1304,6 @@ export function* createBodyMakeAccessorySaga(action: AppActions) {
     };
   }
 
-  console.log(formData);
-
   try {
     let response = yield axios.post(url, formData);
     yield put(actions.createBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
@@ -1369,7 +1362,6 @@ export function* updateBodyMakeAccessorySaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, formData);
-    console.log(response);
 
     yield put(actions.updateBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
   } catch (error) {
@@ -1538,6 +1530,28 @@ export function* updateAccessorySaga(action: AppActions) {
       yield setPromiseError(error, actions.updateAccessoryFailed, error.response.data.error);
     } else {
       yield setPromiseError(error, actions.updateAccessoryFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete Accessory
+/* ------------------------------- */
+export function* deleteAccessorySaga(action: AppActions) {
+  yield put(actions.deleteAccessoryStart());
+
+  let url = '';
+  if ('accessory_id' in action) {
+    url = process.env.REACT_APP_API + `/tail/accessories/${action.accessory_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteAccessorySucceed(response.data.accessories, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteAccessoryFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteAccessoryFailed, 'Error');
     }
   }
 }

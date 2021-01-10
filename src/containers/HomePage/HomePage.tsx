@@ -13,6 +13,7 @@ import ScrollAnimation from 'react-animate-on-scroll';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 
 /* Util */
+import { ROUTE_SALES } from 'src/shared/routes';
 import homepageImage from 'src/img/hino_homepage.jpg';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 /**
@@ -62,18 +63,21 @@ function HomePage() {
   };
 
   let homepageButtons = [
-    { title: 'Sales', desc: 'We don’t just sell vehicles. We solve problems.' },
+    { title: 'Sales', desc: 'We don’t just sell vehicles. We solve problems.', redirectUrl: ROUTE_SALES },
     {
       title: 'Service',
       desc: 'Treat your tools to a spa, and they will serve you well',
+      redirectUrl: '',
     },
     {
       title: 'Sparepart',
       desc: 'Sourcing the best parts since 1988.',
+      redirectUrl: '',
     },
     {
       title: 'Insurance',
       desc: ' We offer competitive rates, tailored just for you.',
+      redirectUrl: '',
     },
   ];
 
@@ -152,7 +156,7 @@ function HomePage() {
               {homepageButtons.map((buttonObj, index) => (
                 <div key={index} className="homepage__first-button-div">
                   <Button className="homepage__first-button" type="default">
-                    {buttonObj.title}
+                    <a href={buttonObj.redirectUrl}>{buttonObj.title}</a>
                   </Button>
                   <div className="homepage__first-button-description">{buttonObj.desc}</div>
                 </div>

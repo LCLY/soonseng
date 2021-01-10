@@ -106,6 +106,39 @@ export const updateAccessoryFailed = (errorMessage: string): AppActions => {
   };
 };
 
+/* ------------------ */
+// Delete Accessory
+/* ------------------ */
+export const deleteAccessory = (accessory_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_ACCESSORY,
+    accessory_id: accessory_id,
+  };
+};
+
+export const deleteAccessoryStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_ACCESSORY_START,
+  };
+};
+
+export const deleteAccessorySucceed = (
+  accessoriesArray: TReceivedAccessoryObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.DELETE_ACCESSORY_SUCCEED,
+    accessoriesArray: accessoriesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteAccessoryFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_ACCESSORY_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
 /* ============================================================================================ */
 // Body Accessory
 /* ============================================================================================ */

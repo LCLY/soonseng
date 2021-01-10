@@ -2,6 +2,7 @@ import React, { useState, useEffect, ReactText } from 'react';
 import './Accessory.scss';
 /*components*/
 import Loading from 'src/components/Loading/Loading';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
@@ -47,10 +48,6 @@ type TAccessoryTableState = {
   available?: boolean;
 };
 
-type TShowModal = {
-  accessory: boolean;
-};
-
 type Props = AccessoryProps & StateProps & DispatchProps;
 
 const Accessory: React.FC<Props> = ({
@@ -63,6 +60,7 @@ const Accessory: React.FC<Props> = ({
   onGetAccessories,
   onCreateAccessory,
   onUpdateAccessory,
+  onDeleteAccessory,
   // delete upload iamge
   onDeleteUploadImage,
   // clear states
@@ -109,11 +107,18 @@ const Accessory: React.FC<Props> = ({
   const [galleryImages, setGalleryImages] = useState<TGalleryImageArrayObj[]>([]);
 
   // Modal states
-  const [showCreateModal, setShowCreateModal] = useState<TShowModal>({
+  const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
     accessory: false,
   });
-  const [showUpdateModal, setShowUpdateModal] = useState<TShowModal>({
+  const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
     accessory: false,
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
+    accessory: false,
+  });
+
+  const [deleteModalContent, setDeleteModalContent] = useState({
+    accessory: { accessoryId: -1, warningText: '', backupWarningText: 'this accessory' },
   });
 
   // check if accessory is dimension associated if yes, hide price
@@ -208,7 +213,21 @@ const Accessory: React.FC<Props> = ({
             >
               Edit
             </Button>
-            <Button disabled type="link" danger>
+            <Button
+              type="link"
+              danger
+              onClick={() => {
+                setDeleteModalContent({
+                  ...deleteModalContent,
+                  accessory: {
+                    accessoryId: record.accessoryId,
+                    warningText: record.accessoryTitle,
+                    backupWarningText: 'this accessory',
+                  },
+                });
+                setShowDeleteModal({ ...showDeleteModal, accessory: true });
+              }}
+            >
               Delete
             </Button>
           </>
@@ -364,6 +383,10 @@ const Accessory: React.FC<Props> = ({
       };
       onUpdateAccessory(updateAccessoryData);
     }
+  };
+
+  const onDeleteAccessoryFinish = () => {
+    onDeleteAccessory(deleteModalContent.accessory.accessoryId);
   };
 
   /**
@@ -631,7 +654,7 @@ const Accessory: React.FC<Props> = ({
       >
         {accessoryFormItems}
 
-        {/* Getting the brand id */}
+        {/* Getting the accessory id */}
         <Form.Item
           className="make__form-item"
           label="id"
@@ -745,16 +768,18 @@ const Accessory: React.FC<Props> = ({
       // close all the modals if successful
       setShowCreateModal({ ...showCreateModal, accessory: false });
       setShowUpdateModal({ ...showUpdateModal, accessory: false });
+      setShowDeleteModal({ ...showDeleteModal, accessory: false });
     }
   }, [
     successMessage,
     showUpdateModal,
     showCreateModal,
+    showDeleteModal,
     createAccessoryForm,
     updateAccessoryForm,
-
     setShowUpdateModal,
     setShowCreateModal,
+    setShowDeleteModal,
     onClearDashboardState,
   ]);
 
@@ -781,6 +806,19 @@ const Accessory: React.FC<Props> = ({
       {/* ================== */}
       {createAccessoryModal}
       {updateAccessoryModal}
+      <CrudModal
+        crud={'delete'}
+        indexKey={'accessory'}
+        category={'accessory'}
+        modalTitle={`Delete Accessory`}
+        showModal={showDeleteModal}
+        visible={showDeleteModal.accessory}
+        onDelete={onDeleteAccessoryFinish}
+        setShowModal={setShowDeleteModal}
+        warningText={deleteModalContent.accessory.warningText}
+        backupWarningText={deleteModalContent.accessory.backupWarningText}
+        loading={loading !== undefined && loading}
+      />
 
       <Layout>
         <NavbarComponent activePage="dashboard" />
@@ -842,7 +880,6 @@ const Accessory: React.FC<Props> = ({
 };
 interface StateProps {
   loading?: boolean;
-  imagesUploaded?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
   accessoriesArray?: TReceivedAccessoryObj[] | null;
@@ -852,7 +889,6 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     loading: state.dashboard.loading,
     errorMessage: state.dashboard.errorMessage,
     successMessage: state.dashboard.successMessage,
-    imagesUploaded: state.dashboard.imagesUploaded,
     accessoriesArray: state.dashboard.accessoriesArray,
   };
 };
@@ -861,6 +897,7 @@ interface DispatchProps {
   onGetAccessories: typeof actions.getAccessories;
   onCreateAccessory: typeof actions.createAccessory;
   onUpdateAccessory: typeof actions.updateAccessory;
+  onDeleteAccessory: typeof actions.deleteAccessory;
   // Images
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   // Miscellaneous
@@ -872,6 +909,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetAccessories: () => dispatch(actions.getAccessories()),
     onCreateAccessory: (createAccessoryData) => dispatch(actions.createAccessory(createAccessoryData)),
     onUpdateAccessory: (updateAccessoryData) => dispatch(actions.updateAccessory(updateAccessoryData)),
+    onDeleteAccessory: (accessory_id) => dispatch(actions.deleteAccessory(accessory_id)),
+
     // Image
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     // Miscellaneous

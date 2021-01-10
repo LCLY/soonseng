@@ -13,7 +13,20 @@ import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
 import { LeftCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Button, Empty, Modal, Form, Checkbox, Divider, Skeleton, notification, Dropdown, Tooltip, Menu } from 'antd';
+import {
+  Button,
+  Empty,
+  Modal,
+  Form,
+  Checkbox,
+  Divider,
+  Skeleton,
+  notification,
+  Dropdown,
+  Tooltip,
+  Menu,
+  Tag,
+} from 'antd';
 /* Util */
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
@@ -35,17 +48,22 @@ import moment from 'moment';
 import { TUpdateMakeFinishValues } from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
 import { checkInchExist, convertPriceToFloat, emptyStringWhenUndefinedOrNull, formatFeetInch } from 'src/shared/Utils';
 import { TCreateBodyMakeForm, TUpdateBodyMakeForm } from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
+import CatalogAccessoriesModal from './CatalogAccessories/CatalogAccessoriesModal';
 
 interface MatchParams {
   make_id: string;
   series_id: string;
 }
 
-interface ICheckedAccessories {
+export interface ICheckedAccessories {
   [uniqueId: string]: { checked: boolean; accessory: TReceivedAccessoryObj };
 }
-interface ICheckedDimensionAccessories {
+export interface ICheckedDimensionAccessories {
   [uniqueId: string]: { checked: boolean; accessory: TReceivedDimensionAccessoryObj };
+}
+
+export interface ICrudModal {
+  [key: string]: boolean;
 }
 
 interface CatalogBodyMakeProps {}
@@ -76,14 +94,20 @@ const CatalogBodyMake: React.FC<Props> = ({
   onGetSalesAccessories,
   onCreateMakeWheelbase,
   onDeleteMakeWheelbase,
+  onGetBodyAccessories,
   onClearDashboardState,
   onGetCatalogBodyMakes,
+  onGetBodyMakeAccessories,
+  onGetBodyAssociatedAccessories,
+  onGetDimensionAssociatedAccessories,
 }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
   const [catalogMake, setCatalogMake] = useState<TReceivedMakeObj | null>(null);
   const [pickAccessoryModalOpen, setPickAccessoryModalOpen] = useState(false);
+  const [crudAccessoryModalOpen, setCrudAccessoryModalOpen] = useState(false);
+  const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
 
   /* ======================== */
   /*   Image related states   */
@@ -98,18 +122,26 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [createBodyMakeForm] = Form.useForm();
   const [updateBodyMakeForm] = Form.useForm();
 
-  const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
+  const [showCreateModal, setShowCreateModal] = useState<ICrudModal>({
     make: false,
-    make_wheelbase: false,
+    accessory: false,
     body_make: false,
+    make_wheelbase: false,
+    body_accessory: false,
+    body_make_accessory: false,
   });
-  const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
+  const [showUpdateModal, setShowUpdateModal] = useState<ICrudModal>({
     make: false,
+    accessory: false,
     body_make: false,
+    body_make_accessory: false,
   });
-  const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
-    make_wheelbase: false,
+  const [showDeleteModal, setShowDeleteModal] = useState<ICrudModal>({
+    accessory: false,
     body_make: false,
+    make_wheelbase: false,
+    body_accessory: false,
+    body_make_accessory: false,
   });
 
   const [modalContent, setModalContent] = useState({
@@ -425,7 +457,6 @@ const CatalogBodyMake: React.FC<Props> = ({
             <div className="catalogbodymake__detail-model">
               <div className="catalogbodymake__detail-model-text">{catalogMake.title}</div>
             </div>
-
             <section className="catalogbodymake__detail-body catalogbodymake__detail-body--mobile">
               {/* left column */}
               <div style={{ width: '100%' }}>
@@ -480,28 +511,44 @@ const CatalogBodyMake: React.FC<Props> = ({
                     </div>
                   </div>
                 )}
-
-                {accessObj?.showAdminDashboard && (
-                  <Tooltip title="Edit Model">
-                    <div
-                      className="catalogbodymake__button-make catalogbodymake__button-make--mobile"
-                      onClick={() => {
-                        setModalContent({
-                          ...modalContent,
-                          make: { seriesTitle: catalogMake.series, makeTitle: catalogMake.title },
-                        });
-                        updateMakeForm.setFieldsValue({ makeSeriesId: match.params.series_id });
-                        // show the modal
-                        setShowCreateModal({ ...showCreateModal, make: true });
-                      }}
-                    >
-                      <i className="fas fa-pen" />
-                    </div>
-                  </Tooltip>
-                )}
               </div>
             </section>
           </div>
+          {accessObj?.showAdminDashboard && (
+            <Tooltip title="Edit Model">
+              <div
+                className="catalogbodymake__button-make"
+                onClick={() => {
+                  setModalContent({
+                    ...modalContent,
+                    make: { seriesTitle: catalogMake.series, makeTitle: catalogMake.title },
+                  });
+
+                  updateMakeForm.setFieldsValue({
+                    makeId: catalogMake.id,
+                    gvw: catalogMake.gvw,
+                    price: catalogMake.price,
+                    title: catalogMake.title,
+                    makeAbs: catalogMake.abs,
+                    makeTire: catalogMake.tire,
+                    makeTorque: catalogMake.torque,
+                    makeConfig: catalogMake.config,
+                    makeSeriesId: match.params.series_id,
+                    makeBrandId: catalogMake.brand.id,
+                    horsepower: catalogMake.horsepower,
+                    engine_cap: catalogMake.engine_cap,
+                    makeEmission: catalogMake.emission,
+                    transmission: catalogMake.transmission,
+                    year: catalogMake.year ? moment(catalogMake.year) : '',
+                  });
+                  // show the modal
+                  setShowUpdateModal({ ...showUpdateModal, make: true });
+                }}
+              >
+                <i className="fas fa-pen" />
+              </div>
+            </Tooltip>
+          )}
         </div>
       </>
     );
@@ -557,7 +604,7 @@ const CatalogBodyMake: React.FC<Props> = ({
         {accessObj?.showAdminDashboard && (
           <Tooltip title={`Add Body for ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm configuration`}>
             <span
-              className="catalog__button-series"
+              className="catalog__button-series catalogbodymake__button-body"
               onClick={() => {
                 setModalContent({
                   ...modalContent,
@@ -574,7 +621,7 @@ const CatalogBodyMake: React.FC<Props> = ({
               }}
             >
               <PlusCircleOutlined className="catalog__button-icon catalog__button-icon--make" />
-              <span className="catalog__button-title">&nbsp;&nbsp;Add Body</span>
+              <span className="catalogbodymake__button-title">&nbsp;&nbsp;Add Body</span>
             </span>
           </Tooltip>
         )}
@@ -622,12 +669,15 @@ const CatalogBodyMake: React.FC<Props> = ({
                               </div>
                             )}
 
-                            {bodyMake?.height !== null && bodyMake?.height !== '' && bodyMake?.height !== null && (
-                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                Height:&nbsp;
-                                <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.height}</div>
-                              </div>
-                            )}
+                            {bodyMake?.height !== null &&
+                              bodyMake?.height !== '\' "' &&
+                              bodyMake?.height !== '' &&
+                              bodyMake?.height !== null && (
+                                <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                  Height:&nbsp;
+                                  <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.height}</div>
+                                </div>
+                              )}
                           </div>
                           <div>
                             {accessObj?.showPriceSalesPage && (
@@ -740,7 +790,17 @@ const CatalogBodyMake: React.FC<Props> = ({
         }}
       >
         <i className="fas fa-edit" />
-        &nbsp;Edit Body
+        &nbsp;&nbsp;Edit Body
+      </Menu.Item>
+      <Menu.Item
+        onClick={() => {
+          // set the current body make obj
+          setCurrentBodyMake(bodyMakeObj);
+          setCrudAccessoryModalOpen(true);
+        }}
+      >
+        <i className="fas fa-tools" />
+        &nbsp;&nbsp;Accessories
       </Menu.Item>
       <Menu.Item
         danger
@@ -756,7 +816,8 @@ const CatalogBodyMake: React.FC<Props> = ({
           setShowDeleteModal({ ...showDeleteModal, body_make: true });
         }}
       >
-        <i className="fas fa-trash-alt" /> &nbsp; Delete Body
+        <i className="fas fa-trash-alt" />
+        &nbsp;&nbsp;Delete Body
       </Menu.Item>
     </Menu>
   );
@@ -844,20 +905,28 @@ const CatalogBodyMake: React.FC<Props> = ({
       setShowCreateModal({
         ...showCreateModal,
         make: false,
+        accessory: false,
         body_make: false,
         make_wheelbase: false,
+        body_accessory: false,
+        body_make_accessory: false,
       });
       setShowUpdateModal({
         ...showUpdateModal,
         make: false,
+        accessory: false,
         body_make: false,
         make_wheelbase: false,
+        body_make_accessory: false,
       });
       setShowDeleteModal({
         ...showDeleteModal,
         make: false,
         body_make: false,
         make_wheelbase: false,
+        accessory: false,
+        body_accessory: false,
+        body_make_accessory: false,
       });
     }
   }, [
@@ -888,8 +957,27 @@ const CatalogBodyMake: React.FC<Props> = ({
   useEffect(() => {
     if (successMessage) {
       onGetCatalogBodyMakes(parseInt(match.params.make_id));
+      // need to refesh them jz incase new ones are created
+      onGetBodyAssociatedAccessories();
+      onGetDimensionAssociatedAccessories();
+
+      if (currentBodyMake) {
+        onGetSalesAccessories(currentBodyMake.id);
+        onGetBodyAccessories(currentBodyMake.body.id);
+        onGetBodyMakeAccessories(currentBodyMake.id);
+      }
     }
-  }, [successMessage, onGetCatalogBodyMakes, match.params.make_id]);
+  }, [
+    successMessage,
+    currentBodyMake,
+    onGetBodyAccessories,
+    onGetSalesAccessories,
+    onGetCatalogBodyMakes,
+    match.params.make_id,
+    onGetBodyMakeAccessories,
+    onGetBodyAssociatedAccessories,
+    onGetDimensionAssociatedAccessories,
+  ]);
 
   /* ================================================== */
   /* ================================================== */
@@ -998,11 +1086,28 @@ const CatalogBodyMake: React.FC<Props> = ({
       />
 
       {/* -------------------------------- */}
+      {/* Catalog Accessories CRUD Modal */}
+      {/* -------------------------------- */}
+      <CatalogAccessoriesModal
+        currentBodyMake={currentBodyMake}
+        setCurrentBodyMake={setCurrentBodyMake}
+        showCreateModal={showCreateModal}
+        setShowCreateModal={setShowCreateModal}
+        showUpdateModal={showUpdateModal}
+        setShowUpdateModal={setShowUpdateModal}
+        showDeleteModal={showDeleteModal}
+        setShowDeleteModal={setShowDeleteModal}
+        crudAccessoryModalOpen={crudAccessoryModalOpen}
+        setCrudAccessoryModalOpen={setCrudAccessoryModalOpen}
+      />
+
+      {/* -------------------------------- */}
       {/* Quotation modal */}
       {/* -------------------------------- */}
       <Modal
         className="catalogbodymake__modal"
         title="Select accessories for this configuration"
+        width={650}
         visible={pickAccessoryModalOpen}
         okText="Add To Orders"
         onOk={onGenerateQuotation}
@@ -1053,6 +1158,12 @@ const CatalogBodyMake: React.FC<Props> = ({
                                 }}
                               >
                                 {currentCheckedGeneralAccessories[uniqueId].accessory.title}
+                                {currentCheckedGeneralAccessories[uniqueId].accessory.price !== 0 &&
+                                  currentCheckedGeneralAccessories[uniqueId].accessory.price !== null && (
+                                    <Tag color="volcano" className="margin_l-1">
+                                      RM&nbsp;{currentCheckedGeneralAccessories[uniqueId].accessory.price}
+                                    </Tag>
+                                  )}
                               </Checkbox>
                             </div>
                           );
@@ -1093,6 +1204,13 @@ const CatalogBodyMake: React.FC<Props> = ({
                                 }}
                               >
                                 {currentCheckedBodyAccessories[uniqueId].accessory.title}
+
+                                {currentCheckedBodyAccessories[uniqueId].accessory.price !== 0 &&
+                                  currentCheckedBodyAccessories[uniqueId].accessory.price !== null && (
+                                    <Tag color="volcano" className="margin_l-1">
+                                      RM&nbsp;{currentCheckedBodyAccessories[uniqueId].accessory.price}
+                                    </Tag>
+                                  )}
                               </Checkbox>
                             </div>
                           );
@@ -1133,6 +1251,13 @@ const CatalogBodyMake: React.FC<Props> = ({
                                 }}
                               >
                                 {currentCheckedDimensionAccessories[uniqueId].accessory.accessory.title}
+
+                                {currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== 0 &&
+                                  currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== null && (
+                                    <Tag color="volcano" className="margin_l-1">
+                                      RM&nbsp;{currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price}
+                                    </Tag>
+                                  )}
                               </Checkbox>
                             </div>
                           );
@@ -1165,25 +1290,27 @@ const CatalogBodyMake: React.FC<Props> = ({
                     </div>
 
                     {accessObj?.showAdminDashboard && (
-                      <div
-                        className="catalog__button-series"
-                        onClick={() => {
-                          // get make id and title
-                          setModalContent({
-                            ...modalContent,
-                            make_wheelbase: {
-                              seriesTitle: catalogMake.series,
-                            },
-                          });
-                          setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
-                          createMakeWheelbaseForm.setFieldsValue({
-                            makeId: catalogMake.id,
-                          });
-                        }}
-                      >
-                        <PlusCircleOutlined className="catalog__button-icon" />
-                        &nbsp;&nbsp;Add Configuration
-                      </div>
+                      <Tooltip title="Add Configuration">
+                        <div
+                          className="catalog__button-series catalogbodymake__button-body"
+                          onClick={() => {
+                            // get make id and title
+                            setModalContent({
+                              ...modalContent,
+                              make_wheelbase: {
+                                seriesTitle: catalogMake.series,
+                              },
+                            });
+                            setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
+                            createMakeWheelbaseForm.setFieldsValue({
+                              makeId: catalogMake.id,
+                            });
+                          }}
+                        >
+                          <PlusCircleOutlined className="catalog__button-icon" />
+                          <span className="catalogbodymake__button-title">&nbsp;&nbsp;Add Configuration</span>
+                        </div>
+                      </Tooltip>
                     )}
                   </div>
                   <section className="catalogbodymake__section-banner">
@@ -1298,6 +1425,10 @@ interface DispatchProps {
   onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
   onDeleteMakeWheelbase: typeof actions.deleteMakeWheelbase;
   onClearDashboardState: typeof actions.clearDashboardState;
+  onGetBodyAccessories: typeof actions.getBodyAccessories;
+  onGetBodyMakeAccessories: typeof actions.getBodyMakeAccessories;
+  onGetBodyAssociatedAccessories: typeof actions.getBodyAssociatedAccessories;
+  onGetDimensionAssociatedAccessories: typeof actions.getDimensionAssociatedAccessories;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -1310,14 +1441,18 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.createBodyMake(createBodyMakeData, imageTag, imageFiles)),
     onUpdateBodyMake: (updateBodyMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateBodyMake(updateBodyMakeData, imageTag, imageFiles)),
+    onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>
+      dispatch(actions.deleteMakeWheelbase(make_id, make_wheelbase_id)),
+    onGetBodyAccessories: (body_id) => dispatch(actions.getBodyAccessories(body_id)),
     onDeleteBodyMake: (body_make_id) => dispatch(actions.deleteBodyMake(body_make_id)),
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
     onGetCatalogBodyMakes: (make_id) => dispatch(actions.getCatalogBodyMakes(make_id)),
+    onGetBodyAssociatedAccessories: () => dispatch(actions.getBodyAssociatedAccessories()),
+    onGetDimensionAssociatedAccessories: () => dispatch(actions.getDimensionAssociatedAccessories()),
+    onGetBodyMakeAccessories: (body_make_id) => dispatch(actions.getBodyMakeAccessories(body_make_id)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onCreateMakeWheelbase: (make_id, wheelbase_id) => dispatch(actions.createMakeWheelbase(make_id, wheelbase_id)),
-    onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>
-      dispatch(actions.deleteMakeWheelbase(make_id, make_wheelbase_id)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CatalogBodyMake));

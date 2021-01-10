@@ -69,6 +69,10 @@ import {
   UpdateAccessoryFailedAction,
   UpdateAccessoryStartAction,
   UpdateAccessorySucceedAction,
+  DeleteAccessoryAction,
+  DeleteAccessoryStartAction,
+  DeleteAccessorySucceedAction,
+  DeleteAccessoryFailedAction,
   // Body Accessory
   CreateBodyAccessoryAction,
   CreateBodyAccessoryStartAction,
@@ -793,6 +797,10 @@ export type DashboardActionTypes =
   | UpdateAccessoryStartAction
   | UpdateAccessorySucceedAction
   | UpdateAccessoryFailedAction
+  | DeleteAccessoryAction
+  | DeleteAccessoryStartAction
+  | DeleteAccessorySucceedAction
+  | DeleteAccessoryFailedAction
   /* ======================================================================= */
   // Body Accessory (Body Page)
   /* ======================================================================= */

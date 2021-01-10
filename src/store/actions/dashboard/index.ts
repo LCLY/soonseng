@@ -267,6 +267,10 @@ export {
   updateAccessoryStart,
   updateAccessoryFailed,
   updateAccessorySucceed,
+  deleteAccessory,
+  deleteAccessoryStart,
+  deleteAccessoryFailed,
+  deleteAccessorySucceed,
   // Body Accessory
   createBodyAccessory,
   createBodyAccessoryStart,

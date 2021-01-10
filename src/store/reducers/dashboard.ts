@@ -1161,6 +1161,29 @@ const updateAccessoryFailed = (state: DashboardInitialState, action: AppActions)
   }
   return state;
 };
+/* -------------------------- */
+/* Delete Accessory  */
+/* -------------------------- */
+const deleteAccessoryStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteAccessorySucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'accessoriesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      accessoriesArray: action.accessoriesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteAccessoryFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 /* Body Make Accessory */
@@ -1698,6 +1721,13 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return updateAccessorySucceed(state, action);
     case actionTypes.UPDATE_ACCESSORY_FAILED:
       return updateAccessoryFailed(state, action);
+    // Delete accessory (tail)
+    case actionTypes.DELETE_ACCESSORY_START:
+      return deleteAccessoryStart(state, action);
+    case actionTypes.DELETE_ACCESSORY_SUCCEED:
+      return deleteAccessorySucceed(state, action);
+    case actionTypes.DELETE_ACCESSORY_FAILED:
+      return deleteAccessoryFailed(state, action);
 
     default:
       return state;

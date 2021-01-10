@@ -5,7 +5,7 @@ import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { SearchOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
-import { TReceivedImageObj } from 'src/store/types/dashboard';
+import { TReceivedAccessoryObj, TReceivedBodyAccessoryObj, TReceivedImageObj } from 'src/store/types/dashboard';
 import { AppActions } from 'src/store/types/index';
 import { AxiosError, AxiosResponse } from 'axios';
 import { put /*, delay */ /* call */ } from 'redux-saga/effects';
@@ -420,6 +420,18 @@ export const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>, formRef: 
   if (e.key === 'Enter') {
     formRef.submit();
   }
+};
+
+/**
+ * Extract accessories only from each body accessory and form a new
+ * accessory array so can filter
+ * @param {TReceivedBodyAccessoryObj[]} bodyAccessoriesArray
+ * @return {*}
+ */
+export const extractAccessoriesArray = (bodyAccessoriesArray: TReceivedBodyAccessoryObj[]) => {
+  let resultArray: TReceivedAccessoryObj[] = [];
+  bodyAccessoriesArray.forEach((bodyAccessory) => resultArray.push(bodyAccessory.accessory));
+  return resultArray;
 };
 
 /* ============================================================================= */
