@@ -23,3 +23,12 @@ export const clearLocalStorage = (projectVersion: string): AppActions => {
     projectVersion: projectVersion,
   };
 };
+/* ------------------- */
+// set discount for quotation
+/* ------------------- */
+export const setQuotationDiscount = (quotationDiscount: number): AppActions => {
+  return {
+    type: actionTypes.SET_QUOTATION_DISCOUNT,
+    quotationDiscount: quotationDiscount,
+  };
+};

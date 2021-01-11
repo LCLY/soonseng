@@ -29,6 +29,7 @@ import { ROUTE_NOT_FOUND } from 'src/shared/routes';
 
 interface MatchParams {
   order_id: string;
+  discount: string;
 }
 
 interface QuotationPageProps {}
@@ -362,12 +363,49 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                     </li>
                   ))}
                 </ol>
-                <div className={`${hidden}quotation__grandtotal-outerdiv`}>
-                  <span className={`${hidden}quotation__grandtotal-text`}>TOTAL PRICE</span>
-                  <div className={`${hidden}quotation__grandtotal-price`}>
-                    <NumberFormat value={grandTotalPrice.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+                {match.params.discount ? (
+                  <>
+                    <div className={`${hidden}quotation__grandtotal-outerdiv--discount`}>
+                      <span className={`${hidden}quotation__grandtotal-text`}>TOTAL PRICE</span>
+                      <div className={`${hidden}quotation__grandtotal-price--discount`}>
+                        <NumberFormat
+                          value={grandTotalPrice.toFixed(2)}
+                          displayType={'text'}
+                          thousandSeparator={true}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className={`${hidden}quotation__grandtotal-outerdiv ${hidden}quotation__grandtotal-outerdiv--discount`}
+                    >
+                      <span className={`${hidden}quotation__discount-text`}>DISCOUNT</span>
+                      <div style={{ fontWeight: 'normal' }}>
+                        <NumberFormat
+                          value={parseFloat(match.params.discount.toString()).toFixed(2)}
+                          displayType={'text'}
+                          thousandSeparator={true}
+                        />
+                      </div>
+                    </div>
+                    <div className={`${hidden}quotation__grandtotal-outerdiv`}>
+                      <span className={`${hidden}quotation__grandtotal-text`}>TOTAL ON THE ROAD PRICE</span>
+                      <div className={`${hidden}quotation__grandtotal-price`}>
+                        <NumberFormat
+                          value={(grandTotalPrice - parseFloat(match.params.discount.toString())).toFixed(2)}
+                          displayType={'text'}
+                          thousandSeparator={true}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className={`${hidden}quotation__grandtotal-outerdiv`}>
+                    <span className={`${hidden}quotation__grandtotal-text`}>TOTAL PRICE</span>
+                    <div className={`${hidden}quotation__grandtotal-price`}>
+                      <NumberFormat value={grandTotalPrice.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               {/* ========================= */}
               {/* After Sales Programme */}
@@ -385,20 +423,20 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                   <table className={`${hidden}quotation__salesprogram-table`}>
                     <tbody>
                       <tr>
-                        <td className="hiddenquotation__salesprogram-table-left">Down&nbsp;Payment</td>
-                        <td className="hiddenquotation__salesprogram-table-right"></td>
+                        <td className={`${hidden}quotation__salesprogram-table-left`}>Down&nbsp;Payment</td>
+                        <td className={`${hidden}quotation__salesprogram-table-right`}></td>
                       </tr>
                       <tr>
-                        <td className="hiddenquotation__salesprogram-table-left">Account&nbsp;Finance</td>
-                        <td className="hiddenquotation__salesprogram-table-right"></td>
+                        <td className={`${hidden}quotation__salesprogram-table-left`}>Account&nbsp;Finance</td>
+                        <td className={`${hidden}quotation__salesprogram-table-right`}></td>
                       </tr>
                       <tr>
-                        <td className="hiddenquotation__salesprogram-table-left">Payment&nbsp;Period</td>
-                        <td className="hiddenquotation__salesprogram-table-right"></td>
+                        <td className={`${hidden}quotation__salesprogram-table-left`}>Payment&nbsp;Period</td>
+                        <td className={`${hidden}quotation__salesprogram-table-right`}></td>
                       </tr>
                       <tr>
-                        <td className="hiddenquotation__salesprogram-table-left">Months&nbsp;Finance</td>
-                        <td className="hiddenquotation__salesprogram-table-right"></td>
+                        <td className={`${hidden}quotation__salesprogram-table-left`}>Months&nbsp;Finance</td>
+                        <td className={`${hidden}quotation__salesprogram-table-right`}></td>
                       </tr>
                     </tbody>
                   </table>

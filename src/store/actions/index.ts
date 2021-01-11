@@ -1,5 +1,5 @@
 // export all the actions
-export { saveProjectVersion, clearLocalStorage } from './general';
+export { saveProjectVersion, clearLocalStorage, setQuotationDiscount } from './general';
 
 export {
   // clear state

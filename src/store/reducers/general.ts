@@ -6,6 +6,7 @@ import { Reducer } from 'redux';
 
 const initialState: GeneralInitialState = {
   projectVersion: '',
+  quotationDiscount: 0,
 };
 
 /* ============================================================================================================ */
@@ -37,6 +38,17 @@ const clearLocalStorage = (state: GeneralInitialState, action: AppActions) => {
   }
   return state;
 };
+/* ============================================================================================ */
+// Set quotation discount
+/* ============================================================================================ */
+const setQuotationDiscount = (state: GeneralInitialState, action: AppActions) => {
+  if ('quotationDiscount' in action) {
+    return updateObject(state, {
+      quotationDiscount: action.quotationDiscount,
+    });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 /* ============================================================================================ */
@@ -52,6 +64,11 @@ const reducer: Reducer<GeneralInitialState, AppActions> = (state = initialState,
     /* ---------------------- */
     case actionTypes.CLEAR_LOCALSTORAGE:
       return clearLocalStorage(state, action);
+    /* ---------------------- */
+    //  Set quotation discount
+    /* ---------------------- */
+    case actionTypes.SET_QUOTATION_DISCOUNT:
+      return setQuotationDiscount(state, action);
 
     default:
       return state;

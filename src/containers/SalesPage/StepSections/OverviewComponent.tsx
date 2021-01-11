@@ -3,17 +3,20 @@ import React, { useState, useContext } from 'react';
 /*3rd party lib*/
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import { connect } from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
 import NumberFormat from 'react-number-format';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Button, Collapse, Dropdown, Empty, Menu, Skeleton } from 'antd';
+import { Button, Collapse, Dropdown, Empty, Form, Menu, Modal, Skeleton } from 'antd';
 import { CaretDownOutlined, InfoCircleOutlined, CaretRightOutlined } from '@ant-design/icons';
 /* Util */
 import { AppActions } from 'src/store/types';
+import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
-import { convertSpaceInStringWithChar } from 'src/shared/Utils';
 import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
+import { convertPriceToFloat, convertSpaceInStringWithChar, handleKeyDown } from 'src/shared/Utils';
 
 const { Panel } = Collapse;
 
@@ -26,13 +29,16 @@ export interface OverviewComponentProps {
   onRemoveAnOrder?: (orderId: string, localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
 
-type Props = OverviewComponentProps & RouteComponentProps;
+type Props = OverviewComponentProps & RouteComponentProps & DispatchProps;
 
 const OverviewComponent: React.FC<Props> = ({ history }) => {
+  const [discountForm] = Form.useForm();
   // for the collapsible to be opened on load
+  const [clickedOrder, setClickedOrder] = useState<TLocalOrderObj | null>(null);
   const [expandedModelCollapse, setExpandedModelCollapse] = useState<string | string[]>([]);
   const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
-
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const [showDiscountInput, setShowDiscountInput] = useState(false);
   const salesPageContext = useContext(SalesPageContext);
   if (salesPageContext === null) {
     return null;
@@ -66,6 +72,89 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
   /* ================================================== */
   return (
     <>
+      <Modal
+        title="Setting Discount"
+        visible={showDiscountModal}
+        footer={[
+          <Button key="cancel" onClick={() => setShowDiscountModal(false)}>
+            Cancel
+          </Button>,
+          <>
+            {showDiscountInput ? null : (
+              <Button
+                key="proceed without discount"
+                onClick={() => {
+                  if (clickedOrder && clickedOrder.bodyMakeObj) {
+                    const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
+                    history.push({
+                      pathname: `/quotation/${convertSpaceInStringWithChar(
+                        `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
+                        '',
+                      )}/${clickedOrder.id}`,
+                    });
+                  }
+                }}
+              >
+                No, Proceed to Quotation
+              </Button>
+            )}
+          </>,
+          <>
+            {showDiscountInput ? (
+              <Button
+                key="proceed to generate quotation"
+                type="primary"
+                onClick={() => {
+                  discountForm.submit();
+                }}
+              >
+                Generate Quotation
+              </Button>
+            ) : (
+              <Button key="proceed to set discount" type="primary" onClick={() => setShowDiscountInput(true)}>
+                Yes
+              </Button>
+            )}
+          </>,
+        ]}
+      >
+        {showDiscountInput ? (
+          <Form
+            form={discountForm}
+            onKeyDown={(e) => {
+              handleKeyDown(e, discountForm);
+            }}
+            onFinish={(values) => {
+              if (clickedOrder && clickedOrder.bodyMakeObj) {
+                const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
+                history.push({
+                  pathname: `/quotation/${convertSpaceInStringWithChar(
+                    `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
+                    '',
+                  )}/${clickedOrder.id}/${convertPriceToFloat(values.discount)}`,
+                });
+              }
+            }}
+          >
+            {/* The rest of the form items */}
+            <Form.Item
+              className="make__form-item"
+              label="Discount"
+              name="discount"
+              rules={[{ required: true, message: 'Input discount here!' }]}
+            >
+              <NumberFormat
+                placeholder="Type discount here"
+                className="ant-input"
+                thousandSeparator={true}
+                prefix={'RM '}
+              />
+            </Form.Item>
+          </Form>
+        ) : (
+          <div>Are you setting discount for this quotation?</div>
+        )}
+      </Modal>
       <div>
         {localOrdersArray && localOrdersArray.length > 0 ? (
           [...localOrdersArray]
@@ -234,15 +323,8 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                   {accessObj.showPriceSalesPage && (
                     <Menu.Item
                       onClick={() => {
-                        if (order.bodyMakeObj) {
-                          const { length, make_wheelbase, body } = order.bodyMakeObj;
-                          history.push({
-                            pathname: `/quotation/${convertSpaceInStringWithChar(
-                              `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
-                              '',
-                            )}/${order.id}`,
-                          });
-                        }
+                        setShowDiscountModal(true);
+                        setClickedOrder(order);
                       }}
                     >
                       Generate quotation
@@ -719,4 +801,15 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
     </>
   );
 };
-export default withRouter(OverviewComponent);
+
+interface DispatchProps {
+  onSetQuotationDiscount: typeof actions.setQuotationDiscount;
+}
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
+  return {
+    onSetQuotationDiscount: (quotationDiscount) => dispatch(actions.setQuotationDiscount(quotationDiscount)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(withRouter(OverviewComponent));

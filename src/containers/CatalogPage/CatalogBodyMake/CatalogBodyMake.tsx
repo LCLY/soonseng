@@ -153,7 +153,13 @@ const CatalogBodyMake: React.FC<Props> = ({
     body_make: { makeWheelbaseTitle: '' },
   });
   const [deleteModalContent, setDeleteModalContent] = useState({
-    make_wheelbase: { makeWheelbaseId: -1, makeId: -1, warningText: '', backupWarningText: 'this configuration' },
+    make_wheelbase: {
+      makeWheelbaseId: -1,
+      makeId: -1,
+      text: { wheelbase: '', series: '', bodyMakesLength: '' },
+      warningText: '',
+      backupWarningText: 'this configuration',
+    },
     body_make: { bodyMakeId: -1, warningText: '', backupWarningText: 'this configuration' },
   });
 
@@ -586,6 +592,11 @@ const CatalogBodyMake: React.FC<Props> = ({
                           make_wheelbase: {
                             makeId: makeObj.id,
                             makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+                            text: {
+                              wheelbase: wheelbaseBodyMake.make_wheelbase.wheelbase.title,
+                              series: seriesTitle,
+                              bodyMakesLength: wheelbaseBodyMake.body_makes.length.toString(),
+                            },
                             warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${seriesTitle} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
                             backupWarningText: `this configuration from ${seriesTitle}`,
                           },
@@ -1048,6 +1059,24 @@ const CatalogBodyMake: React.FC<Props> = ({
         visible={showDeleteModal.make_wheelbase}
         onDelete={onDeleteMakeWheelbaseFinish}
         setShowModal={setShowDeleteModal}
+        customDeleteTextComponent={
+          <>
+            You are deleting&nbsp;
+            <>
+              <span className="dashboard__delete-message">
+                {deleteModalContent.make_wheelbase.text.wheelbase}mm wheelbase configuration
+              </span>
+              &nbsp;from&nbsp;
+              <span className="dashboard__delete-message">{deleteModalContent.make_wheelbase.text.series}</span>
+              &nbsp;along with other&nbsp;
+              <span className="dashboard__delete-message">
+                {deleteModalContent.make_wheelbase.text.bodyMakesLength}&nbsp;bodies
+              </span>
+              , this action is permanent. Are you sure?
+            </>
+          </>
+        }
+        customDeleteButtonText={'Yes, delete it'}
         warningText={deleteModalContent.make_wheelbase.warningText}
         backupWarningText={deleteModalContent.make_wheelbase.backupWarningText}
         loading={dashboardLoading !== undefined && dashboardLoading}
