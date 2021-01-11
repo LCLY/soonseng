@@ -565,6 +565,7 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                 <div
                                   className="catalogaccessoriesmodal__button-crud-edit"
                                   onClick={() => {
+                                    onSetAccessoryType(GENERAL_ACCESSORY);
                                     updateAccessoryForm.setFieldsValue({
                                       accessoryId: accessoryObj.id,
                                       accessoryTitle: accessoryObj.title,
