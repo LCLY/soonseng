@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 /* components */
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 /* 3rd party lib */
 import { v4 as uuidv4 } from 'uuid';
+import { connect } from 'react-redux';
 import { Form, Input, Radio } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import NumberFormat from 'react-number-format';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 /* Util */
-import { GENERAL_ACCESSORY, DIMENSION_ACCESSORY, BODY_ACCESSORY } from 'src/shared/constants';
+import { RootState } from 'src';
 import { handleKeyDown } from 'src/shared/Utils';
+import { GENERAL_ACCESSORY, DIMENSION_ACCESSORY, BODY_ACCESSORY } from 'src/shared/constants';
 
 interface AccessoryMakeFormItemsProps {
   crud: 'create' | 'update' | 'delete';
@@ -27,13 +29,14 @@ interface AccessoryMakeFormItemsProps {
   setUploadSelectedFiles: React.Dispatch<React.SetStateAction<FileList | null | undefined>>;
 }
 
-type Props = AccessoryMakeFormItemsProps;
+type Props = AccessoryMakeFormItemsProps & StateProps;
 
 const AccessoryMakeFormItems: React.FC<Props> = ({
   crud,
   antdForm,
   onFinish,
   isDashboard,
+  accessoryType,
   imagesPreviewUrls,
   setImagesPreviewUrls,
   setUploadSelectedFiles,
@@ -45,6 +48,21 @@ const AccessoryMakeFormItems: React.FC<Props> = ({
   // true = hide, false = show
   const [accessoryIsDimensionAssociated, setAccessoryIsDimensionAssociated] = useState(false);
   let accessoryTypeOptions = [GENERAL_ACCESSORY, DIMENSION_ACCESSORY, BODY_ACCESSORY];
+
+  /* ================================== */
+  // useEffect
+  /* ================================== */
+  useEffect(() => {
+    if (accessoryType) {
+      if (accessoryType === DIMENSION_ACCESSORY) {
+        // hide price
+        setAccessoryIsDimensionAssociated(true);
+      } else {
+        // show price
+        setAccessoryIsDimensionAssociated(false);
+      }
+    }
+  }, [accessoryType]);
 
   return (
     <>
@@ -135,4 +153,13 @@ const AccessoryMakeFormItems: React.FC<Props> = ({
   );
 };
 
-export default AccessoryMakeFormItems;
+interface StateProps {
+  accessoryType?: string | null;
+}
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    accessoryType: state.catalog.accessoryType,
+  };
+};
+
+export default connect(mapStateToProps, null)(AccessoryMakeFormItems);

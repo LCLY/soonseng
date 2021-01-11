@@ -6,6 +6,8 @@ export interface CatalogInitialState {
   readonly loading?: boolean;
   readonly errorMessage?: string | null;
   readonly successMessage?: string | null;
+  // accessory type for the create accessory part
+  readonly accessoryType?: string | null;
   // catalogMake
   readonly catalogMakeObj?: TReceivedCatalogMakeObj | null;
   readonly catalogMakesArray?: TReceivedCatalogMakeObj[] | null;
@@ -78,6 +80,15 @@ export interface GetCatalogBodyMakesFailedAction {
   errorMessage: string;
 }
 
+/* --------------------- */
+// set accessory type
+/* --------------------- */
+
+export interface SetAccessoryTypeAction {
+  type: typeof actionTypes.SET_ACCESSORY_TYPE;
+  accessoryType: string;
+}
+
 /* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
@@ -99,4 +110,8 @@ export type CatalogActionTypes =
   | GetCatalogBodyMakesAction
   | GetCatalogBodyMakesStartAction
   | GetCatalogBodyMakesSucceedAction
-  | GetCatalogBodyMakesFailedAction;
+  | GetCatalogBodyMakesFailedAction
+  /* -------------------------- */
+  // Set accessory type
+  /* -------------------------- */
+  | SetAccessoryTypeAction;

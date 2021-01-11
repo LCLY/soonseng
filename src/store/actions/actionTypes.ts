@@ -48,6 +48,9 @@ export const GET_CATALOG_BODYMAKES_START = 'GET_CATALOG_BODYMAKES_START';
 export const GET_CATALOG_BODYMAKES_SUCCEED = 'GET_CATALOG_BODYMAKES_SUCCEED';
 export const GET_CATALOG_BODYMAKES_FAILED = 'GET_CATALOG_BODYMAKES_FAILED';
 
+// Set Accessory Type for the accessory form, general,body and dimension
+export const SET_ACCESSORY_TYPE = 'SET_ACCESSORY_TYPE';
+
 /* ================================================================================== */
 /*                                       Sales                                        */
 /* ================================================================================== */

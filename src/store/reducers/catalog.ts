@@ -77,6 +77,16 @@ const getCatalogBodyMakesFailed = (state: CatalogInitialState, action: AppAction
 };
 
 /* ============================================================================================ */
+/* Set Accessory Type
+/* ============================================================================================ */
+const setAccessoryType = (state: CatalogInitialState, action: AppActions) => {
+  if ('accessoryType' in action) {
+    return updateObject(state, { accessoryType: action.accessoryType });
+  }
+  return state;
+};
+
+/* ============================================================================================ */
 /* ============================================================================================ */
 const reducer: Reducer<CatalogInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
@@ -103,6 +113,11 @@ const reducer: Reducer<CatalogInitialState, AppActions> = (state = initialState,
       return getCatalogBodyMakesSucceed(state, action);
     case actionTypes.GET_CATALOG_BODYMAKES_FAILED:
       return getCatalogBodyMakesFailed(state, action);
+    /* ---------------------- */
+    //  Set Accessory Type
+    /* ---------------------- */
+    case actionTypes.SET_ACCESSORY_TYPE:
+      return setAccessoryType(state, action);
 
     default:
       return state;

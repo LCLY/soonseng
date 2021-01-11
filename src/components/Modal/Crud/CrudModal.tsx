@@ -39,6 +39,9 @@ interface CrudModalProps extends ICategory {
       [key: string]: boolean;
     }>
   >;
+  /** custom delete text component jz incase need to overrwite the whole content*/
+  customDeleteTextComponent?: React.ReactNode;
+  customDeleteButtonText?: string | null;
   /** onFinish method when user click ok*/
   onFinish?: (values: any) => void;
   /** onDelete method when user is deleting*/
@@ -87,6 +90,8 @@ const CrudModal: React.FC<Props> = ({
   setShowModal,
   setImagesPreviewUrls,
   setUploadSelectedFiles,
+  customDeleteTextComponent,
+  customDeleteButtonText,
 }) => {
   /* ================================================== */
   /* ================================================== */
@@ -105,21 +110,27 @@ const CrudModal: React.FC<Props> = ({
             if (onDelete !== undefined) onDelete();
           }}
           onCancel={() => setShowModal({ ...showModal, [indexKey]: false })}
-          okText="Yes, delete it"
+          okText={customDeleteButtonText ? customDeleteButtonText : 'Yes, delete it'}
           confirmLoading={loading}
           cancelText="Cancel"
         >
-          You are deleting&nbsp;
-          {warningText !== undefined && (
+          {customDeleteTextComponent ? (
+            customDeleteTextComponent
+          ) : (
             <>
-              {warningText === '' ? (
-                { backupWarningText }
-              ) : (
-                <span className="dashboard__delete-message">{`${warningText}`}</span>
+              You are deleting&nbsp;
+              {warningText !== undefined && (
+                <>
+                  {warningText === '' ? (
+                    { backupWarningText }
+                  ) : (
+                    <span className="dashboard__delete-message">{`${warningText}`}</span>
+                  )}
+                </>
               )}
+              , this action is permanent. Are you sure?
             </>
           )}
-          , this action is permanent. Are you sure?
         </Modal>
       ) : (
         <Modal

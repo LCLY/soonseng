@@ -86,7 +86,7 @@
         margin: 1rem 0;
         padding: 0;
         grid-gap: 1rem;
-        grid-auto-rows: auto; //height of each row
+        grid-auto-rows: auto; //height of each rowa
         grid-template-columns: repeat(1, 1fr);
       }
 
@@ -108,6 +108,25 @@
       justify-content: space-between;
       &:hover {
         background: rgba($primary-color-4, 0.08);
+      }
+    }
+
+    /* ------------------------------ */
+    // title of the accessories in the modal
+    /* ------------------------------ */
+    &-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @include respond-to($small-phone) {
+        max-width: calc(100vw - 20rem);
+      }
+      @include respond-to($phone-only) {
+        max-width: 14rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        max-width: 22rem;
       }
     }
   }

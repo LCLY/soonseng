@@ -53,6 +53,7 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
   onDeleteAccessory,
   onCreateAccessory,
   onUpdateAccessory,
+  onSetAccessoryType,
   setCurrentBodyMake,
   onGetBodyAccessories,
   onCreateBodyAccessory,
@@ -79,10 +80,20 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
 
   const [deleteModalContent, setDeleteModalContent] = useState({
     accessory: { accessoryId: -1, warningText: '', backupWarningText: 'this accessory' },
-    body_accessory: { body_id: -1, body_accessory_id: -1, warningText: '', backupWarningText: 'this body accessory' },
+    body_accessory: {
+      body_id: -1,
+      body_accessory_id: -1,
+      bodyTitle: '',
+      accessoryTitle: '',
+      warningText: '',
+      backupWarningText: 'this body accessory',
+    },
     body_make_accessory: {
       body_make_id: -1,
       body_make_accessory_id: -1,
+      bodyTitle: '',
+      accessoryTitle: '',
+      dimensionTitle: '',
       warningText: '',
       backupWarningText: 'this body with dimension accessory',
     },
@@ -123,6 +134,20 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
       default:
     }
     return { general_bool: general_bool, dimension_associated_bool: dimension_associated_bool };
+  };
+
+  const convertAccessoryBoolToCategory = (general: boolean, dimension: boolean) => {
+    let accessoryTypeName = '';
+    if (general === true && dimension === false) {
+      accessoryTypeName = GENERAL_ACCESSORY;
+    } else if (general === false && dimension === true) {
+      accessoryTypeName = DIMENSION_ACCESSORY;
+    } else if (general === false && dimension === false) {
+      accessoryTypeName = BODY_ACCESSORY;
+    } else {
+      accessoryTypeName = 'NULL';
+    }
+    return accessoryTypeName;
   };
 
   // the keys "values" are from the form's 'name' attribute
@@ -350,6 +375,18 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
         visible={showDeleteModal.body_accessory}
         onDelete={onDeleteBodyAccessoryFinish}
         setShowModal={setShowDeleteModal}
+        customDeleteTextComponent={
+          <>
+            You are about to remove&nbsp;
+            <>
+              <span className="dashboard__delete-message">{deleteModalContent.body_accessory.accessoryTitle}</span>
+              &nbsp;from&nbsp;
+              <span className="dashboard__delete-message">{deleteModalContent.body_accessory.bodyTitle}</span>
+              .&nbsp;Proceed?
+            </>
+          </>
+        }
+        customDeleteButtonText={'Yes, Remove It'}
         warningText={deleteModalContent.body_accessory.warningText}
         backupWarningText={deleteModalContent.body_accessory.backupWarningText}
         loading={dashboardLoading !== undefined && dashboardLoading}
@@ -428,9 +465,24 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
         warningText={deleteModalContent.body_make_accessory.warningText}
         backupWarningText={deleteModalContent.body_make_accessory.backupWarningText}
         loading={dashboardLoading !== undefined && dashboardLoading}
+        customDeleteTextComponent={
+          <>
+            You are about to remove&nbsp;
+            <>
+              <span className="dashboard__delete-message">{deleteModalContent.body_make_accessory.accessoryTitle}</span>
+              &nbsp;from&nbsp;
+              <span className="dashboard__delete-message">{deleteModalContent.body_make_accessory.bodyTitle}</span>
+              &nbsp;with it's dimension&nbsp;
+              <span className="dashboard__delete-message">{deleteModalContent.body_make_accessory.dimensionTitle}</span>
+              .&nbsp;Proceed?
+            </>
+          </>
+        }
+        customDeleteButtonText={'Yes, Remove It'}
       />
 
       <Modal
+        centered
         className="catalogbodymake__modal"
         title={
           currentBodyMake ? (
@@ -446,10 +498,10 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
             'All accessories for this body'
           )
         }
-        width={700}
+        width={800}
         visible={crudAccessoryModalOpen}
-        okText="Add To Orders"
-        onOk={() => alert('hi')}
+        okButtonProps={{ style: { display: 'none' } }}
+        cancelText={'Close'}
         onCancel={() => {
           // close the modal and clear the current body make obj
           setCurrentBodyMake(null);
@@ -462,11 +514,14 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
               <div>
                 <Divider orientation="left">
                   <div className="flex-align-center">
-                    <div className="catalogbodymake__modal-divider">General Accessories</div>
+                    <div className="catalogbodymake__modal-divider">
+                      General<span className="mobilehide-inline-block">&nbsp;Accessories</span>
+                    </div>
                     <Tooltip title={`Create General Accessory`}>
                       <div
                         className="catalogaccessoriesmodal__button-create"
                         onClick={() => {
+                          onSetAccessoryType(GENERAL_ACCESSORY);
                           createAccessoryForm.setFieldsValue({ accessoryType: GENERAL_ACCESSORY });
                           setShowCreateModal({ ...showCreateModal, accessory: true });
                           setAccessoryCategory({ ...accessoryCategory, general: true, body: false, dimension: false });
@@ -487,17 +542,15 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                         {generalAccessoriesArray.map((accessoryObj) => {
                           return (
                             <div key={uuidv4()} className="catalogaccessoriesmodal__accessories-div">
-                              <div>
-                                <Tooltip
-                                  title={
-                                    accessoryObj.description && accessoryObj.description !== ''
-                                      ? accessoryObj.description
-                                      : ''
-                                  }
-                                >
-                                  {accessoryObj.title}
-                                </Tooltip>
-                              </div>
+                              <Tooltip
+                                title={`${accessoryObj.title}${
+                                  accessoryObj.description && accessoryObj.description !== ''
+                                    ? ` (${accessoryObj.description})`
+                                    : ''
+                                }`}
+                              >
+                                <div className="catalogaccessoriesmodal__accessories-title">{accessoryObj.title}</div>
+                              </Tooltip>
                               <div className="catalogaccessoriesmodal__button-crud-div">
                                 {accessoryObj.price !== 0 && accessoryObj.price !== null ? (
                                   <Tag color="red" className="margin_l-1">
@@ -509,31 +562,16 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                   </Tag>
                                 )}
                                 {/* Edit Button */}
-
                                 <div
                                   className="catalogaccessoriesmodal__button-crud-edit"
                                   onClick={() => {
-                                    let accessoryTypeName = '';
-                                    if (accessoryObj.general === true && accessoryObj.dimension_associated === false) {
-                                      accessoryTypeName = GENERAL_ACCESSORY;
-                                    } else if (
-                                      accessoryObj.general === false &&
-                                      accessoryObj.dimension_associated === true
-                                    ) {
-                                      accessoryTypeName = DIMENSION_ACCESSORY;
-                                    } else if (
-                                      accessoryObj.general === false &&
-                                      accessoryObj.dimension_associated === false
-                                    ) {
-                                      accessoryTypeName = BODY_ACCESSORY;
-                                    } else {
-                                      accessoryTypeName = 'NULL';
-                                    }
-
                                     updateAccessoryForm.setFieldsValue({
                                       accessoryId: accessoryObj.id,
                                       accessoryTitle: accessoryObj.title,
-                                      accessoryType: accessoryTypeName,
+                                      accessoryType: convertAccessoryBoolToCategory(
+                                        accessoryObj.general,
+                                        accessoryObj.dimension_associated,
+                                      ),
                                       accessoryPrice: accessoryObj.price,
                                       accessoryDescription: accessoryObj.description,
                                     });
@@ -574,7 +612,10 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
               <div>
                 <Divider orientation="left">
                   <div className="flex-align-center">
-                    <div className="catalogbodymake__modal-divider">Body Associated Accessories</div>
+                    <div className="catalogbodymake__modal-divider">
+                      Body
+                      <span className="mobilehide-inline-block">&nbsp;Associated Accessories</span>
+                    </div>
                     <Tooltip title={`Assign accessory to ${currentBodyMake?.body.title}`}>
                       <div
                         className="catalogaccessoriesmodal__button-create"
@@ -590,6 +631,7 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                       <div
                         className="catalogaccessoriesmodal__button-create"
                         onClick={() => {
+                          onSetAccessoryType(BODY_ACCESSORY);
                           createAccessoryForm.setFieldsValue({ accessoryType: BODY_ACCESSORY });
                           setShowCreateModal({ ...showCreateModal, accessory: true });
                           setAccessoryCategory({ ...accessoryCategory, general: false, body: true, dimension: false });
@@ -610,14 +652,14 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                       {bodyAccessoriesArray.map((bodyAccessoryObj) => {
                         return (
                           <div key={uuidv4()} className="catalogaccessoriesmodal__accessories-div">
-                            <div>
+                            <div className="catalogaccessoriesmodal__accessories-title">
                               <Tooltip
-                                title={
+                                title={`${bodyAccessoryObj.accessory.title}${
                                   bodyAccessoryObj.accessory.description &&
                                   bodyAccessoryObj.accessory.description !== ''
-                                    ? bodyAccessoryObj.accessory.description
+                                    ? ` (${bodyAccessoryObj.accessory.description})`
                                     : ''
-                                }
+                                }`}
                               >
                                 {bodyAccessoryObj.accessory.title}
                               </Tooltip>
@@ -633,6 +675,25 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                   -----
                                 </Tag>
                               )}
+                              {/* Edit Button */}
+                              <div
+                                className="catalogaccessoriesmodal__button-crud-edit"
+                                onClick={() => {
+                                  updateAccessoryForm.setFieldsValue({
+                                    accessoryId: bodyAccessoryObj.accessory.id,
+                                    accessoryTitle: bodyAccessoryObj.accessory.title,
+                                    accessoryType: convertAccessoryBoolToCategory(
+                                      bodyAccessoryObj.accessory.general,
+                                      bodyAccessoryObj.accessory.dimension_associated,
+                                    ),
+                                    accessoryPrice: bodyAccessoryObj.accessory.price,
+                                    accessoryDescription: bodyAccessoryObj.accessory.description,
+                                  });
+                                  setShowUpdateModal({ ...showUpdateModal, accessory: true });
+                                }}
+                              >
+                                <i className="fas fa-edit"></i>
+                              </div>
                               {/* Delete Button */}
                               <div
                                 className="catalogaccessoriesmodal__button-crud-delete"
@@ -644,6 +705,8 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                       body_accessory: {
                                         body_id: currentBodyMake.body.id,
                                         body_accessory_id: bodyAccessoryObj.id,
+                                        bodyTitle: currentBodyMake.body.title,
+                                        accessoryTitle: bodyAccessoryObj.accessory.title,
                                         warningText: `${bodyAccessoryObj.accessory.title} from ${currentBodyMake.body.title}`,
                                         backupWarningText: 'this accessory from this body',
                                       },
@@ -670,7 +733,10 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
               <div>
                 <Divider orientation="left">
                   <div className="flex-align-center">
-                    <div className="catalogbodymake__modal-divider">Dimension Associated Accessories</div>
+                    <div className="catalogbodymake__modal-divider">
+                      Dimension
+                      <span className="mobilehide-inline-block">&nbsp;Associated Accessories</span>
+                    </div>
                     {/* Create body make accessory button */}
                     <Tooltip
                       title={`Assign accessory to ${currentBodyMake?.body.title} with dimension (${
@@ -710,6 +776,7 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                       <div
                         className="catalogaccessoriesmodal__button-create"
                         onClick={() => {
+                          onSetAccessoryType(DIMENSION_ACCESSORY);
                           createAccessoryForm.setFieldsValue({ accessoryType: DIMENSION_ACCESSORY });
                           setShowCreateModal({ ...showCreateModal, accessory: true });
                           setAccessoryCategory({ ...accessoryCategory, general: false, body: false, dimension: true });
@@ -732,14 +799,14 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                         return (
                           <div key={uuidv4()} className="catalogaccessoriesmodal__accessories-div">
                             {/* Title */}
-                            <div>
+                            <div className="catalogaccessoriesmodal__accessories-title">
                               <Tooltip
-                                title={
+                                title={`${bodyMakeAccessoryObj.accessory.title}${
                                   bodyMakeAccessoryObj.accessory.description &&
                                   bodyMakeAccessoryObj.accessory.description !== ''
-                                    ? bodyMakeAccessoryObj.accessory.description
+                                    ? ` (${bodyMakeAccessoryObj.accessory.description})`
                                     : ''
-                                }
+                                }`}
                               >
                                 {bodyMakeAccessoryObj.accessory.title}
                               </Tooltip>
@@ -756,7 +823,6 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                 </Tag>
                               )}
                               {/* Edit Button */}
-
                               <div
                                 className="catalogaccessoriesmodal__button-crud-edit"
                                 onClick={() => {
@@ -785,9 +851,9 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                       body_make_accessory: {
                                         body_make_id: currentBodyMake.id,
                                         body_make_accessory_id: bodyMakeAccessoryObj.id,
-                                        warningText: `${bodyMakeAccessoryObj.accessory.title} from ${
-                                          currentBodyMake.body.title
-                                        } with dimension (${
+                                        bodyTitle: currentBodyMake.body.title,
+                                        accessoryTitle: bodyMakeAccessoryObj.accessory.title,
+                                        dimensionTitle: `${
                                           currentBodyMake?.width !== null &&
                                           currentBodyMake?.width !== '' &&
                                           currentBodyMake?.width !== '\' "'
@@ -805,7 +871,8 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                           currentBodyMake?.height !== '\' "'
                                             ? ` | H: ${currentBodyMake?.height}`
                                             : ''
-                                        })`,
+                                        }`,
+                                        warningText: '',
                                         backupWarningText: "this accessory from this body with it's dimension",
                                       },
                                     });
@@ -830,7 +897,10 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
             </div>
           </>
         ) : (
-          <Skeleton active />
+          <>
+            <Skeleton active />
+            <Skeleton active />
+          </>
         )}
       </Modal>
     </>
@@ -861,6 +931,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 };
 
 interface DispatchProps {
+  onSetAccessoryType: typeof actions.setAccessoryType;
   onCreateAccessory: typeof actions.createAccessory;
   onUpdateAccessory: typeof actions.updateAccessory;
   onDeleteAccessory: typeof actions.deleteAccessory;
@@ -882,6 +953,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.deleteBodyAccessory(body_id, body_accessory_id)),
     onDeleteBodyMakeAccessory: (body_make_id, body_make_accessory_id) =>
       dispatch(actions.deleteBodyMakeAccessory(body_make_id, body_make_accessory_id)),
+    onSetAccessoryType: (accessoryType) => dispatch(actions.setAccessoryType(accessoryType)),
     onCreateBodyMakeAccessory: (price, body_make_id, accessory_id) =>
       dispatch(actions.createBodyMakeAccessory(price, body_make_id, accessory_id)),
     onUpdateBodyMakeAccessory: (body_make_id, body_make_accessory_id, price) =>

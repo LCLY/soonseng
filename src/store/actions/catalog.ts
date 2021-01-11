@@ -76,3 +76,13 @@ export const getCatalogBodyMakesFailed = (errorMessage: string): AppActions => {
     errorMessage: errorMessage,
   };
 };
+
+/* ------------------------------------------- */
+// Set Accessory Type
+/* ------------------------------------------- */
+export const setAccessoryType = (accessoryType: string): AppActions => {
+  return {
+    type: actionTypes.SET_ACCESSORY_TYPE,
+    accessoryType: accessoryType,
+  };
+};

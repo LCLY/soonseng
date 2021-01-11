@@ -211,3 +211,20 @@ svg {
     background: $secondary-color-2 !important;
   }
 }
+
+.mobilehide-inline-block {
+  @include respond-to($small-phone) {
+    display: none;
+  }
+  @include respond-to($phone-only) {
+    display: inline-block;
+  }
+}
+.mobilehide-block {
+  @include respond-to($small-phone) {
+    display: none;
+  }
+  @include respond-to($phone-only) {
+    display: block;
+  }
+}

@@ -33,6 +33,8 @@ export {
   getCatalogBodyMakesFailed,
   getCatalogBodyMakesStart,
   getCatalogBodyMakesSucceed,
+  // set Accessory type
+  setAccessoryType,
 } from './catalog';
 
 export {
