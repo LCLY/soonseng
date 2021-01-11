@@ -5,6 +5,7 @@ import {
   TReceivedBodyMakeObj,
   TReceivedBodyObj,
   TReceivedBrandObj,
+  TReceivedChargesFeesObj,
   TReceivedMakeObj,
 } from './dashboard';
 
@@ -61,6 +62,7 @@ export type TLocalOrderObj = {
   dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
   bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
   bodyMakeObj: TReceivedBodyMakeObj | null;
+  chargesFeesArray: TReceivedChargesFeesObj[];
 };
 
 export interface StoreLocalOrdersAction {

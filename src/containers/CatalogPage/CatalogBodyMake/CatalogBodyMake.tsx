@@ -39,6 +39,7 @@ import {
   TCreateBodyMakeData,
   TReceivedAccessoryObj,
   TReceivedBodyMakeObj,
+  TReceivedChargesFeesObj,
   TReceivedMakeObj,
   TUpdateBodyMakeData,
   TUpdateMakeData,
@@ -81,6 +82,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   bodyMakeWithWheelbase,
   makeFromCatalogBodyMake,
   generalAccessoriesArray,
+  chargesFeesArray,
   bodyRelatedAccessoriesArray,
   dimensionRelatedAccessoriesArray,
   onUpdateMake,
@@ -91,6 +93,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   onDeleteBodyMake,
   onCreateBodyMake,
   onStoreLocalOrders,
+  onGetChargesFees,
   onGetSalesAccessories,
   onCreateMakeWheelbase,
   onDeleteMakeWheelbase,
@@ -163,6 +166,7 @@ const CatalogBodyMake: React.FC<Props> = ({
     dimensionRelatedAccessoriesArray: [],
     bodyRelatedAccessoriesArray: [],
     bodyMakeObj: null,
+    chargesFeesArray: [],
   });
   const [accessoriesLength, setAccessoriesLength] = useState<{ general: number; body: number; dimension: number }>({
     general: -1,
@@ -835,12 +839,24 @@ const CatalogBodyMake: React.FC<Props> = ({
   }, [onGetWheelbases]);
 
   useEffect(() => {
+    onGetChargesFees();
+  }, [onGetChargesFees]);
+
+  useEffect(() => {
     onGetBodies();
   }, [onGetBodies]);
 
   useEffect(() => {
     onGetLengths();
   }, [onGetLengths]);
+
+  useEffect(() => {
+    if (chargesFeesArray) {
+      setOrderObj((prevState) => {
+        return { ...prevState, chargesFeesArray: chargesFeesArray };
+      });
+    }
+  }, [chargesFeesArray]);
 
   useEffect(() => {
     if (makeFromCatalogBodyMake) {
@@ -1131,12 +1147,12 @@ const CatalogBodyMake: React.FC<Props> = ({
                     <Divider orientation="left">
                       <div className="catalogbodymake__modal-divider">General Accessories</div>
                     </Divider>
-                    <div className="catalogbodymake__modal-checkboxes-div">
+                    <div className="catalogbodymake__modal-checkboxes-outerdiv">
                       <div className="catalogbodymake__modal-checkboxes">
                         {Object.keys(currentCheckedGeneralAccessories).map((uniqueId) => {
                           // map out unique id to keep track of which accessories is this
                           return (
-                            <div key={uuidv4()}>
+                            <div key={uuidv4()} className="catalogbodymake__modal-checkboxes-row">
                               <Checkbox
                                 checked={currentCheckedGeneralAccessories[uniqueId].checked}
                                 onChange={(event) => {
@@ -1157,13 +1173,33 @@ const CatalogBodyMake: React.FC<Props> = ({
                                   }
                                 }}
                               >
-                                {currentCheckedGeneralAccessories[uniqueId].accessory.title}
-                                {currentCheckedGeneralAccessories[uniqueId].accessory.price !== 0 &&
-                                  currentCheckedGeneralAccessories[uniqueId].accessory.price !== null && (
-                                    <Tag color="volcano" className="margin_l-1">
-                                      RM&nbsp;{currentCheckedGeneralAccessories[uniqueId].accessory.price}
-                                    </Tag>
-                                  )}
+                                <div className="catalogbodymake__modal-checkboxes-titlepricediv">
+                                  <Tooltip
+                                    title={`${currentCheckedGeneralAccessories[uniqueId].accessory.title}${
+                                      currentCheckedGeneralAccessories[uniqueId].accessory.description &&
+                                      currentCheckedGeneralAccessories[uniqueId].accessory.description !== ''
+                                        ? ` (${currentCheckedGeneralAccessories[uniqueId].accessory.description})`
+                                        : ''
+                                    }`}
+                                  >
+                                    <div className="catalogbodymake__modal-checkboxes-title">
+                                      {currentCheckedGeneralAccessories[uniqueId].accessory.title}
+                                    </div>
+                                  </Tooltip>
+
+                                  <div>
+                                    {currentCheckedGeneralAccessories[uniqueId].accessory.price !== 0 &&
+                                    currentCheckedGeneralAccessories[uniqueId].accessory.price !== null ? (
+                                      <Tag color="volcano" className="margin_l-1">
+                                        RM&nbsp;{currentCheckedGeneralAccessories[uniqueId].accessory.price}
+                                      </Tag>
+                                    ) : (
+                                      <Tag color="red" className="margin_l-1">
+                                        -----
+                                      </Tag>
+                                    )}
+                                  </div>
+                                </div>
                               </Checkbox>
                             </div>
                           );
@@ -1177,12 +1213,12 @@ const CatalogBodyMake: React.FC<Props> = ({
                     <Divider orientation="left">
                       <div className="catalogbodymake__modal-divider">Body Associated Accessories</div>
                     </Divider>
-                    <div className="catalogbodymake__modal-checkboxes-div">
+                    <div className="catalogbodymake__modal-checkboxes-outerdiv">
                       <div className="catalogbodymake__modal-checkboxes">
                         {Object.keys(currentCheckedBodyAccessories).map((uniqueId) => {
                           // map out unique id to keep track of which accessories is this
                           return (
-                            <div key={uuidv4()}>
+                            <div key={uuidv4()} className="catalogbodymake__modal-checkboxes-row">
                               <Checkbox
                                 checked={currentCheckedBodyAccessories[uniqueId].checked}
                                 onChange={(event) => {
@@ -1203,14 +1239,33 @@ const CatalogBodyMake: React.FC<Props> = ({
                                   }
                                 }}
                               >
-                                {currentCheckedBodyAccessories[uniqueId].accessory.title}
+                                <div className="catalogbodymake__modal-checkboxes-titlepricediv">
+                                  <Tooltip
+                                    title={`${currentCheckedBodyAccessories[uniqueId].accessory.title}${
+                                      currentCheckedBodyAccessories[uniqueId].accessory.description &&
+                                      currentCheckedBodyAccessories[uniqueId].accessory.description !== ''
+                                        ? ` (${currentCheckedBodyAccessories[uniqueId].accessory.description})`
+                                        : ''
+                                    }`}
+                                  >
+                                    <div className="catalogbodymake__modal-checkboxes-title">
+                                      {currentCheckedBodyAccessories[uniqueId].accessory.title}
+                                    </div>
+                                  </Tooltip>
 
-                                {currentCheckedBodyAccessories[uniqueId].accessory.price !== 0 &&
-                                  currentCheckedBodyAccessories[uniqueId].accessory.price !== null && (
-                                    <Tag color="volcano" className="margin_l-1">
-                                      RM&nbsp;{currentCheckedBodyAccessories[uniqueId].accessory.price}
-                                    </Tag>
-                                  )}
+                                  <div>
+                                    {currentCheckedBodyAccessories[uniqueId].accessory.price !== 0 &&
+                                    currentCheckedBodyAccessories[uniqueId].accessory.price !== null ? (
+                                      <Tag color="volcano" className="margin_l-1">
+                                        RM&nbsp;{currentCheckedBodyAccessories[uniqueId].accessory.price}
+                                      </Tag>
+                                    ) : (
+                                      <Tag color="red" className="margin_l-1">
+                                        -----
+                                      </Tag>
+                                    )}
+                                  </div>
+                                </div>
                               </Checkbox>
                             </div>
                           );
@@ -1224,12 +1279,12 @@ const CatalogBodyMake: React.FC<Props> = ({
                     <Divider orientation="left">
                       <div className="catalogbodymake__modal-divider">Dimension Associated Accessories</div>
                     </Divider>
-                    <div className="catalogbodymake__modal-checkboxes-div">
+                    <div className="catalogbodymake__modal-checkboxes-outerdiv">
                       <div className="catalogbodymake__modal-checkboxes">
                         {Object.keys(currentCheckedDimensionAccessories).map((uniqueId) => {
                           // map out unique id to keep track of which accessories is this
                           return (
-                            <div key={uuidv4()}>
+                            <div key={uuidv4()} className="catalogbodymake__modal-checkboxes-row">
                               <Checkbox
                                 checked={currentCheckedDimensionAccessories[uniqueId].checked}
                                 onChange={(event) => {
@@ -1250,14 +1305,33 @@ const CatalogBodyMake: React.FC<Props> = ({
                                   }
                                 }}
                               >
-                                {currentCheckedDimensionAccessories[uniqueId].accessory.accessory.title}
-
-                                {currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== 0 &&
-                                  currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== null && (
-                                    <Tag color="volcano" className="margin_l-1">
-                                      RM&nbsp;{currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price}
-                                    </Tag>
-                                  )}
+                                <div className="catalogbodymake__modal-checkboxes-titlepricediv">
+                                  <Tooltip
+                                    title={`${currentCheckedDimensionAccessories[uniqueId].accessory.accessory.title}${
+                                      currentCheckedDimensionAccessories[uniqueId].accessory.accessory.description &&
+                                      currentCheckedDimensionAccessories[uniqueId].accessory.accessory.description !==
+                                        ''
+                                        ? ` (${currentCheckedDimensionAccessories[uniqueId].accessory.accessory.description})`
+                                        : ''
+                                    }`}
+                                  >
+                                    <div className="catalogbodymake__modal-checkboxes-title">
+                                      {currentCheckedDimensionAccessories[uniqueId].accessory.accessory.title}
+                                    </div>
+                                  </Tooltip>
+                                  <div>
+                                    {currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== 0 &&
+                                    currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== null ? (
+                                      <Tag color="volcano" className="margin_l-1">
+                                        RM&nbsp;{currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price}
+                                      </Tag>
+                                    ) : (
+                                      <Tag color="red" className="margin_l-1">
+                                        -----
+                                      </Tag>
+                                    )}
+                                  </div>
+                                </div>
                               </Checkbox>
                             </div>
                           );
@@ -1390,8 +1464,9 @@ interface StateProps {
   errorMessage?: string | null;
   successMessage?: string | null;
   localOrdersArray?: TLocalOrderObj[];
-  bodyMakeWithWheelbase?: TReceivedCatalogBodyMake[] | null;
   makeFromCatalogBodyMake?: TReceivedMakeObj | null;
+  chargesFeesArray?: TReceivedChargesFeesObj[] | null;
+  bodyMakeWithWheelbase?: TReceivedCatalogBodyMake[] | null;
   generalAccessoriesArray?: TReceivedAccessoryObj[] | null;
   bodyRelatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
   dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
@@ -1403,6 +1478,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     errorMessage: state.dashboard.errorMessage,
     successMessage: state.dashboard.successMessage,
     localOrdersArray: state.sales.localOrdersArray,
+    chargesFeesArray: state.dashboard.chargesFeesArray,
     bodyMakeWithWheelbase: state.catalog.catalogBodyMakesArray,
     makeFromCatalogBodyMake: state.catalog.makeFromCatalogBodyMake,
     generalAccessoriesArray: state.sales.generalAccessoriesArray,
@@ -1419,6 +1495,7 @@ interface DispatchProps {
   onCreateBodyMake: typeof actions.createBodyMake;
   onUpdateBodyMake: typeof actions.updateBodyMake;
   onDeleteBodyMake: typeof actions.deleteBodyMake;
+  onGetChargesFees: typeof actions.getChargesFees;
   onStoreLocalOrders: typeof actions.storeLocalOrders;
   onGetCatalogBodyMakes: typeof actions.getCatalogBodyMakes;
   onGetSalesAccessories: typeof actions.getSalesAccessories;
@@ -1435,6 +1512,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetBodies: () => dispatch(actions.getBodies()),
     onGetLengths: () => dispatch(actions.getLengths()),
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
+    onGetChargesFees: () => dispatch(actions.getChargesFees()),
     onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
     onCreateBodyMake: (createBodyMakeData, imageTag, imageFiles) =>

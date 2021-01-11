@@ -19,9 +19,9 @@ const { Panel } = Collapse;
 
 export interface OverviewComponentProps {
   accessObj?: TUserAccess;
-  localOrdersArray?: TLocalOrderObj[];
   currentStep?: number; //for steps component
   displayOrdersAmount?: number; //determine how many orders there should be
+  localOrdersArray?: TLocalOrderObj[];
   setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
   onRemoveAnOrder?: (orderId: string, localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
@@ -76,28 +76,10 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                 title: string;
                 price: number;
               };
-              let processingFeesArray = [
-                {
-                  title: 'Admin fees, handling charges, weighing',
-                  price: 500,
-                },
-                {
-                  title: 'Signwriting & luminous sticker',
-                  price: 250,
-                },
-                {
-                  title: 'Weighing / Inspection Fee (Puspakom)',
-                  price: 650,
-                },
-                {
-                  title: 'JPJ Booking Number',
-                  price: 325,
-                },
-                {
-                  title: 'HQS Final Inspection',
-                  price: 200,
-                },
-              ];
+
+              let processingFeesArray = order.chargesFeesArray.filter(
+                (charges) => charges.title !== 'JPJ Registration & E Hak Milik',
+              );
 
               let bodyMakeDetailRowArray: { title: string; data: string }[] = [];
               if (order.bodyMakeObj !== null && order.bodyMakeObj !== undefined) {
@@ -209,14 +191,18 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
               roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
 
+              let JPJEHakMilik = order.chargesFeesArray.filter(
+                (charges) => charges.title === 'JPJ Registration & E Hak Milik',
+              );
+
               let insuranceArray = [
                 {
                   title: 'Road tax (1year)',
                   price: 1015,
                 },
                 {
-                  title: 'JPJ Registration & E Hak Milik ',
-                  price: 110,
+                  title: JPJEHakMilik[0].title,
+                  price: JPJEHakMilik[0].price,
                 },
                 {
                   title: 'INSURANCE PREMIUM (windscreen included)',

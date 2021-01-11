@@ -557,7 +557,7 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                     RM&nbsp;{accessoryObj.price}
                                   </Tag>
                                 ) : (
-                                  <Tag color="red" className="margin_l-1">
+                                  <Tag color="gold" className="margin_l-1">
                                     -----
                                   </Tag>
                                 )}
@@ -672,7 +672,7 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                                   RM&nbsp;{bodyAccessoryObj.accessory.price}
                                 </Tag>
                               ) : (
-                                <Tag color="red" className="margin_l-1">
+                                <Tag color="gold" className="margin_l-1">
                                   -----
                                 </Tag>
                               )}
@@ -815,11 +815,11 @@ const CatalogAccessoriesModal: React.FC<Props> = ({
                             <div className="catalogaccessoriesmodal__button-crud-div">
                               {/* The body make accessory's price */}
                               {bodyMakeAccessoryObj.price !== 0 && bodyMakeAccessoryObj.price !== null ? (
-                                <Tag color="red" className="margin_l-1">
+                                <Tag color="geekblue" className="margin_l-1">
                                   RM&nbsp;{bodyMakeAccessoryObj.price}
                                 </Tag>
                               ) : (
-                                <Tag color="red" className="margin_l-1">
+                                <Tag color="gold" className="margin_l-1">
                                   -----
                                 </Tag>
                               )}

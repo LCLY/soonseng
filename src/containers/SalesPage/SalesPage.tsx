@@ -41,7 +41,12 @@ import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
-import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
+import {
+  TReceivedAccessoryObj,
+  TReceivedBodyMakeObj,
+  TReceivedBodyObj,
+  TReceivedChargesFeesObj,
+} from 'src/store/types/dashboard';
 import { SalesPageContext } from './SalesPageContext';
 
 const { Step } = Steps;
@@ -64,6 +69,7 @@ const SalesPage: React.FC<Props> = ({
   bodiesArray,
   bodyMakesArray,
   // salesBrandsArray,
+  chargesFeesArray,
   localOrdersArray,
   lengthsCategoriesArray,
   generalAccessoriesArray,
@@ -75,6 +81,7 @@ const SalesPage: React.FC<Props> = ({
   onRemoveAnOrder,
   // API calls
   onGetSalesLengths,
+  onGetChargesFees,
   onGetSalesBodies,
   onGetSalesBodyMakes,
   onGetSalesAccessories,
@@ -112,6 +119,7 @@ const SalesPage: React.FC<Props> = ({
     dimensionRelatedAccessoriesArray: [],
     bodyRelatedAccessoriesArray: [],
     bodyMakeObj: null,
+    chargesFeesArray: [],
   });
 
   let totalAccessoriesArrayLength =
@@ -325,6 +333,19 @@ const SalesPage: React.FC<Props> = ({
   }, [setTotalSteps, steps]);
 
   useEffect(() => {
+    onGetChargesFees();
+  }, [onGetChargesFees]);
+
+  useEffect(() => {
+    if (chargesFeesArray) {
+      // after fetch, store the charges fees array into local order obj
+      setCurrentOrderObj((prevState) => {
+        return { ...prevState, chargesFeesArray: chargesFeesArray };
+      });
+    }
+  }, [chargesFeesArray, setCurrentOrderObj]);
+
+  useEffect(() => {
     // when user clicks on a length and the body length returns succeed, user proceed to the next step
     if (
       getSalesMakesSucceed ||
@@ -407,9 +428,10 @@ interface StateProps {
   bodiesArray?: TReceivedBodyObj[] | null;
   salesBrandsArray?: TReceivedSalesMakesObj[] | null;
   bodyMakesArray?: TReceivedSalesBodyMakeObj[] | null;
+  chargesFeesArray?: TReceivedChargesFeesObj[] | null;
   generalAccessoriesArray?: TReceivedAccessoryObj[] | null;
-  dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
   bodyRelatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
+  dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
   // length category object
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
   // array for local orders
@@ -431,6 +453,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     bodyMakesArray: state.sales.bodyMakesArray,
     localOrdersArray: state.sales.localOrdersArray,
     salesBrandsArray: state.sales.salesBrandsArray,
+    chargesFeesArray: state.dashboard.chargesFeesArray,
     lengthsCategoriesArray: state.sales.lengthsCategoriesArray,
     generalAccessoriesArray: state.sales.generalAccessoriesArray,
     bodyRelatedAccessoriesArray: state.sales.bodyRelatedAccessoriesArray,
@@ -455,12 +478,14 @@ interface DispatchProps {
   onGetSalesLengths: typeof actions.getSalesLengths;
   onGetSalesBodies: typeof actions.getSalesBodies;
   onGetSalesBodyMakes: typeof actions.getSalesBodyMakes;
+  onGetChargesFees: typeof actions.getChargesFees;
   onGetSalesAccessories: typeof actions.getSalesAccessories;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onClearSalesState: () => dispatch(actions.clearSalesState()),
+    onGetChargesFees: () => dispatch(actions.getChargesFees()),
     onGetSalesLengths: (tire) => dispatch(actions.getSalesLengths(tire)),
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),

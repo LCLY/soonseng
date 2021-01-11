@@ -822,13 +822,63 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      &-div {
-        @include respond-to($small-phone) {
-          & .ant-checkbox-wrapper {
+      &-outerdiv {
+        & .ant-checkbox-wrapper {
+          width: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+
+          @include respond-to($small-phone) {
             font-size: 1.3rem !important;
+          }
+
+          & > span {
+            &:first-child {
+              width: auto;
+            }
+            &:not(:first-child) {
+              width: 100%;
+              display: block !important;
+            }
           }
         }
         margin-top: 1rem;
+      }
+
+      // each row of checkbox
+      &-row {
+        display: flex;
+      }
+
+      // div wrapping title
+      &-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @include respond-to($small-phone) {
+          max-width: calc(100vw - 15rem);
+        }
+        @include respond-to($phone-only) {
+          max-width: 24vw;
+        }
+        @include respond-to($tablet-portrait-up) {
+          max-width: 17rem;
+        }
+      }
+
+      &-titlepricediv {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.2rem 0.5rem;
+        width: 100%;
+        &:hover {
+          background: rgba($primary-color-4, 0.08);
+        }
+        &:active {
+          background: rgba($primary-color-4, 0.08);
+        }
       }
     }
 
