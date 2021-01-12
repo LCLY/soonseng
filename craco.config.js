@@ -26,8 +26,12 @@ module.exports = {
           './src/scss/mixin.scss',
           './src/index.scss',
           './src/App.scss',
+          './src/scss/reactbootstrap.scss',
         ],
       },
     },
   ],
 };
+
+// package.json generatedoc command
+// "generate-docs": "typedoc --out docs --exclude \"**/*+(index).ts\" --exclude \"**/store/actions/*+(actionTypes|sales).ts\" --exclude \"**/store/reducers/*.ts\" src"

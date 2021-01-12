@@ -1,0 +1,132 @@
+.test {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //   border: 1px solid black;
+}
+
+.quotation {
+  &__section {
+    width: 100rem;
+  }
+  &__top {
+    &-div {
+      display: flex;
+      position: relative;
+      justify-content: space-between;
+      border-bottom: 2px solid black;
+      padding-bottom: 2rem;
+      &:after {
+        position: absolute;
+        content: '';
+        bottom: -0.9rem;
+        width: 100%;
+        border-bottom: 5px solid black;
+      }
+    }
+
+    &-title {
+      font-style: italic;
+      font-size: 3rem;
+      font-weight: bolder;
+      font-family: $font-bebasneue;
+      text-align: center;
+    }
+
+    &-address {
+      font-family: $font-roboto;
+      font-size: 1.6rem;
+      margin-top: 1rem;
+    }
+
+    &-contacts {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+      justify-content: center;
+
+      &-highlight {
+        font-weight: bolder;
+        font-size: 1.6rem;
+        // font-family: $font-anton;
+      }
+    }
+  }
+
+  &__logo {
+    height: 100%;
+    width: 10.5vw;
+    object-fit: cover;
+  }
+
+  &__header {
+    &-2 {
+      font-size: 2.5rem;
+      margin-top: 3rem;
+      font-weight: bolder;
+      text-align: center;
+      font-family: $font-firesans;
+      text-decoration: underline;
+    }
+  }
+
+  &__subheader {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  &__content {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+  }
+
+  &__makedetail {
+    &-div {
+      display: flex;
+      margin-top: 2rem;
+      border: 1px solid black;
+      padding: 1rem 1rem;
+      min-width: 60rem;
+      justify-content: space-around;
+
+      &-left {
+        margin-right: 2rem;
+      }
+    }
+  }
+
+  /* ============================== */
+  //   order list
+  /* ============================== */
+  &__orderedlist {
+    & li {
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+    }
+    &-row {
+      display: flex;
+      justify-content: space-between;
+
+      &--chassis {
+        font-weight: bolder;
+      }
+    }
+  }
+
+  &__price {
+    &-div {
+      min-width: 65rem;
+      margin-top: 2rem;
+    }
+    &-unit {
+      text-align: right;
+      margin-bottom: 1rem;
+      margin-right: 2rem;
+    }
+  }
+}

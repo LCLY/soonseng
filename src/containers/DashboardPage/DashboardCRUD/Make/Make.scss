@@ -3,9 +3,67 @@
   // main sections
   /* ============ */
   &__section {
-    background: $section-grey;
+    // background: $section-grey;
     padding: 1rem 2rem 2rem 2rem;
     margin-bottom: 2rem;
+
+    /* ------------------------------ */
+    // top part section for two tables
+    /* ------------------------------ */
+    &-top {
+      display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
+      @include respond-to($phone-only) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+      }
+      &-left {
+        @include respond-to($small-phone) {
+          width: 100%;
+        }
+        @include respond-to($phone-only) {
+          width: 100%;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 100%;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 50%;
+        }
+      }
+
+      &-right {
+        @include respond-to($small-phone) {
+          width: 100%;
+        }
+        @include respond-to($phone-only) {
+          width: 100%;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 100%;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 50%;
+        }
+      }
+    }
+  }
+
+  /* ================= */
+  // The tabs for navigation
+  /* ================= */
+  &__tab {
+    &-outerdiv {
+      margin-top: 3rem;
+      // padding-top: $navbar-height;
+    }
   }
 
   /* =============== */
@@ -25,12 +83,27 @@
     //  the title of the header
     /* ---------------- */
     &-title {
-      font-family: $roboto;
+      font-family: $font-roboto;
       font-size: 2.5rem;
     }
   }
 
   &__table {
+    & .ant-table-body {
+      &::-webkit-scrollbar {
+        width: 0.5rem !important;
+        height: 0.5rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: $secondary-color-3 !important;
+        border-radius: 1rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: $secondary-color-2 !important;
+      }
+    }
     /* ==================== */
     // Every make table
     /* ==================== */
@@ -66,6 +139,15 @@
         }
       }
     }
+
+    /* Title for the brand in the craete/update series modal */
+    &-series {
+      &-title {
+        font-family: $font-roboto;
+        font-weight: bolder;
+        color: $primary-color-3;
+      }
+    }
   }
 
   /* ============ */
@@ -76,6 +158,12 @@
     // the category item
     /* ---------- */
     &-item {
+      flex-wrap: nowrap !important;
+
+      @include respond-to($small-phone) {
+        flex-wrap: wrap !important;
+      }
+
       /* for create make overwrite label width */
       &--make {
         margin-bottom: 0.5rem !important;
@@ -84,37 +172,22 @@
         }
       }
 
-      // remove the colon from the inch form input
       &--inch {
-        & .ant-form-item-control-input:before {
-          // content: none !important;
+        @include respond-to($small-phone) {
+          & .ant-form-item-control-input {
+            margin-top: auto;
+          }
         }
       }
 
       label {
-        width: 9rem;
-      }
-
-      .ant-form-item-label > label::after {
-        // content: '' !important;
-      }
-
-      // add colon before the form input
-      .ant-form-item-control-input:before {
-        // content: ':' !important;
-        // top: 0 !important;
-        // position: absolute;
-        // margin-right: 1rem;
-        // @include respond-to(mobile) {
-        //   content: none !important;
-        //   margin-right: 0;
-        // }
+        min-width: 9rem;
       }
 
       // push to right abit for error message
       .ant-form-item-explain.ant-form-item-explain-error {
         margin-left: 1.3rem;
-        @include respond-to(mobile) {
+        @include respond-to($small-phone) {
           content: none !important;
           margin-left: 0;
         }
@@ -122,11 +195,23 @@
       // same thing applies to success message
       .ant-form-item-explain.ant-form-item-explain-success {
         margin-left: 1.3rem;
-        @include respond-to(mobile) {
+        @include respond-to($small-phone) {
           content: none !important;
           margin-left: 0;
         }
       }
+    }
+
+    // left side of the forms
+    &-left {
+      width: 50%;
+      padding-right: 2rem;
+    }
+
+    // right side of the forms
+    &-right {
+      width: 50%;
+      padding-left: 1rem;
     }
   }
   /* ================================== */
@@ -138,12 +223,13 @@
     /* ---------- */
     &-category {
       color: $primary-color-3;
-      font-family: $opensans;
+      font-family: $font-opensans;
     }
     /* ------------------------------ */
     // the left div of details
     /* ------------------------------ */
     &-left {
+      white-space: initial;
       width: 11rem;
     }
 
@@ -151,7 +237,23 @@
     &-right {
       margin-left: 1rem;
       white-space: initial;
-      width: 17rem;
+      width: 12rem;
+    }
+
+    // The outer collapsible div
+    &-collapse {
+      & .ant-collapse-content-box {
+        border: 1px solid $translucent-grey;
+      }
+    }
+
+    // the collapsible panel inside
+    &-panel {
+      & .ant-collapse-header {
+        padding: 0.5rem 0 0 0 !important;
+
+        color: $link-blue !important;
+      }
     }
   }
 
@@ -162,10 +264,22 @@
     display: flex;
     overflow-x: auto;
     position: relative;
+    padding: 2rem;
+    background: $section-grey;
 
-    // outerdiv
-    &-outerdiv {
-      margin-top: 2rem;
+    /* ------------------- */
+    // The button and label for upload
+    /* ------------------- */
+    &-btn {
+      &-div {
+        margin-top: 1.5rem;
+      }
+    }
+    /* ---------------------------- */
+    // innerdiv wrapping the badges
+    /* ---------------------------- */
+    &-innerdiv {
+      margin-right: 2rem !important;
     }
 
     &-title {
@@ -185,8 +299,208 @@
       min-width: 15rem;
       height: 13rem;
       border: 1px solid $primary-color-4;
+    }
+
+    /* -------------------- */
+    // the 'x' icon
+    /* -------------------- */
+    &-closeicon {
+      color: $primary-color-3 !important;
+      background: white;
+      border-radius: 50%;
+      font-size: 2rem;
+
+      &:hover {
+        cursor: pointer;
+        color: $primary-color-1 !important;
+      }
+
+      &:active {
+        color: $primary-color-3 !important;
+      }
+    }
+  }
+  /* ======================= */
+  // the modal section
+  /* ======================= */
+  &__modal {
+    &-title {
+      &--card {
+        color: $primary-color-4;
+        font-family: $font-firesans;
+        font-weight: bolder;
+      }
+    }
+  }
+
+  /* ======================= */
+  // the expand section
+  /* ======================= */
+  &__expand {
+    &-title {
+      color: $primary-color-4;
+      font-family: $font-firesans;
+      font-weight: bolder;
+    }
+
+    // outerdiv for the whole expand row
+    &-outerdiv {
+      display: flex;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      &::-webkit-scrollbar {
+        height: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: $primary-color-3;
+        border-radius: 6px;
+      }
+      &::-webkit-scrollbar-thumb:hover {
+        background: $primary-color-1;
+      }
+    }
+
+    /* ----------------------------- */
+    // the available text
+    /* ----------------------------- */
+    &-available {
+      color: $primary-color-3;
+      font-family: $font-roboto;
+    }
+    /* ----------------------------- */
+    // the div for empty component
+    /* ----------------------------- */
+    &-empty {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    /* ----------------------------- */
+    // card for accessories
+    /* ----------------------------- */
+    &-card {
+      font-size: 1.2rem !important;
+      min-width: 20rem;
+      max-width: 20rem;
+      box-shadow: $bottom-shadow;
+
       &:not(:last-child) {
         margin-right: 1rem;
+      }
+      /* the title of the card */
+      &-title {
+        text-transform: capitalize;
+        font-size: 1.4rem;
+        font-family: $font-firesans;
+        color: $primary-color-4;
+        // div of the title
+        &-div {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+
+      // the images within the carousel and card
+      &-img {
+        object-fit: cover !important;
+        width: 100%;
+        height: 12rem;
+      }
+      // the body of the card
+      &-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 9rem;
+      }
+
+      // The categories e.g. price and description within the card
+      &-category {
+        color: $primary-color-3;
+      }
+      // The div of description
+      &-description {
+        padding: 0.5rem;
+        height: 100%;
+        &::-webkit-scrollbar {
+          width: 2.5px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: $primary-color-3;
+          border-radius: 6px;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+          background: $primary-color-1;
+        }
+        /* ----------------------------- */
+        // the right column of description
+        /* ------------------------------- */
+        &-right {
+          height: 4rem;
+          overflow-y: auto;
+          width: 100%;
+          &::-webkit-scrollbar {
+            width: 2.5px;
+          }
+          &::-webkit-scrollbar-thumb {
+            background: $primary-color-3;
+            border-radius: 6px;
+          }
+          &::-webkit-scrollbar-thumb:hover {
+            background: $primary-color-1;
+          }
+        }
+      }
+      /* ----------------------------- */
+      // The two edit and delete buttons
+      /* ----------------------------- */
+      &-btn {
+        // the whole section wrapping the horizontal line and buttons
+        &-section {
+          width: 100%;
+        }
+        // outerdiv for the two  buttons
+        &-div {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          padding-right: 1rem;
+          border-top: 1px solid rgba($translucent-grey, 0.3);
+        }
+        // the edit link button
+        &-edit {
+          margin-right: 1rem;
+          color: #1890ff !important;
+          &:hover {
+            color: darken(#1890ff, 10%) !important;
+          }
+          &:active {
+            transition: none;
+            color: #1890ff !important;
+          }
+        }
+      }
+      /* ============================ */
+      // the body within the card
+      /* ============================ */
+      & .ant-card-body {
+        display: flex;
+        // height: 19.5rem;
+        flex-direction: column;
+        position: relative;
+        padding: 0.5rem 0.5rem 0 0.5rem !important;
+      }
+
+      /* ========================== */
+      // div of the card title
+      /* ========================== */
+      & .ant-card-head-title {
+        padding: 0.5rem 0 !important;
+      }
+
+      &.ant-card-small > .ant-card-head {
+        min-height: auto;
       }
     }
   }

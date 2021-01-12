@@ -1,0 +1,133 @@
+.catalogaccessoriesmodal {
+  &__button {
+    /* ---------------- */
+    // the create button
+    /* ---------------- */
+    &-create {
+      cursor: pointer;
+      user-select: none;
+      margin-left: 1rem;
+      color: $primary-color-4;
+      border: 1px solid $primary-color-4;
+      padding: 0.2rem 0.7rem;
+      font-size: 1.2rem;
+      background: white;
+      border-radius: 0.5rem;
+      transition: all 0.5s ease;
+      &:hover {
+        color: white;
+        background: $primary-color-2;
+      }
+      &:active {
+        transition: none;
+        color: $primary-color-4;
+        background: white;
+      }
+    }
+
+    /* --------------------------------------------------- */
+    // the crud div containing the edit and delete button
+    /* --------------------------------------------------- */
+    &-crud {
+      &-div {
+        display: flex;
+        align-items: center;
+      }
+
+      &-edit {
+        cursor: pointer;
+        display: flex;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background: white;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+        color: black;
+        border: 1px solid black;
+        transition: all 0.5s ease;
+        &:hover {
+          color: $primary-color-1;
+          border: 1px solid $primary-color-1;
+        }
+      }
+
+      &-delete {
+        color: white;
+        cursor: pointer;
+        display: flex;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.5s ease;
+        background: $primary-color-4;
+        border: 1px solid $primary-color-4;
+        &:hover {
+          color: white;
+          background: $primary-color-2;
+        }
+      }
+    }
+  }
+
+  /* ------------------- */
+  // checkboxes
+  /* ------------------- */
+
+  &__accessories {
+    &-grid {
+      display: grid;
+      margin: 2rem 0;
+
+      @include respond-to($small-phone) {
+        margin: 1rem 0;
+        padding: 0;
+        grid-gap: 1rem;
+        grid-auto-rows: auto; //height of each rowa
+        grid-template-columns: repeat(1, 1fr);
+      }
+
+      @include respond-to($phone-only) {
+        padding: 0;
+        grid-gap: 0.5rem 3rem;
+        grid-auto-rows: auto; //height of each row
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ---------------------------------------------------------------- */
+    // the div for each accessory, price and the edit and delete button
+    /* ---------------------------------------------------------------- */
+    &-div {
+      display: flex;
+      align-items: center;
+      padding: 0.2rem 0.5rem;
+      justify-content: space-between;
+      &:hover {
+        background: rgba($primary-color-4, 0.08);
+      }
+    }
+
+    /* ------------------------------ */
+    // title of the accessories in the modal
+    /* ------------------------------ */
+    &-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @include respond-to($small-phone) {
+        max-width: calc(100vw - 20rem);
+      }
+      @include respond-to($phone-only) {
+        max-width: 14rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        max-width: 22rem;
+      }
+    }
+  }
+}

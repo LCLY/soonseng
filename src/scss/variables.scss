@@ -4,7 +4,7 @@
 $primary-color-1: rgb(219, 9, 44);
 $primary-color-2: rgb(201, 26, 56);
 $primary-color-3: #af0606;
-$primary-color-4: #830e0e;
+$primary-color-4: rgb(131, 14, 14);
 $secondary-color-1: rgb(44, 45, 46);
 $secondary-color-2: rgb(92, 88, 89);
 $secondary-color-3: rgb(141, 144, 147);
@@ -26,24 +26,38 @@ $progress-color-3: rgba(223, 206, 56, 0.904);
 $progress-color-2: rgba(223, 184, 56, 0.904);
 $progress-color-1: rgba(218, 144, 49, 0.904);
 
+$link-blue: #1890ff;
+$link-blue-2: darken(#1890ff, 10%);
+$dark-blue: #020024;
+
 $star-rating: rgb(237, 240, 58);
 
 $facebook: #3b5998;
 $google: #d84b37;
 
 $translucent-grey: rgba(197, 197, 197, 0.637);
-$section-grey: #dde2eb4b;
+$section-grey: #dde2eb71;
+$soonseng-grey: #d6d6d652;
 
 // shadows
 $shadow: 0 0.1rem 0.5rem 0.1rem rgba(black, 0.5);
 $bottom-shadow: 0px 0.3rem 0.5rem rgba(black, 0.15);
 
 // font families
-$ubuntu: 'Ubuntu', sans-serif;
-$roboto: 'Roboto', sans-serif;
-$opensans: 'Open Sans', sans-serif;
-$bebasneue: 'Bebas Neue', cursive;
-$firesans: 'Fira Sans Condensed', sans-serif;
-
+$font-ubuntu: 'Ubuntu', sans-serif;
+$font-roboto: 'Roboto', sans-serif;
+$font-opensans: 'Open Sans', sans-serif;
+$font-bebasneue: 'Bebas Neue', sans-serif;
+$font-firesans: 'Fira Sans Condensed', sans-serif;
+$font-courgette: 'Courgette', sans-serif;
+$font-anton: 'Anton', sans-serif;
+$font-carterone: 'Carter One', sans-serif;
+$font-bowlby: 'Bowlby One SC', sans-serif;
+$font-dmsans: 'DM Sans', sans-serif;
+$font-archivo: 'Archivo Black', sans-serif;
+$font-fugaz: 'Fugaz One', sans-serif;
+$font-pragati: 'Pragati Narrow', sans-serif;
 // z-index
 $navbar: 10;
+
+$navbar-height: 106.88px;

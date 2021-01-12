@@ -1,51 +1,202 @@
 .navbar {
   // only changing the bg primary of navbar
-  &__outerdiv > .bg-primary {
-    background-image: linear-gradient(to right, $primary-color-3 60%, rgb(66, 5, 16));
+  &__outerdiv {
+    // position: absolute;
+    transition: all 0.5s ease;
+    width: 100%;
+    z-index: 1000;
+
+    & .bg-primary {
+      background: rgba($primary-color-4, 1) !important;
+    }
+
+    // set style for all the a tag
+    & a {
+      text-decoration: none !important;
+    }
   }
+
   &__div {
-    padding: 2rem 3rem !important;
+    padding: 2rem 5rem !important;
+    @include respond-to($small-phone) {
+      // min-height: 10vh;
+      padding: 2% 5rem !important;
+    }
+    @include respond-to(phone-only) {
+      // min-height: 10vh;
+      padding: 2% 5rem !important;
+    }
+    @include respond-to(tablet-portrait-up) {
+      // min-height: 10vh;
+      padding: 2rem 5rem !important;
+    }
+    @include respond-to(tablet-portrait-up) {
+      // min-height: 10vh;
+      padding: 2rem 5rem !important;
+    }
   }
 
   &__logo {
-    margin-right: 2rem !important;
+    cursor: pointer;
+    width: 15rem;
+    border-radius: 0.5rem;
+    margin-right: 3rem !important;
+    object-fit: cover;
+    @include respond-to($small-phone) {
+      width: 20vw;
+    }
+    @include respond-to(phone-only) {
+      width: 20vw;
+    }
+    @include respond-to(tablet-portrait-up) {
+      width: 10rem;
+    }
+    @include respond-to(tablet-landscape-up) {
+      width: 15rem;
+    }
+
+    &:hover {
+      transition: all 0.3s ease;
+      // background: rgb(228, 228, 228);
+    }
+    &:active {
+      transition: none;
+      // background: rgb(255, 255, 255);
+    }
+  }
+
+  &__item {
+    background: $primary-color-3;
+    padding: 1.8rem 4rem 1.8rem 4rem !important;
+
+    &-menu {
+      & .ant-menu-item-selected {
+        background: $primary-color-4 !important;
+      }
+    }
   }
 
   &__wrapper {
-    & > .active {
-      background: $secondary-color-1;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    & .active {
+      // the background when the nav items is active
+      // background: $secondary-color-1;
       border-radius: 0.5rem;
+      & .navbar__link {
+        color: white;
+      }
     }
   }
 
   &__link {
-    padding: 0 1rem;
-    margin: 0 0.4rem;
+    // the link itself
+    color: rgba(white, 0.5);
+    cursor: pointer;
     &:hover {
-      transition: all 0.5s ease;
-      background: $secondary-color-1;
-      @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
-      border-radius: 0.5rem;
+      color: white;
     }
 
-    @include respond-to(tablet) {
-      margin: 0.3rem 0;
+    @include respond-to($small-phone) {
+      font-size: 1.3rem !important;
     }
+    @include respond-to(phone-only) {
+      font-size: 1.3rem !important;
+    }
+    @include respond-to($tablet-portrait-up) {
+      font-size: 1.5rem !important;
+    }
+    // div of the nav links
+    &-div {
+      padding: 0 1rem;
+      margin: 0 0.4rem;
+      &:hover {
+        transition: all 0.5s ease;
+        // background: $secondary-color-1;
+        // @include alpha-attribute('background', rgba($secondary-color-1, 0.5), white);
+        border-radius: 0.5rem;
+      }
 
-    /* --------------- */
-    // the product dropdown, need to add padding to the bottom of the dropdown
-    &--product {
-      & > .show {
-        @include respond-to(tablet) {
-          margin-bottom: 1rem;
-        }
+      @include respond-to($small-phone) {
+        // font-size: 1.2rem !important;
+        padding: 0.5rem 0;
+      }
+      @include respond-to(phone-only) {
+        // font-size: 1.2rem !important;
+        padding: 0.5rem 0;
+      }
+      @include respond-to(tablet-portrait-up) {
+        margin: 0.3rem 0;
+        padding: 0 1rem;
       }
     }
   }
-}
 
-.dropdown-menu {
-  & > a {
-    z-index: 1000 !important;
+  &__dropdown {
+    &-item {
+      font-size: 1.5rem !important;
+    }
+
+    &-link {
+      text-decoration: none !important;
+    }
+  }
+
+  &__left {
+    &-div {
+      display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
+      @include respond-to(phone-only) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
+    }
+  }
+
+  /* ========================= */
+  // the right div of the navbar
+  /* ======================== */
+
+  &__right {
+    &-div {
+      display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        border-top: 1px solid $translucent-grey;
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
+      @include respond-to(phone-only) {
+        flex-direction: column;
+        border-top: 1px solid $translucent-grey;
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+  }
+
+  /* ================ */
+  // user role
+  /* ================ */
+  &__role {
+    &-title {
+      color: white;
+      background: $primary-color-3;
+      border: 1px solid white;
+      border-radius: 0.5rem;
+      margin-right: 1rem;
+    }
   }
 }

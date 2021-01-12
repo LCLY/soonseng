@@ -1,0 +1,125 @@
+.bodymake {
+  &__form {
+    &-item {
+      flex-wrap: nowrap !important;
+      @include respond-to($small-phone) {
+        flex-wrap: wrap !important;
+      }
+
+      // label {
+      //   min-width: 30% !important;
+      // }
+
+      & .ant-form-item-label {
+        min-width: 25% !important;
+        text-align: left;
+      }
+      & .ant-form-item-control {
+        min-width: 75% !important;
+      }
+
+      // push to right abit for error message
+      .ant-form-item-explain.ant-form-item-explain-error {
+        margin-left: 1.3rem;
+        @include respond-to($small-phone) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+      // same thing applies to success message
+      .ant-form-item-explain.ant-form-item-explain-success {
+        margin-left: 1.3rem;
+        @include respond-to($small-phone) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+
+      /* -------------------------- */
+      // the dimensions feet and inch
+      /* -------------------------- */
+      &-left {
+        width: 62% !important;
+        @include respond-to($small-phone) {
+          width: 50% !important;
+        }
+      }
+      &-right {
+        width: 38% !important;
+        @include respond-to($small-phone) {
+          width: 50% !important;
+        }
+      }
+    }
+  }
+  &__details {
+    &-category {
+      color: $primary-color-3;
+      font-family: $font-opensans;
+    }
+    &-left {
+      width: auto;
+    }
+    &-right {
+      margin-left: 1rem;
+    }
+  }
+
+  /* delete modal related css */
+  &__delete {
+    &-header {
+      display: flex;
+      align-items: center;
+    }
+    &-icon {
+      font-size: 2.5rem;
+      margin-right: 1rem;
+      color: $primary-color-2 !important;
+    }
+    &-message {
+      color: $primary-color-3;
+      font-family: $font-firesans;
+    }
+  }
+
+  // button related css
+  &__btn {
+    // div wrapping the link buttons
+    &-div {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    // the link buttons
+    &-link {
+      padding: 0 !important;
+      color: $link-blue !important;
+      margin-right: 2rem;
+      &:hover {
+        color: darken($link-blue, 50%) !important;
+      }
+      &:active {
+        transition: none;
+        color: $link-blue !important;
+      }
+      // the delete button
+      &--danger {
+        padding: 0 !important;
+        &:hover {
+          color: $primary-color-3 !important;
+        }
+        &:active {
+          transition: none;
+          color: $primary-color-1 !important;
+        }
+      }
+    }
+  }
+
+  &__select {
+    width: 100% !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}

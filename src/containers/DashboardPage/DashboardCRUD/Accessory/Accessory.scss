@@ -1,4 +1,35 @@
 .accessory {
+  /* ================ */
+  // navigation tabs
+  /* ================ */
+  &__tab {
+    &-outerdiv {
+      margin-top: 3rem;
+      // padding-top: $navbar-height;
+    }
+  }
+
+  &__table {
+    & .ant-table-body {
+      &::-webkit-scrollbar {
+        width: 0.5rem !important;
+        height: 0.5rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: $secondary-color-3 !important;
+        border-radius: 1rem !important;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: $secondary-color-2 !important;
+      }
+    }
+  }
+
+  /* =================== */
+  // The expanded tab
+  /* =================== */
   &__expand {
     &-div {
       display: flex;
@@ -12,8 +43,39 @@
 
     // the text on the right
     &-text {
-      width: 70rem;
+      width: 75rem;
       white-space: normal;
+    }
+  }
+
+  /* ============ */
+  // form
+  /* ============ */
+  &__form {
+    /* ---------- */
+    // the category item
+    /* ---------- */
+    &-item {
+      label {
+        width: auto;
+      }
+
+      // push to right abit for error message
+      .ant-form-item-explain.ant-form-item-explain-error {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
+      // same thing applies to success message
+      .ant-form-item-explain.ant-form-item-explain-success {
+        margin-left: 1.3rem;
+        @include respond-to(mobile) {
+          content: none !important;
+          margin-left: 0;
+        }
+      }
     }
   }
 }

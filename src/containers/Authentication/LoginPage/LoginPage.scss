@@ -1,0 +1,97 @@
+.login {
+  &__section {
+    @include respond-to($small-phone) {
+      padding: 1rem;
+    }
+    @include respond-to($phone-only) {
+      padding: 1rem;
+    }
+    @include respond-to($tablet-portrait-up) {
+      padding: 3rem;
+    }
+
+    &-header {
+      text-align: center;
+      font-size: 3rem;
+      font-family: $font-firesans;
+      font-weight: bolder;
+      padding-bottom: 2rem;
+      color: white;
+    }
+  }
+  &__form {
+    &-div {
+      // border: 1px solid $primary-color-1;
+      padding: 2rem;
+
+      margin-bottom: 10rem;
+      margin-top: 2rem;
+      border-top-right-radius: 5rem;
+      border-top-left-radius: 5rem;
+      border-bottom-right-radius: 5rem;
+      background: rgba($primary-color-4, 0.5);
+      @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+
+      @include respond-to($small-phone) {
+        width: 90%;
+      }
+      @include respond-to($phone-only) {
+        width: 40rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 40rem;
+      }
+    }
+
+    &-outerdiv {
+      padding-top: 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      @include shadow-func(0rem, 0rem, 0.5rem, 0.01rem, rgba(255, 255, 255, 0.789));
+      @include glassMorph(rgba(0, 0, 0, 0.07), 20px, rgba(225, 225, 225, 0.056), 2rem);
+
+      @include respond-to($small-phone) {
+        min-height: 80vh;
+      }
+    }
+
+    /* ------------------------------- */
+    // inputs form items
+    /* ------------------------------- */
+    &-items {
+      &:first-child {
+        margin-bottom: 0.5rem !important;
+      }
+      & .ant-input {
+        width: 100% !important;
+      }
+
+      & label {
+        color: white !important;
+        width: 10rem;
+        @include respond-to($small-phone) {
+          display: none !important;
+        }
+        @include respond-to($phone-only) {
+          display: none !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          display: flex !important;
+        }
+      }
+    }
+  }
+
+  &__btn {
+    width: 100%;
+    border: 1px solid white !important;
+    background: none !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.145) !important;
+    }
+  }
+}

@@ -4,7 +4,6 @@ import './DashboardPage.scss';
 /*3rd party lib*/
 import { Tabs } from 'antd';
 import LazyLoad from 'react-lazyload';
-import { Container } from 'react-bootstrap';
 /* Utils */
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 /*components*/
@@ -31,40 +30,28 @@ const DashboardPage: React.FC<Props> = () => {
   /* ================================================== */
   const { width } = useWindowDimensions();
 
-  /* ================================================== */
-  // methods
-  /* ================================================== */
-
-  /* ================================================== */
-  // components
-  /* ================================================== */
-
-  /* ================================================== */
-  /* ================================================== */
   return (
     <>
-      <NavbarComponent activePage="" />
-      <Container>
-        <section className="dashboard__section">
-          <Tabs defaultActiveKey="make" tabPosition={width > 1200 ? 'left' : 'top'}>
-            <TabPane tab="Make" key="make" className="dashboard__tab">
-              <LazyLoad placeholder={<div>Loading</div>}>
-                <Make />
-              </LazyLoad>
-            </TabPane>
-            <TabPane tab="Body" key="body" className="dashboard__tab">
-              <LazyLoad placeholder={<div>Loading</div>}>
-                <Body />
-              </LazyLoad>
-            </TabPane>
-            <TabPane tab="Accessory" key="accessory" className="dashboard__tab">
-              <LazyLoad placeholder={<div>Loading</div>}>
-                <Accessory />
-              </LazyLoad>
-            </TabPane>
-          </Tabs>
-        </section>
-      </Container>
+      <NavbarComponent activePage="dashboard" />
+      <section className="dashboard__section">
+        <Tabs defaultActiveKey="make" tabPosition={width > 1200 ? 'left' : 'top'}>
+          <TabPane tab="Make" key="make" className="dashboard__tab">
+            <LazyLoad placeholder={<div>Loading</div>}>
+              <Make />
+            </LazyLoad>
+          </TabPane>
+          <TabPane tab="Body" key="body" className="dashboard__tab">
+            <LazyLoad placeholder={<div>Loading</div>}>
+              <Body />
+            </LazyLoad>
+          </TabPane>
+          <TabPane tab="Accessory" key="accessory" className="dashboard__tab">
+            <LazyLoad placeholder={<div>Loading</div>}>
+              <Accessory />
+            </LazyLoad>
+          </TabPane>
+        </Tabs>
+      </section>
     </>
   );
 };

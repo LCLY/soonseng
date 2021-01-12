@@ -1,0 +1,79 @@
+.e-with-fixed-bg {
+  width: 100%;
+  height: auto;
+  /* Important */
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow: hidden;
+  }
+}
+
+.bg-wrap {
+  overflow: hidden;
+  backface-visibility: hidden;
+  clip: rect(0, auto, auto, 0);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.bg {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  // bottom: 0;
+  right: 0;
+  padding-top: $navbar-height;
+  width: 100vw;
+  min-height: 100vh;
+  z-index: 0;
+  transform: translateZ(0);
+  will-change: transform;
+  overflow: hidden;
+
+  &-cover {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    // background-image: radial-gradient(rgba(255, 255, 255, 0) 20%, rgba(0, 0, 0, 1));
+  }
+}
+
+.parallax {
+  &__children {
+    &-container {
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+}

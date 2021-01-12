@@ -1,0 +1,1479 @@
+.sales {
+  /* =================== */
+  // skeleton for loading
+  /* =================== */
+  &__skeleton {
+    width: 100% !important;
+    padding: 0.5rem 1rem;
+  }
+
+  color: rgba(0, 0, 0, 0.111);
+
+  &__outerdiv {
+    flex: 1;
+    // max-height: 100vh;
+    // overflow: auto;
+
+    @include respond-to(phone-only) {
+      padding-top: 0; //height of navbar
+    }
+  }
+
+  // div wrapping the steps and the content
+  &__innerdiv {
+    display: flex;
+    justify-content: center; // flex-direction: column;
+    padding-bottom: 10%;
+    min-height: calc(100vh - 58rem);
+    // height: calc(100vh - 58rem);
+  }
+
+  /* =================================== */
+  // the 3 main sections
+  &__section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    margin: 1rem 0;
+    padding: 2rem;
+    @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);
+    @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+
+    @include respond-to($small-phone) {
+      margin: 1rem 0.5rem;
+    }
+
+    &-header {
+      font-family: $font-bebasneue;
+      text-align: center;
+      color: $primary-color-4;
+      -webkit-text-fill-color: $primary-color-4; /* Will override color (regardless of order) */
+      -webkit-text-stroke-width: 0.5px;
+      -webkit-text-stroke-color: white;
+      // changing the divider's color
+      &-divider {
+        border-color: white !important;
+      }
+
+      @include respond-to($small-phone) {
+        -webkit-text-stroke-width: 0.2px;
+        font-size: 2.5rem;
+      }
+      @include respond-to($phone-only) {
+        -webkit-text-stroke-width: 0.5px;
+        font-size: 3.2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        -webkit-text-stroke-width: 0.5px;
+        font-size: 5rem;
+      }
+    }
+
+    // the innerdiv wrapping the description on the left and choices on the right
+    &-innerdiv {
+      display: flex;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
+      @include respond-to(phone-only) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
+
+      & .ant-card {
+        border: none !important;
+        background: rgba(255, 255, 255, 0.487) !important;
+      }
+    }
+
+    // the section image
+    &-img {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      width: 100%;
+      object-fit: cover;
+
+      @include respond-to($small-phone) {
+        height: 25rem;
+      }
+      @include respond-to($phone-only) {
+        height: 35rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        height: 22rem;
+      }
+      @include respond-to($tablet-landscape-up) {
+        height: 30vh;
+      }
+      @include respond-to($desktop-up) {
+        height: 40vh;
+      }
+
+      &-unavailabletext {
+        color: rgba(0, 0, 0, 0.479);
+        font-family: $font-firesans;
+        font-size: 1.3rem;
+      }
+
+      &--illustratoricon {
+        // padding-top: 3rem;
+        width: 50%;
+        height: 5%;
+        &-div {
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
+        &-text {
+          font-size: 3rem;
+          padding-top: 0rem;
+          padding-bottom: 2rem;
+          color: rgba($secondary-color-2, 0.5);
+          font-family: $font-bebasneue;
+        }
+      }
+
+      &--accessories {
+        padding-top: 2rem;
+        margin-top: 2rem;
+        width: 40%;
+        height: 5%;
+        &-text {
+          font-size: 3rem;
+          padding-top: 1.3rem;
+          padding-bottom: 1rem;
+          color: rgba($secondary-color-2, 0.5);
+          font-family: $font-bebasneue;
+        }
+      }
+
+      /* -------------------- */
+      // skeleton for showing no image
+      /* -------------------- */
+      &-skeleton {
+        width: 100% !important;
+        height: 100% !important;
+        color: white !important;
+        background: darken($primary-color-4, 6%) !important;
+        @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+
+        &.ant-skeleton-element .ant-skeleton-image-svg {
+          width: 20%;
+          height: 20%;
+        }
+
+        & .ant-skeleton-image-path {
+          fill: rgb(201, 197, 197) !important;
+        }
+      }
+    }
+
+    /* --------------------------- */
+    // the left column with image
+    /* ---------------------------- */
+    &-left {
+      color: $secondary-color-2;
+      margin-bottom: 1rem;
+      margin-right: 2rem;
+      padding-right: 3rem;
+
+      @include respond-to($phone-only) {
+        width: 100%;
+        padding-right: 0;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 45%;
+        padding-right: 1rem;
+      }
+      @include respond-to($small-phone) {
+        width: 100%;
+        padding-right: 0;
+      }
+    }
+    /* --------------------------- */
+    // the right column with select box
+    /* ---------------------------- */
+    &-right {
+      display: flex;
+      flex-direction: column;
+
+      border-radius: 5px;
+      @include respond-to($small-phone) {
+        width: 100%;
+      }
+      @include respond-to($phone-only) {
+        width: 100%;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 55%;
+      }
+    }
+
+    &-result {
+      color: $primary-color-3;
+      font-family: $font-ubuntu;
+      font-weight: bolder;
+      text-transform: capitalize;
+    }
+
+    /* ----------------------------------------- */
+    // overview of user's truck configuration
+    /* ---------------------------------------- */
+    &-overview {
+      width: 100%;
+    }
+
+    /* --------------------------------------------- */
+    // the div to ask user to select to preview images
+    /* --------------------------------------------- */
+    &-preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid $translucent-grey;
+      &-innerdiv {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.474);
+      }
+    }
+  }
+
+  /* ============================ */
+  // The select area on the right
+  /* ============================ */
+  &__selectarea {
+    // the search bar
+    &-search {
+      margin-top: 1rem;
+    }
+    // accessories alteration
+    &--accessories {
+      &:not(:last-child) {
+        margin-bottom: 5rem;
+      }
+    }
+
+    &--brand {
+      &:not(:last-child) {
+        margin-bottom: 5rem;
+      }
+    }
+
+    /* --------------------- */
+    // innerdiv
+    /* --------------------- */
+    &-innerdiv {
+      padding: 2rem 2rem 5rem 2rem;
+      border-top-left-radius: 3rem;
+      // border-top-right-radius: 3rem;
+      border-bottom-right-radius: 3rem;
+      // border-bottom-left-radius: 3rem;
+      border: 1px solid rgba(0, 0, 0, 0.171);
+      background: $primary-color-4;
+      color: white;
+
+      // main background
+      position: relative;
+      background: rgba($primary-color-4, 0.4);
+      backdrop-filter: blur(20px);
+      border-top-left-radius: 3rem;
+      border-bottom-right-radius: 3rem;
+      // second layer behind the main background
+      &:before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-top-left-radius: 3rem;
+        border-bottom-right-radius: 3rem;
+        background: rgba(121, 14, 14, 0.083);
+      }
+    }
+
+    /* ---------------- */
+    // display grid div
+    /* ---------------- */
+    &-div {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-rows: auto;
+      justify-content: center;
+      align-items: center;
+      grid-auto-rows: 3fr;
+      justify-items: center;
+
+      @include respond-to($small-phone) {
+        max-height: 50vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        grid-gap: 0.5rem;
+        padding-right: 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        @include customScrollbar(0.2rem, 0.2rem, 0.5rem, white, rgba(255, 255, 255, 0.44));
+      }
+      @include respond-to($phone-only) {
+        grid-gap: 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        max-height: 50vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        grid-gap: 0.5rem;
+        padding: 0 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        @include customScrollbar(0.2rem, 0.2rem, 0.5rem, white, rgba(255, 255, 255, 0.44));
+      }
+      @include respond-to($tablet-portrait-up) {
+        grid-gap: 2rem;
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      &--twocolumn {
+        grid-template-columns: repeat(2, 1fr);
+
+        @include respond-to($tablet-landscape-up) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.2rem;
+        }
+      }
+
+      /* --------------------- */
+      // Active selected buttons
+      /* --------------------- */
+      & .active {
+        // if the card is in active state
+        border: 1px solid white;
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        // if card is active, when hover, shouldnt have any changes
+        &:hover {
+          border: 1px solid white;
+          background: rgba(255, 255, 255, 0.25);
+          color: white;
+        }
+      }
+    }
+
+    /* ---------------------- */
+    // the select text above the small button
+    /* ---------------------- */
+    &-selecttext {
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
+      @include respond-to(phone-only) {
+        font-size: 1.2rem;
+      }
+      @include respond-to(tablet-portrait-up) {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* --------------------*/
+    // Small select buttons
+    /* --------------------*/
+    &-button {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      text-align: center;
+      text-transform: capitalize;
+      white-space: normal;
+      border-radius: 2px;
+      // background: white;
+      border: none;
+      color: white;
+      width: 100%;
+      height: 100%;
+      padding: 1rem 1rem;
+      border: 1px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      // color: $primary-color-4;
+
+      &:hover {
+        // border: 1px solid $primary-color-1;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+      }
+
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
+      @include respond-to(phone-only) {
+        font-size: 1.2rem;
+      }
+      @include respond-to(tablet-portrait-up) {
+        font-size: 1.5rem;
+      }
+
+      /* -------------------------- */
+      // the skeleton of the buttons
+      /* -------------------------- */
+      &-skeleton {
+        width: 100% !important;
+      }
+    }
+
+    /* ------------------------------------------- */
+    // details/ info card
+    // card that shows when user selected an option
+    /* ------------------------------------------- */
+    &-card {
+      width: 100%;
+      // margin-top: 2rem !important;
+      min-height: 5rem !important;
+      border-bottom-right-radius: 1.5rem !important;
+      border-color: $translucent-grey !important;
+      // background: $primary-color-4 !important;
+      // color: white !important;
+
+      & .ant-card-head {
+        display: none;
+        // font-family: $font-roboto;
+        // color: white;
+        // background: $primary-color-4 !important;
+        // @include glassMorph(rgba($primary-color-4, 0.4), 20px, rgba(121, 14, 14, 0.083), 0);
+      }
+
+      & .ant-card-body {
+        border-radius: 10rem !important;
+      }
+      /* the two columns in make */
+      &-column {
+        width: 50%;
+      }
+
+      /* each row of the details within the card*/
+      &-row {
+        display: flex;
+        align-items: center;
+        &:not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+        // left part of the row
+        &-left {
+          width: 25%;
+          font-family: $font-firesans;
+          // color: white;
+          @include respond-to($small-phone) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.5rem;
+          }
+
+          // for make
+          &--make {
+            width: 52%;
+            font-family: $font-firesans;
+            color: rgba(0, 0, 0, 0.514);
+            @include respond-to($small-phone) {
+              font-size: 1.2rem;
+            }
+            @include respond-to($phone-only) {
+              font-size: 1.2rem;
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 1.5rem;
+            }
+          }
+        }
+
+        /* right part of the row */
+        &-right {
+          width: 75%;
+          display: flex;
+          font-size: 1.3rem;
+          &-title {
+            font-size: 1.3rem;
+            text-transform: capitalize;
+          }
+          // for make
+          &--make {
+            display: block !important;
+            width: calc(55%);
+            display: flex;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            // white-space: nowrap;
+            @include respond-to($small-phone) {
+              font-size: 1rem;
+            }
+            @include respond-to($phone-only) {
+              font-size: 1rem;
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 1.3rem;
+            }
+          }
+        }
+      }
+      &-dimension {
+        @include respond-to($small-phone) {
+          font-size: 1rem !important;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1rem !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.2rem;
+        }
+      }
+      /* ------------- */
+      // price in the card
+      /* ------------- */
+      &-price {
+        font-weight: bolder;
+        color: $primary-color-4;
+        font-family: $font-opensans;
+        @include respond-to($small-phone) {
+          font-size: 1.2rem;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.2rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.5rem;
+        }
+        // price for model
+        &--model {
+          color: black;
+          @include respond-to($small-phone) {
+            font-size: 1rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.3rem;
+          }
+        }
+      }
+
+      /* ============================ */
+      // the custom header of the card
+      /* ============================ */
+      &-outerdiv {
+        margin-top: 2rem;
+        &-customheader {
+          padding: 1rem 1.4rem;
+          color: white;
+          @include glassMorph(rgba($primary-color-4, 0.4), 20px, rgba(121, 14, 14, 0.083), 0);
+        }
+      }
+    }
+
+    /* ----------------------------------------------- */
+    // different categories e.g. LCV, HCV, 300 Series
+    /* ----------------------------------------------- */
+    &-category {
+      background: rgba($primary-color-4, 0.4);
+      padding: 0 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid white;
+    }
+
+    /* the divider */
+    &-categorydivider {
+      font-family: $font-firesans;
+      border-color: white !important;
+      color: white !important;
+
+      // alteration for brand
+      &--brand {
+        font-size: 2rem;
+      }
+    }
+
+    /* --------------------- */
+    // description on top of select area
+    /* --------------------- */
+    &-desc {
+      font-size: 1.5rem !important;
+      color: black;
+      font-family: $font-firesans;
+      margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.474);
+      padding: 2rem !important;
+      border-radius: 1rem;
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+        padding: 1rem 1rem 0 1rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+        padding: 1rem 1rem 0 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.4rem;
+        padding: 0;
+      }
+    }
+
+    /* -------------------------- */
+    // series title e.g. XZU600K
+    /* -------------------------- */
+    &-seriestitle {
+      display: inline-block;
+      font-size: 1.2rem;
+      font-family: $font-roboto;
+      padding: 0.1rem 1rem 0.1rem 2rem;
+      border-left: 0.5rem solid $primary-color-2;
+      border-top-left-radius: 5rem;
+      background: white;
+      color: $primary-color-4;
+      border-top: 1px solid rgba($primary-color-2, 0.2);
+      border-right: 1px solid rgba($primary-color-2, 0.2);
+      border-bottom: 1px solid rgba($primary-color-2, 0.2);
+    }
+  }
+
+  /* ===================================== */
+  // The buttons of the sales section
+  /* ===================================== */
+  &__btn {
+    margin-top: 2rem;
+    padding: 0.5rem 2.5rem !important;
+    background: none !important;
+    border-color: white !important;
+
+    // if btn is disabled, border should be dimmer and when hover
+    // background should be none
+    &:disabled {
+      border-color: rgba(67, 67, 67, 0.672) !important;
+      &:hover {
+        background: none !important;
+      }
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.165) !important;
+    }
+    /* --------------------------- */ // the div wrapping the button
+    /* --------------------------- */
+    &-div {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* ----------------- */
+    // back button
+    /* ----------------- */
+    &--back {
+      color: white !important;
+    }
+  }
+
+  /* =================================== */
+  // Body section
+  /* =================================== */
+  &__body {
+    /* --------------------------------------------- */
+    // the div of the body section containing cards
+    /* --------------------------------------------- */
+
+    &-div {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-rows: auto;
+      grid-template-columns: repeat(3, 1fr);
+      justify-content: center;
+      align-items: center;
+      grid-auto-rows: 3fr;
+      justify-items: center;
+      grid-gap: 2rem;
+
+      // display: grid;
+      // grid-template-rows: auto;
+      // grid-template-columns: repeat(3, 1fr);
+      // justify-content: center;
+      // grid-auto-rows: 3fr;
+      // grid-gap: 0.5rem;
+    }
+
+    /* ------------------------------------------ */
+    // the details when user clicks on a body
+    /* ------------------------------------------ */
+    &-details {
+      // the most outerdiv of the details
+      &-outerdiv {
+        margin-top: 1rem;
+        background: white;
+        padding: 1rem 2rem;
+        border: 1px solid $translucent-grey;
+      }
+      &-title {
+        font-family: $font-opensans;
+        // font-size: 2rem !important;
+        color: rgba(0, 0, 0, 0.397) !important;
+      }
+
+      // the description for accessory
+      &-accdesc {
+        color: rgba(0, 0, 0, 0.397);
+        font-family: $font-firesans;
+      }
+    }
+
+    &-btn {
+      &-addtocart {
+        display: flex;
+        padding-bottom: 1rem;
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  // The steps showing progress
+  &__steps {
+    &-div {
+      margin-top: 8rem;
+      margin-bottom: 1rem;
+      // position: fixed;
+      // border: 2px solid $primary-color-3;
+      border-radius: 5px;
+      padding: 2rem 2rem 0 2rem;
+      background: $primary-color-4;
+
+      @include glassMorph(rgba($primary-color-4, 0.4), 20px, rgba(121, 14, 14, 0.083), 1rem);
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($phone-only) {
+        display: none;
+      }
+      @include respond-to($tablet-portrait-up) {
+        display: block;
+      }
+
+      // overwrite the divider color to white in steps
+      & .ant-steps-item-title::after {
+        background-color: white !important;
+      }
+
+      // the steps icon
+      & .ant-steps-item-process .ant-steps-item-icon {
+        background: white !important;
+        & span {
+          color: $primary-color-4 !important;
+        }
+      }
+
+      & .ant-steps-item-icon {
+        background: $primary-color-3 !important;
+        & span {
+          color: white !important;
+        }
+      }
+    }
+
+    // the title showing which step user is at
+    &-title {
+      margin-bottom: 2rem;
+      position: relative;
+      color: white;
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
+    }
+
+    &-content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      // justify-content: center;
+      &-outerdiv {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+
+    &-additionalinfo {
+      position: absolute;
+      top: 2rem;
+    }
+  }
+
+  /* ========================== */
+  // lightbox related css
+  /* ========================== */
+  &__lightbox {
+    //  parent div wrapping image and lightbox and icon
+    &-parent {
+      position: relative;
+      cursor: pointer;
+      border: 1px solid $translucent-grey;
+      &:hover {
+        transition: all 0.5s ease;
+        @include shadow-func(0.1rem, 0.1rem, 1rem, 0.5rem, rgba(0, 0, 0, 0.171));
+
+        & .sales__lightbox-icon {
+          transition: all 0.5s ease;
+          opacity: 1;
+        }
+      }
+    }
+
+    // the expand icon
+    &-icon {
+      position: absolute;
+      opacity: 0;
+      bottom: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.452);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      border: 2px solid white;
+    }
+  }
+
+  /* ========================== */
+  // overview section related css
+  /* ========================== */
+  &__overview {
+    &-title {
+      font-size: 3rem;
+      font-family: $font-firesans;
+    }
+
+    // the list of items
+    &-list {
+      // list-style: inside;
+      list-style-type: lower-roman;
+      & li:hover {
+        transition: all 0.5 ease;
+        background: rgba($primary-color-4, 0.15);
+        cursor: default;
+      }
+
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem;
+      }
+    }
+
+    // each row of orders
+    &-row {
+      display: flex;
+      width: 100%;
+
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
+      @include respond-to($phone-only) {
+        flex-direction: row;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+      }
+
+      // most outerdiv
+      &-outerdiv {
+        &:not(:first-child) {
+          padding-top: 5rem;
+        }
+        &:not(:last-child) {
+          padding-bottom: 5rem;
+          border-bottom: 1px solid $translucent-grey;
+        }
+      }
+
+      /* ------------------------------- */
+      // image on every row
+      /* ------------------------------- */
+      &-image {
+        object-fit: cover;
+
+        @include respond-to($small-phone) {
+          width: 100%;
+          height: 20rem;
+        }
+        @include respond-to($phone-only) {
+          width: 26vw;
+          height: 18vh;
+          margin-top: 1rem;
+          padding-right: 1rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 25vw;
+          height: 22vh;
+          margin-top: 2rem;
+          padding-right: 1rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 20vw;
+          height: 15rem;
+        }
+        @include respond-to($desktop-up) {
+          width: 20vw;
+          height: 20rem;
+        }
+
+        &-div {
+          user-select: none;
+
+          @include respond-to($small-phone) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
+          @include respond-to(phone-only) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
+          @include respond-to($tablet-landscape-up) {
+            padding: 2rem;
+            margin-bottom: 0;
+          }
+        }
+      }
+      /* ------------------------------- */
+      // content on the right
+      /* ------------------------------- */
+      &-content {
+        width: 100%;
+        margin-right: 1rem;
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.5);
+
+        @include respond-to($small-phone) {
+          padding: 1rem;
+        }
+        @include respond-to($phone-only) {
+          padding: 1rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          padding: 1rem;
+          // padding: 2rem 0.5rem 2rem 2rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          padding: 2rem;
+        }
+
+        // the header title e.g. 15ft wooden cargo
+        &-header {
+          font-size: 2.5rem;
+          font-family: $font-roboto;
+          font-weight: bolder;
+          color: $primary-color-4;
+
+          @include respond-to($small-phone) {
+            font-size: 1.4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 1rem;
+          }
+
+          @include respond-to($phone-only) {
+            font-size: 1.4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 1rem;
+          }
+
+          @include respond-to($tablet-portrait-up) {
+            font-size: 2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 0;
+          }
+          @include respond-to($tablet-landscape-up) {
+            font-size: 2.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 0;
+          }
+
+          // the grand total price at the bottom
+          &-price {
+            font-family: $font-roboto;
+            font-weight: bolder;
+            // padding-right: 1.5rem;
+            // margin-bottom: 0.5rem;
+            color: $primary-color-4;
+            @include respond-to($small-phone) {
+              font-size: 1.5rem;
+            }
+            @include respond-to(phone-only) {
+              font-size: 1.5rem;
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 2.5rem;
+            }
+
+            // the prediscount on the top
+            &--prediscount {
+              font-family: $font-roboto;
+              font-weight: bolder;
+              @include respond-to($small-phone) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to(phone-only) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 1.8rem;
+                padding-right: 0;
+              }
+            }
+          }
+        }
+
+        // the subheader title e.g. HINO 300 Series model name or Insurance
+        &-subheader {
+          color: rgba(0, 0, 0, 0.768);
+          font-family: $font-firesans;
+          @include respond-to($small-phone) {
+            font-size: 1.3rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.3rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.7rem;
+          }
+
+          &--discount {
+            color: black;
+            // font-weight: bolder;
+          }
+
+          &--totalroadprice {
+            background: white;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+
+            &-text {
+              color: black;
+              font-family: $font-firesans;
+              @include respond-to($small-phone) {
+                font-size: 1.5rem;
+              }
+              @include respond-to($phone-only) {
+                font-size: 1.5rem;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 2.2rem;
+              }
+            }
+          }
+
+          &-price {
+            font-size: 1.2rem;
+            @include respond-to($small-phone) {
+            }
+            @include respond-to($phone-only) {
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 1.5rem;
+            }
+
+            // the prediscount price at bottom
+            &--prediscount {
+              font-weight: bolder;
+              @include respond-to($small-phone) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($phone-only) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 1.7rem;
+                padding-right: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /* ------------------------- */
+    // the empty div in overview
+    /* -------------------------- */
+    &-empty {
+      &-div {
+        padding: 5rem 0;
+        border-radius: 1rem;
+        margin: 3rem 0;
+        background: rgba(131, 9, 9, 0.5);
+        color: white !important;
+        @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+      }
+
+      &-btn {
+        background: transparent !important;
+        border-color: white !important;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15) !important;
+        }
+      }
+    }
+
+    // the collapsible panels
+    &-panel {
+      & .ant-collapse-header {
+        color: $primary-color-3 !important;
+
+        @include respond-to($small-phone) {
+          font-size: 1.1rem !important;
+          padding: 1.2rem 0.5rem 1.2rem 4rem !important;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.2rem !important;
+          padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.5rem !important;
+          padding: 1rem 0.5rem 1rem 4rem !important;
+        }
+      }
+
+      & .ant-collapse-arrow {
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        @include respond-to($small-phone) {
+          font-size: 0.8rem !important;
+          // padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
+
+        @include respond-to($phone-only) {
+          font-size: 1.1rem !important;
+        }
+      }
+
+      & .ant-collapse-content-box {
+        @include respond-to($small-phone) {
+          padding-top: 0 !important;
+          padding-left: 2rem !important;
+          padding-right: 0 !important;
+        }
+        @include respond-to($phone-only) {
+          padding-left: 2rem !important;
+          padding-right: 0 !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          padding-top: 0 !important;
+          padding-left: 4rem !important;
+        }
+      }
+
+      &--modeldetails {
+        & .ant-collapse-header {
+          padding: 0.5rem 0 0 0 !important;
+
+          color: white !important;
+        }
+
+        & .ant-collapse-content-box {
+          padding: 0 !important;
+        }
+      }
+
+      // another panel to show model specs
+      &-specs {
+        &-div {
+          // make it so that the div wont stretch out
+          display: inline-block;
+        }
+
+        // make the specs into 2 columns white background
+        &-innerdiv {
+          display: flex;
+          background: rgba(255, 255, 255, 0.8);
+          margin-top: 1rem;
+          padding: 1rem 2rem;
+          border-radius: 1rem;
+
+          @include respond-to($small-phone) {
+            font-size: 1rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.5rem;
+          }
+        }
+
+        &-column {
+          &:first-child {
+            margin-right: 2rem;
+          }
+        }
+
+        // each row of the specs
+        &-row {
+          display: flex;
+          align-items: center;
+          &:hover {
+            background: rgba($primary-color-4, 0.15);
+            cursor: default;
+          }
+        }
+        // the span text "Click here to view more spec"
+        &-header {
+          background: rgb(119, 119, 119);
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+        }
+        // the title of specs on the left
+        &-title {
+          font-family: $font-firesans;
+          color: $primary-color-4;
+          padding-right: 0.5rem;
+        }
+        // the specs value on the right
+        &-value {
+          color: $secondary-color-2;
+          font-family: $font-ubuntu;
+        }
+      }
+    }
+
+    // highlight the model name
+    &-highlight {
+      &-model {
+        font-family: $font-firesans;
+        color: $primary-color-4;
+      }
+    }
+
+    // small title further splitting the categories
+    &-smalltitle {
+      font-size: 1.4rem;
+      color: white;
+      margin-bottom: 0.5rem;
+      padding: 0.3rem 1rem;
+      font-family: $font-ubuntu;
+      background: rgba($primary-color-4, 0.5);
+      &:not(:first-child) {
+        margin-top: 1rem;
+      }
+      @include respond-to($small-phone) {
+        margin-left: -1.8rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: -1.8rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-left: 0;
+      }
+    }
+
+    // subtotal on every last
+    &-subtotal {
+      font-size: 1.7rem;
+      padding-left: 2rem;
+      font-weight: bolder;
+      @include respond-to($small-phone) {
+        font-size: 1.3rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.3rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.7rem;
+      }
+
+      &-outerdiv {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+        background: rgba(255, 255, 255, 0.35);
+        border-top: 1px solid $translucent-grey;
+        border-bottom: 1px solid $translucent-grey;
+      }
+
+      &-text {
+        color: black;
+
+        font-family: $font-opensans;
+
+        @include respond-to($small-phone) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.6rem;
+        }
+      }
+    }
+
+    // The dropdown to show more options button
+    &-more {
+      display: flex;
+      justify-content: flex-end;
+
+      @include respond-to($small-phone) {
+        margin-right: 0.5rem;
+      }
+      @include respond-to($phone-only) {
+        margin-right: 0.5rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-right: 1.5rem;
+      }
+
+      &-icon {
+        &-div {
+          z-index: 2;
+          cursor: pointer;
+          border: 1px solid white;
+          color: white;
+          padding: 0.5rem 1rem 0.5rem 2rem;
+          background: rgba($primary-color-4, 0.3);
+          margin-bottom: 1rem;
+
+          @include respond-to($small-phone) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.5rem;
+          }
+
+          &:hover {
+            transition: all 0.5s ease;
+            background: rgba($primary-color-4, 0.6);
+            & .sales__overview-more-icon {
+              transition: all 0.5s ease;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+    &-btn {
+      &--another {
+        margin-bottom: 1rem;
+        margin-top: 3rem;
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
+
+        background: none !important;
+        color: white !important;
+        border: 1px solid white !important;
+        &:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          border: 1px solid rgba(255, 255, 255, 0.57) !important;
+        }
+      }
+
+      &--allorders {
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
+
+        background: rgba($primary-color-4, 0.3) !important;
+        color: white !important;
+        border: 1px solid $primary-color-4 !important;
+        &:hover {
+          background: rgba($primary-color-4, 0.4) !important;
+          border: 1px solid white !important;
+        }
+      }
+    }
+
+    &-dash {
+      padding-right: 2rem;
+
+      @include respond-to($small-phone) {
+        padding-right: 1rem;
+      }
+    }
+  }
+
+  &__breadcrumb {
+    font-family: $font-firesans;
+
+    /* outer div wrapping breadcrumb to push the content to further bottom */
+    &-outerdiv {
+      border-left: 0.5rem solid $primary-color-2;
+      background: rgba(255, 255, 255, 0.7);
+      @include respond-to($small-phone) {
+        & .ant-breadcrumb {
+          font-size: 1rem !important;
+        }
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem 0.5rem 1rem;
+      }
+      @include respond-to(phone-only) {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem 0.5rem 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-top: 1rem;
+        margin-bottom: 3rem;
+        padding: 0.5rem 4rem 0.5rem 4rem;
+      }
+    }
+
+    /* the text within the breadcrumbs */
+    &-text {
+      color: rgba(0, 0, 0, 0.603);
+      white-space: nowrap;
+    }
+    /* the result text when user chooses something */
+    &-highlight {
+      font-family: $font-firesans;
+      font-weight: bolder;
+      padding-left: 0.7rem;
+      color: $primary-color-4;
+      font-size: 1.3rem;
+      z-index: 10;
+      @include respond-to($small-phone) {
+        font-size: 1rem !important;
+      }
+      // display: inline-block;
+      // white-space: normal;
+      &--accessory {
+        color: white;
+      }
+    }
+  }
+}

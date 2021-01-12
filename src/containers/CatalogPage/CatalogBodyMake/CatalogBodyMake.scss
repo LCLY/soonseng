@@ -1,0 +1,978 @@
+.catalogbodymake {
+  &__innerdiv {
+    // div wrapping the steps and the content
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    min-height: calc(100vh - 58rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    @include customScrollbar(0.2rem, 0.2rem, 1rem, white, rgba(255, 255, 255, 0.604));
+
+    @include respond-to($small-phone) {
+      display: block;
+      padding: 0 0.5rem;
+      max-height: 70vh;
+    }
+
+    @include respond-to($phone-only) {
+      display: block;
+      padding: 0 0.5rem;
+      max-height: 100vh;
+    }
+
+    @include respond-to($tablet-landscape-up) {
+      padding: 0.5rem;
+    }
+  }
+
+  /* ============================ */
+  // sections
+  /* ============================ */
+  &__section {
+    &-div {
+      background: $primary-color-4;
+      padding: 1.5rem 2rem;
+      border-radius: 1rem;
+
+      @include glassMorph(rgba($primary-color-4, 0.3), 20px, rgba(44, 44, 44, 0.308), 1rem);
+      @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+      @include respond-to($small-phone) {
+        padding: 1.5rem 0.5rem;
+      }
+    }
+
+    &-banner {
+      display: flex;
+
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        height: auto;
+      }
+      @include respond-to($phone-only) {
+        flex-direction: column;
+        height: auto;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: column;
+        height: auto;
+      }
+
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+        height: 60rem;
+      }
+    }
+  }
+
+  /* ================================ */
+  // Brand title
+  /* ================================ */
+  &__brand {
+    &-title {
+      font-size: 5rem;
+      font-family: $font-firesans;
+      text-align: center;
+      color: white;
+      margin-bottom: 1rem;
+
+      padding: 2rem 0;
+      border-radius: 1rem;
+      @include glassMorph(rgba($primary-color-4, 0.6), 15px, rgba(75, 12, 12, 0.158), 1rem);
+
+      @include respond-to(phone-only) {
+        font-size: 3rem;
+        width: 20rem;
+        padding: 1rem 0;
+        margin-left: 0;
+      }
+
+      @include respond-to(tablet-portrait-up) {
+        // margin: 0 5rem;
+        width: 30rem;
+      }
+      @include respond-to(tablet-landscape-up) {
+        width: 30rem;
+      }
+    }
+  }
+
+  /* ==================================== */
+  // Image banner on top
+  /* ==================================== */
+  &__banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* -------------- */
+    // div wrapping the banner
+    /* -------------- */
+    &-div {
+      @include respond-to($tablet-portrait-up) {
+        width: 100%;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 100%;
+      }
+    }
+  }
+
+  /* ========================== */
+  // the detail beside the banner
+  /* ========================== */
+  &__detail {
+    &-div {
+      padding: 3rem;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      background: rgba($primary-color-4, 0.5);
+      z-index: 1;
+
+      @include respond-to($small-phone) {
+        display: none;
+      }
+
+      @include respond-to($phone-only) {
+        display: none;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        display: none;
+      }
+
+      @include respond-to($tablet-landscape-up) {
+        min-width: 35rem;
+        display: flex;
+      }
+
+      /* --------------------------- */
+      // Mobile iteration of detail div
+      /* --------------------------- */
+      &--mobile {
+        padding: 3rem;
+        position: relative;
+        background: rgba($primary-color-4, 0.5);
+
+        @include respond-to($small-phone) {
+          display: block;
+          margin-bottom: 2rem;
+          padding: 2rem 0rem;
+        }
+
+        @include respond-to($phone-only) {
+          display: block;
+          padding: 2rem 0rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          display: block;
+        }
+        @include respond-to($tablet-landscape-up) {
+          display: none;
+        }
+      }
+
+      /* ---------------------------- */
+      // right column of the detail div
+      /* ---------------------------- */
+      &-right {
+        position: relative;
+      }
+    }
+
+    &-innerdiv {
+      display: flex;
+      flex-direction: column;
+
+      height: 100%;
+      width: 100%;
+      padding: 0 2rem;
+
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* ------------ */
+    // The model name
+    /* ------------ */
+    &-model {
+      text-align: center;
+      transform: skew(-30deg);
+      border-top: 2px solid white;
+      background: $primary-color-4;
+      color: white;
+      font-family: $font-firesans;
+      padding: 0.5rem 0;
+      @include shadow-func(0.1rem, 0.1rem, 0.3rem, 0.2rem, rgba(233, 233, 233, 0.212));
+
+      &-text {
+        color: white;
+        transform: skew(30deg);
+        font-size: 2rem;
+
+        @include respond-to($small-phone) {
+          font-size: 1.5rem;
+        }
+      }
+    }
+
+    //* --------------- */
+    // the body containing the rest of the content
+    //* --------------- */
+    &-body {
+      display: flex;
+      margin-top: 2rem;
+      color: white;
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+
+      /* --------------------------- */
+      // Mobile iteration of body content
+      /* --------------------------- */
+      &--mobile {
+        justify-content: center;
+        width: 100%;
+
+        @include respond-to($small-phone) {
+          flex-direction: column;
+        }
+        @include respond-to($phone-only) {
+          flex-direction: column;
+        }
+        @include respond-to($tablet-portrait-up) {
+          flex-direction: row;
+        }
+      }
+
+      /* each row of the details within the card*/
+      &-row {
+        display: flex;
+        align-items: center;
+
+        &-left {
+          width: 52%;
+          // font-size: 2rem;
+          font-family: $font-roboto;
+          color: rgb(255, 198, 198);
+          /* --------------------------- */
+          // Mobile iteration of left div
+          /* --------------------------- */
+          &--mobile {
+            width: 100%;
+          }
+        }
+
+        /* right part of the row */
+        &-right {
+          font-size: 1.8rem;
+          display: block !important;
+          // width: calc(55%);
+          display: flex;
+          font-family: $font-bebasneue;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          /* --------------------------- */
+          // Mobile iteration of right div
+          /* --------------------------- */
+          &--mobile {
+            width: 100%;
+            color: white;
+            font-size: 1.8rem;
+            font-family: $font-bebasneue;
+            @include respond-to($small-phone) {
+              font-size: 1.3rem;
+            }
+          }
+
+          /* --------------------------- */
+          // Iteration for the price
+          /* --------------------------- */
+          &-price {
+            font-family: $font-anton;
+            font-size: 1.6rem;
+            padding: 0.2rem 1rem;
+            color: $primary-color-4;
+            background: rgb(255, 255, 255);
+            @include respond-to($small-phone) {
+              font-size: 1rem;
+            }
+          }
+        }
+      }
+
+      /* ------------- */
+      // price in the card
+      /* ------------- */
+      &-price {
+        font-weight: bolder;
+        color: $primary-color-4;
+        font-family: $font-opensans;
+        @include respond-to(phone-only) {
+          font-size: 1.2rem;
+        }
+        @include respond-to(tablet-portrait-up) {
+          font-size: 1.5rem;
+        }
+        // price for model
+        &--model {
+          color: black;
+          @include respond-to(phone-only) {
+            font-size: 1rem;
+          }
+          @include respond-to(tablet-portrait-up) {
+            font-size: 1.3rem;
+          }
+        }
+      }
+    }
+  }
+
+  /* ==================== */
+  // the series title
+  /* ==================== */
+  &__series {
+    &-title {
+      align-self: left;
+      display: inline-block;
+      font-size: 3rem;
+      font-family: $font-bebasneue;
+      padding: 0.5rem 4rem 0.3rem 4rem;
+      border-left: 0.5rem solid $primary-color-2;
+      background: white;
+      color: $primary-color-4;
+
+      @include respond-to($small-phone) {
+        font-size: 2rem;
+        margin-left: 1rem;
+        padding: 0.1rem 2rem 0.1rem 2rem;
+      }
+    }
+
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+
+      @include respond-to($small-phone) {
+        margin: 0 0 1rem 0.5rem;
+      }
+    }
+  }
+
+  /* ====================== */
+  // The grid containing the cards
+  /* ====================== */
+  &__grid {
+    display: grid;
+    // margin: 2rem 0;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+
+    @include respond-to($small-phone) {
+      grid-gap: 1rem;
+      padding: 0;
+      margin: 0;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 15vh; //height of each row
+    }
+    @include respond-to($phone-only) {
+      grid-gap: 1rem;
+      padding: 0;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 20rem; //height of each row
+    }
+
+    @include respond-to($tablet-portrait-up) {
+      grid-gap: 2rem;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 20rem; //height of each row
+    }
+    @include respond-to($tablet-landscape-up) {
+      grid-gap: 2rem;
+      grid-auto-rows: 20rem; //height of each row
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @include respond-to($desktop-up) {
+      grid-gap: 2rem;
+      grid-auto-rows: 23rem; //height of each row
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @include respond-to($big-desktop-up) {
+      grid-gap: 2rem;
+      grid-auto-rows: 28vh; //height of each row
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+
+    &:hover {
+      & .catalogbodymake__card-overlay {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* =========================== */
+    // parent div for the edit button to refer
+    /* =========================== */
+    &-parent {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    /* =========================== */
+    // the image of the card
+    /* =========================== */
+    &-image {
+      width: 100% !important;
+      height: 100% !important;
+      color: white !important;
+      background: darken($primary-color-4, 6%) !important;
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+
+      & .ant-skeleton-image-path {
+        fill: rgb(201, 197, 197) !important;
+      }
+    }
+
+    /* ------------------------ */
+    // glass label for make title
+    /* ------------------------ */
+    &-label {
+      position: absolute;
+      color: white;
+      bottom: 1rem;
+      right: -0.5rem;
+      font-size: 1.2rem;
+      border-left: 0.5rem solid rgb(255, 255, 255);
+      border-top-left-radius: 5rem;
+      z-index: 2;
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      background: rgba(0, 0, 0, 0.5);
+
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @include respond-to($small-phone) {
+        font-size: 0.8rem;
+        right: -0.5rem;
+        padding: 0.2rem 1rem 0.2rem 1.5rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.4rem;
+      }
+      @include respond-to($tablet-landscape-up) {
+        font-size: 1.3rem;
+      }
+      @include respond-to($desktop-up) {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* ---------------- */
+    // the overlay showing more info
+    /* ---------------- */
+    &-overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      // right: 0;
+      height: 100%;
+      width: auto;
+      min-width: 50%;
+      opacity: 0;
+      transform: translateX(-2rem);
+      transition: 0.3s ease;
+      background: rgba($primary-color-3, 1);
+      padding: 1rem;
+      z-index: 3;
+
+      @include respond-to($small-phone) {
+        width: auto;
+        z-index: 10;
+        padding: 0.5rem;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        width: auto;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: auto;
+      }
+
+      /* ----------------- */
+      // more info text
+      /* ----------------- */
+      &-moreinfo {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.418);
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+
+        font-family: $font-opensans;
+        @include respond-to($small-phone) {
+          padding-bottom: 0;
+          margin-bottom: 0.3rem;
+          font-size: 0.85rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.2rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          font-size: 1.5rem;
+        }
+
+        &-content {
+          @include respond-to($small-phone) {
+            font-size: 0.8rem;
+          }
+
+          @include respond-to($phone-only) {
+            font-size: 1.2rem;
+          }
+
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($tablet-landscape-up) {
+            font-size: 1.5rem;
+          }
+        }
+      }
+
+      /* --------------------- */
+      // the content of overlay
+      /* -------------------- */
+      &-content {
+        height: 100%;
+        color: white;
+        @include respond-to($small-phone) {
+          font-size: 0.8rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          font-size: 1.3rem;
+        }
+      }
+
+      /* ---------------- */
+      // dimension of the body
+      /* ---------------- */
+      &-dimension {
+        font-family: $font-anton;
+        font-size: 1.3rem;
+
+        @include respond-to($small-phone) {
+          font-size: 0.8rem;
+        }
+        &-title {
+          @include respond-to($small-phone) {
+            font-size: 0.8rem;
+          }
+          font-size: 1.2rem;
+        }
+      }
+
+      /* ---------------- */
+      // price of the body
+      /* ---------------- */
+      &-price {
+        color: white;
+        padding-left: 0.3rem;
+        font-family: $font-bebasneue;
+
+        @include respond-to($small-phone) {
+          font-size: 1rem;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.5rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.6rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          font-size: 2rem;
+        }
+
+        &-title {
+          @include respond-to($small-phone) {
+            font-size: 0.8rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($tablet-landscape-up) {
+            font-size: 1.3rem;
+          }
+          @include respond-to($big-desktop-up) {
+            font-size: 1.5rem;
+          }
+        }
+      }
+
+      &-quotation {
+        &-div {
+          margin-top: 1rem;
+          @include respond-to($small-phone) {
+            margin-top: 0.5rem !important;
+          }
+        }
+
+        &-btn {
+          width: 100% !important;
+          @include respond-to($small-phone) {
+            height: auto !important;
+            padding: 0 0 0.1rem 0 !important;
+            font-size: 0.8rem !important;
+          }
+        }
+      }
+    }
+  }
+
+  // loading / spinner
+  &__empty {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      color: white;
+      position: relative;
+
+      @include respond-to($small-phone) {
+        height: auto;
+        padding: 1rem 0 2rem 0;
+      }
+      @include respond-to($phone-only) {
+        height: 30rem;
+      }
+    }
+
+    // the arrow on the empty div
+    &-backarrow {
+      &-div {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        top: 2rem;
+        left: 2rem;
+        color: white;
+        font-size: 2rem;
+        margin: 0 2rem 0 1rem;
+
+        @include respond-to($small-phone) {
+          font-size: 1.5rem;
+          margin-left: 0;
+        }
+
+        &:hover {
+          color: rgba(255, 255, 255, 0.611) !important;
+          & .catalogbodymake__backarrow {
+            color: rgba(255, 255, 255, 0.611) !important;
+          }
+        }
+        &:active {
+          color: white !important;
+          & .catalogbodymake__backarrow {
+            color: white !important;
+          }
+        }
+      }
+    }
+
+    &-bodymake {
+      width: 100%;
+      color: white;
+      padding: 5rem 0;
+      border: 1px solid white;
+    }
+  }
+
+  /* ==================== */
+  // the wheelbase title
+  /* ==================== */
+  &__wheelbase {
+    &-div {
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
+    }
+
+    /* ------------------------------------------------ */
+    // outerdiv wrapping title, delete button and add body make button
+    /* ------------------------------------------------ */
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      margin-top: 2rem;
+    }
+    /* ------------------------------------------------ */
+    // innerdiv wrapping wheelbase and admin dropdown
+    /* ------------------------------------------------ */
+    &-innerdiv {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    &-title {
+      align-self: left;
+      display: inline-block;
+      font-size: 3rem;
+      font-family: $font-bebasneue;
+      padding: 0.5rem 2rem 0.3rem 2rem;
+      border-left: 0.5rem solid white;
+      border-top: 1px solid white;
+      border-right: 1px solid white;
+      border-bottom: 1px solid white;
+      background: transparent;
+      color: white;
+
+      @include respond-to($small-phone) {
+        font-size: 2rem;
+        padding: 0.1rem 2rem 0.1rem 2rem;
+        margin: 0 0 0 0.5rem;
+      }
+    }
+  }
+
+  /* ====================== */
+  // the back arrow
+  /* ====================== */
+  &__backarrow {
+    color: white !important;
+    margin: 0 2rem 0 1rem;
+    font-size: 3.5rem;
+
+    @include respond-to($small-phone) {
+      font-size: 2.5rem;
+      margin: 0 0.5rem 0 1rem;
+    }
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.611) !important;
+    }
+    &:active {
+      color: white !important;
+    }
+  }
+
+  /* ============================== */
+  // The modal showing the accessories
+  /* ============================== */
+  &__modal {
+    @include respond-to($small-phone) {
+      & .ant-modal-body {
+        padding: 0.5rem 1rem !important;
+      }
+    }
+    /* --------------- */
+    // div
+    /* --------------- */
+    &-div {
+      & .ant-divider-with-text {
+        margin: 0 !important;
+        border-color: $primary-color-4 !important;
+      }
+    }
+
+    /* ------------------- */
+    // checkboxes
+    /* ------------------- */
+    &-checkboxes {
+      display: grid;
+      margin: 2rem 0;
+
+      @include respond-to($small-phone) {
+        margin: 1rem 0;
+        padding: 0;
+        grid-gap: 1rem;
+        grid-auto-rows: auto; //height of each row
+        grid-template-columns: repeat(1, 1fr);
+      }
+
+      @include respond-to($phone-only) {
+        padding: 0;
+        grid-gap: 1rem;
+        grid-auto-rows: auto; //height of each row
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      &-outerdiv {
+        & .ant-checkbox-wrapper {
+          width: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+
+          @include respond-to($small-phone) {
+            font-size: 1.3rem !important;
+          }
+
+          & > span {
+            &:first-child {
+              width: auto;
+            }
+            &:not(:first-child) {
+              width: 100%;
+              display: block !important;
+            }
+          }
+        }
+        margin-top: 1rem;
+      }
+
+      // each row of checkbox
+      &-row {
+        display: flex;
+      }
+
+      // div wrapping title
+      &-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @include respond-to($small-phone) {
+          max-width: calc(100vw - 15rem);
+        }
+        @include respond-to($phone-only) {
+          max-width: 24vw;
+        }
+        @include respond-to($tablet-portrait-up) {
+          max-width: 17rem;
+        }
+      }
+
+      &-titlepricediv {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.2rem 0.5rem;
+        width: 100%;
+        &:hover {
+          background: rgba($primary-color-4, 0.08);
+        }
+        &:active {
+          background: rgba($primary-color-4, 0.08);
+        }
+      }
+    }
+
+    /* -------------- */
+    // divider
+    /* -------------- */
+    &-divider {
+      background: $primary-color-4;
+      color: white;
+      padding: 0 1rem;
+      border-radius: 0.7rem;
+      @include respond-to($small-phone) {
+        font-size: 1.3rem !important;
+      }
+    }
+
+    &-title {
+      &-highlight {
+        font-weight: bolder;
+        color: $primary-color-4;
+        font-family: $font-firesans;
+      }
+    }
+  }
+
+  /* =================== */
+  // buttons
+  /* =================== */
+  &__button {
+    &-make {
+      position: absolute;
+      color: black;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 3.5rem;
+      width: 3.5rem;
+      bottom: 1rem;
+      right: 1rem;
+      cursor: pointer;
+
+      &--mobile {
+        bottom: 0;
+        right: 0;
+      }
+
+      &:hover {
+        transition: all 0.5s ease;
+        border: 1px solid white;
+        color: $primary-color-4;
+        background: rgba(255, 255, 255, 0.75);
+      }
+      &:active {
+        transition: all 0.5s ease;
+        background: white;
+      }
+
+      @include respond-to($small-phone) {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.5rem;
+      }
+    }
+
+    &-title {
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($phone-only) {
+        display: flex;
+      }
+      @include respond-to($tablet-portrait-up) {
+        display: flex;
+      }
+      @include respond-to($tablet-landscape-up) {
+        display: flex;
+      }
+      @include respond-to($desktop-up) {
+        display: block;
+      }
+    }
+
+    &-body {
+      @include respond-to($small-phone) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.7rem;
+        padding: 0;
+      }
+    }
+  }
+}

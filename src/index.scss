@@ -12,19 +12,48 @@ html {
   // This defines what 1 rem is
   font-size: 62.5%; // 1 rem = 10px; 10px/16px = 62.5%
 
+  // @include respond-to($phone-only) {
+  //   overflow: auto !important; //hidden so when modal open it wont overflows
+  // }
+
+  // @include respond-to($desktop-up) {
+  //   overflow: hidden !important; //hidden so when modal open it wont overflows
+  // }
+
   // if content is less then pages still takes full view-port height
   // and footer will stick at the bottom of page
-  // min-height: 100%;
+  // min-height: 100rem !important;
   // height: 100vh !important;
   // overflow-y: overlay; // a hack to prevent stuffs from moving around when scrollbar pops up
 }
 
 body {
   margin: 0;
+  display: flex !important;
+  min-height: 100vh !important;
+  flex-direction: column !important;
   font-size: 1.5rem !important;
   font-family: 'Helvetica Neue', sans-serif !important;
   text-rendering: optimizeLegibility;
+
+  // @include respond-to($desktop-up) {
+  //   overflow: auto !important; //auto so when html overflow hidden, things are still scrollable
+  // }
+
   -webkit-font-smoothing: antialiased;
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $primary-color-2;
+    border-radius: 1rem;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: $primary-color-3;
+  }
 }
 
 .flex {
@@ -41,7 +70,7 @@ body {
   align-items: center;
 }
 
-.justify-conter {
+.justify-center {
   justify-content: center;
 }
 
@@ -52,5 +81,3 @@ body {
 .text-center {
   text-align: center;
 }
-
-

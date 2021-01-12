@@ -1,0 +1,1031 @@
+.quotation {
+  &__section {
+    border: 1px solid darken($translucent-grey, 30%);
+    width: 95rem;
+    padding: 3rem;
+    background: white;
+
+    @include respond-to($small-phone) {
+      width: 95%;
+      padding: 1rem 0;
+    }
+
+    @include respond-to($phone-only) {
+      width: 95%;
+      padding: 1rem 0;
+    }
+    @include respond-to($tablet-portrait-up) {
+      width: 90%;
+      padding: 1rem 0;
+    }
+    @include respond-to($tablet-landscape-up) {
+      width: 90%;
+      padding: 1rem 0;
+    }
+    @include respond-to($desktop-up) {
+      width: 95rem;
+      padding: 1rem 0;
+    }
+
+    &-outerdiv {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      padding-top: 3rem;
+      width: auto;
+      padding-bottom: 5rem;
+      @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 0);
+    }
+
+    &-innerdiv {
+      padding: 5rem 0;
+      @include respond-to($small-phone) {
+        padding: 0;
+      }
+    }
+  }
+
+  /* ================ */
+  // Button
+  /* ================ */
+  &__button {
+    border: 1px solid white !important;
+    background: rgba($primary-color-4, 0.8) !important;
+    padding: 0 2rem !important;
+    height: 4rem !important;
+
+    &-div {
+      display: flex;
+      justify-content: flex-end;
+      margin: 3rem;
+      width: 95rem;
+
+      @include respond-to($small-phone) {
+        width: 95%;
+        margin-top: 0;
+        margin-bottom: 2rem;
+      }
+
+      @include respond-to($phone-only) {
+        width: 95%;
+        padding: 1rem 0;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        width: 90%;
+        padding: 1rem 0;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 90%;
+        padding: 1rem 0;
+      }
+      @include respond-to($desktop-up) {
+        width: 95rem;
+        padding: 1rem 0;
+      }
+    }
+  }
+
+  &__top {
+    &-div {
+      display: flex;
+      position: relative;
+      justify-content: space-between;
+      border-bottom: 2px solid black;
+      margin: 0 2rem 2rem 2rem;
+
+      @include respond-to($small-phone) {
+        margin: 0 0.5rem;
+        border-bottom: 1px solid black;
+        padding-bottom: 0.1rem;
+      }
+
+      &:after {
+        position: absolute;
+        content: '';
+        bottom: -0.9rem;
+        width: 100%;
+        border-bottom: 5px solid black;
+
+        @include respond-to($small-phone) {
+          bottom: -0.4rem;
+          border-bottom: 1.8px solid black;
+        }
+      }
+    }
+
+    /* ---------------------- */
+    // huge title on top
+    /* ---------------------- */
+    &-title {
+      font-style: italic;
+      font-size: 1.8rem;
+      font-weight: bolder;
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+
+      @include respond-to($small-phone) {
+        font-size: 0.8rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.4rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem;
+      }
+      @include respond-to($tablet-landscape-up) {
+        font-size: 1.8rem;
+      }
+    }
+    /* ---------------------- */
+    // address on top
+    /* ---------------------- */
+    &-address {
+      font-family: $font-roboto;
+      font-size: 1.6rem;
+      margin-top: 1rem;
+      @include respond-to($small-phone) {
+        font-size: 0.6rem;
+        margin-top: 0.2rem;
+        text-align: center;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+        padding: 0 2rem;
+        text-align: center;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.4rem;
+        padding: 0 1rem;
+      }
+
+      @include respond-to($tablet-landscape-up) {
+        font-size: 1.6rem;
+        padding: 0;
+      }
+    }
+
+    &-contacts {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+      justify-content: center;
+
+      @include respond-to($small-phone) {
+        font-size: 0.6rem;
+        margin-top: 0rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.3rem;
+      }
+      @include respond-to($tablet-landscape-up) {
+        font-size: 1.5rem;
+      }
+
+      &-highlight {
+        font-weight: bolder;
+        font-size: 1.6rem;
+        // font-family: $font-anton;
+
+        @include respond-to($small-phone) {
+          font-size: 0.6rem;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.2rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          font-size: 1.6rem;
+        }
+      }
+    }
+  }
+
+  /* ===================== */
+  // logo on both sides
+  /* ===================== */
+  &__logo {
+    height: 100%;
+    width: 12.5rem;
+    object-fit: cover;
+    border: 1px solid $translucent-grey;
+
+    @include respond-to($small-phone) {
+      height: auto;
+      width: 13vw;
+    }
+    @include respond-to($phone-only) {
+      height: auto;
+      width: 10rem;
+    }
+    @include respond-to($tablet-portrait-up) {
+      height: auto;
+      width: 12.5rem;
+    }
+  }
+
+  &__header {
+    &-2 {
+      font-size: 2.5rem;
+      margin-top: 3rem;
+      font-weight: bolder;
+      text-align: center;
+      // font-family: $font-;
+      font-family: Arial, Helvetica, sans-serif;
+      text-decoration: none;
+
+      @include respond-to($small-phone) {
+        font-size: 1rem;
+        margin-top: 1.2rem;
+      }
+
+      &-text {
+        border-bottom: 2px solid black;
+        @include respond-to($small-phone) {
+          border-bottom: 1px solid black;
+        }
+      }
+    }
+  }
+
+  &__subheader {
+    text-align: center;
+    margin-top: 3rem;
+    @include respond-to($small-phone) {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      padding: 0 2rem;
+    }
+    @include respond-to($tablet-portrait-up) {
+      padding: 0 2rem;
+    }
+    @include respond-to($tablet-landscape-up) {
+      padding: 0;
+    }
+  }
+
+  &__content {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    &-innerdiv {
+      width: 70rem;
+
+      @include respond-to($small-phone) {
+        width: 85%;
+      }
+      @include respond-to($phone-only) {
+        width: 85%;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: auto;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 70rem;
+      }
+    }
+  }
+
+  /* ================ */
+  // The detail of make
+  /* ================ */
+  &__makedetail {
+    &-div {
+      display: flex;
+      margin-top: 2rem;
+      border: 1px solid black;
+      padding: 1rem 1rem;
+      min-width: 60rem;
+      justify-content: space-around;
+
+      @include respond-to($small-phone) {
+        min-width: auto;
+        font-size: 0.8rem;
+        margin-top: 1rem;
+        padding: 0.5rem 0;
+        border: 0.5px solid black;
+      }
+      @include respond-to($phone-only) {
+        min-width: auto;
+      }
+
+      &-left {
+        margin-right: 2rem;
+      }
+    }
+  }
+
+  /* ============================== */
+  //   order list
+  /* ============================== */
+  &__orderedlist {
+    margin-left: 2rem;
+    margin-bottom: 0.5rem;
+
+    @include respond-to($small-phone) {
+      margin-left: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    & li {
+      &:hover {
+        background: rgba($primary-color-4, 0.1);
+      }
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+    }
+    &-row {
+      display: flex;
+      justify-content: space-between;
+
+      &--chassis {
+        font-weight: bolder;
+      }
+    }
+  }
+
+  /* ========================= */
+  // The RM on the top beneath header
+  /* ========================= */
+  &__price {
+    &-div {
+      min-width: 65rem;
+      margin-top: 2rem;
+      @include respond-to($small-phone) {
+        min-width: auto;
+        font-size: 0.8rem;
+        margin-top: 1rem;
+      }
+      @include respond-to($phone-only) {
+        min-width: auto;
+      }
+    }
+    &-unit {
+      text-align: right;
+      margin-bottom: 1rem;
+      margin-right: 2rem;
+
+      @include respond-to($small-phone) {
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  /* ================================= */
+  // Subtotal price of model and fees
+  /* ================================= */
+  &__subtotal {
+    &-outerdiv {
+      font-weight: bolder;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      &:hover {
+        background: rgba($primary-color-4, 0.1);
+      }
+    }
+
+    &-text {
+      padding-left: 2rem;
+    }
+
+    &-price {
+      border-top: 2px solid black;
+      padding-left: 3rem;
+
+      @include respond-to($small-phone) {
+        border-top: 0.8px solid black;
+      }
+    }
+  }
+
+  &__discount {
+    &-text {
+      padding-top: 0.2rem;
+      font-weight: normal;
+      @include respond-to($small-phone) {
+        margin-left: 3rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: 4rem;
+      }
+    }
+  }
+  /* ================================= */
+  // Subtotal price of model and fees
+  /* ================================= */
+  &__grandtotal {
+    &-outerdiv {
+      font-weight: bolder;
+      display: flex;
+      justify-content: space-between;
+      &:hover {
+        background: rgba($primary-color-4, 0.1);
+      }
+
+      /* --------------- */
+      // discount variation
+      /* --------------- */
+      &--discount {
+        display: flex;
+        align-items: center;
+        font-weight: bolder;
+        justify-content: space-between;
+        &:hover {
+          background: rgba($primary-color-4, 0.1);
+        }
+      }
+    }
+
+    &-price {
+      position: relative;
+      padding-left: 3rem;
+      border-top: 2px solid black;
+      border-bottom: 2px solid black;
+
+      @include respond-to($small-phone) {
+        border-top: 0.8px solid black;
+        border-bottom: 0.8px solid black;
+      }
+
+      &:after {
+        position: absolute;
+        content: '';
+        bottom: -0.5rem;
+        left: 0;
+        width: 100%;
+        border-bottom: 2px solid black;
+
+        @include respond-to($small-phone) {
+          bottom: -0.3rem;
+          border-bottom: 1.4px solid black;
+        }
+      }
+
+      /* --------------- */
+      // discount variation
+      /* --------------- */
+      &--discount {
+        position: relative;
+        padding-left: 3rem;
+        border-top: 2px solid black;
+        border-bottom: none;
+
+        @include respond-to($small-phone) {
+          border-top: 0.8px solid black;
+          border-bottom: none;
+        }
+      }
+    }
+
+    &-text {
+      padding-top: 0.2rem;
+      @include respond-to($small-phone) {
+        margin-left: 3rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: 4rem;
+      }
+    }
+  }
+
+  /* ================================= */
+  // Sales Program
+  /* ================================= */
+  &__salesprogram {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 5rem;
+
+      @include respond-to($small-phone) {
+        font-size: 0.8rem;
+        margin-top: 2rem;
+      }
+    }
+
+    /* ------------------------------ */
+    // the after sales programme title
+    /* ------------------------------ */
+    &-title {
+      font-weight: bolder;
+      // text-decoration: underline;
+      margin-bottom: 0.5rem;
+      @include respond-to($small-phone) {
+        font-size: 1rem;
+      }
+      & span {
+        padding-bottom: 0.2rem;
+        border-bottom: 1px solid black;
+        @include respond-to($small-phone) {
+          padding-bottom: 0.1rem;
+        }
+      }
+    }
+
+    /* ---------------- */
+    // the smaller text
+    /* ---------------- */
+    &-contract {
+      font-size: 1.3rem;
+      @include respond-to($small-phone) {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* ------------------------------ */
+    // the table on the right
+    /* ------------------------------ */
+    &-table {
+      @include respond-to($small-phone) {
+        margin-left: 0.5rem;
+      }
+
+      & td {
+        // border: 1px solid black;
+        &:first-child {
+          border-left: 1px solid black;
+          @include respond-to($small-phone) {
+            border-left: 0.5px solid black;
+          }
+        }
+        @include respond-to($small-phone) {
+          border-right: 0.5px solid black;
+        }
+        border-right: 1px solid black;
+      }
+
+      & tr {
+        &:first-child {
+          border-top: 1px solid black;
+          @include respond-to($small-phone) {
+            border-top: 0.5px solid black;
+          }
+        }
+        border-bottom: 1px solid black;
+        @include respond-to($small-phone) {
+          border-bottom: 0.5px solid black;
+        }
+      }
+
+      &-left {
+        padding: 0 1.5rem !important;
+        font-weight: bolder;
+        white-space: nowrap;
+        @include respond-to($small-phone) {
+          padding: 0 0.5rem !important;
+          white-space: nowrap;
+        }
+      }
+      &-right {
+        width: 13rem;
+        @include respond-to($small-phone) {
+          width: 20vw;
+        }
+      }
+    }
+  }
+
+  /* ========================== */
+  // Accessories
+  /* ========================== */
+  &__accessorieslist {
+    margin-top: 3rem;
+
+    @include respond-to($small-phone) {
+      margin-top: 1rem;
+    }
+
+    /* ---------------- */
+    // the title "Standard accessories"
+    /* ---------------- */
+    &-standard {
+      font-weight: bolder;
+      @include respond-to($small-phone) {
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
+      }
+      & span {
+        padding-bottom: 0.1rem;
+        border-bottom: 1px solid black;
+      }
+    }
+
+    &-img {
+      height: 100%;
+      width: 17rem;
+      object-fit: cover;
+
+      @include respond-to($small-phone) {
+        height: 11vw;
+        width: auto;
+      }
+    }
+
+    /* ----------------------- */
+    // The contents within the accessories list
+    /* ----------------------- */
+    &-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      @include respond-to($small-phone) {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  &__note {
+    font-size: 1.5rem;
+    font-style: italic;
+    margin-top: 2rem;
+    word-wrap: break-word;
+
+    @include respond-to($small-phone) {
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    &-date {
+      margin-top: 0.5rem;
+      font-weight: bolder;
+      // font-family: $font-firesans;
+    }
+  }
+}
+
+/* ============================================================================================== */
+/* ============================================================================================== */
+/* ============================================================================================== */
+/* ============================================================================================== */
+/* ============================================================================================== */
+
+/* ============================================================================================== */
+// Quotation but hidden for printing
+/* ============================================================================================== */
+.hiddenquotation {
+  &__section {
+    border: 1px solid darken($translucent-grey, 30%);
+    width: 95rem;
+    padding: 3rem;
+    background: white;
+    position: absolute;
+    bottom: 1000vh;
+
+    &-innerdiv {
+      padding: 5rem 0;
+    }
+  }
+  &__top {
+    &-div {
+      display: flex;
+      position: relative;
+      justify-content: space-between;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid black;
+      margin: 0 2rem 0 2rem;
+
+      &:after {
+        position: absolute;
+        content: '';
+        bottom: -0.6rem;
+        width: 100%;
+        border-bottom: 3px solid black;
+      }
+    }
+
+    &-title {
+      font-style: italic;
+      font-size: 1.7rem;
+      font-weight: bolder;
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    &-address {
+      font-family: $font-roboto;
+      font-size: 1.4rem;
+      margin-top: 1rem;
+    }
+
+    &-contacts {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+      justify-content: center;
+      font-size: 1.4rem;
+      &-highlight {
+        font-weight: bolder;
+        font-size: 1.4rem;
+      }
+    }
+  }
+
+  &__logo {
+    height: 13rem;
+    width: 13.5rem;
+    object-fit: cover;
+    border: 1px solid $translucent-grey;
+  }
+
+  &__header {
+    &-2 {
+      font-size: 1.8rem;
+      margin-top: 3rem;
+      font-weight: bolder;
+      text-align: center;
+      // font-family: $font-;
+      font-family: Arial, Helvetica, sans-serif;
+      text-decoration: none;
+
+      &-text {
+        border-bottom: 1px solid black;
+      }
+    }
+  }
+
+  &__subheader {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  &__content {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    &-innerdiv {
+      width: 70rem;
+    }
+  }
+
+  /* ================ */
+  // The detail of make
+  /* ================ */
+  &__makedetail {
+    &-div {
+      display: flex;
+      margin-top: 1rem;
+      border: 1px solid black;
+      padding: 1rem 1rem;
+      min-width: 60rem;
+      justify-content: space-around;
+      font-size: 1.3rem;
+
+      &-left {
+        margin-right: 2rem;
+      }
+    }
+  }
+
+  /* ============================== */
+  //   order list
+  /* ============================== */
+  &__orderedlist {
+    margin-left: 2rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+
+    & li {
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+    }
+    &-row {
+      display: flex;
+      justify-content: space-between;
+
+      &--chassis {
+        font-weight: bolder;
+      }
+    }
+  }
+
+  /* ========================= */
+  // The RM on the top beneath header
+  /* ========================= */
+  &__price {
+    &-div {
+      min-width: 65rem;
+      margin-top: 1rem;
+      font-size: 1.3rem;
+    }
+    &-unit {
+      text-align: right;
+      margin-bottom: rem;
+      margin-right: 2rem;
+    }
+  }
+
+  /* ================================= */
+  // Subtotal price of model and fees
+  /* ================================= */
+  &__subtotal {
+    &-outerdiv {
+      font-size: 1.3rem;
+      font-weight: bolder;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    &-text {
+      padding-left: 2rem;
+    }
+
+    &-price {
+      border-top: 1px solid black;
+      padding-left: 3rem;
+    }
+  }
+
+  &__discount {
+    &-text {
+      padding-top: 0.5rem;
+      font-weight: normal;
+      @include respond-to($small-phone) {
+        margin-left: 3rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: 4rem;
+      }
+    }
+  }
+
+  /* ================================= */
+  // Subtotal price of model and fees
+  /* ================================= */
+  &__grandtotal {
+    &-outerdiv {
+      font-weight: bolder;
+      display: flex;
+      justify-content: space-between;
+
+      /* --------------- */
+      // discount variation
+      /* --------------- */
+      &--discount {
+        display: flex;
+        align-items: center;
+        font-weight: bolder;
+        justify-content: space-between;
+      }
+    }
+
+    &-price {
+      font-size: 1.3rem;
+      position: relative;
+      padding-left: 3rem;
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
+      &:after {
+        position: absolute;
+        content: '';
+        bottom: -0.5rem;
+        left: 0;
+        width: 100%;
+        border-bottom: 1.2px solid black;
+      }
+
+      /* --------------- */
+      // discount variation
+      /* --------------- */
+      &--discount {
+        position: relative;
+        padding-left: 3rem;
+        border-top: 1px solid black;
+        border-bottom: none;
+      }
+    }
+
+    &-text {
+      padding-top: 0.5rem;
+      margin-left: 4rem;
+    }
+  }
+
+  /* ================================= */
+  // Sales Program
+  /* ================================= */
+  &__salesprogram {
+    &-div {
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 5rem;
+    }
+
+    /* ------------------------------ */
+    // the after sales programme title
+    /* ------------------------------ */
+    &-title {
+      font-size: 1.4rem;
+      font-weight: bolder;
+      // text-decoration: underline;
+      margin-bottom: 0.5rem;
+      & span {
+        padding-bottom: 0.2rem;
+        border-bottom: 1px solid black;
+      }
+    }
+
+    /* ---------------- */
+    // the smaller text
+    /* ---------------- */
+    &-contract {
+      font-size: 1rem;
+    }
+
+    /* ------------------------------ */
+    // the table on the right
+    /* ------------------------------ */
+    &-table {
+      & td {
+        font-size: 1.2rem;
+        // border: 1px solid black;
+        &:first-child {
+          border-left: 1px solid black;
+        }
+        border-right: 1px solid black;
+      }
+
+      & tr {
+        &:first-child {
+          border-top: 1px solid black;
+        }
+        border-bottom: 1px solid black;
+      }
+
+      &-left {
+        padding: 0 1.5rem !important;
+        font-weight: bolder;
+      }
+      &-right {
+        width: 13rem;
+      }
+    }
+  }
+
+  /* ========================== */
+  // Accessories
+  /* ========================== */
+  &__accessorieslist {
+    margin-top: 3rem;
+
+    /* ---------------- */
+    // the title
+    /* ---------------- */
+    &-standard {
+      font-size: 1.4rem;
+      font-weight: bolder;
+      & span {
+        padding-bottom: 0.1rem;
+        border-bottom: 1px solid black;
+      }
+    }
+
+    &-img {
+      height: 100%;
+      width: 17rem;
+      object-fit: cover;
+    }
+
+    &-content {
+      display: flex;
+      font-size: 1.3rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__note {
+    font-size: 1.3rem;
+    font-style: italic;
+    margin-top: 2rem;
+    &-date {
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+      font-weight: bolder;
+      // font-family: $font-firesans;
+    }
+  }
+}

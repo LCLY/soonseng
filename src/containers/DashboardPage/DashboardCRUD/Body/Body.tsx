@@ -1,28 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactText } from 'react';
 import './Body.scss';
 /*components*/
 import Loading from 'src/components/Loading/Loading';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import CustomContainer from 'src/components/CustomContainer/CustomContainer';
+import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
+import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
+import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 /*3rd party lib*/
+import {
+  Button,
+  Form,
+  Input,
+  Layout,
+  Modal,
+  Select,
+  Table,
+  Tag,
+  Tooltip,
+  notification,
+  Checkbox,
+  Skeleton,
+  Card,
+  Carousel,
+} from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
-import { Button, Empty, Form, Card, Input, Modal, Select, Table, Tag, Tooltip } from 'antd';
+import { img_not_available_link, img_loading_link } from 'src/shared/links';
+import { PlusCircleTwoTone, ExclamationCircleOutlined, MinusCircleTwoTone } from '@ant-design/icons';
 /* Util */
-import { TMapStateToProps } from 'src/store/types';
-import * as actions from 'src/store/actions/index';
 import {
-  TCreateBodyLengthData,
   TReceivedAccessoryObj,
   TReceivedBodyAccessoryObj,
-  TReceivedBodyLengthObj,
   TReceivedBodyObj,
+  TReceivedImageObj,
   TReceivedLengthObj,
-  TUpdateBodyLengthData,
-} from 'src/store/types/sales';
-import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
+} from 'src/store/types/dashboard';
+import { RootState } from 'src';
+import {
+  convertHeader,
+  getColumnSearchProps,
+  onClearAllSelectedImages,
+  onTableRowExpand,
+  setFilterReference,
+} from 'src/shared/Utils';
+import * as actions from 'src/store/actions/index';
+// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import LazyLoad from 'react-lazyload';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -31,77 +60,30 @@ interface BodyProps {}
 
 type TBodyTableState = {
   key?: string;
-  index?: number;
   bodyId: number; //for update
   bodyTitle: string;
   bodyDescription: string;
   available?: boolean;
+  bodyImages: TReceivedImageObj[];
 };
 type TLengthTableState = {
   key?: string;
-  index?: number;
   lengthId: number; //for update
   lengthTitle: string;
-  lengthDescription: string;
+  lengthDescription: CheckboxValueType[] | string;
   available?: boolean;
-};
-type TBodyLengthTableState = {
-  key?: string;
-  index?: number;
-  bodyLengthId: number; //for update
-  bodyLengthLengthId: number;
-  bodyLengthLengthTitle: string;
-  bodyLengthBodyId: number;
-  bodyLengthBodyTitle: string;
-  bodyLengthWidth: string;
-  bodyLengthHeight: string;
-  bodyLengthDepth: string;
-  bodyLengthPrice: string;
-  bodyLengthBodyAccessory: TReceivedBodyAccessoryObj[] | null;
-  bodyLengthBodyAccessoryArrayLength: number;
-  available?: boolean;
-};
-
-type TCreateBodyLengthForm = {
-  bodyLengthLengthId: number; // length id
-  bodyLengthBodyId: number; // body id
-  bodyLengthWidth: { feet: string; inch: string };
-  bodyLengthHeight: { feet: string; inch: string };
-  bodyLengthDepth: { feet: string; inch: string };
-  bodyLengthPrice: number;
-};
-type TUpdateBodyLengthForm = {
-  bodyLengthId: number;
-  bodyLengthLengthId: number; // length id
-  bodyLengthBodyId: number; // body id
-  bodyLengthWidth: { feet: string; inch: string };
-  bodyLengthHeight: { feet: string; inch: string };
-  bodyLengthDepth: { feet: string; inch: string };
-  bodyLengthPrice: number;
-};
-
-type TCreateBodyAccessoryForm = {
-  bodyAccessoryTitle: string; //according to teckhong, probably dont want the title
-  bodyAccessoryDescription: string;
-  bodyLengthId: number; //body_length_id
-  accessoryId: number; //accessory_id
-  bodyAccessoryPrice: number;
-};
-type TUpdateBodyAccessoryForm = {
-  bodyAccessoryId: number; // body_accessory id
-  bodyAccessoryTitle: string; //according to teckhong, probably dont want the title
-  bodyAccessoryDescription: string;
-  bodyLengthId: number; //body_length_id
-  accessoryId: number; //accessory_id
-  bodyAccessoryPrice: number;
 };
 
 type TShowModal = {
   body: boolean;
-  currentBodyId?: number; //(for upload image) id to track which specific object is currently being edited
   length: boolean;
-  body_length: boolean; //if got image add current Body length id as well
-  body_accessory: boolean; //if got image add current Body length id as well
+  body_accessory: boolean;
+};
+
+type TDeleteModalContent = {
+  body: { body_id: number; bodyTitle: string };
+  length: { length_id: number; lengthTitle: string };
+  body_accessory: { body_id: number; body_accessory_id: number; accessoryTitle: string };
 };
 
 type Props = BodyProps & StateProps & DispatchProps;
@@ -109,30 +91,33 @@ type Props = BodyProps & StateProps & DispatchProps;
 const Body: React.FC<Props> = ({
   // miscellaneous
   loading,
+  errorMessage,
   successMessage,
   // body
   bodiesArray,
   onGetBodies,
   onUpdateBody,
   onCreateBody,
+  onDeleteBody,
   // length
   lengthsArray,
   onGetLengths,
   onUpdateLength,
   onCreateLength,
-  // body length
-  bodyLengthsArray,
-  onGetBodyLengths,
-  onCreateBodyLength,
-  onUpdateBodyLength,
+  onDeleteLength,
   // body accessory
   bodyAccessoriesArray,
+  bodyAssociatedAccessoriesArray,
   onGetBodyAccessories,
   onCreateBodyAccessory,
-  onUpdateBodyAccessory,
-  // accessory
-  accessoriesArray,
-  onGetAccessories,
+  // onUpdateBodyAccessory,
+  onDeleteBodyAccessory,
+  onGetBodyAssociatedAccessories,
+  // onClearBodyAccessoryArray,
+  // delete upload iamges
+  onDeleteUploadImage,
+  // clear states
+  onClearDashboardState,
 }) => {
   /* ================================================== */
   /*  state */
@@ -144,63 +129,84 @@ const Body: React.FC<Props> = ({
   /* length */
   const [createLengthForm] = Form.useForm();
   const [updateLengthForm] = Form.useForm();
-  /* bodyLength */
-  const [createBodyLengthForm] = Form.useForm();
-  const [updateBodyLengthForm] = Form.useForm();
+
   /* bodyAccessories */
   const [createBodyAccessoryForm] = Form.useForm();
-  const [updateBodyAccessoryForm] = Form.useForm();
+  // const [updateBodyAccessoryForm] = Form.useForm();
+
+  // const { width } = useWindowDimensions();
 
   // Table states
   const [bodyTableState, setBodyTableState] = useState<TBodyTableState[]>([]);
   const [lengthTableState, setLengthTableState] = useState<TLengthTableState[]>([]);
-  const [bodyLengthTableState, setBodyLengthTableState] = useState<TBodyLengthTableState[]>([]);
 
   let bodySearchInput = null; //this is for filter on antd table
   let lengthSearchInput = null; //this is for filter on antd table
-  let bodyLengthSearchInput = null; //this is for filter on antd table
   const [filterData, setFilterData] = useState({ searchText: '', searchedColumn: '' });
   setFilterReference(filterData, setFilterData);
 
+  /* ------------------------ */
+  /*   Image related states   */
+  /* ------------------------ */
+  // Upload states
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  // state to store temporary images before user uploads
+  const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+
+  // edit image gallery
+  /**
+   * This state will be storing makeId as the key
+   * The boolean is to determine whether to show each individual image gallery
+   * e.g. make1: false
+   */
+  const [showEditImageGallery, setShowEditImageGallery] = useState<{ [key: string]: boolean }>({});
+  // To handle one row only expand at a time
+  const [expandedRowKeys, setExpandedRowKeys] = useState<ReactText[]>([]);
+  // this is to determine if all of the images are selected
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  // For populating images
+  const [galleryImages, setGalleryImages] = useState<TGalleryImageArrayObj[]>([]);
+  /* ------------------------ */
   // Modal states
+  /* ------------------------ */
   const [showCreateModal, setShowCreateModal] = useState<TShowModal>({
     body: false,
     length: false,
-    body_length: false,
     body_accessory: false,
   });
   const [showUpdateModal, setShowUpdateModal] = useState<TShowModal>({
     body: false,
     length: false,
-    body_length: false,
     body_accessory: false,
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState<TShowModal>({
+    body: false,
+    length: false,
+    body_accessory: false,
+  });
+
+  // this state to keep track of what to show on delete modal and what useful info to pass
+  const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
+    body: { body_id: -1, bodyTitle: '' },
+    length: { length_id: -1, lengthTitle: '' },
+    body_accessory: { body_id: -1, body_accessory_id: -1, accessoryTitle: '' },
   });
 
   // store table header definition in state
   /**
    * containing objects of arrays
-   * body[], length[], bodyLength[]
+   * body[], length[]
    **/
 
   /* Body column initialization */
   const [bodyColumns, setBodyColumns] = useState([
     {
-      key: 'bodyIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TBodyTableState, b: TBodyTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
-    {
       key: 'bodyTitle',
       title: 'Title',
       dataIndex: 'bodyTitle',
-      width: '15rem',
-      className: 'body__table-header--title',
+      width: '30rem',
       ellipsis: true,
+      className: 'body__table-header--title',
       sorter: (a: TBodyTableState, b: TBodyTableState) => a.bodyTitle.localeCompare(b.bodyTitle),
       ...getColumnSearchProps(bodySearchInput, 'bodyTitle', 'Title'),
     },
@@ -223,27 +229,57 @@ const Body: React.FC<Props> = ({
       render: (_text: any, record: TBodyTableState) => {
         return (
           <>
-            <Button
-              type="link"
-              className="make__brand-btn--edit"
-              onClick={() => {
-                // show modal
-                setShowUpdateModal({ ...showUpdateModal, body: true });
-                // update the form value using the 'name' attribute as target/key
-                // if bodyDescription is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-                updateBodyForm.setFieldsValue({
-                  bodyId: record.bodyId,
-                  bodyTitle: record.bodyTitle,
-                  bodyDescription: record.bodyDescription === '-' ? '' : record.bodyDescription,
-                });
-              }}
-            >
-              Edit
-            </Button>
-            <Button disabled type="link" danger>
-              Delete
-            </Button>
+            <div className="dashboard__btn-div">
+              <Button
+                type="link"
+                className="dashboard__btn-link"
+                onClick={() => {
+                  onPopulateEditBodyModal(record);
+                  // show modal
+                  setShowUpdateModal({ ...showUpdateModal, body: true });
+                }}
+              >
+                <i className="far fa-edit"></i>
+              </Button>
+              <Button
+                type="link"
+                className="dashboard__btn-link"
+                onClick={() => {
+                  alert('disable - supposed to set available to false');
+                }}
+              >
+                <i className="fas fa-eye-slash"></i>
+              </Button>
+              <Button
+                className="dashboard__btn-link--danger"
+                type="link"
+                danger
+                onClick={() => {
+                  setShowDeleteModal({ ...showDeleteModal, body: true });
+                  setDeleteModalContent({
+                    ...deleteModalContent,
+                    body: { body_id: record.bodyId, bodyTitle: record.bodyTitle },
+                  });
+                }}
+              >
+                <i className="far fa-trash-alt"></i>
+              </Button>
+            </div>
+            <div>
+              <Button
+                type="default"
+                onClick={() => {
+                  // everytime when user open the modal clear the body accessory array first
+                  // onClearBodyAccessoryArray();
+                  //  set the body id
+                  createBodyAccessoryForm.setFieldsValue({ bodyId: record.bodyId });
+                  setShowCreateModal({ ...showCreateModal, body_accessory: true });
+                  onGetBodyAccessories(record.bodyId); //get body accessories so we can know what to filter
+                }}
+              >
+                Create Accessory
+              </Button>
+            </div>
           </>
         );
       },
@@ -251,16 +287,6 @@ const Body: React.FC<Props> = ({
   ]);
   /* Length column initialization */
   const [lengthColumns, setLengthColumns] = useState([
-    {
-      key: 'lengthIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TLengthTableState, b: TLengthTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
     {
       key: 'lengthTitle',
       title: 'Title',
@@ -272,13 +298,41 @@ const Body: React.FC<Props> = ({
     },
     {
       key: 'lengthDescription',
-      title: 'Description',
+      title: 'Categories',
       dataIndex: 'lengthDescription',
       ellipsis: true,
       width: 'auto',
-      sorter: (a: TLengthTableState, b: TLengthTableState) => a.lengthDescription.localeCompare(b.lengthDescription),
-
-      ...getColumnSearchProps(lengthSearchInput, 'lengthDescription', 'Description'),
+      render: (_text: any, record: TLengthTableState) => (
+        <>
+          {typeof record.lengthDescription === 'string'
+            ? record.lengthDescription
+            : record.lengthDescription.map((category) => {
+                /** check categories and assign respective tag colors  */
+                const setRespectiveColors = (category: CheckboxValueType) => {
+                  let color = '';
+                  switch (category) {
+                    case 'LCV':
+                      color = 'orange';
+                      break;
+                    case 'MCV':
+                      color = 'green';
+                      break;
+                    case 'HCV':
+                      color = 'cyan';
+                      break;
+                    default:
+                      color = 'magenta';
+                  }
+                  return color;
+                };
+                return (
+                  <React.Fragment key={uuidv4()}>
+                    {category !== '' && <Tag color={setRespectiveColors(category)}>{category}</Tag>}
+                  </React.Fragment>
+                );
+              })}
+        </>
+      ),
     },
     {
       key: 'lengthAction',
@@ -289,201 +343,45 @@ const Body: React.FC<Props> = ({
       render: (_text: any, record: TLengthTableState) => {
         return (
           <>
-            <Button
-              type="link"
-              className="make__brand-btn--edit"
-              onClick={() => {
-                // show modal
-                setShowUpdateModal({ ...showUpdateModal, length: true });
-                // update the form value using the 'name' attribute as target/key
-                // if bodyDescription is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-                let extractedFeet = '';
-                let extractedInch = '';
-                // they have to be legit strings after being splitted
-
-                // needa check if inch is undefined, only have feet in the string
-                let onlyInchUndefined =
-                  record.lengthTitle.split(" '")[0] !== undefined && record.lengthTitle.split(" '")[1] === undefined;
-
-                if (onlyInchUndefined) {
-                  extractedFeet = record.lengthTitle.split(" '")[0]; //get the first index  (feet)
-                } else {
-                  extractedFeet = record.lengthTitle.split(" '")[0]; //get the first index
-                  extractedInch = record.lengthTitle.split(" '")[1].toString().trim(); //second index (inch) and remove empty space infront of the inch
-                }
-
-                updateLengthForm.setFieldsValue({
-                  lengthId: record.lengthId,
-                  lengthTitle: { feet: extractedFeet, inch: extractedInch },
-                  lengthDescription: record.lengthDescription === '-' ? '' : record.lengthDescription,
-                });
-              }}
-            >
-              Edit
-            </Button>
-            <Button disabled type="link" danger>
-              Delete
-            </Button>
-          </>
-        );
-      },
-    },
-  ]);
-
-  /* Body Length column initialization */
-  const [bodyLengthColumns, setBodyLengthColumns] = useState([
-    {
-      key: 'bodyLengthIndex',
-      title: 'No.',
-      dataIndex: 'index',
-      ellipsis: true,
-      width: '7rem',
-      align: 'center',
-      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
-        a.index !== undefined && b.index !== undefined && a.index - b.index,
-    },
-    {
-      key: 'bodyLengthBodyTitle',
-      title: 'Body',
-      dataIndex: 'bodyLengthBodyTitle',
-      className: 'body__table-header--title',
-      ellipsis: true,
-      width: 'auto',
-      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
-        a.bodyLengthBodyTitle.localeCompare(b.bodyLengthBodyTitle),
-      ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthBodyTitle', 'Body'),
-    },
-    {
-      key: 'bodyLengthDimension',
-      title: 'Dimension',
-      dataIndex: 'bodyLengthDimension',
-      ellipsis: true,
-      width: 'auto',
-      render: (_text: any, record: TBodyLengthTableState) => {
-        return (
-          <>
-            <div className="body__tag-outerdiv">
-              <div className="body__tag-div">
-                <Tag className="body__tag" color="red">
-                  <div className="body__tag-title">Width</div>
-                  <div className="body__tag-values">
-                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthWidth}</div>
-                  </div>
-                </Tag>
-              </div>
-              <div className="body__tag-div">
-                <Tag className="body__tag" color="cyan">
-                  <div className="body__tag-title">Height</div>
-                  <div className="body__tag-values">
-                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthHeight}</div>
-                  </div>
-                </Tag>
-              </div>
-              <div className="body__tag-div">
-                <Tag className="body__tag" color="blue">
-                  <div className="body__tag-title">Depth</div>
-                  <div className="body__tag-values">
-                    <div className="body__tag-colon">:</div> <div>{record.bodyLengthDepth}</div>
-                  </div>
-                </Tag>
-              </div>
-            </div>
-          </>
-        );
-      },
-    },
-    {
-      key: 'bodyLengthPrice',
-      title: 'Price',
-      dataIndex: 'bodyLengthPrice',
-      ellipsis: true,
-      width: 'auto',
-      sorter: (a: TBodyLengthTableState, b: TBodyLengthTableState) =>
-        a.bodyLengthPrice.localeCompare(b.bodyLengthPrice),
-      ...getColumnSearchProps(bodyLengthSearchInput, 'bodyLengthPrice', 'Price'),
-    },
-    {
-      key: 'bodyLengthAction',
-      title: 'Action',
-      dataIndex: 'action',
-      // fixed: 'right',
-      width: '17rem',
-      render: (_text: any, record: TBodyLengthTableState) => {
-        return (
-          <>
-            <div>
+            <div className="dashboard__btn-div">
               <Button
                 type="link"
-                className="make__brand-btn--edit"
+                className="dashboard__btn-link"
                 onClick={() => {
                   // show modal
-                  setShowUpdateModal({ ...showUpdateModal, body_length: true });
+                  setShowUpdateModal({ ...showUpdateModal, length: true });
 
-                  /**
-                   *
-                   *  Inner helper function to return feet only or feet with inch
-                   * @param {string} extractedValue Value after width/height/depth is extracted
-                   * @return {*} return object of feet and inch
-                   */
-                  const checkInchExist = (extractedValue: string) => {
-                    let extractedFeet = '';
-                    let extractedInch = '';
-
-                    // needa check if inch is undefined, only have feet in the string
-                    let onlyInchUndefined =
-                      extractedValue.split(" '")[0] !== undefined && extractedValue.split(" '")[1] === undefined;
-
-                    // needa check if inch is undefined, only have feet in the string
-                    if (onlyInchUndefined) {
-                      extractedFeet = extractedValue.split(" '")[0]; //get the first index
-                    } else {
-                      extractedFeet = extractedValue.split(" '")[0]; //get the first index
-                      extractedInch = extractedValue.split(" '")[1].toString().trim(); //second index and remove empty space infront of the inch
-                    }
-
-                    return { feet: extractedFeet, inch: extractedInch };
-                  };
-
-                  let formattedPrice = record.bodyLengthPrice.replace('RM', ''); //remove unit
-
-                  // update the form value using the 'name' attribute as target/key
-                  updateBodyLengthForm.setFieldsValue({
-                    bodyLengthId: record.bodyLengthId,
-                    bodyLengthBodyId: record.bodyLengthBodyId, // body id
-                    bodyLengthLengthId: record.bodyLengthLengthId, // length id
-                    bodyLengthWidth: {
-                      feet: checkInchExist(record.bodyLengthWidth).feet,
-                      inch: checkInchExist(record.bodyLengthWidth).inch,
-                    },
-                    bodyLengthHeight: {
-                      feet: checkInchExist(record.bodyLengthHeight).feet,
-                      inch: checkInchExist(record.bodyLengthHeight).inch,
-                    },
-                    bodyLengthDepth: {
-                      feet: checkInchExist(record.bodyLengthDepth).feet,
-                      inch: checkInchExist(record.bodyLengthDepth).inch,
-                    },
-                    bodyLengthPrice: formattedPrice,
+                  updateLengthForm.setFieldsValue({
+                    lengthId: record.lengthId,
+                    lengthTitle: record.lengthTitle.replace('ft', ''),
+                    lengthDescription: record.lengthDescription === '-' ? '' : record.lengthDescription,
                   });
                 }}
               >
-                Edit
+                <i className="far fa-edit"></i>
               </Button>
-              <Button disabled type="link" danger>
-                Delete
-              </Button>
-            </div>
-            <div>
               <Button
-                type="default"
+                type="link"
+                className="dashboard__btn-link"
                 onClick={() => {
-                  setShowCreateModal({ ...showCreateModal, body_accessory: true });
-                  //  set the body length id
-                  createBodyAccessoryForm.setFieldsValue({ bodyLengthId: record.bodyLengthId });
+                  alert('disable - supposed to set available to false');
                 }}
               >
-                Create Accessory
+                <i className="fas fa-eye-slash"></i>
+              </Button>
+              <Button
+                className="dashboard__btn-link--danger"
+                type="link"
+                danger
+                onClick={() => {
+                  setShowDeleteModal({ ...showDeleteModal, length: true });
+                  setDeleteModalContent({
+                    ...deleteModalContent,
+                    length: { length_id: record.lengthId, lengthTitle: record.lengthTitle },
+                  });
+                }}
+              >
+                <i className="far fa-trash-alt"></i>
               </Button>
             </div>
           </>
@@ -497,19 +395,6 @@ const Body: React.FC<Props> = ({
   /* ================================================== */
 
   /**
-   * helper function for checking inch undefined
-   * @param {string} feet
-   * @param {string} inch
-   * @return {*} feet + ' or feet + ' + inch ''
-   */
-  const formatFeetInch = (feet: string, inch: string) => {
-    if (inch === undefined) {
-      return feet + " ' ";
-    }
-    return feet + " ' " + inch + " '' ";
-  };
-
-  /**
    * For user to be able to press enter and submit the form
    * @param {React.KeyboardEvent<HTMLFormElement>} e
    * @param {FormInstance<any>} form form instance created at initialization using useForm
@@ -520,104 +405,228 @@ const Body: React.FC<Props> = ({
     }
   };
 
+  /**
+   *
+   * This function takes in images array from make object and then populate the current state
+   * of setImage
+   * @param {TReceivedImageObj[]} recordImagesArray
+   * @category Helper function
+   */
+  const onPopulateImagesArray = (recordImagesArray: TReceivedImageObj[]) => {
+    let tempArray: TGalleryImageArrayObj[] = [];
+
+    // Populate the array state with every image and later pass to Image Gallery
+    const storeValue = (image: TReceivedImageObj) => {
+      let imageObject = {
+        id: image.id,
+        src: image.url,
+        thumbnail: image.url,
+        thumbnailWidth: 320,
+        thumbnailHeight: 212,
+        alt: image.filename,
+        nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
+        isSelected: false,
+        tags: [{ value: image.tag ? image.tag : ' - ', title: image.tag ? image.tag : ' - ' }],
+        caption: image.filename,
+      };
+
+      tempArray.push(imageObject);
+    };
+    recordImagesArray.map(storeValue);
+
+    setGalleryImages(tempArray);
+  };
+
+  /**
+   *
+   * Helper function to render expand icons for different tables
+   * @param {boolean} expanded
+   * @param {(TBodyTableState)} record
+   * @return {*}
+   */
+  const onExpandIcon = (expanded: boolean, record: TBodyTableState) => {
+    let expandImageGalleryButton = null;
+    let tooltipIconsText = { plusIcon: '', minusIcon: '' };
+
+    if ('bodyImages' in record && 'bodyId' in record) {
+      expandImageGalleryButton = (
+        <PlusCircleTwoTone
+          onClick={() => {
+            // clear the state first to make sure that body accessories array is reloaded
+            // onClearBodyAccessoryArray();
+            // this allow only 1 row to expand at a time
+            onTableRowExpand(expanded, record, setExpandedRowKeys);
+            // call the body accessories api on expand
+            onGetBodyAccessories(record.bodyId);
+            // this closes all the edit image gallery when user expand other row
+            // clearing out all the booleans
+            setShowEditImageGallery({});
+            // this function is passed to imageGallery
+            //  it will simply uncheck everything
+            onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
+            // populate image array state and pass to ImageGallery component
+            onPopulateImagesArray(record.bodyImages);
+          }}
+        />
+      );
+      // when showing plus, text should be click to show, vice versa
+      tooltipIconsText.plusIcon = 'Click to show images';
+      tooltipIconsText.minusIcon = 'Click to hide images';
+    }
+
+    return (
+      <>
+        {expanded ? (
+          <Tooltip trigger={['hover', 'click']} title={tooltipIconsText.minusIcon}>
+            <MinusCircleTwoTone
+              onClick={() => {
+                onTableRowExpand(expanded, record, setExpandedRowKeys);
+                // this function is passed to imageGallery
+                //  it will simply uncheck everything
+                onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
+              }}
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip trigger={['hover', 'click']} title={tooltipIconsText.plusIcon}>
+            {expandImageGalleryButton}
+          </Tooltip>
+        )}
+      </>
+    );
+  };
+
+  const onExpandedRowRender = (record: TBodyTableState) => {
+    let tableName: string = '';
+    let tableSpecificId: number = -1;
+    let recordImageArray: TReceivedImageObj[] = [];
+
+    if ('bodyImages' in record && 'bodyId' in record) {
+      recordImageArray = record.bodyImages;
+      tableSpecificId = record.bodyId;
+      tableName = 'body';
+    }
+
+    return (
+      <>
+        <TableImageViewer
+          record={record}
+          loading={loading}
+          tableName={tableName}
+          galleryImages={galleryImages}
+          showUpdateModal={showUpdateModal}
+          tableSpecificId={tableSpecificId}
+          setGalleryImages={setGalleryImages}
+          recordImageArray={recordImageArray}
+          selectAllChecked={selectAllChecked}
+          setSelectAllChecked={setSelectAllChecked}
+          onDeleteUploadImage={onDeleteUploadImage}
+          setShowUpdateModal={setShowUpdateModal}
+          setExpandedRowKeys={setExpandedRowKeys}
+          showEditImageGallery={showEditImageGallery}
+          setShowEditImageGallery={setShowEditImageGallery}
+          onPopulateEditModal={(record) => {
+            if ('bodyImages' in record && 'bodyId' in record) {
+              onPopulateEditBodyModal(record);
+            }
+          }}
+        />
+      </>
+    );
+  };
+
+  /* helper functions to populate forms */
+  /**
+   * This function takes in the record of the current row of the table
+   * and then reformat the important information and pass into the current modal / form
+   * @param {TBodyTableState} record
+   */
+  const onPopulateEditBodyModal = (record: TBodyTableState) => {
+    // update the form value using the 'name' attribute as target/key
+    // if bodyDescription is '-' then change to empty string, else the real string
+    // remember to set this form on the Form component
+    updateBodyForm.setFieldsValue({
+      bodyId: record.bodyId,
+      bodyTitle: record.bodyTitle,
+      bodyDescription: record.bodyDescription === '-' ? '' : record.bodyDescription,
+    });
+  };
+
+  /*========================================== */
   /* Forms onFinish methods */
+  /*========================================== */
   /* --------- BODY ---------- */
   // the keys "values" are from the form's 'name' attribute
-  const onCreateBodyFinish = (values: { bodyTitle: string; bodyDescription: string }) => {
-    // if not then just get the title and description
-    if (!loading) {
-      // prevent it from running multiple times
-      onCreateBody(values.bodyTitle, values.bodyDescription);
+  const onCreateBodyFinish = (values: { bodyTitle: string; bodyDescription: string; imageTag: string }) => {
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onCreateBody(values.bodyTitle, values.bodyDescription, values.imageTag, uploadSelectedFiles);
+    } else {
+      onCreateBody(values.bodyTitle, values.bodyDescription, null, null);
     }
   };
-  const onUpdateBodyFinish = (values: { bodyId: number; bodyTitle: string; bodyDescription: string }) => {
-    // if not then just get the title and description
-    if (!loading) {
-      onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription);
+  const onUpdateBodyFinish = (values: {
+    bodyId: number;
+    bodyTitle: string;
+    bodyDescription: string;
+    imageTag: string;
+  }) => {
+    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+      // if there are files being selected to be uploaded
+      // then send the tag and image files to the api call
+      onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription, values.imageTag, uploadSelectedFiles);
+    } else {
+      onUpdateBody(values.bodyId, values.bodyTitle, values.bodyDescription, null, null);
     }
+  };
+
+  /**
+   *
+   * Concat categories into strings
+   * @param {CheckboxValueType[]} checkboxValuesArray
+   * @return {string} e.g. "LCV,MCV,HCV"
+   */
+  const concatCategories = (checkboxValuesArray: CheckboxValueType[]) => {
+    let concatCategories = '';
+    checkboxValuesArray.forEach((category) => (concatCategories += `${category},`));
+    return concatCategories;
+  };
+
+  /**
+   *
+   * Convert a plain string into an array of strings
+   * @param {string} categoriesString
+   * @return {string[]} ["LCV","HCV","MCV"]
+   */
+  const convertCategoriesToCheckboxValuesType = (categoriesString: string) => {
+    return categoriesString.split(',');
   };
 
   /* --------- LENGTH ---------- */
-  const onCreateLengthFinish = (values: { lengthTitle: { feet: string; inch: string }; lengthDescription: string }) => {
-    let concatLength = '';
-    // if inch has no input then only display length
-    concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
+  const onCreateLengthFinish = (values: { lengthTitle: string; lengthDescription: CheckboxValueType[] }) => {
     if (!loading) {
-      onCreateLength(concatLength, values.lengthDescription);
+      onCreateLength(values.lengthTitle, concatCategories(values.lengthDescription));
     }
   };
+
   const onUpdateLengthFinish = (values: {
     lengthId: number;
-    lengthDescription: string;
-    lengthTitle: { feet: string; inch: string };
+    lengthDescription: CheckboxValueType[];
+    lengthTitle: string;
   }) => {
-    let concatLength = '';
-    // if inch has no input then only display length
-    concatLength = formatFeetInch(values.lengthTitle.feet, values.lengthTitle.inch);
     if (!loading) {
-      onUpdateLength(values.lengthId, concatLength, values.lengthDescription);
+      onUpdateLength(values.lengthId, values.lengthTitle, concatCategories(values.lengthDescription));
     }
-  };
-
-  /* --------- BODY LENGTH ---------- */
-  const onCreateBodyLengthFinish = (values: TCreateBodyLengthForm) => {
-    // if inch has no input then only display feet
-    let concatWidth = formatFeetInch(values.bodyLengthWidth.feet, values.bodyLengthWidth.inch);
-    let concatHeight = formatFeetInch(values.bodyLengthHeight.feet, values.bodyLengthHeight.inch);
-    let concatDepth = formatFeetInch(values.bodyLengthDepth.feet, values.bodyLengthDepth.inch);
-
-    // if inch has no input then only display length
-    let createBodyLengthData: TCreateBodyLengthData = {
-      body_id: values.bodyLengthBodyId,
-      length_id: values.bodyLengthLengthId,
-      width: concatWidth,
-      height: concatHeight,
-      depth: concatDepth,
-      price: values.bodyLengthPrice,
-    };
-    onCreateBodyLength(createBodyLengthData);
-  };
-
-  const onUpdateBodyLengthFinish = (values: TUpdateBodyLengthForm) => {
-    // if inch has no input then only display feet
-    let concatWidth = formatFeetInch(values.bodyLengthWidth.feet, values.bodyLengthWidth.inch);
-    let concatHeight = formatFeetInch(values.bodyLengthHeight.feet, values.bodyLengthHeight.inch);
-    let concatDepth = formatFeetInch(values.bodyLengthDepth.feet, values.bodyLengthDepth.inch);
-
-    let updateBodyLengthData: TUpdateBodyLengthData = {
-      body_length_id: values.bodyLengthId,
-      body_id: values.bodyLengthBodyId,
-      length_id: values.bodyLengthLengthId,
-      width: concatWidth,
-      height: concatHeight,
-      depth: concatDepth,
-      price: values.bodyLengthPrice,
-    };
-
-    onUpdateBodyLength(updateBodyLengthData);
   };
 
   /* --------- BODY ACCESSORY ---------- */
-  const onCreateBodyAccessoryFinish = (values: TCreateBodyAccessoryForm) => {
-    console.log(values.bodyLengthId);
-    let createBodyAccessoryData = {
-      body_length_id: values.bodyLengthId,
-      accesory_id: values.accessoryId,
-      price: values.bodyAccessoryPrice,
-      description: values.bodyAccessoryDescription,
-    };
-    onCreateBodyAccessory(createBodyAccessoryData);
+  const onCreateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number }) => {
+    onCreateBodyAccessory(values.bodyId, values.accessoryId);
   };
-  const onUpdateBodyAccessoryFinish = (values: TUpdateBodyAccessoryForm) => {
-    let updateBodyAccessoryData = {
-      body_accessory_id: values.bodyAccessoryId,
-      body_length_id: values.bodyLengthId,
-      accesory_id: values.accessoryId,
-      price: values.bodyAccessoryPrice,
-      description: values.bodyAccessoryDescription,
-    };
-    onUpdateBodyAccessory(updateBodyAccessoryData);
-  };
+  // const onUpdateBodyAccessoryFinish = (values: { bodyId: number; accessoryId: number }) => {
+  //   onUpdateBodyAccessory(values.bodyId, values.accessoryId);
+  // };
 
   /* ================================================== */
   /*  Components  */
@@ -645,6 +654,11 @@ const Body: React.FC<Props> = ({
       >
         <TextArea rows={3} placeholder="Type description here" />
       </Form.Item>
+      <PreviewUploadImage
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={imagesPreviewUrls}
+        setImagesPreviewUrls={setImagesPreviewUrls}
+      />
     </>
   );
 
@@ -665,12 +679,15 @@ const Body: React.FC<Props> = ({
   /* Create Body Modal */
   let createBodyModal = (
     <Modal
+      centered
       title="Create Body"
       visible={showCreateModal.body}
       onOk={createBodyForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createBodyForm.resetFields();
         setShowCreateModal({ ...showCreateModal, body: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -707,6 +724,7 @@ const Body: React.FC<Props> = ({
   /* Edit Body Modal */
   let updateBodyModal = (
     <Modal
+      centered
       title="Edit Body"
       visible={showUpdateModal.body}
       onOk={updateBodyForm.submit}
@@ -717,6 +735,7 @@ const Body: React.FC<Props> = ({
           ...showUpdateModal,
           body: false,
         });
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -727,39 +746,29 @@ const Body: React.FC<Props> = ({
   /* ---------------------------- */
   // Length
   /* ---------------------------- */
+
+  const lengthCategoryOptions = ['LCV', 'MCV', 'HCV'];
+
   /* Length Form Items*/
   let lengthFormItems = (
     <>
-      <div className="flex">
-        <Form.Item
-          className="make__form-item margin_r-1"
-          label="Title"
-          name={['lengthTitle', 'feet']}
-          rules={[{ required: true, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
-        >
-          {/* ft */}
-          <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
-        </Form.Item>
-
-        <Form.Item
-          className="make__form-item--make make__form-item--inch"
-          name={['lengthTitle', 'inch']}
-          rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
-        >
-          {/* inch */}
-          <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
-        </Form.Item>
-      </div>
+      <Form.Item
+        className="make__form-item margin_r-1"
+        label="Title"
+        name={'lengthTitle'}
+        rules={[{ required: true, message: 'Input ft here!' }]}
+      >
+        {/* ft */}
+        <Input type="number" min={0} addonAfter={'ft'} placeholder="Type ft here" />
+      </Form.Item>
 
       <Form.Item
         className="make__form-item"
-        label="Description"
+        label="Categories"
         name="lengthDescription"
-        rules={[{ required: false, message: 'Input description here!' }]}
+        rules={[{ required: true, message: 'Choose a category!' }]}
       >
-        <TextArea rows={3} placeholder="Type description here" />
+        <Checkbox.Group options={lengthCategoryOptions} style={{ paddingLeft: '2rem' }} />
       </Form.Item>
     </>
   );
@@ -779,14 +788,18 @@ const Body: React.FC<Props> = ({
     </>
   );
 
+  /* --------------------------- */
   /* Create Length Modal */
+  /* --------------------------- */
   let createLengthModal = (
     <Modal
+      centered
       title="Create Length"
       visible={showCreateModal.length}
       onOk={createLengthForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createLengthForm.resetFields();
         setShowCreateModal({ ...showCreateModal, length: false }); //close modal on cancel
       }}
     >
@@ -795,7 +808,6 @@ const Body: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ----------------------------------------- */
   /* Edit Length Form */
   let updateLengthFormComponent = (
     <>
@@ -822,9 +834,12 @@ const Body: React.FC<Props> = ({
     </>
   );
 
+  /* ---------------------- */
   /* Edit Length Modal */
+  /* ---------------------- */
   let updateLengthModal = (
     <Modal
+      centered
       title="Edit Length"
       visible={showUpdateModal.length}
       onOk={updateLengthForm.submit}
@@ -842,219 +857,17 @@ const Body: React.FC<Props> = ({
     </Modal>
   );
 
-  /* ---------------------------- */
-  // Body Length
-  /* ---------------------------- */
-  /* Body Length Form Items*/
-  let bodyLengthFormItems = (
-    <>
-      {/* ------- Length - value is brand id but display is brand name -------*/}
-      <Form.Item
-        className="make__form-item"
-        label="Length"
-        name="bodyLengthLengthId"
-        style={{ marginBottom: '0.8rem' }}
-        rules={[{ required: true, message: 'Select a Length!' }]}
-      >
-        {/* only render if lengthsArray is not null */}
-        <Select
-          showSearch
-          placeholder="Select a length"
-          optionFilterProp="children"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {lengthsArray &&
-            lengthsArray.map((length) => {
-              return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={length.id}>
-                  {length.title}
-                </Option>
-              );
-            })}
-        </Select>
-      </Form.Item>
-      {/* ------- Body - value is brand id but display is brand name -------*/}
-      <Form.Item
-        className="make__form-item"
-        label="Body"
-        name="bodyLengthBodyId"
-        rules={[{ required: true, message: 'Select a Body!' }]}
-      >
-        {/* only render if bodiesArray is not null */}
-        <Select
-          showSearch
-          placeholder="Select a Body"
-          optionFilterProp="children"
-          className="body__select-updatebodylength"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        >
-          {bodiesArray &&
-            bodiesArray.map((body) => {
-              return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={body.id}>
-                  {body.title} {body.description ? ' (' + body.description + ')' : ''}
-                </Option>
-              );
-            })}
-        </Select>
-      </Form.Item>
-      <div style={{ marginBottom: '1rem' }}>Dimensions - W x H x D</div>
-      {/* Body Length Width */}
-      <div className="flex">
-        <Form.Item
-          className="make__form-item body__item margin_r-1"
-          label="Width"
-          name={['bodyLengthWidth', 'feet']}
-          rules={[{ required: true, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
-        >
-          {/* width - ft */}
-          <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
-        </Form.Item>
-
-        <Form.Item
-          className="make__form-item--make body__item make__form-item--inch"
-          name={['bodyLengthWidth', 'inch']}
-          rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
-        >
-          {/* height - inch */}
-          <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
-        </Form.Item>
-      </div>
-      {/* Body Length Height */}
-      <div className="flex">
-        <Form.Item
-          className="make__form-item body__item margin_r-1"
-          label="Height"
-          name={['bodyLengthHeight', 'feet']}
-          rules={[{ required: true, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
-        >
-          {/* height - ft */}
-          <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
-        </Form.Item>
-
-        <Form.Item
-          className="make__form-item--make body__item make__form-item--inch"
-          name={['bodyLengthHeight', 'inch']}
-          rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
-        >
-          {/* height - inch */}
-          <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
-        </Form.Item>
-      </div>
-      {/* Body Length Depth */}
-      <div className="flex">
-        <Form.Item
-          className="make__form-item margin_r-1"
-          label="Depth"
-          name={['bodyLengthDepth', 'feet']}
-          rules={[{ required: true, message: 'Input ft here!' }]}
-          style={{ width: '62%' }}
-        >
-          {/* height - ft */}
-          <Input type="number" min={0} addonAfter={"'"} placeholder="Type ft' here" />
-        </Form.Item>
-
-        <Form.Item
-          className="make__form-item--make make__form-item--inch"
-          name={['bodyLengthDepth', 'inch']}
-          rules={[{ required: false, message: 'Input inch here!' }]}
-          style={{ width: '38%' }}
-        >
-          {/* height - inch */}
-          <Input type="number" min={0} max={12} addonAfter={"''"} placeholder="Type inch'' here" />
-        </Form.Item>
-      </div>
-      <Form.Item
-        className="make__form-item"
-        label="Price"
-        name="bodyLengthPrice"
-        rules={[{ required: true, message: 'Input price here!' }]}
-      >
-        <Input type="number" min={0} addonBefore="RM" placeholder="Type price here" />
-      </Form.Item>
-    </>
-  );
-
-  /* Create Body Length Form */
-  let createBodyLengthFormComponent = (
-    <>
-      <Form
-        form={createBodyLengthForm}
-        name="createBodyLength"
-        onKeyDown={(e) => handleKeyDown(e, createBodyLengthForm)}
-        onFinish={onCreateBodyLengthFinish}
-      >
-        {/* reuse the component */}
-        {bodyLengthFormItems}
-      </Form>
-    </>
-  );
-
-  /* Create Body Length Modal */
-  let createBodyLengthModal = (
-    <Modal
-      title="Create Body Price"
-      visible={showCreateModal.body_length}
-      onOk={createBodyLengthForm.submit}
-      confirmLoading={loading}
-      onCancel={() => {
-        setShowCreateModal({ ...showCreateModal, body_length: false }); //close modal on cancel
-      }}
-    >
-      {/* the content within the modal */}
-      {createBodyLengthFormComponent}
-    </Modal>
-  );
-
-  /* ----------------------------------------- */
-  /* Edit/Update Body Length Form */
-  let updateBodyLengthFormComponent = (
-    <>
-      <Form
-        form={updateBodyLengthForm}
-        name="createBodyLength"
-        onKeyDown={(e) => handleKeyDown(e, updateBodyLengthForm)}
-        onFinish={onUpdateBodyLengthFinish}
-      >
-        {/* reuse form items */}
-        {bodyLengthFormItems}
-        {/* Getting the BODY LENGTH ID */}
-        <Form.Item
-          className="make__form-item"
-          label="id"
-          name="bodyLengthId"
-          hidden
-          rules={[{ required: true, message: 'Get body length id!' }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
-    </>
-  );
-
-  /* Edit Body Length Modal */
-  let updateBodyLengthModal = (
-    <Modal
-      title="Edit Body Price"
-      visible={showUpdateModal.body_length}
-      onOk={updateBodyLengthForm.submit}
-      confirmLoading={loading}
-      onCancel={() => {
-        // close edit body modal
-        setShowUpdateModal({
-          ...showUpdateModal,
-          body_length: false,
-        });
-      }}
-    >
-      {/* the content within the modal */}
-      {updateBodyLengthFormComponent}
-    </Modal>
-  );
+  /**
+   * Extract accessories only from each body accessory and form a new
+   * accessory array so can filter
+   * @param {TReceivedBodyAccessoryObj[]} bodyAccessoriesArray
+   * @return {*}
+   */
+  const extractAccessoriesArray = (bodyAccessoriesArray: TReceivedBodyAccessoryObj[]) => {
+    let resultArray: TReceivedAccessoryObj[] = [];
+    bodyAccessoriesArray.forEach((bodyAccessory) => resultArray.push(bodyAccessory.accessory));
+    return resultArray;
+  };
 
   /* ---------------------------- */
   // Body Accessory
@@ -1070,45 +883,29 @@ const Body: React.FC<Props> = ({
         rules={[{ required: true, message: 'Select an Accessory!' }]}
       >
         {/* only render if accessoriesArray is not null */}
-        {accessoriesArray && (
+        {/* also if user already created a new body accessory using body associated accessories */}
+        {bodyAssociatedAccessoriesArray && bodyAccessoriesArray ? (
           <Select placeholder="Select an Accessory">
-            {accessoriesArray.map((accessory) => {
-              return (
-                <Option key={uuidv4()} value={accessory.id}>
-                  {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
-                </Option>
-              );
-            })}
+            {bodyAssociatedAccessoriesArray
+              .filter((mainArrayChild) =>
+                extractAccessoriesArray(bodyAccessoriesArray).every(
+                  (filterArrayChild) => filterArrayChild.id !== mainArrayChild.id,
+                ),
+              )
+              .map((accessory) => {
+                return (
+                  <Option key={uuidv4()} value={accessory.id}>
+                    {accessory.title} {accessory.description ? ' - ' + accessory.description : ''}
+                  </Option>
+                );
+              })}
           </Select>
+        ) : (
+          <Skeleton.Input className="body__form-item-skeleton" style={{ width: '100%' }} active={true} />
         )}
       </Form.Item>
 
-      {/* Accessory price */}
-      <Form.Item
-        className="make__form-item"
-        label="Price"
-        name="bodyAccessoryPrice"
-        rules={[{ required: true, message: 'Input price here!' }]}
-      >
-        <Input type="number" min={0} addonBefore="RM" placeholder="Type price here" />
-      </Form.Item>
-
-      {/* Body accessory description */}
-      <Form.Item
-        className="make__form-item"
-        label="Description"
-        name="bodyAccessoryDescription"
-        rules={[{ required: false, message: 'Input description here!' }]}
-      >
-        <TextArea rows={3} />
-      </Form.Item>
-
-      <Form.Item
-        hidden
-        label="bodyLengthId"
-        name="bodyLengthId"
-        rules={[{ required: true, message: 'Input body length id!' }]}
-      >
+      <Form.Item hidden label="bodyId" name="bodyId" rules={[{ required: true, message: 'Input body id!' }]}>
         <Input />
       </Form.Item>
     </>
@@ -1128,15 +925,20 @@ const Body: React.FC<Props> = ({
     </>
   );
 
+  /* ------------------------------ */
   /* Create Body Accessory Modal */
+  /* ------------------------------ */
   let createBodyAccessoryModal = (
     <Modal
-      title="Create Accessory"
+      centered
+      title="Create Body Accessory"
       visible={showCreateModal.body_accessory}
       onOk={createBodyAccessoryForm.submit}
       confirmLoading={loading}
       onCancel={() => {
+        createBodyAccessoryForm.resetFields();
         setShowCreateModal({ ...showCreateModal, body_accessory: false }); //close modal on cancel
+        setImagesPreviewUrls([]); //clear the image preview when oncancel
       }}
     >
       {/* the content within the modal */}
@@ -1144,47 +946,211 @@ const Body: React.FC<Props> = ({
     </Modal>
   );
 
-  /* -------------------------------------------- */
-  /* Update Body Accessory Form */
-  let updateBodyAccessoryFormComponent = (
-    <>
-      <Form
-        form={updateBodyAccessoryForm}
-        name="updateBodyAccessory"
-        onKeyDown={(e) => handleKeyDown(e, updateBodyAccessoryForm)}
-        onFinish={onUpdateBodyAccessoryFinish}
-      >
-        {bodyAccessoryFormItems}
+  /* ================================ */
+  // Delete Modals
+  /* ================================ */
 
-        {/* Getting the BODY ACCESSORY ID */}
-        <Form.Item
-          className="make__form-item"
-          label="id"
-          name="bodyAccessoryId"
-          hidden
-          rules={[{ required: true, message: 'Get body accessory id!' }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
-    </>
-  );
-
-  /* Update Body Accessory Modal */
-  let updateBodyAccessoryModal = (
+  //  Delete Length Modal
+  let deleteLengthModal = (
     <Modal
-      title="Edit Body Accessory"
-      visible={showUpdateModal.body_accessory}
-      onOk={updateBodyAccessoryForm.submit}
+      title={
+        <div className="dashboard__delete-header">
+          <ExclamationCircleOutlined className="dashboard__delete-icon" />
+          Delete Length
+        </div>
+      }
+      visible={showDeleteModal.length}
+      onOk={() => onDeleteLength(deleteModalContent.length.length_id)}
+      onCancel={() => setShowDeleteModal({ ...showDeleteModal, length: false })}
+      okText="Yes, delete it"
       confirmLoading={loading}
-      onCancel={() => {
-        setShowUpdateModal({ ...showUpdateModal, body_accessory: false }); //close modal on cancel
-      }}
+      cancelText="Cancel"
     >
-      {/* the content within the modal */}
-      {updateBodyAccessoryFormComponent}
+      You are deleting
+      {deleteModalContent.length.lengthTitle === '' ? (
+        ' this length'
+      ) : (
+        <span className="dashboard__delete-message">{` ${deleteModalContent.length.lengthTitle}`}</span>
+      )}
+      , this action is permanent. Are you sure?
     </Modal>
   );
+
+  //  Delete Body Modal
+  let deleteBodyModal = (
+    <Modal
+      title={
+        <div className="dashboard__delete-header">
+          <ExclamationCircleOutlined className="dashboard__delete-icon" />
+          Delete Body
+        </div>
+      }
+      visible={showDeleteModal.body}
+      onOk={() => onDeleteBody(deleteModalContent.body.body_id)}
+      onCancel={() => setShowDeleteModal({ ...showDeleteModal, body: false })}
+      okText="Yes, delete it"
+      confirmLoading={loading}
+      cancelText="Cancel"
+    >
+      You are deleting
+      {deleteModalContent.body.bodyTitle === '' ? (
+        ' this body'
+      ) : (
+        <span className="dashboard__delete-message">{` ${deleteModalContent.body.bodyTitle}`}</span>
+      )}
+      , this action is permanent. Are you sure?
+    </Modal>
+  );
+
+  //  Delete Body Accessory Modal
+  let deleteBodyAccessoryModal = (
+    <Modal
+      title={
+        <div className="dashboard__delete-header">
+          <ExclamationCircleOutlined className="dashboard__delete-icon" />
+          Delete Body Accessory
+        </div>
+      }
+      visible={showDeleteModal.body_accessory}
+      onOk={() =>
+        onDeleteBodyAccessory(
+          deleteModalContent.body_accessory.body_id,
+          deleteModalContent.body_accessory.body_accessory_id,
+        )
+      }
+      onCancel={() => setShowDeleteModal({ ...showDeleteModal, body_accessory: false })}
+      okText="Yes, delete it"
+      confirmLoading={loading}
+      cancelText="Cancel"
+    >
+      You are deleting
+      {deleteModalContent.body_accessory.accessoryTitle === '' ? (
+        ' this body accessory'
+      ) : (
+        <span className="dashboard__delete-message">{` ${deleteModalContent.body_accessory.accessoryTitle}`}</span>
+      )}
+      , this action is permanent. Are you sure?
+    </Modal>
+  );
+
+  /* =================================== */
+  /* Body accessory expanded component*/
+  /* =================================== */
+  const bodyAccessoriesCardsComponent = (record: TBodyTableState) => {
+    return (
+      <>
+        {bodyAccessoriesArray ? (
+          <>
+            {bodyAccessoriesArray.length > 0 ? (
+              <>
+                <div>
+                  Attachable accessories for&nbsp;
+                  <span style={{ textTransform: 'capitalize' }}>{record.bodyTitle}</span>
+                  :&nbsp;
+                  <span className="body__expand-available">{bodyAccessoriesArray.length} available</span>
+                </div>
+                <hr />
+                <div className="body__expand-outerdiv">
+                  {[...bodyAccessoriesArray].reverse().map((bodyAccessory) => {
+                    if (bodyAccessory.available) {
+                      return (
+                        <Card
+                          key={uuidv4()}
+                          className="body__expand-card"
+                          title={
+                            <div className="body__expand-card-title-div">
+                              <span className="body__expand-card-title">{bodyAccessory.accessory.title}</span>
+                              <Tag color="geekblue" style={{ marginRight: 0 }}>
+                                RM {bodyAccessory.accessory.price}
+                              </Tag>
+                            </div>
+                          }
+                          size="small"
+                          style={{ width: 'auto' }}
+                          headStyle={{ background: '#FFF2E8' }}
+                        >
+                          {bodyAccessory.accessory.images ? (
+                            <>
+                              <Carousel autoplay>
+                                {/* render all images if array more than 0 else render 'image not available' image */}
+                                {bodyAccessory.accessory.images.length > 0 ? (
+                                  bodyAccessory.accessory.images.map((image) => {
+                                    return (
+                                      <React.Fragment key={uuidv4()}>
+                                        <LazyLoad
+                                          placeholder={
+                                            <img
+                                              className="body__expand-card-img"
+                                              alt="loading"
+                                              src={img_loading_link}
+                                            />
+                                          }
+                                        >
+                                          <img
+                                            className="body__expand-card-img"
+                                            key={image.id}
+                                            alt={image.filename}
+                                            src={image.url}
+                                          />
+                                        </LazyLoad>
+                                      </React.Fragment>
+                                    );
+                                  })
+                                ) : (
+                                  <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
+                                )}
+                              </Carousel>
+                            </>
+                          ) : (
+                            <img className="body__expand-card-img" alt="test" src={img_not_available_link} />
+                          )}
+                          <div className="body__expand-card-body">
+                            <section className="body__expand-card-description">
+                              Description:&nbsp;
+                              {bodyAccessory.accessory.description ? bodyAccessory.accessory.description : '-'}
+                            </section>
+                            <section className="body__expand-card-btn-section">
+                              <div className="body__expand-card-btn-div">
+                                <div>
+                                  <Button
+                                    type="link"
+                                    danger
+                                    style={{ padding: 0 }}
+                                    onClick={() => {
+                                      setDeleteModalContent({
+                                        ...deleteModalContent,
+                                        body_accessory: {
+                                          body_id: record.bodyId,
+                                          body_accessory_id: bodyAccessory.id,
+                                          accessoryTitle: bodyAccessory.accessory.title,
+                                        },
+                                      });
+                                      setShowDeleteModal({ ...showDeleteModal, body_accessory: true });
+                                    }}
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              </div>
+                            </section>
+                          </div>
+                        </Card>
+                      );
+                    }
+                    return <React.Fragment key={uuidv4()}></React.Fragment>;
+                  })}
+                </div>
+              </>
+            ) : (
+              <div>No accessory has been created yet for this body.</div>
+            )}
+          </>
+        ) : (
+          <Skeleton active />
+        )}
+      </>
+    );
+  };
 
   /* ================================================== */
   /*  useEffect  */
@@ -1199,23 +1165,8 @@ const Body: React.FC<Props> = ({
   }, [onGetLengths]);
 
   useEffect(() => {
-    onGetLengths();
-  }, [onGetLengths]);
-
-  useEffect(() => {
-    if (!accessoriesArray) {
-      // only call if accessoriesArray is null
-      onGetAccessories();
-    }
-  }, [accessoriesArray, onGetAccessories]);
-
-  useEffect(() => {
-    onGetBodyLengths();
-  }, [onGetBodyLengths]);
-
-  useEffect(() => {
-    onGetBodyAccessories();
-  }, [onGetBodyAccessories]);
+    onGetBodyAssociatedAccessories();
+  }, [onGetBodyAssociatedAccessories]);
 
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for BODY
@@ -1223,17 +1174,17 @@ const Body: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TBodyTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (body: TReceivedBodyObj, index: number) => {
+    const storeValue = (body: TReceivedBodyObj) => {
       let descriptionIsNullOrEmpty = body.description === null || body.description === '';
       // only render when available value is true
       if (body.available) {
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
           bodyId: body.id,
           bodyTitle: body.title,
           bodyDescription: descriptionIsNullOrEmpty ? '-' : body.description,
           available: body.available,
+          bodyImages: body.images,
         });
       }
     };
@@ -1253,16 +1204,24 @@ const Body: React.FC<Props> = ({
   useEffect(() => {
     let tempArray: TLengthTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (length: TReceivedLengthObj, index: number) => {
+    const storeValue = (length: TReceivedLengthObj) => {
       let descriptionIsNullOrEmpty = length.description === null || length.description === '';
-      // only render when available value is true
+      let formattedLength = '';
+      let lengthHasFtInString = length.title.includes('ft');
+      if (!lengthHasFtInString) {
+        // then add ft to the string behind
+        formattedLength = length.title + 'ft';
+      } else {
+        formattedLength = length.title;
+      }
+
       if (length.available) {
+        // only render when available value is true
         tempArray.push({
           key: uuidv4(),
-          index: index + 1,
           lengthId: length.id,
-          lengthTitle: length.title,
-          lengthDescription: descriptionIsNullOrEmpty ? '-' : length.description,
+          lengthTitle: formattedLength,
+          lengthDescription: descriptionIsNullOrEmpty ? '-' : convertCategoriesToCheckboxValuesType(length.description),
           available: length.available,
         });
       }
@@ -1276,71 +1235,55 @@ const Body: React.FC<Props> = ({
     setLengthTableState(tempArray);
   }, [lengthsArray]);
 
-  /* ------------------------------------------------------------ */
-  // initialize/populate the state of data array for BODY LENGTH
-  /* ------------------------------------------------------------ */
-
-  useEffect(() => {
-    let tempArray: TBodyLengthTableState[] = [];
-    /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (bodyLength: TReceivedBodyLengthObj, index: number) => {
-      // only render when available value is true
-      let concatPrice = `RM${bodyLength.price}`;
-      if (bodyLength.available && bodyAccessoriesArray && bodyLengthsArray) {
-        tempArray.push({
-          key: uuidv4(),
-          index: index + 1,
-          bodyLengthId: bodyLength.id,
-          bodyLengthLengthId: bodyLength.length.id,
-          bodyLengthBodyId: bodyLength.body.id,
-          bodyLengthLengthTitle: bodyLength.length.title,
-          bodyLengthBodyTitle: bodyLength.body.title,
-          bodyLengthWidth: bodyLength.width,
-          bodyLengthHeight: bodyLength.height,
-          bodyLengthDepth: bodyLength.depth,
-          bodyLengthPrice: concatPrice,
-          bodyLengthBodyAccessory: bodyAccessoriesArray, //pass the whole array
-          bodyLengthBodyAccessoryArrayLength: bodyLengthsArray.length, //pass in the array length for rowSpan
-          available: bodyLength.available,
-        });
-      }
-    };
-
-    if (bodyLengthsArray) {
-      // Execute function "storeValue" for every array index
-      bodyLengthsArray.map(storeValue);
-    }
-    // update the state with tempArray
-    setBodyLengthTableState(tempArray);
-  }, [bodyAccessoriesArray, bodyLengthsArray]);
-
   /* -------------------- */
   // success notification
   /* -------------------- */
   useEffect(() => {
     if (successMessage) {
-      // no need to call notification and onClearSalesState again because Make Page already calls it
+      // show success notification
+      notification['success']({
+        message: 'Success',
+        description: successMessage,
+      });
+      // clear the successMessage object, set to null
+      onClearDashboardState();
       // clear the form inputs using the form reference
       createBodyForm.resetFields();
       createLengthForm.resetFields();
-      createBodyLengthForm.resetFields();
       createBodyAccessoryForm.resetFields();
 
       // close all the modals if successful
-      setShowCreateModal({ ...showCreateModal, body: false, length: false, body_length: false, body_accessory: false });
-      setShowUpdateModal({ ...showUpdateModal, body: false, length: false, body_length: false, body_accessory: false });
+      setShowCreateModal({ ...showCreateModal, body: false, length: false, body_accessory: false });
+      setShowUpdateModal({ ...showUpdateModal, body: false, length: false, body_accessory: false });
+      setShowDeleteModal({ ...showDeleteModal, body: false, length: false, body_accessory: false });
     }
   }, [
     successMessage,
     showUpdateModal,
     showCreateModal,
+    showDeleteModal,
     createBodyForm,
     createLengthForm,
-    createBodyLengthForm,
     createBodyAccessoryForm,
+    onClearDashboardState,
     setShowUpdateModal,
     setShowCreateModal,
+    setShowDeleteModal,
   ]);
+
+  /* ------------------ */
+  // error notification
+  /* ------------------ */
+  useEffect(() => {
+    if (errorMessage) {
+      notification['error']({
+        message: 'Failed',
+        duration: 2.5,
+        description: errorMessage,
+      });
+      onClearDashboardState();
+    }
+  }, [errorMessage, onClearDashboardState]);
 
   /* ================================================== */
   /* ================================================== */
@@ -1353,224 +1296,129 @@ const Body: React.FC<Props> = ({
       {updateBodyModal}
       {createLengthModal}
       {updateLengthModal}
-      {createBodyLengthModal}
-      {updateBodyLengthModal}
       {createBodyAccessoryModal}
-      {updateBodyAccessoryModal}
+      {deleteBodyModal}
+      {deleteLengthModal}
+      {deleteBodyAccessoryModal}
 
-      <section>
-        <HeaderTitle>Body (Tail)</HeaderTitle>
-        {bodiesArray && lengthsArray && bodyLengthsArray ? (
-          <>
-            {/* ===================================== */}
-            {/*              Body Section             */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Bodies</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, body: true })}
-                >
-                  Create New Body
-                </Button>
-              </div>
-              {/* ------------------ */}
-              {/*    Body Table     */}
-              {/* ------------------ */}
-              <Table
-                bordered
-                className="body__table"
-                scroll={{ x: '89rem', y: 400 }}
-                dataSource={bodyTableState}
-                columns={convertHeader(bodyColumns, setBodyColumns)}
-                pagination={false}
-              />
-            </section>
-
-            {/* ===================================== */}
-            {/*             Length Section            */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Lengths</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
-                >
-                  Create New Length
-                </Button>
-              </div>
-              {/* ------------------ */}
-              {/*    Length Table     */}
-              {/* ------------------ */}
-              <Table
-                bordered
-                className="body__table"
-                scroll={{ x: '89rem', y: 400 }}
-                dataSource={lengthTableState}
-                columns={convertHeader(lengthColumns, setLengthColumns)}
-                pagination={false}
-              />
-            </section>
-
-            {/* ===================================== */}
-            {/*         Body Length Section           */}
-            {/* ===================================== */}
-            <section className="make__section">
-              <div className="make__header-div ">
-                <div className="make__header-title">Body Price</div>
-                <Button
-                  type="primary"
-                  className="make__brand-btn"
-                  onClick={() => setShowCreateModal({ ...showCreateModal, body_length: true })}
-                >
-                  Create Price
-                </Button>
-              </div>
-              {/* ----------------------- */}
-              {/*    Body Length Table    */}
-              {/* ----------------------- */}
-              <Table
-                bordered
-                className="body__table"
-                scroll={{ x: '89rem', y: 600 }}
-                dataSource={bodyLengthTableState}
-                expandable={{
-                  expandIcon: ({ expanded, onExpand, record }) =>
-                    expanded ? (
-                      <Tooltip title="Click to hide accessories">
-                        <MinusCircleTwoTone onClick={(e) => onExpand(record, e)} />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip title="Click to view accessories">
-                        <PlusCircleTwoTone onClick={(e) => onExpand(record, e)} />
-                      </Tooltip>
-                    ),
-
-                  expandedRowRender: (record: TBodyLengthTableState) => (
-                    <>
-                      <div>
-                        Attachable accessories for this body:&nbsp;
-                        <span className="body__expand-available">
-                          {record.bodyLengthBodyAccessoryArrayLength} available
-                        </span>
+      <Layout>
+        <NavbarComponent activePage="dashboard" />
+        <LayoutComponent activeKey="body">
+          <CustomContainer>
+            <div className="body__tab-outerdiv">
+              <section>
+                <HeaderTitle>Body</HeaderTitle>
+                {bodiesArray && lengthsArray ? (
+                  <>
+                    {/* ===================================== */}
+                    {/*             Length Section            */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Lengths</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
+                        >
+                          Create New Length
+                        </Button>
                       </div>
-                      <hr />
-                      <div className="body__expand-outerdiv">
-                        {record.bodyLengthBodyAccessory && (
-                          <>
-                            {/* if no accessory then show empty */}
-                            {record.bodyLengthBodyAccessoryArrayLength === 0 ? (
-                              <div className="body__expand-empty">
-                                <Empty />
-                              </div>
-                            ) : (
-                              record.bodyLengthBodyAccessory.map((bodyAccessory, index) => {
-                                if (bodyAccessory.available) {
-                                  return (
-                                    <Card
-                                      className="body__expand-card"
-                                      title={
-                                        <span className="body__expand-card-title">{bodyAccessory.accesory.title}</span>
-                                      }
-                                      key={index}
-                                      size="small"
-                                      style={{ width: 'auto' }}
-                                      headStyle={{ background: '#FFF2E8' }}
-                                    >
-                                      <div>
-                                        <div>
-                                          <span className="body__expand-card-category">Price</span>: RM
-                                          {bodyAccessory.price}
-                                        </div>
-                                        <div>
-                                          <span className="body__expand-card-category">Description</span>:&nbsp;
-                                          {bodyAccessory.description ? (
-                                            <>
-                                              <br />
-                                              <div className="body__expand-card-description">
-                                                {bodyAccessory.description}
-                                              </div>
-                                            </>
-                                          ) : (
-                                            ' - '
-                                          )}
-                                        </div>
-                                      </div>
-                                      <section className="body__expand-card-btn-section">
-                                        <hr style={{ margin: 0 }} />
-                                        <div className="body__expand-card-btn-div">
-                                          <Button
-                                            className="body__expand-card-btn-edit"
-                                            style={{ padding: 0 }}
-                                            type="link"
-                                            onClick={() => {
-                                              // show the update modal
-                                              setShowUpdateModal({ ...showUpdateModal, body_accessory: true });
-                                              // fill in the updateBodyAccessoryform
-                                              updateBodyAccessoryForm.setFieldsValue({
-                                                bodyAccessoryId: bodyAccessory.id, //the id for update
-                                                accessoryId: bodyAccessory.accesory.id,
-                                                bodyAccessoryPrice: bodyAccessory.price,
-                                                bodyAccessoryDescription: bodyAccessory.description,
-                                                bodyLengthId: bodyAccessory.body_length.id,
-                                              });
-                                            }}
-                                          >
-                                            Edit
-                                          </Button>
-                                          <Button disabled type="link" danger style={{ padding: 0 }}>
-                                            Delete
-                                          </Button>
-                                        </div>
-                                      </section>
-                                    </Card>
-                                  );
-                                }
-                                return <></>;
-                              })
-                            )}
-                          </>
-                        )}
+                      {/* ------------------ */}
+                      {/*    Length Table     */}
+                      {/* ------------------ */}
+                      <Table
+                        bordered
+                        className="body__table"
+                        scroll={{ x: '89rem', y: 400 }}
+                        dataSource={lengthTableState}
+                        columns={convertHeader(lengthColumns, setLengthColumns)}
+                        pagination={false}
+                      />
+                    </section>
+                    {/* ===================================== */}
+                    {/*              Body Section             */}
+                    {/* ===================================== */}
+                    <section className="make__section">
+                      <div className="make__header-div ">
+                        <div className="make__header-title">Bodies</div>
+                        <Button
+                          type="primary"
+                          className="make__brand-btn"
+                          onClick={() => setShowCreateModal({ ...showCreateModal, body: true })}
+                        >
+                          Create New Body
+                        </Button>
                       </div>
-                    </>
-                  ),
-                }}
-                columns={convertHeader(bodyLengthColumns, setBodyLengthColumns)}
-                pagination={false}
-              />
-            </section>
-          </>
-        ) : (
-          <div className="padding_t-5">
-            <Loading />
-          </div>
-        )}
-      </section>
+                      {/* ------------------ */}
+                      {/*    Body Table     */}
+                      {/* ------------------ */}
+                      <Table
+                        bordered
+                        className="body__table"
+                        scroll={{ x: '89rem', y: 700 }}
+                        dataSource={bodyTableState}
+                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                        onExpand={(expanded, record) => {
+                          onTableRowExpand(expanded, record, setExpandedRowKeys);
+                        }} //this allow only 1 row to expand at a time
+                        expandable={{
+                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                          expandedRowRender: (record: TBodyTableState) => {
+                            let bodyAccessoriesCards = bodyAccessoriesCardsComponent(record);
+                            let imageGalleryComponent = onExpandedRowRender(record);
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    marginBottom:
+                                      bodyAccessoriesArray && bodyAccessoriesArray.length > 0 ? '2rem' : 'none',
+                                  }}
+                                >
+                                  {bodyAccessoriesCards}
+                                </div>
+                                {imageGalleryComponent}
+                              </>
+                            );
+                          },
+                        }}
+                        columns={convertHeader(bodyColumns, setBodyColumns)}
+                        pagination={false}
+                      />
+                    </section>
+                  </>
+                ) : (
+                  <div className="padding_t-5">
+                    <Loading />
+                  </div>
+                )}
+              </section>
+            </div>
+          </CustomContainer>
+        </LayoutComponent>
+      </Layout>
     </>
   );
 };
 interface StateProps {
   loading?: boolean;
+  errorMessage?: string | null;
   successMessage?: string | null;
   bodiesArray?: TReceivedBodyObj[] | null;
   lengthsArray?: TReceivedLengthObj[] | null;
-  accessoriesArray?: TReceivedAccessoryObj[] | null;
-  bodyLengthsArray?: TReceivedBodyLengthObj[] | null;
   bodyAccessoriesArray?: TReceivedBodyAccessoryObj[] | null;
+  bodyAssociatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
 }
-const mapStateToProps = (state: TMapStateToProps): StateProps | void => {
+
+const mapStateToProps = (state: RootState): StateProps | void => {
   return {
-    loading: state.sales.loading,
-    bodiesArray: state.sales.bodiesArray,
-    lengthsArray: state.sales.lengthsArray,
-    successMessage: state.sales.successMessage,
-    accessoriesArray: state.sales.accessoriesArray,
-    bodyLengthsArray: state.sales.bodyLengthsArray,
-    bodyAccessoriesArray: state.sales.bodyAccessoriesArray,
+    loading: state.dashboard.loading,
+    bodiesArray: state.dashboard.bodiesArray,
+    lengthsArray: state.dashboard.lengthsArray,
+    errorMessage: state.dashboard.errorMessage,
+    successMessage: state.dashboard.successMessage,
+    bodyAccessoriesArray: state.dashboard.bodyAccessoriesArray,
+    bodyAssociatedAccessoriesArray: state.dashboard.bodyAssociatedAccessoriesArray,
   };
 };
 interface DispatchProps {
@@ -1578,41 +1426,52 @@ interface DispatchProps {
   onGetBodies: typeof actions.getBodies;
   onCreateBody: typeof actions.createBody;
   onUpdateBody: typeof actions.updateBody;
+  onDeleteBody: typeof actions.deleteBody;
   // Length
   onGetLengths: typeof actions.getLengths;
   onCreateLength: typeof actions.createLength;
   onUpdateLength: typeof actions.updateLength;
-  // Body Length
-  onGetBodyLengths: typeof actions.getBodyLengths;
-  onCreateBodyLength: typeof actions.createBodyLength;
-  onUpdateBodyLength: typeof actions.updateBodyLength;
+  onDeleteLength: typeof actions.deleteLength;
   // Body Accessory
   onGetBodyAccessories: typeof actions.getBodyAccessories;
   onCreateBodyAccessory: typeof actions.createBodyAccessory;
-  onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
-  // Accessory
-  onGetAccessories: typeof actions.getAccessories;
+  // onUpdateBodyAccessory: typeof actions.updateBodyAccessory;
+  onDeleteBodyAccessory: typeof actions.deleteBodyAccessory;
+  onGetBodyAssociatedAccessories: typeof actions.getBodyAssociatedAccessories;
+  onClearBodyAccessoryArray: typeof actions.clearBodyAccessoryArray;
+  // Images
+  onDeleteUploadImage: typeof actions.deleteUploadImage;
+  // Miscellaneous
+  onClearDashboardState: typeof actions.clearDashboardState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     // Body
     onGetBodies: () => dispatch(actions.getBodies()),
-    onCreateBody: (title, description) => dispatch(actions.createBody(title, description)),
-    onUpdateBody: (id, title, description) => dispatch(actions.updateBody(id, title, description)),
+    onCreateBody: (title, description, imageTag, imageFiles) =>
+      dispatch(actions.createBody(title, description, imageTag, imageFiles)),
+    onUpdateBody: (id, title, description, imageTag, imageFiles) =>
+      dispatch(actions.updateBody(id, title, description, imageTag, imageFiles)),
+    onDeleteBody: (body_id) => dispatch(actions.deleteBody(body_id)),
     // Length
     onGetLengths: () => dispatch(actions.getLengths()),
     onCreateLength: (title, description) => dispatch(actions.createLength(title, description)),
     onUpdateLength: (id, title, description) => dispatch(actions.updateLength(id, title, description)),
-    // Body Length
-    onGetBodyLengths: () => dispatch(actions.getBodyLengths()),
-    onCreateBodyLength: (createBodyLengthData) => dispatch(actions.createBodyLength(createBodyLengthData)),
-    onUpdateBodyLength: (updateBodyLengthData) => dispatch(actions.updateBodyLength(updateBodyLengthData)),
-    // Body Length
-    onGetBodyAccessories: () => dispatch(actions.getBodyAccessories()),
-    onCreateBodyAccessory: (createBodyAccessoryData) => dispatch(actions.createBodyAccessory(createBodyAccessoryData)),
-    onUpdateBodyAccessory: (updateBodyAccessoryData) => dispatch(actions.updateBodyAccessory(updateBodyAccessoryData)),
-    // Accessory
-    onGetAccessories: () => dispatch(actions.getAccessories()),
+    onDeleteLength: (length_id) => dispatch(actions.deleteLength(length_id)),
+    // Body Accessory
+    onGetBodyAccessories: (body_id) => dispatch(actions.getBodyAccessories(body_id)),
+    onCreateBodyAccessory: (body_id, accessory_id) => dispatch(actions.createBodyAccessory(body_id, accessory_id)),
+    // onUpdateBodyAccessory: (body_id, accessory_id, imageTag, imageFiles) =>
+    //   dispatch(actions.updateBodyAccessory(body_id, accessory_id, imageTag, imageFiles)),
+    onDeleteBodyAccessory: (body_id, body_accessory_id) =>
+      dispatch(actions.deleteBodyAccessory(body_id, body_accessory_id)),
+    onGetBodyAssociatedAccessories: () => dispatch(actions.getBodyAssociatedAccessories()),
+    onClearBodyAccessoryArray: () => dispatch(actions.clearBodyAccessoryArray()),
+
+    // Image
+    onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
+    // Miscellaneous
+    onClearDashboardState: () => dispatch(actions.clearDashboardState()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Body);

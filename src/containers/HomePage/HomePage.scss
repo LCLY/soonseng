@@ -1,0 +1,773 @@
+.homepage {
+  /* ======================================= */
+  // Main sections in homepage
+  /* ======================================= */
+  &__section {
+    /* -------------------------- */
+    /* first section */
+    /* -------------------------- */
+    &-first {
+      display: flex;
+      overflow-x: hidden;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.562);
+      width: 100%;
+      min-height: 100vh;
+      // min-height: calc(100vh - 106.88px); //100vh - navbar height
+      height: auto;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      @include respond-to($small-phone) {
+        // height: calc(100vh - 5.6rem);
+        min-height: calc(100vh - 5.6rem);
+      }
+      @include respond-to($phone-only) {
+        min-height: calc(100vh - 5.6rem);
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        min-height: calc(100vh - 10vh);
+        // height: auto;
+        padding: 0 5rem 5rem 5rem;
+      }
+
+      &-parent {
+        min-height: 100vh;
+        position: relative;
+
+        @include respond-to($small-phone) {
+          min-height: calc(100vh - 5.6rem);
+        }
+        @include respond-to($phone-only) {
+          min-height: calc(100vh - 5.6rem);
+        }
+        @include respond-to($tablet-portrait-up) {
+          min-height: calc(100vh - 10vh);
+        }
+      }
+    }
+
+    /* ----------------------- */
+    /* values section */
+    /* ----------------------- */
+    &-values {
+      // justify-content: space-between;
+      overflow-x: hidden;
+
+      @include respond-to($small-phone) {
+        padding: 5rem 1rem;
+      }
+      @include respond-to(phone-only) {
+        padding: 5rem 1rem;
+      }
+
+      @include respond-to(tablet-portrait-up) {
+        padding: 5rem 1rem;
+      }
+      @include respond-to(tablet-landscape-up) {
+        padding: 12rem 0;
+      }
+
+      // our values
+      &-title {
+        font-size: 4rem;
+        text-align: center;
+        color: $primary-color-4;
+        font-weight: bolder;
+        font-family: $font-bebasneue;
+        margin-bottom: 1rem;
+      }
+    }
+
+    /* ----------------------- */
+    // Third section
+    /* ----------------------- */
+    &-third {
+      display: flex;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 5rem;
+      flex-direction: column;
+    }
+  }
+
+  /*================================= */
+  // The first
+  /*================================= */
+  &__first {
+    &-title {
+      /* =============================== */
+      // Biggest title of the page
+      /* =============================== */
+      font-family: $font-bebasneue;
+      color: white;
+      @include respond-to($small-phone) {
+        font-size: 4rem;
+        text-align: center;
+      }
+      @include respond-to($phone-only) {
+        font-size: 6rem;
+        text-align: center;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        font-size: 6rem;
+        text-align: left;
+        margin-bottom: 2rem;
+      }
+
+      @include respond-to($desktop-up) {
+        font-size: 8rem;
+        text-align: left;
+        margin-bottom: 2rem;
+      }
+
+      &-div {
+        overflow: hidden;
+        margin-bottom: 4rem;
+        transform: translateY(-2rem);
+        @include respond-to($small-phone) {
+          padding-top: 0rem;
+          transform: none;
+          width: auto;
+        }
+        @include respond-to($phone-only) {
+          padding-top: 0rem;
+          transform: none;
+          width: auto;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 50rem;
+          padding: 1rem;
+        }
+      }
+    }
+
+    /* the buttons in first section*/
+    &-button {
+      background: transparent !important;
+      color: white !important;
+      opacity: 0;
+      transform: translateX(-100%);
+
+      @include respond-to($small-phone) {
+        margin-right: 0;
+        font-size: 1.2rem !important;
+        width: 15rem !important;
+        height: 4rem !important;
+      }
+      @include respond-to($phone-only) {
+        margin-right: 0;
+        font-size: 1.5rem !important;
+        width: 15rem !important;
+        height: 4rem !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-left: 3rem;
+        font-size: 1.5rem !important;
+        width: 15rem !important;
+        height: 5rem !important;
+      }
+
+      @include respond-to($desktop-up) {
+        margin-right: 3rem;
+        font-size: 2rem !important;
+        width: 20rem !important;
+        height: 5rem !important;
+      }
+
+      &:hover {
+        background: $primary-color-3 !important;
+        border: 1px solid white !important;
+        // trigger animation when button is hovered
+        & + .homepage__first-button-description {
+          animation: flipInY; /* referring directly to the animation's @keyframe declaration */
+          opacity: 1;
+          animation-duration: 0.5s; /* don't forget to set a duration! */
+        }
+      }
+      &:focus {
+        @include respond-to($small-phone) {
+          background: $primary-color-3 !important;
+        }
+        @include respond-to($phone-only) {
+          background: $primary-color-3 !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          background: rgba($primary-color-3, 0.3) !important;
+          border: 1px solid white !important;
+        }
+      }
+      & a {
+        text-decoration: none !important;
+      }
+
+      // most outerdiv wrapping all buttons
+      &-outerdiv {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      // individual div wrapping each button
+      &-div {
+        display: flex;
+        align-items: center;
+
+        @include respond-to($small-phone) {
+          flex-direction: column;
+          justify-content: center;
+          width: 100%;
+          text-align: center;
+
+          &:not(:last-child) {
+            margin-bottom: 0.5rem;
+          }
+        }
+        @include respond-to($phone-only) {
+          flex-direction: column;
+          justify-content: center;
+          text-align: center;
+          width: 100%;
+
+          &:not(:last-child) {
+            margin-bottom: 0.5rem;
+          }
+        }
+        @include respond-to($tablet-portrait-up) {
+          flex-direction: row;
+          width: auto;
+          &:not(:last-child) {
+            margin-bottom: 2rem;
+          }
+        }
+      }
+
+      // the description of the function of the button
+      &-description {
+        color: white;
+        opacity: 0;
+        @include respond-to($small-phone) {
+          font-size: 1rem;
+          padding-top: 0.5rem;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1rem;
+          padding-top: 0.5rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.5rem;
+          padding-top: 0;
+          margin-left: 1rem;
+        }
+      }
+    }
+
+    /* -------------------------------- */
+    // the shape underneath the title
+    /* -------------------------------- */
+    &-parallelogram {
+      // height: 2rem;
+      opacity: 0;
+      transform: skew(-30deg) translateX(-100%);
+      border-top: 2px solid white;
+      background: $primary-color-1;
+      color: white;
+      font-family: $font-firesans;
+      @include respond-to($small-phone) {
+        width: 23rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      @include respond-to($phone-only) {
+        width: 30rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 70%;
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      @include respond-to($desktop-up) {
+        width: 90%;
+      }
+
+      &-text {
+        color: rgb(190, 190, 190);
+        transform: skew(30deg);
+        // font-weight: bolder;
+
+        @include respond-to($small-phone) {
+          font-size: 1rem;
+        }
+
+        @include respond-to($phone-only) {
+          font-size: 1.3rem;
+        }
+
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.5rem;
+        }
+      }
+    }
+  }
+
+  /* ================================== */
+  // Our values
+  /* ================================== */
+  &__values {
+    /* ------------------------------------ */
+    // The div of each of the values
+    /* ------------------------------------ */
+    &-div {
+      display: flex;
+      align-items: center;
+
+      @include respond-to($small-phone) {
+        margin-right: 0;
+      }
+      @include respond-to(phone-only) {
+        margin-right: 0;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-right: 2rem;
+      }
+    }
+
+    &-top {
+      display: flex;
+      justify-content: center;
+
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
+      @include respond-to($phone-only) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+      }
+    }
+    /* ------------------------------------------- */
+    // The bottom part of values
+    /* ------------------------------------------- */
+    &-bottom {
+      display: flex;
+      justify-content: center;
+      padding: 0 10%;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        padding: 0;
+      }
+      @include respond-to($phone-only) {
+        flex-direction: column;
+        padding: 0;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: column;
+        padding: 0;
+      }
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+        padding: 0 10%;
+      }
+    }
+
+    /* ------------------------------------------------------------------------------------- */
+    // outerdiv wrapping each of the values div together with the scrollanimation component
+    /* ------------------------------------------------------------------------------------- */
+    &-outerdiv {
+      padding: 2rem 0;
+      width: 33.33%;
+      &:not(:last-child) {
+        @include respond-to($small-phone) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+        @include respond-to($phone-only) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+        @include respond-to($tablet-portrait-up) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+        @include respond-to($tablet-landscape-up) {
+          border-bottom: none;
+          // width: 33.33%;
+        }
+      }
+      // border bottom wont work on efficiency row using lastchild
+      &--efficiency {
+        @include respond-to($small-phone) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+        @include respond-to($phone-only) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+        @include respond-to($tablet-portrait-up) {
+          border-bottom: 1px solid $translucent-grey;
+          width: 100%;
+        }
+        @include respond-to($tablet-landscape-up) {
+          border-bottom: none;
+          width: 100%;
+        }
+      }
+
+      // only change the width of the bottom feature outerdivs
+      &--bottom {
+        @include respond-to($small-phone) {
+          width: 100%;
+        }
+        @include respond-to(phone-only) {
+          width: 100%;
+        }
+        @include respond-to(tablet-portrait-up) {
+          width: 100%;
+        }
+
+        &:not(:last-child) {
+          @include respond-to($small-phone) {
+            border-bottom: 1px solid $translucent-grey;
+          }
+          @include respond-to(phone-only) {
+            border-bottom: 1px solid $translucent-grey;
+          }
+          @include respond-to(tablet-portrait-up) {
+            border-bottom: 1px solid $translucent-grey;
+          }
+          @include respond-to(tablet-landscape-up) {
+            border: none;
+          }
+        }
+      }
+    }
+
+    /* ------------------------------------ */
+    // The icon within those values div
+    /* ------------------------------------ */
+    &-icon {
+      font-size: 5rem;
+      color: $primary-color-3;
+      // the div of the icons
+      &-div {
+        width: 8rem;
+        text-align: center;
+        margin-right: 3rem;
+
+        & .fa-truck-moving {
+          cursor: pointer;
+        }
+        &:hover {
+          & .fa-truck-moving {
+            &:hover {
+              color: $primary-color-1;
+            }
+            &:active {
+              color: $primary-color-4;
+            }
+          }
+        }
+
+        @include respond-to($small-phone) {
+          width: 35%;
+          margin-right: 0;
+        }
+        @include respond-to(phone-only) {
+          width: 35%;
+          margin-right: 0;
+        }
+        @include respond-to(tablet-landscape-up) {
+          width: 35%;
+          margin-right: 0;
+        }
+        @include respond-to(medium) {
+          width: 35%;
+          margin-right: 0;
+        }
+      }
+    }
+
+    /* ------------------------------ */
+    // the div for the text containing title and desc
+    /* ------------------------------ */
+    &-text {
+      @include respond-to($small-phone) {
+        width: 65%;
+      }
+      @include respond-to(phone-only) {
+        width: 65%;
+      }
+      @include respond-to(tablet-landscape-up) {
+        width: 65%;
+      }
+    }
+
+    /* ------------------------------------ */
+    // The title within those values div
+    /* ------------------------------------ */
+    &-title {
+      font-weight: bolder;
+      font-family: $font-ubuntu;
+
+      @include respond-to($small-phone) {
+        font-size: 1.4rem;
+      }
+      @include respond-to(phone-only) {
+        font-size: 1.4rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.8rem;
+      }
+    }
+
+    &-desc {
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
+      @include respond-to(phone-only) {
+        font-size: 1.2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  /* ======================== */
+  // Each carousel in section 2
+  /* ======================== */
+  &__carousel {
+    &-outerdiv {
+      overflow-x: hidden;
+      background: $primary-color-4;
+      & .ant-carousel .slick-dots li {
+        width: 5rem !important;
+      }
+      & .ant-carousel .slick-dots li button {
+        height: 0.8rem !important;
+        border-radius: 1rem;
+      }
+
+      @include respond-to($small-phone) {
+        padding: 2rem;
+      }
+      @include respond-to(phone-only) {
+        padding: 2rem;
+      }
+      @include respond-to(tablet-portrait-up) {
+        padding: 3rem 2rem 5rem 2rem;
+      }
+      @include respond-to(tablet-landscape-up) {
+        padding: 6rem 2rem 4rem 2rem;
+      }
+
+      // pushing the carousel white dots down
+      & .slick-list {
+        @include respond-to($small-phone) {
+          padding-bottom: 0 !important;
+        }
+        @include respond-to(phone-only) {
+          padding-bottom: 0 !important;
+        }
+        @include respond-to(tablet-portrait-up) {
+          padding-bottom: 5% !important;
+        }
+        @include respond-to(tablet-landscape-up) {
+          padding-bottom: 10% !important;
+        }
+        @include respond-to(desktop-up) {
+          padding-bottom: 0 !important;
+        }
+      }
+    }
+    &-div {
+      display: flex !important;
+
+      background: $primary-color-4;
+      color: white;
+      overflow: hidden;
+      backface-visibility: hidden;
+
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        height: auto;
+      }
+      @include respond-to(phone-only) {
+        flex-direction: column;
+        height: auto;
+      }
+      @include respond-to(tablet-portrait-up) {
+        flex-direction: column;
+        height: auto;
+      }
+      @include respond-to(tablet-landscape-up) {
+        flex-direction: row;
+        height: 40rem;
+      }
+      @include respond-to(desktop-up) {
+        flex-direction: row;
+        height: 50rem;
+        padding-bottom: 10rem;
+      }
+      /* ----------------------- */
+      // Left column
+      /* ----------------------- */
+      &-left {
+        width: 49%;
+        padding-right: 3%;
+        height: 100%;
+
+        @include respond-to($small-phone) {
+          width: 100%;
+          padding: 0;
+        }
+
+        @include respond-to(phone-only) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet-portrait-up) {
+          width: 100%;
+          padding-right: 3%;
+        }
+        @include respond-to(tablet-landscape-up) {
+          width: 49%;
+          padding-right: 3%;
+        }
+      }
+      /* -------------------------- */
+      // right Column
+      /* -------------------------- */
+      &-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @include respond-to($small-phone) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(phone-only) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet-portrait-up) {
+          width: 100%;
+          padding: 0;
+        }
+        @include respond-to(tablet-landscape-up) {
+          width: 50%;
+          padding: 0;
+        }
+        @include respond-to(desktop-up) {
+          width: 50%;
+          height: 100%;
+          padding: 0;
+          padding-bottom: 2rem;
+          padding-left: 2rem;
+        }
+      }
+    }
+
+    /* ------------------- */
+    // The text 'Our Team'
+    /* ------------------- */
+    &-ourteam {
+      font-size: 4rem;
+      color: white;
+      text-align: center;
+      font-family: $font-courgette;
+      @include respond-to($small-phone) {
+        font-size: 3rem;
+        text-align: center;
+      }
+      // @include respond-to(phone-only) {
+      //   font-size: 3rem;
+      //   text-align: center;
+      // }
+    }
+
+    &-title {
+      font-size: 2rem;
+      font-family: $font-roboto;
+      display: inline-block;
+      padding-left: 0.5rem;
+      margin: 2rem 0;
+      @include respond-to($small-phone) {
+        font-size: 1.5rem;
+        text-align: center;
+      }
+    }
+
+    &-parallelogram {
+      width: 100%;
+      height: 0.6rem;
+      opacity: 1;
+      transform: skew(-30deg);
+      border-top: 2px solid white;
+      background: $primary-color-1;
+    }
+
+    // the italic text
+    &-italic {
+      font-style: italic;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      font-family: $font-firesans;
+      color: rgb(209, 202, 202);
+      @include respond-to($small-phone) {
+        font-size: 1.3rem;
+      }
+    }
+
+    &-content {
+      &-paragraph {
+        font-family: $font-ubuntu;
+        margin-bottom: 2rem;
+        @include respond-to($small-phone) {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    // the image
+    &-image {
+      object-fit: cover;
+      width: 100%;
+
+      @include respond-to($small-phone) {
+        height: 20rem;
+        width: 100%;
+      }
+      @include respond-to(phone-only) {
+        height: 20rem;
+        width: 100%;
+      }
+      @include respond-to(tablet-portrait-up) {
+        height: 40rem;
+        width: 100%;
+      }
+      @include respond-to(tablet-landscape-up) {
+        width: 100%;
+        height: 100%;
+        margin-top: 10rem;
+      }
+    }
+  }
+}
