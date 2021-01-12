@@ -75,14 +75,23 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
       <Modal
         title="Setting Discount"
         visible={showDiscountModal}
+        onCancel={() => {
+          setShowDiscountInput(false);
+          setShowDiscountModal(false);
+        }}
         footer={[
-          <Button key="cancel" onClick={() => setShowDiscountModal(false)}>
+          <Button
+            key={uuidv4()}
+            onClick={() => {
+              setShowDiscountInput(false);
+              setShowDiscountModal(false);
+            }}
+          >
             Cancel
           </Button>,
-          <>
+          <React.Fragment key={uuidv4()}>
             {showDiscountInput ? null : (
               <Button
-                key="proceed without discount"
                 onClick={() => {
                   if (clickedOrder && clickedOrder.bodyMakeObj) {
                     const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
@@ -95,14 +104,13 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                   }
                 }}
               >
-                No, Proceed to Quotation
+                No<span className="mobilehide-inline-block">&nbsp;, Proceed To Quotation</span>
               </Button>
             )}
-          </>,
-          <>
+          </React.Fragment>,
+          <React.Fragment key={uuidv4()}>
             {showDiscountInput ? (
               <Button
-                key="proceed to generate quotation"
                 type="primary"
                 onClick={() => {
                   discountForm.submit();
@@ -111,11 +119,11 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                 Generate Quotation
               </Button>
             ) : (
-              <Button key="proceed to set discount" type="primary" onClick={() => setShowDiscountInput(true)}>
+              <Button type="primary" onClick={() => setShowDiscountInput(true)}>
                 Yes
               </Button>
             )}
-          </>,
+          </React.Fragment>,
         ]}
       >
         {showDiscountInput ? (
@@ -136,7 +144,6 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               }
             }}
           >
-            {/* The rest of the form items */}
             <Form.Item
               className="make__form-item"
               label="Discount"
@@ -510,9 +517,9 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                                 }
                                 key="specs"
                               >
-                                <div key={uuidv4()} className="sales__overview-panel-specs-div">
+                                <div className="sales__overview-panel-specs-div">
                                   <div className="sales__overview-panel-specs-innerdiv">
-                                    <div key={uuidv4()} className="sales__overview-panel-specs-column">
+                                    <div className="sales__overview-panel-specs-column">
                                       {bodyMakeDetailRowArray.slice(0, 6).map((bodyMake) => (
                                         <div key={uuidv4()} className="sales__overview-panel-specs-row">
                                           <span className="sales__overview-panel-specs-title">{bodyMake.title}</span>

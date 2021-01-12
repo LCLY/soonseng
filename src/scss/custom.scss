@@ -214,17 +214,17 @@ svg {
 
 .mobilehide-inline-block {
   @include respond-to($small-phone) {
-    display: none;
+    display: none !important;
   }
   @include respond-to($phone-only) {
-    display: inline-block;
+    display: inline-block !important;
   }
 }
 .mobilehide-block {
   @include respond-to($small-phone) {
-    display: none;
+    display: none !important;
   }
   @include respond-to($phone-only) {
-    display: block;
+    display: block !important;
   }
 }
