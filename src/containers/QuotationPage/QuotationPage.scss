@@ -332,11 +332,15 @@
   &__orderedlist {
     margin-left: 2rem;
     margin-bottom: 0.5rem;
+
     @include respond-to($small-phone) {
       margin-left: 1rem;
       margin-bottom: 0.5rem;
     }
     & li {
+      &:hover {
+        background: rgba($primary-color-4, 0.1);
+      }
       &:not(:last-child) {
         margin-bottom: 0.5rem;
       }
@@ -388,6 +392,9 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 0.5rem;
+      &:hover {
+        background: rgba($primary-color-4, 0.1);
+      }
     }
 
     &-text {
@@ -424,6 +431,9 @@
       font-weight: bolder;
       display: flex;
       justify-content: space-between;
+      &:hover {
+        background: rgba($primary-color-4, 0.1);
+      }
 
       /* --------------- */
       // discount variation
@@ -433,6 +443,9 @@
         align-items: center;
         font-weight: bolder;
         justify-content: space-between;
+        &:hover {
+          background: rgba($primary-color-4, 0.1);
+        }
       }
     }
 
