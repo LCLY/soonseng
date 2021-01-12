@@ -1419,6 +1419,10 @@
 
     &-dash {
       padding-right: 2rem;
+
+      @include respond-to($small-phone) {
+        padding-right: 1rem;
+      }
     }
   }
 
