@@ -821,7 +821,7 @@ const Accessory: React.FC<Props> = ({
       />
 
       <Layout>
-        <NavbarComponent activePage="dashboard" />
+        <NavbarComponent activePage="accessory" defaultOpenKeys="dashboard" />
         <LayoutComponent activeKey="accessory">
           <CustomContainer>
             <div className="accessory__tab-outerdiv">

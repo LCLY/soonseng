@@ -1376,7 +1376,7 @@ const CatalogBodyMake: React.FC<Props> = ({
           <Skeleton active />
         )}
       </Modal>
-      <NavbarComponent />
+      <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
       <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
         <div className="catalog__outerdiv">
           <div className="catalog__div">

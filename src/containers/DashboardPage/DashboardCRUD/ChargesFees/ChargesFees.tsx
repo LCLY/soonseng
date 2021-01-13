@@ -286,7 +286,7 @@ const ChargesFees: React.FC<Props> = ({
         backupWarningText={'this standard charges / fees'}
       />
       <Layout>
-        <NavbarComponent activePage="dashboard" />
+        <NavbarComponent activePage="fees" defaultOpenKeys="dashboard" />
         <LayoutComponent activeKey="accessory">
           <CustomContainer>
             <div className="make__tab-outerdiv">

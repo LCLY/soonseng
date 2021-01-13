@@ -1370,7 +1370,7 @@ const BodyMake: React.FC<Props> = ({
       {deleteBodyMakeAccessoryModal}
 
       <Layout style={{ overflow: 'hidden' }}>
-        <NavbarComponent activePage="dashboard" />
+        <NavbarComponent activePage="bodymake" defaultOpenKeys="dashboard" />
         <LayoutComponent>
           <CustomContainer>
             <div className="body__tab-outerdiv">

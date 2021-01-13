@@ -1302,7 +1302,7 @@ const Body: React.FC<Props> = ({
       {deleteBodyAccessoryModal}
 
       <Layout>
-        <NavbarComponent activePage="dashboard" />
+        <NavbarComponent activePage="body" defaultOpenKeys="dashboard" />
         <LayoutComponent activeKey="body">
           <CustomContainer>
             <div className="body__tab-outerdiv">

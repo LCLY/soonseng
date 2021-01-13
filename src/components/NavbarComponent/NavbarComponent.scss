@@ -44,6 +44,7 @@
     object-fit: cover;
     @include respond-to($small-phone) {
       width: 20vw;
+      margin-right: 0 !important;
     }
     @include respond-to(phone-only) {
       width: 20vw;
@@ -93,6 +94,7 @@
 
   &__link {
     // the link itself
+    text-decoration: none !important;
     color: rgba(white, 0.5);
     cursor: pointer;
     &:hover {
@@ -146,15 +148,16 @@
 
   &__left {
     &-div {
-      display: flex;
+      // hide the nav items on desktop below
       @include respond-to($small-phone) {
-        flex-direction: column;
+        display: none;
       }
-      @include respond-to(phone-only) {
-        flex-direction: column;
+      @include respond-to($phone-only) {
+        display: none;
       }
-      @include respond-to($tablet-portrait-up) {
-        flex-direction: row;
+
+      @include respond-to($desktop-up) {
+        display: flex;
       }
     }
   }
@@ -165,20 +168,24 @@
 
   &__right {
     &-div {
+      margin-left: auto;
       display: flex;
       @include respond-to($small-phone) {
+        display: none;
         flex-direction: column;
         border-top: 1px solid $translucent-grey;
         margin-top: 1rem;
         padding-top: 1rem;
       }
       @include respond-to(phone-only) {
+        display: none;
         flex-direction: column;
         border-top: 1px solid $translucent-grey;
         margin-top: 1rem;
         padding-top: 1rem;
       }
       @include respond-to($tablet-portrait-up) {
+        display: flex;
         flex-direction: row;
         border-top: none;
         margin-top: 0;
@@ -197,6 +204,172 @@
       border: 1px solid white;
       border-radius: 0.5rem;
       margin-right: 1rem;
+    }
+  }
+
+  /* ====================== */
+  // the 3 line bars/ hamburger icon
+  /* ====================== */
+  &__bars {
+    // hide bars icon on desktop screen
+    // ICON
+    &-icon {
+      position: relative;
+      cursor: pointer;
+      color: $primary-color-4;
+
+      // creating siblings bar
+      &,
+      &::before,
+      &::after {
+        display: inline-block;
+        width: 2.5rem;
+        height: 2.5px;
+        border-radius: 1px;
+        background-color: $primary-color-4;
+      }
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        transition: all 0.2s;
+      }
+
+      &::before {
+        top: -0.8rem;
+      }
+      &::after {
+        top: 0.8rem;
+      }
+    }
+
+    &-div {
+      display: none;
+      padding: 1.7rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: $navbar;
+      background: white !important;
+
+      &:hover {
+        transition: all 0.3s ease;
+        background: $secondary-color-1;
+      }
+      &:active {
+        transition: none;
+        background: $primary-color-2;
+      }
+      align-items: center;
+
+      @include respond-to($small-phone) {
+        display: flex;
+        align-items: center;
+      }
+      @include respond-to($phone-only) {
+        display: flex;
+        align-items: center;
+      }
+      @include respond-to($desktop-up) {
+        display: none;
+      }
+    }
+
+    &-checkbox {
+      display: none;
+      & ~ label {
+        margin: 0;
+      }
+    }
+    // when the button is checked, find the span icon and make it transparent
+    &-checkbox:checked + &-button &-icon {
+      background-color: transparent;
+    }
+
+    &-checkbox:checked + &-button &-icon::before {
+      top: 0;
+      transform: rotate(135deg);
+    }
+    &-checkbox:checked + &-button &-icon::after {
+      top: 0;
+      transform: rotate(-135deg);
+    }
+  }
+
+  &__mobilesidebar {
+    position: fixed;
+    z-index: 101;
+    display: block;
+    height: 100vh;
+    background: rgba($primary-color-4, 0.4);
+    // border-right: 2px solid white;
+
+    &-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: $primary-color-4 !important;
+      border-bottom: 1px solid $primary-color-4 !important;
+      padding: 1rem 5rem !important;
+    }
+
+    &-bottom {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    &-sider {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100% !important;
+      // & li {
+      //   color: white !important;
+      //   background-color: $primary-color-4 !important;
+      //   margin: 0 !important;
+      // }
+      // & .ant-layout-sider-children {
+      //   transition: all 0.5s ease !important;
+      // }
+
+      // & .ant-menu-submenu-title {
+      //   margin: 0 !important;
+      //   color: white !important;
+      // }
+
+      // & .ant-menu-submenu-arrow {
+      //   color: white !important;
+      // }
+      // & .ant-menu-submenu-open {
+      //   border: none !important;
+      // }
+
+      // & .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+      //   background: rgba(245, 245, 245, 0.07) !important;
+      //   color: $primary-color-4 !important;
+      //   z-index: 2;
+      // }
+
+      // & .ant-menu-sub {
+      //   & li {
+      //     & a {
+      //       color: white !important;
+      //     }
+      //     background: $primary-color-2 !important;
+      //   }
+      // }
+    }
+
+    &-link {
+      text-decoration: none !important;
+      &-div {
+        background: white;
+        color: $primary-color-4 !important;
+        & a {
+          color: $primary-color-4 !important;
+          text-decoration: none !important;
+        }
+      }
     }
   }
 }

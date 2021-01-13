@@ -2108,7 +2108,7 @@ const Make: React.FC<Props> = ({
       {deleteBrandModal}
 
       <Layout>
-        <NavbarComponent activePage="dashboard" />
+        <NavbarComponent activePage="make" defaultOpenKeys="dashboard" />
         <LayoutComponent activeKey="make">
           <CustomContainer>
             <div className="make__tab-outerdiv">
