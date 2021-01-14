@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import './NavbarComponent.scss';
 // components
 // 3rd party lib
-import { Dropdown, Menu } from 'antd';
+import { Badge, Dropdown, Menu } from 'antd';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { Navbar, Nav } from 'react-bootstrap';
@@ -27,6 +27,7 @@ import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 import Backdrop from '../Backdrop/Backdrop';
 import Sider from 'antd/lib/layout/Sider';
+import { TLocalOrderObj } from 'src/store/types/sales';
 
 /**
  * Hook that alerts clicks outside of the passed ref
@@ -100,6 +101,7 @@ const NavbarComponent: React.FC<Props> = ({
   onGetUserInfo,
   authenticated,
   defaultOpenKeys,
+  localOrdersArray,
 }) => {
   /* ======================================= */
   // state
@@ -291,13 +293,16 @@ const NavbarComponent: React.FC<Props> = ({
                 )}
               </Menu.Item>
 
-              <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
-                <a className={`navbar__link`} href={ROUTE_ORDERS}>
-                  Orders
-                </a>
-              </Menu.Item>
+              {/* <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
+                  <a className={`navbar__link`} href={ROUTE_ORDERS}>
+                    Orders
+                  </a>
+              </Menu.Item> */}
             </Menu>
           </Sider>
+        </div>
+        <div className="navbar__mobilesidebar-admin">
+          {userInfoObj && <div className="">{userInfoObj?.roles.title}</div>}
         </div>
       </div>
     </>
@@ -329,24 +334,33 @@ const NavbarComponent: React.FC<Props> = ({
               src={SoonSengLogo}
             />
           </Navbar.Brand>
-          <input
-            type="checkbox"
-            id="header__toggle"
-            checked={showMobileSidebar}
-            className="navbar__bars-checkbox"
-            readOnly
-          />
-          <label
-            htmlFor="header__toggle"
-            className="navbar__bars-button navbar__bars-div"
-            onClick={() => {
-              setShowMobileSidebar(!showMobileSidebar);
-            }}
-          >
-            <div className="navbar__bars-icon">&nbsp;</div>
-          </label>
+          <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
+            {localOrdersArray !== undefined && (
+              <Badge count={localOrdersArray.length} showZero size="small" className="navbar__icon-cart--mobile">
+                <a className={`navbar__link`} href={ROUTE_ORDERS}>
+                  <ShoppingCartOutlined className="navbar__icon-cart" />
+                </a>
+              </Badge>
+            )}
+            <input
+              type="checkbox"
+              id="header__toggle"
+              checked={showMobileSidebar}
+              className="navbar__bars-checkbox"
+              readOnly
+            />
+            <label
+              htmlFor="header__toggle"
+              className="navbar__bars-button navbar__bars-div"
+              onClick={() => {
+                setShowMobileSidebar(!showMobileSidebar);
+              }}
+            >
+              <div className="navbar__bars-icon">&nbsp;</div>
+            </label>
+          </div>
 
-          <Nav className="mr-auto navbar__wrapper">
+          <Nav className="navbar__wrapper">
             <div className="navbar__left-div">
               <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_HOME}>
@@ -391,7 +405,7 @@ const NavbarComponent: React.FC<Props> = ({
             </div>
             <div className="navbar__right-div">
               {/* only show if user info exist or not a normal user */}
-              {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>}
+              {/* {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>} */}
               <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
                 <div className={`navbar__link`}>
                   {authenticated && userInfoObj ? (
@@ -409,11 +423,15 @@ const NavbarComponent: React.FC<Props> = ({
                   )}
                 </div>
               </div>
+
               <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
-                <a className={`navbar__link`} href={ROUTE_ORDERS}>
-                  <ShoppingCartOutlined />
-                  &nbsp;Orders
-                </a>
+                {localOrdersArray !== undefined && (
+                  <Badge count={localOrdersArray.length} showZero size="small">
+                    <a className={`navbar__link`} href={ROUTE_ORDERS}>
+                      <ShoppingCartOutlined className="navbar__icon-cart" />
+                    </a>
+                  </Badge>
+                )}
               </div>
             </div>
           </Nav>
@@ -428,12 +446,14 @@ interface StateProps {
   authenticated?: boolean;
   accessObj?: TUserAccess;
   userInfoObj?: TReceivedUserInfoObj | null;
+  localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
     auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
+    localOrdersArray: state.sales.localOrdersArray,
     authenticated: state.auth.auth_token !== null,
   };
 };

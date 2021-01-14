@@ -180,24 +180,24 @@ $big-desktop-up: big-desktop-up;
 ) {
   // main background
   position: relative;
-  background: $frontLayerColor;
-  backdrop-filter: blur($blur);
-  -moz-backdrop-filter: blur($blur);
-  -webkit-backdrop-filter: blur($blur);
-  border-radius: $borderRadius;
-  transform: translateZ(0);
-  will-change: translate, backdrop-filter;
+  background: $frontLayerColor !important;
+  backdrop-filter: blur($blur) !important;
+  -moz-backdrop-filter: blur($blur) !important;
+  -webkit-backdrop-filter: blur($blur) !important;
+  border-radius: $borderRadius !important;
+  transform: translateZ(0) !important;
+  will-change: translate, backdrop-filter !important;
   // second layer behind the main background
   &:before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: $borderRadius;
-    background: $secondLayerColor;
+    content: '' !important;
+    position: absolute !important;
+    z-index: -1 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: $borderRadius !important;
+    background: $secondLayerColor !important;
   }
 }
 /* =============================================================== */

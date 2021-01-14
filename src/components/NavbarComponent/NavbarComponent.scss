@@ -7,7 +7,15 @@
     z-index: 1000;
 
     & .bg-primary {
-      background: rgba($primary-color-4, 1) !important;
+      // @include glassMorph(
+      //   $frontLayerColor: rgb(213, 213, 213),
+      //   $blur: 20px,
+      //   $secondLayerColor: rgba($primary-color-4, 0.356),
+      //   $borderRadius: 0
+      // );
+      // main background
+      // background: none !important;
+      background: $primary-color-4 !important;
     }
 
     // set style for all the a tag
@@ -17,20 +25,17 @@
   }
 
   &__div {
-    padding: 2rem 5rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
     @include respond-to($small-phone) {
       // min-height: 10vh;
-      padding: 2% 5rem !important;
+      padding: 2% 3rem !important;
     }
-    @include respond-to(phone-only) {
+    @include respond-to($phone-only) {
       // min-height: 10vh;
       padding: 2% 5rem !important;
     }
-    @include respond-to(tablet-portrait-up) {
-      // min-height: 10vh;
-      padding: 2rem 5rem !important;
-    }
-    @include respond-to(tablet-portrait-up) {
+    @include respond-to($tablet-portrait-up) {
       // min-height: 10vh;
       padding: 2rem 5rem !important;
     }
@@ -79,7 +84,6 @@
 
   &__wrapper {
     width: 100%;
-    display: flex;
     justify-content: space-between;
 
     & .active {
@@ -89,6 +93,16 @@
       & .navbar__link {
         color: white;
       }
+    }
+
+    @include respond-to($small-phone) {
+      display: none !important;
+    }
+    @include respond-to($phone-only) {
+      display: none !important;
+    }
+    @include respond-to($desktop-up) {
+      display: flex !important;
     }
   }
 
@@ -155,7 +169,6 @@
       @include respond-to($phone-only) {
         display: none;
       }
-
       @include respond-to($desktop-up) {
         display: flex;
       }
@@ -185,6 +198,13 @@
         padding-top: 1rem;
       }
       @include respond-to($tablet-portrait-up) {
+        display: none;
+        flex-direction: row;
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
+      }
+      @include respond-to($desktop-up) {
         display: flex;
         flex-direction: row;
         border-top: none;
@@ -246,7 +266,6 @@
     }
 
     &-div {
-      display: none;
       padding: 1.7rem 0.8rem;
       border-radius: 5px;
       cursor: pointer;
@@ -300,7 +319,8 @@
   &__mobilesidebar {
     position: fixed;
     z-index: 101;
-    display: block;
+    display: flex;
+    flex-direction: column;
     height: 100vh;
     background: rgba($primary-color-4, 0.4);
     // border-right: 2px solid white;
@@ -368,6 +388,33 @@
         & a {
           color: $primary-color-4 !important;
           text-decoration: none !important;
+        }
+      }
+    }
+
+    &-admin {
+      background: $primary-color-4;
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: auto;
+    }
+  }
+
+  &__icon {
+    &-cart {
+      font-size: 2.5rem;
+
+      &--mobile {
+        margin-right: 3rem !important;
+        @include respond-to($small-phone) {
+          display: block !important;
+        }
+        @include respond-to($phone-only) {
+          display: block !important;
+        }
+        @include respond-to($desktop-up) {
+          display: none !important;
         }
       }
     }
