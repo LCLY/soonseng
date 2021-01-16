@@ -4,7 +4,7 @@
     position: absolute;
     transition: all 0.5s ease;
     width: 100%;
-    z-index: 1000;
+    z-index: $navbar;
 
     & .bg-primary {
       @include glassMorph(rgba($primary-color-4, 0.342), 20px, rgba(255, 3, 3, 0.137), 0);
@@ -30,11 +30,11 @@
     justify-content: space-between !important;
     @include respond-to($small-phone) {
       // min-height: 10vh;
-      padding: 2% 1rem !important;
+      padding: 0.5rem 1rem !important;
     }
     @include respond-to($phone-only) {
       // min-height: 10vh;
-      padding: 2% 5rem !important;
+      padding: 0.5rem 5rem !important;
     }
     @include respond-to($tablet-portrait-up) {
       // min-height: 10vh;
@@ -119,10 +119,13 @@
     @include respond-to($small-phone) {
       font-size: 1.3rem !important;
     }
-    @include respond-to(phone-only) {
+    @include respond-to($phone-only) {
       font-size: 1.3rem !important;
     }
     @include respond-to($tablet-portrait-up) {
+      font-size: 1.5rem !important;
+    }
+    @include respond-to($desktop-up) {
       font-size: 1.8rem !important;
     }
     // div of the nav links
@@ -161,6 +164,18 @@
 
     &-link {
       text-decoration: none !important;
+      @include respond-to($small-phone) {
+        font-size: 1.3rem !important;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.3rem !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem !important;
+      }
+      @include respond-to($desktop-up) {
+        font-size: 1.8rem !important;
+      }
     }
   }
 
@@ -187,6 +202,7 @@
     &-div {
       margin-left: auto;
       display: flex;
+      align-items: center;
       @include respond-to($small-phone) {
         display: none;
         flex-direction: column;
@@ -251,6 +267,10 @@
         height: 2.5px;
         border-radius: 1px;
         background-color: $primary-color-4;
+        @include respond-to($small-phone) {
+          height: 1.8px;
+          width: 2rem;
+        }
       }
 
       &::before,
@@ -263,9 +283,15 @@
 
       &::before {
         top: -0.8rem;
+        @include respond-to($small-phone) {
+          top: -0.6rem;
+        }
       }
       &::after {
         top: 0.8rem;
+        @include respond-to($small-phone) {
+          top: 0.6rem;
+        }
       }
     }
 
@@ -289,6 +315,7 @@
       @include respond-to($small-phone) {
         display: flex;
         align-items: center;
+        padding: 1.3rem 0.6rem;
       }
       @include respond-to($phone-only) {
         display: flex;
@@ -322,7 +349,7 @@
 
   &__mobilesidebar {
     position: fixed;
-    z-index: 1001;
+    z-index: $navbar + 1;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -347,41 +374,6 @@
       width: 100% !important;
       max-width: 100% !important;
       height: 100% !important;
-      // & li {
-      //   color: white !important;
-      //   background-color: $primary-color-4 !important;
-      //   margin: 0 !important;
-      // }
-      // & .ant-layout-sider-children {
-      //   transition: all 0.5s ease !important;
-      // }
-
-      // & .ant-menu-submenu-title {
-      //   margin: 0 !important;
-      //   color: white !important;
-      // }
-
-      // & .ant-menu-submenu-arrow {
-      //   color: white !important;
-      // }
-      // & .ant-menu-submenu-open {
-      //   border: none !important;
-      // }
-
-      // & .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-      //   background: rgba(245, 245, 245, 0.07) !important;
-      //   color: $primary-color-4 !important;
-      //   z-index: 2;
-      // }
-
-      // & .ant-menu-sub {
-      //   & li {
-      //     & a {
-      //       color: white !important;
-      //     }
-      //     background: $primary-color-2 !important;
-      //   }
-      // }
     }
 
     &-link {
@@ -402,6 +394,21 @@
       padding: 2rem 0;
       text-align: center;
       margin-top: auto;
+    }
+
+    &-submenu {
+      @include respond-to($small-phone) {
+        font-size: 1.3rem !important;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.3rem !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem !important;
+      }
+      @include respond-to($desktop-up) {
+        font-size: 1.8rem !important;
+      }
     }
   }
 
@@ -427,6 +434,13 @@
           display: none !important;
         }
       }
+    }
+  }
+
+  &__version {
+    &-div {
+      color: white;
+      margin-right: 1rem;
     }
   }
 }

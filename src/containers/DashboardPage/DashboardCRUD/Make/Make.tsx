@@ -1,8 +1,9 @@
 import React, { ReactText, useEffect, useState } from 'react';
 import './Make.scss';
 /*components*/
-import Loading from 'src/components/Loading/Loading';
+import Footer from 'src/components/Footer/Footer';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
@@ -55,7 +56,6 @@ import {
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
-import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 
 const { Option } = Select;
@@ -210,7 +210,6 @@ const Make: React.FC<Props> = ({
   const [createMakeWheelbaseForm] = Form.useForm();
   const [updateMakeWheelbaseForm] = Form.useForm();
 
-  const { width } = useWindowDimensions();
   // Table states
   const [makeTableState, setMakeTableState] = useState<TMakeTableState[]>([]);
   const [brandTableState, setBrandTableState] = useState<TBrandTableState[]>([]);
@@ -2115,7 +2114,7 @@ const Make: React.FC<Props> = ({
       <NavbarComponent activePage="make" defaultOpenKeys="dashboard" />
       <Layout>
         <LayoutComponent activeKey="make">
-          <ParallaxContainer bgImageUrl={holy5truck} bgPosition={width < 768 ? '80% 0' : 'center'}>
+          <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
               <div className="make__tab-outerdiv">
                 <section>
@@ -2128,7 +2127,7 @@ const Make: React.FC<Props> = ({
                       {/* ====================== */}
                       <div className="make__section-top">
                         <div className="make__section-top-left">
-                          <section className="make__section">
+                          <section className="make__section" style={{ marginRight: '1rem' }}>
                             <div className="make__header-div ">
                               <div className="make__header-title">Brands</div>
                               <Button
@@ -2247,8 +2246,8 @@ const Make: React.FC<Props> = ({
                       </section>
                     </>
                   ) : (
-                    <div className="padding_t-5">
-                      <Loading />
+                    <div className="catalog__loading-div">
+                      <Ripple />
                     </div>
                   )}
                 </section>
@@ -2257,6 +2256,7 @@ const Make: React.FC<Props> = ({
           </ParallaxContainer>
         </LayoutComponent>
       </Layout>
+      <Footer />
     </>
   );
 };

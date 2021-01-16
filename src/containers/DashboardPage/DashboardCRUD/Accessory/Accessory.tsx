@@ -1,12 +1,14 @@
 import React, { useState, useEffect, ReactText } from 'react';
 import './Accessory.scss';
 /*components*/
-import Loading from 'src/components/Loading/Loading';
+import Footer from 'src/components/Footer/Footer';
 import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
@@ -29,6 +31,7 @@ import {
   unformatPriceString,
 } from 'src/shared/Utils';
 import { RootState } from 'src';
+import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TReceivedAccessoryObj, TReceivedImageObj } from 'src/store/types/dashboard';
 import { GENERAL_ACCESSORY, BODY_ACCESSORY, DIMENSION_ACCESSORY } from 'src/shared/constants';
@@ -823,58 +826,61 @@ const Accessory: React.FC<Props> = ({
       <Layout>
         <NavbarComponent activePage="accessory" defaultOpenKeys="dashboard" />
         <LayoutComponent activeKey="accessory">
-          <CustomContainer>
-            <div className="accessory__tab-outerdiv">
-              <section>
-                <HeaderTitle>Accessory</HeaderTitle>
-                {accessoriesArray ? (
-                  <>
-                    {/* ===================================== */}
-                    {/*           Accessory Section           */}
-                    {/* ===================================== */}
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Accessories</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => {
-                            setAccessoryIsDimensionAssociated(false);
-                            setShowCreateModal({ ...showCreateModal, accessory: true });
+          <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
+            <CustomContainer>
+              <div className="make__tab-outerdiv">
+                <section>
+                  <HeaderTitle>Accessory</HeaderTitle>
+                  {accessoriesArray ? (
+                    <>
+                      {/* ===================================== */}
+                      {/*           Accessory Section           */}
+                      {/* ===================================== */}
+                      <section className="make__section">
+                        <div className="make__header-div ">
+                          <div className="make__header-title">Accessories</div>
+                          <Button
+                            type="primary"
+                            className="make__brand-btn"
+                            onClick={() => {
+                              setAccessoryIsDimensionAssociated(false);
+                              setShowCreateModal({ ...showCreateModal, accessory: true });
+                            }}
+                          >
+                            Create New Accessory
+                          </Button>
+                        </div>
+                        {/* --------------------- */}
+                        {/*    Accessory Table    */}
+                        {/* --------------------- */}
+                        <Table
+                          className="accessory__table"
+                          bordered
+                          scroll={{ x: '89rem', y: 1000 }}
+                          expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                          onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                          expandable={{
+                            expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                            expandedRowRender: (record: TAccessoryTableState) => onExpandedRowRender(record),
                           }}
-                        >
-                          Create New Accessory
-                        </Button>
-                      </div>
-                      {/* --------------------- */}
-                      {/*    Accessory Table    */}
-                      {/* --------------------- */}
-                      <Table
-                        className="accessory__table"
-                        bordered
-                        scroll={{ x: '89rem', y: 1000 }}
-                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
-                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
-                        expandable={{
-                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
-                          expandedRowRender: (record: TAccessoryTableState) => onExpandedRowRender(record),
-                        }}
-                        dataSource={accessoryTableState}
-                        columns={convertHeader(accessoryColumns, setAccessoryColumns)}
-                        pagination={false}
-                      />
-                    </section>
-                  </>
-                ) : (
-                  <div className="padding_t-5">
-                    <Loading />
-                  </div>
-                )}
-              </section>
-            </div>
-          </CustomContainer>
+                          dataSource={accessoryTableState}
+                          columns={convertHeader(accessoryColumns, setAccessoryColumns)}
+                          pagination={false}
+                        />
+                      </section>
+                    </>
+                  ) : (
+                    <div className="catalog__loading-div">
+                      <Ripple />
+                    </div>
+                  )}
+                </section>
+              </div>
+            </CustomContainer>
+          </ParallaxContainer>
         </LayoutComponent>
       </Layout>
+      <Footer />
     </>
   );
 };

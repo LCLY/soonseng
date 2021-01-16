@@ -1,11 +1,13 @@
 import React, { useEffect, useState, ReactText } from 'react';
 import './Body.scss';
 /*components*/
-import Loading from 'src/components/Loading/Loading';
+import Footer from 'src/components/Footer/Footer';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
@@ -28,8 +30,10 @@ import {
 } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
+import LazyLoad from 'react-lazyload';
 import { AnyAction, Dispatch } from 'redux';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { img_not_available_link, img_loading_link } from 'src/shared/links';
 import { PlusCircleTwoTone, ExclamationCircleOutlined, MinusCircleTwoTone } from '@ant-design/icons';
 /* Util */
@@ -48,10 +52,8 @@ import {
   onTableRowExpand,
   setFilterReference,
 } from 'src/shared/Utils';
+import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
-// import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import LazyLoad from 'react-lazyload';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -1301,102 +1303,105 @@ const Body: React.FC<Props> = ({
       {deleteLengthModal}
       {deleteBodyAccessoryModal}
 
+      <NavbarComponent activePage="body" defaultOpenKeys="dashboard" />
       <Layout>
-        <NavbarComponent activePage="body" defaultOpenKeys="dashboard" />
         <LayoutComponent activeKey="body">
-          <CustomContainer>
-            <div className="body__tab-outerdiv">
-              <section>
-                <HeaderTitle>Body</HeaderTitle>
-                {bodiesArray && lengthsArray ? (
-                  <>
-                    {/* ===================================== */}
-                    {/*             Length Section            */}
-                    {/* ===================================== */}
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Lengths</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
-                        >
-                          Create New Length
-                        </Button>
-                      </div>
-                      {/* ------------------ */}
-                      {/*    Length Table     */}
-                      {/* ------------------ */}
-                      <Table
-                        bordered
-                        className="body__table"
-                        scroll={{ x: '89rem', y: 400 }}
-                        dataSource={lengthTableState}
-                        columns={convertHeader(lengthColumns, setLengthColumns)}
-                        pagination={false}
-                      />
-                    </section>
-                    {/* ===================================== */}
-                    {/*              Body Section             */}
-                    {/* ===================================== */}
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Bodies</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, body: true })}
-                        >
-                          Create New Body
-                        </Button>
-                      </div>
-                      {/* ------------------ */}
-                      {/*    Body Table     */}
-                      {/* ------------------ */}
-                      <Table
-                        bordered
-                        className="body__table"
-                        scroll={{ x: '89rem', y: 700 }}
-                        dataSource={bodyTableState}
-                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
-                        onExpand={(expanded, record) => {
-                          onTableRowExpand(expanded, record, setExpandedRowKeys);
-                        }} //this allow only 1 row to expand at a time
-                        expandable={{
-                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
-                          expandedRowRender: (record: TBodyTableState) => {
-                            let bodyAccessoriesCards = bodyAccessoriesCardsComponent(record);
-                            let imageGalleryComponent = onExpandedRowRender(record);
-                            return (
-                              <>
-                                <div
-                                  style={{
-                                    marginBottom:
-                                      bodyAccessoriesArray && bodyAccessoriesArray.length > 0 ? '2rem' : 'none',
-                                  }}
-                                >
-                                  {bodyAccessoriesCards}
-                                </div>
-                                {imageGalleryComponent}
-                              </>
-                            );
-                          },
-                        }}
-                        columns={convertHeader(bodyColumns, setBodyColumns)}
-                        pagination={false}
-                      />
-                    </section>
-                  </>
-                ) : (
-                  <div className="padding_t-5">
-                    <Loading />
-                  </div>
-                )}
-              </section>
-            </div>
-          </CustomContainer>
+          <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
+            <CustomContainer>
+              <div className="make__tab-outerdiv">
+                <section>
+                  <HeaderTitle>Body</HeaderTitle>
+                  {bodiesArray && lengthsArray ? (
+                    <>
+                      {/* ===================================== */}
+                      {/*             Length Section            */}
+                      {/* ===================================== */}
+                      <section className="make__section">
+                        <div className="make__header-div ">
+                          <div className="make__header-title">Lengths</div>
+                          <Button
+                            type="primary"
+                            className="make__brand-btn"
+                            onClick={() => setShowCreateModal({ ...showCreateModal, length: true })}
+                          >
+                            Create New Length
+                          </Button>
+                        </div>
+                        {/* ------------------ */}
+                        {/*    Length Table     */}
+                        {/* ------------------ */}
+                        <Table
+                          bordered
+                          className="body__table"
+                          scroll={{ x: '89rem', y: 400 }}
+                          dataSource={lengthTableState}
+                          columns={convertHeader(lengthColumns, setLengthColumns)}
+                          pagination={false}
+                        />
+                      </section>
+                      {/* ===================================== */}
+                      {/*              Body Section             */}
+                      {/* ===================================== */}
+                      <section className="make__section">
+                        <div className="make__header-div ">
+                          <div className="make__header-title">Bodies</div>
+                          <Button
+                            type="primary"
+                            className="make__brand-btn"
+                            onClick={() => setShowCreateModal({ ...showCreateModal, body: true })}
+                          >
+                            Create New Body
+                          </Button>
+                        </div>
+                        {/* ------------------ */}
+                        {/*    Body Table     */}
+                        {/* ------------------ */}
+                        <Table
+                          bordered
+                          className="body__table"
+                          scroll={{ x: '89rem', y: 700 }}
+                          dataSource={bodyTableState}
+                          expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                          onExpand={(expanded, record) => {
+                            onTableRowExpand(expanded, record, setExpandedRowKeys);
+                          }} //this allow only 1 row to expand at a time
+                          expandable={{
+                            expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                            expandedRowRender: (record: TBodyTableState) => {
+                              let bodyAccessoriesCards = bodyAccessoriesCardsComponent(record);
+                              let imageGalleryComponent = onExpandedRowRender(record);
+                              return (
+                                <>
+                                  <div
+                                    style={{
+                                      marginBottom:
+                                        bodyAccessoriesArray && bodyAccessoriesArray.length > 0 ? '2rem' : 'none',
+                                    }}
+                                  >
+                                    {bodyAccessoriesCards}
+                                  </div>
+                                  {imageGalleryComponent}
+                                </>
+                              );
+                            },
+                          }}
+                          columns={convertHeader(bodyColumns, setBodyColumns)}
+                          pagination={false}
+                        />
+                      </section>
+                    </>
+                  ) : (
+                    <div className="catalog__loading-div">
+                      <Ripple />
+                    </div>
+                  )}
+                </section>
+              </div>
+            </CustomContainer>
+          </ParallaxContainer>
         </LayoutComponent>
       </Layout>
+      <Footer />
     </>
   );
 };

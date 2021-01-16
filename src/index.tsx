@@ -38,7 +38,7 @@ const composeEnhancers =
 
 // you want to store only a subset of your state of reducer one
 const saveSalesSubsetFilter = createFilter('sales', ['localOrdersArray']);
-const saveAuthSubsetFilter = createFilter('auth', ['auth_token', 'accessObj']);
+const saveAuthSubsetFilter = createFilter('auth', ['auth_token', 'accessObj', 'userInfoObj']);
 const saveGeneralSubsetFilter = createFilter('general', ['projectVersion']);
 
 // redux persist config

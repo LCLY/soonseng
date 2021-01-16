@@ -96,12 +96,13 @@ type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentP
 
 const NavbarComponent: React.FC<Props> = ({
   history,
-  auth_token,
+  // auth_token,
   accessObj,
   userInfoObj,
   activePage,
-  onGetUserInfo,
+  // onGetUserInfo,
   authenticated,
+  projectVersion,
   defaultOpenKeys,
   localOrdersArray,
 }) => {
@@ -240,7 +241,12 @@ const NavbarComponent: React.FC<Props> = ({
                   Home
                 </a>
               </Menu.Item>
-              <SubMenu key="product" icon={<i className="fas fa-book margin_r-1"></i>} title="Product">
+              <SubMenu
+                className="navbar__mobilesidebar-submenu"
+                key="product"
+                icon={<i className="fas fa-book margin_r-1"></i>}
+                title="Product"
+              >
                 <Menu.Item key="catalog">
                   <a className="navbar__dropdown-link" href={ROUTE_CATALOG}>
                     Vehicle Catalog
@@ -254,7 +260,12 @@ const NavbarComponent: React.FC<Props> = ({
               </Menu.Item>
 
               {accessObj?.showSalesDashboard && (
-                <SubMenu key="dashboard" icon={<i className="fas fa-columns margin_r-1"></i>} title="Dashboard">
+                <SubMenu
+                  className="navbar__mobilesidebar-submenu"
+                  key="dashboard"
+                  icon={<i className="fas fa-columns margin_r-1"></i>}
+                  title="Dashboard"
+                >
                   <Menu.Item key="make">
                     <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
                       Model
@@ -297,17 +308,17 @@ const NavbarComponent: React.FC<Props> = ({
                   </a>
                 )}
               </Menu.Item>
-
-              {/* <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
-                  <a className={`navbar__link`} href={ROUTE_ORDERS}>
-                    Orders
-                  </a>
-              </Menu.Item> */}
             </Menu>
           </Sider>
         </div>
         <div className="navbar__mobilesidebar-admin">
-          {userInfoObj && <div className="">{userInfoObj?.roles.title}</div>}
+          {userInfoObj && (
+            <>
+              <div className="">
+                {userInfoObj?.roles.title}&nbsp;{accessObj?.showSalesDashboard ? projectVersion : ''}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
@@ -318,15 +329,23 @@ const NavbarComponent: React.FC<Props> = ({
   /* ======================================== */
 
   useEffect(() => {
+    if ((document && showMobileSidebar) || (document && showOrderSlidebar)) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [showMobileSidebar, showOrderSlidebar]);
+
+  useEffect(() => {
     if (width >= 1200) {
       setShowMobileSidebar(false);
     }
   }, [width]);
 
-  useEffect(() => {
-    if (auth_token === undefined) return;
-    onGetUserInfo(auth_token);
-  }, [onGetUserInfo, auth_token]);
+  // useEffect(() => {
+  //   if (auth_token === undefined) return;
+  //   onGetUserInfo(auth_token);
+  // }, [onGetUserInfo, auth_token]);
 
   return (
     <>
@@ -411,6 +430,8 @@ const NavbarComponent: React.FC<Props> = ({
             <div className="navbar__right-div">
               {/* only show if user info exist or not a normal user */}
               {/* {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>} */}
+              {accessObj?.showSalesDashboard && <div className="navbar__version-div">{projectVersion}</div>}
+
               <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
                 <div className={`navbar__link`}>
                   {authenticated && userInfoObj ? (
@@ -456,6 +477,7 @@ interface StateProps {
   auth_token?: string | null;
   authenticated?: boolean;
   accessObj?: TUserAccess;
+  projectVersion?: string;
   userInfoObj?: TReceivedUserInfoObj | null;
   localOrdersArray?: TLocalOrderObj[];
 }
@@ -464,6 +486,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     accessObj: state.auth.accessObj,
     auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
+    projectVersion: state.general.projectVersion,
     localOrdersArray: state.sales.localOrdersArray,
     authenticated: state.auth.auth_token !== null,
   };

@@ -30,6 +30,7 @@
     &-outerdiv {
       min-height: 100vh;
       display: flex;
+
       align-items: center;
       // justify-content: center;
       flex-direction: column;
@@ -40,9 +41,11 @@
 
       @include respond-to($small-phone) {
         padding: 1rem;
+        padding-top: 7rem;
       }
       @include respond-to($phone-only) {
         padding: 1rem;
+        margin-top: 10rem;
       }
     }
 
