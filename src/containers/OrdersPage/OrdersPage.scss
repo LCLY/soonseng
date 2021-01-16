@@ -12,7 +12,10 @@
 
     &-outerdiv {
       width: auto;
-      margin-top: 2rem;
+      margin-top: 12rem;
+      @include respond-to($small-phone) {
+        margin-top: 7rem;
+      }
       padding: 2rem 2rem 5rem 2rem;
       // padding-top: $navbar-height;
       @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 1rem);

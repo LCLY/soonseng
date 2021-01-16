@@ -13,9 +13,9 @@
     flex: 1;
     // max-height: 100vh;
     // overflow: auto;
-
-    @include respond-to(phone-only) {
-      padding-top: 0; //height of navbar
+    padding-top: 5rem;
+    @include respond-to($small-phone) {
+      padding-top: 6rem; //height of navbar
     }
   }
 
@@ -23,7 +23,7 @@
   &__innerdiv {
     display: flex;
     justify-content: center; // flex-direction: column;
-    padding-bottom: 10%;
+    padding-bottom: 5rem;
     min-height: calc(100vh - 58rem);
     // height: calc(100vh - 58rem);
   }

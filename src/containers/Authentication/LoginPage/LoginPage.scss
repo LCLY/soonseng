@@ -1,6 +1,9 @@
 .login {
   &__section {
+    margin-top: 8rem;
     @include respond-to($small-phone) {
+      margin-top: 8rem;
+      margin-bottom: 2rem;
       padding: 1rem;
     }
     @include respond-to($phone-only) {

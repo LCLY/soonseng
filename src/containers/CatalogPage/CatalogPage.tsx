@@ -295,7 +295,7 @@ const CatalogPage: React.FC<Props> = ({
                     ...modalContent,
                     make: { seriesTitle: series.title, makeTitle: '' },
                   });
-                  createMakeForm.setFieldsValue({ makeSeriesId: series.id });
+                  createMakeForm.setFieldsValue({ makeSeriesId: series.id, makeBrandId: catalog.brand.id });
                   // show the modal
                   setShowCreateModal({ ...showCreateModal, make: true });
                 }}
