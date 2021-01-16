@@ -1,10 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './NavbarComponent.scss';
 // components
+import Backdrop from '../Backdrop/Backdrop';
+import OrdersSlidebar from 'src/containers/OrdersPage/OrdersSlidebar/OrdersSlidebar';
 // 3rd party lib
-import { Badge, Dropdown, Menu } from 'antd';
 import { connect } from 'react-redux';
+import Sider from 'antd/lib/layout/Sider';
 import { AnyAction, Dispatch } from 'redux';
+import { Badge, Dropdown, Menu } from 'antd';
 import { Navbar, Nav } from 'react-bootstrap';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -18,16 +21,15 @@ import {
   ROUTE_LOGIN,
   ROUTE_SALES,
   ROUTE_LOGOUT,
-  ROUTE_ORDERS,
+  // ROUTE_ORDERS,
   ROUTE_CATALOG,
   ROUTE_DASHBOARD,
 } from 'src/shared/routes';
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
-import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
-import Backdrop from '../Backdrop/Backdrop';
-import Sider from 'antd/lib/layout/Sider';
 import { TLocalOrderObj } from 'src/store/types/sales';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 
 /**
  * Hook that alerts clicks outside of the passed ref
@@ -120,6 +122,9 @@ const NavbarComponent: React.FC<Props> = ({
   const salesDropdownRef = useRef(null);
   useOutsideAlerter(salesWrapperRef, salesDropdownRef, setSalesDropdownVisible);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  const [showOrderSlidebar, setShowOrderSlidebar] = useState(false);
+  const { width } = useWindowDimensions();
 
   /* =========================================== */
   // methods
@@ -311,10 +316,12 @@ const NavbarComponent: React.FC<Props> = ({
   /* ======================================== */
   // useEffect
   /* ======================================== */
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => window.removeEventListener('scroll', handleScroll);
-  // }, [prevScrollPos, visible, handleScroll]);
+
+  useEffect(() => {
+    if (width >= 1200) {
+      setShowMobileSidebar(false);
+    }
+  }, [width]);
 
   useEffect(() => {
     if (auth_token === undefined) return;
@@ -337,9 +344,7 @@ const NavbarComponent: React.FC<Props> = ({
           <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
             {localOrdersArray !== undefined && (
               <Badge count={localOrdersArray.length} showZero size="small" className="navbar__icon-cart--mobile">
-                <a className={`navbar__link`} href={ROUTE_ORDERS}>
-                  <ShoppingCartOutlined className="navbar__icon-cart" />
-                </a>
+                <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
               </Badge>
             )}
             <input
@@ -427,9 +432,9 @@ const NavbarComponent: React.FC<Props> = ({
               <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
                 {localOrdersArray !== undefined && (
                   <Badge count={localOrdersArray.length} showZero size="small">
-                    <a className={`navbar__link`} href={ROUTE_ORDERS}>
-                      <ShoppingCartOutlined className="navbar__icon-cart" />
-                    </a>
+                    {/* <a className={`navbar__link`} href={ROUTE_ORDERS}> */}
+                    <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
+                    {/* </a> */}
                   </Badge>
                 )}
               </div>
@@ -437,6 +442,12 @@ const NavbarComponent: React.FC<Props> = ({
           </Nav>
         </Navbar>
       </div>
+
+      <OrdersSlidebar
+        showOrderSlidebar={showOrderSlidebar}
+        setShowOrderSlidebar={setShowOrderSlidebar}
+        style={{ transform: showOrderSlidebar ? 'translateX(0)' : 'translateX(100%)' }}
+      />
     </>
   );
 };

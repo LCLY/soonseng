@@ -1,12 +1,13 @@
 .navbar {
   // only changing the bg primary of navbar
   &__outerdiv {
-    // position: absolute;
+    position: absolute;
     transition: all 0.5s ease;
     width: 100%;
     z-index: 1000;
 
     & .bg-primary {
+      @include glassMorph(rgba($primary-color-4, 0.342), 20px, rgba(255, 3, 3, 0.137), 0);
       // @include glassMorph(
       //   $frontLayerColor: rgb(213, 213, 213),
       //   $blur: 20px,
@@ -15,7 +16,7 @@
       // );
       // main background
       // background: none !important;
-      background: $primary-color-4 !important;
+      // background: $primary-color-4 !important;
     }
 
     // set style for all the a tag
@@ -29,7 +30,7 @@
     justify-content: space-between !important;
     @include respond-to($small-phone) {
       // min-height: 10vh;
-      padding: 2% 3rem !important;
+      padding: 2% 1rem !important;
     }
     @include respond-to($phone-only) {
       // min-height: 10vh;
@@ -37,7 +38,7 @@
     }
     @include respond-to($tablet-portrait-up) {
       // min-height: 10vh;
-      padding: 2rem 5rem !important;
+      padding: 0.5rem 5rem !important;
     }
   }
 
@@ -122,12 +123,15 @@
       font-size: 1.3rem !important;
     }
     @include respond-to($tablet-portrait-up) {
-      font-size: 1.5rem !important;
+      font-size: 1.8rem !important;
     }
     // div of the nav links
     &-div {
+      display: flex;
+      align-items: center;
       padding: 0 1rem;
       margin: 0 0.4rem;
+      font-family: $font-pragati;
       &:hover {
         transition: all 0.5s ease;
         // background: $secondary-color-1;
@@ -318,7 +322,7 @@
 
   &__mobilesidebar {
     position: fixed;
-    z-index: 101;
+    z-index: 1001;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -404,6 +408,12 @@
   &__icon {
     &-cart {
       font-size: 2.5rem;
+      // color: white !important;
+      color: rgba(white, 0.5) !important;
+
+      &:hover {
+        color: white !important;
+      }
 
       &--mobile {
         margin-right: 3rem !important;
