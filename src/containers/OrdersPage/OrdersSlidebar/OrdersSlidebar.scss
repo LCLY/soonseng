@@ -1,0 +1,650 @@
+.ordersslidebar {
+  &__div {
+    position: fixed;
+    right: 0;
+    top: 0;
+    background: white;
+    height: 100vh;
+    overflow: hidden;
+    z-index: $navbar + 1;
+    transition: all 0.5s ease;
+    border-left: 1px solid $translucent-grey;
+
+    @include respond-to($small-phone) {
+      width: 100vw;
+    }
+    @include respond-to($phone-only) {
+      min-width: 40rem;
+      width: 30vw;
+    }
+  }
+
+  &__top {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.8rem;
+      margin: 1rem 1rem 0 1rem;
+      border-bottom: 1px solid $translucent-grey;
+    }
+  }
+  &__bottom {
+    &-div {
+      // background: blue;
+      height: calc(100vh - 6.5rem);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1rem 1rem 3rem 1rem;
+      @include customScrollbar(0.3rem, 0.1rem, 0.2rem, $translucent-grey, rgba(255, 255, 255, 0.678));
+    }
+  }
+
+  &__title {
+    font-size: 3.5rem;
+    padding-left: 1rem;
+    color: $primary-color-4;
+    font-family: $font-bebasneue;
+
+    &-link {
+      color: $primary-color-4;
+
+      &:hover {
+        color: $primary-color-4;
+      }
+    }
+  }
+
+  &__icon {
+    cursor: pointer;
+    &:hover {
+      color: $primary-color-4;
+    }
+  }
+
+  &__overview {
+    &-title {
+      font-size: 3rem;
+      font-family: $font-firesans;
+    }
+
+    // the list of items
+    &-list {
+      // list-style: inside;
+      list-style-type: lower-roman;
+      & li:hover {
+        transition: all 0.5 ease;
+        background: rgba($primary-color-4, 0.15);
+        cursor: default;
+      }
+
+      @include respond-to($small-phone) {
+        font-size: 1.2rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem;
+      }
+    }
+
+    // each row of orders
+    &-row {
+      display: flex;
+      width: 100%;
+
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
+      @include respond-to($phone-only) {
+        flex-direction: row;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
+      @include respond-to($tablet-landscape-up) {
+        flex-direction: row;
+      }
+
+      // most outerdiv
+      &-outerdiv {
+        &:not(:first-child) {
+          padding-top: 2.5rem;
+        }
+        &:not(:last-child) {
+          padding-bottom: 2rem;
+          border-bottom: 1px solid $translucent-grey;
+        }
+      }
+
+      /* ------------------------------- */
+      // image on every row
+      /* ------------------------------- */
+      &-image {
+        object-fit: cover;
+
+        @include respond-to($small-phone) {
+          width: 100%;
+          height: 20rem;
+        }
+        @include respond-to($phone-only) {
+          width: 26vw;
+          height: 18vh;
+          margin-top: 1rem;
+          padding-right: 1rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 25vw;
+          height: 22vh;
+          margin-top: 2rem;
+          padding-right: 1rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 20vw;
+          height: 15rem;
+        }
+        @include respond-to($desktop-up) {
+          width: 20vw;
+          height: 20rem;
+        }
+
+        &-div {
+          user-select: none;
+
+          @include respond-to($small-phone) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
+          @include respond-to(phone-only) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            padding: 0;
+            margin-bottom: 1rem;
+          }
+          @include respond-to($tablet-landscape-up) {
+            padding: 2rem;
+            margin-bottom: 0;
+          }
+        }
+      }
+      /* ------------------------------- */
+      // content on the right
+      /* ------------------------------- */
+      &-content {
+        width: 100%;
+        @include respond-to($small-phone) {
+          padding: 0rem;
+        }
+        @include respond-to($phone-only) {
+          padding: 1rem;
+        }
+
+        // the header title e.g. 15ft wooden cargo
+        &-header {
+          font-family: $font-roboto;
+          font-weight: bolder;
+          color: $primary-color-4;
+
+          @include respond-to($small-phone) {
+            font-size: 1.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          @include respond-to($phone-only) {
+            font-size: 1.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          @include respond-to($tablet-portrait-up) {
+            font-size: 2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          @include respond-to($tablet-landscape-up) {
+            font-size: 2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 20rem;
+          }
+          @include respond-to($desktop-up) {
+            font-size: 2rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 25rem;
+          }
+
+          // the grand total price at the bottom
+          &-price {
+            font-family: $font-roboto;
+            font-weight: bolder;
+            // padding-right: 1.5rem;
+            // margin-bottom: 0.5rem;
+            color: $primary-color-4;
+            @include respond-to($small-phone) {
+              font-size: 1.5rem;
+            }
+            @include respond-to(phone-only) {
+              font-size: 1.5rem;
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 2rem;
+            }
+
+            // the prediscount on the top
+            &--prediscount {
+              font-family: $font-roboto;
+              font-weight: bolder;
+              @include respond-to($small-phone) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to(phone-only) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 1.6rem;
+                padding-right: 0;
+              }
+            }
+          }
+        }
+
+        // the subheader title e.g. HINO 300 Series model name or Insurance
+        &-subheader {
+          color: rgba(0, 0, 0, 0.768);
+          font-family: $font-firesans;
+          @include respond-to($small-phone) {
+            font-size: 1.3rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.3rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.7rem;
+          }
+
+          &--discount {
+            color: black;
+            // font-weight: bolder;
+          }
+
+          &--totalroadprice {
+            background: rgba(179, 190, 208, 0.24);
+            padding: 0 1rem;
+
+            &-text {
+              color: black;
+              font-family: $font-firesans;
+              @include respond-to($small-phone) {
+                font-size: 1.5rem;
+              }
+              @include respond-to($phone-only) {
+                font-size: 1.5rem;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 2rem;
+              }
+            }
+          }
+
+          &-price {
+            font-size: 1.2rem;
+
+            @include respond-to($tablet-portrait-up) {
+              font-size: 1.5rem;
+            }
+
+            // the prediscount price at bottom
+            &--prediscount {
+              font-weight: bolder;
+              @include respond-to($small-phone) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($phone-only) {
+                font-size: 1.2rem;
+                padding-right: 0;
+              }
+              @include respond-to($tablet-portrait-up) {
+                font-size: 1.7rem;
+                padding-right: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /* ------------------------- */
+    // the empty div in overview
+    /* -------------------------- */
+    &-empty {
+      &-div {
+        padding: 5rem 0;
+        border-radius: 1rem;
+        margin: 3rem 0;
+        background: rgba(131, 9, 9, 0.5);
+        color: white !important;
+        @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+      }
+
+      &-btn {
+        background: transparent !important;
+        border-color: white !important;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15) !important;
+        }
+      }
+    }
+
+    // the collapsible panels
+    &-panel {
+      & .ant-collapse-header {
+        color: $primary-color-3 !important;
+
+        @include respond-to($small-phone) {
+          font-size: 1.1rem !important;
+          padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.2rem !important;
+          padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.5rem !important;
+        }
+      }
+
+      & .ant-collapse-arrow {
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        @include respond-to($small-phone) {
+          font-size: 0.8rem !important;
+          // padding: 0.5rem 0.5rem 0.5rem 4rem !important;
+        }
+
+        @include respond-to($phone-only) {
+          font-size: 1.1rem !important;
+        }
+      }
+
+      & .ant-collapse-content-box {
+        @include respond-to($small-phone) {
+          padding-top: 0 !important;
+          padding-left: 2rem !important;
+          padding-right: 0 !important;
+        }
+        @include respond-to($phone-only) {
+          padding-left: 2rem !important;
+          padding-right: 0 !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          padding-top: 0 !important;
+          padding-left: 4rem !important;
+        }
+      }
+
+      &--modeldetails {
+        & .ant-collapse-header {
+          padding: 0.5rem 0 0 0 !important;
+
+          color: white !important;
+        }
+
+        & .ant-collapse-content-box {
+          padding: 0 !important;
+        }
+      }
+
+      // another panel to show model specs
+      &-specs {
+        &-div {
+          // make it so that the div wont stretch out
+          display: inline-block;
+        }
+
+        // make the specs into 2 columns white background
+        &-innerdiv {
+          display: flex;
+          background: rgba(255, 255, 255, 0.8);
+          margin-top: 1rem;
+          padding: 1rem 2rem;
+          border-radius: 1rem;
+
+          @include respond-to($small-phone) {
+            font-size: 1rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.5rem;
+          }
+        }
+
+        &-column {
+          &:first-child {
+            margin-right: 2rem;
+          }
+        }
+
+        // each row of the specs
+        &-row {
+          display: flex;
+          align-items: center;
+          &:hover {
+            background: rgba($primary-color-4, 0.15);
+            cursor: default;
+          }
+        }
+        // the span text "Click here to view more spec"
+        &-header {
+          background: rgb(119, 119, 119);
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+        }
+        // the title of specs on the left
+        &-title {
+          font-family: $font-firesans;
+          color: $primary-color-4;
+          padding-right: 0.5rem;
+        }
+        // the specs value on the right
+        &-value {
+          color: $secondary-color-2;
+          font-family: $font-ubuntu;
+        }
+      }
+    }
+
+    // highlight the model name
+    &-highlight {
+      &-model {
+        font-family: $font-firesans;
+        color: $primary-color-4;
+      }
+    }
+
+    // small title further splitting the categories
+    &-smalltitle {
+      font-size: 1.4rem;
+      color: white;
+      margin-bottom: 0.5rem;
+      padding: 0.3rem 1rem;
+      font-family: $font-ubuntu;
+      background: $primary-color-4;
+      &:not(:first-child) {
+        margin-top: 1rem;
+      }
+      @include respond-to($small-phone) {
+        margin-left: -1.8rem;
+      }
+      @include respond-to($phone-only) {
+        margin-left: -1.8rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-left: 0;
+      }
+    }
+
+    // subtotal on every last
+    &-subtotal {
+      font-size: 1.7rem;
+      padding-left: 2rem;
+      font-weight: bolder;
+      @include respond-to($small-phone) {
+        font-size: 1.3rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.3rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.7rem;
+      }
+
+      &-outerdiv {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+        background: rgba(255, 255, 255, 0.35);
+        border-top: 1px solid $translucent-grey;
+        border-bottom: 1px solid $translucent-grey;
+      }
+
+      &-text {
+        color: black;
+
+        font-family: $font-opensans;
+
+        @include respond-to($small-phone) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.6rem;
+        }
+      }
+    }
+
+    // The dropdown to show more options button
+    &-more {
+      display: flex;
+      justify-content: flex-end;
+
+      &-icon {
+        &-div {
+          z-index: 2;
+          cursor: pointer;
+          border: 1px solid white;
+
+          margin-left: 1rem;
+          @include respond-to($small-phone) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.2rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 1.2rem;
+          }
+
+          &:hover {
+            transition: all 0.5s ease;
+            color: $primary-color-1;
+            & .sales__overview-more-icon {
+              transition: all 0.5s ease;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+    &-btn {
+      &--another {
+        margin-bottom: 1rem;
+        margin-top: 3rem;
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
+
+        background: none !important;
+        color: white !important;
+        border: 1px solid white !important;
+        &:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          border: 1px solid rgba(255, 255, 255, 0.57) !important;
+        }
+      }
+
+      &--allorders {
+        padding-bottom: 3rem !important;
+        padding-top: 1rem !important;
+
+        background: rgba($primary-color-4, 0.3) !important;
+        color: white !important;
+        border: 1px solid $primary-color-4 !important;
+        &:hover {
+          background: rgba($primary-color-4, 0.4) !important;
+          border: 1px solid white !important;
+        }
+      }
+    }
+
+    &-dash {
+      padding-right: 2rem;
+
+      @include respond-to($small-phone) {
+        padding-right: 1rem;
+      }
+    }
+  }
+
+  &__total {
+    &-items {
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+    }
+
+    &-text {
+      font-family: $font-firesans;
+      font-weight: bolder;
+      color: $primary-color-4;
+      margin-right: 1rem;
+    }
+  }
+
+  &__collapse {
+    &-outerdiv {
+      & > .ant-collapse {
+        border: 1px solid rgba(128, 128, 128, 0.2);
+        padding: 0 0.5rem;
+
+        @include respond-to($small-phone) {
+          margin: 0.5rem 0;
+        }
+        @include respond-to($phone-only) {
+          margin: 0.5rem 0;
+        }
+        @include respond-to($tablet-portrait-up) {
+          margin: 0.8rem 0;
+        }
+      }
+    }
+  }
+}

@@ -4,13 +4,13 @@ import './HomePage.scss';
 import Footer from 'src/components/Footer/Footer';
 import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 
 // 3rd party lib
 import gsap from 'gsap';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Carousel } from 'antd';
 import ScrollAnimation from 'react-animate-on-scroll';
-import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 
 /* Util */
 import { ROUTE_SALES } from 'src/shared/routes';

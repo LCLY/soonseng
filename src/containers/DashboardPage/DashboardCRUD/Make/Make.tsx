@@ -1,13 +1,16 @@
 import React, { ReactText, useEffect, useState } from 'react';
 import './Make.scss';
 /*components*/
-import Loading from 'src/components/Loading/Loading';
+import Footer from 'src/components/Footer/Footer';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+
 /*3rd party lib*/
 import {
   Table,
@@ -49,7 +52,9 @@ import {
   onClearAllSelectedImages,
   emptyStringWhenUndefinedOrNull,
 } from 'src/shared/Utils';
+
 import { RootState } from 'src';
+import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 
@@ -205,7 +210,6 @@ const Make: React.FC<Props> = ({
   const [createMakeWheelbaseForm] = Form.useForm();
   const [updateMakeWheelbaseForm] = Form.useForm();
 
-  // const { width } = useWindowDimensions();
   // Table states
   const [makeTableState, setMakeTableState] = useState<TMakeTableState[]>([]);
   const [brandTableState, setBrandTableState] = useState<TBrandTableState[]>([]);
@@ -2107,149 +2111,152 @@ const Make: React.FC<Props> = ({
       {deleteMakeWheelbaseModal}
       {deleteBrandModal}
 
+      <NavbarComponent activePage="make" defaultOpenKeys="dashboard" />
       <Layout>
-        <NavbarComponent activePage="dashboard" />
         <LayoutComponent activeKey="make">
-          <CustomContainer>
-            <div className="make__tab-outerdiv">
-              <section>
-                <HeaderTitle>Model</HeaderTitle>
+          <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
+            <CustomContainer>
+              <div className="make__tab-outerdiv">
+                <section>
+                  <HeaderTitle>Model</HeaderTitle>
 
-                {brandsArray && wheelbasesArray && makesArray ? (
-                  <>
-                    {/* ====================== */}
-                    {/*     Brand Section      */}
-                    {/* ====================== */}
-                    <div className="make__section-top">
-                      <div className="make__section-top-left">
-                        <section className="make__section">
-                          <div className="make__header-div ">
-                            <div className="make__header-title">Brands</div>
-                            <Button
-                              type="primary"
-                              className="make__brand-btn"
-                              onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
-                            >
-                              Create New Brand
-                            </Button>
-                          </div>
-                          {/* ------------------ */}
-                          {/*    Brand Table     */}
-                          {/* ------------------ */}
-                          <Table
-                            bordered
-                            className="make__table"
-                            scroll={{ y: 400 }}
-                            expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
-                            onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
-                            expandable={{
-                              expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
-                              expandedRowRender: (record: TBrandTableState) => onExpandedRowRender(record),
-                            }}
-                            // components={components}
-                            dataSource={brandTableState}
-                            columns={convertHeader(brandColumns, setBrandColumns)}
-                            pagination={false}
-                          />
-                        </section>
+                  {brandsArray && wheelbasesArray && makesArray ? (
+                    <>
+                      {/* ====================== */}
+                      {/*     Brand Section      */}
+                      {/* ====================== */}
+                      <div className="make__section-top">
+                        <div className="make__section-top-left">
+                          <section className="make__section" style={{ marginRight: '1rem' }}>
+                            <div className="make__header-div ">
+                              <div className="make__header-title">Brands</div>
+                              <Button
+                                type="primary"
+                                className="make__brand-btn"
+                                onClick={() => setShowCreateModal({ ...showCreateModal, brand: true })}
+                              >
+                                Create New Brand
+                              </Button>
+                            </div>
+                            {/* ------------------ */}
+                            {/*    Brand Table     */}
+                            {/* ------------------ */}
+                            <Table
+                              bordered
+                              className="make__table"
+                              scroll={{ y: 400 }}
+                              expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                              onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                              expandable={{
+                                expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                                expandedRowRender: (record: TBrandTableState) => onExpandedRowRender(record),
+                              }}
+                              // components={components}
+                              dataSource={brandTableState}
+                              columns={convertHeader(brandColumns, setBrandColumns)}
+                              pagination={false}
+                            />
+                          </section>
+                        </div>
+
+                        {/* ====================== */}
+                        {/*   Wheelbases Section   */}
+                        {/* ====================== */}
+
+                        <div className="make__section-top-right">
+                          <section className="make__section">
+                            <div className="make__header-div ">
+                              <div className="make__header-title">Wheelbases</div>
+                              <Button
+                                type="primary"
+                                className="make__brand-btn"
+                                onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
+                              >
+                                Create New Wheelbase
+                              </Button>
+                            </div>
+
+                            {/* -------------------- */}
+                            {/*   Wheelbase Table   */}
+                            {/* -------------------- */}
+                            <Table
+                              bordered
+                              className="make__table"
+                              scroll={{ y: 400 }}
+                              // components={components}
+                              dataSource={wheelbaseTableState}
+                              columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
+                              pagination={false}
+                            />
+                          </section>
+                        </div>
                       </div>
 
                       {/* ====================== */}
-                      {/*   Wheelbases Section   */}
+                      {/*      Makes/Models Section     */}
                       {/* ====================== */}
 
-                      <div className="make__section-top-right">
-                        <section className="make__section">
-                          <div className="make__header-div ">
-                            <div className="make__header-title">Wheelbases</div>
-                            <Button
-                              type="primary"
-                              className="make__brand-btn"
-                              onClick={() => setShowCreateModal({ ...showCreateModal, wheelbase: true })}
-                            >
-                              Create New Wheelbase
-                            </Button>
-                          </div>
+                      <section className="make__section">
+                        <div className="make__header-div ">
+                          <div className="make__header-title">Models</div>
+                          <Button
+                            type="primary"
+                            className="make__brand-btn"
+                            onClick={() => setShowCreateModal({ ...showCreateModal, make: true })}
+                          >
+                            Create New Make
+                          </Button>
+                        </div>
 
-                          {/* -------------------- */}
-                          {/*   Wheelbase Table   */}
-                          {/* -------------------- */}
-                          <Table
-                            bordered
-                            className="make__table"
-                            scroll={{ y: 400 }}
-                            // components={components}
-                            dataSource={wheelbaseTableState}
-                            columns={convertHeader(wheelbaseColumn, setWheelbaseColumn)}
-                            pagination={false}
-                          />
-                        </section>
-                      </div>
+                        {/* -------------------- */}
+                        {/*     Make Table      */}
+                        {/* -------------------- */}
+                        <Table
+                          bordered
+                          className="make__table"
+                          scroll={{ x: '89rem', y: 600 }}
+                          expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
+                          onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
+                          expandable={{
+                            expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                            expandedRowRender: (record: TMakeTableState) => {
+                              let imageGalleryComponent = onExpandedRowRender(record);
+                              let makeWheelbaseCards = makeWheelbasesCardsComponent(record);
+
+                              return (
+                                <>
+                                  <div
+                                    style={{
+                                      marginBottom:
+                                        makeWheelbasesArray && makeWheelbasesArray.length > 0 ? '2rem' : 'none',
+                                    }}
+                                  >
+                                    {makeWheelbaseCards}
+                                  </div>
+                                  {imageGalleryComponent}
+                                </>
+                              );
+                            },
+                          }}
+                          // components={components}
+                          dataSource={makeTableState}
+                          columns={convertHeader(makeColumn, setMakeColumn)}
+                          // pagination={false}
+                        />
+                      </section>
+                    </>
+                  ) : (
+                    <div className="catalog__loading-div">
+                      <Ripple />
                     </div>
-
-                    {/* ====================== */}
-                    {/*      Makes/Models Section     */}
-                    {/* ====================== */}
-
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Models</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, make: true })}
-                        >
-                          Create New Make
-                        </Button>
-                      </div>
-
-                      {/* -------------------- */}
-                      {/*     Make Table      */}
-                      {/* -------------------- */}
-                      <Table
-                        bordered
-                        className="make__table"
-                        scroll={{ x: '89rem', y: 600 }}
-                        expandedRowKeys={expandedRowKeys} // this allow only 1 row to expand at a time
-                        onExpand={onTableRowExpand} //this allow only 1 row to expand at a time
-                        expandable={{
-                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
-                          expandedRowRender: (record: TMakeTableState) => {
-                            let imageGalleryComponent = onExpandedRowRender(record);
-                            let makeWheelbaseCards = makeWheelbasesCardsComponent(record);
-
-                            return (
-                              <>
-                                <div
-                                  style={{
-                                    marginBottom:
-                                      makeWheelbasesArray && makeWheelbasesArray.length > 0 ? '2rem' : 'none',
-                                  }}
-                                >
-                                  {makeWheelbaseCards}
-                                </div>
-                                {imageGalleryComponent}
-                              </>
-                            );
-                          },
-                        }}
-                        // components={components}
-                        dataSource={makeTableState}
-                        columns={convertHeader(makeColumn, setMakeColumn)}
-                        // pagination={false}
-                      />
-                    </section>
-                  </>
-                ) : (
-                  <div className="padding_t-5">
-                    <Loading />
-                  </div>
-                )}
-              </section>
-            </div>
-          </CustomContainer>
+                  )}
+                </section>
+              </div>
+            </CustomContainer>
+          </ParallaxContainer>
         </LayoutComponent>
       </Layout>
+      <Footer />
     </>
   );
 };

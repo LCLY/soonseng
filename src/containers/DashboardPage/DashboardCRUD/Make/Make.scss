@@ -4,8 +4,10 @@
   /* ============ */
   &__section {
     // background: $section-grey;
-    padding: 1rem 2rem 2rem 2rem;
+    padding: 2rem 2rem 2rem 2rem;
     margin-bottom: 2rem;
+    @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+    @include glassMorph(rgba(255, 255, 255, 0.151), 20px, rgba(255, 255, 255, 0.111), 1rem);
 
     /* ------------------------------ */
     // top part section for two tables
@@ -62,6 +64,7 @@
   &__tab {
     &-outerdiv {
       margin-top: 3rem;
+      padding-bottom: 2rem;
       // padding-top: $navbar-height;
     }
   }
@@ -83,8 +86,11 @@
     //  the title of the header
     /* ---------------- */
     &-title {
-      font-family: $font-roboto;
+      font-family: $font-bebasneue;
       font-size: 2.5rem;
+      background: rgb(255, 255, 255);
+      border-right: 5px solid $primary-color-3;
+      padding: 0.5rem 5rem;
     }
   }
 

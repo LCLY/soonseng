@@ -2,9 +2,6 @@
   &__background {
     &-outerdiv {
       min-height: 100vh;
-      @include respond-to(phone-only) {
-        // padding-top: 51.58px; //height of navbar
-      }
     }
 
     &-image {
@@ -19,8 +16,9 @@
   }
   &__outerdiv {
     display: block;
-    @include respond-to(phone-only) {
-      // padding-top: 51.58px; //height of navbar
+    padding-top: 7.6rem; //height of navbar
+    @include respond-to($small-phone) {
+      padding-top: 5rem; //height of navbar
     }
   }
 

@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
+import { withRouter } from 'react-router-dom';
 import NumberFormat from 'react-number-format';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Breadcrumb, Button, Card, Divider, Empty, Skeleton } from 'antd';
@@ -13,6 +14,7 @@ import { img_loading_link } from 'src/shared/links';
 import { SalesPageContext } from 'src/containers/SalesPage/SalesPageContext';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj, TReceivedSalesLengthObj } from 'src/store/types/sales';
 import { TReceivedAccessoryObj, TReceivedBodyMakeObj, TReceivedBodyObj } from 'src/store/types/dashboard';
+import { RouteComponentProps } from 'react-router';
 
 export interface AccessorySectionProps {
   loading?: boolean;
@@ -45,9 +47,9 @@ export interface AccessorySectionProps {
   onStoreLocalOrders?: (localOrdersArray: TLocalOrderObj[]) => AppActions;
 }
 
-type Props = AccessorySectionProps;
+type Props = AccessorySectionProps & RouteComponentProps;
 
-const AccessorySection: React.FC<Props> = () => {
+const AccessorySection: React.FC<Props> = ({ history }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
@@ -526,7 +528,7 @@ const AccessorySection: React.FC<Props> = () => {
                 Back
               </Button>
 
-              {currentStep !== undefined && totalSteps !== undefined && currentStep < totalSteps - 1 && (
+              {currentStep !== undefined && totalSteps !== undefined && (
                 <Button
                   className="sales__btn"
                   type="primary"
@@ -547,10 +549,11 @@ const AccessorySection: React.FC<Props> = () => {
                     copyArray.push({ ...currentOrderObj, id: uuidv4() });
 
                     onStoreLocalOrders(copyArray);
-                    setCurrentStep(currentStep + 1);
+                    // setCurrentStep(currentStep + 1);
+                    history.push('/orders');
                   }}
                 >
-                  Complete
+                  Confirm Configuration
                 </Button>
               )}
             </div>
@@ -561,4 +564,4 @@ const AccessorySection: React.FC<Props> = () => {
   );
 };
 
-export default AccessorySection;
+export default withRouter(AccessorySection);

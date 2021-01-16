@@ -32,10 +32,27 @@
       display: flex;
       align-items: center;
       flex-direction: column;
-      padding-top: 3rem;
+
       width: auto;
       padding-bottom: 5rem;
       @include glassMorph(rgba(255, 255, 255, 0.05), 20px, rgba(97, 97, 97, 0.118), 0);
+
+      @include respond-to($small-phone) {
+        padding-top: 2rem;
+        margin-top: 4rem;
+        padding-bottom: 0;
+      }
+      @include respond-to($phone-only) {
+        padding-top: 1rem;
+        margin-top: 2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        padding-top: 3rem;
+        margin-top: 2rem;
+      }
+      @include respond-to($desktop-up) {
+        margin-top: 4rem;
+      }
     }
 
     &-innerdiv {
@@ -58,13 +75,12 @@
     &-div {
       display: flex;
       justify-content: flex-end;
-      margin: 3rem;
+      margin: 3rem 3rem 2rem 3rem;
       width: 95rem;
 
       @include respond-to($small-phone) {
         width: 95%;
-        margin-top: 0;
-        margin-bottom: 2rem;
+        margin: 1rem;
       }
 
       @include respond-to($phone-only) {

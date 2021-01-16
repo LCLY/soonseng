@@ -3,7 +3,7 @@ import './SalesPage.scss';
 // component
 import Footer from 'src/components/Footer/Footer';
 import BodyMakeSection from './StepSections/BodyMakeSection';
-import OverviewComponent from './StepSections/OverviewComponent';
+// import OverviewComponent from './StepSections/OverviewComponent';
 import Container from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Breadcrumb, Button, Divider, Steps } from 'antd';
+import { /* Breadcrumb, Button, Divider, */ Steps } from 'antd';
 
 // Util
 import {
@@ -26,7 +26,7 @@ import {
   STEPS_BODY,
   STEPS_ACCESSORY,
   STEPS_BODYMAKE,
-  STEPS_OVERVIEW,
+  // STEPS_OVERVIEW,
 } from 'src/shared/constants';
 import {
   TLocalOrderObj,
@@ -61,7 +61,7 @@ type Props = SalesPageProps & StateProps & DispatchProps & RouteComponentProps;
  * @category Pages
  */
 const SalesPage: React.FC<Props> = ({
-  history,
+  // history,
   // auth token
   auth_token,
   accessObj,
@@ -211,81 +211,81 @@ const SalesPage: React.FC<Props> = ({
     ],
   );
 
-  let SalesPageOverview = (
-    <>
-      <section className="sales__section">
-        <div className="sales__section-overview">
-          <div className="sales__breadcrumb-outerdiv">
-            <Breadcrumb separator=">" className="sales__breadcrumb">
-              <Breadcrumb.Item>
-                <span className="sales__breadcrumb-text">Tyre Count</span>
-                <span className="sales__breadcrumb-highlight">({currentTyre})</span>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span className="sales__breadcrumb-text">Length</span>
-                <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span className="sales__breadcrumb-text">Body</span>
-                {currentBody && <span className="sales__breadcrumb-highlight">({currentBody?.title})</span>}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span className="sales__breadcrumb-text">Option</span>
-                {currentBodyMake && (
-                  <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make_wheelbase.make.brand.title} ${currentBodyMake?.make_wheelbase.make.title} ${currentBodyMake?.make_wheelbase.make.series})`}</span>
-                )}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span className="sales__breadcrumb-text">Accessory</span>
-                <span className="sales__breadcrumb-highlight">({totalAccessoriesArrayLength} Items)</span>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span className="sales__breadcrumb-text">Overview</span>
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <Divider className="sales__section-header-divider" orientation="left">
-            <div className="sales__section-header">Current Configuration</div>
-          </Divider>
-        </div>
+  // let SalesPageOverview = (
+  //   <>
+  //     <section className="sales__section">
+  //       <div className="sales__section-overview">
+  //         <div className="sales__breadcrumb-outerdiv">
+  //           <Breadcrumb separator=">" className="sales__breadcrumb">
+  //             <Breadcrumb.Item>
+  //               <span className="sales__breadcrumb-text">Tyre Count</span>
+  //               <span className="sales__breadcrumb-highlight">({currentTyre})</span>
+  //             </Breadcrumb.Item>
+  //             <Breadcrumb.Item>
+  //               <span className="sales__breadcrumb-text">Length</span>
+  //               <span className="sales__breadcrumb-highlight">({currentLength?.title}ft)</span>
+  //             </Breadcrumb.Item>
+  //             <Breadcrumb.Item>
+  //               <span className="sales__breadcrumb-text">Body</span>
+  //               {currentBody && <span className="sales__breadcrumb-highlight">({currentBody?.title})</span>}
+  //             </Breadcrumb.Item>
+  //             <Breadcrumb.Item>
+  //               <span className="sales__breadcrumb-text">Option</span>
+  //               {currentBodyMake && (
+  //                 <span className="sales__breadcrumb-highlight">{`(${currentBodyMake?.make_wheelbase.make.brand.title} ${currentBodyMake?.make_wheelbase.make.title} ${currentBodyMake?.make_wheelbase.make.series})`}</span>
+  //               )}
+  //             </Breadcrumb.Item>
+  //             <Breadcrumb.Item>
+  //               <span className="sales__breadcrumb-text">Accessory</span>
+  //               <span className="sales__breadcrumb-highlight">({totalAccessoriesArrayLength} Items)</span>
+  //             </Breadcrumb.Item>
+  //             <Breadcrumb.Item>
+  //               <span className="sales__breadcrumb-text">Overview</span>
+  //             </Breadcrumb.Item>
+  //           </Breadcrumb>
+  //         </div>
+  //         <Divider className="sales__section-header-divider" orientation="left">
+  //           <div className="sales__section-header">Current Configuration</div>
+  //         </Divider>
+  //       </div>
 
-        {/* Add overview component in here */}
-        <OverviewComponent />
-        <Button
-          className="sales__overview-btn--another"
-          onClick={() => {
-            if (
-              setCurrentStep === undefined ||
-              setCurrentLength === undefined ||
-              setCurrentTyre === undefined ||
-              setCurrentBody === undefined ||
-              setCurrentBodyMake === undefined ||
-              setCurrentAccessory === undefined
-            )
-              return;
+  //       {/* Add overview component in here */}
+  //       <OverviewComponent />
+  //       <Button
+  //         className="sales__overview-btn--another"
+  //         onClick={() => {
+  //           if (
+  //             setCurrentStep === undefined ||
+  //             setCurrentLength === undefined ||
+  //             setCurrentTyre === undefined ||
+  //             setCurrentBody === undefined ||
+  //             setCurrentBodyMake === undefined ||
+  //             setCurrentAccessory === undefined
+  //           )
+  //             return;
 
-            setCurrentStep(0);
-            setCurrentLength(null);
-            setCurrentTyre(null);
-            setCurrentBody(null);
-            setCurrentAccessory(null);
-            setCurrentBodyMake(null);
-          }}
-        >
-          Add Another Order
-        </Button>
-        <Button
-          type="primary"
-          className="sales__overview-btn--allorders"
-          onClick={() => {
-            history.push('/orders');
-          }}
-        >
-          View All Orders
-        </Button>
-      </section>
-    </>
-  );
+  //           setCurrentStep(0);
+  //           setCurrentLength(null);
+  //           setCurrentTyre(null);
+  //           setCurrentBody(null);
+  //           setCurrentAccessory(null);
+  //           setCurrentBodyMake(null);
+  //         }}
+  //       >
+  //         Add Another Order
+  //       </Button>
+  //       <Button
+  //         type="primary"
+  //         className="sales__overview-btn--allorders"
+  //         onClick={() => {
+  //           history.push('/orders');
+  //         }}
+  //       >
+  //         View All Orders
+  //       </Button>
+  //     </section>
+  //   </>
+  // );
 
   /* =========================== */
   /*         components          */
@@ -317,11 +317,11 @@ const SalesPage: React.FC<Props> = ({
       title: STEPS_ACCESSORY,
       content: <AccessorySection />,
     },
-    {
-      step: 6,
-      title: STEPS_OVERVIEW,
-      content: SalesPageOverview,
-    },
+    // {
+    //   step: 6,
+    //   title: STEPS_OVERVIEW,
+    //   content: SalesPageOverview,
+    // },
   ];
 
   /* =========================== */

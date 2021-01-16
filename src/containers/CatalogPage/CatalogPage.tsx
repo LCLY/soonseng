@@ -295,7 +295,7 @@ const CatalogPage: React.FC<Props> = ({
                     ...modalContent,
                     make: { seriesTitle: series.title, makeTitle: '' },
                   });
-                  createMakeForm.setFieldsValue({ makeSeriesId: series.id });
+                  createMakeForm.setFieldsValue({ makeSeriesId: series.id, makeBrandId: catalog.brand.id });
                   // show the modal
                   setShowCreateModal({ ...showCreateModal, make: true });
                 }}
@@ -530,7 +530,7 @@ const CatalogPage: React.FC<Props> = ({
         loading={dashboardLoading !== undefined && dashboardLoading}
       />
 
-      <NavbarComponent />
+      <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
       {/* background image in outerdiv */}
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
         <div className="catalog__outerdiv">

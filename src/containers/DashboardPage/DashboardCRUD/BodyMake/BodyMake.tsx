@@ -1,15 +1,32 @@
 import React, { useEffect, useState, ReactText } from 'react';
 import './BodyMake.scss';
 /*components*/
-import Loading from 'src/components/Loading/Loading';
+import Footer from 'src/components/Footer/Footer';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 /*3rd party lib*/
+import {
+  Button,
+  Form,
+  Select,
+  Input,
+  Layout,
+  notification,
+  Table,
+  Tag,
+  Tooltip,
+  Modal,
+  Card,
+  Carousel,
+  Skeleton,
+} from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import LazyLoad from 'react-lazyload';
 import { connect } from 'react-redux';
@@ -43,23 +60,9 @@ import {
   TReceivedBodyMakeAccessoryObj,
 } from 'src/store/types/dashboard';
 import { RootState } from 'src';
+import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { img_not_available_link, img_loading_link } from 'src/shared/links';
-import {
-  Button,
-  Form,
-  Select,
-  Input,
-  Layout,
-  notification,
-  Table,
-  Tag,
-  Tooltip,
-  Modal,
-  Card,
-  Carousel,
-  Skeleton,
-} from 'antd';
 
 const { Option } = Select;
 
@@ -1368,75 +1371,78 @@ const BodyMake: React.FC<Props> = ({
       {createBodyMakeAccessoryModal}
       {updateBodyMakeAccessoryModal}
       {deleteBodyMakeAccessoryModal}
+      <NavbarComponent activePage="bodymake" defaultOpenKeys="dashboard" />
 
       <Layout style={{ overflow: 'hidden' }}>
-        <NavbarComponent activePage="dashboard" />
         <LayoutComponent>
-          <CustomContainer>
-            <div className="body__tab-outerdiv">
-              <section>
-                <HeaderTitle>Vehicle Option</HeaderTitle>
-                {bodyMakesArray ? (
-                  <>
-                    {/* ===================================== */}
-                    {/*         Body Make Section           */}
-                    {/* ===================================== */}
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Body Make</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => {
-                            // clear the make wheelbase first to start clean everything when user starts to create a new body make
-                            onClearMakeWheelbase();
-                            setShowCreateModal({ ...showCreateModal, body_make: true });
+          <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
+            <CustomContainer>
+              <div className="body__tab-outerdiv">
+                <section>
+                  <HeaderTitle>Vehicle Option</HeaderTitle>
+                  {bodyMakesArray ? (
+                    <>
+                      {/* ===================================== */}
+                      {/*         Body Make Section           */}
+                      {/* ===================================== */}
+                      <section className="make__section">
+                        <div className="make__header-div ">
+                          <div className="make__header-title">Body Make</div>
+                          <Button
+                            type="primary"
+                            className="make__brand-btn"
+                            onClick={() => {
+                              // clear the make wheelbase first to start clean everything when user starts to create a new body make
+                              onClearMakeWheelbase();
+                              setShowCreateModal({ ...showCreateModal, body_make: true });
+                            }}
+                          >
+                            Create Body Make
+                          </Button>
+                        </div>
+                        {/* ----------------------- */}
+                        {/*    Body Make Table    */}
+                        {/* ----------------------- */}
+                        <Table
+                          bordered
+                          className="body__table"
+                          scroll={{ x: '89rem', y: 600 }}
+                          dataSource={bodyMakeTableState}
+                          expandedRowKeys={expandedRowKeys}
+                          onExpand={(expanded: boolean, record: TBodyMakeTableState) =>
+                            onTableRowExpand(expanded, record, setExpandedRowKeys)
+                          }
+                          expandable={{
+                            expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
+                            expandedRowRender: (record: TBodyMakeTableState) => {
+                              let bodyMakeAccessoriesCards = bodyMakeAccessoriesCardsComponent(record);
+                              let imageGalleryComponent = onExpandedRowRender(record);
+                              return (
+                                <>
+                                  <div style={{ marginBottom: record.bodyMakeImages.length > 0 ? '2rem' : 'none' }}>
+                                    {bodyMakeAccessoriesCards}
+                                  </div>
+                                  {imageGalleryComponent}
+                                </>
+                              );
+                            },
                           }}
-                        >
-                          Create Body Make
-                        </Button>
-                      </div>
-                      {/* ----------------------- */}
-                      {/*    Body Make Table    */}
-                      {/* ----------------------- */}
-                      <Table
-                        bordered
-                        className="body__table"
-                        scroll={{ x: '89rem', y: 600 }}
-                        dataSource={bodyMakeTableState}
-                        expandedRowKeys={expandedRowKeys}
-                        onExpand={(expanded: boolean, record: TBodyMakeTableState) =>
-                          onTableRowExpand(expanded, record, setExpandedRowKeys)
-                        }
-                        expandable={{
-                          expandIcon: ({ expanded, record }) => onExpandIcon(expanded, record),
-                          expandedRowRender: (record: TBodyMakeTableState) => {
-                            let bodyMakeAccessoriesCards = bodyMakeAccessoriesCardsComponent(record);
-                            let imageGalleryComponent = onExpandedRowRender(record);
-                            return (
-                              <>
-                                <div style={{ marginBottom: record.bodyMakeImages.length > 0 ? '2rem' : 'none' }}>
-                                  {bodyMakeAccessoriesCards}
-                                </div>
-                                {imageGalleryComponent}
-                              </>
-                            );
-                          },
-                        }}
-                        columns={convertHeader(bodyMakeColumns, setbodyMakeColumns)}
-                      />
-                    </section>
-                  </>
-                ) : (
-                  <div className="padding_t-5">
-                    <Loading />
-                  </div>
-                )}
-              </section>
-            </div>
-          </CustomContainer>
+                          columns={convertHeader(bodyMakeColumns, setbodyMakeColumns)}
+                        />
+                      </section>
+                    </>
+                  ) : (
+                    <div className="catalog__loading-div">
+                      <Ripple />
+                    </div>
+                  )}
+                </section>
+              </div>
+            </CustomContainer>
+          </ParallaxContainer>
         </LayoutComponent>
       </Layout>
+      <Footer />
     </>
   );
 };

@@ -32,7 +32,7 @@ const DashboardPage: React.FC<Props> = () => {
 
   return (
     <>
-      <NavbarComponent activePage="dashboard" />
+      <NavbarComponent activePage="make" defaultOpenKeys="dashboard" />
       <section className="dashboard__section">
         <Tabs defaultActiveKey="make" tabPosition={width > 1200 ? 'left' : 'top'}>
           <TabPane tab="Make" key="make" className="dashboard__tab">

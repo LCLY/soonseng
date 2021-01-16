@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './ChargesFees.scss';
 /*Components*/
-import Loading from 'src/components/Loading/Loading';
-import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import Footer from 'src/components/Footer/Footer';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
+import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
-import CrudModal from 'src/components/Modal/Crud/CrudModal';
+import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -14,6 +16,7 @@ import { Dispatch, AnyAction } from 'redux';
 import { Button, Form, Layout, notification, Table } from 'antd';
 /*Util*/
 import { RootState } from 'src';
+import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TReceivedChargesFeesObj } from 'src/store/types/dashboard';
 import { convertHeader, convertPriceToFloat, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
@@ -285,51 +288,54 @@ const ChargesFees: React.FC<Props> = ({
         warningText={deleteModalContent.fees.feesTitle}
         backupWarningText={'this standard charges / fees'}
       />
+      <NavbarComponent activePage="fees" defaultOpenKeys="dashboard" />
       <Layout>
-        <NavbarComponent activePage="dashboard" />
         <LayoutComponent activeKey="accessory">
-          <CustomContainer>
-            <div className="make__tab-outerdiv">
-              <section>
-                <HeaderTitle>Standard Charges and Fees</HeaderTitle>
-                <>
-                  {chargesFeesArray ? (
-                    <section className="make__section">
-                      <div className="make__header-div ">
-                        <div className="make__header-title">Fees</div>
-                        <Button
-                          type="primary"
-                          className="make__brand-btn"
-                          onClick={() => setShowCreateModal({ ...showCreateModal, fees: true })}
-                        >
-                          Create New Fees
-                        </Button>
-                      </div>
+          <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
+            <CustomContainer>
+              <div className="make__tab-outerdiv">
+                <section>
+                  <HeaderTitle>Standard Charges and Fees</HeaderTitle>
+                  <>
+                    {chargesFeesArray ? (
+                      <section className="make__section">
+                        <div className="make__header-div ">
+                          <div className="make__header-title">Standard Charges & Fees</div>
+                          <Button
+                            type="primary"
+                            className="make__brand-btn"
+                            onClick={() => setShowCreateModal({ ...showCreateModal, fees: true })}
+                          >
+                            Create New Fees
+                          </Button>
+                        </div>
 
-                      {/* -------------------- */}
-                      {/*     Make Table      */}
-                      {/* -------------------- */}
-                      <Table
-                        bordered
-                        className="make__table"
-                        scroll={{ x: '89rem', y: 600 }}
-                        // components={components}
-                        dataSource={feesTableState}
-                        columns={convertHeader(feesColumns, setFeesColumns)}
-                        // pagination={false}
-                      />
-                    </section>
-                  ) : (
-                    <div className="padding_t-5">
-                      <Loading />
-                    </div>
-                  )}
-                </>
-              </section>
-            </div>
-          </CustomContainer>
+                        {/* -------------------- */}
+                        {/*     Make Table      */}
+                        {/* -------------------- */}
+                        <Table
+                          bordered
+                          className="make__table"
+                          scroll={{ x: '89rem', y: 600 }}
+                          // components={components}
+                          dataSource={feesTableState}
+                          columns={convertHeader(feesColumns, setFeesColumns)}
+                          // pagination={false}
+                        />
+                      </section>
+                    ) : (
+                      <div className="catalog__loading-div">
+                        <Ripple />
+                      </div>
+                    )}
+                  </>
+                </section>
+              </div>
+            </CustomContainer>
+          </ParallaxContainer>
         </LayoutComponent>
       </Layout>
+      <Footer />
     </>
   );
 };

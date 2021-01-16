@@ -1,10 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './NavbarComponent.scss';
 // components
+import Backdrop from '../Backdrop/Backdrop';
+import OrdersSlidebar from 'src/containers/OrdersPage/OrdersSlidebar/OrdersSlidebar';
 // 3rd party lib
-import { Dropdown, Menu } from 'antd';
 import { connect } from 'react-redux';
+import Sider from 'antd/lib/layout/Sider';
 import { AnyAction, Dispatch } from 'redux';
+import { Badge, Dropdown, Menu } from 'antd';
 import { Navbar, Nav } from 'react-bootstrap';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -18,12 +21,14 @@ import {
   ROUTE_LOGIN,
   ROUTE_SALES,
   ROUTE_LOGOUT,
-  ROUTE_ORDERS,
+  // ROUTE_ORDERS,
   ROUTE_CATALOG,
   ROUTE_DASHBOARD,
 } from 'src/shared/routes';
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
+import { TLocalOrderObj } from 'src/store/types/sales';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 
 /**
@@ -58,9 +63,26 @@ function useOutsideAlerter(
   }, [wrapperRef, dropdownRef, setShowPopUp]);
 }
 
+const { SubMenu } = Menu;
+
 interface NavbarComponentProps {
   /** Shows which active page it is currently */
-  activePage?: 'home' | 'sales' | 'about' | 'product' | 'contact' | 'about' | 'orders' | 'dashboard' | 'login';
+  activePage?:
+    | 'catalog'
+    | 'home'
+    | 'sales'
+    | 'body'
+    | 'about'
+    | 'product'
+    | 'contact'
+    | 'bodymake'
+    | 'accessory'
+    | 'fees'
+    | 'about'
+    | 'orders'
+    | 'make'
+    | 'login';
+  defaultOpenKeys?: 'product' | 'dashboard';
 }
 
 type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentProps;
@@ -74,12 +96,15 @@ type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentP
 
 const NavbarComponent: React.FC<Props> = ({
   history,
-  auth_token,
+  // auth_token,
   accessObj,
   userInfoObj,
-  authenticated,
   activePage,
-  onGetUserInfo,
+  // onGetUserInfo,
+  authenticated,
+  projectVersion,
+  defaultOpenKeys,
+  localOrdersArray,
 }) => {
   /* ======================================= */
   // state
@@ -97,51 +122,14 @@ const NavbarComponent: React.FC<Props> = ({
   const salesWrapperRef = useRef(null);
   const salesDropdownRef = useRef(null);
   useOutsideAlerter(salesWrapperRef, salesDropdownRef, setSalesDropdownVisible);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  const [showOrderSlidebar, setShowOrderSlidebar] = useState(false);
+  const { width } = useWindowDimensions();
 
   /* =========================================== */
   // methods
   /* =========================================== */
-
-  // const handleScroll = useCallback(
-  //   debounce(
-  //     () => {
-  //       // find current scroll position
-  //       const currentScrollPos = window.pageYOffset;
-  //       // set state based on location info
-  //       if (prevScrollPos > currentScrollPos) {
-  //         if (Math.abs(prevScrollPos - currentScrollPos) > 40 || currentScrollPos < 10) {
-  //           setVisible(true);
-  //           setDropdownVisible(false);
-  //           setSalesDropdownVisible(false);
-  //         }
-  //       } else {
-  //         if (Math.abs(prevScrollPos - currentScrollPos) > 35) {
-  //           setVisible(false);
-  //           setDropdownVisible(false);
-  //           setSalesDropdownVisible(false);
-  //         }
-  //       }
-
-  //       // // set state based on location info (explained in more detail below)
-  //       // setVisible(
-  //       //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 70) || currentScrollPos < 10,
-  //       // );
-
-  //       // setVisible(
-  //       //   (prevScrollPos > currentScrollPos && prevScrollPos - currentScrollPos > 20) || currentScrollPos < 10,
-  //       // );
-  //       // set state to new scroll position
-  //       setPrevScrollPos(currentScrollPos);
-  //     },
-  //     100,
-  //     {
-  //       leading: true,
-  //       trailing: false,
-  //     },
-  //   ),
-
-  //   [prevScrollPos],
-  // );
 
   /* ========================================== */
   //  Component
@@ -207,7 +195,7 @@ const NavbarComponent: React.FC<Props> = ({
     <div ref={salesDropdownRef}>
       <Menu>
         <Menu.Item
-          key="make"
+          key="catalog"
           onClick={() => {
             setSalesDropdownVisible(false);
           }}
@@ -220,22 +208,149 @@ const NavbarComponent: React.FC<Props> = ({
     </div>
   );
 
+  let mobileSidebar = (
+    <>
+      <Backdrop backdropZIndex={100} show={showMobileSidebar} clicked={() => setShowMobileSidebar(false)} />
+      <div
+        className="navbar__mobilesidebar"
+        style={{
+          transform: showMobileSidebar ? 'translateX(0%)' : 'translateX(-100%)',
+          transition: 'all 0.5s ease',
+        }}
+      >
+        <div className="navbar__mobilesidebar-top">
+          <Navbar.Brand className="navbar__logo" href="/">
+            <img
+              alt="soonseng logo"
+              className="navbar__logo"
+              onClick={() => history.push(ROUTE_HOME)}
+              src={SoonSengLogo}
+            />
+          </Navbar.Brand>
+        </div>
+
+        <div className="navbar__mobilesidebar-bottom">
+          <Sider className="navbar__mobilesidebar-sider" theme="light">
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={[activePage !== undefined ? activePage : '']}
+              defaultOpenKeys={[defaultOpenKeys !== undefined ? defaultOpenKeys : '']}
+            >
+              <Menu.Item key="home" icon={<i className="fas fa-home"></i>}>
+                <a className="navbar__dropdown-link" href={ROUTE_HOME}>
+                  Home
+                </a>
+              </Menu.Item>
+              <SubMenu
+                className="navbar__mobilesidebar-submenu"
+                key="product"
+                icon={<i className="fas fa-book margin_r-1"></i>}
+                title="Product"
+              >
+                <Menu.Item key="catalog">
+                  <a className="navbar__dropdown-link" href={ROUTE_CATALOG}>
+                    Vehicle Catalog
+                  </a>
+                </Menu.Item>
+              </SubMenu>
+              <Menu.Item key="sales" icon={<i className="fas fa-balance-scale"></i>}>
+                <a className="navbar__link" href={ROUTE_SALES}>
+                  Sales
+                </a>
+              </Menu.Item>
+
+              {accessObj?.showSalesDashboard && (
+                <SubMenu
+                  className="navbar__mobilesidebar-submenu"
+                  key="dashboard"
+                  icon={<i className="fas fa-columns margin_r-1"></i>}
+                  title="Dashboard"
+                >
+                  <Menu.Item key="make">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
+                      Model
+                    </a>
+                  </Menu.Item>
+                  <Menu.Item key="body">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.body}>
+                      Body
+                    </a>
+                  </Menu.Item>
+                  <Menu.Item key="accessory">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.accessory}>
+                      Accessory
+                    </a>
+                  </Menu.Item>
+                  <Menu.Item key="bodymake">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.body_make}>
+                      Model with body
+                    </a>
+                  </Menu.Item>
+                  <Menu.Item key="fees">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.fees}>
+                      Standard Charges
+                    </a>
+                  </Menu.Item>
+                </SubMenu>
+              )}
+
+              <Menu.Item
+                key="login"
+                icon={authenticated ? <i className="fas fa-sign-out-alt"></i> : <i className="fas fa-sign-in-alt"></i>}
+              >
+                {authenticated && userInfoObj ? (
+                  <a className={`navbar__link`} href={ROUTE_LOGOUT}>
+                    Sign Out
+                  </a>
+                ) : (
+                  <a className={`navbar__link`} href={ROUTE_LOGIN}>
+                    Sign In
+                  </a>
+                )}
+              </Menu.Item>
+            </Menu>
+          </Sider>
+        </div>
+        <div className="navbar__mobilesidebar-admin">
+          {userInfoObj && (
+            <>
+              <div className="">
+                {userInfoObj?.roles.title}&nbsp;{accessObj?.showSalesDashboard ? projectVersion : ''}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+
   /* ======================================== */
   // useEffect
   /* ======================================== */
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => window.removeEventListener('scroll', handleScroll);
-  // }, [prevScrollPos, visible, handleScroll]);
 
   useEffect(() => {
-    if (auth_token === undefined) return;
-    onGetUserInfo(auth_token);
-  }, [onGetUserInfo, auth_token]);
+    if ((document && showMobileSidebar) || (document && showOrderSlidebar)) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [showMobileSidebar, showOrderSlidebar]);
+
+  useEffect(() => {
+    if (width >= 1200) {
+      setShowMobileSidebar(false);
+    }
+  }, [width]);
+
+  // useEffect(() => {
+  //   if (auth_token === undefined) return;
+  //   onGetUserInfo(auth_token);
+  // }, [onGetUserInfo, auth_token]);
 
   return (
     <>
-      <div className="navbar__outerdiv" /*  style={{ top: visible ? '0' : '-100%' }} */>
+      {mobileSidebar}
+      <div className="navbar__outerdiv">
         <Navbar className="navbar__div" bg="primary" variant="dark" expand="md">
           <Navbar.Brand className="navbar__logo" href="#home">
             <img
@@ -245,84 +360,115 @@ const NavbarComponent: React.FC<Props> = ({
               src={SoonSengLogo}
             />
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto navbar__wrapper">
-              <div className="navbar__left-div">
-                <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
-                  <a className="navbar__link" href={ROUTE_HOME}>
-                    <i className="fas fa-home"></i>&nbsp;Home
-                  </a>
-                </div>
-                <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
-                  <Dropdown visible={salesDropdownVisible} overlay={salesMenu} trigger={['click']}>
-                    <span className="navbar__link" ref={salesWrapperRef} onClick={() => setSalesDropdownVisible(true)}>
-                      {/* SALES <DownOutlined /> */}
-                      <i className="fas fa-book"></i>&nbsp;Product
+          <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
+            {localOrdersArray !== undefined && (
+              <Badge count={localOrdersArray.length} showZero size="small" className="navbar__icon-cart--mobile">
+                <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
+              </Badge>
+            )}
+            <input
+              type="checkbox"
+              id="header__toggle"
+              checked={showMobileSidebar}
+              className="navbar__bars-checkbox"
+              readOnly
+            />
+            <label
+              htmlFor="header__toggle"
+              className="navbar__bars-button navbar__bars-div"
+              onClick={() => {
+                setShowMobileSidebar(!showMobileSidebar);
+              }}
+            >
+              <div className="navbar__bars-icon">&nbsp;</div>
+            </label>
+          </div>
+
+          <Nav className="navbar__wrapper">
+            <div className="navbar__left-div">
+              <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
+                <a className="navbar__link" href={ROUTE_HOME}>
+                  <i className="fas fa-home"></i>&nbsp;Home
+                </a>
+              </div>
+              <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
+                <Dropdown visible={salesDropdownVisible} overlay={salesMenu} trigger={['click']}>
+                  <span className="navbar__link" ref={salesWrapperRef} onClick={() => setSalesDropdownVisible(true)}>
+                    <i className="fas fa-book"></i>&nbsp;Product
+                  </span>
+                </Dropdown>
+              </div>
+              <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
+                <a className="navbar__link" href={ROUTE_SALES}>
+                  <i className="fas fa-balance-scale"></i>&nbsp;Sales
+                </a>
+              </div>
+              {/* ABOUT US */}
+              {/* <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
+          <span className="navbar__link" onClick={() => history.push('/about')}>
+            <i className="fas fa-address-card"></i>&nbsp;About us
+          </span>
+        </div> */}
+              {/* CONTACT */}
+              {/* <div className={`navbar__link-div ${activePage === 'contact' ? 'active' : ''}`}>
+          <span className="navbar__link" onClick={() => history.push('/contact')}>
+            <i className="fas fa-address-book"></i>&nbsp;Contact
+          </span>
+        </div> */}
+
+              {/* only show dashboard when bool is true */}
+              {accessObj?.showSalesDashboard ? (
+                <div className={`navbar__link-div`}>
+                  <Dropdown visible={dropdownVisible} overlay={dashboardMenu} trigger={['click']}>
+                    <span className="navbar__link" ref={wrapperRef} onClick={() => setDropdownVisible(true)}>
+                      <i className="fas fa-columns"></i>&nbsp;Dashboard
                     </span>
                   </Dropdown>
                 </div>
-                <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
-                  <a className="navbar__link" href={ROUTE_SALES}>
-                    <i className="fas fa-balance-scale"></i>&nbsp;Sales
-                  </a>
-                </div>
-                {/* ABOUT US */}
-                {/* <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
-                  <span className="navbar__link" onClick={() => history.push('/about')}>
-                    <i className="fas fa-address-card"></i>&nbsp;About us
-                  </span>
-                </div> */}
-                {/* CONTACT */}
-                {/* <div className={`navbar__link-div ${activePage === 'contact' ? 'active' : ''}`}>
-                  <span className="navbar__link" onClick={() => history.push('/contact')}>
-                    <i className="fas fa-address-book"></i>&nbsp;Contact
-                  </span>
-                </div> */}
+              ) : null}
+            </div>
+            <div className="navbar__right-div">
+              {/* only show if user info exist or not a normal user */}
+              {/* {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>} */}
+              {accessObj?.showSalesDashboard && <div className="navbar__version-div">{projectVersion}</div>}
 
-                {/* only show dashboard when bool is true */}
-                {accessObj?.showSalesDashboard ? (
-                  <div className={`navbar__link-div`}>
-                    <Dropdown visible={dropdownVisible} overlay={dashboardMenu} trigger={['click']}>
-                      <span className="navbar__link" ref={wrapperRef} onClick={() => setDropdownVisible(true)}>
-                        {/* DASHBOARD <DownOutlined /> */}
-                        <i className="fas fa-columns"></i>&nbsp;Dashboard
-                      </span>
-                    </Dropdown>
-                  </div>
-                ) : null}
-              </div>
-              <div className="navbar__right-div">
-                {/* only show if user info exist or not a normal user */}
-                {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>}
-                <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
-                  <div className={`navbar__link`}>
-                    {authenticated && userInfoObj ? (
-                      <>
-                        <a className={`navbar__link`} href={ROUTE_LOGOUT}>
-                          <i className="fas fa-sign-out-alt"></i>&nbsp;Sign Out
-                        </a>
-                      </>
-                    ) : (
-                      <>
-                        <a className={`navbar__link`} href={ROUTE_LOGIN}>
-                          <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
-                        </a>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
-                  <a className={`navbar__link`} href={ROUTE_ORDERS}>
-                    <ShoppingCartOutlined />
-                    &nbsp;Orders
-                  </a>
+              <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
+                <div className={`navbar__link`}>
+                  {authenticated && userInfoObj ? (
+                    <>
+                      <a className={`navbar__link`} href={ROUTE_LOGOUT}>
+                        <i className="fas fa-sign-out-alt"></i>&nbsp;Sign Out
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <a className={`navbar__link`} href={ROUTE_LOGIN}>
+                        <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
+                      </a>
+                    </>
+                  )}
                 </div>
               </div>
-            </Nav>
-          </Navbar.Collapse>
+
+              <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
+                {localOrdersArray !== undefined && (
+                  <Badge count={localOrdersArray.length} showZero size="small">
+                    {/* <a className={`navbar__link`} href={ROUTE_ORDERS}> */}
+                    <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
+                    {/* </a> */}
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </Nav>
         </Navbar>
       </div>
+
+      <OrdersSlidebar
+        showOrderSlidebar={showOrderSlidebar}
+        setShowOrderSlidebar={setShowOrderSlidebar}
+        style={{ transform: showOrderSlidebar ? 'translateX(0)' : 'translateX(100%)' }}
+      />
     </>
   );
 };
@@ -331,13 +477,17 @@ interface StateProps {
   auth_token?: string | null;
   authenticated?: boolean;
   accessObj?: TUserAccess;
+  projectVersion?: string;
   userInfoObj?: TReceivedUserInfoObj | null;
+  localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
     auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
+    projectVersion: state.general.projectVersion,
+    localOrdersArray: state.sales.localOrdersArray,
     authenticated: state.auth.auth_token !== null,
   };
 };
