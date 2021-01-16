@@ -265,28 +265,34 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                         </th>
                         {filteredLocalOrdersArray.map((order) => (
                           <td key={uuidv4()}>
-                            {order.bodyMakeObj?.width !== '' && order.bodyMakeObj?.width !== null && (
-                              <>
-                                Width:&nbsp;
-                                {order.bodyMakeObj?.width}
-                                <br />
-                              </>
-                            )}
+                            {order.bodyMakeObj?.width !== '' &&
+                              order.bodyMakeObj?.width !== '\' "' &&
+                              order.bodyMakeObj?.width !== null && (
+                                <>
+                                  Width:&nbsp;
+                                  {order.bodyMakeObj?.width}
+                                  <br />
+                                </>
+                              )}
 
-                            {order.bodyMakeObj?.depth !== '' && order.bodyMakeObj?.depth !== null && (
-                              <>
-                                Depth:&nbsp;
-                                {order.bodyMakeObj?.depth}
-                              </>
-                            )}
+                            {order.bodyMakeObj?.depth !== '' &&
+                              order.bodyMakeObj?.depth !== '\' "' &&
+                              order.bodyMakeObj?.depth !== null && (
+                                <>
+                                  Depth:&nbsp;
+                                  {order.bodyMakeObj?.depth}
+                                </>
+                              )}
 
-                            {order.bodyMakeObj?.height !== '' && order.bodyMakeObj?.height !== null && (
-                              <>
-                                <br />
-                                <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
-                                <div className="sales__selectarea-card-dimension">{order.bodyMakeObj?.height}</div>
-                              </>
-                            )}
+                            {order.bodyMakeObj?.height !== '' &&
+                              order.bodyMakeObj?.height !== '\' "' &&
+                              order.bodyMakeObj?.height !== null && (
+                                <>
+                                  <br />
+                                  <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
+                                  <div className="sales__selectarea-card-dimension">{order.bodyMakeObj?.height}</div>
+                                </>
+                              )}
                           </td>
                         ))}
                       </tr>
