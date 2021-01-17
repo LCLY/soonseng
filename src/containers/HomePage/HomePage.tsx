@@ -149,7 +149,7 @@ function HomePage() {
                 ENTERPRISE (1988)
               </h1>
               <div className="homepage__first-parallelogram">
-                <div className="homepage__first-parallelogram-text">- Your one stop commercial vehicle hub -</div>
+                <div className="homepage__first-parallelogram-text">- More than just lorries -</div>
               </div>
             </div>
             <div className="homepage__first-button-outerdiv">

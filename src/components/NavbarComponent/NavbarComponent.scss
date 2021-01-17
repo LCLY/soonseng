@@ -164,17 +164,36 @@
 
     &-link {
       text-decoration: none !important;
-      @include respond-to($small-phone) {
-        font-size: 1.3rem !important;
+    }
+
+    &-menu {
+      & .ant-menu-item-active {
+        background: rgba(179, 179, 179, 0.4) !important;
       }
-      @include respond-to($phone-only) {
-        font-size: 1.3rem !important;
+      & li {
+        &:hover {
+          background: rgba(169, 169, 169, 0.4) !important;
+        }
+
+        &:active {
+          background: rgba(169, 169, 169, 0.6) !important;
+        }
+        &:focus {
+          background: rgba(169, 169, 169, 0.6) !important;
+        }
       }
-      @include respond-to($tablet-portrait-up) {
-        font-size: 1.5rem !important;
+
+      & .ant-menu-item:active,
+      & .ant-menu-submenu-title:active {
+        background: rgba(169, 169, 169, 0.4) !important;
       }
-      @include respond-to($desktop-up) {
-        font-size: 1.8rem !important;
+
+      & .ant-menu:not(.ant-menu-horizontal) {
+        background: rgba(169, 169, 169, 0.4) !important;
+      }
+      & .ant-menu-item-selected {
+        color: white !important;
+        background: rgba(169, 169, 169, 0.4) !important;
       }
     }
   }
