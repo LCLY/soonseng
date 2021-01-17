@@ -14,6 +14,7 @@ import LengthSection from 'src/containers/SalesPage/StepSections/LengthSection';
 import BodySection from 'src/containers/SalesPage/StepSections/BodySection';
 // 3rd party lib
 import { v4 as uuidv4 } from 'uuid';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -378,6 +379,15 @@ const SalesPage: React.FC<Props> = ({
   /* ====================================================== */
   return (
     <>
+      <Helmet>
+        <meta
+          charSet="utf-8"
+          name="Sales"
+          content="Configure your desired vehicle specification with it's accessories and see their availabilities."
+        />
+        <title>Sales Configuration | Soon Seng Motors Enterprise (1988)</title>
+        <link rel="canonical" href="http://www.soonsenghino.com/sales" />
+      </Helmet>
       <NavbarComponent activePage="sales" />
       <ParallaxContainer
         bgImageUrl={holy5truck}

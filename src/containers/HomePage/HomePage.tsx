@@ -9,6 +9,7 @@ import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContaine
 // 3rd party lib
 import gsap from 'gsap';
 import { v4 as uuidv4 } from 'uuid';
+import { Helmet } from 'react-helmet';
 import { Button, Carousel } from 'antd';
 import ScrollAnimation from 'react-animate-on-scroll';
 
@@ -137,6 +138,15 @@ function HomePage() {
 
   return (
     <>
+      <Helmet>
+        <meta
+          charSet="utf-8"
+          name="Home Page"
+          content="Soon Seng Motors Enterprice (1988) - Variety of vehicle selections that strive to perform on every situations possible."
+        />
+        <title>Home | Soon Seng Motors Enterprise (1988)</title>
+        <link rel="canonical" href="http://www.soonsenghino.com" />
+      </Helmet>
       <NavbarComponent activePage="home" />
 
       <ParallaxContainer bgImageUrl={homepageImage} colorSettings="none" bgPosition={width < 768 ? '80% 0' : 'center'}>
