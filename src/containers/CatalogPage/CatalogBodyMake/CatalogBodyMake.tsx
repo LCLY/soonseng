@@ -279,23 +279,15 @@ const CatalogBodyMake: React.FC<Props> = ({
       copyArray.push(tempOrderObj);
 
       onStoreLocalOrders(copyArray);
-      // history.push(ROUTE_ORDERS);
-      // {deleteModalContent.make_wheelbase.text.wheelbase}mm wheelbase configuration
-      // </span>
-      // &nbsp;from&nbsp;
-      // <span className="dashboard__delete-message">{deleteModalContent.make_wheelbase.text.series}</span>
-      // &nbsp;along with other&nbsp;
-      // <span className="dashboard__delete-message">
-      //   {deleteModalContent.make_wheelbase.text.bodyMakesLength}&nbsp;bodies
-      // </span>
-
       const { bodyMakeObj } = tempOrderObj;
       if (bodyMakeObj) {
         const { make_wheelbase } = bodyMakeObj;
+        console.log(make_wheelbase);
         message.success(
-          `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.brand.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
+          `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
         );
       }
+      setPickAccessoryModalOpen(false);
     }
   };
 

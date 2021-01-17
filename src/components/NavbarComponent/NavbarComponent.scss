@@ -7,7 +7,7 @@
     z-index: $navbar;
 
     & .bg-primary {
-      @include glassMorph(rgba($primary-color-4, 0.342), 20px, rgba(255, 3, 3, 0.137), 0);
+      @include glassMorph(rgba($primary-color-4, 0.342), 10px, rgba(255, 3, 3, 0.137), 0);
       // @include glassMorph(
       //   $frontLayerColor: rgb(213, 213, 213),
       //   $blur: 20px,

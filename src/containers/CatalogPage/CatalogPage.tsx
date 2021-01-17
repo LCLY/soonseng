@@ -440,7 +440,7 @@ const CatalogPage: React.FC<Props> = ({
       <Helmet>
         <meta charSet="utf-8" name="Catalog" content="Catalog showing all available vehicle cargos to be ordered." />
         <title>Catalog | Soon Seng Motors Enterprise (1988)</title>
-        <link rel="canonical" href="http://www.soonsenghino.com/catalog" />
+        <link href="http://www.soonsenghino.com/catalog" />
       </Helmet>
       {/* ====================================== */}
       {/* Modals */}

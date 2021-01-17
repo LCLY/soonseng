@@ -239,15 +239,15 @@ const NavbarComponent: React.FC<Props> = ({
             </Menu>
           </Sider>
         </div>
-        <div className="navbar__mobilesidebar-admin">
-          {userInfoObj && (
+        {userInfoObj && (
+          <div className="navbar__mobilesidebar-admin">
             <>
               <div className="">
                 {userInfoObj?.roles.title}&nbsp;{accessObj?.showSalesDashboard ? projectVersion : ''}
               </div>
             </>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );
@@ -256,13 +256,13 @@ const NavbarComponent: React.FC<Props> = ({
   // useEffect
   /* ======================================== */
 
-  useEffect(() => {
-    if ((document && showMobileSidebar) || (document && showOrderSlidebar)) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [showMobileSidebar, showOrderSlidebar]);
+  // useEffect(() => {
+  //   if ((document && showMobileSidebar) || (document && showOrderSlidebar)) {
+  //     document.body.style.overflow = 'hidden';
+  //   } else {
+  //     document.body.style.overflow = 'auto';
+  //   }
+  // }, [showMobileSidebar, showOrderSlidebar]);
 
   useEffect(() => {
     if (width >= 1200) {

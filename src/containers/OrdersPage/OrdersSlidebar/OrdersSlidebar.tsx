@@ -16,7 +16,7 @@ import { RootState } from 'src';
 import { TUserAccess } from 'src/store/types/auth';
 import * as actions from 'src/store/actions/index';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
-import { ROUTE_COMPARISON, ROUTE_ORDERS } from 'src/shared/routes';
+import { ROUTE_COMPARISON, ROUTE_ORDERS, ROUTE_SALES } from 'src/shared/routes';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { convertPriceToFloat, convertSpaceInStringWithChar, handleKeyDown } from 'src/shared/Utils';
 const { Panel } = Collapse;
@@ -908,9 +908,11 @@ const OrdersSlidebar: React.FC<Props> = ({
                 <Button
                   className="ordersslidebar__overview-empty-btn"
                   type="primary"
-                  onClick={() => history.push('/sales')}
+                  // onClick={() => history.push('/sales')}
                 >
-                  Make a new order
+                  <a className="ordersslidebar__overview-link" href={ROUTE_SALES}>
+                    Make a new order
+                  </a>
                 </Button>
               </Empty>
             </div>

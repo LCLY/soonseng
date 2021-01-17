@@ -107,7 +107,7 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
           content="Check out the configurations you put together and make comparisons to see which one you prefer."
         />
         <title>Orders | Soon Seng Motors Enterprise (1988)</title>
-        <link rel="canonical" href="http://www.soonsenghino.com/orders" />
+        <link href="http://www.soonsenghino.com/orders" />
       </Helmet>
 
       {/* ========================================== */}

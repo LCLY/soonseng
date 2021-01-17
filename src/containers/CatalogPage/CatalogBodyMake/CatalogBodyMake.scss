@@ -35,7 +35,7 @@
       padding: 1.5rem 2rem;
       border-radius: 1rem;
 
-      @include glassMorph(rgba($primary-color-4, 0.3), 20px, rgba(44, 44, 44, 0.308), 1rem);
+      @include glassMorph(rgba($primary-color-4, 0.3), 10px, rgba(44, 44, 44, 0.308), 1rem);
       @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
       @include respond-to($small-phone) {
         padding: 1.5rem 0.5rem;
@@ -62,38 +62,6 @@
       @include respond-to($tablet-landscape-up) {
         flex-direction: row;
         height: 60rem;
-      }
-    }
-  }
-
-  /* ================================ */
-  // Brand title
-  /* ================================ */
-  &__brand {
-    &-title {
-      font-size: 5rem;
-      font-family: $font-firesans;
-      text-align: center;
-      color: white;
-      margin-bottom: 1rem;
-
-      padding: 2rem 0;
-      border-radius: 1rem;
-      @include glassMorph(rgba($primary-color-4, 0.6), 15px, rgba(75, 12, 12, 0.158), 1rem);
-
-      @include respond-to(phone-only) {
-        font-size: 3rem;
-        width: 20rem;
-        padding: 1rem 0;
-        margin-left: 0;
-      }
-
-      @include respond-to(tablet-portrait-up) {
-        // margin: 0 5rem;
-        width: 30rem;
-      }
-      @include respond-to(tablet-landscape-up) {
-        width: 30rem;
       }
     }
   }

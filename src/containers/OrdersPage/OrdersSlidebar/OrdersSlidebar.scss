@@ -69,6 +69,10 @@
       font-family: $font-firesans;
     }
 
+    &-link {
+      text-decoration: none !important;
+    }
+
     // the list of items
     &-list {
       // list-style: inside;

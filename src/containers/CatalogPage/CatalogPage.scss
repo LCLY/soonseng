@@ -117,7 +117,7 @@
         overflow-y: hidden;
         position: relative;
         margin-bottom: 2rem;
-        @include glassMorph(rgba(237, 237, 237, 0.08), 15px, rgba(230, 230, 230, 0.09), 1.5rem);
+        @include glassMorph(rgba(237, 237, 237, 0.08), 10px, rgba(230, 230, 230, 0.09), 1.5rem);
         @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
         @include respond-to($small-phone) {
@@ -308,25 +308,10 @@
       margin-left: 6rem;
 
       padding: 2rem 0;
-      position: relative;
       border-radius: 1rem;
-      background: rgba($primary-color-4, 0.4);
       @include shadow-func(0rem, 0rem, 1rem, 0.1rem, rgba(199, 199, 199, 0.583));
-
-      backdrop-filter: blur(15px);
-
-      /*  glass morphism */
-      &:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 1rem;
-        z-index: -1;
-        background: rgba(75, 12, 12, 0.158);
-      }
+      background: rgba($primary-color-4, 0.5);
+      background: linear-gradient(to right, rgba($primary-color-4, 0.7), rgba($primary-color-3, 0.3));
 
       @include respond-to($small-phone) {
         font-size: 3rem;
@@ -455,7 +440,7 @@
       width: 100%;
 
       background: white;
-      @include glassMorph(rgba(255, 255, 255, 0), 20px, rgba(0, 0, 0, 0), 2rem);
+      @include glassMorph(rgba(255, 255, 255, 0), 10px, rgba(0, 0, 0, 0), 2rem);
       @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
 
       @include respond-to($small-phone) {
