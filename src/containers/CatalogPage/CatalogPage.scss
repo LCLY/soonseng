@@ -490,8 +490,8 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
-      @include glassMorph(rgba(162, 162, 162, 0.289), 20px, rgba(182, 182, 182, 0.473), 0.5rem);
+      background: rgba(255, 255, 255, 0.233);
+      background: linear-gradient(to right, rgba(153, 153, 153, 0.789), rgba(197, 197, 197, 0.124));
 
       &:hover {
         transition: all 0.5s ease;
@@ -501,7 +501,7 @@
       &:active {
         transition: all 0.2s ease;
         box-shadow: none;
-        @include glassMorph(rgba(162, 162, 162, 0.289), 20px, rgba(182, 182, 182, 0.268), 0.5rem);
+        background: rgba(255, 255, 255, 0.453);
       }
 
       @include respond-to($small-phone) {

@@ -9,7 +9,8 @@
     z-index: $navbar + 1;
     transition: all 0.5s ease;
     border-left: 1px solid $translucent-grey;
-
+    will-change: transform;
+    backface-visibility: hidden;
     @include respond-to($small-phone) {
       width: 100vw;
     }
