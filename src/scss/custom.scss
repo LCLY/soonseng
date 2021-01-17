@@ -167,6 +167,22 @@ svg {
   }
 }
 
+.ant-dropdown {
+  & ul {
+    border: 1px solid $translucent-grey !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    background: linear-gradient(to right bottom, rgba(175, 175, 175, 0.6), rgba(39, 39, 39, 0.9)) !important;
+  }
+  & a {
+    color: white !important;
+  }
+}
+
+// .ant-menu-item:active,
+// .ant-menu-submenu-title:active {
+//   background: rgba(131, 131, 131, 0.549) !important;
+// }
+
 .blue-link-btn {
   color: #1890ff !important;
   // border-color: rgb(153, 180, 219) !important;

@@ -170,8 +170,9 @@ const CatalogPage: React.FC<Props> = ({
   /*  components  */
   /* ================================================== */
   const SeriesMenu = (props: { seriesTitle: string; brandId: number; seriesId: number }) => (
-    <Menu>
+    <Menu className="catalog__menu">
       <Menu.Item
+        className="catalog__menu-item"
         onClick={() => {
           updateSeriesForm.setFieldsValue({
             brand_id: props.brandId,
@@ -188,6 +189,7 @@ const CatalogPage: React.FC<Props> = ({
         &nbsp;&nbsp;Edit Series
       </Menu.Item>
       <Menu.Item
+        className="catalog__menu-item--danger"
         danger
         onClick={() => {
           setDeleteModalContent({
@@ -210,8 +212,9 @@ const CatalogPage: React.FC<Props> = ({
 
   // Menu for dropdown
   const MakeMenu = (props: { makeObj: TReceivedMakeObj; seriesObj: TReceivedSeriesObj }) => (
-    <Menu>
+    <Menu className="catalog__menu">
       <Menu.Item
+        className="catalog__menu-item"
         onClick={() => {
           updateMakeForm.setFieldsValue({
             makeId: props.makeObj.id,
@@ -240,6 +243,7 @@ const CatalogPage: React.FC<Props> = ({
         &nbsp;&nbsp;Edit Model
       </Menu.Item>
       <Menu.Item
+        className="catalog__menu-item--danger"
         danger
         onClick={() => {
           setDeleteModalContent({

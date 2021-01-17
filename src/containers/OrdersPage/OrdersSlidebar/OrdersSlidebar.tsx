@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './OrdersSlidebar.scss';
 /* components */
 /* 3rd party lib */
@@ -10,7 +10,7 @@ import NumberFormat from 'react-number-format';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { InfoCircleOutlined, CaretRightOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Tooltip, Empty, Menu, Collapse, Checkbox, Modal } from 'antd';
+import { Button, Dropdown, Tooltip, Empty, Form, Menu, Collapse, Checkbox, Modal } from 'antd';
 /* Util */
 import { RootState } from 'src';
 import { TUserAccess } from 'src/store/types/auth';
@@ -18,6 +18,7 @@ import * as actions from 'src/store/actions/index';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { ROUTE_COMPARISON, ROUTE_ORDERS } from 'src/shared/routes';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
+import { convertPriceToFloat, convertSpaceInStringWithChar, handleKeyDown } from 'src/shared/Utils';
 const { Panel } = Collapse;
 
 interface OrdersSlidebarProps {
@@ -27,40 +28,6 @@ interface OrdersSlidebarProps {
 }
 
 type Props = OrdersSlidebarProps & StateProps & DispatchProps & RouteComponentProps;
-
-/**
- * Hook that alerts clicks outside of the passed ref
- */
-function useOutsideAlerter(
-  wrapperRef: any,
-  dropdownRef: any,
-  compareModalOpen: boolean,
-  setShowPopUp: React.Dispatch<React.SetStateAction<boolean>>,
-) {
-  useEffect(() => {
-    /**
-     * Hide pop up if clicked on outside of element
-     */
-    function handleClickOutside(event: any) {
-      if (
-        !compareModalOpen &&
-        wrapperRef.current &&
-        dropdownRef.current &&
-        !wrapperRef.current.contains(event.target) &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setShowPopUp(false);
-      }
-    }
-
-    // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [wrapperRef, dropdownRef, compareModalOpen, setShowPopUp]);
-}
 
 const OrdersSlidebar: React.FC<Props> = ({
   style,
@@ -73,17 +40,16 @@ const OrdersSlidebar: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-
+  const [discountForm] = Form.useForm();
+  const [clickedOrder, setClickedOrder] = useState<TLocalOrderObj | null>(null);
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [expandedModelCollapse, setExpandedModelCollapse] = useState<string | string[]>([]);
   const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
   const [selectedMoreThanFour, setSelectedMoreThanFour] = useState(false);
   const [totalChecked, setTotalChecked] = useState(0);
   const [checkedConfigurations, setCheckedConfigurations] = useState<{ [orderId: string]: boolean } | null>(null);
-
-  const wrapperRef = useRef(null);
-  const dropdownRef = useRef(null);
-  useOutsideAlerter(wrapperRef, dropdownRef, compareModalOpen, setShowOrderSlidebar);
 
   /* ================================================== */
   /*  method */
@@ -151,6 +117,103 @@ const OrdersSlidebar: React.FC<Props> = ({
   }
   return (
     <>
+      {/* ========================================================= */}
+      {/* Discount modal */}
+      {/* ========================================================= */}
+      <Modal
+        title="Setting Discount"
+        visible={showDiscountModal}
+        onCancel={() => {
+          setShowDiscountInput(false);
+          setShowDiscountModal(false);
+        }}
+        footer={[
+          <Button
+            key={uuidv4()}
+            onClick={() => {
+              setShowDiscountInput(false);
+              setShowDiscountModal(false);
+            }}
+          >
+            Cancel
+          </Button>,
+          <React.Fragment key={uuidv4()}>
+            {showDiscountInput ? null : (
+              <Button
+                onClick={() => {
+                  if (clickedOrder && clickedOrder.bodyMakeObj) {
+                    const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
+                    history.push({
+                      pathname: `/quotation/${convertSpaceInStringWithChar(
+                        `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
+                        '',
+                      )}/${clickedOrder.id}`,
+                    });
+                  }
+                }}
+              >
+                No<span className="mobilehide-inline-block">&nbsp;, Proceed To Quotation</span>
+              </Button>
+            )}
+          </React.Fragment>,
+          <React.Fragment key={uuidv4()}>
+            {showDiscountInput ? (
+              <Button
+                type="primary"
+                onClick={() => {
+                  discountForm.submit();
+                }}
+              >
+                Generate Quotation
+              </Button>
+            ) : (
+              <Button type="primary" onClick={() => setShowDiscountInput(true)}>
+                Yes
+              </Button>
+            )}
+          </React.Fragment>,
+        ]}
+      >
+        {showDiscountInput ? (
+          <Form
+            form={discountForm}
+            onKeyDown={(e) => {
+              handleKeyDown(e, discountForm);
+            }}
+            onFinish={(values) => {
+              if (clickedOrder && clickedOrder.bodyMakeObj) {
+                const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
+                history.push({
+                  pathname: `/quotation/${convertSpaceInStringWithChar(
+                    `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
+                    '',
+                  )}/${clickedOrder.id}/${convertPriceToFloat(values.discount)}`,
+                });
+              }
+            }}
+          >
+            <Form.Item
+              className="make__form-item"
+              label="Discount"
+              name="discount"
+              rules={[{ required: true, message: 'Input discount here!' }]}
+            >
+              <NumberFormat
+                placeholder="Type discount here"
+                className="ant-input"
+                thousandSeparator={true}
+                prefix={'RM '}
+              />
+            </Form.Item>
+          </Form>
+        ) : (
+          <div>Are you setting discount for this quotation?</div>
+        )}
+      </Modal>
+
+      {/* ========================================================= */}
+      {/* Comparison modal */}
+      {/* ========================================================= */}
       <Modal
         title="Select up to 4 configurations to compare"
         visible={compareModalOpen}
@@ -214,8 +277,8 @@ const OrdersSlidebar: React.FC<Props> = ({
           })}
       </Modal>
 
-      <div className="ordersslidebar__div" style={style} ref={wrapperRef}>
-        <div className="ordersslidebar__top-div" ref={dropdownRef}>
+      <div className="ordersslidebar__div" style={style}>
+        <div className="ordersslidebar__top-div">
           <div className="ordersslidebar__title">
             <a className="ordersslidebar__title-link" href={ROUTE_ORDERS}>
               Orders
@@ -228,17 +291,15 @@ const OrdersSlidebar: React.FC<Props> = ({
                   Total:&nbsp;<span className="ordersslidebar__total-text">{localOrdersArray.length}&nbsp;items</span>
                 </div>
 
-                <div className="orders__btn-comparison-div">
-                  <Tooltip title="Compare Specifications">
-                    <Button
-                      disabled={localOrdersArray.length <= 1}
-                      className="orders__btn-comparison"
-                      type="primary"
-                      onClick={() => setCompareModalOpen(true)}
-                    >
-                      Compare
-                    </Button>
-                  </Tooltip>
+                <div className="ordersslidebar__btn-comparison-div">
+                  <Button
+                    disabled={localOrdersArray.length <= 1}
+                    className="ordersslidebar__btn-comparison"
+                    type="primary"
+                    onClick={() => setCompareModalOpen(true)}
+                  >
+                    Compare
+                  </Button>
                 </div>
               </div>
             )}
@@ -412,12 +473,13 @@ const OrdersSlidebar: React.FC<Props> = ({
                 let grandTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice;
 
                 let moreOptionsDropdown = (
-                  <Menu>
+                  <Menu className="catalog__menu">
                     {accessObj.showPriceSalesPage && (
                       <Menu.Item
+                        className="catalog__menu-item"
                         onClick={() => {
-                          //   setShowDiscountModal(true);
-                          //   setClickedOrder(order);
+                          setShowDiscountModal(true);
+                          setClickedOrder(order);
                         }}
                       >
                         Generate quotation
@@ -425,9 +487,12 @@ const OrdersSlidebar: React.FC<Props> = ({
                     )}
                     <Menu.Item
                       danger
+                      className="catalog__menu-item--danger"
                       onClick={() => {
-                        if (onRemoveAnOrder === undefined) return;
-                        onRemoveAnOrder(order.id, localOrdersArray);
+                        if (onRemoveAnOrder !== undefined) {
+                          console.log('hello');
+                          onRemoveAnOrder(order.id, localOrdersArray);
+                        }
                       }}
                     >
                       Remove from order
@@ -811,44 +876,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                             </div>
                           </>
                         )}
-                        {/* <hr /> */}
 
-                        {/* ======================== */}
-                        {/* Total Price */}
-                        {/* ======================== */}
-                        {/* {accessObj.showPriceSalesPage && (
-                        <div className="flex space-between">
-                          <span className="ordersslidebar__overview-row-content-subheader">Total Price</span>
-                          <span className="ordersslidebar__overview-row-content-subheader-price--prediscount">
-                            <NumberFormat
-                              displayType={'text'}
-                              thousandSeparator={true}
-                              value={prediscountTotalPrice.toFixed(2)}
-                            />
-                          </span>
-                        </div>
-                      )} */}
-
-                        {/* ======================== */}
-                        {/* DISCOUNT */}
-                        {/* ======================== */}
-                        {/* {accessObj.showPriceSalesPage && (
-                        <>
-                          <div className="flex space-between">
-                            <span className="ordersslidebar__overview-row-content-subheader ordersslidebar__overview-row-content-subheader--discount">
-                              Hino Discount
-                            </span>
-                            <span className="ordersslidebar__overview-row-content-subheader-price">
-                              -&nbsp;
-                              <NumberFormat
-                                displayType={'text'}
-                                thousandSeparator={true}
-                                value={Math.abs(discountPrice).toFixed(2)}
-                              />
-                            </span>
-                          </div>
-                        </>
-                      )} */}
                         {/* ======================== */}
                         {/* TOTAL ON THE ROAD PRICE  */}
                         {/* ======================== */}
@@ -870,17 +898,6 @@ const OrdersSlidebar: React.FC<Props> = ({
                           </div>
                         )}
                       </section>
-                      {/* <div className="sales__btn-div">
-                      <Button
-                        className="sales__btn sales__btn--back margin_r-1"
-                        onClick={() => {
-                          if (setCurrentStep === undefined || currentStep === undefined) return;
-                          setCurrentStep(currentStep - 1);
-                        }}
-                      >
-                        Back
-                      </Button>
-                    </div> */}
                     </div>
                   </div>
                 );

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './NavbarComponent.scss';
 // components
 import Backdrop from '../Backdrop/Backdrop';
@@ -30,38 +30,6 @@ import * as actions from 'src/store/actions/index';
 import { TLocalOrderObj } from 'src/store/types/sales';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
-
-/**
- * Hook that alerts clicks outside of the passed ref
- */
-function useOutsideAlerter(
-  wrapperRef: any,
-  dropdownRef: any,
-  setShowPopUp: React.Dispatch<React.SetStateAction<boolean>>,
-) {
-  useEffect(() => {
-    /**
-     * Hide pop up if clicked on outside of element
-     */
-    function handleClickOutside(event: any) {
-      if (
-        wrapperRef.current &&
-        dropdownRef.current &&
-        !wrapperRef.current.contains(event.target) &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setShowPopUp(false);
-      }
-    }
-
-    // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [wrapperRef, dropdownRef, setShowPopUp]);
-}
 
 const { SubMenu } = Menu;
 
@@ -113,17 +81,7 @@ const NavbarComponent: React.FC<Props> = ({
   // navbar visibility
   // const [visible, setVisible] = useState(true);
 
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const wrapperRef = useRef(null);
-  const dropdownRef = useRef(null);
-  useOutsideAlerter(wrapperRef, dropdownRef, setDropdownVisible);
-
-  const [salesDropdownVisible, setSalesDropdownVisible] = useState(false);
-  const salesWrapperRef = useRef(null);
-  const salesDropdownRef = useRef(null);
-  useOutsideAlerter(salesWrapperRef, salesDropdownRef, setSalesDropdownVisible);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
-
   const [showOrderSlidebar, setShowOrderSlidebar] = useState(false);
   const { width } = useWindowDimensions();
 
@@ -135,54 +93,29 @@ const NavbarComponent: React.FC<Props> = ({
   //  Component
   /* ========================================== */
   const dashboardMenu = (
-    <div ref={dropdownRef}>
-      <Menu>
-        <Menu.Item
-          key="make"
-          onClick={() => {
-            setDropdownVisible(false);
-          }}
-        >
+    <div>
+      <Menu className="navbar__dropdown-menu">
+        <Menu.Item key="make">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
             Model
           </a>
         </Menu.Item>
-        <Menu.Item
-          key="body"
-          onClick={() => {
-            setDropdownVisible(false);
-          }}
-        >
+        <Menu.Item key="body">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.body}>
             Body
           </a>
         </Menu.Item>
-        <Menu.Item
-          key="accessory"
-          onClick={() => {
-            setDropdownVisible(false);
-          }}
-        >
+        <Menu.Item key="accessory">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.accessory}>
             Accessory
           </a>
         </Menu.Item>
-        <Menu.Item
-          key="body_make"
-          onClick={() => {
-            setDropdownVisible(false);
-          }}
-        >
+        <Menu.Item key="body_make">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.body_make}>
             Model with body
           </a>
         </Menu.Item>
-        <Menu.Item
-          key="fees"
-          onClick={() => {
-            setDropdownVisible(false);
-          }}
-        >
+        <Menu.Item key="fees">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.fees}>
             Processing Fees
           </a>
@@ -192,14 +125,9 @@ const NavbarComponent: React.FC<Props> = ({
   );
 
   const salesMenu = (
-    <div ref={salesDropdownRef}>
-      <Menu>
-        <Menu.Item
-          key="catalog"
-          onClick={() => {
-            setSalesDropdownVisible(false);
-          }}
-        >
+    <div>
+      <Menu className="navbar__dropdown-menu">
+        <Menu.Item key="catalog">
           <a className="navbar__dropdown-link" href={ROUTE_CATALOG}>
             Vehicle Catalog
           </a>
@@ -350,6 +278,8 @@ const NavbarComponent: React.FC<Props> = ({
   return (
     <>
       {mobileSidebar}
+      <Backdrop backdropZIndex={100} show={showOrderSlidebar} clicked={() => setShowOrderSlidebar(false)} />
+
       <div className="navbar__outerdiv">
         <Navbar className="navbar__div" bg="primary" variant="dark" expand="md">
           <Navbar.Brand className="navbar__logo" href="#home">
@@ -392,8 +322,8 @@ const NavbarComponent: React.FC<Props> = ({
                 </a>
               </div>
               <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
-                <Dropdown visible={salesDropdownVisible} overlay={salesMenu} trigger={['click']}>
-                  <span className="navbar__link" ref={salesWrapperRef} onClick={() => setSalesDropdownVisible(true)}>
+                <Dropdown overlay={salesMenu} trigger={['hover']} overlayStyle={{ fill: 'blue' }}>
+                  <span className="navbar__link">
                     <i className="fas fa-book"></i>&nbsp;Product
                   </span>
                 </Dropdown>
@@ -419,8 +349,8 @@ const NavbarComponent: React.FC<Props> = ({
               {/* only show dashboard when bool is true */}
               {accessObj?.showSalesDashboard ? (
                 <div className={`navbar__link-div`}>
-                  <Dropdown visible={dropdownVisible} overlay={dashboardMenu} trigger={['click']}>
-                    <span className="navbar__link" ref={wrapperRef} onClick={() => setDropdownVisible(true)}>
+                  <Dropdown overlay={dashboardMenu}>
+                    <span className="navbar__link">
                       <i className="fas fa-columns"></i>&nbsp;Dashboard
                     </span>
                   </Dropdown>

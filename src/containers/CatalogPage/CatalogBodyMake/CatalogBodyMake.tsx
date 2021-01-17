@@ -26,11 +26,12 @@ import {
   Tooltip,
   Menu,
   Tag,
+  message,
 } from 'antd';
 /* Util */
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
-import { ROUTE_ORDERS } from 'src/shared/routes';
+// import { ROUTE_ORDERS } from 'src/shared/routes';
 import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
@@ -270,11 +271,31 @@ const CatalogBodyMake: React.FC<Props> = ({
       tempOrderObj.bodyRelatedAccessoriesArray = tempBodyRelatedAccessoriesArray;
       tempOrderObj.dimensionRelatedAccessoriesArray = tempDimensionRelatedAccessoriesArray;
 
+      let totalAccessoriesLength =
+        tempGeneralAccessoriesArray.length +
+        tempBodyRelatedAccessoriesArray.length +
+        tempDimensionRelatedAccessoriesArray.length;
       // push that updated orderObj with the latest accessories array
       copyArray.push(tempOrderObj);
 
       onStoreLocalOrders(copyArray);
-      history.push(ROUTE_ORDERS);
+      // history.push(ROUTE_ORDERS);
+      // {deleteModalContent.make_wheelbase.text.wheelbase}mm wheelbase configuration
+      // </span>
+      // &nbsp;from&nbsp;
+      // <span className="dashboard__delete-message">{deleteModalContent.make_wheelbase.text.series}</span>
+      // &nbsp;along with other&nbsp;
+      // <span className="dashboard__delete-message">
+      //   {deleteModalContent.make_wheelbase.text.bodyMakesLength}&nbsp;bodies
+      // </span>
+
+      const { bodyMakeObj } = tempOrderObj;
+      if (bodyMakeObj) {
+        const { make_wheelbase } = bodyMakeObj;
+        message.success(
+          `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.brand.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
+        );
+      }
     }
   };
 
@@ -772,8 +793,9 @@ const CatalogBodyMake: React.FC<Props> = ({
   );
 
   const BodyMakeMenu = ({ bodyMakeObj }: { bodyMakeObj: TReceivedBodyMakeObj }) => (
-    <Menu>
+    <Menu className="catalog__menu">
       <Menu.Item
+        className="catalog__menu-item"
         onClick={() => {
           setModalContent({
             ...modalContent,
@@ -808,6 +830,7 @@ const CatalogBodyMake: React.FC<Props> = ({
         &nbsp;&nbsp;Edit Body
       </Menu.Item>
       <Menu.Item
+        className="catalog__menu-item"
         onClick={() => {
           // set the current body make obj
           setCurrentBodyMake(bodyMakeObj);
@@ -819,6 +842,7 @@ const CatalogBodyMake: React.FC<Props> = ({
       </Menu.Item>
       <Menu.Item
         danger
+        className="catalog__menu-item--danger"
         onClick={() => {
           setDeleteModalContent({
             ...deleteModalContent,

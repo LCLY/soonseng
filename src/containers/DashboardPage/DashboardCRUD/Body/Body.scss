@@ -6,6 +6,7 @@
     &-outerdiv {
       margin-top: 3rem;
       padding-bottom: 3rem;
+      min-height: calc(100vh - 58rem);
       // padding-top: $navbar-height;
     }
   }
