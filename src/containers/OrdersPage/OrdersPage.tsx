@@ -8,6 +8,7 @@ import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContaine
 // 3rd party lib
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 import { Button, Checkbox, Divider, Modal } from 'antd';
 import { Dispatch, AnyAction } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -99,6 +100,19 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
   }
   return (
     <>
+      <Helmet>
+        <meta
+          charSet="utf-8"
+          name="Orders"
+          content="Check out the configurations you put together and make comparisons to see which one you prefer."
+        />
+        <title>Orders | Soon Seng Motors Enterprise (1988)</title>
+        <link rel="canonical" href="http://www.soonsenghino.com/orders" />
+      </Helmet>
+
+      {/* ========================================== */}
+      {/* compare modal */}
+      {/* ========================================== */}
       <Modal
         title="Select up to 4 configurations to compare"
         visible={modalOpen}

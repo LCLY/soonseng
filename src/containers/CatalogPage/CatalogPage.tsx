@@ -9,6 +9,7 @@ import CrudModal from 'src/components/Modal/Crud/CrudModal';
 /*3rd party lib*/
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
@@ -436,6 +437,11 @@ const CatalogPage: React.FC<Props> = ({
   /* ================================================== */
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" name="Catalog" content="Catalog showing all available vehicle cargos to be ordered." />
+        <title>Catalog | Soon Seng Motors Enterprise (1988)</title>
+        <link rel="canonical" href="http://www.soonsenghino.com/catalog" />
+      </Helmet>
       {/* ====================================== */}
       {/* Modals */}
       {/* ====================================== */}
