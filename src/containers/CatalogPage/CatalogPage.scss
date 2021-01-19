@@ -236,6 +236,7 @@
     &-image {
       width: 100% !important;
       height: 100% !important;
+      object-fit: cover;
       color: white !important;
       background: darken($primary-color-4, 6%) !important;
       @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
@@ -278,7 +279,7 @@
       border-top-left-radius: 5rem;
       z-index: 2;
       padding: 0.5rem 2rem 0.5rem 2.5rem;
-      background: rgba(rgb(224, 35, 35), 0.4);
+      background: rgba(rgb(181, 21, 21), 0.7);
 
       @include respond-to($small-phone) {
         font-size: 0.8rem;
@@ -574,6 +575,7 @@
         z-index: 2;
         background: white;
         color: $primary-color-4;
+        border: 2px solid rgba(204, 204, 204, 1);
 
         &:hover {
           transition: all 0.5s ease;
