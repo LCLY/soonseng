@@ -405,6 +405,7 @@
       width: 100% !important;
       height: 100% !important;
       color: white !important;
+      object-fit: cover;
       background: darken($primary-color-4, 6%) !important;
       @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
 

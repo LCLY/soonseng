@@ -302,8 +302,7 @@
 
   &__brand {
     &-title {
-      font-size: 5rem;
-      font-family: $font-firesans;
+      font-family: $font-archivo;
       text-align: center;
       color: white;
       margin-left: 6rem;
@@ -311,8 +310,8 @@
       padding: 2rem 0;
       border-radius: 1rem;
       @include shadow-func(0rem, 0rem, 1rem, 0.1rem, rgba(199, 199, 199, 0.583));
-      background: rgba($primary-color-4, 0.5);
-      background: linear-gradient(to right, rgba($primary-color-4, 0.7), rgba($primary-color-3, 0.3));
+      // background: linear-gradient(to right, rgba($primary-color-4, 0.7) 70%, rgba($primary-color-3, 0.4));
+      @include glassMorph(rgba($primary-color-4, 0.5), 3px, rgba(75, 27, 27, 0.138), 1rem);
 
       @include respond-to($small-phone) {
         font-size: 3rem;
@@ -331,6 +330,7 @@
         margin-left: 1rem;
         padding: 2rem 0;
         width: 30rem;
+        font-size: 4rem;
       }
       @include respond-to($tablet-landscape-up) {
         width: 30rem;
