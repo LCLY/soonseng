@@ -213,54 +213,56 @@ const CatalogPage: React.FC<Props> = ({
 
   // Menu for dropdown
   const MakeMenu = (props: { makeObj: TReceivedMakeObj; seriesObj: TReceivedSeriesObj }) => (
-    <Menu className="catalog__menu">
-      <Menu.Item
-        className="catalog__menu-item"
-        onClick={() => {
-          updateMakeForm.setFieldsValue({
-            makeId: props.makeObj.id,
-            gvw: props.makeObj.gvw,
-            price: props.makeObj.price,
-            title: props.makeObj.title,
-            makeAbs: props.makeObj.abs,
-            makeTire: props.makeObj.tire,
-            makeTorque: props.makeObj.torque,
-            makeConfig: props.makeObj.config,
-            makeSeriesId: props.seriesObj.id,
-            makeBrandId: props.makeObj.brand.id,
-            horsepower: props.makeObj.horsepower,
-            engine_cap: props.makeObj.engine_cap,
-            makeEmission: props.makeObj.emission,
-            transmission: props.makeObj.transmission,
-            year: props.makeObj.year ? moment(props.makeObj.year) : null,
-          });
-          let makeModalContent = { ...modalContent };
-          makeModalContent.make.makeTitle = props.makeObj.title;
-          setModalContent(makeModalContent);
-          setShowUpdateModal({ ...showUpdateModal, make: true });
-        }}
-      >
-        <i className="fas fa-edit" />
-        &nbsp;&nbsp;Edit Model
-      </Menu.Item>
-      <Menu.Item
-        className="catalog__menu-item--danger"
-        danger
-        onClick={() => {
-          setDeleteModalContent({
-            ...deleteModalContent,
-            make: {
+    <div className="catalog__menu-outerdiv">
+      <Menu className="catalog__menu">
+        <Menu.Item
+          className="catalog__menu-item"
+          onClick={() => {
+            updateMakeForm.setFieldsValue({
               makeId: props.makeObj.id,
-              warningText: props.makeObj.title,
-              backupWarningText: 'this model',
-            },
-          });
-          setShowDeleteModal({ ...showDeleteModal, make: true });
-        }}
-      >
-        <i className="fas fa-trash-alt" /> &nbsp;&nbsp;Delete Model
-      </Menu.Item>
-    </Menu>
+              gvw: props.makeObj.gvw,
+              price: props.makeObj.price,
+              title: props.makeObj.title,
+              makeAbs: props.makeObj.abs,
+              makeTire: props.makeObj.tire,
+              makeTorque: props.makeObj.torque,
+              makeConfig: props.makeObj.config,
+              makeSeriesId: props.seriesObj.id,
+              makeBrandId: props.makeObj.brand.id,
+              horsepower: props.makeObj.horsepower,
+              engine_cap: props.makeObj.engine_cap,
+              makeEmission: props.makeObj.emission,
+              transmission: props.makeObj.transmission,
+              year: props.makeObj.year ? moment(props.makeObj.year) : null,
+            });
+            let makeModalContent = { ...modalContent };
+            makeModalContent.make.makeTitle = props.makeObj.title;
+            setModalContent(makeModalContent);
+            setShowUpdateModal({ ...showUpdateModal, make: true });
+          }}
+        >
+          <i className="fas fa-edit" />
+          &nbsp;&nbsp;Edit Model
+        </Menu.Item>
+        <Menu.Item
+          className="catalog__menu-item--danger"
+          danger
+          onClick={() => {
+            setDeleteModalContent({
+              ...deleteModalContent,
+              make: {
+                makeId: props.makeObj.id,
+                warningText: props.makeObj.title,
+                backupWarningText: 'this model',
+              },
+            });
+            setShowDeleteModal({ ...showDeleteModal, make: true });
+          }}
+        >
+          <i className="fas fa-trash-alt" /> &nbsp;&nbsp;Delete Model
+        </Menu.Item>
+      </Menu>
+    </div>
   );
 
   const SeriesMakesGrid = ({
@@ -327,12 +329,18 @@ const CatalogPage: React.FC<Props> = ({
                       onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
                     >
                       {make.images.length > 0 ? (
-                        <img className="catalog__card-image" src={make.images[0].url} alt={make.images[0].filename} />
+                        <>
+                          <img className="catalog__card-image" src={make.images[0].url} alt={make.images[0].filename} />
+                          <div
+                            className="catalog__card-image-blurbg"
+                            style={{ backgroundImage: `url(${make.images[0].url})` }}
+                          ></div>
+                        </>
                       ) : (
-                        <Skeleton.Image className="catalog__card-image" />
+                        <Skeleton.Image className="catalog__card-image--skeleton" />
                       )}
-                      <div className="catalog__card-label">{make.title}</div>
                     </div>
+                    <div className="catalog__card-label">{make.title}</div>
                     {accessObj?.showAdminDashboard && (
                       <Tooltip title={`Edit / Delete ${make.title}`}>
                         <Dropdown

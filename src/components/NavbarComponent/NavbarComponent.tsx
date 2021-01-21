@@ -322,7 +322,7 @@ const NavbarComponent: React.FC<Props> = ({
                 </a>
               </div>
               <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
-                <Dropdown overlay={salesMenu} trigger={['hover']} overlayStyle={{ fill: 'blue' }}>
+                <Dropdown overlay={salesMenu} trigger={['click']} overlayStyle={{ fill: 'blue' }}>
                   <span className="navbar__link">
                     <i className="fas fa-book"></i>&nbsp;Product
                   </span>
@@ -349,7 +349,7 @@ const NavbarComponent: React.FC<Props> = ({
               {/* only show dashboard when bool is true */}
               {accessObj?.showSalesDashboard ? (
                 <div className={`navbar__link-div`}>
-                  <Dropdown overlay={dashboardMenu}>
+                  <Dropdown overlay={dashboardMenu} trigger={['click']}>
                     <span className="navbar__link">
                       <i className="fas fa-columns"></i>&nbsp;Dashboard
                     </span>

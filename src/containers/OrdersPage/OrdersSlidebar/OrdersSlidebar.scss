@@ -335,21 +335,24 @@
     /* -------------------------- */
     &-empty {
       &-div {
-        padding: 5rem 0;
+        padding: 2rem 0 0 0;
         border-radius: 1rem;
         margin: 3rem 0;
-        background: rgba(131, 9, 9, 1);
-        color: white !important;
-        @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // background: rgba(131, 9, 9, 1);
+
+        & .ant-empty-image {
+          background: $primary-color-4;
+          border-radius: 50%;
+          width: 20rem;
+          height: 20rem;
+        }
       }
 
       &-btn {
-        background: transparent !important;
         border-color: white !important;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.15) !important;
-        }
       }
     }
 

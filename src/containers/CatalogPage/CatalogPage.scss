@@ -151,30 +151,28 @@
       padding: 0;
       grid-gap: 1rem;
       grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 20rem; //height of each row
+      grid-auto-rows: 30vw; //height of each row
     }
 
     @include respond-to($tablet-portrait-up) {
       grid-gap: 2rem;
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 20rem; //height of each row
+      // grid-template-columns: repeat(2, 1fr);
+      // grid-auto-rows: 30vw; //height of each row
     }
     @include respond-to($tablet-landscape-up) {
       grid-gap: 2rem;
-      grid-auto-rows: 18vh; //height of each row
-      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 13vw; //height of each row
     }
     @include respond-to($desktop-up) {
       grid-gap: 2rem;
-      grid-auto-rows: 28vh; //height of each row
-      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 15vw; //height of each row
     }
 
     @include respond-to($small-phone) {
       grid-gap: 1rem;
       padding: 0;
       grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 15vh; //height of each row
+      grid-auto-rows: 30vw; //height of each row
     }
 
     /* ============================================ */
@@ -222,6 +220,8 @@
     height: 100%;
     position: relative;
     z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.452);
+    overflow: hidden;
 
     &-outerdiv {
       width: 100%;
@@ -234,12 +234,22 @@
     // the image of the card
     /* =========================== */
     &-image {
-      width: 100% !important;
-      height: 100% !important;
+      left: 50%;
+      top: 50%;
+      position: absolute;
+
       object-fit: cover;
       color: white !important;
-      background: darken($primary-color-4, 6%) !important;
-      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+      border-radius: 50%;
+      z-index: 2;
+      transform: translate(-50%, -50%);
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(255, 255, 255, 0.219));
+
+      &--skeleton {
+        width: 100% !important;
+        height: 100% !important;
+        background: darken($primary-color-4, 6%) !important;
+      }
 
       & .ant-skeleton-image-svg {
         width: 5rem !important;
@@ -259,6 +269,50 @@
       & .ant-skeleton-image-path {
         fill: rgb(201, 197, 197) !important;
       }
+
+      // the width and height
+      @include respond-to($small-phone) {
+        width: 25vw !important;
+        height: 25vw !important;
+      }
+      @include respond-to($phone-only) {
+        width: 25vw !important;
+        height: 25vw !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 20vw !important;
+        height: 20vw !important;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 15vw !important;
+        height: 15vw !important;
+      }
+      @include respond-to($desktop-up) {
+        width: 12vw !important;
+        height: 12vw !important;
+      }
+      @include respond-to($big-desktop-up) {
+        width: 10vw !important;
+        height: 10vw !important;
+      }
+
+      // blur bg for the image
+      &-blurbg {
+        z-index: 1;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        /* Add the blur effect */
+        filter: blur(6px);
+        -webkit-filter: blur(6px);
+
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
     }
     cursor: pointer;
     &:hover {
@@ -273,13 +327,14 @@
       position: absolute;
       color: white;
       bottom: 1rem;
-      right: -1.5rem;
+      right: -0.8rem;
 
       border-left: 0.5rem solid white;
       border-top-left-radius: 5rem;
       z-index: 2;
       padding: 0.5rem 2rem 0.5rem 2.5rem;
       background: rgba(rgb(181, 21, 21), 0.7);
+      @include shadow-func(0rem, 0rem, 0.5rem, 0.05rem, rgba(255, 255, 255, 0.583));
 
       @include respond-to($small-phone) {
         font-size: 0.8rem;
@@ -477,7 +532,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       background: rgba(255, 255, 255, 0.233);
-      background: linear-gradient(to right, rgba(153, 153, 153, 0.789), rgba(197, 197, 197, 0.124));
+      background: linear-gradient(to right, rgba(153, 153, 153, 0.85), rgba(197, 197, 197, 0.124));
 
       &:hover {
         transition: all 0.5s ease;
@@ -593,31 +648,38 @@
 
   &__menu {
     padding: 0 !important;
+    border: none !important;
+
     & li {
       margin: 0 !important;
-      // padding: 1rem !important;
+      outline: none !important;
+      min-width: 15rem !important;
+      transition: none !important;
+      // padding-right: 2rem !important;
+      &:hover {
+        background: rgba($primary-color-1, 0.15) !important;
+        border-right: 3px solid $primary-color-3 !important;
+      }
     }
     &-item {
-      color: white !important;
-      height: 5rem !important;
-      display: flex !important;
-      align-items: center !important;
-      backdrop-filter: blur(5px) !important;
+      color: black !important;
       &:hover {
-        color: white !important;
-        background: rgba(114, 114, 114, 0.487) !important;
+        color: black !important;
       }
 
       &--danger {
-        display: flex !important;
-        align-items: center !important;
-        height: 5rem !important;
-        color: $primary-color-2 !important;
-        background: rgba(255, 255, 255, 0.85) !important;
+        color: $primary-color-1 !important;
         &:hover {
-          background: white !important;
+          color: $primary-color-1 !important;
         }
       }
+    }
+
+    /* ------------------------ */
+    // outerdiv wrapping menu
+    /* ------------------------ */
+    &-outerdiv {
+      @include shadow-func(0rem, 0.2rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.672));
     }
   }
 }
