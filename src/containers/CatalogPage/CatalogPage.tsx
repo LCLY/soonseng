@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Tooltip, Skeleton, notification, Menu, Dropdown } from 'antd';
+import { Empty, Form, Input, Tooltip, Skeleton, notification, Menu, Dropdown } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -26,6 +26,8 @@ import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog
 import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
+
+const { Search } = Input;
 
 interface CatalogPageProps {}
 
@@ -71,6 +73,8 @@ const CatalogPage: React.FC<Props> = ({
     series: { brandId: -1, seriesId: -1, warningText: '', backupWarningText: 'this series' },
     make: { makeId: -1, warningText: '', backupWarningText: 'this model' },
   });
+
+  const [makeFilter, setMakeFilter] = useState<string>('');
 
   const [createMakeForm] = Form.useForm();
   const [updateMakeForm] = Form.useForm();
@@ -167,6 +171,14 @@ const CatalogPage: React.FC<Props> = ({
     onDeleteMake(deleteModalContent.make.makeId);
   };
 
+  /* ------------------------------------------- */
+  // searchbar
+  /* ------------------------------------------- */
+  const onSearch = (result: any) => {
+    setMakeFilter(result);
+  };
+
+  console.log(makeFilter);
   /* ================================================== */
   /*  components  */
   /* ================================================== */
@@ -316,45 +328,51 @@ const CatalogPage: React.FC<Props> = ({
         <div className="catalog__section-series-innerdiv">
           {series.makes.length > 0 ? (
             <div className={`catalog__grid ${arrayIsOddNumberAndMakeLengthLessThanThree ? 'catalog__grid--full' : ''}`}>
-              {series.makes.map((make) => {
-                let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
-                  series.title,
-                  '',
-                )}-${convertSpaceInStringWithChar(make.title, '')}`;
+              {series.makes
+                .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
+                .map((make) => {
+                  let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
+                    series.title,
+                    '',
+                  )}-${convertSpaceInStringWithChar(make.title, '')}`;
 
-                return (
-                  <div key={uuidv4()} className="catalog__card-outerdiv">
-                    <div
-                      className="catalog__card"
-                      onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
-                    >
-                      {make.images.length > 0 ? (
-                        <>
-                          <img className="catalog__card-image" src={make.images[0].url} alt={make.images[0].filename} />
-                          <div
-                            className="catalog__card-image-blurbg"
-                            style={{ backgroundImage: `url(${make.images[0].url})` }}
-                          ></div>
-                        </>
-                      ) : (
-                        <Skeleton.Image className="catalog__card-image--skeleton" />
+                  return (
+                    <div key={uuidv4()} className="catalog__card-outerdiv">
+                      <div
+                        className="catalog__card"
+                        onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
+                      >
+                        {make.images.length > 0 ? (
+                          <>
+                            <img
+                              className="catalog__card-image"
+                              src={make.images[0].url}
+                              alt={make.images[0].filename}
+                            />
+                            <div
+                              className="catalog__card-image-blurbg"
+                              style={{ backgroundImage: `url(${make.images[0].url})` }}
+                            ></div>
+                          </>
+                        ) : (
+                          <Skeleton.Image className="catalog__card-image--skeleton" />
+                        )}
+                      </div>
+                      <div className="catalog__card-label">{make.title}</div>
+                      {accessObj?.showAdminDashboard && (
+                        <Tooltip title={`Edit / Delete ${make.title}`}>
+                          <Dropdown
+                            className="catalog__dropdown-series catalog__dropdown-series--make"
+                            overlay={<MakeMenu makeObj={make} seriesObj={series} />}
+                            trigger={['click']}
+                          >
+                            <i className="fas fa-ellipsis-h"></i>
+                          </Dropdown>
+                        </Tooltip>
                       )}
                     </div>
-                    <div className="catalog__card-label">{make.title}</div>
-                    {accessObj?.showAdminDashboard && (
-                      <Tooltip title={`Edit / Delete ${make.title}`}>
-                        <Dropdown
-                          className="catalog__dropdown-series catalog__dropdown-series--make"
-                          overlay={<MakeMenu makeObj={make} seriesObj={series} />}
-                          trigger={['click']}
-                        >
-                          <i className="fas fa-ellipsis-h"></i>
-                        </Dropdown>
-                      </Tooltip>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           ) : (
             <Empty />
@@ -581,6 +599,7 @@ const CatalogPage: React.FC<Props> = ({
                               &nbsp;&nbsp;Add Series
                             </div>
                           )}
+                          <Search placeholder="input search text" onSearch={onSearch} style={{ width: 200 }} />
                         </div>
                         {/* series section */}
                         <section className="catalog__section-series">

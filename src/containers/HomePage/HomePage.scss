@@ -33,6 +33,7 @@
 
       @include respond-to($tablet-portrait-up) {
         padding: 7.6rem 5rem 5rem 5rem;
+        min-height: 95vh;
         height: 80rem;
       }
 
