@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.4.0",
     "animate.css": "^4.1.1",
     "antd": "^4.7.3",
     "axios": "^0.19.2",
