@@ -23,6 +23,7 @@
   }
 
   &__div {
+    position: relative;
     padding: 5rem 1rem 5rem 1rem;
 
     @include respond-to($small-phone) {
@@ -240,7 +241,7 @@
 
       object-fit: cover;
       color: white !important;
-      border-radius: 50%;
+      border-radius: 50% 20% 30% 100%;
       z-index: 2;
       transform: translate(-50%, -50%);
       @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(255, 255, 255, 0.219));
@@ -680,6 +681,172 @@
     /* ------------------------ */
     &-outerdiv {
       @include shadow-func(0rem, 0.2rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.672));
+    }
+  }
+
+  &__search {
+    &-btn {
+      background: rgba(255, 255, 255, 0.522);
+      border-radius: 50%;
+      width: 5rem;
+      height: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+
+      user-select: none;
+      transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+
+      @include shadow-func(0rem, 0rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.268));
+      & &-icon {
+        opacity: 50%;
+      }
+
+      &:hover {
+        background: white;
+        .catalog__search-btn {
+          &-icon {
+            @include respond-to($tablet-landscape-up) {
+              opacity: 100%;
+              left: 1.5rem;
+              transform: translate(0, -50%);
+            }
+          }
+          &-text {
+            @include respond-to($tablet-landscape-up) {
+              opacity: 1;
+              padding-left: 2rem;
+            }
+          }
+        }
+
+        border-radius: 5rem;
+        width: 100%;
+        @include shadow-func(0rem, 0rem, 0.5rem, 0.5rem, rgba(0, 0, 0, 0.268));
+      }
+
+      &:active {
+        transition: none;
+        background: white;
+        color: $primary-color-4;
+        @include shadow-func(0, 0, 0, 0, transparent);
+        .catalog__search-btn {
+          &-icon {
+            transition: none;
+          }
+          &-text {
+            transition: none;
+          }
+        }
+      }
+      &-icon {
+        top: 50%;
+        left: 50%;
+        font-size: 2rem;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+      }
+      &-text {
+        opacity: 0;
+        white-space: nowrap;
+        font-family: $font-anton;
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+
+        @include respond-to($small-phone) {
+          display: none;
+        }
+        @include respond-to($phone-only) {
+          display: none;
+        }
+        @include respond-to($tablet-landscape-up) {
+          display: block;
+        }
+      }
+
+      &-outerdiv {
+        width: 5rem;
+        position: fixed;
+        z-index: $navbar + 1;
+        display: flex;
+        justify-content: flex-end;
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+
+        @include respond-to($small-phone) {
+          bottom: 1rem;
+          right: 1rem;
+        }
+        @include respond-to($phone-only) {
+          bottom: 3rem;
+          right: 3rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          bottom: 3rem;
+          right: 5rem;
+        }
+        @include respond-to($tablet-landscape-up) {
+          bottom: 5rem;
+          right: 5rem;
+          &:hover {
+            width: 15rem;
+          }
+        }
+      }
+    }
+    /* ----------------------- */
+    // search input
+    /* ----------------------- */
+    &-input {
+      width: 100% !important;
+      background: rgba(124, 124, 124, 0.5) !important;
+      border: 1px solid transparent !important;
+      & .ant-input {
+        color: white !important;
+        background: transparent !important;
+      }
+
+      & .ant-input-clear-icon {
+        color: white !important;
+      }
+
+      &:focus {
+        border: 1px solid white !important;
+      }
+      &:hover {
+        border: 1px solid white !important;
+      }
+      &-outerdiv {
+        position: fixed;
+        left: 50%;
+        top: 60%;
+        opacity: 0;
+        z-index: 0;
+        transform: translate(-50%, -30%);
+      }
+      &-div {
+        width: 50vw;
+        padding: 5rem;
+        @include glassMorph(rgba(0, 0, 0, 0.575), 5px, rgba(43, 43, 43, 0.253), 1.5rem);
+        @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+
+        @include respond-to($small-phone) {
+          width: 90vw;
+        }
+        @include respond-to($phone-only) {
+          width: 80vw;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 70vw;
+        }
+        @include respond-to($tablet-landscape-up) {
+          width: 60vw;
+        }
+        @include respond-to($desktop-up) {
+          width: 50vw;
+        }
+      }
     }
   }
 }

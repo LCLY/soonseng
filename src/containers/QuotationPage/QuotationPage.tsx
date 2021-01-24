@@ -7,13 +7,13 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 
 /* 3rd party lib */
-import { Button } from 'antd';
+import { Menu, Dropdown } from 'antd';
 import moment from 'moment';
 import { jsPDF } from 'jspdf';
 import { v4 as uuidv4 } from 'uuid';
 import html2canvas from 'html2canvas';
 import NumberFormat from 'react-number-format';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, CaretDownOutlined } from '@ant-design/icons';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 /* Util */
 import holy5truck from 'src/img/5trucks.jpg';
@@ -74,6 +74,20 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   /* ================================================== */
   /*  component */
   /* ================================================== */
+
+  const QuotationMenu = () => (
+    <Menu className="catalog__menu">
+      <Menu.Item className="catalog__menu-item" onClick={() => captureHandler()}>
+        <DownloadOutlined style={{ margin: 0 }} />
+        &nbsp;Download as PDF
+      </Menu.Item>
+      <Menu.Item className="catalog__menu-item--danger">
+        <i className="fas fa-trash-alt" />
+        &nbsp;&nbsp;Delete Series
+      </Menu.Item>
+    </Menu>
+  );
+
   // separating the component out so we can change the classNames
 
   const QuotationComponent = (props: { hidden: string }) => {
@@ -380,6 +394,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                     >
                       <span className={`${hidden}quotation__discount-text`}>DISCOUNT</span>
                       <div style={{ fontWeight: 'normal' }}>
+                        -&nbsp;
                         <NumberFormat
                           value={parseFloat(match.params.discount.toString()).toFixed(2)}
                           displayType={'text'}
@@ -627,10 +642,9 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
         {/* <Container> */}
         <div className="quotation__section-outerdiv">
           <div className="quotation__button-div">
-            <Button type="primary" className="quotation__button" onClick={() => captureHandler()}>
-              <DownloadOutlined />
-              &nbsp;Download as PDF
-            </Button>
+            <Dropdown className="quotation__button" overlay={<QuotationMenu />} trigger={['click']}>
+              More Options <CaretDownOutlined />
+            </Dropdown>
           </div>
 
           <QuotationComponent hidden="" />

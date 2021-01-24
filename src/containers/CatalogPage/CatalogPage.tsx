@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './CatalogPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
@@ -7,6 +7,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import CrudModal from 'src/components/Modal/Crud/CrudModal';
 /*3rd party lib*/
+import gsap from 'gsap';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { Helmet } from 'react-helmet';
@@ -27,11 +28,34 @@ import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData 
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
-const { Search } = Input;
-
 interface CatalogPageProps {}
 
 type Props = CatalogPageProps & StateProps & DispatchProps & RouteComponentProps;
+
+function useOutsideAlerter(wrapperRef: any, dropdownRef: any, setShowPopUp: any) {
+  useEffect(() => {
+    /**
+     * Hide pop up if clicked on outside of element
+     */
+    function handleClickOutside(event: any) {
+      if (
+        wrapperRef.current &&
+        dropdownRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setShowPopUp(false);
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [wrapperRef, dropdownRef, setShowPopUp]);
+}
 
 const CatalogPage: React.FC<Props> = ({
   history,
@@ -75,11 +99,14 @@ const CatalogPage: React.FC<Props> = ({
   });
 
   const [makeFilter, setMakeFilter] = useState<string>('');
-
   const [createMakeForm] = Form.useForm();
   const [updateMakeForm] = Form.useForm();
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
+
+  // need to refer to both the pop up and also the dropdown button itself
+  const wrapperRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   /* ======================== */
   /*   Image related states   */
@@ -171,14 +198,20 @@ const CatalogPage: React.FC<Props> = ({
     onDeleteMake(deleteModalContent.make.makeId);
   };
 
-  /* ------------------------------------------- */
-  // searchbar
-  /* ------------------------------------------- */
-  const onSearch = (result: any) => {
-    setMakeFilter(result);
+  /* -------------------------- */
+  // animation
+  /* -------------------------- */
+  const showSearchbar = () => {
+    gsap.to('.catalog__search-btn-outerdiv', { opacity: 0, duration: 0.2, pointerEvents: 'none' });
+    gsap.to('.catalog__search-input-outerdiv', { top: '30%', zIndex: 100, opacity: 1, duration: 0.5 });
+  };
+  const hideSearchbar = () => {
+    gsap.to('.catalog__search-btn-outerdiv', { opacity: 1, duration: 0.2, pointerEvents: 'initial' });
+    gsap.to('.catalog__search-input-outerdiv', { top: '60%', zIndex: 0, opacity: 0, duration: 0.5 });
   };
 
-  console.log(makeFilter);
+  useOutsideAlerter(wrapperRef, dropdownRef, hideSearchbar);
+
   /* ================================================== */
   /*  components  */
   /* ================================================== */
@@ -230,10 +263,16 @@ const CatalogPage: React.FC<Props> = ({
         <Menu.Item
           className="catalog__menu-item"
           onClick={() => {
+            let price: number | null = null;
+            if (props.makeObj.price === 0) {
+              price = null;
+            } else {
+              price = props.makeObj.price;
+            }
             updateMakeForm.setFieldsValue({
               makeId: props.makeObj.id,
               gvw: props.makeObj.gvw,
-              price: props.makeObj.price,
+              price: price,
               title: props.makeObj.title,
               makeAbs: props.makeObj.abs,
               makeTire: props.makeObj.tire,
@@ -570,6 +609,33 @@ const CatalogPage: React.FC<Props> = ({
       {/* background image in outerdiv */}
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
         <div className="catalog__outerdiv">
+          {catalogMakesArray && (
+            <>
+              <div className="catalog__search-btn-outerdiv">
+                <div className="catalog__search-btn" onClick={() => showSearchbar()}>
+                  <i className="fas fa-search catalog__search-btn-icon"></i>
+                  <span className="catalog__search-btn-text">Search Model</span>
+                </div>
+              </div>
+              <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
+                <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
+                  <Input
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        hideSearchbar();
+                      }
+                    }}
+                    allowClear
+                    className="catalog__search-input"
+                    value={makeFilter}
+                    placeholder="&#xF002;   Search model"
+                    onChange={(event) => setMakeFilter(event.target.value)}
+                    style={{ width: 200, fontFamily: ' FontAwesome, Arial', fontStyle: 'normal' }}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="catalog__div">
             {catalogMakesArray ? (
               catalogMakesArray.length > 0 ? (
@@ -599,7 +665,6 @@ const CatalogPage: React.FC<Props> = ({
                               &nbsp;&nbsp;Add Series
                             </div>
                           )}
-                          <Search placeholder="input search text" onSearch={onSearch} style={{ width: 200 }} />
                         </div>
                         {/* series section */}
                         <section className="catalog__section-series">

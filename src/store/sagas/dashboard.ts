@@ -519,6 +519,7 @@ export function* updateMakeSaga(action: AppActions) {
         { imageTag: action.imageTag, imageFiles: action.imageFiles },
       );
     }
+    console.log(response);
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.updateMakeFailed, error.response.data.error);

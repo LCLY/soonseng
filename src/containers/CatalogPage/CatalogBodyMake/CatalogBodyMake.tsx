@@ -448,11 +448,18 @@ const CatalogBodyMake: React.FC<Props> = ({
                     ...modalContent,
                     make: { seriesTitle: catalogMake.series, makeTitle: catalogMake.title },
                   });
+                  let price: number | null = null;
+
+                  if (catalogMake.price === 0) {
+                    price = null;
+                  } else {
+                    price = catalogMake.price;
+                  }
 
                   updateMakeForm.setFieldsValue({
                     makeId: catalogMake.id,
                     gvw: catalogMake.gvw,
-                    price: catalogMake.price,
+                    price: price,
                     title: catalogMake.title,
                     makeAbs: catalogMake.abs,
                     makeTire: catalogMake.tire,
@@ -675,7 +682,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                           ></div>
                         </>
                       ) : (
-                        <Skeleton.Image className="catalog__card-image" />
+                        <Skeleton.Image className="catalog__card-image--skeleton" />
                       )}
                       <div className="catalogbodymake__card-overlay">
                         <div className="catalogbodymake__card-overlay-content">

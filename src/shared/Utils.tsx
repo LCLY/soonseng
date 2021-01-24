@@ -163,8 +163,9 @@ export const convertPriceToFloat = (price: string) => {
     extractedPrice = price.replace('RM', '');
     extractedPrice = unformatPriceString(extractedPrice).toString();
     return parseFloat(extractedPrice);
+  } else {
+    return price;
   }
-  return 0;
 };
 
 /* =========================================================== */
