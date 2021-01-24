@@ -71,6 +71,11 @@
     background: rgba($primary-color-4, 0.8) !important;
     padding: 0 2rem !important;
     height: 4rem !important;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 
     &-div {
       display: flex;

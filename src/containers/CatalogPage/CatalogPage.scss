@@ -651,6 +651,8 @@
     padding: 0 !important;
     border: none !important;
 
+    @include shadow-func(0rem, 0.1rem, 0.8rem, 0.1rem, rgba(0, 0, 0, 0.186));
+
     & li {
       margin: 0 !important;
       outline: none !important;
