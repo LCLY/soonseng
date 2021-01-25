@@ -3,7 +3,6 @@ import './ChargesFees.scss';
 /*Components*/
 import Footer from 'src/components/Footer/Footer';
 import CrudModal from 'src/components/Modal/Crud/CrudModal';
-import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
@@ -295,7 +294,6 @@ const ChargesFees: React.FC<Props> = ({
             <CustomContainer>
               <div className="make__tab-outerdiv">
                 <section>
-                  <HeaderTitle>Standard Charges and Fees</HeaderTitle>
                   <>
                     {chargesFeesArray ? (
                       <section className="make__section">

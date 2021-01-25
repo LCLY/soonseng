@@ -2,7 +2,6 @@ import React, { ReactText, useEffect, useState } from 'react';
 import './Make.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
-import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
@@ -2118,8 +2117,6 @@ const Make: React.FC<Props> = ({
             <CustomContainer>
               <div className="make__tab-outerdiv">
                 <section>
-                  <HeaderTitle>Model</HeaderTitle>
-
                   {brandsArray && wheelbasesArray && makesArray ? (
                     <>
                       {/* ====================== */}

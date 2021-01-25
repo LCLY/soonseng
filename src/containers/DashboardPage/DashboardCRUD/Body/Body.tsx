@@ -2,7 +2,6 @@ import React, { useEffect, useState, ReactText } from 'react';
 import './Body.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
-import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
@@ -1310,7 +1309,6 @@ const Body: React.FC<Props> = ({
             <CustomContainer>
               <div className="make__tab-outerdiv">
                 <section>
-                  <HeaderTitle>Body</HeaderTitle>
                   {bodiesArray && lengthsArray ? (
                     <>
                       {/* ===================================== */}

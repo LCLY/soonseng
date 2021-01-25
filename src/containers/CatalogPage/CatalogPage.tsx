@@ -2,10 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import './CatalogPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
+import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
-import CrudModal from 'src/components/Modal/Crud/CrudModal';
 /*3rd party lib*/
 import gsap from 'gsap';
 import moment from 'moment';
@@ -15,7 +16,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Input, Tooltip, Skeleton, notification, Menu, Dropdown } from 'antd';
+import { Empty, Form, Tabs, Input, Tooltip, Skeleton, notification, Menu, Dropdown, Button } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -27,6 +28,8 @@ import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog
 import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
+
+const { TabPane } = Tabs;
 
 interface CatalogPageProps {}
 
@@ -319,7 +322,6 @@ const CatalogPage: React.FC<Props> = ({
   const SeriesMakesGrid = ({
     series,
     catalog,
-    arrayIsOddNumberAndMakeLengthLessThanThree,
   }: {
     series: TCatalogSeries;
     catalog: TReceivedCatalogMakeObj;
@@ -328,21 +330,7 @@ const CatalogPage: React.FC<Props> = ({
     <>
       <div className="catalog__section-series-outerdiv">
         <div className="catalog__series-top-div">
-          <div className="catalog__series-title-outerdiv">
-            <div className="catalog__series-title">{series.title}</div>
-
-            {accessObj?.showAdminDashboard && (
-              <Tooltip title={`Edit / Delete ${series.title}`}>
-                <Dropdown
-                  className="catalog__dropdown-series"
-                  overlay={<SeriesMenu seriesTitle={series.title} brandId={catalog.brand.id} seriesId={series.id} />}
-                  trigger={['click']}
-                >
-                  <i className="fas fa-cogs" />
-                </Dropdown>
-              </Tooltip>
-            )}
-          </div>
+          <div className="catalog__series-title-outerdiv"></div>
 
           {accessObj?.showAdminDashboard && (
             <Tooltip title="Add Model">
@@ -366,7 +354,7 @@ const CatalogPage: React.FC<Props> = ({
         </div>
         <div className="catalog__section-series-innerdiv">
           {series.makes.length > 0 ? (
-            <div className={`catalog__grid ${arrayIsOddNumberAndMakeLengthLessThanThree ? 'catalog__grid--full' : ''}`}>
+            <div className={`catalog__grid`}>
               {series.makes
                 .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
                 .map((make) => {
@@ -608,126 +596,164 @@ const CatalogPage: React.FC<Props> = ({
       <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
       {/* background image in outerdiv */}
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
-        <div className="catalog__outerdiv">
-          {catalogMakesArray && (
-            <>
-              <div className="catalog__search-btn-outerdiv">
-                <div className="catalog__search-btn" onClick={() => showSearchbar()}>
-                  <i className="fas fa-search catalog__search-btn-icon"></i>
-                  <span className="catalog__search-btn-text">Search Model</span>
+        <CustomContainer>
+          <div className="catalog__outerdiv">
+            {catalogMakesArray && (
+              <>
+                <div className="catalog__search-btn-outerdiv">
+                  <div className="catalog__search-btn" onClick={() => showSearchbar()}>
+                    <i className="fas fa-search catalog__search-btn-icon"></i>
+                    <span className="catalog__search-btn-text">Search Model</span>
+                  </div>
                 </div>
-              </div>
-              <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
-                <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
-                  <Input
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        hideSearchbar();
-                      }
-                    }}
-                    allowClear
-                    className="catalog__search-input"
-                    value={makeFilter}
-                    placeholder="&#xF002;   Search model"
-                    onChange={(event) => setMakeFilter(event.target.value)}
-                    style={{ width: 200, fontFamily: ' FontAwesome, Arial', fontStyle: 'normal' }}
-                  />
+                <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
+                  <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
+                    <Input
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          hideSearchbar();
+                        }
+                      }}
+                      allowClear
+                      className="catalog__search-input"
+                      value={makeFilter}
+                      placeholder="&#xF002;   Search model"
+                      onChange={(event) => setMakeFilter(event.target.value)}
+                      style={{ width: 200, fontFamily: ' FontAwesome, Arial', fontStyle: 'normal' }}
+                    />
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
-          <div className="catalog__div">
-            {catalogMakesArray ? (
-              catalogMakesArray.length > 0 ? (
-                <div className="catalog__innerdiv">
-                  {catalogMakesArray.map((catalog) => {
-                    return (
-                      // div wrapping brand along with its series
-                      <div className="catalog__brand-div" key={uuidv4()}>
-                        {/* brand title */}
-                        <div className="catalog__brand-innerdiv">
-                          <div className="catalog__brand-title">{catalog.brand.title}</div>
-                          {accessObj?.showAdminDashboard && (
-                            <div
-                              className="catalog__button-series"
-                              onClick={() => {
-                                // set the brand id in the form
-                                createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
-                                // set the content so that modal can display the brand title
-                                let seriesModalContent = { ...modalContent };
-                                seriesModalContent.series.brandTitle = catalog.brand.title;
-                                setModalContent(seriesModalContent);
-                                // show the modal
-                                setShowCreateModal({ ...showCreateModal, series: true });
-                              }}
-                            >
-                              <PlusCircleOutlined className="catalog__button-icon" />
-                              &nbsp;&nbsp;Add Series
-                            </div>
-                          )}
-                        </div>
-                        {/* series section */}
-                        <section className="catalog__section-series">
-                          {catalog.series.map((series, index) => {
-                            // if array is odd number, on the last row, make it display flex
-                            let arrayIsOddNumberAndMakeLengthLessThanThree =
-                              catalog.series.length % 2 !== 0 &&
-                              index === catalog.series.length - 1 &&
-                              catalog.series[index].makes.length > 3;
-
-                            return (
-                              <div
-                                key={uuidv4()}
-                                className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
-                              >
-                                {/*  ================================================================ */}
-                                {/*    ADMIN - if user is admin show everything, if not only show
-                                      those that the length is greater than 0 */}
-                                {/*  ================================================================ */}
-                                {accessObj?.showAdminDashboard ? (
-                                  <SeriesMakesGrid
-                                    series={series}
-                                    catalog={catalog}
-                                    arrayIsOddNumberAndMakeLengthLessThanThree={
-                                      arrayIsOddNumberAndMakeLengthLessThanThree
-                                    }
-                                  />
-                                ) : (
-                                  /* ================================================================ */
-                                  // NORMAL USER - if user is normal user only show the series that has item inside
-                                  /* ================================================================ */
-                                  <>
-                                    {series.makes.length > 0 && (
-                                      <SeriesMakesGrid
-                                        series={series}
-                                        catalog={catalog}
-                                        arrayIsOddNumberAndMakeLengthLessThanThree={
-                                          arrayIsOddNumberAndMakeLengthLessThanThree
-                                        }
-                                      />
-                                    )}
-                                  </>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </section>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="catalogbodymake__loading-div">
-                  <Empty />
-                </div>
-              )
-            ) : (
-              <div className="catalog__loading-div">
-                <Ripple />
-              </div>
+              </>
             )}
+            <div className="catalog__div">
+              {catalogMakesArray ? (
+                catalogMakesArray.length > 0 ? (
+                  <div className="catalog__innerdiv">
+                    {catalogMakesArray.map((catalog) => {
+                      return (
+                        // div wrapping brand along with its series
+                        <div className="catalog__brand-div" key={uuidv4()}>
+                          {/* ================================= */}
+                          {/* Brand title */}
+                          {/* ================================= */}
+                          <div className="catalog__brand-innerdiv">
+                            <div className="catalog__brand-title">{catalog.brand.title}</div>
+                            {accessObj?.showAdminDashboard && (
+                              <div
+                                className="catalog__button-series"
+                                onClick={() => {
+                                  // set the brand id in the form
+                                  createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
+                                  // set the content so that modal can display the brand title
+                                  let seriesModalContent = { ...modalContent };
+                                  seriesModalContent.series.brandTitle = catalog.brand.title;
+                                  setModalContent(seriesModalContent);
+                                  // show the modal
+                                  setShowCreateModal({ ...showCreateModal, series: true });
+                                }}
+                              >
+                                <PlusCircleOutlined className="catalog__button-icon" />
+                                &nbsp;&nbsp;Add Series
+                              </div>
+                            )}
+                          </div>
+                          {/* ================================= */}
+                          {/* series section */}
+                          {/* ================================= */}
+                          <section className="catalog__section-series">
+                            <Tabs className="catalog__tabs-outerdiv" defaultActiveKey="series1" tabPosition={'top'}>
+                              {catalog.series.map((series, index) => {
+                                // if array is odd number, on the last row, make it display flex
+                                let arrayIsOddNumberAndMakeLengthLessThanThree =
+                                  catalog.series.length % 2 !== 0 &&
+                                  index === catalog.series.length - 1 &&
+                                  catalog.series[index].makes.length > 3;
+
+                                return (
+                                  <TabPane
+                                    tab={
+                                      <div className="catalog__tabs-title">
+                                        <span>{series.title}</span>
+                                        {accessObj?.showAdminDashboard && (
+                                          <Tooltip title={`Edit / Delete ${series.title}`}>
+                                            <Dropdown
+                                              className="catalog__dropdown-series"
+                                              overlay={
+                                                <SeriesMenu
+                                                  seriesTitle={series.title}
+                                                  brandId={catalog.brand.id}
+                                                  seriesId={series.id}
+                                                />
+                                              }
+                                              trigger={['click']}
+                                            >
+                                              <i className="fas fa-cogs" />
+                                            </Dropdown>
+                                          </Tooltip>
+                                        )}
+                                      </div>
+                                    }
+                                    key={`series${index + 1}`}
+                                  >
+                                    <div
+                                      key={uuidv4()}
+                                      className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
+                                    >
+                                      {/*  ================================================================ */}
+                                      {/*    ADMIN - if user is admin show everything, if not only show
+                                      those that the length is greater than 0 */}
+                                      {/*  ================================================================ */}
+                                      {accessObj?.showAdminDashboard ? (
+                                        <SeriesMakesGrid
+                                          series={series}
+                                          catalog={catalog}
+                                          arrayIsOddNumberAndMakeLengthLessThanThree={
+                                            arrayIsOddNumberAndMakeLengthLessThanThree
+                                          }
+                                        />
+                                      ) : (
+                                        /* ================================================================ */
+                                        // NORMAL USER - if user is normal user only show the series that has item inside
+                                        /* ================================================================ */
+                                        <>
+                                          {series.makes.length > 0 && (
+                                            <SeriesMakesGrid
+                                              series={series}
+                                              catalog={catalog}
+                                              arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                arrayIsOddNumberAndMakeLengthLessThanThree
+                                              }
+                                            />
+                                          )}
+                                        </>
+                                      )}
+                                    </div>{' '}
+                                  </TabPane>
+                                );
+                              })}
+                            </Tabs>
+                          </section>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="catalogbodymake__loading-div">
+                    <Empty>
+                      <Button type="primary" onClick={() => history.push('/dashboard/make')}>
+                        Go to Dashboard
+                      </Button>
+                    </Empty>
+                  </div>
+                )
+              ) : (
+                <div className="catalog__loading-div">
+                  <Ripple />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </CustomContainer>
       </ParallaxContainer>
       <Footer />
     </>
