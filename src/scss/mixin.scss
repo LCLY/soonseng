@@ -148,8 +148,8 @@ $big-desktop-up: big-desktop-up;
 /* =============================================================== */
 // creating shadow
 /* =============================================================== */
-@mixin shadow-func($horizontal, $vertical, $blur, $spread, $color) {
-  box-shadow: $horizontal $vertical $blur $spread $color;
+@mixin shadow-func($horizontal: 0, $vertical: 0, $blur: 0.1rem, $spread: 0.2rem, $color: rgba(34, 34, 34, 0.241)) {
+  box-shadow: $horizontal $vertical $blur $spread $color !important;
 }
 
 // take in whatever attribute and manipulate its properties

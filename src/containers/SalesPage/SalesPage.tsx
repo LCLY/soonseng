@@ -386,7 +386,7 @@ const SalesPage: React.FC<Props> = ({
           content="Configure your desired vehicle specification with it's accessories and see their availabilities."
         />
         <title>Sales Configuration | Soon Seng Motors Enterprise (1988)</title>
-        <link rel="canonical" href="http://www.soonsenghino.com/sales" />
+        <link href="http://www.soonsenghino.com/sales" />
       </Helmet>
       <NavbarComponent activePage="sales" />
       <ParallaxContainer

@@ -6,6 +6,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
 import { Spin } from 'antd';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { Button, Form, Input, message } from 'antd';
@@ -61,6 +62,12 @@ const LoginPage: React.FC<Props> = ({
   /* ================================================== */
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" name="Login" content="Login as salesman or admin to access more information." />
+        <title>Login | Soon Seng Motors Enterprise (1988)</title>
+        <link href="http://www.soonsenghino.com/login" />
+      </Helmet>
+
       {authenticated && userInfoObj && <Redirect to="/" />}
       <NavbarComponent activePage="login" />
 

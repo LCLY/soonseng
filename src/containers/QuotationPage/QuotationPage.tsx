@@ -7,25 +7,26 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 
 /* 3rd party lib */
-import { Button } from 'antd';
 import moment from 'moment';
 import { jsPDF } from 'jspdf';
 import { v4 as uuidv4 } from 'uuid';
 import html2canvas from 'html2canvas';
+import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Menu, Dropdown, Modal, Form } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { DownloadOutlined, CaretDownOutlined } from '@ant-design/icons';
 /* Util */
+import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import hinologo from 'src/img/quotation1.jpg';
 import warranty from 'src/img/quotation3.jpg';
 import hinoconnect from 'src/img/quotation2.jpg';
+import { ROUTE_NOT_FOUND } from 'src/shared/routes';
+import { convertPriceToFloat, handleKeyDown } from 'src/shared/Utils';
+import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
-import { RootState } from 'src';
-import { connect } from 'react-redux';
-import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
-import { ROUTE_NOT_FOUND } from 'src/shared/routes';
 
 interface MatchParams {
   order_id: string;
@@ -44,6 +45,9 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   const divRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   const { width } = useWindowDimensions();
+  const [updateRoadtaxForm] = Form.useForm();
+  const [newRoadTax, setNewRoadTax] = useState(0);
+  const [showRoadtaxModal, setShowRoadtaxModal] = useState(false);
   const [captureRef, setCaptureRef] = useState<{ current: HTMLElement } | null>(null);
 
   /* ================================================== */
@@ -74,6 +78,20 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   /* ================================================== */
   /*  component */
   /* ================================================== */
+
+  const QuotationMenu = () => (
+    <Menu className="catalog__menu">
+      <Menu.Item className="catalog__menu-item" onClick={() => captureHandler()}>
+        <DownloadOutlined style={{ margin: 0 }} />
+        &nbsp;&nbsp;Download as PDF
+      </Menu.Item>
+      <Menu.Item className="catalog__menu-item" onClick={() => setShowRoadtaxModal(true)}>
+        <i className="fas fa-edit" />
+        &nbsp;&nbsp;Edit Road Tax
+      </Menu.Item>
+    </Menu>
+  );
+
   // separating the component out so we can change the classNames
 
   const QuotationComponent = (props: { hidden: string }) => {
@@ -380,6 +398,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                     >
                       <span className={`${hidden}quotation__discount-text`}>DISCOUNT</span>
                       <div style={{ fontWeight: 'normal' }}>
+                        -&nbsp;
                         <NumberFormat
                           value={parseFloat(match.params.discount.toString()).toFixed(2)}
                           displayType={'text'}
@@ -480,6 +499,10 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                 NOTE:&nbsp;PRICE&nbsp;&&nbsp;SPECIFICATIONS&nbsp;ARE&nbsp;SUBJECTED&nbsp;TO&nbsp;CHANGE&nbsp;WITHOUT&nbsp;PRIOR&nbsp;NOTICE
                 <div className={`${hidden}quotation__note-date`}>
                   **Price&nbsp;effective&nbsp;-&nbsp;Starts&nbsp;1st&nbsp;Sept&nbsp;2020
+                </div>
+                <div className={`${hidden}quotation__note-date`}>
+                  **This&nbsp;quotation&nbsp;is&nbsp;only&nbsp;valid&nbsp;until&nbsp;
+                  <span style={{ color: 'rgb(131, 14, 14)' }}>{moment().add(1, 'M').format('YYYY-MM-DD')}</span>
                 </div>
               </div>
             </div>
@@ -600,7 +623,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   let insuranceArray = [
     {
       title: 'Road tax (1year)',
-      price: 1015,
+      price: newRoadTax !== 0 ? newRoadTax : 1015,
     },
     {
       title: 'JPJ Registration & E Hak Milik',
@@ -622,15 +645,47 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   /* ================================================== */
   return (
     <>
+      {/* Modal */}
+      <Modal
+        centered
+        title="Edit Road Tax"
+        onOk={() => {
+          setShowRoadtaxModal(false);
+          updateRoadtaxForm.submit();
+        }}
+        visible={showRoadtaxModal}
+        onCancel={() => setShowRoadtaxModal(false)}
+      >
+        <Form
+          form={updateRoadtaxForm}
+          onKeyDown={(e) => {
+            handleKeyDown(e, updateRoadtaxForm);
+            if (e.key === 'Enter') {
+              setShowRoadtaxModal(false);
+            }
+          }}
+          onFinish={(values: { roadtax: string }) => setNewRoadTax(convertPriceToFloat(values.roadtax))}
+        >
+          <Form.Item
+            className="make__form-item"
+            label="Road Tax"
+            name="roadtax"
+            rules={[{ required: false, message: 'Input price here!' }]}
+          >
+            <NumberFormat className="ant-input" placeholder="Type price here" thousandSeparator={true} prefix={'RM '} />
+          </Form.Item>
+        </Form>
+      </Modal>
       <NavbarComponent />
       <ParallaxContainer bgImageUrl={holy5truck}>
         {/* <Container> */}
         <div className="quotation__section-outerdiv">
           <div className="quotation__button-div">
-            <Button type="primary" className="quotation__button" onClick={() => captureHandler()}>
-              <DownloadOutlined />
-              &nbsp;Download as PDF
-            </Button>
+            <Dropdown overlay={<QuotationMenu />} trigger={['click']}>
+              <div className="quotation__button">
+                More Options <CaretDownOutlined />
+              </div>
+            </Dropdown>
           </div>
 
           <QuotationComponent hidden="" />

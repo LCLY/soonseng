@@ -32,13 +32,22 @@
   &__section {
     &-div {
       background: $primary-color-4;
-      padding: 1.5rem 2rem;
+      padding: 1.5rem 5rem;
       border-radius: 1rem;
 
-      @include glassMorph(rgba($primary-color-4, 0.3), 20px, rgba(44, 44, 44, 0.308), 1rem);
+      @include glassMorph(rgba($primary-color-4, 0.3), 10px, rgba(44, 44, 44, 0.308), 1rem);
       @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
       @include respond-to($small-phone) {
         padding: 1.5rem 0.5rem;
+      }
+      @include respond-to($phone-only) {
+        padding: 1.5rem 2rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        padding: 1.5rem 5rem;
+      }
+      @include respond-to($tablet-landscape-up) {
+        padding: 1.5rem 5%;
       }
     }
 
@@ -62,38 +71,6 @@
       @include respond-to($tablet-landscape-up) {
         flex-direction: row;
         height: 60rem;
-      }
-    }
-  }
-
-  /* ================================ */
-  // Brand title
-  /* ================================ */
-  &__brand {
-    &-title {
-      font-size: 5rem;
-      font-family: $font-firesans;
-      text-align: center;
-      color: white;
-      margin-bottom: 1rem;
-
-      padding: 2rem 0;
-      border-radius: 1rem;
-      @include glassMorph(rgba($primary-color-4, 0.6), 15px, rgba(75, 12, 12, 0.158), 1rem);
-
-      @include respond-to(phone-only) {
-        font-size: 3rem;
-        width: 20rem;
-        padding: 1rem 0;
-        margin-left: 0;
-      }
-
-      @include respond-to(tablet-portrait-up) {
-        // margin: 0 5rem;
-        width: 30rem;
-      }
-      @include respond-to(tablet-landscape-up) {
-        width: 30rem;
       }
     }
   }
@@ -143,6 +120,10 @@
       }
 
       @include respond-to($tablet-landscape-up) {
+        min-width: 30rem;
+        display: flex;
+      }
+      @include respond-to($desktop-up) {
         min-width: 35rem;
         display: flex;
       }
@@ -414,6 +395,8 @@
     height: 100%;
     position: relative;
     z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.452);
+    overflow: hidden;
 
     &:hover {
       & .catalogbodymake__card-overlay {
@@ -434,14 +417,61 @@
     // the image of the card
     /* =========================== */
     &-image {
-      width: 100% !important;
-      height: 100% !important;
+      z-index: 2;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       color: white !important;
-      background: darken($primary-color-4, 6%) !important;
-      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.219));
+      object-fit: cover;
+      border-radius: 50%;
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(255, 255, 255, 0.219));
+
+      @include respond-to($small-phone) {
+        width: 25vw !important;
+        height: 25vw !important;
+      }
+      @include respond-to($phone-only) {
+        width: 25vw !important;
+        height: 25vw !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 20vw !important;
+        height: 20vw !important;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 15vw !important;
+        height: 15vw !important;
+      }
+      @include respond-to($desktop-up) {
+        width: 12vw !important;
+        height: 12vw !important;
+      }
+      @include respond-to($big-desktop-up) {
+        width: 10vw !important;
+        height: 10vw !important;
+      }
 
       & .ant-skeleton-image-path {
         fill: rgb(201, 197, 197) !important;
+      }
+
+      // blur bg for the image
+      &-blurbg {
+        z-index: 1;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        /* Add the blur effect */
+        filter: blur(6px);
+        -webkit-filter: blur(6px);
+
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
       }
     }
 
@@ -458,12 +488,13 @@
       border-top-left-radius: 5rem;
       z-index: 2;
       padding: 0.5rem 1rem 0.5rem 2.5rem;
-      background: rgba(0, 0, 0, 0.5);
-
+      background: rgba(0, 0, 0, 0.8);
+      // background-image: linear-gradient(to right, rgba(0, 0, 0, 0.8) 60%, rgba(56, 9, 9, 0.8));
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      @include shadow-func(0rem, 0rem, 0.5rem, 0.05rem, rgba(255, 255, 255, 0.583));
 
       @include respond-to($small-phone) {
         font-size: 0.8rem;

@@ -279,23 +279,15 @@ const CatalogBodyMake: React.FC<Props> = ({
       copyArray.push(tempOrderObj);
 
       onStoreLocalOrders(copyArray);
-      // history.push(ROUTE_ORDERS);
-      // {deleteModalContent.make_wheelbase.text.wheelbase}mm wheelbase configuration
-      // </span>
-      // &nbsp;from&nbsp;
-      // <span className="dashboard__delete-message">{deleteModalContent.make_wheelbase.text.series}</span>
-      // &nbsp;along with other&nbsp;
-      // <span className="dashboard__delete-message">
-      //   {deleteModalContent.make_wheelbase.text.bodyMakesLength}&nbsp;bodies
-      // </span>
-
       const { bodyMakeObj } = tempOrderObj;
       if (bodyMakeObj) {
         const { make_wheelbase } = bodyMakeObj;
+        console.log(make_wheelbase);
         message.success(
-          `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.brand.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
+          `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
         );
       }
+      setPickAccessoryModalOpen(false);
     }
   };
 
@@ -456,11 +448,18 @@ const CatalogBodyMake: React.FC<Props> = ({
                     ...modalContent,
                     make: { seriesTitle: catalogMake.series, makeTitle: catalogMake.title },
                   });
+                  let price: number | null = null;
+
+                  if (catalogMake.price === 0) {
+                    price = null;
+                  } else {
+                    price = catalogMake.price;
+                  }
 
                   updateMakeForm.setFieldsValue({
                     makeId: catalogMake.id,
                     gvw: catalogMake.gvw,
-                    price: catalogMake.price,
+                    price: price,
                     title: catalogMake.title,
                     makeAbs: catalogMake.abs,
                     makeTire: catalogMake.tire,
@@ -671,13 +670,19 @@ const CatalogBodyMake: React.FC<Props> = ({
                   <div key={uuidv4()} className="catalogbodymake__card-parent">
                     <div className="catalogbodymake__card" key={uuidv4()}>
                       {bodyMake.images.length > 0 ? (
-                        <img
-                          className="catalogbodymake__card-image"
-                          src={bodyMake.images[0].url}
-                          alt={bodyMake.images[0].filename}
-                        />
+                        <>
+                          <img
+                            className="catalogbodymake__card-image"
+                            src={bodyMake.images[0].url}
+                            alt={bodyMake.images[0].filename}
+                          />
+                          <div
+                            className="catalogbodymake__card-image-blurbg"
+                            style={{ backgroundImage: `url(${bodyMake.images[0].url})` }}
+                          ></div>
+                        </>
                       ) : (
-                        <Skeleton.Image className="catalog__card-image" />
+                        <Skeleton.Image className="catalog__card-image--skeleton" />
                       )}
                       <div className="catalogbodymake__card-overlay">
                         <div className="catalogbodymake__card-overlay-content">
@@ -765,8 +770,8 @@ const CatalogBodyMake: React.FC<Props> = ({
                           </div>
                         </div>
                       </div>
-                      <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
                     </div>
+                    <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
                     {accessObj?.showAdminDashboard && (
                       <Tooltip title={`Edit / Delete ${bodyMake.body.title}`}>
                         <Dropdown
@@ -793,72 +798,74 @@ const CatalogBodyMake: React.FC<Props> = ({
   );
 
   const BodyMakeMenu = ({ bodyMakeObj }: { bodyMakeObj: TReceivedBodyMakeObj }) => (
-    <Menu className="catalog__menu">
-      <Menu.Item
-        className="catalog__menu-item"
-        onClick={() => {
-          setModalContent({
-            ...modalContent,
-            body_make: { makeWheelbaseTitle: bodyMakeObj.make_wheelbase.wheelbase.title },
-          });
-          // update the form value using the 'name' attribute as target/key
-          updateBodyMakeForm.setFieldsValue({
-            makeId: bodyMakeObj.make_wheelbase.make.id,
-            bodyId: bodyMakeObj.body.id, // body id
-            bodyMakeId: bodyMakeObj.id, // length id
-            makeWheelbaseId: bodyMakeObj.make_wheelbase.id,
-            lengthId: bodyMakeObj.length.id,
-            bodyMakeWidth: {
-              feet: checkInchExist(bodyMakeObj.width).feet,
-              inch: checkInchExist(bodyMakeObj.width).inch,
-            },
-            bodyMakeHeight: {
-              feet: bodyMakeObj.height ? checkInchExist(bodyMakeObj.height).feet : '',
-              inch: bodyMakeObj.height ? checkInchExist(bodyMakeObj.height).inch : '',
-            },
-            bodyMakeDepth: {
-              feet: checkInchExist(bodyMakeObj.depth).feet,
-              inch: checkInchExist(bodyMakeObj.depth).inch,
-            },
-            bodyMakePrice: bodyMakeObj.price,
-          });
+    <div className="catalog__menu-outerdiv">
+      <Menu className="catalog__menu">
+        <Menu.Item
+          className="catalog__menu-item"
+          onClick={() => {
+            setModalContent({
+              ...modalContent,
+              body_make: { makeWheelbaseTitle: bodyMakeObj.make_wheelbase.wheelbase.title },
+            });
+            // update the form value using the 'name' attribute as target/key
+            updateBodyMakeForm.setFieldsValue({
+              makeId: bodyMakeObj.make_wheelbase.make.id,
+              bodyId: bodyMakeObj.body.id, // body id
+              bodyMakeId: bodyMakeObj.id, // length id
+              makeWheelbaseId: bodyMakeObj.make_wheelbase.id,
+              lengthId: bodyMakeObj.length.id,
+              bodyMakeWidth: {
+                feet: checkInchExist(bodyMakeObj.width).feet,
+                inch: checkInchExist(bodyMakeObj.width).inch,
+              },
+              bodyMakeHeight: {
+                feet: bodyMakeObj.height ? checkInchExist(bodyMakeObj.height).feet : '',
+                inch: bodyMakeObj.height ? checkInchExist(bodyMakeObj.height).inch : '',
+              },
+              bodyMakeDepth: {
+                feet: checkInchExist(bodyMakeObj.depth).feet,
+                inch: checkInchExist(bodyMakeObj.depth).inch,
+              },
+              bodyMakePrice: bodyMakeObj.price,
+            });
 
-          setShowUpdateModal({ ...showUpdateModal, body_make: true });
-        }}
-      >
-        <i className="fas fa-edit" />
-        &nbsp;&nbsp;Edit Body
-      </Menu.Item>
-      <Menu.Item
-        className="catalog__menu-item"
-        onClick={() => {
-          // set the current body make obj
-          setCurrentBodyMake(bodyMakeObj);
-          setCrudAccessoryModalOpen(true);
-        }}
-      >
-        <i className="fas fa-tools" />
-        &nbsp;&nbsp;Accessories
-      </Menu.Item>
-      <Menu.Item
-        danger
-        className="catalog__menu-item--danger"
-        onClick={() => {
-          setDeleteModalContent({
-            ...deleteModalContent,
-            body_make: {
-              bodyMakeId: bodyMakeObj.id,
-              warningText: `${bodyMakeObj.make_wheelbase.make.brand.title} ${bodyMakeObj.make_wheelbase.make.title} ${bodyMakeObj.body.title}`,
-              backupWarningText: 'this body',
-            },
-          });
-          setShowDeleteModal({ ...showDeleteModal, body_make: true });
-        }}
-      >
-        <i className="fas fa-trash-alt" />
-        &nbsp;&nbsp;Delete Body
-      </Menu.Item>
-    </Menu>
+            setShowUpdateModal({ ...showUpdateModal, body_make: true });
+          }}
+        >
+          <i className="fas fa-edit" />
+          &nbsp;&nbsp;Edit Body
+        </Menu.Item>
+        <Menu.Item
+          className="catalog__menu-item"
+          onClick={() => {
+            // set the current body make obj
+            setCurrentBodyMake(bodyMakeObj);
+            setCrudAccessoryModalOpen(true);
+          }}
+        >
+          <i className="fas fa-tools" />
+          &nbsp;&nbsp;Accessories
+        </Menu.Item>
+        <Menu.Item
+          danger
+          className="catalog__menu-item--danger"
+          onClick={() => {
+            setDeleteModalContent({
+              ...deleteModalContent,
+              body_make: {
+                bodyMakeId: bodyMakeObj.id,
+                warningText: `${bodyMakeObj.make_wheelbase.make.brand.title} ${bodyMakeObj.make_wheelbase.make.title} ${bodyMakeObj.body.title}`,
+                backupWarningText: 'this body',
+              },
+            });
+            setShowDeleteModal({ ...showDeleteModal, body_make: true });
+          }}
+        >
+          <i className="fas fa-trash-alt" />
+          &nbsp;&nbsp;Delete Body
+        </Menu.Item>
+      </Menu>
+    </div>
   );
 
   /* ================================================== */

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './CatalogPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
@@ -7,6 +7,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import CrudModal from 'src/components/Modal/Crud/CrudModal';
 /*3rd party lib*/
+import gsap from 'gsap';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { Helmet } from 'react-helmet';
@@ -14,7 +15,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Tooltip, Skeleton, notification, Menu, Dropdown } from 'antd';
+import { Empty, Form, Input, Tooltip, Skeleton, notification, Menu, Dropdown } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -30,6 +31,31 @@ import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndef
 interface CatalogPageProps {}
 
 type Props = CatalogPageProps & StateProps & DispatchProps & RouteComponentProps;
+
+function useOutsideAlerter(wrapperRef: any, dropdownRef: any, setShowPopUp: any) {
+  useEffect(() => {
+    /**
+     * Hide pop up if clicked on outside of element
+     */
+    function handleClickOutside(event: any) {
+      if (
+        wrapperRef.current &&
+        dropdownRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setShowPopUp(false);
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [wrapperRef, dropdownRef, setShowPopUp]);
+}
 
 const CatalogPage: React.FC<Props> = ({
   history,
@@ -72,10 +98,15 @@ const CatalogPage: React.FC<Props> = ({
     make: { makeId: -1, warningText: '', backupWarningText: 'this model' },
   });
 
+  const [makeFilter, setMakeFilter] = useState<string>('');
   const [createMakeForm] = Form.useForm();
   const [updateMakeForm] = Form.useForm();
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
+
+  // need to refer to both the pop up and also the dropdown button itself
+  const wrapperRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   /* ======================== */
   /*   Image related states   */
@@ -167,6 +198,20 @@ const CatalogPage: React.FC<Props> = ({
     onDeleteMake(deleteModalContent.make.makeId);
   };
 
+  /* -------------------------- */
+  // animation
+  /* -------------------------- */
+  const showSearchbar = () => {
+    gsap.to('.catalog__search-btn-outerdiv', { opacity: 0, duration: 0.2, pointerEvents: 'none' });
+    gsap.to('.catalog__search-input-outerdiv', { top: '30%', zIndex: 100, opacity: 1, duration: 0.5 });
+  };
+  const hideSearchbar = () => {
+    gsap.to('.catalog__search-btn-outerdiv', { opacity: 1, duration: 0.2, pointerEvents: 'initial' });
+    gsap.to('.catalog__search-input-outerdiv', { top: '60%', zIndex: 0, opacity: 0, duration: 0.5 });
+  };
+
+  useOutsideAlerter(wrapperRef, dropdownRef, hideSearchbar);
+
   /* ================================================== */
   /*  components  */
   /* ================================================== */
@@ -213,54 +258,62 @@ const CatalogPage: React.FC<Props> = ({
 
   // Menu for dropdown
   const MakeMenu = (props: { makeObj: TReceivedMakeObj; seriesObj: TReceivedSeriesObj }) => (
-    <Menu className="catalog__menu">
-      <Menu.Item
-        className="catalog__menu-item"
-        onClick={() => {
-          updateMakeForm.setFieldsValue({
-            makeId: props.makeObj.id,
-            gvw: props.makeObj.gvw,
-            price: props.makeObj.price,
-            title: props.makeObj.title,
-            makeAbs: props.makeObj.abs,
-            makeTire: props.makeObj.tire,
-            makeTorque: props.makeObj.torque,
-            makeConfig: props.makeObj.config,
-            makeSeriesId: props.seriesObj.id,
-            makeBrandId: props.makeObj.brand.id,
-            horsepower: props.makeObj.horsepower,
-            engine_cap: props.makeObj.engine_cap,
-            makeEmission: props.makeObj.emission,
-            transmission: props.makeObj.transmission,
-            year: props.makeObj.year ? moment(props.makeObj.year) : null,
-          });
-          let makeModalContent = { ...modalContent };
-          makeModalContent.make.makeTitle = props.makeObj.title;
-          setModalContent(makeModalContent);
-          setShowUpdateModal({ ...showUpdateModal, make: true });
-        }}
-      >
-        <i className="fas fa-edit" />
-        &nbsp;&nbsp;Edit Model
-      </Menu.Item>
-      <Menu.Item
-        className="catalog__menu-item--danger"
-        danger
-        onClick={() => {
-          setDeleteModalContent({
-            ...deleteModalContent,
-            make: {
+    <div className="catalog__menu-outerdiv">
+      <Menu className="catalog__menu">
+        <Menu.Item
+          className="catalog__menu-item"
+          onClick={() => {
+            let price: number | null = null;
+            if (props.makeObj.price === 0) {
+              price = null;
+            } else {
+              price = props.makeObj.price;
+            }
+            updateMakeForm.setFieldsValue({
               makeId: props.makeObj.id,
-              warningText: props.makeObj.title,
-              backupWarningText: 'this model',
-            },
-          });
-          setShowDeleteModal({ ...showDeleteModal, make: true });
-        }}
-      >
-        <i className="fas fa-trash-alt" /> &nbsp;&nbsp;Delete Model
-      </Menu.Item>
-    </Menu>
+              gvw: props.makeObj.gvw,
+              price: price,
+              title: props.makeObj.title,
+              makeAbs: props.makeObj.abs,
+              makeTire: props.makeObj.tire,
+              makeTorque: props.makeObj.torque,
+              makeConfig: props.makeObj.config,
+              makeSeriesId: props.seriesObj.id,
+              makeBrandId: props.makeObj.brand.id,
+              horsepower: props.makeObj.horsepower,
+              engine_cap: props.makeObj.engine_cap,
+              makeEmission: props.makeObj.emission,
+              transmission: props.makeObj.transmission,
+              year: props.makeObj.year ? moment(props.makeObj.year) : null,
+            });
+            let makeModalContent = { ...modalContent };
+            makeModalContent.make.makeTitle = props.makeObj.title;
+            setModalContent(makeModalContent);
+            setShowUpdateModal({ ...showUpdateModal, make: true });
+          }}
+        >
+          <i className="fas fa-edit" />
+          &nbsp;&nbsp;Edit Model
+        </Menu.Item>
+        <Menu.Item
+          className="catalog__menu-item--danger"
+          danger
+          onClick={() => {
+            setDeleteModalContent({
+              ...deleteModalContent,
+              make: {
+                makeId: props.makeObj.id,
+                warningText: props.makeObj.title,
+                backupWarningText: 'this model',
+              },
+            });
+            setShowDeleteModal({ ...showDeleteModal, make: true });
+          }}
+        >
+          <i className="fas fa-trash-alt" /> &nbsp;&nbsp;Delete Model
+        </Menu.Item>
+      </Menu>
+    </div>
   );
 
   const SeriesMakesGrid = ({
@@ -314,39 +367,51 @@ const CatalogPage: React.FC<Props> = ({
         <div className="catalog__section-series-innerdiv">
           {series.makes.length > 0 ? (
             <div className={`catalog__grid ${arrayIsOddNumberAndMakeLengthLessThanThree ? 'catalog__grid--full' : ''}`}>
-              {series.makes.map((make) => {
-                let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
-                  series.title,
-                  '',
-                )}-${convertSpaceInStringWithChar(make.title, '')}`;
+              {series.makes
+                .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
+                .map((make) => {
+                  let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
+                    series.title,
+                    '',
+                  )}-${convertSpaceInStringWithChar(make.title, '')}`;
 
-                return (
-                  <div key={uuidv4()} className="catalog__card-outerdiv">
-                    <div
-                      className="catalog__card"
-                      onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
-                    >
-                      {make.images.length > 0 ? (
-                        <img className="catalog__card-image" src={make.images[0].url} alt={make.images[0].filename} />
-                      ) : (
-                        <Skeleton.Image className="catalog__card-image" />
-                      )}
+                  return (
+                    <div key={uuidv4()} className="catalog__card-outerdiv">
+                      <div
+                        className="catalog__card"
+                        onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
+                      >
+                        {make.images.length > 0 ? (
+                          <>
+                            <img
+                              className="catalog__card-image"
+                              src={make.images[0].url}
+                              alt={make.images[0].filename}
+                            />
+                            <div
+                              className="catalog__card-image-blurbg"
+                              style={{ backgroundImage: `url(${make.images[0].url})` }}
+                            ></div>
+                          </>
+                        ) : (
+                          <Skeleton.Image className="catalog__card-image--skeleton" />
+                        )}
+                      </div>
                       <div className="catalog__card-label">{make.title}</div>
+                      {accessObj?.showAdminDashboard && (
+                        <Tooltip title={`Edit / Delete ${make.title}`}>
+                          <Dropdown
+                            className="catalog__dropdown-series catalog__dropdown-series--make"
+                            overlay={<MakeMenu makeObj={make} seriesObj={series} />}
+                            trigger={['click']}
+                          >
+                            <i className="fas fa-ellipsis-h"></i>
+                          </Dropdown>
+                        </Tooltip>
+                      )}
                     </div>
-                    {accessObj?.showAdminDashboard && (
-                      <Tooltip title={`Edit / Delete ${make.title}`}>
-                        <Dropdown
-                          className="catalog__dropdown-series catalog__dropdown-series--make"
-                          overlay={<MakeMenu makeObj={make} seriesObj={series} />}
-                          trigger={['click']}
-                        >
-                          <i className="fas fa-ellipsis-h"></i>
-                        </Dropdown>
-                      </Tooltip>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           ) : (
             <Empty />
@@ -440,7 +505,7 @@ const CatalogPage: React.FC<Props> = ({
       <Helmet>
         <meta charSet="utf-8" name="Catalog" content="Catalog showing all available vehicle cargos to be ordered." />
         <title>Catalog | Soon Seng Motors Enterprise (1988)</title>
-        <link rel="canonical" href="http://www.soonsenghino.com/catalog" />
+        <link href="http://www.soonsenghino.com/catalog" />
       </Helmet>
       {/* ====================================== */}
       {/* Modals */}
@@ -544,6 +609,33 @@ const CatalogPage: React.FC<Props> = ({
       {/* background image in outerdiv */}
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
         <div className="catalog__outerdiv">
+          {catalogMakesArray && (
+            <>
+              <div className="catalog__search-btn-outerdiv">
+                <div className="catalog__search-btn" onClick={() => showSearchbar()}>
+                  <i className="fas fa-search catalog__search-btn-icon"></i>
+                  <span className="catalog__search-btn-text">Search Model</span>
+                </div>
+              </div>
+              <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
+                <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
+                  <Input
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        hideSearchbar();
+                      }
+                    }}
+                    allowClear
+                    className="catalog__search-input"
+                    value={makeFilter}
+                    placeholder="&#xF002;   Search model"
+                    onChange={(event) => setMakeFilter(event.target.value)}
+                    style={{ width: 200, fontFamily: ' FontAwesome, Arial', fontStyle: 'normal' }}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="catalog__div">
             {catalogMakesArray ? (
               catalogMakesArray.length > 0 ? (
