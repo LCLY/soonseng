@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './CatalogBodyMake.scss';
 /*Components*/
 import Footer from 'src/components/Footer/Footer';
@@ -17,7 +17,9 @@ import {
   Button,
   Empty,
   Modal,
+  Tabs,
   Form,
+  Input,
   Checkbox,
   Divider,
   Skeleton,
@@ -52,6 +54,8 @@ import { checkInchExist, convertPriceToFloat, emptyStringWhenUndefinedOrNull, fo
 import { TCreateBodyMakeForm, TUpdateBodyMakeForm } from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
 import CatalogAccessoriesModal from './CatalogAccessories/CatalogAccessoriesModal';
 
+const { TabPane } = Tabs;
+
 interface MatchParams {
   make_id: string;
   series_id: string;
@@ -71,6 +75,31 @@ export interface ICrudModal {
 interface CatalogBodyMakeProps {}
 
 type Props = CatalogBodyMakeProps & StateProps & DispatchProps & RouteComponentProps<MatchParams>;
+
+function useOutsideAlerter(wrapperRef: any, dropdownRef: any, setShowPopUp: any) {
+  useEffect(() => {
+    /**
+     * Hide pop up if clicked on outside of element
+     */
+    function handleClickOutside(event: any) {
+      if (
+        wrapperRef.current &&
+        dropdownRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setShowPopUp(false);
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [wrapperRef, dropdownRef, setShowPopUp]);
+}
 
 const CatalogBodyMake: React.FC<Props> = ({
   match,
@@ -112,6 +141,11 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [pickAccessoryModalOpen, setPickAccessoryModalOpen] = useState(false);
   const [crudAccessoryModalOpen, setCrudAccessoryModalOpen] = useState(false);
   const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
+
+  // need to refer to both the pop up and also the dropdown button itself
+  const wrapperRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const [bodyMakeFilter, setBodyMakeFilter] = useState<string>('');
 
   /* ======================== */
   /*   Image related states   */
@@ -232,6 +266,20 @@ const CatalogBodyMake: React.FC<Props> = ({
       },
     ];
   }
+
+  /* -------------------------- */
+  // animation
+  /* -------------------------- */
+  const showSearchbar = () => {
+    gsap.to('.catalog__search-btn-outerdiv', { opacity: 0, duration: 0.2, pointerEvents: 'none' });
+    gsap.to('.catalog__search-input-outerdiv', { top: '30%', zIndex: 100, opacity: 1, duration: 0.5 });
+  };
+  const hideSearchbar = () => {
+    gsap.to('.catalog__search-btn-outerdiv', { opacity: 1, duration: 0.2, pointerEvents: 'initial' });
+    gsap.to('.catalog__search-input-outerdiv', { top: '60%', zIndex: 0, opacity: 0, duration: 0.5 });
+  };
+
+  useOutsideAlerter(wrapperRef, dropdownRef, hideSearchbar);
 
   /* ================================================== */
   /*  method */
@@ -665,127 +713,137 @@ const CatalogBodyMake: React.FC<Props> = ({
         {wheelbaseBodyMake.body_makes.length > 0 ? (
           <div className="catalogbodymake__grid">
             <>
-              {wheelbaseBodyMake.body_makes.map((bodyMake) => {
-                return (
-                  <div key={uuidv4()} className="catalogbodymake__card-parent">
-                    <div className="catalogbodymake__card" key={uuidv4()}>
-                      {bodyMake.images.length > 0 ? (
-                        <>
-                          <img
-                            className="catalogbodymake__card-image"
-                            src={bodyMake.images[0].url}
-                            alt={bodyMake.images[0].filename}
-                          />
-                          <div
-                            className="catalogbodymake__card-image-blurbg"
-                            style={{ backgroundImage: `url(${bodyMake.images[0].url})` }}
-                          ></div>
-                        </>
-                      ) : (
-                        <Skeleton.Image className="catalog__card-image--skeleton" />
-                      )}
-                      <div className="catalogbodymake__card-overlay">
-                        <div className="catalogbodymake__card-overlay-content">
-                          <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
-                          <div className="catalogbodymake__card-overlay-moreinfo-content">
-                            {bodyMake?.length && (
-                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                Length:&nbsp;
-                                <div className="catalogbodymake__card-overlay-dimension">
-                                  {bodyMake?.length.title} - {bodyMake?.length.description}
-                                </div>
-                              </div>
-                            )}
-                            {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
-                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                Width:&nbsp;
-                                <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.width}</div>
-                              </div>
-                            )}
-
-                            {bodyMake?.depth !== null && bodyMake?.depth !== '' && bodyMake?.depth !== null && (
-                              <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                Depth:&nbsp;
-                                <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.depth}</div>
-                              </div>
-                            )}
-
-                            {bodyMake?.height !== null &&
-                              bodyMake?.height !== '\' "' &&
-                              bodyMake?.height !== '' &&
-                              bodyMake?.height !== null && (
+              {wheelbaseBodyMake.body_makes
+                .filter(
+                  (body_make) =>
+                    body_make.body.title.toLowerCase().includes(bodyMakeFilter.toLowerCase()) ||
+                    body_make.price.toString().toLowerCase().includes(bodyMakeFilter.toLowerCase()) ||
+                    body_make.make_wheelbase.wheelbase.title
+                      .toString()
+                      .toLowerCase()
+                      .includes(bodyMakeFilter.toLowerCase()),
+                )
+                .map((bodyMake) => {
+                  return (
+                    <div key={uuidv4()} className="catalogbodymake__card-parent">
+                      <div className="catalogbodymake__card" key={uuidv4()}>
+                        {bodyMake.images.length > 0 ? (
+                          <>
+                            <img
+                              className="catalogbodymake__card-image"
+                              src={bodyMake.images[0].url}
+                              alt={bodyMake.images[0].filename}
+                            />
+                            <div
+                              className="catalogbodymake__card-image-blurbg"
+                              style={{ backgroundImage: `url(${bodyMake.images[0].url})` }}
+                            ></div>
+                          </>
+                        ) : (
+                          <Skeleton.Image className="catalog__card-image--skeleton" />
+                        )}
+                        <div className="catalogbodymake__card-overlay">
+                          <div className="catalogbodymake__card-overlay-content">
+                            <div className="catalogbodymake__card-overlay-moreinfo">More Info</div>
+                            <div className="catalogbodymake__card-overlay-moreinfo-content">
+                              {bodyMake?.length && (
                                 <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
-                                  Height:&nbsp;
-                                  <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.height}</div>
-                                </div>
-                              )}
-                          </div>
-                          <div>
-                            {accessObj?.showPriceSalesPage && (
-                              <div>
-                                <div className="flex-align-center">
-                                  <div className="catalogbodymake__card-overlay-price-title">Body Price:</div>
-                                  <div className="catalogbodymake__card-overlay-price">
-                                    {bodyMake?.price === 0 || bodyMake?.price === null ? (
-                                      '-'
-                                    ) : (
-                                      <div>
-                                        RM
-                                        <NumberFormat
-                                          value={bodyMake?.price}
-                                          displayType={'text'}
-                                          thousandSeparator={true}
-                                        />
-                                      </div>
-                                    )}
+                                  Length:&nbsp;
+                                  <div className="catalogbodymake__card-overlay-dimension">
+                                    {bodyMake?.length.title} - {bodyMake?.length.description}
                                   </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                          <div className="catalogbodymake__card-overlay-quotation-div">
-                            <Button
-                              type="default"
-                              className="catalogbodymake__card-overlay-quotation-btn"
-                              onClick={() => {
-                                onGetSalesAccessories(bodyMake?.id);
-                                setOrderObj({
-                                  ...orderObj,
-                                  id: uuidv4(),
-                                  bodyMakeObj: bodyMake,
-                                  bodyObj: bodyMake.body,
-                                  lengthObj: bodyMake.length,
-                                  tireCount: parseInt(bodyMake?.make_wheelbase.make.tire),
-                                });
-                                setPickAccessoryModalOpen(true);
-                                // clear the states
-                                setCurrentCheckedBodyAccessories({});
-                                setCurrentCheckedGeneralAccessories({});
-                                setCurrentCheckedDimensionAccessories({});
-                              }}
-                            >
-                              Add To Orders&nbsp;&nbsp;
-                              <i className="fas fa-file-invoice-dollar"></i>
-                            </Button>
+                              )}
+                              {bodyMake?.width !== null && bodyMake?.width !== '' && bodyMake?.width !== null && (
+                                <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                  Width:&nbsp;
+                                  <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.width}</div>
+                                </div>
+                              )}
+
+                              {bodyMake?.depth !== null && bodyMake?.depth !== '' && bodyMake?.depth !== null && (
+                                <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                  Depth:&nbsp;
+                                  <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.depth}</div>
+                                </div>
+                              )}
+
+                              {bodyMake?.height !== null &&
+                                bodyMake?.height !== '\' "' &&
+                                bodyMake?.height !== '' &&
+                                bodyMake?.height !== null && (
+                                  <div className="flex-align-center catalogbodymake__card-overlay-dimension-title">
+                                    Height:&nbsp;
+                                    <div className="catalogbodymake__card-overlay-dimension">{bodyMake?.height}</div>
+                                  </div>
+                                )}
+                            </div>
+                            <div>
+                              {accessObj?.showPriceSalesPage && (
+                                <div>
+                                  <div className="flex-align-center">
+                                    <div className="catalogbodymake__card-overlay-price-title">Body Price:</div>
+                                    <div className="catalogbodymake__card-overlay-price">
+                                      {bodyMake?.price === 0 || bodyMake?.price === null ? (
+                                        '-'
+                                      ) : (
+                                        <div>
+                                          RM
+                                          <NumberFormat
+                                            value={bodyMake?.price}
+                                            displayType={'text'}
+                                            thousandSeparator={true}
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            <div className="catalogbodymake__card-overlay-quotation-div">
+                              <Button
+                                type="default"
+                                className="catalogbodymake__card-overlay-quotation-btn"
+                                onClick={() => {
+                                  onGetSalesAccessories(bodyMake?.id);
+                                  setOrderObj({
+                                    ...orderObj,
+                                    id: uuidv4(),
+                                    bodyMakeObj: bodyMake,
+                                    bodyObj: bodyMake.body,
+                                    lengthObj: bodyMake.length,
+                                    tireCount: parseInt(bodyMake?.make_wheelbase.make.tire),
+                                  });
+                                  setPickAccessoryModalOpen(true);
+                                  // clear the states
+                                  setCurrentCheckedBodyAccessories({});
+                                  setCurrentCheckedGeneralAccessories({});
+                                  setCurrentCheckedDimensionAccessories({});
+                                }}
+                              >
+                                Add To Orders&nbsp;&nbsp;
+                                <i className="fas fa-file-invoice-dollar"></i>
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
+                      <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
+                      {accessObj?.showAdminDashboard && (
+                        <Tooltip title={`Edit / Delete ${bodyMake.body.title}`}>
+                          <Dropdown
+                            className="catalog__dropdown-series catalog__dropdown-series--make"
+                            overlay={<BodyMakeMenu bodyMakeObj={bodyMake} />}
+                            trigger={['click']}
+                          >
+                            <i className="fas fa-ellipsis-h"></i>
+                          </Dropdown>
+                        </Tooltip>
+                      )}
                     </div>
-                    <div className="catalogbodymake__card-label"> {bodyMake.body.title}</div>
-                    {accessObj?.showAdminDashboard && (
-                      <Tooltip title={`Edit / Delete ${bodyMake.body.title}`}>
-                        <Dropdown
-                          className="catalog__dropdown-series catalog__dropdown-series--make"
-                          overlay={<BodyMakeMenu bodyMakeObj={bodyMake} />}
-                          trigger={['click']}
-                        >
-                          <i className="fas fa-ellipsis-h"></i>
-                        </Dropdown>
-                      </Tooltip>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
             </>
           </div>
         ) : (
@@ -1410,6 +1468,33 @@ const CatalogBodyMake: React.FC<Props> = ({
       <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
       <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
         <div className="catalog__outerdiv">
+          {makeFromCatalogBodyMake && (
+            <>
+              <div className="catalog__search-btn-outerdiv">
+                <div className="catalog__search-btn" onClick={() => showSearchbar()}>
+                  <i className="fas fa-search catalog__search-btn-icon"></i>
+                  <span className="catalog__search-btn-text">Search Model</span>
+                </div>
+              </div>
+              <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
+                <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
+                  <Input
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        hideSearchbar();
+                      }
+                    }}
+                    allowClear
+                    className="catalog__search-input"
+                    value={bodyMakeFilter}
+                    placeholder="&#xF002;   Search model"
+                    onChange={(event) => setBodyMakeFilter(event.target.value)}
+                    style={{ width: 200, fontFamily: ' FontAwesome, Arial', fontStyle: 'normal' }}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="catalog__div">
             {bodyMakeWithWheelbase && catalogMake ? (
               <>
@@ -1460,33 +1545,74 @@ const CatalogBodyMake: React.FC<Props> = ({
                   {/*  ================================================================ */}
                   {bodyMakeWithWheelbase.length > 0 ? (
                     <>
-                      {bodyMakeWithWheelbase.map((wheelbaseBodyMake) => (
-                        <section key={uuidv4()} className="catalogbodymake__wheelbase-div">
-                          {
-                            /* ================================================================ */
-                            // ADMIN - shows everything
-                            /* ================================================================ */
-                          }
-                          {accessObj?.showAdminDashboard ? (
-                            <WheelbaseBodyMakeGrid
-                              makeObj={catalogMake}
-                              seriesTitle={catalogMake.series}
-                              wheelbaseBodyMake={wheelbaseBodyMake}
-                            />
-                          ) : (
-                            <>
+                      <Tabs className="catalog__tabs-outerdiv" defaultActiveKey="wheelbase1" tabPosition={'top'}>
+                        {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
+                          <TabPane
+                            tab={
+                              <div className="catalog__tabs-title">
+                                <div className="catalogbodymake__wheelbase-title">
+                                  {wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm Wheelbase
+                                </div>
+                                {accessObj?.showAdminDashboard && (
+                                  <Tooltip
+                                    title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series}`}
+                                  >
+                                    <div
+                                      className="catalog__dropdown-series"
+                                      onClick={() => {
+                                        setDeleteModalContent({
+                                          ...deleteModalContent,
+                                          make_wheelbase: {
+                                            makeId: catalogMake.id,
+                                            makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+                                            text: {
+                                              wheelbase: wheelbaseBodyMake.make_wheelbase.wheelbase.title,
+                                              series: catalogMake.series,
+                                              bodyMakesLength: wheelbaseBodyMake.body_makes.length.toString(),
+                                            },
+                                            warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
+                                            backupWarningText: `this configuration from ${catalogMake.series}`,
+                                          },
+                                        });
+                                        setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
+                                      }}
+                                    >
+                                      <i className="fas fa-trash-alt"></i>
+                                    </div>
+                                  </Tooltip>
+                                )}
+                              </div>
+                            }
+                            key={`wheelbase${index + 1}`}
+                          >
+                            <section key={uuidv4()} className="catalogbodymake__wheelbase-div">
                               {
                                 /* ================================================================ */
-                                // NORMAL USER - only show the body makes that has length > 0
+                                // ADMIN - shows everything
                                 /* ================================================================ */
                               }
-                              {wheelbaseBodyMake.body_makes.length > 0 && (
-                                <WheelbaseBodyMakeGrid wheelbaseBodyMake={wheelbaseBodyMake} />
+                              {accessObj?.showAdminDashboard ? (
+                                <WheelbaseBodyMakeGrid
+                                  makeObj={catalogMake}
+                                  seriesTitle={catalogMake.series}
+                                  wheelbaseBodyMake={wheelbaseBodyMake}
+                                />
+                              ) : (
+                                <>
+                                  {
+                                    /* ================================================================ */
+                                    // NORMAL USER - only show the body makes that has length > 0
+                                    /* ================================================================ */
+                                  }
+                                  {wheelbaseBodyMake.body_makes.length > 0 && (
+                                    <WheelbaseBodyMakeGrid wheelbaseBodyMake={wheelbaseBodyMake} />
+                                  )}
+                                </>
                               )}
-                            </>
-                          )}
-                        </section>
-                      ))}
+                            </section>
+                          </TabPane>
+                        ))}
+                      </Tabs>
                     </>
                   ) : (
                     <div className="catalogbodymake__empty-div">
