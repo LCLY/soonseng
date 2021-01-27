@@ -370,7 +370,7 @@ const Make: React.FC<Props> = ({
                   });
                 }}
               >
-                Create Series
+                Create Seriess
               </Button>
             </div>
           </>
