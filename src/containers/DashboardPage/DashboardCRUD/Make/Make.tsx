@@ -2,6 +2,7 @@ import React, { ReactText, useEffect, useState } from 'react';
 import './Make.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
@@ -106,17 +107,11 @@ type TMakeTableState = {
   makeImages: TReceivedImageObj[];
 };
 
-type TShowModal = {
-  make: boolean;
-  brand: boolean;
-  wheelbase: boolean;
-  series: boolean;
-  make_wheelbase: boolean;
-};
-
 type TDeleteModalContent = {
   make_wheelbase: { make_wheelbase_id: number; make_wheelbase_title: string; make_title: string };
   brand: { brand_id: number; brand_title: string };
+  wheelbase: { wheelbase_id: number; wheelbase_title: string };
+  make: { make_id: number; make_title: string };
 };
 
 // Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
@@ -175,14 +170,18 @@ const Make: React.FC<Props> = ({
   onGetWheelbases,
   onCreateWheelbase,
   onUpdateWheelbase,
+  onDeleteWheelbase,
   // make
   makesArray,
   onGetMakes,
   onCreateMake,
   onUpdateMake,
+  onDeleteMake,
   // series
   seriesArray,
   onGetSeries,
+  onCreateSeries,
+  onUpdateSeries,
   // make wheelbase
   makeWheelbasesArray,
   onGetMakeWheelbases,
@@ -223,21 +222,21 @@ const Make: React.FC<Props> = ({
   setFilterReference(filterData, setFilterData);
 
   // Modal states
-  const [showUpdateModal, setShowUpdateModal] = useState<TShowModal>({
+  const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
     brand: false,
     wheelbase: false,
     make: false,
     series: false,
     make_wheelbase: false,
   });
-  const [showCreateModal, setShowCreateModal] = useState<TShowModal>({
+  const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
     brand: false,
     wheelbase: false,
     make: false,
     series: false,
     make_wheelbase: false,
   });
-  const [showDeleteModal, setShowDeleteModal] = useState<TShowModal>({
+  const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
     brand: false,
     wheelbase: false,
     make: false,
@@ -257,6 +256,8 @@ const Make: React.FC<Props> = ({
   const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
     make_wheelbase: { make_title: '', make_wheelbase_id: -1, make_wheelbase_title: '' },
     brand: { brand_title: '', brand_id: -1 },
+    wheelbase: { wheelbase_id: -1, wheelbase_title: '' },
+    make: { make_title: '', make_id: -1 },
   });
 
   /* ======================== */
@@ -319,9 +320,10 @@ const Make: React.FC<Props> = ({
       render: (_text: any, record: TBrandTableState) => {
         return (
           <>
-            <div>
+            <div className="dashboard__btn-div">
               <Button
                 type="link"
+                title="Edit Brand"
                 className="make__brand-btn--edit"
                 onClick={() => {
                   onPopulateUpdateBrandModal(record);
@@ -330,21 +332,31 @@ const Make: React.FC<Props> = ({
                   setShowUpdateModal({ ...showUpdateModal, brand: true });
                 }}
               >
-                Edit
+                <i className="far fa-edit"></i>
               </Button>
               <Button
                 type="link"
+                className="make__brand-btn--edit"
+                onClick={() => {
+                  alert('disable - supposed to set available to false');
+                }}
+              >
+                <i className="fas fa-eye-slash"></i>
+              </Button>
+              <Button
+                type="link"
+                title="Delete Brand"
                 danger
                 onClick={() => {
                   // delete modal
-                  setShowDeleteModal({ ...showDeleteModal, brand: true });
+                  setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
                   setDeleteModalContent({
                     ...deleteModalContent,
                     brand: { brand_id: record.brandId, brand_title: record.brandTitle },
                   });
                 }}
               >
-                Delete
+                <i className="far fa-trash-alt"></i>
               </Button>
             </div>
             <div className="flex justify-center">
@@ -397,28 +409,55 @@ const Make: React.FC<Props> = ({
       render: (_text: any, record: TWheelbaseTableState) => {
         return (
           <>
-            <Button
-              className="make__brand-btn--edit"
-              type="link"
-              onClick={() => {
-                // show modal
-                setShowUpdateModal({ ...showUpdateModal, wheelbase: true });
-                let convertedToIntWheelbaseTitle = parseInt(record.wheelbaseTitle.replace('mm', ''));
-                // update the form value
-                // if wheelbaseDescription is '-' then change to empty string, else the real string
-                // remember to set this form on the Form component
-                updateWheelbaseForm.setFieldsValue({
-                  wheelbaseId: record.wheelbaseId,
-                  wheelbaseTitle: convertedToIntWheelbaseTitle,
-                  wheelbaseDescription: record.wheelbaseDescription === '-' ? '' : record.wheelbaseDescription,
-                });
-              }}
-            >
-              Edit
-            </Button>
-            <Button disabled type="link" danger>
-              Delete
-            </Button>
+            <div className="dashboard__btn-div">
+              <Button
+                className="make__brand-btn--edit"
+                type="link"
+                title="Edit Wheelbase"
+                onClick={() => {
+                  // show modal
+                  setShowUpdateModal({ ...showUpdateModal, wheelbase: true });
+                  let convertedToIntWheelbaseTitle = parseInt(record.wheelbaseTitle.replace('mm', ''));
+                  // update the form value
+                  // if wheelbaseDescription is '-' then change to empty string, else the real string
+                  // remember to set this form on the Form component
+                  updateWheelbaseForm.setFieldsValue({
+                    wheelbaseId: record.wheelbaseId,
+                    wheelbaseTitle: convertedToIntWheelbaseTitle,
+                    wheelbaseDescription: record.wheelbaseDescription === '-' ? '' : record.wheelbaseDescription,
+                  });
+                }}
+              >
+                <i className="far fa-edit"></i>
+              </Button>
+              <Button
+                type="link"
+                className="make__brand-btn--edit"
+                onClick={() => {
+                  alert('disable - supposed to set available to false');
+                }}
+              >
+                <i className="fas fa-eye-slash"></i>
+              </Button>
+              <Button
+                type="link"
+                danger
+                title="Delete Wheelbase"
+                onClick={() => {
+                  // delete modal
+                  setShowDeleteModal({ ...showDeleteModal, wheelbase: true });
+                  setDeleteModalContent({
+                    ...deleteModalContent,
+                    wheelbase: {
+                      wheelbase_id: record.wheelbaseId,
+                      wheelbase_title: record.wheelbaseTitle,
+                    },
+                  });
+                }}
+              >
+                <i className="far fa-trash-alt"></i>
+              </Button>
+            </div>
           </>
         );
       },
@@ -480,6 +519,7 @@ const Make: React.FC<Props> = ({
             <div className="dashboard__btn-div">
               <Button
                 className="dashboard__btn-link"
+                title="Edit Model"
                 type="link"
                 onClick={() => {
                   // populate the editModalForm
@@ -499,7 +539,19 @@ const Make: React.FC<Props> = ({
               >
                 <i className="fas fa-eye-slash"></i>
               </Button>
-              <Button className="dashboard__btn-link--danger" disabled type="link" danger>
+              <Button
+                className="dashboard__btn-link--danger"
+                title="Delete Models"
+                type="link"
+                danger
+                onClick={() => {
+                  setShowDeleteModal({ ...showDeleteModal, make: true });
+                  setDeleteModalContent({
+                    ...deleteModalContent,
+                    make: { make_id: record.makeId, make_title: record.makeBrandTitle },
+                  });
+                }}
+              >
                 <i className="far fa-trash-alt"></i>
               </Button>
             </div>
@@ -674,11 +726,11 @@ const Make: React.FC<Props> = ({
   // Series
   /* ===================================== */
 
-  const onCreateSeriesFinish = (values: any) => {
-    console.log(values);
+  const onCreateSeriesFinish = (values: { brandTitle: string; brandId: number }) => {
+    onCreateSeries(values.brandId, values.brandTitle);
   };
-  const onEditSeriesFinish = (values: any) => {
-    console.log(values);
+  const onUpdateSeriesFinish = (values: { brandId: number; seriesId: number; title: string }) => {
+    onUpdateSeries(values.brandId, values.seriesId, values.title);
   };
 
   /* ===================================== */
@@ -693,6 +745,13 @@ const Make: React.FC<Props> = ({
     wheelbaseDescription: string;
   }) => {
     onUpdateWheelbase(values.wheelbaseId, values.wheelBaseTitle, values.wheelbaseDescription);
+  };
+  const onDeleteWheelbaseFinish = () => {
+    onDeleteWheelbase(deleteModalContent.wheelbase.wheelbase_id);
+  };
+
+  const onDeleteMakeFinish = () => {
+    onDeleteMake(deleteModalContent.make.make_id);
   };
 
   /* ===================================== */
@@ -801,12 +860,12 @@ const Make: React.FC<Props> = ({
             onTableRowExpand(expanded, record);
             // this closes all the edit image gallery when user expand other row
             // clearing out all the booleans
-            setShowEditImageGallery({});
+            // setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
+            // onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
             // populate image array state and pass to ImageGallery component
-            onPopulateImagesArray(record.brandImages);
+            // onPopulateImagesArray(record.brandImages);
           }}
         />
       );
@@ -874,7 +933,35 @@ const Make: React.FC<Props> = ({
 
     return (
       <>
-        {seriesArray && seriesArray.map((series) => <div>{series.title}</div>)}
+        {seriesArray &&
+          seriesArray.map((series) => (
+            <div>
+              {series.title}{' '}
+              <Button
+                className="make__brand-btn--edit"
+                type="link"
+                title="Edit Series"
+                onClick={() => {
+                  // delete modal
+                  setShowUpdateModal({ ...showUpdateModal, series: true });
+                }}
+              >
+                <i className="far fa-edit"></i>
+              </Button>
+              <Button
+                type="link"
+                danger
+                title="Delete Series"
+                onClick={() => {
+                  // delete modal
+                  setShowDeleteModal({ ...showDeleteModal, series: true });
+                }}
+              >
+                <i className="far fa-trash-alt"></i>
+              </Button>
+            </div>
+          ))}
+
         <TableImageViewer
           record={record}
           loading={loading}
@@ -1090,7 +1177,7 @@ const Make: React.FC<Props> = ({
         form={updateSeriesForm}
         name="editSeries"
         onKeyDown={(e) => handleKeyDown(e, updateSeriesForm)}
-        onFinish={onEditSeriesFinish}
+        onFinish={onUpdateSeriesFinish}
       >
         {/* The rest of the form items */}
         {seriesFormItems}
@@ -1689,6 +1776,7 @@ const Make: React.FC<Props> = ({
                                 <Button
                                   type="link"
                                   className="blue-link-btn margin_r-1"
+                                  title="Edit Model"
                                   style={{ padding: 0 }}
                                   onClick={() => {
                                     // to get name and id
@@ -1821,6 +1909,39 @@ const Make: React.FC<Props> = ({
     </Modal>
   );
 
+  //  Delete Make Wheelbase Modal
+  let deleteWheelbaseModal = (
+    <CrudModal
+      crud={'delete'}
+      indexKey={'wheelbase'}
+      category={'wheelbase'}
+      modalTitle={`Delete Wheelbase`}
+      showModal={showDeleteModal}
+      visible={showDeleteModal.wheelbase}
+      onDelete={onDeleteWheelbaseFinish}
+      setShowModal={setShowDeleteModal}
+      warningText={deleteModalContent.wheelbase.wheelbase_title}
+      backupWarningText={'this wheelbase'}
+      loading={loading !== undefined && loading}
+    />
+  );
+
+  //  Delete Make  Modal
+  let deleteMakeModal = (
+    <CrudModal
+      crud={'delete'}
+      indexKey={'make'}
+      category={'make'}
+      modalTitle={`Delete Make`}
+      showModal={showDeleteModal}
+      visible={showDeleteModal.make}
+      onDelete={onDeleteMakeFinish}
+      setShowModal={setShowDeleteModal}
+      warningText={deleteModalContent.make.make_title}
+      backupWarningText={'this wheelbase'}
+      loading={loading !== undefined && loading}
+    />
+  );
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
@@ -2108,7 +2229,9 @@ const Make: React.FC<Props> = ({
       {createMakeWheelbaseModal}
       {updateMakeWheelbaseModal}
       {deleteMakeWheelbaseModal}
+      {deleteWheelbaseModal}
       {deleteBrandModal}
+      {deleteMakeModal}
 
       <NavbarComponent activePage="make" defaultOpenKeys="dashboard" />
       <Layout>
@@ -2292,12 +2415,16 @@ interface DispatchProps {
   onGetWheelbases: typeof actions.getWheelbases;
   onCreateWheelbase: typeof actions.createWheelbase;
   onUpdateWheelbase: typeof actions.updateWheelbase;
+  onDeleteWheelbase: typeof actions.deleteWheelbase;
   // Make
   onGetMakes: typeof actions.getMakes;
   onCreateMake: typeof actions.createMake;
   onUpdateMake: typeof actions.updateMake;
+  onDeleteMake: typeof actions.deleteMake;
   // Series
   onGetSeries: typeof actions.getSeries;
+  onCreateSeries: typeof actions.createSeries;
+  onUpdateSeries: typeof actions.updateSeries;
   // Make Wheelbase
   onGetMakeWheelbases: typeof actions.getMakeWheelbases;
   onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
@@ -2322,14 +2449,18 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onCreateWheelbase: (title, description) => dispatch(actions.createWheelbase(title, description)),
     onUpdateWheelbase: (wheelbase_id, title, description) =>
       dispatch(actions.updateWheelbase(wheelbase_id, title, description)),
+    onDeleteWheelbase: (wheelbase_id) => dispatch(actions.deleteWheelbase(wheelbase_id)),
     // Make
     onGetMakes: () => dispatch(actions.getMakes()),
     onCreateMake: (createMakeData, imageTag, uploadSelectedFiles) =>
       dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
     onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    onDeleteMake: (make_id) => dispatch(actions.deleteMake(make_id)),
     //  Series
     onGetSeries: (brand_id) => dispatch(actions.getSeries(brand_id)),
+    onCreateSeries: (brand_id, title) => dispatch(actions.createSeries(brand_id, title)),
+    onUpdateSeries: (brand_id, series_id, title) => dispatch(actions.updateSeries(brand_id, series_id, title)),
     // Make wheelbase
     onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
     onCreateMakeWheelbase: (make_id, wheelbase_id) => dispatch(actions.createMakeWheelbase(make_id, wheelbase_id)),

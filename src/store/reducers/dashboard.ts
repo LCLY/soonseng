@@ -372,6 +372,29 @@ const updateWheelbaseFailed = (state: DashboardInitialState, action: AppActions)
   return state;
 };
 
+/* -------------------------- */
+/* Delete Brand  */
+/* -------------------------- */
+const deleteWheelbaseStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteWheelbaseSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('wheelbasesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      wheelbasesArray: action.wheelbasesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteWheelbaseFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
 /* ============================================================================================ */
 /* Make (Make Page) (head) */
 /* ============================================================================================ */
@@ -478,7 +501,7 @@ const deleteMakeFailed = (state: DashboardInitialState, action: AppActions) => {
 /* Get Series  */
 /* -------------------------- */
 const getSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null });
+  return updateObject(state, { seriesArray: null, errorMessage: null });
 };
 const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('seriesArray' in action) {
@@ -1420,6 +1443,13 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return updateWheelbaseSucceed(state, action);
     case actionTypes.UPDATE_WHEELBASE_FAILED:
       return updateWheelbaseFailed(state, action);
+    // Delete wheelbase (head)
+    case actionTypes.DELETE_WHEELBASE_START:
+      return deleteWheelbaseStart(state, action);
+    case actionTypes.DELETE_WHEELBASE_SUCCEED:
+      return deleteWheelbaseSucceed(state, action);
+    case actionTypes.DELETE_WHEELBASE_FAILED:
+      return deleteWheelbaseFailed(state, action);
 
     /* =================================== */
     // Make  (Make Page) (head)

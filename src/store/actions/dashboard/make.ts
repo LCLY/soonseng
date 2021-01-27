@@ -250,6 +250,39 @@ export const updateWheelbaseFailed = (errorMessage: string): AppActions => {
   };
 };
 
+/* ------------------------------ */
+// Delete Wheelbase
+/* ------------------------------ */
+export const deleteWheelbase = (wheelbase_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_WHEELBASE,
+    wheelbase_id: wheelbase_id,
+  };
+};
+
+export const deleteWheelbaseStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_WHEELBASE_START,
+  };
+};
+
+export const deleteWheelbaseSucceed = (
+  wheelbasesArray: TReceivedWheelbaseObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.DELETE_WHEELBASE_SUCCEED,
+    wheelbasesArray: wheelbasesArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteWheelbaseFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_WHEELBASE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
 /* ============================================================================================ */
 // Make / Model
 /* ============================================================================================ */

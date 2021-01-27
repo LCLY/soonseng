@@ -402,6 +402,27 @@ export function* updateWheelbaseSaga(action: AppActions) {
   }
 }
 
+export function* deleteWheelbaseSaga(action: AppActions) {
+  yield put(actions.deleteWheelbaseStart());
+
+  let url = '';
+  if ('wheelbase_id' in action) {
+    url = process.env.REACT_APP_API + `/head/wheelbases/${action.wheelbase_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    console.log(response);
+    yield put(actions.deleteWheelbaseSucceed(response.data.wheelbases, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteWheelbaseFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteWheelbaseFailed, 'Delete Body Make Accessory Failed');
+    }
+  }
+}
+
 /* ================================================================== */
 /*   Make (Make Page) (head) */
 /* ================================================================== */
