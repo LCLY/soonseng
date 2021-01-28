@@ -1,25 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CatalogBodyMake.scss';
 /*Components*/
 import Footer from 'src/components/Footer/Footer';
 import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
+import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
+import CatalogAccessoriesModal from './CatalogAccessories/CatalogAccessoriesModal';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
-import { v4 as uuidv4 } from 'uuid';
-import { connect } from 'react-redux';
-import { Dispatch, AnyAction } from 'redux';
-import NumberFormat from 'react-number-format';
-import { LeftCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import {
   Button,
   Empty,
   Modal,
   Tabs,
   Form,
-  Input,
   Checkbox,
   Divider,
   Skeleton,
@@ -30,6 +26,13 @@ import {
   Tag,
   message,
 } from 'antd';
+import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
+import { connect } from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
+import NumberFormat from 'react-number-format';
+import { LeftCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 /* Util */
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
@@ -48,11 +51,9 @@ import {
   TUpdateMakeData,
 } from 'src/store/types/dashboard';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
-import moment from 'moment';
 import { TUpdateMakeFinishValues } from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
 import { checkInchExist, convertPriceToFloat, emptyStringWhenUndefinedOrNull, formatFeetInch } from 'src/shared/Utils';
 import { TCreateBodyMakeForm, TUpdateBodyMakeForm } from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
-import CatalogAccessoriesModal from './CatalogAccessories/CatalogAccessoriesModal';
 
 const { TabPane } = Tabs;
 
@@ -75,31 +76,6 @@ export interface ICrudModal {
 interface CatalogBodyMakeProps {}
 
 type Props = CatalogBodyMakeProps & StateProps & DispatchProps & RouteComponentProps<MatchParams>;
-
-function useOutsideAlerter(wrapperRef: any, dropdownRef: any, setShowPopUp: any) {
-  useEffect(() => {
-    /**
-     * Hide pop up if clicked on outside of element
-     */
-    function handleClickOutside(event: any) {
-      if (
-        wrapperRef.current &&
-        dropdownRef.current &&
-        !wrapperRef.current.contains(event.target) &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setShowPopUp(false);
-      }
-    }
-
-    // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [wrapperRef, dropdownRef, setShowPopUp]);
-}
 
 const CatalogBodyMake: React.FC<Props> = ({
   match,
@@ -141,10 +117,10 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [pickAccessoryModalOpen, setPickAccessoryModalOpen] = useState(false);
   const [crudAccessoryModalOpen, setCrudAccessoryModalOpen] = useState(false);
   const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
+  const [showAllEmpty, setShowAllEmpty] = useState(false);
 
   // need to refer to both the pop up and also the dropdown button itself
-  const wrapperRef = useRef(null);
-  const dropdownRef = useRef(null);
+  const [showSearch, setShowSearch] = useState(false);
   const [bodyMakeFilter, setBodyMakeFilter] = useState<string>('');
 
   /* ======================== */
@@ -266,20 +242,6 @@ const CatalogBodyMake: React.FC<Props> = ({
       },
     ];
   }
-
-  /* -------------------------- */
-  // animation
-  /* -------------------------- */
-  const showSearchbar = () => {
-    gsap.to('.catalog__search-btn-outerdiv', { opacity: 0, duration: 0.2, pointerEvents: 'none' });
-    gsap.to('.catalog__search-input-outerdiv', { top: '30%', zIndex: 100, opacity: 1, duration: 0.5 });
-  };
-  const hideSearchbar = () => {
-    gsap.to('.catalog__search-btn-outerdiv', { opacity: 1, duration: 0.2, pointerEvents: 'initial' });
-    gsap.to('.catalog__search-input-outerdiv', { top: '60%', zIndex: 0, opacity: 0, duration: 0.5 });
-  };
-
-  useOutsideAlerter(wrapperRef, dropdownRef, hideSearchbar);
 
   /* ================================================== */
   /*  method */
@@ -634,7 +596,6 @@ const CatalogBodyMake: React.FC<Props> = ({
 
   const WheelbaseBodyMakeGrid = ({
     makeObj,
-    seriesTitle,
     wheelbaseBodyMake,
   }: {
     seriesTitle?: string;
@@ -643,46 +604,6 @@ const CatalogBodyMake: React.FC<Props> = ({
   }) => (
     <>
       <div className="catalogbodymake__wheelbase-outerdiv">
-        {wheelbaseBodyMake.make_wheelbase.wheelbase.title && wheelbaseBodyMake.make_wheelbase.wheelbase.title !== '' ? (
-          <>
-            <div className="catalogbodymake__wheelbase-innerdiv">
-              <div className="catalogbodymake__wheelbase-title">
-                {wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm Wheelbase
-              </div>
-              {accessObj?.showAdminDashboard && (
-                <Tooltip title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${seriesTitle}`}>
-                  {makeObj !== undefined && seriesTitle !== undefined && (
-                    <div
-                      className="catalog__dropdown-series"
-                      onClick={() => {
-                        setDeleteModalContent({
-                          ...deleteModalContent,
-                          make_wheelbase: {
-                            makeId: makeObj.id,
-                            makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
-                            text: {
-                              wheelbase: wheelbaseBodyMake.make_wheelbase.wheelbase.title,
-                              series: seriesTitle,
-                              bodyMakesLength: wheelbaseBodyMake.body_makes.length.toString(),
-                            },
-                            warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${seriesTitle} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
-                            backupWarningText: `this configuration from ${seriesTitle}`,
-                          },
-                        });
-                        setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
-                      }}
-                    >
-                      <i className="fas fa-trash-alt"></i>
-                    </div>
-                  )}
-                </Tooltip>
-              )}
-            </div>
-          </>
-        ) : (
-          ''
-        )}
-
         {/* Add Body Make Button */}
         {accessObj?.showAdminDashboard && (
           <Tooltip title={`Add Body for ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm configuration`}>
@@ -957,6 +878,22 @@ const CatalogBodyMake: React.FC<Props> = ({
       });
     }
   }, [chargesFeesArray]);
+
+  useEffect(() => {
+    if (bodyMakeWithWheelbase) {
+      // use this to loop through every body makes array and determine if all of them are empty
+      // if they are all empty, then show no data on normal user screen
+      let result = bodyMakeWithWheelbase.reduce((total, currValue) => {
+        return total + currValue.body_makes.length;
+      }, 0);
+
+      if (result === 0) {
+        setShowAllEmpty(true);
+      } else {
+        setShowAllEmpty(false);
+      }
+    }
+  }, [bodyMakeWithWheelbase]);
 
   useEffect(() => {
     if (makeFromCatalogBodyMake) {
@@ -1466,178 +1403,218 @@ const CatalogBodyMake: React.FC<Props> = ({
         )}
       </Modal>
       <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
+
       <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
-        <div className="catalog__outerdiv">
-          {makeFromCatalogBodyMake && (
-            <>
-              <div className="catalog__search-btn-outerdiv">
-                <div className="catalog__search-btn" onClick={() => showSearchbar()}>
-                  <i className="fas fa-search catalog__search-btn-icon"></i>
-                  <span className="catalog__search-btn-text">Search Model</span>
-                </div>
-              </div>
-              <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
-                <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
-                  <Input
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        hideSearchbar();
-                      }
-                    }}
-                    allowClear
-                    className="catalog__search-input"
-                    value={bodyMakeFilter}
-                    placeholder="&#xF002;   Search model"
-                    onChange={(event) => setBodyMakeFilter(event.target.value)}
-                    style={{ width: 200, fontFamily: ' FontAwesome, Arial', fontStyle: 'normal' }}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-          <div className="catalog__div">
-            {bodyMakeWithWheelbase && catalogMake ? (
+        <CustomContainer>
+          <div className="catalog__outerdiv">
+            {makeFromCatalogBodyMake && (
               <>
-                <section className="catalogbodymake__section-div">
-                  <div className="catalogbodymake__series-outerdiv">
-                    <div className="catalogbodymake__series-innerdiv">
-                      <LeftCircleOutlined
-                        className="catalogbodymake__backarrow"
-                        onClick={() => history.push('/catalog')}
-                      />
-                      <div className="catalogbodymake__series-title">{catalogMake.series}</div>
-                    </div>
+                <CatalogFilter
+                  showSearch={showSearch}
+                  setShowSearch={setShowSearch}
+                  filterString={bodyMakeFilter}
+                  setFilterString={setBodyMakeFilter}
+                />
+              </>
+            )}
+            <div className="catalog__div">
+              {bodyMakeWithWheelbase && catalogMake ? (
+                <>
+                  <section className="catalogbodymake__section-div">
+                    <div className="catalogbodymake__series-outerdiv">
+                      <div className="catalogbodymake__series-innerdiv">
+                        <LeftCircleOutlined
+                          className="catalogbodymake__backarrow"
+                          onClick={() => history.push('/catalog')}
+                        />
+                        <div className="catalogbodymake__series-title">{catalogMake.series}</div>
+                      </div>
 
-                    {accessObj?.showAdminDashboard && (
-                      <Tooltip title="Add Configuration">
-                        <div
-                          className="catalog__button-series catalogbodymake__button-body"
-                          onClick={() => {
-                            // get make id and title
-                            setModalContent({
-                              ...modalContent,
-                              make_wheelbase: {
-                                seriesTitle: catalogMake.series,
-                              },
-                            });
-                            setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
-                            createMakeWheelbaseForm.setFieldsValue({
-                              makeId: catalogMake.id,
-                            });
-                          }}
-                        >
-                          <PlusCircleOutlined className="catalog__button-icon" />
-                          <span className="catalogbodymake__button-title">&nbsp;&nbsp;Add Configuration</span>
-                        </div>
-                      </Tooltip>
-                    )}
-                  </div>
-                  <section className="catalogbodymake__section-banner">
-                    <div className="catalogbodymake__banner-div">
-                      <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
-                    </div>
-                    <MakeDetailsComponent catalogMake={catalogMake} />
-                  </section>
-
-                  {/*  ================================================================ */}
-                  {/*    ADMIN - if user is admin show everything, if not only show
-                        those that the length is greater than 0 */}
-                  {/*  ================================================================ */}
-                  {bodyMakeWithWheelbase.length > 0 ? (
-                    <>
-                      <Tabs className="catalog__tabs-outerdiv" defaultActiveKey="wheelbase1" tabPosition={'top'}>
-                        {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
-                          <TabPane
-                            tab={
-                              <div className="catalog__tabs-title">
-                                <div className="catalogbodymake__wheelbase-title">
-                                  {wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm Wheelbase
-                                </div>
-                                {accessObj?.showAdminDashboard && (
-                                  <Tooltip
-                                    title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series}`}
-                                  >
-                                    <div
-                                      className="catalog__dropdown-series"
-                                      onClick={() => {
-                                        setDeleteModalContent({
-                                          ...deleteModalContent,
-                                          make_wheelbase: {
-                                            makeId: catalogMake.id,
-                                            makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
-                                            text: {
-                                              wheelbase: wheelbaseBodyMake.make_wheelbase.wheelbase.title,
-                                              series: catalogMake.series,
-                                              bodyMakesLength: wheelbaseBodyMake.body_makes.length.toString(),
-                                            },
-                                            warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
-                                            backupWarningText: `this configuration from ${catalogMake.series}`,
-                                          },
-                                        });
-                                        setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
-                                      }}
-                                    >
-                                      <i className="fas fa-trash-alt"></i>
-                                    </div>
-                                  </Tooltip>
-                                )}
-                              </div>
-                            }
-                            key={`wheelbase${index + 1}`}
+                      {accessObj?.showAdminDashboard && (
+                        <Tooltip title="Add Configuration">
+                          <div
+                            className="catalog__button-series catalogbodymake__button-body"
+                            onClick={() => {
+                              // get make id and title
+                              setModalContent({
+                                ...modalContent,
+                                make_wheelbase: {
+                                  seriesTitle: catalogMake.series,
+                                },
+                              });
+                              setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
+                              createMakeWheelbaseForm.setFieldsValue({
+                                makeId: catalogMake.id,
+                              });
+                            }}
                           >
-                            <section key={uuidv4()} className="catalogbodymake__wheelbase-div">
-                              {
-                                /* ================================================================ */
-                                // ADMIN - shows everything
-                                /* ================================================================ */
-                              }
-                              {accessObj?.showAdminDashboard ? (
-                                <WheelbaseBodyMakeGrid
-                                  makeObj={catalogMake}
-                                  seriesTitle={catalogMake.series}
-                                  wheelbaseBodyMake={wheelbaseBodyMake}
-                                />
-                              ) : (
-                                <>
+                            <PlusCircleOutlined className="catalog__button-icon" />
+                            <span className="catalogbodymake__button-title">&nbsp;&nbsp;Add Configuration</span>
+                          </div>
+                        </Tooltip>
+                      )}
+                    </div>
+                    <section className="catalogbodymake__section-banner">
+                      <div className="catalogbodymake__banner-div">
+                        <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
+                      </div>
+                      <MakeDetailsComponent catalogMake={catalogMake} />
+                    </section>
+
+                    {/*  ================================================================ */}
+                    {/*    ADMIN - if user is admin show everything, if not only show
+                        those that the length is greater than 0 */}
+                    {/*  ================================================================ */}
+                    {bodyMakeWithWheelbase.length > 0 ? (
+                      <>
+                        {accessObj?.showAdminDashboard ? (
+                          <Tabs
+                            animated={{ tabPane: true }}
+                            className="catalog__tabs-outerdiv"
+                            defaultActiveKey="wheelbase1"
+                            tabPosition={'top'}
+                          >
+                            {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
+                              <TabPane
+                                tab={
+                                  <div className="catalog__tabs-title">
+                                    <span>{wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm Wheelbase</span>
+                                    {accessObj?.showAdminDashboard && (
+                                      <Tooltip
+                                        title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series}`}
+                                      >
+                                        <div
+                                          className="catalog__dropdown-series"
+                                          onClick={() => {
+                                            setDeleteModalContent({
+                                              ...deleteModalContent,
+                                              make_wheelbase: {
+                                                makeId: catalogMake.id,
+                                                makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+                                                text: {
+                                                  wheelbase: wheelbaseBodyMake.make_wheelbase.wheelbase.title,
+                                                  series: catalogMake.series,
+                                                  bodyMakesLength: wheelbaseBodyMake.body_makes.length.toString(),
+                                                },
+                                                warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
+                                                backupWarningText: `this configuration from ${catalogMake.series}`,
+                                              },
+                                            });
+                                            setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
+                                          }}
+                                        >
+                                          <i className="fas fa-trash-alt"></i>
+                                        </div>
+                                      </Tooltip>
+                                    )}
+                                  </div>
+                                }
+                                key={`wheelbase${index + 1}`}
+                              >
+                                <section key={uuidv4()} className="catalogbodymake__wheelbase-div">
                                   {
                                     /* ================================================================ */
-                                    // NORMAL USER - only show the body makes that has length > 0
+                                    // ADMIN - shows everything
                                     /* ================================================================ */
                                   }
-                                  {wheelbaseBodyMake.body_makes.length > 0 && (
-                                    <WheelbaseBodyMakeGrid wheelbaseBodyMake={wheelbaseBodyMake} />
+                                  {accessObj?.showAdminDashboard ? (
+                                    <WheelbaseBodyMakeGrid
+                                      makeObj={catalogMake}
+                                      seriesTitle={catalogMake.series}
+                                      wheelbaseBodyMake={wheelbaseBodyMake}
+                                    />
+                                  ) : (
+                                    <>
+                                      {
+                                        /* ================================================================ */
+                                        // NORMAL USER - only show the body makes that has length > 0
+                                        /* ================================================================ */
+                                      }
+                                      {wheelbaseBodyMake.body_makes.length > 0 && (
+                                        <WheelbaseBodyMakeGrid wheelbaseBodyMake={wheelbaseBodyMake} />
+                                      )}
+                                    </>
                                   )}
-                                </>
-                              )}
-                            </section>
-                          </TabPane>
-                        ))}
-                      </Tabs>
-                    </>
-                  ) : (
-                    <div className="catalogbodymake__empty-div">
-                      <div>
-                        <Empty
-                          description={
-                            <span>
-                              No configurations available
-                              <br />
-                              Contact Jason for business inquiries
-                            </span>
-                          }
-                        />
+                                </section>
+                              </TabPane>
+                            ))}
+                          </Tabs>
+                        ) : (
+                          <>
+                            {showAllEmpty ? (
+                              <div className="catalogbodymake__empty-div">
+                                <Empty
+                                  description={
+                                    <span>
+                                      No configurations available
+                                      <br />
+                                      Contact Jason for business inquiries
+                                    </span>
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              <Tabs
+                                animated={{ tabPane: true }}
+                                className="catalog__tabs-outerdiv"
+                                defaultActiveKey="wheelbase1"
+                                tabPosition={'top'}
+                              >
+                                {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
+                                  <React.Fragment key={uuidv4()}>
+                                    {wheelbaseBodyMake.body_makes.length > 0 && (
+                                      <TabPane
+                                        tab={
+                                          <div className="catalog__tabs-title">
+                                            <span>{wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm Wheelbase</span>
+                                          </div>
+                                        }
+                                        key={`wheelbase${index + 1}`}
+                                      >
+                                        <section className="catalogbodymake__wheelbase-div">
+                                          <section>
+                                            {
+                                              /* ================================================================ */
+                                              // NORMAL USER - only show the body makes that has length > 0
+                                              /* ================================================================ */
+                                            }
+                                            <WheelbaseBodyMakeGrid wheelbaseBodyMake={wheelbaseBodyMake} />
+                                          </section>
+                                        </section>
+                                      </TabPane>
+                                    )}
+                                  </React.Fragment>
+                                ))}
+                              </Tabs>
+                            )}
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <div className="catalogbodymake__empty-div">
+                        <div>
+                          <Empty
+                            description={
+                              <span>
+                                No configurations available
+                                <br />
+                                Contact Jason for business inquiries
+                              </span>
+                            }
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </section>
-              </>
-            ) : (
-              <div className="catalog__loading-div">
-                <Ripple />
-              </div>
-            )}
+                    )}
+                  </section>
+                </>
+              ) : (
+                <div className="catalog__loading-div">
+                  <Ripple />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </CustomContainer>
       </ParallaxContainer>
       <Footer />
     </>

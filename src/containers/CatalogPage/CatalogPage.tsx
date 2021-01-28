@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, MutableRefObject } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CatalogPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
@@ -6,9 +6,9 @@ import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
+import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
-import gsap from 'gsap';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { Helmet } from 'react-helmet';
@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Tabs, Input, Tooltip, Skeleton, notification, Menu, Dropdown, Button } from 'antd';
+import { Empty, Form, Tabs, Tooltip, Skeleton, notification, Menu, Dropdown } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -35,31 +35,6 @@ const { TabPane } = Tabs;
 interface CatalogPageProps {}
 
 type Props = CatalogPageProps & StateProps & DispatchProps & RouteComponentProps;
-
-function useOutsideAlerter(wrapperRef: any, dropdownRef: any, setShowPopUp: any) {
-  useEffect(() => {
-    /**
-     * Hide pop up if clicked on outside of element
-     */
-    function handleClickOutside(event: any) {
-      if (
-        wrapperRef.current &&
-        dropdownRef.current &&
-        !wrapperRef.current.contains(event.target) &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        setShowPopUp(false);
-      }
-    }
-
-    // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [wrapperRef, dropdownRef, setShowPopUp]);
-}
 
 const CatalogPage: React.FC<Props> = ({
   history,
@@ -107,11 +82,7 @@ const CatalogPage: React.FC<Props> = ({
   const [updateMakeForm] = Form.useForm();
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
-
-  // need to refer to both the pop up and also the dropdown button itself
-  const wrapperRef = useRef(null);
-  const dropdownRef = useRef(null);
-  const searchInputRef = useRef() as MutableRefObject<any>;
+  const [showSearch, setShowSearch] = useState(false);
 
   const { width } = useWindowDimensions();
 
@@ -203,43 +174,6 @@ const CatalogPage: React.FC<Props> = ({
 
   const onDeleteMakeFinish = () => {
     onDeleteMake(deleteModalContent.make.makeId);
-  };
-
-  /* -------------------------- */
-  // animation
-  /* -------------------------- */
-  const showSearchbar = () => {
-    gsap.to('.catalog__search-btn-outerdiv', { opacity: 0, duration: 0.2, pointerEvents: 'none' });
-    gsap.to('.catalog__search-input-outerdiv', { top: '30%', zIndex: 100, opacity: 1, duration: 0.5 });
-    setTimeout(() => {
-      if (searchInputRef && searchInputRef.current) {
-        searchInputRef.current.focus();
-      }
-    }, 700);
-  };
-  const hideSearchbar = () => {
-    gsap.to('.catalog__search-btn-outerdiv', { opacity: 1, duration: 0.2, pointerEvents: 'initial' });
-    gsap.to('.catalog__search-input-outerdiv', { top: '60%', zIndex: 0, opacity: 0, duration: 0.5 });
-    setTimeout(() => {
-      if (searchInputRef && searchInputRef.current) {
-        searchInputRef.current.blur();
-      }
-    }, 700);
-  };
-
-  useOutsideAlerter(wrapperRef, dropdownRef, hideSearchbar);
-
-  const handleEsc = (e: any) => {
-    // key Esc
-    if (e.keyCode === 27) {
-      hideSearchbar();
-      setMakeFilter('');
-    }
-
-    // key F
-    if (e.keyCode === 70) {
-      showSearchbar();
-    }
   };
 
   /* ================================================== */
@@ -429,7 +363,9 @@ const CatalogPage: React.FC<Props> = ({
                 })}
             </div>
           ) : (
-            <Empty style={{ marginTop: 'auto', marginBottom: 'auto' }} />
+            <div style={{ display: 'flex', alignItems: 'çenter', justifyContent: 'center', height: '100%' }}>
+              <Empty />
+            </div>
           )}
         </div>
       </div>
@@ -443,14 +379,6 @@ const CatalogPage: React.FC<Props> = ({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleEsc);
-
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  });
 
   useEffect(() => {
     if (auth_token === undefined) return;
@@ -635,36 +563,12 @@ const CatalogPage: React.FC<Props> = ({
           <div className="catalog__outerdiv">
             {catalogMakesArray && (
               <>
-                <Tooltip title="Hotkey Tips: Press F to quick open and ESC to close the search bar">
-                  <div className="catalog__search-btn-outerdiv">
-                    <div className="catalog__search-btn" onClick={() => showSearchbar()}>
-                      <i className="fas fa-search catalog__search-btn-icon"></i>
-                      <span className="catalog__search-btn-text">Search Model</span>
-                    </div>
-                  </div>
-                </Tooltip>
-                <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
-                  <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
-                    <Input
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          hideSearchbar();
-                        }
-                      }}
-                      autoFocus
-                      allowClear
-                      ref={searchInputRef}
-                      className="catalog__search-input"
-                      value={makeFilter}
-                      placeholder="&#xF002;   Search model"
-                      onChange={(event) => setMakeFilter(event.target.value)}
-                      style={{ width: 200, fontFamily: ' FontAwesome, Arial', fontStyle: 'normal' }}
-                    />
-                    <div className="catalog__search-input-text">
-                      Press Enter to confirm filter, press ESC to quick clear filter.
-                    </div>
-                  </div>
-                </div>
+                <CatalogFilter
+                  showSearch={showSearch}
+                  setShowSearch={setShowSearch}
+                  filterString={makeFilter}
+                  setFilterString={setMakeFilter}
+                />
               </>
             )}
             <div className="catalog__div">
@@ -672,9 +576,9 @@ const CatalogPage: React.FC<Props> = ({
                 catalogMakesArray.length > 0 ? (
                   <div className="catalog__innerdiv">
                     <Tabs
-                      className="catalog__tabs-outerdiv--brand"
                       defaultActiveKey="brand1"
-                      tabPosition={width <= 576 ? 'top' : 'left'}
+                      tabPosition={width < 900 ? 'top' : 'left'}
+                      className="catalog__tabs-outerdiv--brand"
                     >
                       {catalogMakesArray.map((catalog, index) => {
                         return (
@@ -685,7 +589,7 @@ const CatalogPage: React.FC<Props> = ({
                               {/* Brand title */}
                               {/* ================================= */}
                               <div className="catalog__brand-innerdiv">
-                                <div className="catalog__brand-title">{catalog.brand.title}</div>
+                                {/* <div className="catalog__brand-title">{catalog.brand.title}</div> */}
                                 {accessObj?.showAdminDashboard && (
                                   <div
                                     className="catalog__button-series"
@@ -709,78 +613,91 @@ const CatalogPage: React.FC<Props> = ({
                               {/* series section */}
                               {/* ================================= */}
                               <section className="catalog__section-series">
-                                <Tabs className="catalog__tabs-outerdiv" defaultActiveKey="series1" tabPosition={'top'}>
-                                  {catalog.series.map((series, index) => {
-                                    // if array is odd number, on the last row, make it display flex
-                                    let arrayIsOddNumberAndMakeLengthLessThanThree =
-                                      catalog.series.length % 2 !== 0 &&
-                                      index === catalog.series.length - 1 &&
-                                      catalog.series[index].makes.length > 3;
+                                {catalog.series.length > 0 ? (
+                                  <Tabs
+                                    className="catalog__tabs-outerdiv glass-shadow"
+                                    animated={{ tabPane: true }}
+                                    defaultActiveKey="series1"
+                                    tabPosition={'top'}
+                                  >
+                                    {catalog.series.map((series, index) => {
+                                      // if array is odd number, on the last row, make it display flex
+                                      let arrayIsOddNumberAndMakeLengthLessThanThree =
+                                        catalog.series.length % 2 !== 0 &&
+                                        index === catalog.series.length - 1 &&
+                                        catalog.series[index].makes.length > 3;
 
-                                    return (
-                                      <React.Fragment key={uuidv4()}>
-                                        <TabPane
-                                          tab={
-                                            <div className="catalog__tabs-title">
-                                              <span>{series.title}</span>
-                                              {accessObj?.showAdminDashboard && (
-                                                <Tooltip title={`Edit / Delete ${series.title}`}>
-                                                  <Dropdown
-                                                    className="catalog__dropdown-series"
-                                                    overlay={
-                                                      <SeriesMenu
-                                                        seriesTitle={series.title}
-                                                        brandId={catalog.brand.id}
-                                                        seriesId={series.id}
-                                                      />
-                                                    }
-                                                    trigger={['click']}
-                                                  >
-                                                    <i className="fas fa-cogs" />
-                                                  </Dropdown>
-                                                </Tooltip>
+                                      return (
+                                        <React.Fragment key={uuidv4()}>
+                                          <TabPane
+                                            tab={
+                                              <div className="catalog__tabs-title">
+                                                <span>{series.title}</span>
+                                                {accessObj?.showAdminDashboard && (
+                                                  <Tooltip title={`Edit / Delete ${series.title}`}>
+                                                    <Dropdown
+                                                      className="catalog__dropdown-series"
+                                                      overlay={
+                                                        <SeriesMenu
+                                                          seriesTitle={series.title}
+                                                          brandId={catalog.brand.id}
+                                                          seriesId={series.id}
+                                                        />
+                                                      }
+                                                      trigger={['click']}
+                                                    >
+                                                      <i className="fas fa-cogs" />
+                                                    </Dropdown>
+                                                  </Tooltip>
+                                                )}
+                                              </div>
+                                            }
+                                            key={`series${index + 1}`}
+                                          >
+                                            <div
+                                              className={
+                                                arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''
+                                              }
+                                            >
+                                              {/*  ================================================================ */}
+                                              {/*    ADMIN - if user is admin show everything, if not only show
+                                       those that the length is greater than 0 */}
+                                              {/*  ================================================================ */}
+                                              {accessObj?.showAdminDashboard ? (
+                                                <SeriesMakesGrid
+                                                  series={series}
+                                                  catalog={catalog}
+                                                  arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                    arrayIsOddNumberAndMakeLengthLessThanThree
+                                                  }
+                                                />
+                                              ) : (
+                                                /* ================================================================ */
+                                                // NORMAL USER - if user is normal user only show the series that has item inside
+                                                /* ================================================================ */
+                                                <>
+                                                  {series.makes.length > 0 && (
+                                                    <SeriesMakesGrid
+                                                      series={series}
+                                                      catalog={catalog}
+                                                      arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                        arrayIsOddNumberAndMakeLengthLessThanThree
+                                                      }
+                                                    />
+                                                  )}
+                                                </>
                                               )}
                                             </div>
-                                          }
-                                          key={`series${index + 1}`}
-                                        >
-                                          <div
-                                            className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
-                                          >
-                                            {/*  ================================================================ */}
-                                            {/*    ADMIN - if user is admin show everything, if not only show
-                                      those that the length is greater than 0 */}
-                                            {/*  ================================================================ */}
-                                            {accessObj?.showAdminDashboard ? (
-                                              <SeriesMakesGrid
-                                                series={series}
-                                                catalog={catalog}
-                                                arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                  arrayIsOddNumberAndMakeLengthLessThanThree
-                                                }
-                                              />
-                                            ) : (
-                                              /* ================================================================ */
-                                              // NORMAL USER - if user is normal user only show the series that has item inside
-                                              /* ================================================================ */
-                                              <>
-                                                {series.makes.length > 0 && (
-                                                  <SeriesMakesGrid
-                                                    series={series}
-                                                    catalog={catalog}
-                                                    arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                      arrayIsOddNumberAndMakeLengthLessThanThree
-                                                    }
-                                                  />
-                                                )}
-                                              </>
-                                            )}
-                                          </div>
-                                        </TabPane>
-                                      </React.Fragment>
-                                    );
-                                  })}
-                                </Tabs>
+                                          </TabPane>
+                                        </React.Fragment>
+                                      );
+                                    })}
+                                  </Tabs>
+                                ) : (
+                                  <div className="catalog__empty-series glass-shadow">
+                                    <Empty />
+                                  </div>
+                                )}
                               </section>
                             </div>
                           </TabPane>
@@ -789,11 +706,11 @@ const CatalogPage: React.FC<Props> = ({
                     </Tabs>
                   </div>
                 ) : (
-                  <div className="catalogbodymake__loading-div">
-                    <Empty>
-                      <Button type="primary" onClick={() => history.push('/dashboard/make')}>
+                  <div className="catalog__loading-div">
+                    <Empty style={{ color: 'white' }}>
+                      <div className="catalog__button-series" onClick={() => history.push('/dashboard/make')}>
                         Go to Dashboard
-                      </Button>
+                      </div>
                     </Empty>
                   </div>
                 )

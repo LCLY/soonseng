@@ -178,7 +178,7 @@ const BodyMakeFormItems: React.FC<Props> = ({
               lengthsArray.map((length) => {
                 return (
                   <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={length.id}>
-                    {length.title}ft - {length.description}
+                    {`${length.title}ft - ${length.description}`}
                   </Option>
                 );
               })}
