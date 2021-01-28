@@ -68,7 +68,8 @@ export interface ICategory {
     | 'body_make'
     | 'accessory'
     | 'body_accessory'
-    | 'body_make_accessory';
+    | 'body_make_accessory'
+    | 'wheelbase';
 }
 
 const CrudModal: React.FC<Props> = ({
@@ -119,15 +120,13 @@ const CrudModal: React.FC<Props> = ({
           ) : (
             <>
               You are deleting&nbsp;
-              {warningText !== undefined && (
-                <>
-                  {warningText === '' ? (
-                    { backupWarningText }
-                  ) : (
-                    <span className="dashboard__delete-message">{`${warningText}`}</span>
-                  )}
-                </>
-              )}
+              <>
+                {warningText === '' || warningText === null || warningText === undefined ? (
+                  <>{backupWarningText}</>
+                ) : (
+                  <span className="dashboard__delete-message">{`${warningText}`}</span>
+                )}
+              </>
               , this action is permanent. Are you sure?
             </>
           )}

@@ -289,8 +289,10 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
                               order.bodyMakeObj?.height !== null && (
                                 <>
                                   <br />
-                                  <div className="sales__selectarea-card-dimension">Height:&nbsp;</div>
-                                  <div className="sales__selectarea-card-dimension">{order.bodyMakeObj?.height}</div>
+                                  <>
+                                    Depth:&nbsp;
+                                    {order.bodyMakeObj?.height}
+                                  </>
                                 </>
                               )}
                           </td>

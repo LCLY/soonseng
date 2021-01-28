@@ -137,6 +137,10 @@ export {
   updateWheelbaseStart,
   updateWheelbaseFailed,
   updateWheelbaseSucceed,
+  deleteWheelbase,
+  deleteWheelbaseStart,
+  deleteWheelbaseFailed,
+  deleteWheelbaseSucceed,
   /* ---------------- */
   // Model/Make
   /* ---------------- */

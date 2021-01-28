@@ -183,6 +183,12 @@ export const UPDATE_WHEELBASE_START = 'UPDATE_WHEELBASE_START';
 export const UPDATE_WHEELBASE_SUCCEED = 'UPDATE_WHEELBASE_SUCCEED';
 export const UPDATE_WHEELBASE_FAILED = 'UPDATE_WHEELBASE_FAILED';
 
+// Delete Wheelbase (head)
+export const DELETE_WHEELBASE = 'DELETE_WHEELBASE';
+export const DELETE_WHEELBASE_START = 'DELETE_WHEELBASE_START';
+export const DELETE_WHEELBASE_SUCCEED = 'DELETE_WHEELBASE_SUCCEED';
+export const DELETE_WHEELBASE_FAILED = 'DELETE_WHEELBASE_FAILED';
+
 /* --------------------------------------------- */
 // Make Page - Make / Model
 /* --------------------------------------------- */

@@ -106,6 +106,10 @@ export {
   updateWheelbaseStart,
   updateWheelbaseFailed,
   updateWheelbaseSucceed,
+  deleteWheelbase,
+  deleteWheelbaseStart,
+  deleteWheelbaseFailed,
+  deleteWheelbaseSucceed,
   /* =========================================== */
   //  Make (Make Page)
   /* =========================================== */

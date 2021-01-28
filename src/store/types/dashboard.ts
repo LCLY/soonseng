@@ -172,6 +172,10 @@ import {
   UpdateWheelbaseStartAction,
   UpdateWheelbaseSucceedAction,
   UpdateWheelbaseFailedAction,
+  DeleteWheelbaseAction,
+  DeleteWheelbaseStartAction,
+  DeleteWheelbaseSucceedAction,
+  DeleteWheelbaseFailedAction,
   //Model/Make
   CreateMakeAction,
   CreateMakeStartAction,
@@ -478,6 +482,7 @@ export type TReceivedWheelbaseObj = {
   value: number | null;
   available: boolean;
 };
+
 /* ---------------------------------------- */
 // Make Wheelbase
 /* ---------------------------------------- */
@@ -666,6 +671,10 @@ export type DashboardActionTypes =
   | UpdateWheelbaseStartAction
   | UpdateWheelbaseSucceedAction
   | UpdateWheelbaseFailedAction
+  | DeleteWheelbaseAction
+  | DeleteWheelbaseStartAction
+  | DeleteWheelbaseSucceedAction
+  | DeleteWheelbaseFailedAction
   /* ======================================================================= */
   // Make
   /* ======================================================================= */

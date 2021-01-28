@@ -182,6 +182,29 @@ export interface UpdateWheelbaseFailedAction {
   errorMessage: string;
 }
 
+/* --------------------------------------------------------- */
+// Delete Wheelbase
+/* --------------------------------------------------------- */
+
+/* Api call */
+export interface DeleteWheelbaseAction {
+  type: typeof actionTypes.DELETE_WHEELBASE;
+  wheelbase_id: number;
+}
+/* States */
+export interface DeleteWheelbaseStartAction {
+  type: typeof actionTypes.DELETE_WHEELBASE_START;
+}
+export interface DeleteWheelbaseSucceedAction {
+  type: typeof actionTypes.DELETE_WHEELBASE_SUCCEED;
+  wheelbasesArray: TReceivedWheelbaseObj[];
+  successMessage: string;
+}
+export interface DeleteWheelbaseFailedAction {
+  type: typeof actionTypes.DELETE_WHEELBASE_FAILED;
+  errorMessage: string;
+}
+
 /* ================================================================================================= */
 //  Make (Make Page)
 /* ================================================================================================= */

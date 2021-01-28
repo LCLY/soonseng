@@ -3,7 +3,6 @@ import './Accessory.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
 import CrudModal from 'src/components/Modal/Crud/CrudModal';
-import HeaderTitle from 'src/components/HeaderTitle/HeaderTitle';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
@@ -830,7 +829,6 @@ const Accessory: React.FC<Props> = ({
             <CustomContainer>
               <div className="make__tab-outerdiv">
                 <section>
-                  <HeaderTitle>Accessory</HeaderTitle>
                   {accessoriesArray ? (
                     <>
                       {/* ===================================== */}
