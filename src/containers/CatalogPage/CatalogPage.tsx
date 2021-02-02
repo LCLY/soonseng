@@ -68,6 +68,9 @@ const CatalogPage: React.FC<Props> = ({
     series: false,
     make: false,
   });
+
+  const [activeSeriesTab, setActiveSeriesTab] = useState('series1');
+
   const [modalContent, setModalContent] = useState({
     make: { makeTitle: '', seriesTitle: '' },
     series: { brandTitle: '', seriesTitle: '' },
@@ -615,9 +618,10 @@ const CatalogPage: React.FC<Props> = ({
                               <section className="catalog__section-series">
                                 {catalog.series.length > 0 ? (
                                   <Tabs
+                                    onTabClick={(activeKey: string) => setActiveSeriesTab(activeKey)}
                                     className="catalog__tabs-outerdiv glass-shadow"
                                     animated={{ tabPane: true }}
-                                    defaultActiveKey="series1"
+                                    activeKey={activeSeriesTab}
                                     tabPosition={'top'}
                                   >
                                     {catalog.series.map((series, index) => {

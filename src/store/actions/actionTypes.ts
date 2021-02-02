@@ -493,3 +493,28 @@ export const DELETE_SERVICETYPES = 'DELETE_SERVICETYPES';
 export const DELETE_SERVICETYPES_START = 'DELETE_SERVICETYPES_START';
 export const DELETE_SERVICETYPES_SUCCEED = 'DELETE_SERVICETYPES_SUCCEED';
 export const DELETE_SERVICETYPES_FAILED = 'DELETE_SERVICETYPES_FAILED';
+
+/* ======================================================================================== */
+
+/* --------------------------------------------- */
+// Task/Job
+/* --------------------------------------------- */
+export const CREATE_TASK = 'CREATE_TASK';
+export const CREATE_TASK_START = 'CREATE_TASK_START';
+export const CREATE_TASK_SUCCEED = 'CREATE_TASK_SUCCEED';
+export const CREATE_TASK_FAILED = 'CREATE_TASK_FAILED';
+
+export const GET_TASKS = 'GET_TASKS';
+export const GET_TASKS_START = 'GET_TASKS_START';
+export const GET_TASKS_SUCCEED = 'GET_TASKS_SUCCEED';
+export const GET_TASKS_FAILED = 'GET_TASKS_FAILED';
+
+export const UPDATE_TASK = 'UPDATE_TASK';
+export const UPDATE_TASK_START = 'UPDATE_TASK_START';
+export const UPDATE_TASK_SUCCEED = 'UPDATE_TASK_SUCCEED';
+export const UPDATE_TASK_FAILED = 'UPDATE_TASK_FAILED';
+
+export const DELETE_TASK = 'DELETE_TASK';
+export const DELETE_TASK_START = 'DELETE_TASK_START';
+export const DELETE_TASK_SUCCEED = 'DELETE_TASK_SUCCEED';
+export const DELETE_TASK_FAILED = 'DELETE_TASK_FAILED';
