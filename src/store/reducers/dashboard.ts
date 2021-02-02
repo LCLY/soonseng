@@ -2030,28 +2030,28 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
     /* =================================== */
     //  Job Status
     /* =================================== */
-    // Get all Job Status (tail)
+    // Get all Job Status 
     case actionTypes.GET_JOBSTATUS_START:
       return getJobStatusStart(state, action);
     case actionTypes.GET_JOBSTATUS_SUCCEED:
       return getJobStatusSucceed(state, action);
     case actionTypes.GET_JOBSTATUS_FAILED:
       return getJobStatusFailed(state, action);
-    // Create Job Status (tail)
+    // Create Job Status 
     case actionTypes.CREATE_JOBSTATUS_START:
       return createJobStatusStart(state, action);
     case actionTypes.CREATE_JOBSTATUS_SUCCEED:
       return createJobStatusSucceed(state, action);
     case actionTypes.CREATE_JOBSTATUS_FAILED:
       return createJobStatusFailed(state, action);
-    // Update JobStatus (tail)
+    // Update JobStatus 
     case actionTypes.UPDATE_JOBSTATUS_START:
       return updateJobStatusStart(state, action);
     case actionTypes.UPDATE_JOBSTATUS_SUCCEED:
       return updateJobStatusSucceed(state, action);
     case actionTypes.UPDATE_JOBSTATUS_FAILED:
       return updateJobStatusFailed(state, action);
-    // Delete JobStatus (tail)
+    // Delete JobStatus 
     case actionTypes.DELETE_JOBSTATUS_START:
       return deleteJobStatusStart(state, action);
     case actionTypes.DELETE_JOBSTATUS_SUCCEED:
@@ -2062,28 +2062,28 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
     /* =================================== */
     //  Service types
     /* =================================== */
-    // Get all Job Status (tail)
+    // Get all ServiceTypes
     case actionTypes.GET_SERVICETYPES_START:
       return getServiceTypesStart(state, action);
     case actionTypes.GET_SERVICETYPES_SUCCEED:
       return getServiceTypesSucceed(state, action);
     case actionTypes.GET_SERVICETYPES_FAILED:
       return getServiceTypesFailed(state, action);
-    // Create Job Status (tail)
+    // Create ServiceTypes
     case actionTypes.CREATE_SERVICETYPES_START:
       return createServiceTypesStart(state, action);
     case actionTypes.CREATE_SERVICETYPES_SUCCEED:
       return createServiceTypesSucceed(state, action);
     case actionTypes.CREATE_SERVICETYPES_FAILED:
       return createServiceTypesFailed(state, action);
-    // Update Job Status (tail)
+    // Update ServiceTypes
     case actionTypes.UPDATE_SERVICETYPES_START:
       return updateServiceTypesStart(state, action);
     case actionTypes.UPDATE_SERVICETYPES_SUCCEED:
       return updateServiceTypesSucceed(state, action);
     case actionTypes.UPDATE_SERVICETYPES_FAILED:
       return updateServiceTypesFailed(state, action);
-    // Delete Job Status (tail)
+    // Delete ServiceTypes
     case actionTypes.DELETE_SERVICETYPES_START:
       return deleteServiceTypesStart(state, action);
     case actionTypes.DELETE_SERVICETYPES_SUCCEED:

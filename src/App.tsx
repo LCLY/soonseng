@@ -1,9 +1,9 @@
-
 import React, { Suspense, useEffect } from 'react';
 /* containers */
 // Authentication
 import Logout from 'src/containers/Authentication/Logout/Logout';
 // General pages
+import TaskPage from './containers/TaskPage/TaskPage';
 import Homepage from 'src/containers/HomePage/HomePage';
 import AboutPage from 'src/containers/AboutPage/AboutPage';
 import SalesPage from 'src/containers/SalesPage/SalesPage';
@@ -82,6 +82,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_HOME} component={Homepage} />
         <Route exact path={ROUTE_ABOUT} component={AboutPage} />
         <Route exact path={ROUTE_SALES} component={SalesPage} />
+        <Route exact path={ROUTE_TASK} component={TaskPage} />
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
@@ -114,7 +115,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CONTACT} component={ContactPage} />
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
-        <Route exact path={ROUTE_TASK} component={CatalogPage} />
+        <Route exact path={ROUTE_TASK} component={TaskPage} />
         <Route exact path={`${ROUTE_CATALOG}/:series_id/:make_detail/:make_id`} component={CatalogBodyMake} />
         <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id/:discount?`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />

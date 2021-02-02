@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Tabs, Tooltip, Skeleton, notification, Menu, Dropdown } from 'antd';
+import { Empty, Form, Tabs, Tooltip, message, Skeleton, Menu, Dropdown } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -42,7 +42,6 @@ const CatalogPage: React.FC<Props> = ({
   auth_token,
   successMessage,
   errorMessage,
-  dashboardLoading,
   catalogMakesArray,
   onCreateSeries,
   onDeleteSeries,
@@ -69,7 +68,10 @@ const CatalogPage: React.FC<Props> = ({
     make: false,
   });
 
+  const [localLoading, setLocalLoading] = useState(false);
+
   const [activeSeriesTab, setActiveSeriesTab] = useState('series1');
+  const [activeBrandTab, setActiveBrandTab] = useState('brand1');
 
   const [modalContent, setModalContent] = useState({
     make: { makeTitle: '', seriesTitle: '' },
@@ -105,12 +107,15 @@ const CatalogPage: React.FC<Props> = ({
   //  Series
   /* ---------------- */
   const onCreateSeriesFinish = (values: { brand_id: number; title: string }) => {
+    setLocalLoading(true);
     onCreateSeries(values.brand_id, values.title);
   };
   const onUpdateSeriesFinish = (values: { brand_id: number; series_id: number; title: string }) => {
+    setLocalLoading(true);
     onUpdateSeries(values.brand_id, values.series_id, values.title);
   };
   const onDeleteSeriesFinish = () => {
+    setLocalLoading(true);
     onDeleteSeries(deleteModalContent.series.brandId, deleteModalContent.series.seriesId);
   };
   /* ---------------- */
@@ -118,6 +123,7 @@ const CatalogPage: React.FC<Props> = ({
   /* ---------------- */
   // Create Make
   const onCreateMakeFinish = (values: TCreateMakeFinishValues) => {
+    setLocalLoading(true);
     // package the object
     let createMakeData: TCreateMakeData = {
       title: values.title,
@@ -147,6 +153,7 @@ const CatalogPage: React.FC<Props> = ({
 
   // Update Make
   const onUpdateMakeFinish = (values: TUpdateMakeFinishValues) => {
+    setLocalLoading(true);
     // package the object
     let updateMakeData: TUpdateMakeData = {
       make_id: values.makeId,
@@ -176,6 +183,7 @@ const CatalogPage: React.FC<Props> = ({
   };
 
   const onDeleteMakeFinish = () => {
+    setLocalLoading(true);
     onDeleteMake(deleteModalContent.make.makeId);
   };
 
@@ -381,6 +389,9 @@ const CatalogPage: React.FC<Props> = ({
   // on mount, always start user at the top of the page
   useEffect(() => {
     window.scrollTo(0, 0);
+    message.config({
+      maxCount: 3,
+    });
   }, []);
 
   useEffect(() => {
@@ -393,33 +404,34 @@ const CatalogPage: React.FC<Props> = ({
   /* -------------------- */
   useEffect(() => {
     if (successMessage) {
-      // show success notification
-      notification['success']({
-        message: 'Success',
-        description: successMessage,
-      });
-      // clear the successMessage object, set to null
-      onClearDashboardState();
-      // clear the form inputs using the form reference
-      createSeriesForm.resetFields();
-      createMakeForm.resetFields();
+      // delay 1s to allow array render to catch
+      setTimeout(() => {
+        setLocalLoading(false);
+        // show success notification
+        message.success(successMessage);
+        // clear the successMessage object, set to null
+        onClearDashboardState();
+        // clear the form inputs using the form reference
+        createSeriesForm.resetFields();
+        createMakeForm.resetFields();
 
-      // close all the modals if successful
-      setShowCreateModal({
-        ...showCreateModal,
-        series: false,
-        make: false,
-      });
-      setShowUpdateModal({
-        ...showUpdateModal,
-        series: false,
-        make: false,
-      });
-      setShowDeleteModal({
-        ...showDeleteModal,
-        series: false,
-        make: false,
-      });
+        // close all the modals if successful
+        setShowCreateModal({
+          ...showCreateModal,
+          series: false,
+          make: false,
+        });
+        setShowUpdateModal({
+          ...showUpdateModal,
+          series: false,
+          make: false,
+        });
+        setShowDeleteModal({
+          ...showDeleteModal,
+          series: false,
+          make: false,
+        });
+      }, 1000);
     }
   }, [
     successMessage,
@@ -443,11 +455,7 @@ const CatalogPage: React.FC<Props> = ({
   /* ------------------ */
   useEffect(() => {
     if (errorMessage) {
-      notification['error']({
-        message: 'Failed',
-        duration: 2.5,
-        description: errorMessage,
-      });
+      message.success({ content: errorMessage, duration: 2.5 });
       onClearDashboardState();
     }
   }, [errorMessage, onClearDashboardState]);
@@ -477,7 +485,7 @@ const CatalogPage: React.FC<Props> = ({
         visible={showCreateModal.series}
         onFinish={onCreateSeriesFinish}
         setShowModal={setShowCreateModal}
-        loading={dashboardLoading !== undefined && dashboardLoading}
+        loading={localLoading}
       />
 
       <CrudModal
@@ -490,7 +498,7 @@ const CatalogPage: React.FC<Props> = ({
         visible={showUpdateModal.series}
         onFinish={onUpdateSeriesFinish}
         setShowModal={setShowUpdateModal}
-        loading={dashboardLoading !== undefined && dashboardLoading}
+        loading={localLoading}
       />
       <CrudModal
         crud={'delete'}
@@ -503,7 +511,7 @@ const CatalogPage: React.FC<Props> = ({
         setShowModal={setShowDeleteModal}
         warningText={deleteModalContent.series.warningText}
         backupWarningText={deleteModalContent.series.backupWarningText}
-        loading={dashboardLoading !== undefined && dashboardLoading}
+        loading={localLoading}
       />
 
       {/* -------------------------------- */}
@@ -524,7 +532,7 @@ const CatalogPage: React.FC<Props> = ({
         imagesPreviewUrls={imagesPreviewUrls}
         setImagesPreviewUrls={setImagesPreviewUrls}
         setUploadSelectedFiles={setUploadSelectedFiles}
-        loading={dashboardLoading !== undefined && dashboardLoading}
+        loading={localLoading}
       />
 
       <CrudModal
@@ -542,7 +550,7 @@ const CatalogPage: React.FC<Props> = ({
         imagesPreviewUrls={imagesPreviewUrls}
         setImagesPreviewUrls={setImagesPreviewUrls}
         setUploadSelectedFiles={setUploadSelectedFiles}
-        loading={dashboardLoading !== undefined && dashboardLoading}
+        loading={localLoading}
       />
 
       <CrudModal
@@ -556,7 +564,7 @@ const CatalogPage: React.FC<Props> = ({
         setShowModal={setShowDeleteModal}
         warningText={deleteModalContent.make.warningText}
         backupWarningText={deleteModalContent.make.backupWarningText}
-        loading={dashboardLoading !== undefined && dashboardLoading}
+        loading={localLoading}
       />
 
       <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
@@ -579,9 +587,13 @@ const CatalogPage: React.FC<Props> = ({
                 catalogMakesArray.length > 0 ? (
                   <div className="catalog__innerdiv">
                     <Tabs
-                      defaultActiveKey="brand1"
+                      activeKey={activeBrandTab}
                       tabPosition={width < 900 ? 'top' : 'left'}
                       className="catalog__tabs-outerdiv--brand"
+                      onTabClick={(activeKey: string) => {
+                        setActiveBrandTab(activeKey);
+                        setActiveSeriesTab('series1');
+                      }}
                     >
                       {catalogMakesArray.map((catalog, index) => {
                         return (
@@ -618,11 +630,11 @@ const CatalogPage: React.FC<Props> = ({
                               <section className="catalog__section-series">
                                 {catalog.series.length > 0 ? (
                                   <Tabs
-                                    onTabClick={(activeKey: string) => setActiveSeriesTab(activeKey)}
+                                    tabPosition="top"
                                     className="catalog__tabs-outerdiv glass-shadow"
                                     animated={{ tabPane: true }}
-                                    activeKey={activeSeriesTab}
-                                    tabPosition={'top'}
+                                    defaultActiveKey={activeSeriesTab}
+                                    onTabClick={(activeKey: string) => setActiveSeriesTab(activeKey)}
                                   >
                                     {catalog.series.map((series, index) => {
                                       // if array is odd number, on the last row, make it display flex
@@ -632,68 +644,64 @@ const CatalogPage: React.FC<Props> = ({
                                         catalog.series[index].makes.length > 3;
 
                                       return (
-                                        <React.Fragment key={uuidv4()}>
-                                          <TabPane
-                                            tab={
-                                              <div className="catalog__tabs-title">
-                                                <span>{series.title}</span>
-                                                {accessObj?.showAdminDashboard && (
-                                                  <Tooltip title={`Edit / Delete ${series.title}`}>
-                                                    <Dropdown
-                                                      className="catalog__dropdown-series"
-                                                      overlay={
-                                                        <SeriesMenu
-                                                          seriesTitle={series.title}
-                                                          brandId={catalog.brand.id}
-                                                          seriesId={series.id}
-                                                        />
-                                                      }
-                                                      trigger={['click']}
-                                                    >
-                                                      <i className="fas fa-cogs" />
-                                                    </Dropdown>
-                                                  </Tooltip>
-                                                )}
-                                              </div>
-                                            }
-                                            key={`series${index + 1}`}
-                                          >
-                                            <div
-                                              className={
-                                                arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''
-                                              }
-                                            >
-                                              {/*  ================================================================ */}
-                                              {/*    ADMIN - if user is admin show everything, if not only show
-                                       those that the length is greater than 0 */}
-                                              {/*  ================================================================ */}
-                                              {accessObj?.showAdminDashboard ? (
-                                                <SeriesMakesGrid
-                                                  series={series}
-                                                  catalog={catalog}
-                                                  arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                    arrayIsOddNumberAndMakeLengthLessThanThree
-                                                  }
-                                                />
-                                              ) : (
-                                                /* ================================================================ */
-                                                // NORMAL USER - if user is normal user only show the series that has item inside
-                                                /* ================================================================ */
-                                                <>
-                                                  {series.makes.length > 0 && (
-                                                    <SeriesMakesGrid
-                                                      series={series}
-                                                      catalog={catalog}
-                                                      arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                        arrayIsOddNumberAndMakeLengthLessThanThree
-                                                      }
-                                                    />
-                                                  )}
-                                                </>
+                                        <TabPane
+                                          tab={
+                                            <div className="catalog__tabs-title">
+                                              <span>{series.title}</span>
+                                              {accessObj?.showAdminDashboard && (
+                                                <Tooltip title={`Edit / Delete ${series.title}`}>
+                                                  <Dropdown
+                                                    className="catalog__dropdown-series"
+                                                    overlay={
+                                                      <SeriesMenu
+                                                        seriesTitle={series.title}
+                                                        brandId={catalog.brand.id}
+                                                        seriesId={series.id}
+                                                      />
+                                                    }
+                                                    trigger={['click']}
+                                                  >
+                                                    <i className="fas fa-cogs" />
+                                                  </Dropdown>
+                                                </Tooltip>
                                               )}
                                             </div>
-                                          </TabPane>
-                                        </React.Fragment>
+                                          }
+                                          key={`series${index + 1}`}
+                                        >
+                                          <div
+                                            className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
+                                          >
+                                            {/*  ================================================================ */}
+                                            {/*    ADMIN - if user is admin show everything, if not only show
+                                       those that the length is greater than 0 */}
+                                            {/*  ================================================================ */}
+                                            {accessObj?.showAdminDashboard ? (
+                                              <SeriesMakesGrid
+                                                series={series}
+                                                catalog={catalog}
+                                                arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                  arrayIsOddNumberAndMakeLengthLessThanThree
+                                                }
+                                              />
+                                            ) : (
+                                              /* ================================================================ */
+                                              // NORMAL USER - if user is normal user only show the series that has item inside
+                                              /* ================================================================ */
+                                              <>
+                                                {series.makes.length > 0 && (
+                                                  <SeriesMakesGrid
+                                                    series={series}
+                                                    catalog={catalog}
+                                                    arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                      arrayIsOddNumberAndMakeLengthLessThanThree
+                                                    }
+                                                  />
+                                                )}
+                                              </>
+                                            )}
+                                          </div>
+                                        </TabPane>
                                       );
                                     })}
                                   </Tabs>

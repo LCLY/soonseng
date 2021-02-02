@@ -333,3 +333,25 @@ export {
   getSalesMakesStart,
   getSalesMakesSucceed,
 } from './sales';
+
+export {
+  /* ==================== */
+  // Task
+  /* ==================== */
+  createTask,
+  createTaskFailed,
+  createTaskStart,
+  createTaskSucceed,
+  deleteTask,
+  deleteTaskFailed,
+  deleteTaskStart,
+  deleteTaskSucceed,
+  getTasks,
+  getTasksFailed,
+  getTasksStart,
+  getTasksSucceed,
+  updateTask,
+  updateTaskFailed,
+  updateTaskStart,
+  updateTaskSucceed,
+} from './task';

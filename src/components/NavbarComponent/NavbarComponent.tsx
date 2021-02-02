@@ -353,7 +353,7 @@ const NavbarComponent: React.FC<Props> = ({
               </div>
               <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_TASK}>
-                  <i className="fas fa-tasks"></i>&nbsp;Sales
+                  <i className="fas fa-tasks"></i>&nbsp;Task
                 </a>
               </div>
               {/* ABOUT US */}

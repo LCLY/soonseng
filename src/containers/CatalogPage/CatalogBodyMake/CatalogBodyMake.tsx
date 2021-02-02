@@ -122,6 +122,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   // need to refer to both the pop up and also the dropdown button itself
   const [showSearch, setShowSearch] = useState(false);
   const [bodyMakeFilter, setBodyMakeFilter] = useState<string>('');
+  const [activeConfigurationTab, setActiveConfigurationTab] = useState('wheelbase1');
 
   /* ======================== */
   /*   Image related states   */
@@ -1471,7 +1472,8 @@ const CatalogBodyMake: React.FC<Props> = ({
                           <Tabs
                             animated={{ tabPane: true }}
                             className="catalog__tabs-outerdiv"
-                            defaultActiveKey="wheelbase1"
+                            activeKey={activeConfigurationTab}
+                            onTabClick={(activeKey: string) => setActiveConfigurationTab(activeKey)}
                             tabPosition={'top'}
                           >
                             {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
@@ -1557,7 +1559,8 @@ const CatalogBodyMake: React.FC<Props> = ({
                               <Tabs
                                 animated={{ tabPane: true }}
                                 className="catalog__tabs-outerdiv"
-                                defaultActiveKey="wheelbase1"
+                                activeKey={activeConfigurationTab}
+                                onTabClick={(activeKey: string) => setActiveConfigurationTab(activeKey)}
                                 tabPosition={'top'}
                               >
                                 {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
