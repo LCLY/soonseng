@@ -21,6 +21,7 @@ import Body from 'src/containers/DashboardPage/DashboardCRUD/Body/Body';
 import BodyMake from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
 import Accessory from 'src/containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
 import ChargesFees from './containers/DashboardPage/DashboardCRUD/ChargesFees/ChargesFees';
+import JobMonitoring from './containers/DashboardPage/DashboardCRUD/JobMonitoring/JobMonitoring';
 // 3rd party lib
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
@@ -91,6 +92,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_DASHBOARD.body_make} component={BodyMake} />
         <Route exact path={ROUTE_DASHBOARD.accessory} component={Accessory} />
         <Route exact path={ROUTE_DASHBOARD.fees} component={ChargesFees} />
+        <Route exact path={ROUTE_DASHBOARD.job_monitoring} component={JobMonitoring} />
         <Route exact path={ROUTE_DASHBOARD.main} component={DashboardPage} />
         {/* authentication */}
         <Route exact path={ROUTE_LOGIN} component={LoginPage} />

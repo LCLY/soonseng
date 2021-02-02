@@ -49,7 +49,8 @@ interface NavbarComponentProps {
     | 'about'
     | 'orders'
     | 'make'
-    | 'login';
+    | 'login'
+    | 'job_monitoring';
   defaultOpenKeys?: 'product' | 'dashboard';
 }
 
@@ -118,6 +119,11 @@ const NavbarComponent: React.FC<Props> = ({
         <Menu.Item key="fees">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.fees}>
             Processing Fees
+          </a>
+        </Menu.Item>
+        <Menu.Item key="job_monitoring">
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.job_monitoring}>
+            Job Monitoring
           </a>
         </Menu.Item>
       </Menu>
@@ -217,6 +223,11 @@ const NavbarComponent: React.FC<Props> = ({
                   <Menu.Item key="fees">
                     <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.fees}>
                       Standard Charges
+                    </a>
+                  </Menu.Item>
+                  <Menu.Item key="job_monitoring">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.job_monitoring}>
+                      Job Monitoring
                     </a>
                   </Menu.Item>
                 </SubMenu>

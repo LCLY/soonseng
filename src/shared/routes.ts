@@ -16,4 +16,5 @@ export const ROUTE_DASHBOARD = {
   body: '/dashboard/body',
   body_make: '/dashboard/body_make',
   accessory: '/dashboard/accessory',
+  job_monitoring: '/dashboard/job_monitoring',
 };

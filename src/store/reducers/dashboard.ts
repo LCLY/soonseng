@@ -46,6 +46,10 @@ const initialState: DashboardInitialState = {
   // images array
   imagesArray: null,
   imagesUploaded: false, //boolean to keep track of whether the image has uploaded successful
+  // job status array
+  jobStatusArray: null,
+  // service types array
+  serviceTypesArray: null,
   // others
   errorMessage: null,
   successMessage: null,
@@ -1329,6 +1333,270 @@ const getDimensionAssociatedAccessoriesFailed = (state: DashboardInitialState, a
 };
 
 /* ============================================================================================ */
+/* Job Status
+/* ============================================================================================ */
+
+/* -------------------------- */
+/* Create Job Status  */
+/* -------------------------- */
+const createJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const createJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'jobStatusArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      jobStatusArray: action.jobStatusArray,
+      successMessage: action.successMessage,
+      errorMessage: null,
+    });
+  }
+  return state;
+};
+
+const createJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get Job Status  */
+/* -------------------------- */
+const getJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const getJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('jobStatusArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      loading: true,
+      errorMessage: null,
+      jobStatusArray: action.jobStatusArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+
+const getJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: true,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update Job Status  */
+/* -------------------------- */
+const updateJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const updateJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('jobStatusArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      loading: true,
+      errorMessage: null,
+      jobStatusArray: action.jobStatusArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+
+const updateJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: true,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Delete Job Status  */
+/* -------------------------- */
+const deleteJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const deleteJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('jobStatusArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      loading: true,
+      errorMessage: null,
+      jobStatusArray: action.jobStatusArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+
+const deleteJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: true,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Service Types  */
+/* -------------------------- */
+
+/* -------------------------- */
+/* Create Service Types  */
+/* -------------------------- */
+const createServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: false,
+    errorMessage: null,
+  });
+};
+
+const createServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTypesArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTypesArray: action.serviceTypesArray,
+    });
+  }
+  return state;
+};
+
+const createServiceTypesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get Service Types  */
+/* -------------------------- */
+const getServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: false,
+    errorMessage: null,
+  });
+};
+
+const getServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTypesArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTypesArray: action.serviceTypesArray,
+    });
+  }
+  return state;
+};
+
+const getServiceTypesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update Service Types  */
+/* -------------------------- */
+const updateServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: false,
+    errorMessage: null,
+  });
+};
+
+const updateServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTypesArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTypesArray: action.serviceTypesArray,
+    });
+  }
+  return state;
+};
+
+const updateServiceTypesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* delete Service Types  */
+/* -------------------------- */
+const deleteServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: false,
+    errorMessage: null,
+  });
+};
+
+const deleteServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTypesArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTypesArray: action.serviceTypesArray,
+    });
+  }
+  return state;
+};
+
+const deleteServiceTypesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* ============================================================================================ */
 /* ============================================================================================ */
 
 const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialState, action) => {
@@ -1759,6 +2027,69 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
     case actionTypes.DELETE_ACCESSORY_FAILED:
       return deleteAccessoryFailed(state, action);
 
+    /* =================================== */
+    //  Job Status
+    /* =================================== */
+    // Get all Job Status (tail)
+    case actionTypes.GET_JOBSTATUS_START:
+      return getJobStatusStart(state, action);
+    case actionTypes.GET_JOBSTATUS_SUCCEED:
+      return getJobStatusSucceed(state, action);
+    case actionTypes.GET_JOBSTATUS_FAILED:
+      return getJobStatusFailed(state, action);
+    // Create Job Status (tail)
+    case actionTypes.CREATE_JOBSTATUS_START:
+      return createJobStatusStart(state, action);
+    case actionTypes.CREATE_JOBSTATUS_SUCCEED:
+      return createJobStatusSucceed(state, action);
+    case actionTypes.CREATE_JOBSTATUS_FAILED:
+      return createJobStatusFailed(state, action);
+    // Update JobStatus (tail)
+    case actionTypes.UPDATE_JOBSTATUS_START:
+      return updateJobStatusStart(state, action);
+    case actionTypes.UPDATE_JOBSTATUS_SUCCEED:
+      return updateJobStatusSucceed(state, action);
+    case actionTypes.UPDATE_JOBSTATUS_FAILED:
+      return updateJobStatusFailed(state, action);
+    // Delete JobStatus (tail)
+    case actionTypes.DELETE_JOBSTATUS_START:
+      return deleteJobStatusStart(state, action);
+    case actionTypes.DELETE_JOBSTATUS_SUCCEED:
+      return deleteJobStatusSucceed(state, action);
+    case actionTypes.DELETE_JOBSTATUS_FAILED:
+      return deleteJobStatusFailed(state, action);
+
+    /* =================================== */
+    //  Service types
+    /* =================================== */
+    // Get all Job Status (tail)
+    case actionTypes.GET_SERVICETYPES_START:
+      return getServiceTypesStart(state, action);
+    case actionTypes.GET_SERVICETYPES_SUCCEED:
+      return getServiceTypesSucceed(state, action);
+    case actionTypes.GET_SERVICETYPES_FAILED:
+      return getServiceTypesFailed(state, action);
+    // Create Job Status (tail)
+    case actionTypes.CREATE_SERVICETYPES_START:
+      return createServiceTypesStart(state, action);
+    case actionTypes.CREATE_SERVICETYPES_SUCCEED:
+      return createServiceTypesSucceed(state, action);
+    case actionTypes.CREATE_SERVICETYPES_FAILED:
+      return createServiceTypesFailed(state, action);
+    // Update Job Status (tail)
+    case actionTypes.UPDATE_SERVICETYPES_START:
+      return updateServiceTypesStart(state, action);
+    case actionTypes.UPDATE_SERVICETYPES_SUCCEED:
+      return updateServiceTypesSucceed(state, action);
+    case actionTypes.UPDATE_SERVICETYPES_FAILED:
+      return updateServiceTypesFailed(state, action);
+    // Delete Job Status (tail)
+    case actionTypes.DELETE_SERVICETYPES_START:
+      return deleteServiceTypesStart(state, action);
+    case actionTypes.DELETE_SERVICETYPES_SUCCEED:
+      return deleteServiceTypesSucceed(state, action);
+    case actionTypes.DELETE_SERVICETYPES_FAILED:
+      return deleteServiceTypesFailed(state, action);
     default:
       return state;
   }
