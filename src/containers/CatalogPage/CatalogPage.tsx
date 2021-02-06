@@ -70,8 +70,8 @@ const CatalogPage: React.FC<Props> = ({
 
   const [localLoading, setLocalLoading] = useState(false);
 
-  const [activeSeriesTab, setActiveSeriesTab] = useState('series1');
   const [activeBrandTab, setActiveBrandTab] = useState('brand1');
+  const [activeSeriesTab, setActiveSeriesTab] = useState('series1');
 
   const [modalContent, setModalContent] = useState({
     make: { makeTitle: '', seriesTitle: '' },
@@ -591,8 +591,8 @@ const CatalogPage: React.FC<Props> = ({
                       tabPosition={width < 900 ? 'top' : 'left'}
                       className="catalog__tabs-outerdiv--brand"
                       onTabClick={(activeKey: string) => {
-                        setActiveBrandTab(activeKey);
                         setActiveSeriesTab('series1');
+                        setActiveBrandTab(activeKey);
                       }}
                     >
                       {catalogMakesArray.map((catalog, index) => {
@@ -633,8 +633,10 @@ const CatalogPage: React.FC<Props> = ({
                                     tabPosition="top"
                                     className="catalog__tabs-outerdiv glass-shadow"
                                     animated={{ tabPane: true }}
-                                    defaultActiveKey={activeSeriesTab}
-                                    onTabClick={(activeKey: string) => setActiveSeriesTab(activeKey)}
+                                    activeKey={activeSeriesTab}
+                                    onTabClick={(activeKey: string) => {
+                                      setActiveSeriesTab(activeKey);
+                                    }}
                                   >
                                     {catalog.series.map((series, index) => {
                                       // if array is odd number, on the last row, make it display flex
