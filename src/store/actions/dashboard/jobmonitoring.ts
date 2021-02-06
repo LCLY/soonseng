@@ -195,10 +195,10 @@ export const createServiceTypeFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Update ServiceTypes
 /* ------------------------------ */
-export const updateServiceType = (service_types_id: number, title: string, description: string): AppActions => {
+export const updateServiceType = (service_type_id: number, title: string, description: string): AppActions => {
   return {
     type: actionTypes.UPDATE_SERVICETYPE,
-    service_types_id: service_types_id,
+    service_type_id: service_type_id,
     title: title,
     description: description,
   };
@@ -229,10 +229,10 @@ export const updateServiceTypeFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Delete ServiceTypes
 /* ------------------------------ */
-export const deleteServiceType = (service_types_id: number): AppActions => {
+export const deleteServiceType = (service_type_id: number): AppActions => {
   return {
     type: actionTypes.DELETE_SERVICETYPE,
-    service_types_id: service_types_id,
+    service_type_id: service_type_id,
   };
 };
 

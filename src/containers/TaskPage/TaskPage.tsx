@@ -62,7 +62,6 @@ const TaskPage: React.FC<Props> = ({
   const [incomingData, setIncomingData] = useState<TReceivedTaskObj | null>(null);
   // Table states
   const [taskTableState, setTaskTableState] = useState<TTaskTableState[]>([]);
-  console.log(taskTableState);
 
   let taskSearchInput = null; //this is for filter on antd table
 
@@ -196,8 +195,7 @@ const TaskPage: React.FC<Props> = ({
 
   useEffect(() => {
     // If there is incoming data, update the table or add a new row to the table
-    if (incomingData) {
-      console.log(incomingData);
+    if (incomingData && typeof incomingData === 'object') {
       const tempTableData = [...taskTableState];
       // check if the incoming data's id exist in the tempTableData
       const index = tempTableData.findIndex((item) => incomingData.id.toString() === item.key);
@@ -222,7 +220,7 @@ const TaskPage: React.FC<Props> = ({
         setIncomingData(null);
       } else {
         // If not yet exist, add a new row
-        tempTableData.push(formattedData);
+        tempTableData.unshift(formattedData);
         setTaskTableState(tempTableData);
         setIncomingData(null);
       }
@@ -238,7 +236,7 @@ const TaskPage: React.FC<Props> = ({
         indexKey={'task'}
         category="task"
         modalWidth={600}
-        modalTitle={'Create Task'}
+        modalTitle={'Create New Intake'}
         antdForm={createTaskForm}
         showModal={showCreateModal}
         visible={showCreateModal.task}

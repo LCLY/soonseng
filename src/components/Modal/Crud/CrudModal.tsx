@@ -13,6 +13,8 @@ import BodyMakeAccessoryFormItems from 'src/components/Modal/Crud/FormItems/Body
 import { Modal } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import JobStatusFormItems from './FormItems/JobStatusFormItems';
+import ServiceTypesFormItems from './FormItems/ServiceTypesFormItems';
 
 interface CrudModalProps extends ICategory {
   /** The title of the modal on top  */
@@ -71,7 +73,9 @@ export interface ICategory {
     | 'body_accessory'
     | 'body_make_accessory'
     | 'wheelbase'
-    | 'task';
+    | 'task'
+    | 'job_status'
+    | 'service_type';
 }
 
 const CrudModal: React.FC<Props> = ({
@@ -226,6 +230,12 @@ const CrudModal: React.FC<Props> = ({
 
           {category === 'task' && antdForm !== undefined && onFinish !== undefined && (
             <TaskFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'job_status' && antdForm !== undefined && onFinish !== undefined && (
+            <JobStatusFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'service_type' && antdForm !== undefined && onFinish !== undefined && (
+            <ServiceTypesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
         </Modal>
       )}

@@ -349,7 +349,7 @@ const Make: React.FC<Props> = ({
                 danger
                 onClick={() => {
                   // delete modal
-                  setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
+                  setShowDeleteModal({ ...showDeleteModal, brand: true });
                   setDeleteModalContent({
                     ...deleteModalContent,
                     brand: { brand_id: record.brandId, brand_title: record.brandTitle },
@@ -860,12 +860,12 @@ const Make: React.FC<Props> = ({
             onTableRowExpand(expanded, record);
             // this closes all the edit image gallery when user expand other row
             // clearing out all the booleans
-            // setShowEditImageGallery({});
+            setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            // onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
+            onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
             // populate image array state and pass to ImageGallery component
-            // onPopulateImagesArray(record.brandImages);
+            onPopulateImagesArray(record.brandImages);
           }}
         />
       );

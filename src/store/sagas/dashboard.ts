@@ -1633,8 +1633,8 @@ export function* createServiceTypeSaga(action: AppActions) {
 export function* updateServiceTypeSaga(action: AppActions) {
   yield put(actions.updateServiceTypeStart());
   let url = '';
-  if ('service_types_id' in action) {
-    url = process.env.REACT_APP_API + `/job_monitoring/service_types/${action.service_types_id}`;
+  if ('service_type_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/service_types/${action.service_type_id}`;
   }
 
   let service_type = {};
@@ -1662,8 +1662,8 @@ export function* updateServiceTypeSaga(action: AppActions) {
 export function* deleteServiceTypeSaga(action: AppActions) {
   yield put(actions.deleteServiceTypeStart());
   let url = '';
-  if ('service_types_id' in action) {
-    url = process.env.REACT_APP_API + `/job_monitoring/service_types/${action.service_types_id}`;
+  if ('service_type_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/service_types/${action.service_type_id}`;
   }
 
   try {

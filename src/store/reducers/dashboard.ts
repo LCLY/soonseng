@@ -1379,11 +1379,11 @@ const getJobStatusStart = (state: DashboardInitialState, _action: AppActions) =>
 };
 
 const getJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('jobStatusArray' in action ) {
+  if ('jobStatusArray' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: null,
-      jobStatusArray: action.jobStatusArray,     
+      jobStatusArray: action.jobStatusArray,
     });
   }
   return state;
@@ -1392,7 +1392,7 @@ const getJobStatusSucceed = (state: DashboardInitialState, action: AppActions) =
 const getJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: action.errorMessage,
     });
   }
@@ -1412,7 +1412,7 @@ const updateJobStatusStart = (state: DashboardInitialState, _action: AppActions)
 const updateJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('jobStatusArray' in action && 'successMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: null,
       jobStatusArray: action.jobStatusArray,
       successMessage: action.successMessage,
@@ -1424,7 +1424,7 @@ const updateJobStatusSucceed = (state: DashboardInitialState, action: AppActions
 const updateJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: action.errorMessage,
     });
   }
@@ -1444,7 +1444,7 @@ const deleteJobStatusStart = (state: DashboardInitialState, _action: AppActions)
 const deleteJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('jobStatusArray' in action && 'successMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: null,
       jobStatusArray: action.jobStatusArray,
       successMessage: action.successMessage,
@@ -1456,7 +1456,7 @@ const deleteJobStatusSucceed = (state: DashboardInitialState, action: AppActions
 const deleteJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: action.errorMessage,
     });
   }
@@ -1472,7 +1472,7 @@ const deleteJobStatusFailed = (state: DashboardInitialState, action: AppActions)
 /* -------------------------- */
 const createServiceTypeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };
@@ -1504,7 +1504,7 @@ const createServiceTypeFailed = (state: DashboardInitialState, action: AppAction
 /* -------------------------- */
 const getServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };
@@ -1513,7 +1513,7 @@ const getServiceTypesSucceed = (state: DashboardInitialState, action: AppActions
   if ('serviceTypesArray' in action) {
     return updateObject(state, {
       loading: false,
-      errorMessage: null,     
+      errorMessage: null,
       serviceTypesArray: action.serviceTypesArray,
     });
   }
@@ -1535,7 +1535,7 @@ const getServiceTypesFailed = (state: DashboardInitialState, action: AppActions)
 /* -------------------------- */
 const updateServiceTypeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };
@@ -1567,7 +1567,7 @@ const updateServiceTypeFailed = (state: DashboardInitialState, action: AppAction
 /* -------------------------- */
 const deleteServiceTypeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };

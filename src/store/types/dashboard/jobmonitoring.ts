@@ -127,7 +127,7 @@ export interface CreateServiceTypesFailedAction {
 /* Api call */
 export interface UpdateServiceTypesAction {
   type: typeof actionTypes.UPDATE_SERVICETYPE;
-  service_types_id: number;
+  service_type_id: number;
   title: string;
   description: string;
 }
@@ -171,7 +171,7 @@ export interface GetServiceTypesFailedAction {
 /* Api call */
 export interface DeleteServiceTypesAction {
   type: typeof actionTypes.DELETE_SERVICETYPE;
-  service_types_id: number;
+  service_type_id: number;
 }
 /* States */
 export interface DeleteServiceTypesStartAction {
