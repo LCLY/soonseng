@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import { TReceivedUserInfoObj } from './auth';
 
 // initialState for reducers
 export interface TaskInitialState {
@@ -8,27 +9,37 @@ export interface TaskInitialState {
   readonly successMessage?: string | null;
   readonly taskObj?: TReceivedTaskObj | null;
   readonly tasksArray?: TReceivedTaskObj[] | null;
+  readonly allUsersArray?: TReceivedUserInfoObj[] | null;
+  readonly usersByRolesArray?: TReceivedUserInfoObj[] | null;
 }
-
 /* ============================================================== */
 // Task/Job
 /* ============================================================== */
 
+/* -------------------------------------- */
+// clear state
+/* -------------------------------------- */
+export interface ClearTaskAction {
+  type: typeof actionTypes.CLEAR_TASK_STATE;
+}
+
 export type TReceivedTaskObj = {
   id: number;
-  assigned_to_id: number;
-  description: string;
-  job_statuses_id: number;
+  created_at: string;
+  updated_at: string;
   registration_number: string;
-  service_types_id: number;
+  description: string;
+  status: string;
+  service_type: string;
+  assigned_to: { user_id: number; first_name: string; last_name: string }[];
 };
 
 export interface ITaskFormData {
-  assigned_to_id: number;
   description: string;
-  job_statuses_id: number;
+  job_status_id: number;
+  service_type_id: number;
   registration_number: string;
-  service_types_id: number;
+  assigned_to_ids: number[];
 }
 
 /* ----------------------------------- */
@@ -37,6 +48,7 @@ export interface ITaskFormData {
 export interface CreateTaskAction {
   type: typeof actionTypes.CREATE_TASK;
   taskFormData: ITaskFormData;
+  auth_token: string;
 }
 export interface CreateTaskStartAction {
   type: typeof actionTypes.CREATE_TASK_START;
@@ -108,9 +120,49 @@ export interface DeleteTaskFailedAction {
 }
 
 /* ============================================================== */
+// Get All Users
+/* ============================================================== */
+
+export interface GetAllUsersAction {
+  type: typeof actionTypes.GET_ALL_USERS;
+}
+export interface GetAllUsersStartAction {
+  type: typeof actionTypes.GET_ALL_USERS_START;
+}
+export interface GetAllUsersSucceedAction {
+  type: typeof actionTypes.GET_ALL_USERS_SUCCEED;
+  allUsersArray: TReceivedUserInfoObj[];
+}
+export interface GetAllUsersFailedAction {
+  type: typeof actionTypes.GET_ALL_USERS_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
+// Get Users by Roles
+/* ============================================================== */
+export interface GetUsersByRolesAction {
+  type: typeof actionTypes.GET_USERS_BY_ROLES;
+  role_id: number;
+  title: string;
+}
+export interface GetUsersByRolesStartAction {
+  type: typeof actionTypes.GET_USERS_BY_ROLES_START;
+}
+export interface GetUsersByRolesSucceedAction {
+  type: typeof actionTypes.GET_USERS_BY_ROLES_SUCCEED;
+  usersByRolesArray: TReceivedUserInfoObj[];
+}
+export interface GetUsersByRolesFailedAction {
+  type: typeof actionTypes.GET_USERS_BY_ROLES_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
 export type TaskActionTypes =
+  | ClearTaskAction
   /* -------------------- */
   // Task
   /* -------------------- */
@@ -129,4 +181,18 @@ export type TaskActionTypes =
   | DeleteTaskAction
   | DeleteTaskStartAction
   | DeleteTaskSucceedAction
-  | DeleteTaskFailedAction;
+  | DeleteTaskFailedAction
+  /* -------------------- */
+  // Get all users
+  /* -------------------- */
+  | GetAllUsersAction
+  | GetAllUsersStartAction
+  | GetAllUsersSucceedAction
+  | GetAllUsersFailedAction
+  /* -------------------- */
+  // Get users by roles
+  /* -------------------- */
+  | GetUsersByRolesAction
+  | GetUsersByRolesStartAction
+  | GetUsersByRolesSucceedAction
+  | GetUsersByRolesFailedAction;

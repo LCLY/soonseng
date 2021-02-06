@@ -2,6 +2,7 @@ import React from 'react';
 /* components */
 import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
 import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
+import TaskFormItems from 'src/components/Modal/Crud//FormItems/TaskFormItems';
 import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
 import BodyMakeFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeFormItems';
 import AccessoryMakeFormItems from 'src/components/Modal/Crud/FormItems/AccessoryMakeFormItems';
@@ -69,7 +70,8 @@ export interface ICategory {
     | 'accessory'
     | 'body_accessory'
     | 'body_make_accessory'
-    | 'wheelbase';
+    | 'wheelbase'
+    | 'task';
 }
 
 const CrudModal: React.FC<Props> = ({
@@ -220,6 +222,10 @@ const CrudModal: React.FC<Props> = ({
           )}
           {category === 'body_make_accessory' && antdForm !== undefined && onFinish !== undefined && (
             <BodyMakeAccessoryFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+
+          {category === 'task' && antdForm !== undefined && onFinish !== undefined && (
+            <TaskFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
         </Modal>
       )}

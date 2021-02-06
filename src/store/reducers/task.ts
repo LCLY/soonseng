@@ -12,11 +12,18 @@ const initialState: TaskInitialState = {
   // task
   taskObj: null,
   tasksArray: null,
+  // users array
+  allUsersArray: null,
+  usersByRolesArray: null,
 };
 
 /* ============================================================================================ */
 /* Task 
 /* ============================================================================================ */
+const clearTaskState = (state: TaskInitialState, _action: AppActions) => {
+  return updateObject(state, { successMessage: null, errorMessage: null, loading: false });
+};
+
 /* -------------------------- */
 /* Create task */
 /* -------------------------- */
@@ -111,12 +118,62 @@ const deleteTaskFailed = (state: TaskInitialState, action: AppActions) => {
 
 /* ============================================================================================ */
 /* ============================================================================================ */
+/* -------------------------- */
+/* Get all users */
+/* -------------------------- */
+const getAllUsersStart = (state: TaskInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getAllUsersSucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('allUsersArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      allUsersArray: action.allUsersArray,
+    });
+  }
+  return state;
+};
+const getAllUsersFailed = (state: TaskInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* -------------------------- */
+/* Get users by roles */
+/* -------------------------- */
+const getUsersByRolesStart = (state: TaskInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getUsersByRolesSucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('usersByRolesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      usersByRolesArray: action.usersByRolesArray,
+    });
+  }
+  return state;
+};
+const getUsersByRolesFailed = (state: TaskInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* ============================================================================================ */
+/* ============================================================================================ */
 
 const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
     /* =================================== */
     //  Tasks
     /* =================================== */
+    // Create task
+    case actionTypes.CLEAR_TASK_STATE:
+      return clearTaskState(state, action);
     // Create task
     case actionTypes.CREATE_TASK_START:
       return createTaskStart(state, action);
@@ -145,6 +202,24 @@ const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, ac
       return deleteTaskSucceed(state, action);
     case actionTypes.DELETE_TASK_FAILED:
       return deleteTaskFailed(state, action);
+    /* =================================== */
+    // Get all Users
+    /* =================================== */
+    case actionTypes.GET_ALL_USERS_START:
+      return getAllUsersStart(state, action);
+    case actionTypes.GET_ALL_USERS_SUCCEED:
+      return getAllUsersSucceed(state, action);
+    case actionTypes.GET_ALL_USERS_FAILED:
+      return getAllUsersFailed(state, action);
+    /* =================================== */
+    // Get Users By Roles
+    /* =================================== */
+    case actionTypes.GET_USERS_BY_ROLES_START:
+      return getUsersByRolesStart(state, action);
+    case actionTypes.GET_USERS_BY_ROLES_SUCCEED:
+      return getUsersByRolesSucceed(state, action);
+    case actionTypes.GET_USERS_BY_ROLES_FAILED:
+      return getUsersByRolesFailed(state, action);
     default:
       return state;
   }

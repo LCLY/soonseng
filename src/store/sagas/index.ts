@@ -72,6 +72,16 @@ import {
   getChargesFeesSaga,
   updateChargesFeesSaga,
   deleteChargesFeesSaga,
+  // Job Status
+  getJobStatusSaga,
+  createJobStatusSaga,
+  deleteJobStatusSaga,
+  updateJobStatusSaga,
+  // Service Types
+  getServiceTypesSaga,
+  createServiceTypeSaga,
+  deleteServiceTypeSaga,
+  updateServiceTypeSaga,
 } from './dashboard';
 
 import {
@@ -89,7 +99,14 @@ import { getCatalogMakesSaga, getCatalogBodyMakesSaga } from './catalog';
 
 import { signInSaga, getUserInfoSaga } from './auth';
 
-import { createTaskSaga, getTasksSaga, updateTaskSaga, deleteTaskSaga } from './task';
+import {
+  createTaskSaga,
+  getTasksSaga,
+  updateTaskSaga,
+  deleteTaskSaga,
+  getAllUsersSaga,
+  getUsersByRolesSaga,
+} from './task';
 import { TaskActionTypes } from '../types/task';
 
 export function* watchAuth() {
@@ -182,11 +199,25 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_ACCESSORIES, getAccessoriesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_ACCESSORY, updateAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_ACCESSORY, deleteAccessorySaga)]);
+  // Job Status
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_JOBSTATUS, getJobStatusSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_JOBSTATUS, createJobStatusSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_JOBSTATUS, deleteJobStatusSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_JOBSTATUS, updateJobStatusSaga)]);
+  // Service Types
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_SERVICETYPES, getServiceTypesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_SERVICETYPE, createServiceTypeSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_SERVICETYPE, deleteServiceTypeSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_SERVICETYPE, updateServiceTypeSaga)]);
 }
 
 export function* watchTask() {
+  // Task
   yield all([takeEvery<TaskActionTypes>(actionTypes.CREATE_TASK, createTaskSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.GET_TASKS, getTasksSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_TASK, updateTaskSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.DELETE_TASK, deleteTaskSaga)]);
+  // Get Users
+  yield all([takeEvery<TaskActionTypes>(actionTypes.GET_ALL_USERS, getAllUsersSaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.GET_USERS_BY_ROLES, getUsersByRolesSaga)]);
 }

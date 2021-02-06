@@ -921,6 +921,7 @@ export type DashboardActionTypes =
   /* ======================================================================= */
   // Job monitoring page
   /* ======================================================================= */
+  /* Job Status */
   | CreateJobStatusAction
   | CreateJobStatusStartAction
   | CreateJobStatusFailedAction
@@ -937,6 +938,7 @@ export type DashboardActionTypes =
   | UpdateJobStatusStartAction
   | UpdateJobStatusFailedAction
   | UpdateJobStatusSucceedAction
+  /* Service Types */
   | CreateServiceTypesAction
   | CreateServiceTypesStartAction
   | CreateServiceTypesFailedAction

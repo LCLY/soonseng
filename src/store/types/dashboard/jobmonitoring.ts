@@ -103,21 +103,21 @@ export interface DeleteJobStatusFailedAction {
 /* --------------------------- */
 /*  Api call */
 export interface CreateServiceTypesAction {
-  type: typeof actionTypes.CREATE_SERVICETYPES;
+  type: typeof actionTypes.CREATE_SERVICETYPE;
   title: string;
   description: string;
 }
 /*  States */
 export interface CreateServiceTypesStartAction {
-  type: typeof actionTypes.CREATE_SERVICETYPES_START;
+  type: typeof actionTypes.CREATE_SERVICETYPE_START;
 }
 export interface CreateServiceTypesSucceedAction {
-  type: typeof actionTypes.CREATE_SERVICETYPES_SUCCEED;
+  type: typeof actionTypes.CREATE_SERVICETYPE_SUCCEED;
   serviceTypesArray: TReceivedServiceTypesObj[];
   successMessage: string;
 }
 export interface CreateServiceTypesFailedAction {
-  type: typeof actionTypes.CREATE_SERVICETYPES_FAILED;
+  type: typeof actionTypes.CREATE_SERVICETYPE_FAILED;
   errorMessage: string;
 }
 
@@ -126,22 +126,22 @@ export interface CreateServiceTypesFailedAction {
 /* --------------------------- */
 /* Api call */
 export interface UpdateServiceTypesAction {
-  type: typeof actionTypes.UPDATE_SERVICETYPES;
+  type: typeof actionTypes.UPDATE_SERVICETYPE;
   service_types_id: number;
   title: string;
   description: string;
 }
 /* States */
 export interface UpdateServiceTypesStartAction {
-  type: typeof actionTypes.UPDATE_SERVICETYPES_START;
+  type: typeof actionTypes.UPDATE_SERVICETYPE_START;
 }
 export interface UpdateServiceTypesSucceedAction {
-  type: typeof actionTypes.UPDATE_SERVICETYPES_SUCCEED;
+  type: typeof actionTypes.UPDATE_SERVICETYPE_SUCCEED;
   serviceTypesArray: TReceivedServiceTypesObj[];
   successMessage: string;
 }
 export interface UpdateServiceTypesFailedAction {
-  type: typeof actionTypes.UPDATE_SERVICETYPES_FAILED;
+  type: typeof actionTypes.UPDATE_SERVICETYPE_FAILED;
   errorMessage: string;
 }
 
@@ -170,19 +170,19 @@ export interface GetServiceTypesFailedAction {
 /* --------------------------- */
 /* Api call */
 export interface DeleteServiceTypesAction {
-  type: typeof actionTypes.DELETE_SERVICETYPES;
+  type: typeof actionTypes.DELETE_SERVICETYPE;
   service_types_id: number;
 }
 /* States */
 export interface DeleteServiceTypesStartAction {
-  type: typeof actionTypes.DELETE_SERVICETYPES_START;
+  type: typeof actionTypes.DELETE_SERVICETYPE_START;
 }
 export interface DeleteServiceTypesSucceedAction {
-  type: typeof actionTypes.DELETE_SERVICETYPES_SUCCEED;
+  type: typeof actionTypes.DELETE_SERVICETYPE_SUCCEED;
   serviceTypesArray: TReceivedServiceTypesObj[];
   successMessage: string;
 }
 export interface DeleteServiceTypesFailedAction {
-  type: typeof actionTypes.DELETE_SERVICETYPES_FAILED;
+  type: typeof actionTypes.DELETE_SERVICETYPE_FAILED;
   errorMessage: string;
 }

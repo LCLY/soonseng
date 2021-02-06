@@ -446,6 +446,11 @@ export const DELETE_ACCESSORY_START = 'DELETE_ACCESSORY_START';
 export const DELETE_ACCESSORY_SUCCEED = 'DELETE_ACCESSORY_SUCCEED';
 export const DELETE_ACCESSORY_FAILED = 'DELETE_ACCESSORY_FAILED';
 
+/* ================================================================================================= */
+// Jobs
+/* ================================================================================================= */
+
+export const CLEAR_TASK_STATE = 'CLEAR_TASK_STATE';
 /* --------------------------------------------- */
 // JOBSTATUS Page - JOBSTATUS
 /* --------------------------------------------- */
@@ -474,27 +479,25 @@ export const DELETE_JOBSTATUS_FAILED = 'DELETE_JOBSTATUS_FAILED';
 // ServiceType Page - SERVICETYPE
 /* --------------------------------------------- */
 // Create SERVICETYPE (Tail)
-export const CREATE_SERVICETYPES = 'CREATE_SERVICETYPES';
-export const CREATE_SERVICETYPES_START = 'CREATE_SERVICETYPES_START';
-export const CREATE_SERVICETYPES_SUCCEED = 'CREATE_SERVICETYPES_SUCCEED';
-export const CREATE_SERVICETYPES_FAILED = 'CREATE_SERVICETYPES_FAILED';
+export const CREATE_SERVICETYPE = 'CREATE_SERVICETYPE';
+export const CREATE_SERVICETYPE_START = 'CREATE_SERVICETYPE_START';
+export const CREATE_SERVICETYPE_SUCCEED = 'CREATE_SERVICETYPE_SUCCEED';
+export const CREATE_SERVICETYPE_FAILED = 'CREATE_SERVICETYPE_FAILED';
 // Get ServiceTypeS (Tail)
 export const GET_SERVICETYPES = 'GET_SERVICETYPES';
 export const GET_SERVICETYPES_START = 'GET_SERVICETYPES_START';
 export const GET_SERVICETYPES_SUCCEED = 'GET_SERVICETYPES_SUCCEED';
 export const GET_SERVICETYPES_FAILED = 'GET_SERVICETYPES_FAILED';
 // Update SERVICETYPES (Tail)
-export const UPDATE_SERVICETYPES = 'UPDATE_SERVICETYPES';
-export const UPDATE_SERVICETYPES_START = 'UPDATE_SERVICETYPES_START';
-export const UPDATE_SERVICETYPES_SUCCEED = 'UPDATE_SERVICETYPES_SUCCEED';
-export const UPDATE_SERVICETYPES_FAILED = 'UPDATE_SERVICETYPES_FAILED';
+export const UPDATE_SERVICETYPE = 'UPDATE_SERVICETYPE';
+export const UPDATE_SERVICETYPE_START = 'UPDATE_SERVICETYPE_START';
+export const UPDATE_SERVICETYPE_SUCCEED = 'UPDATE_SERVICETYPE_SUCCEED';
+export const UPDATE_SERVICETYPE_FAILED = 'UPDATE_SERVICETYPE_FAILED';
 // Delete SERVICETYPES (Tail)
-export const DELETE_SERVICETYPES = 'DELETE_SERVICETYPES';
-export const DELETE_SERVICETYPES_START = 'DELETE_SERVICETYPES_START';
-export const DELETE_SERVICETYPES_SUCCEED = 'DELETE_SERVICETYPES_SUCCEED';
-export const DELETE_SERVICETYPES_FAILED = 'DELETE_SERVICETYPES_FAILED';
-
-/* ======================================================================================== */
+export const DELETE_SERVICETYPE = 'DELETE_SERVICETYPE';
+export const DELETE_SERVICETYPE_START = 'DELETE_SERVICETYPE_START';
+export const DELETE_SERVICETYPE_SUCCEED = 'DELETE_SERVICETYPE_SUCCEED';
+export const DELETE_SERVICETYPE_FAILED = 'DELETE_SERVICETYPE_FAILED';
 
 /* --------------------------------------------- */
 // Task/Job
@@ -518,3 +521,16 @@ export const DELETE_TASK = 'DELETE_TASK';
 export const DELETE_TASK_START = 'DELETE_TASK_START';
 export const DELETE_TASK_SUCCEED = 'DELETE_TASK_SUCCEED';
 export const DELETE_TASK_FAILED = 'DELETE_TASK_FAILED';
+
+/* -------------------------------------------------- */
+// Users
+/* -------------------------------------------------- */
+export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const GET_ALL_USERS_START = 'GET_ALL_USERS_START';
+export const GET_ALL_USERS_SUCCEED = 'GET_ALL_USERS_SUCCEED';
+export const GET_ALL_USERS_FAILED = 'GET_ALL_USERS_FAILED';
+
+export const GET_USERS_BY_ROLES = 'GET_USERS_BY_ROLES';
+export const GET_USERS_BY_ROLES_START = 'GET_USERS_BY_ROLES_START';
+export const GET_USERS_BY_ROLES_SUCCEED = 'GET_USERS_BY_ROLES_SUCCEED';
+export const GET_USERS_BY_ROLES_FAILED = 'GET_USERS_BY_ROLES_FAILED';

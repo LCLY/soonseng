@@ -7,6 +7,7 @@ import 'react-image-lightbox/style.css';
 // 3rd party lib
 import { BrowserRouter } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
+import { ActionCableProvider } from 'react-actioncable-provider';
 // redux
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
@@ -83,7 +84,9 @@ const app = (
     <ParallaxProvider>
       <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
-          <App />
+          <ActionCableProvider url={`${process.env.REACT_APP_API}/cable`}>
+            <App />
+          </ActionCableProvider>
         </PersistGate>
       </BrowserRouter>
     </ParallaxProvider>
