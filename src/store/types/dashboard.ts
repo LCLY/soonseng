@@ -142,6 +142,41 @@ import {
 } from 'src/store/types/dashboard/bodymake';
 
 import {
+  CreateJobStatusAction,
+  CreateJobStatusFailedAction,
+  CreateJobStatusStartAction,
+  CreateJobStatusSucceedAction,
+  CreateServiceTypesAction,
+  CreateServiceTypesFailedAction,
+  CreateServiceTypesStartAction,
+  CreateServiceTypesSucceedAction,
+  DeleteJobStatusAction,
+  DeleteJobStatusFailedAction,
+  DeleteJobStatusStartAction,
+  DeleteJobStatusSucceedAction,
+  DeleteServiceTypesAction,
+  DeleteServiceTypesFailedAction,
+  DeleteServiceTypesStartAction,
+  DeleteServiceTypesSucceedAction,
+  GetJobStatusAction,
+  GetJobStatusFailedAction,
+  GetJobStatusStartAction,
+  GetJobStatusSucceedAction,
+  GetServiceTypesAction,
+  GetServiceTypesFailedAction,
+  GetServiceTypesStartAction,
+  GetServiceTypesSucceedAction,
+  UpdateJobStatusAction,
+  UpdateJobStatusFailedAction,
+  UpdateJobStatusStartAction,
+  UpdateJobStatusSucceedAction,
+  UpdateServiceTypesAction,
+  UpdateServiceTypesFailedAction,
+  UpdateServiceTypesStartAction,
+  UpdateServiceTypesSucceedAction,
+} from 'src/store/types/dashboard/jobmonitoring';
+
+import {
   // Brand
   GetBrandsAction,
   GetBrandsStartAction,
@@ -277,6 +312,10 @@ export interface DashboardInitialState {
   // images array
   readonly imagesUploaded?: boolean;
   readonly imagesArray?: TReceivedImageObj[] | null;
+  // job status array
+  readonly jobStatusArray?: TReceivedJobStatusObj[] | null;
+  // service types array
+  readonly serviceTypesArray?: TReceivedServiceTypesObj[] | null;
 }
 
 /* =============================================================================================== */
@@ -599,6 +638,25 @@ export type TReceivedBodyMakeAccessoryObj = {
   available: boolean;
 };
 
+/* ------------------------------------------- */
+// Job Status
+/* ------------------------------------------- */
+/* types */
+export type TReceivedJobStatusObj = {
+  id: number;
+  title: string;
+  description: string;
+};
+
+/* ------------------------------------------- */
+// Service Types
+/* ------------------------------------------- */
+/* types */
+export type TReceivedServiceTypesObj = {
+  id: number;
+  title: string;
+  description: string;
+};
 /* ================================================================================================= */
 // Combine and export all action types
 /* ================================================================================================= */
@@ -859,4 +917,39 @@ export type DashboardActionTypes =
   | GetDimensionAssociatedAccessoriesAction
   | GetDimensionAssociatedAccessoriesStartAction
   | GetDimensionAssociatedAccessoriesSucceedAction
-  | GetDimensionAssociatedAccessoriesFailedAction;
+  | GetDimensionAssociatedAccessoriesFailedAction
+  /* ======================================================================= */
+  // Job monitoring page
+  /* ======================================================================= */
+  | CreateJobStatusAction
+  | CreateJobStatusStartAction
+  | CreateJobStatusFailedAction
+  | CreateJobStatusSucceedAction
+  | GetJobStatusAction
+  | GetJobStatusStartAction
+  | GetJobStatusFailedAction
+  | GetJobStatusSucceedAction
+  | DeleteJobStatusAction
+  | DeleteJobStatusStartAction
+  | DeleteJobStatusFailedAction
+  | DeleteJobStatusSucceedAction
+  | UpdateJobStatusAction
+  | UpdateJobStatusStartAction
+  | UpdateJobStatusFailedAction
+  | UpdateJobStatusSucceedAction
+  | CreateServiceTypesAction
+  | CreateServiceTypesStartAction
+  | CreateServiceTypesFailedAction
+  | CreateServiceTypesSucceedAction
+  | GetServiceTypesAction
+  | GetServiceTypesStartAction
+  | GetServiceTypesFailedAction
+  | GetServiceTypesSucceedAction
+  | UpdateServiceTypesAction
+  | UpdateServiceTypesStartAction
+  | UpdateServiceTypesFailedAction
+  | UpdateServiceTypesSucceedAction
+  | DeleteServiceTypesAction
+  | DeleteServiceTypesStartAction
+  | DeleteServiceTypesFailedAction
+  | DeleteServiceTypesSucceedAction;

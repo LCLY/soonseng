@@ -1,3 +1,4 @@
+import { TaskActionTypes } from './task';
 import { AuthActionTypes } from './auth';
 import { SalesActionTypes } from './sales';
 import { CatalogActionTypes } from './catalog';
@@ -10,4 +11,5 @@ export type AppActions =
   | GeneralActionTypes
   | SalesActionTypes
   | AuthActionTypes
-  | CatalogActionTypes;
+  | CatalogActionTypes
+  | TaskActionTypes;

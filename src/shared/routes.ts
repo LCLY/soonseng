@@ -1,4 +1,5 @@
 export const ROUTE_HOME = '/';
+export const ROUTE_TASK = '/task';
 export const ROUTE_ABOUT = '/about';
 export const ROUTE_SALES = '/sales';
 export const ROUTE_LOGIN = '/login';
@@ -16,4 +17,5 @@ export const ROUTE_DASHBOARD = {
   body: '/dashboard/body',
   body_make: '/dashboard/body_make',
   accessory: '/dashboard/accessory',
+  job_monitoring: '/dashboard/job_monitoring',
 };

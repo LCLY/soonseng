@@ -89,6 +89,9 @@ import { getCatalogMakesSaga, getCatalogBodyMakesSaga } from './catalog';
 
 import { signInSaga, getUserInfoSaga } from './auth';
 
+import { createTaskSaga, getTasksSaga, updateTaskSaga, deleteTaskSaga } from './task';
+import { TaskActionTypes } from '../types/task';
+
 export function* watchAuth() {
   yield all([takeEvery<AuthActionTypes>(actionTypes.SIGN_IN, signInSaga)]);
   yield all([takeEvery<AuthActionTypes>(actionTypes.GET_USER_INFO, getUserInfoSaga)]);
@@ -179,4 +182,11 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_ACCESSORIES, getAccessoriesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_ACCESSORY, updateAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_ACCESSORY, deleteAccessorySaga)]);
+}
+
+export function* watchTask() {
+  yield all([takeEvery<TaskActionTypes>(actionTypes.CREATE_TASK, createTaskSaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.GET_TASKS, getTasksSaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_TASK, updateTaskSaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.DELETE_TASK, deleteTaskSaga)]);
 }

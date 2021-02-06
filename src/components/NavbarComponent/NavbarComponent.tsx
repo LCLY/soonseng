@@ -21,6 +21,7 @@ import {
   ROUTE_LOGIN,
   ROUTE_SALES,
   ROUTE_LOGOUT,
+  ROUTE_TASK,
   // ROUTE_ORDERS,
   ROUTE_CATALOG,
   ROUTE_DASHBOARD,
@@ -47,9 +48,11 @@ interface NavbarComponentProps {
     | 'accessory'
     | 'fees'
     | 'about'
+    | 'task'
     | 'orders'
     | 'make'
-    | 'login';
+    | 'login'
+    | 'job_monitoring';
   defaultOpenKeys?: 'product' | 'dashboard';
 }
 
@@ -120,6 +123,11 @@ const NavbarComponent: React.FC<Props> = ({
             Processing Fees
           </a>
         </Menu.Item>
+        <Menu.Item key="job_monitoring">
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.job_monitoring}>
+            Job Monitoring
+          </a>
+        </Menu.Item>
       </Menu>
     </div>
   );
@@ -186,6 +194,11 @@ const NavbarComponent: React.FC<Props> = ({
                   Sales
                 </a>
               </Menu.Item>
+              <Menu.Item key="task" icon={<i className="fas fa-tasks"></i>}>
+                <a className="navbar__link" href={ROUTE_TASK}>
+                  Task
+                </a>
+              </Menu.Item>
 
               {accessObj?.showSalesDashboard && (
                 <SubMenu
@@ -217,6 +230,11 @@ const NavbarComponent: React.FC<Props> = ({
                   <Menu.Item key="fees">
                     <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.fees}>
                       Standard Charges
+                    </a>
+                  </Menu.Item>
+                  <Menu.Item key="job_monitoring">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.job_monitoring}>
+                      Job Monitoring
                     </a>
                   </Menu.Item>
                 </SubMenu>
@@ -331,6 +349,11 @@ const NavbarComponent: React.FC<Props> = ({
               <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_SALES}>
                   <i className="fas fa-balance-scale"></i>&nbsp;Sales
+                </a>
+              </div>
+              <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
+                <a className="navbar__link" href={ROUTE_TASK}>
+                  <i className="fas fa-tasks"></i>&nbsp;Task
                 </a>
               </div>
               {/* ABOUT US */}

@@ -73,7 +73,7 @@ const CatalogFilter: React.FC<Props> = ({ showSearch, filterString, setFilterStr
 
   useOutsideAlerter(wrapperRef, dropdownRef, hideSearchbar, setShowSearch);
 
-  const handleEsc = (e: any) => {
+  const handleEsc = (e: KeyboardEvent) => {
     // key Esc
     if (e.keyCode === 27) {
       hideSearchbar();
@@ -81,8 +81,8 @@ const CatalogFilter: React.FC<Props> = ({ showSearch, filterString, setFilterStr
       setFilterString('');
     }
 
-    // key F
-    if (e.keyCode === 70) {
+    // key `
+    if (e.keyCode === 192) {
       showSearchbar();
       setShowSearch(true);
     }
@@ -91,7 +91,6 @@ const CatalogFilter: React.FC<Props> = ({ showSearch, filterString, setFilterStr
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
-
   useEffect(() => {
     document.addEventListener('keydown', handleEsc);
 
@@ -104,7 +103,7 @@ const CatalogFilter: React.FC<Props> = ({ showSearch, filterString, setFilterStr
   /* ================================================== */
   return (
     <>
-      <div className="catalog__search-btn-outerdiv">
+      <div className="catalog__search-btn-outerdiv" ref={dropdownRef}>
         <div
           className="catalog__search-btn"
           onClick={() => {
@@ -127,7 +126,7 @@ const CatalogFilter: React.FC<Props> = ({ showSearch, filterString, setFilterStr
       </div>
       {/* The floating search input div */}
       <div className="catalog__search-input-outerdiv" ref={wrapperRef}>
-        <div className="catalog__search-input-div" id="catalog__search-input-div" ref={dropdownRef}>
+        <div className="catalog__search-input-div" id="catalog__search-input-div">
           <div
             className="catalog__search-input-div-close"
             onClick={() => {

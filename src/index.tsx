@@ -11,7 +11,7 @@ import { ParallaxProvider } from 'react-scroll-parallax';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { watchDashboard, watchSales, watchAuth, watchCatalog } from './store/sagas/index';
+import { watchDashboard, watchSales, watchAuth, watchCatalog, watchTask } from './store/sagas/index';
 
 // redux-persist
 import storage from 'redux-persist/lib/storage';
@@ -26,6 +26,7 @@ import salesReducer from 'src/store/reducers/sales';
 import dashboardReducer from 'src/store/reducers/dashboard';
 import catalogReducer from 'src/store/reducers/catalog';
 import generalReducer from 'src/store/reducers/general';
+import taskReducer from 'src/store/reducers/task';
 
 // use this when testing locally on mobile
 // const composeEnhancers = compose;
@@ -57,6 +58,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   catalog: catalogReducer,
   general: generalReducer,
+  task: taskReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -74,6 +76,7 @@ sagaMiddleware.run(watchDashboard);
 sagaMiddleware.run(watchSales);
 sagaMiddleware.run(watchAuth);
 sagaMiddleware.run(watchCatalog);
+sagaMiddleware.run(watchTask);
 
 const app = (
   <Provider store={store}>
