@@ -501,6 +501,10 @@ const CatalogPage: React.FC<Props> = ({
           series: false,
           make: false,
         });
+
+        if (successMessage === 'Series deleted') {
+          setActiveSeriesTab('series1');
+        }
       }, 1000);
     }
   }, [
