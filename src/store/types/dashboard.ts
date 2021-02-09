@@ -363,6 +363,7 @@ export interface UploadImageStartAction {
 export interface UploadImageSucceedAction {
   type: typeof actionTypes.UPLOAD_IMAGE_SUCCEED;
   imagesArray: TReceivedImageObj[];
+  successMessage: string;
 }
 
 export interface UploadImageFailedAction {
@@ -921,6 +922,7 @@ export type DashboardActionTypes =
   /* ======================================================================= */
   // Job monitoring page
   /* ======================================================================= */
+  /* Job Status */
   | CreateJobStatusAction
   | CreateJobStatusStartAction
   | CreateJobStatusFailedAction
@@ -937,6 +939,7 @@ export type DashboardActionTypes =
   | UpdateJobStatusStartAction
   | UpdateJobStatusFailedAction
   | UpdateJobStatusSucceedAction
+  /* Service Types */
   | CreateServiceTypesAction
   | CreateServiceTypesStartAction
   | CreateServiceTypesFailedAction

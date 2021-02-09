@@ -395,10 +395,10 @@ const Accessory: React.FC<Props> = ({
    *
    * This function takes in images array from make object and then populate the current state
    * of setImage
-   * @param {TReceivedImageObj[]} recordImagesArray
+   * @param {TReceivedImageObj[]} imagesArray
    * @category Helper function
    */
-  const onPopulateImagesArray = (recordImagesArray: TReceivedImageObj[]) => {
+  const onPopulateImagesArray = (imagesArray: TReceivedImageObj[]) => {
     let tempArray: TGalleryImageArrayObj[] = [];
 
     // Populate the array state with every image and later pass to Image Gallery
@@ -418,7 +418,7 @@ const Accessory: React.FC<Props> = ({
 
       tempArray.push(imageObject);
     };
-    recordImagesArray.map(storeValue);
+    imagesArray.map(storeValue);
 
     setGalleryImages(tempArray);
   };
@@ -600,7 +600,6 @@ const Accessory: React.FC<Props> = ({
     <>
       <Form
         onValuesChange={(values) => {
-          console.log(values);
           if (values.accessoryType === DIMENSION_ACCESSORY) {
             // hide price
             setAccessoryIsDimensionAssociated(true);

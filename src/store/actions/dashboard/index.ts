@@ -34,10 +34,11 @@ export const uploadImageStart = (): AppActions => {
   };
 };
 
-export const uploadImageSucceed = (imagesArray: TReceivedImageObj[]): AppActions => {
+export const uploadImageSucceed = (imagesArray: TReceivedImageObj[], successMessage: string): AppActions => {
   return {
     type: actionTypes.UPLOAD_IMAGE_SUCCEED,
     imagesArray: imagesArray,
+    successMessage: successMessage,
   };
 };
 export const uploadImageFailed = (errorMessage: string): AppActions => {
@@ -321,3 +322,40 @@ export {
   getDimensionAssociatedAccessoriesSucceed,
   getDimensionAssociatedAccessoriesFailed,
 } from './accessory';
+
+export {
+  // Job Status
+  getJobStatus,
+  getJobStatusFailed,
+  getJobStatusStart,
+  getJobStatusSucceed,
+  createJobStatus,
+  createJobStatusFailed,
+  createJobStatusStart,
+  createJobStatusSucceed,
+  updateJobStatus,
+  updateJobStatusFailed,
+  updateJobStatusStart,
+  updateJobStatusSucceed,
+  deleteJobStatus,
+  deleteJobStatusFailed,
+  deleteJobStatusStart,
+  deleteJobStatusSucceed,
+  // Service/job Types
+  getServiceTypes,
+  getServiceTypesFailed,
+  getServiceTypesStart,
+  getServiceTypesSucceed,
+  createServiceType,
+  createServiceTypeFailed,
+  createServiceTypeStart,
+  createServiceTypeSucceed,
+  deleteServiceType,
+  deleteServiceTypeFailed,
+  deleteServiceTypeStart,
+  deleteServiceTypeSucceed,
+  updateServiceType,
+  updateServiceTypeFailed,
+  updateServiceTypeStart,
+  updateServiceTypeSucceed,
+} from './jobmonitoring';

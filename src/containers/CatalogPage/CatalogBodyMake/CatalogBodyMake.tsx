@@ -755,7 +755,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                       {accessObj?.showAdminDashboard && (
                         <Tooltip title={`Edit / Delete ${bodyMake.body.title}`}>
                           <Dropdown
-                            className="catalog__dropdown-series catalog__dropdown-series--make"
+                            className="catalog__dropdown-more catalog__dropdown-more--make"
                             overlay={<BodyMakeMenu bodyMakeObj={bodyMake} />}
                             trigger={['click']}
                           >
@@ -1486,7 +1486,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                                         title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series}`}
                                       >
                                         <div
-                                          className="catalog__dropdown-series"
+                                          className="catalog__dropdown-more"
                                           onClick={() => {
                                             setDeleteModalContent({
                                               ...deleteModalContent,

@@ -45,9 +45,8 @@ export function* uploadImageSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, formData, config);
-    yield put(actions.uploadImageSucceed(response.data.images));
+    yield put(actions.uploadImageSucceed(response.data.images, response.data.success));
     imageIsUploaded = true;
-    window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.uploadImageFailed, error.response.data.error);
@@ -78,7 +77,6 @@ export function* deleteUploadImageSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url, config);
     yield put(actions.deleteUploadImageSucceed(response.data.success));
-    window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteUploadImageFailed, error.response.data.error);
@@ -1574,6 +1572,203 @@ export function* deleteAccessorySaga(action: AppActions) {
       yield setPromiseError(error, actions.deleteAccessoryFailed, error.response.data.error);
     } else {
       yield setPromiseError(error, actions.deleteAccessoryFailed, 'Error');
+    }
+  }
+}
+
+/* ============================================================================================== */
+// Job Monitoring
+/* ============================================================================================== */
+/* ------------------------------- */
+//    Get Service Types
+/* ------------------------------- */
+export function* getServiceTypesSaga(_action: AppActions) {
+  yield put(actions.getServiceTypesStart());
+
+  let url = process.env.REACT_APP_API + `/job_monitoring/service_types`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getServiceTypesSucceed(response.data.service_types));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getServiceTypesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getServiceTypesFailed, 'Get Service Types Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Create Service Types
+/* ------------------------------- */
+export function* createServiceTypeSaga(action: AppActions) {
+  yield put(actions.createServiceTypeStart());
+
+  let url = process.env.REACT_APP_API + `/job_monitoring/service_types`;
+
+  let service_type = {};
+  if ('title' in action && 'description' in action) {
+    service_type = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { service_type });
+    yield put(actions.createServiceTypeSucceed(response.data.service_types, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createServiceTypeFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createServiceTypeFailed, 'Create Service Types Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Update Service Types
+/* ------------------------------- */
+export function* updateServiceTypeSaga(action: AppActions) {
+  yield put(actions.updateServiceTypeStart());
+  let url = '';
+  if ('service_type_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/service_types/${action.service_type_id}`;
+  }
+
+  let service_type = {};
+  if ('title' in action && 'description' in action) {
+    service_type = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { service_type });
+    yield put(actions.updateServiceTypeSucceed(response.data.service_types, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateServiceTypeFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateServiceTypeFailed, 'Update Service Types Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete Service Type
+/* ------------------------------- */
+export function* deleteServiceTypeSaga(action: AppActions) {
+  yield put(actions.deleteServiceTypeStart());
+  let url = '';
+  if ('service_type_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/service_types/${action.service_type_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteServiceTypeSucceed(response.data.service_types, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteServiceTypeFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteServiceTypeFailed, 'Update Service Types Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Get Job Status
+/* ------------------------------- */
+export function* getJobStatusSaga(_action: AppActions) {
+  yield put(actions.getJobStatusStart());
+
+  let url = process.env.REACT_APP_API + `/job_monitoring/job_status`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getJobStatusSucceed(response.data.job_status));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getJobStatusFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getJobStatusFailed, 'Get Job Status Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Create Job Status
+/* ------------------------------- */
+export function* createJobStatusSaga(action: AppActions) {
+  yield put(actions.createJobStatusStart());
+
+  let url = process.env.REACT_APP_API + `/job_monitoring/job_status`;
+
+  let job_status = {};
+  if ('title' in action && 'description' in action) {
+    job_status = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { job_status });
+    yield put(actions.createJobStatusSucceed(response.data.job_status, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createJobStatusFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createJobStatusFailed, 'Create Job Status Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Update Job Status
+/* ------------------------------- */
+export function* updateJobStatusSaga(action: AppActions) {
+  yield put(actions.updateJobStatusStart());
+  let url = '';
+  if ('job_status_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/job_status/${action.job_status_id}`;
+  }
+
+  let job_status = {};
+  if ('title' in action && 'description' in action) {
+    job_status = {
+      title: action.title,
+      description: action.description,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { job_status });
+    yield put(actions.updateJobStatusSucceed(response.data.job_status, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateJobStatusFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateJobStatusFailed, 'Update Job Status Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete Job Status
+/* ------------------------------- */
+export function* deleteJobStatusSaga(action: AppActions) {
+  yield put(actions.deleteJobStatusStart());
+  let url = '';
+  if ('job_status_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/job_status/${action.job_status_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteJobStatusSucceed(response.data.job_status, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteJobStatusFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteJobStatusFailed, 'Update Job Status Error');
     }
   }
 }

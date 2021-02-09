@@ -1,23 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, useRef, MutableRefObject } from 'react';
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
+import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /* 3rd party lib */
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Button, Layout, Table } from 'antd';
+import { Button, Layout, Form, Table, message } from 'antd';
+// import { ActionCableConsumer } from 'react-actioncable-provider';
 /* Util */
 import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
-import { TReceivedTaskObj } from 'src/store/types/task';
+import { ITaskFormData, TReceivedTaskObj } from 'src/store/types/task';
 import { RootState } from 'src';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
+import { TReceivedJobStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import moment from 'moment';
+
+import { ActionCableContext } from 'src/index';
 
 type TTaskTableState = {
   key: string;
@@ -25,21 +31,41 @@ type TTaskTableState = {
   regNumber: string;
   serviceType: string;
   status: string;
-  mechanic: string;
+  bay: string;
 };
 
 interface TaskPageProps {}
 
 type Props = TaskPageProps & StateProps & DispatchProps;
 
-const TaskPage: React.FC<Props> = ({ tasksArray, onGetTasks }) => {
+const TaskPage: React.FC<Props> = ({
+  loading,
+  tasksArray,
+  onGetTasks,
+  auth_token,
+  onCreateTask,
+  successMessage,
+  onGetJobStatus,
+  onClearTaskState,
+  onGetUsersByRoles,
+  onGetServiceTypes,
+}) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
+
+  const cableApp = useContext(ActionCableContext);
+  const cableRef = useRef() as MutableRefObject<any>;
+
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ task: false });
   // const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ fees: false });
   // const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({ fees: false });
 
+  // Forms
+  const [createTaskForm] = Form.useForm();
+
+  // Incoming data
+  const [incomingData, setIncomingData] = useState<TReceivedTaskObj | null>(null);
   // Table states
   const [taskTableState, setTaskTableState] = useState<TTaskTableState[]>([]);
 
@@ -91,26 +117,61 @@ const TaskPage: React.FC<Props> = ({ tasksArray, onGetTasks }) => {
       ...getColumnSearchProps(taskSearchInput, 'status', 'Status'),
     },
     {
-      key: 'mechanic',
-      title: 'Mechanic/Bay/Team Assigned',
+      key: 'bay',
+      title: 'Bay',
       className: 'body__table-header--title',
-      dataIndex: 'mechanic',
+      dataIndex: 'bay',
       width: 'auto',
       ellipsis: true,
-      sorter: (a: TTaskTableState, b: TTaskTableState) => a.mechanic.localeCompare(b.mechanic),
-      ...getColumnSearchProps(taskSearchInput, 'mechanic', 'Mechanic/Bay/Team Assigned'),
+      sorter: (a: TTaskTableState, b: TTaskTableState) => a.bay.localeCompare(b.bay),
+      ...getColumnSearchProps(taskSearchInput, 'bay', 'Bay'),
     },
   ]);
 
   /* ================================================== */
   /*  method */
   /* ================================================== */
+  const onCreateTaskFinish = (values: {
+    jobStatus: number;
+    registrationNumber: string;
+    serviceTypes: number;
+    usersByRoles: number[];
+  }) => {
+    let taskFormData: ITaskFormData = {
+      registration_number: values.registrationNumber,
+      job_status_id: values.jobStatus,
+      service_type_id: values.serviceTypes,
+      assigned_to_ids: values.usersByRoles,
+      description: '',
+    };
+    if (auth_token && auth_token !== undefined) {
+      onCreateTask(taskFormData, auth_token);
+    }
+  };
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
   useEffect(() => {
     onGetTasks();
   }, [onGetTasks]);
+
+  useEffect(() => {
+    const channel = cableApp.cable.subscriptions.create(
+      { channel: 'JobMonitoringChannel' },
+      {
+        connected: () => console.log('connected'),
+        received: (res: any) => console.log(res),
+      },
+    );
+
+    cableRef.current = channel;
+  }, [cableRef, cableApp.cable.subscriptions]);
+
+  useEffect(() => {
+    onGetJobStatus();
+    onGetServiceTypes();
+    onGetUsersByRoles(2, 'admin');
+  }, [onGetJobStatus, onGetUsersByRoles, onGetServiceTypes]);
 
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for charges fees
@@ -120,14 +181,13 @@ const TaskPage: React.FC<Props> = ({ tasksArray, onGetTasks }) => {
     /** A function that stores desired keys and values into a tempArray */
     const storeValue = (task: TReceivedTaskObj) => {
       // only render when available value is true
-
       tempArray.push({
-        key: uuidv4(),
-        dateTimeIn: 'created date',
+        key: task.id.toString(),
+        dateTimeIn: moment(task.created_at).format('YYYY-MM-DD HH:mm A'),
         regNumber: task.registration_number,
-        status: task.job_statuses_id.toString(),
-        mechanic: task.assigned_to_id.toString(),
-        serviceType: task.service_types_id.toString(),
+        serviceType: task.service_type,
+        status: task.status,
+        bay: 'string',
       });
     };
 
@@ -139,15 +199,75 @@ const TaskPage: React.FC<Props> = ({ tasksArray, onGetTasks }) => {
     setTaskTableState(tempArray);
   }, [tasksArray]);
 
+  useEffect(() => {
+    if (successMessage) {
+      message.success(successMessage);
+      onClearTaskState();
+      createTaskForm.resetFields();
+      setShowCreateModal({
+        ...showCreateModal,
+        task: false,
+      });
+    }
+  }, [successMessage, createTaskForm, onClearTaskState, showCreateModal]);
+
+  useEffect(() => {
+    // If there is incoming data, update the table or add a new row to the table
+    if (incomingData && typeof incomingData === 'object') {
+      const tempTableData = [...taskTableState];
+      // check if the incoming data's id exist in the tempTableData
+      const index = tempTableData.findIndex((item) => incomingData.id.toString() === item.key);
+
+      let formattedData = {
+        key: incomingData.id.toString(),
+        dateTimeIn: moment(incomingData.created_at).format('YYYY-MM-DD HH:mm A'),
+        regNumber: incomingData.registration_number,
+        serviceType: incomingData.service_type,
+        status: incomingData.status,
+        bay: 'string',
+      };
+
+      // If already exist, update/replace the row
+      if (index > -1) {
+        const item = tempTableData[index];
+        tempTableData.splice(index, 1, {
+          ...item,
+          ...formattedData,
+        });
+        setTaskTableState(tempTableData);
+        setIncomingData(null);
+      } else {
+        // If not yet exist, add a new row
+        tempTableData.unshift(formattedData);
+        setTaskTableState(tempTableData);
+        setIncomingData(null);
+      }
+    }
+  }, [taskTableState, incomingData]);
+
   /* ================================================== */
   /* ================================================== */
   return (
     <>
+      <CrudModal
+        crud="create"
+        indexKey={'task'}
+        category="task"
+        modalWidth={600}
+        modalTitle={'Create New Intake'}
+        antdForm={createTaskForm}
+        showModal={showCreateModal}
+        visible={showCreateModal.task}
+        onFinish={onCreateTaskFinish}
+        setShowModal={setShowCreateModal}
+        loading={loading !== undefined && loading}
+      />
       <NavbarComponent activePage="task" defaultOpenKeys="dashboard" />
       <Layout>
         <LayoutComponent activeKey="accessory">
           <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
+              <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button>
               <div className="make__tab-outerdiv">
                 <section>
                   <>
@@ -160,7 +280,7 @@ const TaskPage: React.FC<Props> = ({ tasksArray, onGetTasks }) => {
                             className="make__brand-btn"
                             onClick={() => setShowCreateModal({ ...showCreateModal, task: true })}
                           >
-                            Create New Task
+                            Create New Intake
                           </Button>
                         </div>
 
@@ -169,12 +289,12 @@ const TaskPage: React.FC<Props> = ({ tasksArray, onGetTasks }) => {
                         {/* -------------------- */}
                         <Table
                           bordered
-                          className="make__table"
-                          scroll={{ x: '89rem', y: 600 }}
+                          // className="make__table"
+                          scroll={{ x: '89rem', y: 'auto' }}
                           // components={components}
                           dataSource={taskTableState}
                           columns={convertHeader(taskColumns, setTaskColumns)}
-                          // pagination={false}ca
+                          pagination={false}
                         />
                       </section>
                     ) : (
@@ -190,6 +310,15 @@ const TaskPage: React.FC<Props> = ({ tasksArray, onGetTasks }) => {
         </LayoutComponent>
       </Layout>
       <Footer />
+
+      {/* Websocket */}
+      {/* <ActionCableConsumer
+        channel={{ channel: 'JobMonitoringChannel' }}
+        onConnected={() => console.log('Table Connected')}
+        onRejected={() => console.log('Table Rejected')}
+        onDisconnected={() => console.log('Table Disconnected')}
+        onReceived={(res: any) => setIncomingData(res.data)}
+      /> */}
     </>
   );
 };
@@ -198,14 +327,20 @@ interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
+  auth_token?: string | null;
   tasksArray?: TReceivedTaskObj[] | null;
+  serviceTypesArray?: TReceivedServiceTypesObj[] | null;
+  jobStatusArray?: TReceivedJobStatusObj[] | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.task.loading,
+    tasksArray: state.task.tasksArray,
+    auth_token: state.auth.auth_token,
     errorMessage: state.task.errorMessage,
     successMessage: state.task.successMessage,
-    tasksArray: state.task.tasksArray,
+    jobStatusArray: state.dashboard.jobStatusArray,
+    serviceTypesArray: state.dashboard.serviceTypesArray,
   };
 };
 
@@ -214,13 +349,21 @@ interface DispatchProps {
   onCreateTask: typeof actions.createTask;
   onUpdateTask: typeof actions.updateTask;
   onDeleteTask: typeof actions.deleteTask;
+  onGetJobStatus: typeof actions.getJobStatus;
+  onClearTaskState: typeof actions.clearTaskState;
+  onGetUsersByRoles: typeof actions.getUsersByRoles;
+  onGetServiceTypes: typeof actions.getServiceTypes;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onGetTasks: () => dispatch(actions.getTasks()),
-    onCreateTask: (taskFormData) => dispatch(actions.createTask(taskFormData)),
-    onUpdateTask: (task_id, taskFormData) => dispatch(actions.updateTask(task_id, taskFormData)),
+    onClearTaskState: () => dispatch(actions.clearTaskState()),
     onDeleteTask: (task_id) => dispatch(actions.deleteTask(task_id)),
+    onUpdateTask: (task_id, taskFormData) => dispatch(actions.updateTask(task_id, taskFormData)),
+    onCreateTask: (taskFormData, auth_token) => dispatch(actions.createTask(taskFormData, auth_token)),
+    onGetJobStatus: () => dispatch(actions.getJobStatus()),
+    onGetServiceTypes: () => dispatch(actions.getServiceTypes()),
+    onGetUsersByRoles: (role_id, title) => dispatch(actions.getUsersByRoles(role_id, title)),
   };
 };
 

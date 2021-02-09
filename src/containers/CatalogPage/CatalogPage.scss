@@ -235,7 +235,6 @@
       left: 50%;
       top: 50%;
       position: absolute;
-
       object-fit: cover;
       color: white !important;
       border-radius: 50%;
@@ -346,6 +345,10 @@
       @include respond-to($desktop-up) {
         font-size: 1.5rem;
       }
+    }
+
+    & .ant-carousel {
+      height: '100%' !important;
     }
   }
 
@@ -589,7 +592,7 @@
   // the dropdown for series
   /* =================================== */
   &__dropdown {
-    &-series {
+    &-more {
       cursor: pointer;
       width: 3rem;
       height: 3rem;
@@ -643,6 +646,32 @@
           transition: none;
           background: $primary-color-2;
         }
+      }
+
+      &--image {
+        position: absolute;
+        top: 1rem;
+        right: 5rem;
+        z-index: 2;
+        background: white;
+        color: $primary-color-4;
+        border: 2px solid rgba(204, 204, 204, 1);
+
+        &:hover {
+          transition: all 0.5s ease;
+          border: 1px solid white;
+          color: white;
+          background: darken($primary-color-3, 5%);
+        }
+        &:active {
+          transition: none;
+          background: $primary-color-2;
+        }
+      }
+
+      &--disabled {
+        pointer-events: none;
+        opacity: 0;
       }
     }
   }

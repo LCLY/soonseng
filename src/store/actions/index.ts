@@ -298,6 +298,43 @@ export {
   deleteBodyMakeAccessoryStart,
   deleteBodyMakeAccessoryFailed,
   deleteBodyMakeAccessorySucceed,
+  /* =========================================== */
+  //  Job Monitoring
+  /* =========================================== */
+  // Job Status
+  getJobStatus,
+  getJobStatusFailed,
+  getJobStatusStart,
+  getJobStatusSucceed,
+  createJobStatus,
+  createJobStatusFailed,
+  createJobStatusStart,
+  createJobStatusSucceed,
+  updateJobStatus,
+  updateJobStatusFailed,
+  updateJobStatusStart,
+  updateJobStatusSucceed,
+  deleteJobStatus,
+  deleteJobStatusFailed,
+  deleteJobStatusStart,
+  deleteJobStatusSucceed,
+  // Service/job Types
+  getServiceTypes,
+  getServiceTypesFailed,
+  getServiceTypesStart,
+  getServiceTypesSucceed,
+  createServiceType,
+  createServiceTypeFailed,
+  createServiceTypeStart,
+  createServiceTypeSucceed,
+  deleteServiceType,
+  deleteServiceTypeFailed,
+  deleteServiceTypeStart,
+  deleteServiceTypeSucceed,
+  updateServiceType,
+  updateServiceTypeFailed,
+  updateServiceTypeStart,
+  updateServiceTypeSucceed,
 } from './dashboard/index';
 
 export {
@@ -335,6 +372,7 @@ export {
 } from './sales';
 
 export {
+  clearTaskState,
   /* ==================== */
   // Task
   /* ==================== */
@@ -354,4 +392,18 @@ export {
   updateTaskFailed,
   updateTaskStart,
   updateTaskSucceed,
+  /* ==================== */
+  // Get all users
+  /* ==================== */
+  getAllUsers,
+  getAllUsersFailed,
+  getAllUsersStart,
+  getAllUsersSucceed,
+  /* ==================== */
+  // Get users by roles
+  /* ==================== */
+  getUsersByRoles,
+  getUsersByRolesFailed,
+  getUsersByRolesStart,
+  getUsersByRolesSucceed,
 } from './task';

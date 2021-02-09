@@ -8,6 +8,8 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
+import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
+import FullImageGalleryModal from 'src/components/ImageRelated/FullImageGalleryModal/FullImageGalleryModal';
 /*3rd party lib*/
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,14 +21,22 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Empty, Form, Tabs, Tooltip, message, Skeleton, Menu, Dropdown } from 'antd';
 
 /* Util */
+import {
+  TCreateMakeData,
+  TReceivedImageObj,
+  TReceivedMakeObj,
+  TReceivedSeriesObj,
+  TUpdateMakeData,
+} from 'src/store/types/dashboard';
 import { RootState } from 'src';
 import holy5trucks from 'src/img/5trucks.jpg';
 import { ROUTE_CATALOG } from 'src/shared/routes';
+
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
+import { onClearAllSelectedImages } from 'src/shared/Utils';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog';
-import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
@@ -40,6 +50,7 @@ const CatalogPage: React.FC<Props> = ({
   history,
   accessObj,
   auth_token,
+  dashboardLoading,
   successMessage,
   errorMessage,
   catalogMakesArray,
@@ -50,6 +61,7 @@ const CatalogPage: React.FC<Props> = ({
   onDeleteMake,
   onUpdateMake,
   onGetCatalogMakes,
+  onDeleteUploadImage,
   onClearDashboardState,
 }) => {
   /* ================================================== */
@@ -68,10 +80,21 @@ const CatalogPage: React.FC<Props> = ({
     make: false,
   });
 
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImagesArray, setLightboxImagesArray] = useState<TReceivedImageObj[]>([]);
+  const [fullImageGalleryVisible, setFullImageGalleryVisible] = useState(false);
+  const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
+  const [keepTrackSeriesMake, setKeepTrackSeriesMake] = useState<{
+    series_id: number;
+    make_id: number;
+    brand_id: number;
+  } | null>(null);
+
   const [localLoading, setLocalLoading] = useState(false);
 
-  const [activeSeriesTab, setActiveSeriesTab] = useState('series1');
   const [activeBrandTab, setActiveBrandTab] = useState('brand1');
+  const [activeSeriesTab, setActiveSeriesTab] = useState('series1');
 
   const [modalContent, setModalContent] = useState({
     make: { makeTitle: '', seriesTitle: '' },
@@ -98,7 +121,8 @@ const CatalogPage: React.FC<Props> = ({
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
-
+  const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
+  const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
@@ -236,6 +260,21 @@ const CatalogPage: React.FC<Props> = ({
     <div className="catalog__menu-outerdiv">
       <Menu className="catalog__menu">
         <Menu.Item
+          onClick={() => {
+            setFullImageGalleryVisible(true);
+            setFullImageGalleryImagesArray(props.makeObj.images);
+            setKeepTrackSeriesMake({
+              ...keepTrackSeriesMake,
+              make_id: props.makeObj.id,
+              series_id: props.seriesObj.id,
+              brand_id: props.makeObj.brand.id,
+            });
+            setImageGalleryTargetModelId(props.makeObj.id);
+          }}
+        >
+          <i className="fas fa-images"></i> &nbsp;&nbsp;Edit Images
+        </Menu.Item>
+        <Menu.Item
           className="catalog__menu-item"
           onClick={() => {
             let price: number | null = null;
@@ -334,9 +373,9 @@ const CatalogPage: React.FC<Props> = ({
                     series.title,
                     '',
                   )}-${convertSpaceInStringWithChar(make.title, '')}`;
-
+                  let cardUniqueKey = uuidv4();
                   return (
-                    <div key={uuidv4()} className="catalog__card-outerdiv">
+                    <div key={cardUniqueKey} className="catalog__card-outerdiv">
                       <div
                         className="catalog__card"
                         onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
@@ -361,7 +400,7 @@ const CatalogPage: React.FC<Props> = ({
                       {accessObj?.showAdminDashboard && (
                         <Tooltip title={`Edit / Delete ${make.title}`}>
                           <Dropdown
-                            className="catalog__dropdown-series catalog__dropdown-series--make"
+                            className="catalog__dropdown-more catalog__dropdown-more--make"
                             overlay={<MakeMenu makeObj={make} seriesObj={series} />}
                             trigger={['click']}
                           >
@@ -369,6 +408,27 @@ const CatalogPage: React.FC<Props> = ({
                           </Dropdown>
                         </Tooltip>
                       )}
+
+                      {/* View Image button */}
+                      <Tooltip title={`View Images`}>
+                        <div
+                          onClick={() => {
+                            setPhotoIndex(0);
+                            setLightboxOpen(true);
+                            setLightboxImagesArray(make.images);
+                          }}
+                          className={`catalog__dropdown-more 
+                        ${make.images.length === 0 ? 'catalog__dropdown-more--disabled' : ''}                       
+                        ${
+                          accessObj?.showAdminDashboard
+                            ? 'catalog__dropdown-more--image'
+                            : 'catalog__dropdown-more--make'
+                        }                          
+                          `}
+                        >
+                          <i className="fas fa-images"></i>
+                        </div>
+                      </Tooltip>
                     </div>
                   );
                 })}
@@ -380,6 +440,16 @@ const CatalogPage: React.FC<Props> = ({
           )}
         </div>
       </div>
+
+      {lightboxImagesArray.length > 0 && (
+        <LightboxComponent
+          photoIndex={photoIndex}
+          setPhotoIndex={setPhotoIndex}
+          isOpen={lightboxOpen}
+          setIsOpen={setLightboxOpen}
+          images={lightboxImagesArray}
+        />
+      )}
     </>
   );
 
@@ -431,6 +501,10 @@ const CatalogPage: React.FC<Props> = ({
           series: false,
           make: false,
         });
+
+        if (successMessage === 'Series deleted') {
+          setActiveSeriesTab('series1');
+        }
       }, 1000);
     }
   }, [
@@ -442,6 +516,20 @@ const CatalogPage: React.FC<Props> = ({
     createSeriesForm,
     onClearDashboardState,
   ]);
+
+  useEffect(() => {
+    if (catalogMakesArray && catalogMakesArray !== undefined && keepTrackSeriesMake) {
+      let filteredBrandArray = catalogMakesArray.filter(
+        (catalogMake) => catalogMake.brand.id === keepTrackSeriesMake.brand_id,
+      );
+
+      let filteredSeries = filteredBrandArray[0].series.filter(
+        (seriesChild) => seriesChild.id === keepTrackSeriesMake.series_id,
+      );
+      let filteredMake = filteredSeries[0].makes.filter((makeChild) => makeChild.id === keepTrackSeriesMake.make_id);
+      setFullImageGalleryImagesArray(filteredMake[0].images);
+    }
+  }, [catalogMakesArray, keepTrackSeriesMake]);
 
   useEffect(() => {
     if (successMessage) {
@@ -459,6 +547,14 @@ const CatalogPage: React.FC<Props> = ({
       onClearDashboardState();
     }
   }, [errorMessage, onClearDashboardState]);
+
+  useEffect(() => {
+    if (document && lightboxOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [lightboxOpen]);
 
   /* ================================================== */
   /* ================================================== */
@@ -567,6 +663,23 @@ const CatalogPage: React.FC<Props> = ({
         loading={localLoading}
       />
 
+      <FullImageGalleryModal
+        indexKey={'make'}
+        modelId={imageGalleryTargetModelId}
+        uploadSelectedFiles={uploadSelectedFiles}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={fullGalleryImagesPreviewUrls}
+        setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
+        visible={fullImageGalleryVisible}
+        setVisible={setFullImageGalleryVisible}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        showUpdateModal={showUpdateModal}
+        imagesArray={fullImageGalleryImagesArray}
+        setShowUpdateModal={setShowUpdateModal}
+        onDeleteUploadImage={onDeleteUploadImage}
+        onClearAllSelectedImages={onClearAllSelectedImages}
+      />
+
       <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
       {/* background image in outerdiv */}
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
@@ -591,8 +704,8 @@ const CatalogPage: React.FC<Props> = ({
                       tabPosition={width < 900 ? 'top' : 'left'}
                       className="catalog__tabs-outerdiv--brand"
                       onTabClick={(activeKey: string) => {
-                        setActiveBrandTab(activeKey);
                         setActiveSeriesTab('series1');
+                        setActiveBrandTab(activeKey);
                       }}
                     >
                       {catalogMakesArray.map((catalog, index) => {
@@ -633,8 +746,10 @@ const CatalogPage: React.FC<Props> = ({
                                     tabPosition="top"
                                     className="catalog__tabs-outerdiv glass-shadow"
                                     animated={{ tabPane: true }}
-                                    defaultActiveKey={activeSeriesTab}
-                                    onTabClick={(activeKey: string) => setActiveSeriesTab(activeKey)}
+                                    activeKey={activeSeriesTab}
+                                    onTabClick={(activeKey: string) => {
+                                      setActiveSeriesTab(activeKey);
+                                    }}
                                   >
                                     {catalog.series.map((series, index) => {
                                       // if array is odd number, on the last row, make it display flex
@@ -651,7 +766,7 @@ const CatalogPage: React.FC<Props> = ({
                                               {accessObj?.showAdminDashboard && (
                                                 <Tooltip title={`Edit / Delete ${series.title}`}>
                                                   <Dropdown
-                                                    className="catalog__dropdown-series"
+                                                    className="catalog__dropdown-more"
                                                     overlay={
                                                       <SeriesMenu
                                                         seriesTitle={series.title}
@@ -767,6 +882,7 @@ interface DispatchProps {
   onUpdateSeries: typeof actions.updateSeries;
   onDeleteSeries: typeof actions.deleteSeries;
   onGetCatalogMakes: typeof actions.getCatalogMakes;
+  onDeleteUploadImage: typeof actions.deleteUploadImage;
   onClearDashboardState: typeof actions.clearDashboardState;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
@@ -777,6 +893,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
     onDeleteMake: (make_id) => dispatch(actions.deleteMake(make_id)),
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
+    onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     onGetCatalogMakes: (auth_token) => dispatch(actions.getCatalogMakes(auth_token)),
     onCreateSeries: (brand_id, title) => dispatch(actions.createSeries(brand_id, title)),
     onDeleteSeries: (brand_id, series_id) => dispatch(actions.deleteSeries(brand_id, series_id)),

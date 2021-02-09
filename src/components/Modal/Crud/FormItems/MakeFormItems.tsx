@@ -126,7 +126,7 @@ const MakeFormItems: React.FC<Props> = ({
                 className="make__form-item make__form-item--make"
                 label="Series"
                 name="makeSeriesId"
-                rules={[{ required: false, message: 'Input Series here!' }]}
+                rules={[{ required: true, message: 'Input Series here!' }]}
               >
                 <Select
                   showSearch
