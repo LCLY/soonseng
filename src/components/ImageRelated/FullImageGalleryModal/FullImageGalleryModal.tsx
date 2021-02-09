@@ -136,6 +136,7 @@ const FullImageGalleryModal: React.FC<Props> = ({
     }
   }, [imagesArray]);
 
+  console.log(uploadSelectedFiles);
   useEffect(() => {
     if (successMessage) {
       //  if success, swap the upload mode back to gallery
@@ -231,79 +232,80 @@ const FullImageGalleryModal: React.FC<Props> = ({
                         </div>
                       </div>
                     )}
-                    <label
-                      htmlFor="imageFiles"
-                      className={`fullimagegallerymodal__section-draganddrop ${
-                        // disable hover when something is already selected and when file is being dragged on top
-                        // if not will have overlapped effect
-                        imagesPreviewUrls.length === 0 && !dragging
-                          ? 'fullimagegallerymodal__section-draganddrop--hover'
-                          : ''
-                      }`}
-                    >
-                      <DragAndDrop dragging={dragging} setDragging={setDragging} handleFilesDrop={handleFilesDrop}>
-                        {imagesPreviewUrls.length > 0 ? (
-                          <div className="fullimagegallerymodal__preview-div">
-                            {imagesPreviewUrls.map((imagePreviewUrl, index) => {
-                              return (
-                                <div key={index} className="make__preview-innerdiv">
-                                  <Badge
-                                    className="make__preview-closeicon-div"
-                                    count={
-                                      <CloseCircleFilled
-                                        className="make__preview-closeicon"
-                                        onClick={() => deleteUrlFromPreviewUrlsArray(imagePreviewUrl.url)}
-                                      />
-                                    }
-                                  >
-                                    <div className="fullimagegallerymodal__image-outerdiv">
-                                      <div
-                                        className="make__preview-item"
-                                        key={uuidv4()}
-                                        style={{
-                                          backgroundSize: 'cover',
-                                          backgroundRepeat: 'no-repeat',
-                                          backgroundPosition: 'center',
-                                          backgroundColor: 'rgb(197, 197, 191)',
-                                          backgroundImage: `url(${imagePreviewUrl.url}), url(${img_loading_link})`,
-                                        }}
-                                      ></div>
-                                      <div className="fullimagegallerymodal__image-name">{imagePreviewUrl.name}</div>
-                                    </div>
-                                  </Badge>
-                                </div>
-                              );
-                            })}
-                            <div>
-                              <input
-                                type="file"
-                                id="moreImageFiles"
-                                hidden
-                                multiple
-                                accept="image/png, image/jpeg, image/jpg" //only accept image files
-                                onChange={(event) => fileSelectedHandler(event.target.files)}
-                              />
-                              <label
-                                htmlFor="moreImageFiles"
-                                className="fullimagegallerymodal__preview-item fullimagegallerymodal__preview-add"
-                              >
-                                <div className="fullimagegallerymodal__preview-add-div">
-                                  <i className="fas fa-plus-circle fullimagegallerymodal__preview-add-icon"></i>
-                                  <div className="fullimagegallerymodal__preview-add-text">Upload</div>
-                                </div>
-                              </label>
-                            </div>
+
+                    <DragAndDrop dragging={dragging} setDragging={setDragging} handleFilesDrop={handleFilesDrop}>
+                      {imagesPreviewUrls.length > 0 ? (
+                        <div className="fullimagegallerymodal__preview-div">
+                          {imagesPreviewUrls.map((imagePreviewUrl, index) => {
+                            return (
+                              <div key={index} className="make__preview-innerdiv">
+                                <Badge
+                                  className="make__preview-closeicon-div"
+                                  count={
+                                    <CloseCircleFilled
+                                      style={{ zIndex: 1000 }}
+                                      className="make__preview-closeicon"
+                                      onClick={() => deleteUrlFromPreviewUrlsArray(imagePreviewUrl.url)}
+                                    />
+                                  }
+                                >
+                                  <div className="fullimagegallerymodal__image-outerdiv">
+                                    <div
+                                      className="make__preview-item"
+                                      key={uuidv4()}
+                                      style={{
+                                        backgroundSize: 'cover',
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundPosition: 'center',
+                                        backgroundColor: 'rgb(197, 197, 191)',
+                                        backgroundImage: `url(${imagePreviewUrl.url}), url(${img_loading_link})`,
+                                      }}
+                                    ></div>
+                                    <div className="fullimagegallerymodal__image-name">{imagePreviewUrl.name}</div>
+                                  </div>
+                                </Badge>
+                              </div>
+                            );
+                          })}
+                          <div>
+                            <input
+                              type="file"
+                              id="moreImageFiles"
+                              hidden
+                              multiple
+                              accept="image/png, image/jpeg, image/jpg" //only accept image files
+                              onChange={(event) => fileSelectedHandler(event.target.files)}
+                            />
+                            <label
+                              htmlFor="moreImageFiles"
+                              className="fullimagegallerymodal__preview-item fullimagegallerymodal__preview-add"
+                            >
+                              <div className="fullimagegallerymodal__preview-add-div">
+                                <i className="fas fa-plus-circle fullimagegallerymodal__preview-add-icon"></i>
+                                <div className="fullimagegallerymodal__preview-add-text">Upload</div>
+                              </div>
+                            </label>
                           </div>
-                        ) : (
-                          <div className="fullimagegallerymodal__upload-div">
+                        </div>
+                      ) : (
+                        <label htmlFor="imageFiles" className={`fullimagegallerymodal__section-draganddrop`}>
+                          <div
+                            className={`fullimagegallerymodal__upload-div ${
+                              // disable hover when something is already selected and when file is being dragged on top
+                              // if not will have overlapped effect
+                              imagesPreviewUrls.length === 0 && !dragging
+                                ? 'fullimagegallerymodal__upload-div--hover'
+                                : ''
+                            }`}
+                          >
                             <div className="fullimagegallerymodal__upload-icon">
                               <i className="fas fa-file-upload"></i>
                             </div>
                             <div className="fullimagegallerymodal__upload-text">Click or drop image here to upload</div>
                           </div>
-                        )}
-                      </DragAndDrop>
-                    </label>
+                        </label>
+                      )}
+                    </DragAndDrop>
                   </div>
                 </section>
               ) : (
