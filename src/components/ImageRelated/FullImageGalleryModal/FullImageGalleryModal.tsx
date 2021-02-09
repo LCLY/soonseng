@@ -129,6 +129,7 @@ const FullImageGalleryModal: React.FC<Props> = ({
   useEffect(() => {
     if (imagesArray) {
       if (imagesArray.length > 0) {
+        setInUploadMode(false);
         onPopulateImagesArray(imagesArray, setGalleryImages);
       } else {
         setInUploadMode(true);
@@ -136,7 +137,6 @@ const FullImageGalleryModal: React.FC<Props> = ({
     }
   }, [imagesArray]);
 
-  console.log(uploadSelectedFiles);
   useEffect(() => {
     if (successMessage) {
       //  if success, swap the upload mode back to gallery
@@ -146,6 +146,9 @@ const FullImageGalleryModal: React.FC<Props> = ({
       setShowEditImageGallery(false);
     }
   }, [successMessage, setUploadSelectedFiles, setImagesPreviewUrls]);
+
+  // console.log('preview urls', imagesPreviewUrls);
+  // console.log('selected files', uploadSelectedFiles);
 
   return (
     <>
@@ -158,9 +161,11 @@ const FullImageGalleryModal: React.FC<Props> = ({
         onCancel={() => {
           // clear everything
           setVisible(false);
-          setImagesPreviewUrls([]);
           uploadForm.resetFields();
+          setImagesPreviewUrls([]);
           setInUploadMode(false);
+          setUploadSelectedFiles(null);
+          setShowEditImageGallery(false);
         }}
         width={1000}
         confirmLoading={loading}
@@ -171,7 +176,7 @@ const FullImageGalleryModal: React.FC<Props> = ({
               {/* ============================================= */}
               {/* UPLOAD MODE */}
               {/* ============================================= */}
-              {inUploadMode ? (
+              {inUploadMode || imagesArray.length === 0 ? (
                 <section className="fullimagegallerymodal__section-upload">
                   {imagesArray.length > 0 && (
                     <div className="fullimagegallerymodal__div-top">

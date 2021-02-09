@@ -110,7 +110,7 @@ const PreviewUploadImage: React.FC<Props> = ({ setUploadSelectedFiles, imagesPre
               </Select>
             </Form.Item>
           </div>
-          <div className="make__preview">
+          <div className="make__preview custom__scrollbar">
             {imagesPreviewUrls.map((imagePreviewUrl, index) => {
               return (
                 <div key={index} className="make__preview-innerdiv">
