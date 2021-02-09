@@ -34,10 +34,11 @@ export const uploadImageStart = (): AppActions => {
   };
 };
 
-export const uploadImageSucceed = (imagesArray: TReceivedImageObj[]): AppActions => {
+export const uploadImageSucceed = (imagesArray: TReceivedImageObj[], successMessage: string): AppActions => {
   return {
     type: actionTypes.UPLOAD_IMAGE_SUCCEED,
     imagesArray: imagesArray,
+    successMessage: successMessage,
   };
 };
 export const uploadImageFailed = (errorMessage: string): AppActions => {

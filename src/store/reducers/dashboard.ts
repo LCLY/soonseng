@@ -75,12 +75,13 @@ const uploadImageStart = (state: DashboardInitialState, _action: AppActions) => 
   return updateObject(state, { errorMessage: null, loading: true, imagesUploaded: false });
 };
 const uploadImageSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('imagesArray' in action) {
+  if ('imagesArray' in action && 'successMessage' in action) {
     return updateObject(state, {
       loading: false,
       errorMessage: null,
-      imagesArray: action.imagesArray,
       imagesUploaded: true,
+      imagesArray: action.imagesArray,
+      successMessage: action.successMessage,
     });
   }
   return state;

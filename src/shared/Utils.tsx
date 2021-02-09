@@ -294,13 +294,13 @@ export const onTableRowExpand = (
  *
  * This function takes in images array from make object and then populate the current state
  * of setImage
- * @param {TReceivedImageObj[]} recordImagesArray
+ * @param {TReceivedImageObj[]} imagesArray
  * @param {React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>} setGalleryImages
  * @category Helper function
  */
 /* =========================================================== */
 export const onPopulateImagesArray = (
-  recordImagesArray: TReceivedImageObj[],
+  imagesArray: TReceivedImageObj[],
   setGalleryImages: React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>,
 ) => {
   let tempArray: TGalleryImageArrayObj[] = [];
@@ -322,7 +322,7 @@ export const onPopulateImagesArray = (
 
     tempArray.push(imageObject);
   };
-  recordImagesArray.map(storeValue);
+  imagesArray.map(storeValue);
 
   setGalleryImages(tempArray);
 };

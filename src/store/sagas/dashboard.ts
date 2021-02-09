@@ -45,9 +45,8 @@ export function* uploadImageSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, formData, config);
-    yield put(actions.uploadImageSucceed(response.data.images));
+    yield put(actions.uploadImageSucceed(response.data.images, response.data.success));
     imageIsUploaded = true;
-    window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.uploadImageFailed, error.response.data.error);
@@ -78,7 +77,6 @@ export function* deleteUploadImageSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url, config);
     yield put(actions.deleteUploadImageSucceed(response.data.success));
-    window.location.reload(); //force refresh after image uploaded
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteUploadImageFailed, error.response.data.error);

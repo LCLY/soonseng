@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, useRef, MutableRefObject } from 'react';
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
@@ -13,7 +13,7 @@ import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContaine
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { Button, Layout, Form, Table, message } from 'antd';
-import { ActionCableConsumer } from 'react-actioncable-provider';
+// import { ActionCableConsumer } from 'react-actioncable-provider';
 /* Util */
 import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
@@ -22,6 +22,8 @@ import { RootState } from 'src';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 import { TReceivedJobStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 import moment from 'moment';
+
+import { ActionCableContext } from 'src/index';
 
 type TTaskTableState = {
   key: string;
@@ -51,6 +53,10 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
+
+  const cableApp = useContext(ActionCableContext);
+  const cableRef = useRef() as MutableRefObject<any>;
+
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ task: false });
   // const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ fees: false });
   // const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({ fees: false });
@@ -148,6 +154,18 @@ const TaskPage: React.FC<Props> = ({
   useEffect(() => {
     onGetTasks();
   }, [onGetTasks]);
+
+  useEffect(() => {
+    const channel = cableApp.cable.subscriptions.create(
+      { channel: 'JobMonitoringChannel' },
+      {
+        connected: () => console.log('connected'),
+        received: (res: any) => console.log(res),
+      },
+    );
+
+    cableRef.current = channel;
+  }, [cableRef, cableApp.cable.subscriptions]);
 
   useEffect(() => {
     onGetJobStatus();
@@ -249,6 +267,7 @@ const TaskPage: React.FC<Props> = ({
         <LayoutComponent activeKey="accessory">
           <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
+              <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button>
               <div className="make__tab-outerdiv">
                 <section>
                   <>
@@ -293,11 +312,13 @@ const TaskPage: React.FC<Props> = ({
       <Footer />
 
       {/* Websocket */}
-      <ActionCableConsumer
+      {/* <ActionCableConsumer
         channel={{ channel: 'JobMonitoringChannel' }}
-        onConnected={() => console.log('Connected')}
+        onConnected={() => console.log('Table Connected')}
+        onRejected={() => console.log('Table Rejected')}
+        onDisconnected={() => console.log('Table Disconnected')}
         onReceived={(res: any) => setIncomingData(res.data)}
-      />
+      /> */}
     </>
   );
 };

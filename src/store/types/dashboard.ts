@@ -363,6 +363,7 @@ export interface UploadImageStartAction {
 export interface UploadImageSucceedAction {
   type: typeof actionTypes.UPLOAD_IMAGE_SUCCEED;
   imagesArray: TReceivedImageObj[];
+  successMessage: string;
 }
 
 export interface UploadImageFailedAction {

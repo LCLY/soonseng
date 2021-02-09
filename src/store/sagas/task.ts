@@ -43,11 +43,11 @@ export function* createTaskSaga(action: AppActions) {
 /* ------------------------------- */
 export function* getTasksSaga(_action: AppActions) {
   yield put(actions.getTasksStart());
-  let url = process.env.REACT_APP_API + `/job_monitoring/jobs`;
+  let url = process.env.REACT_APP_API + `/job_monitoring/intakes`;
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getTasksSucceed(response.data.jobs));
+    yield put(actions.getTasksSucceed(response.data.intakes));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.getTasksFailed, error.response.data.error);

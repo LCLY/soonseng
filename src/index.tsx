@@ -7,7 +7,10 @@ import 'react-image-lightbox/style.css';
 // 3rd party lib
 import { BrowserRouter } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
-import { ActionCableProvider } from 'react-actioncable-provider';
+
+import actioncable from 'actioncable';
+
+// import { ActionCableProvider } from 'react-actioncable-provider';
 // redux
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
@@ -28,6 +31,11 @@ import dashboardReducer from 'src/store/reducers/dashboard';
 import catalogReducer from 'src/store/reducers/catalog';
 import generalReducer from 'src/store/reducers/general';
 import taskReducer from 'src/store/reducers/task';
+
+export const CableApp: any = {};
+CableApp.cable = actioncable.createConsumer(`ws://ss-sales.herokuapp.com/api/v1/cable`);
+
+export const ActionCableContext = React.createContext(CableApp);
 
 // use this when testing locally on mobile
 // const composeEnhancers = compose;
@@ -84,9 +92,13 @@ const app = (
     <ParallaxProvider>
       <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
-          <ActionCableProvider url={`${process.env.REACT_APP_API}/cable`}>
+          {/* <ActionCableProvider url={`${process.env.REACT_APP_API}/cable`}> */}
+
+          <ActionCableContext.Provider value={CableApp}>
             <App />
-          </ActionCableProvider>
+          </ActionCableContext.Provider>
+
+          {/* </ActionCableProvider> */}
         </PersistGate>
       </BrowserRouter>
     </ParallaxProvider>
