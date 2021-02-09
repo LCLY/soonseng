@@ -16,6 +16,7 @@
 
       @include shadow-func(0rem, 0rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.268));
 
+
       @include respond-to($small-phone) {
         height: 5rem;
       }
