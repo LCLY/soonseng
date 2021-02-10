@@ -9,6 +9,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
 import CatalogAccessoriesModal from './CatalogAccessories/CatalogAccessoriesModal';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
+import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
 /*3rd party lib*/
 import {
   Button,
@@ -34,26 +35,32 @@ import NumberFormat from 'react-number-format';
 import { LeftCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 /* Util */
+
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 // import { ROUTE_ORDERS } from 'src/shared/routes';
 import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
+import { onClearAllSelectedImages } from 'src/shared/Utils';
 import { TReceivedCatalogBodyMake } from 'src/store/types/catalog';
 import {
   TCreateBodyMakeData,
   TReceivedAccessoryObj,
   TReceivedBodyMakeObj,
   TReceivedChargesFeesObj,
+  TReceivedImageObj,
   TReceivedMakeObj,
+  TReceivedWheelbaseObj,
   TUpdateBodyMakeData,
   TUpdateMakeData,
 } from 'src/store/types/dashboard';
+import { UPLOAD_TO_BODY_MAKE } from 'src/shared/constants';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { TUpdateMakeFinishValues } from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
 import { checkInchExist, convertPriceToFloat, emptyStringWhenUndefinedOrNull, formatFeetInch } from 'src/shared/Utils';
 import { TCreateBodyMakeForm, TUpdateBodyMakeForm } from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
+import FullImageGalleryModal from 'src/components/ImageRelated/FullImageGalleryModal/FullImageGalleryModal';
 
 const { TabPane } = Tabs;
 
@@ -85,7 +92,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   successMessage,
   dashboardLoading,
   localOrdersArray,
-  bodyMakeWithWheelbase,
+  bodyMakeWithWheelbaseArray,
   makeFromCatalogBodyMake,
   generalAccessoriesArray,
   chargesFeesArray,
@@ -100,6 +107,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   onCreateBodyMake,
   onStoreLocalOrders,
   onGetChargesFees,
+  onDeleteUploadImage,
   onGetSalesAccessories,
   onCreateMakeWheelbase,
   onDeleteMakeWheelbase,
@@ -130,7 +138,18 @@ const CatalogBodyMake: React.FC<Props> = ({
   // Upload states
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImagesArray, setLightboxImagesArray] = useState<TReceivedImageObj[]>([]);
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+  const [fullImageGalleryVisible, setFullImageGalleryVisible] = useState(false);
+  const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
+  const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
+  const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
+  const [keepTrackBodyMake, setKeepTrackBodyMake] = useState<{
+    body_make_id: number;
+    make_wheelbase_id: number;
+  } | null>(null);
 
   const [updateMakeForm] = Form.useForm();
   const [createMakeWheelbaseForm] = Form.useForm();
@@ -756,13 +775,39 @@ const CatalogBodyMake: React.FC<Props> = ({
                         <Tooltip title={`Edit / Delete ${bodyMake.body.title}`}>
                           <Dropdown
                             className="catalog__dropdown-more catalog__dropdown-more--make"
-                            overlay={<BodyMakeMenu bodyMakeObj={bodyMake} />}
+                            overlay={
+                              <BodyMakeMenu
+                                bodyMakeObj={bodyMake}
+                                makeWheelbaseObj={wheelbaseBodyMake.make_wheelbase}
+                              />
+                            }
                             trigger={['click']}
                           >
                             <i className="fas fa-ellipsis-h"></i>
                           </Dropdown>
                         </Tooltip>
                       )}
+
+                      {/* View Image button */}
+                      <Tooltip title={`View Images`}>
+                        <div
+                          onClick={() => {
+                            setPhotoIndex(0);
+                            setLightboxOpen(true);
+                            setLightboxImagesArray(bodyMake.images);
+                          }}
+                          className={`catalog__dropdown-more 
+                        ${bodyMake.images.length === 0 ? 'catalog__dropdown-more--disabled' : ''}                       
+                        ${
+                          accessObj?.showAdminDashboard
+                            ? 'catalog__dropdown-more--image'
+                            : 'catalog__dropdown-more--make'
+                        }                          
+                          `}
+                        >
+                          <i className="fas fa-images"></i>
+                        </div>
+                      </Tooltip>
                     </div>
                   );
                 })}
@@ -777,9 +822,29 @@ const CatalogBodyMake: React.FC<Props> = ({
     </>
   );
 
-  const BodyMakeMenu = ({ bodyMakeObj }: { bodyMakeObj: TReceivedBodyMakeObj }) => (
+  const BodyMakeMenu = ({
+    bodyMakeObj,
+    makeWheelbaseObj,
+  }: {
+    bodyMakeObj: TReceivedBodyMakeObj;
+    makeWheelbaseObj: { id: number; wheelbase: TReceivedWheelbaseObj };
+  }) => (
     <div className="catalog__menu-outerdiv">
       <Menu className="catalog__menu">
+        <Menu.Item
+          onClick={() => {
+            setFullImageGalleryVisible(true);
+            setFullImageGalleryImagesArray(bodyMakeObj.images);
+            setKeepTrackBodyMake({
+              ...keepTrackBodyMake,
+              body_make_id: bodyMakeObj.id,
+              make_wheelbase_id: makeWheelbaseObj.id,
+            });
+            setImageGalleryTargetModelId(bodyMakeObj.id);
+          }}
+        >
+          <i className="fas fa-images"></i>&nbsp;&nbsp;Edit Images
+        </Menu.Item>
         <Menu.Item
           className="catalog__menu-item"
           onClick={() => {
@@ -881,10 +946,28 @@ const CatalogBodyMake: React.FC<Props> = ({
   }, [chargesFeesArray]);
 
   useEffect(() => {
-    if (bodyMakeWithWheelbase) {
+    if (bodyMakeWithWheelbaseArray && bodyMakeWithWheelbaseArray !== undefined && keepTrackBodyMake) {
+      //  first filter using make wheelbase id
+      let filteredBodyMakesArray = bodyMakeWithWheelbaseArray.filter(
+        (child) => child.make_wheelbase.id === keepTrackBodyMake.make_wheelbase_id,
+      );
+
+      if (filteredBodyMakesArray.length > 0) {
+        let filteredBodyMake = filteredBodyMakesArray[0].body_makes.filter(
+          (bodyMakeChild) => bodyMakeChild.id === keepTrackBodyMake.body_make_id,
+        );
+        if (filteredBodyMake.length > 0) {
+          setFullImageGalleryImagesArray(filteredBodyMake[0].images);
+        }
+      }
+    }
+  }, [bodyMakeWithWheelbaseArray, keepTrackBodyMake]);
+
+  useEffect(() => {
+    if (bodyMakeWithWheelbaseArray) {
       // use this to loop through every body makes array and determine if all of them are empty
       // if they are all empty, then show no data on normal user screen
-      let result = bodyMakeWithWheelbase.reduce((total, currValue) => {
+      let result = bodyMakeWithWheelbaseArray.reduce((total, currValue) => {
         return total + currValue.body_makes.length;
       }, 0);
 
@@ -894,7 +977,7 @@ const CatalogBodyMake: React.FC<Props> = ({
         setShowAllEmpty(false);
       }
     }
-  }, [bodyMakeWithWheelbase]);
+  }, [bodyMakeWithWheelbaseArray]);
 
   useEffect(() => {
     if (makeFromCatalogBodyMake) {
@@ -1173,6 +1256,24 @@ const CatalogBodyMake: React.FC<Props> = ({
         setCrudAccessoryModalOpen={setCrudAccessoryModalOpen}
       />
 
+      <FullImageGalleryModal
+        indexKey={'body_make'}
+        modelName={UPLOAD_TO_BODY_MAKE}
+        modelId={imageGalleryTargetModelId}
+        uploadSelectedFiles={uploadSelectedFiles}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={fullGalleryImagesPreviewUrls}
+        setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
+        visible={fullImageGalleryVisible}
+        setVisible={setFullImageGalleryVisible}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        showUpdateModal={showUpdateModal}
+        imagesArray={fullImageGalleryImagesArray}
+        setShowUpdateModal={setShowUpdateModal}
+        onDeleteUploadImage={onDeleteUploadImage}
+        onClearAllSelectedImages={onClearAllSelectedImages}
+      />
+
       {/* -------------------------------- */}
       {/* Quotation modal */}
       {/* -------------------------------- */}
@@ -1419,7 +1520,7 @@ const CatalogBodyMake: React.FC<Props> = ({
               </>
             )}
             <div className="catalog__div">
-              {bodyMakeWithWheelbase && catalogMake ? (
+              {bodyMakeWithWheelbaseArray && catalogMake ? (
                 <>
                   <section className="catalogbodymake__section-div">
                     <div className="catalogbodymake__series-outerdiv">
@@ -1466,7 +1567,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                     {/*    ADMIN - if user is admin show everything, if not only show
                         those that the length is greater than 0 */}
                     {/*  ================================================================ */}
-                    {bodyMakeWithWheelbase.length > 0 ? (
+                    {bodyMakeWithWheelbaseArray.length > 0 ? (
                       <>
                         {accessObj?.showAdminDashboard ? (
                           <Tabs
@@ -1476,7 +1577,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                             onTabClick={(activeKey: string) => setActiveConfigurationTab(activeKey)}
                             tabPosition={'top'}
                           >
-                            {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
+                            {bodyMakeWithWheelbaseArray.map((wheelbaseBodyMake, index) => (
                               <TabPane
                                 tab={
                                   <div className="catalog__tabs-title">
@@ -1563,7 +1664,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                                 onTabClick={(activeKey: string) => setActiveConfigurationTab(activeKey)}
                                 tabPosition={'top'}
                               >
-                                {bodyMakeWithWheelbase.map((wheelbaseBodyMake, index) => (
+                                {bodyMakeWithWheelbaseArray.map((wheelbaseBodyMake, index) => (
                                   <React.Fragment key={uuidv4()}>
                                     {wheelbaseBodyMake.body_makes.length > 0 && (
                                       <TabPane
@@ -1620,6 +1721,16 @@ const CatalogBodyMake: React.FC<Props> = ({
         </CustomContainer>
       </ParallaxContainer>
       <Footer />
+
+      {lightboxImagesArray.length > 0 && (
+        <LightboxComponent
+          photoIndex={photoIndex}
+          setPhotoIndex={setPhotoIndex}
+          isOpen={lightboxOpen}
+          setIsOpen={setLightboxOpen}
+          images={lightboxImagesArray}
+        />
+      )}
     </>
   );
 };
@@ -1632,7 +1743,7 @@ interface StateProps {
   localOrdersArray?: TLocalOrderObj[];
   makeFromCatalogBodyMake?: TReceivedMakeObj | null;
   chargesFeesArray?: TReceivedChargesFeesObj[] | null;
-  bodyMakeWithWheelbase?: TReceivedCatalogBodyMake[] | null;
+  bodyMakeWithWheelbaseArray?: TReceivedCatalogBodyMake[] | null;
   generalAccessoriesArray?: TReceivedAccessoryObj[] | null;
   bodyRelatedAccessoriesArray?: TReceivedAccessoryObj[] | null;
   dimensionRelatedAccessoriesArray?: TReceivedDimensionAccessoryObj[] | null;
@@ -1645,7 +1756,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     successMessage: state.dashboard.successMessage,
     localOrdersArray: state.sales.localOrdersArray,
     chargesFeesArray: state.dashboard.chargesFeesArray,
-    bodyMakeWithWheelbase: state.catalog.catalogBodyMakesArray,
+    bodyMakeWithWheelbaseArray: state.catalog.catalogBodyMakesArray,
     makeFromCatalogBodyMake: state.catalog.makeFromCatalogBodyMake,
     generalAccessoriesArray: state.sales.generalAccessoriesArray,
     bodyRelatedAccessoriesArray: state.sales.bodyRelatedAccessoriesArray,
@@ -1663,6 +1774,7 @@ interface DispatchProps {
   onDeleteBodyMake: typeof actions.deleteBodyMake;
   onGetChargesFees: typeof actions.getChargesFees;
   onStoreLocalOrders: typeof actions.storeLocalOrders;
+  onDeleteUploadImage: typeof actions.deleteUploadImage;
   onGetCatalogBodyMakes: typeof actions.getCatalogBodyMakes;
   onGetSalesAccessories: typeof actions.getSalesAccessories;
   onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
@@ -1679,6 +1791,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetLengths: () => dispatch(actions.getLengths()),
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
     onGetChargesFees: () => dispatch(actions.getChargesFees()),
+    onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
     onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
     onCreateBodyMake: (createBodyMakeData, imageTag, imageFiles) =>

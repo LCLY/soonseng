@@ -31,9 +31,9 @@ import {
 import { RootState } from 'src';
 import holy5trucks from 'src/img/5trucks.jpg';
 import { ROUTE_CATALOG } from 'src/shared/routes';
-
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
+import { UPLOAD_TO_MAKE } from 'src/shared/constants';
 import { onClearAllSelectedImages } from 'src/shared/Utils';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog';
@@ -123,10 +123,10 @@ const CatalogPage: React.FC<Props> = ({
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
   const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
   const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
+
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
-
   /* ---------------- */
   //  Series
   /* ---------------- */
@@ -665,6 +665,7 @@ const CatalogPage: React.FC<Props> = ({
 
       <FullImageGalleryModal
         indexKey={'make'}
+        modelName={UPLOAD_TO_MAKE}
         modelId={imageGalleryTargetModelId}
         uploadSelectedFiles={uploadSelectedFiles}
         setUploadSelectedFiles={setUploadSelectedFiles}

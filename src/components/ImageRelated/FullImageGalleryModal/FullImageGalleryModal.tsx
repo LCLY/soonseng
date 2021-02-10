@@ -10,13 +10,19 @@ import { Dispatch, AnyAction } from 'redux';
 import { Badge, Button, Form, Modal, Select } from 'antd';
 import { DeleteOutlined, UploadOutlined, CaretLeftOutlined, CloseCircleFilled } from '@ant-design/icons';
 /* Util */
+import {
+  UPLOAD_TO_MAKE,
+  UPLOAD_TO_BRAND,
+  UPLOAD_TO_BODY,
+  UPLOAD_TO_BODY_MAKE,
+  UPLOAD_TO_ACCESSORY,
+} from 'src/shared/constants';
 import { AppActions } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
 import { img_loading_link } from 'src/shared/links';
 // import { UPLOAD_TO_MAKE } from 'src/shared/constants';
 import { TReceivedImageObj } from 'src/store/types/dashboard';
 import { handleKeyDown, onClearAllSelectedImages, onPopulateImagesArray } from 'src/shared/Utils';
-import { UPLOAD_TO_MAKE } from 'src/shared/constants';
 import { RootState } from 'src';
 
 const { Option } = Select;
@@ -25,6 +31,12 @@ interface FullImageGalleryModalProps {
   loading: boolean;
   visible: boolean;
   modelId: number;
+  modelName:
+    | typeof UPLOAD_TO_MAKE
+    | typeof UPLOAD_TO_BRAND
+    | typeof UPLOAD_TO_BODY
+    | typeof UPLOAD_TO_BODY_MAKE
+    | typeof UPLOAD_TO_ACCESSORY;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   /** To target what images we are doing  */
   indexKey: string;
@@ -62,10 +74,10 @@ const FullImageGalleryModal: React.FC<Props> = ({
   modelId,
   visible,
   setVisible,
-  successMessage,
-  // showUpdateModal,
+  modelName,
   imagesArray,
   onUploadImage,
+  successMessage,
   onDeleteUploadImage,
   imagesPreviewUrls,
   uploadSelectedFiles,
@@ -120,7 +132,7 @@ const FullImageGalleryModal: React.FC<Props> = ({
 
   const onUploadFinish = (values: { imageTag: string }) => {
     if (uploadSelectedFiles !== undefined && uploadSelectedFiles !== null) {
-      onUploadImage(UPLOAD_TO_MAKE, modelId, values.imageTag, uploadSelectedFiles);
+      onUploadImage(modelName, modelId, values.imageTag, uploadSelectedFiles);
     }
   };
   /* ==================================== */
