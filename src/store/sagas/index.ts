@@ -82,6 +82,11 @@ import {
   createServiceTypeSaga,
   deleteServiceTypeSaga,
   updateServiceTypeSaga,
+  // Service Task Title
+  getServiceTasksSaga,
+  createServiceTaskSaga,
+  deleteServiceTaskSaga,
+  updateServiceTaskSaga,
 } from './dashboard';
 
 import {
@@ -100,12 +105,19 @@ import { getCatalogMakesSaga, getCatalogBodyMakesSaga } from './catalog';
 import { signInSaga, getUserInfoSaga } from './auth';
 
 import {
-  createTaskSaga,
-  getTasksSaga,
-  updateTaskSaga,
-  deleteTaskSaga,
+  // createTaskSaga,
+  // getTasksSaga,
+  // updateTaskSaga,
+  // deleteTaskSaga,
   getAllUsersSaga,
   getUsersByRolesSaga,
+  // intakes jobs
+  getIntakeSummarySaga,
+  createIntakeSummarySaga,
+  deleteIntakeSummarySaga,
+  updateIntakeSummarySaga,
+  getSpecificIntakeJobsSaga,
+  updateSpecificIntakeJobsSaga,
 } from './task';
 import { TaskActionTypes } from '../types/task';
 
@@ -209,14 +221,27 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_SERVICETYPE, createServiceTypeSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_SERVICETYPE, deleteServiceTypeSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_SERVICETYPE, updateServiceTypeSaga)]);
+  // Service Task Titles
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_SERVICE_TASKS, getServiceTasksSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_SERVICE_TASK, createServiceTaskSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_SERVICE_TASK, deleteServiceTaskSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_SERVICE_TASK, updateServiceTaskSaga)]);
 }
 
 export function* watchTask() {
   // Task
-  yield all([takeEvery<TaskActionTypes>(actionTypes.CREATE_TASK, createTaskSaga)]);
-  yield all([takeEvery<TaskActionTypes>(actionTypes.GET_TASKS, getTasksSaga)]);
-  yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_TASK, updateTaskSaga)]);
-  yield all([takeEvery<TaskActionTypes>(actionTypes.DELETE_TASK, deleteTaskSaga)]);
+  // yield all([takeEvery<TaskActionTypes>(actionTypes.CREATE_TASK, createTaskSaga)]);
+  // yield all([takeEvery<TaskActionTypes>(actionTypes.GET_TASKS, getTasksSaga)]);
+  // yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_TASK, updateTaskSaga)]);
+  // yield all([takeEvery<TaskActionTypes>(actionTypes.DELETE_TASK, deleteTaskSaga)]);
+  // Intake Summary
+  yield all([takeEvery<TaskActionTypes>(actionTypes.GET_INTAKE_SUMMARY, getIntakeSummarySaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.CREATE_INTAKE_SUMMARY, createIntakeSummarySaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_INTAKE_SUMMARY, updateIntakeSummarySaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.DELETE_INTAKE_SUMMARY, deleteIntakeSummarySaga)]);
+  // Specific Intake Jobs
+  yield all([takeEvery<TaskActionTypes>(actionTypes.GET_SPECIFIC_INTAKE_JOBS, getSpecificIntakeJobsSaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS, updateSpecificIntakeJobsSaga)]);
   // Get Users
   yield all([takeEvery<TaskActionTypes>(actionTypes.GET_ALL_USERS, getAllUsersSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.GET_USERS_BY_ROLES, getUsersByRolesSaga)]);

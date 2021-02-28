@@ -2,9 +2,10 @@ import React from 'react';
 /* components */
 import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
 import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
-import TaskFormItems from 'src/components/Modal/Crud//FormItems/TaskFormItems';
 import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
 import BodyMakeFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeFormItems';
+import JobStatusFormItems from 'src/components/Modal/Crud/FormItems/JobStatusFormItems';
+import ServiceTypesFormItems from 'src/components/Modal/Crud/FormItems/ServiceTypesFormItems';
 import AccessoryMakeFormItems from 'src/components/Modal/Crud/FormItems/AccessoryMakeFormItems';
 import BodyAccessoryFormItems from 'src/components/Modal/Crud/FormItems/BodyAccessoryFormItems';
 import MakeWheelbaseFormItems from 'src/components/Modal/Crud/FormItems/MakeWheelbaseFormItems';
@@ -13,8 +14,7 @@ import BodyMakeAccessoryFormItems from 'src/components/Modal/Crud/FormItems/Body
 import { Modal } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import JobStatusFormItems from './FormItems/JobStatusFormItems';
-import ServiceTypesFormItems from './FormItems/ServiceTypesFormItems';
+import TaskTitleFormItems from './FormItems/TaskTitleFormItems';
 
 interface CrudModalProps extends ICategory {
   /** The title of the modal on top  */
@@ -74,6 +74,7 @@ export interface ICategory {
     | 'body_make_accessory'
     | 'wheelbase'
     | 'task'
+    | 'task_title'
     | 'job_status'
     | 'service_type';
 }
@@ -228,14 +229,14 @@ const CrudModal: React.FC<Props> = ({
             <BodyMakeAccessoryFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
 
-          {category === 'task' && antdForm !== undefined && onFinish !== undefined && (
-            <TaskFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
-          )}
           {category === 'job_status' && antdForm !== undefined && onFinish !== undefined && (
             <JobStatusFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
           {category === 'service_type' && antdForm !== undefined && onFinish !== undefined && (
             <ServiceTypesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'task_title' && antdForm !== undefined && onFinish !== undefined && (
+            <TaskTitleFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
         </Modal>
       )}

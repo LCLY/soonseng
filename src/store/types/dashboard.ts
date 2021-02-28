@@ -146,34 +146,53 @@ import {
   CreateJobStatusFailedAction,
   CreateJobStatusStartAction,
   CreateJobStatusSucceedAction,
-  CreateServiceTypesAction,
-  CreateServiceTypesFailedAction,
-  CreateServiceTypesStartAction,
-  CreateServiceTypesSucceedAction,
   DeleteJobStatusAction,
   DeleteJobStatusFailedAction,
   DeleteJobStatusStartAction,
   DeleteJobStatusSucceedAction,
-  DeleteServiceTypesAction,
-  DeleteServiceTypesFailedAction,
-  DeleteServiceTypesStartAction,
-  DeleteServiceTypesSucceedAction,
   GetJobStatusAction,
   GetJobStatusFailedAction,
   GetJobStatusStartAction,
   GetJobStatusSucceedAction,
-  GetServiceTypesAction,
-  GetServiceTypesFailedAction,
-  GetServiceTypesStartAction,
-  GetServiceTypesSucceedAction,
   UpdateJobStatusAction,
   UpdateJobStatusFailedAction,
   UpdateJobStatusStartAction,
   UpdateJobStatusSucceedAction,
+  CreateServiceTypesAction,
+  CreateServiceTypesFailedAction,
+  CreateServiceTypesStartAction,
+  CreateServiceTypesSucceedAction,
+  DeleteServiceTypesAction,
+  DeleteServiceTypesFailedAction,
+  DeleteServiceTypesStartAction,
+  DeleteServiceTypesSucceedAction,
+  GetServiceTypesAction,
+  GetServiceTypesFailedAction,
+  GetServiceTypesStartAction,
+  GetServiceTypesSucceedAction,
   UpdateServiceTypesAction,
   UpdateServiceTypesFailedAction,
   UpdateServiceTypesStartAction,
   UpdateServiceTypesSucceedAction,
+  /* -------------------- */
+  // Task Title
+  /* -------------------- */
+  CreateServiceTaskAction,
+  CreateServiceTaskStartAction,
+  CreateServiceTaskSucceedAction,
+  CreateServiceTaskFailedAction,
+  GetServiceTasksAction,
+  GetServiceTasksStartAction,
+  GetServiceTasksSucceedAction,
+  GetServiceTasksFailedAction,
+  UpdateServiceTaskAction,
+  UpdateServiceTaskStartAction,
+  UpdateServiceTaskSucceedAction,
+  UpdateServiceTaskFailedAction,
+  DeleteServiceTaskAction,
+  DeleteServiceTaskStartAction,
+  DeleteServiceTaskSucceedAction,
+  DeleteServiceTaskFailedAction,
 } from 'src/store/types/dashboard/jobmonitoring';
 
 import {
@@ -316,6 +335,8 @@ export interface DashboardInitialState {
   readonly jobStatusArray?: TReceivedJobStatusObj[] | null;
   // service types array
   readonly serviceTypesArray?: TReceivedServiceTypesObj[] | null;
+  // task titles array
+  readonly serviceTasksArray?: TReceivedServiceTaskObj[] | null;
 }
 
 /* =============================================================================================== */
@@ -658,6 +679,23 @@ export type TReceivedServiceTypesObj = {
   title: string;
   description: string;
 };
+/* ------------------------------------------- */
+// Task Title
+/* ------------------------------------------- */
+
+export type TReceivedServiceTaskObj = {
+  id: number;
+  title: string;
+  description: string | null;
+  service_type: TReceivedServiceTypesObj;
+};
+
+export interface IServiceTaskFormData {
+  title: string;
+  description: string;
+  service_type_id: number;
+}
+
 /* ================================================================================================= */
 // Combine and export all action types
 /* ================================================================================================= */
@@ -955,4 +993,21 @@ export type DashboardActionTypes =
   | DeleteServiceTypesAction
   | DeleteServiceTypesStartAction
   | DeleteServiceTypesFailedAction
-  | DeleteServiceTypesSucceedAction;
+  | DeleteServiceTypesSucceedAction
+  /* Service Task title */
+  | CreateServiceTaskAction
+  | CreateServiceTaskStartAction
+  | CreateServiceTaskSucceedAction
+  | CreateServiceTaskFailedAction
+  | GetServiceTasksAction
+  | GetServiceTasksStartAction
+  | GetServiceTasksSucceedAction
+  | GetServiceTasksFailedAction
+  | UpdateServiceTaskAction
+  | UpdateServiceTaskStartAction
+  | UpdateServiceTaskSucceedAction
+  | UpdateServiceTaskFailedAction
+  | DeleteServiceTaskAction
+  | DeleteServiceTaskStartAction
+  | DeleteServiceTaskSucceedAction
+  | DeleteServiceTaskFailedAction;

@@ -103,18 +103,12 @@ export const getSalesBodiesFailed = (errorMessage: string): AppActions => {
 /* ----------------------------- */
 // Get Body Makes
 /* ---------------------------- */
-export const getSalesBodyMakes = (
-  length_id: number,
-  tire: number,
-  body_id: number,
-  auth_token: string | null,
-): AppActions => {
+export const getSalesBodyMakes = (length_id: number, tire: number, body_id: number): AppActions => {
   return {
     type: actionTypes.GET_SALES_BODYMAKES,
     length_id: length_id,
     tire: tire,
     body_id: body_id,
-    auth_token: auth_token,
   };
 };
 

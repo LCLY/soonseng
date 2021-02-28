@@ -67,10 +67,9 @@ export const signOut = (): AppActions => {
 /* ------------------------------------------- */
 // Get User Info
 /* ------------------------------------------- */
-export const getUserInfo = (auth_token: string | null): AppActions => {
+export const getUserInfo = (): AppActions => {
   return {
     type: actionTypes.GET_USER_INFO,
-    auth_token: auth_token,
   };
 };
 

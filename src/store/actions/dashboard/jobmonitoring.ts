@@ -1,6 +1,11 @@
 import { AppActions } from '../../types/index';
 import * as actionTypes from '../actionTypes';
-import { TReceivedJobStatusObj, TReceivedServiceTypesObj } from '../../types/dashboard';
+import {
+  IServiceTaskFormData,
+  TReceivedJobStatusObj,
+  TReceivedServiceTypesObj,
+  TReceivedServiceTaskObj,
+} from '../../types/dashboard';
 
 /* ============================================================================================ */
 // JobStatus
@@ -255,6 +260,136 @@ export const deleteServiceTypeSucceed = (
 export const deleteServiceTypeFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.DELETE_SERVICETYPE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+//  Task Title
+/* ============================================================================================ */
+/*  ------------------------- */
+//  Create Service Task
+/*  ------------------------- */
+export const createServiceTask = (serviceTaskFormData: IServiceTaskFormData): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERVICE_TASK,
+    serviceTaskFormData: serviceTaskFormData,
+  };
+};
+
+export const createServiceTaskStart = (): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERVICE_TASK_START,
+  };
+};
+
+export const createServiceTaskSucceed = (
+  serviceTasksArray: TReceivedServiceTaskObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERVICE_TASK_SUCCEED,
+    serviceTasksArray: serviceTasksArray,
+    successMessage: successMessage,
+  };
+};
+export const createServiceTaskFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.CREATE_SERVICE_TASK_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/*  ------------------------- */
+// Get Service Tasks
+/*  ------------------------- */
+export const getServiceTasks = (service_type_id: number): AppActions => {
+  return {
+    type: actionTypes.GET_SERVICE_TASKS,
+    service_type_id: service_type_id,
+  };
+};
+
+export const getServiceTasksStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_SERVICE_TASKS_START,
+  };
+};
+
+export const getServiceTasksSucceed = (serviceTasksArray: TReceivedServiceTaskObj[]): AppActions => {
+  return {
+    type: actionTypes.GET_SERVICE_TASKS_SUCCEED,
+    serviceTasksArray: serviceTasksArray,
+  };
+};
+export const getServiceTasksFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_SERVICE_TASKS_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/*  ------------------------- */
+//  Update Service Task
+/*  ------------------------- */
+export const updateServiceTask = (service_task_id: number, serviceTaskFormData: IServiceTaskFormData): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERVICE_TASK,
+    service_task_id: service_task_id,
+    serviceTaskFormData: serviceTaskFormData,
+  };
+};
+
+export const updateServiceTaskStart = (): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERVICE_TASK_START,
+  };
+};
+
+export const updateServiceTaskSucceed = (
+  serviceTasksArray: TReceivedServiceTaskObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERVICE_TASK_SUCCEED,
+    serviceTasksArray: serviceTasksArray,
+    successMessage: successMessage,
+  };
+};
+export const updateServiceTaskFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.UPDATE_SERVICE_TASK_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+/*  ------------------------- */
+//  Delete Service Task
+/*  ------------------------- */
+export const deleteServiceTask = (service_task_id: number, service_type_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERVICE_TASK,
+    service_task_id: service_task_id,
+    service_type_id: service_type_id,
+  };
+};
+
+export const deleteServiceTaskStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERVICE_TASK_START,
+  };
+};
+
+export const deleteServiceTaskSucceed = (
+  serviceTasksArray: TReceivedServiceTaskObj[],
+  successMessage: string,
+): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERVICE_TASK_SUCCEED,
+    serviceTasksArray: serviceTasksArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteServiceTaskFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_SERVICE_TASK_FAILED,
     errorMessage: errorMessage,
   };
 };

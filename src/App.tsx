@@ -3,7 +3,7 @@ import React, { Suspense, useEffect } from 'react';
 // Authentication
 import Logout from 'src/containers/Authentication/Logout/Logout';
 // General pages
-import TaskPage from './containers/TaskPage/TaskPage';
+import TaskPage from 'src/containers/TaskPage/TaskPage';
 import Homepage from 'src/containers/HomePage/HomePage';
 import AboutPage from 'src/containers/AboutPage/AboutPage';
 import SalesPage from 'src/containers/SalesPage/SalesPage';
@@ -12,7 +12,7 @@ import CatalogPage from 'src/containers/CatalogPage/CatalogPage';
 import ContactPage from 'src/containers/ContactPage/ContactPage';
 import PageNotFound from 'src/components/PageNotFound/PageNotFound';
 import QuotationPage from 'src/containers/QuotationPage/QuotationPage';
-import ComparisonPage from './containers/ComparisonPage/ComparisonPage';
+import ComparisonPage from 'src/containers/ComparisonPage/ComparisonPage';
 import LoginPage from 'src/containers/Authentication/LoginPage/LoginPage';
 import CatalogBodyMake from 'src/containers/CatalogPage/CatalogBodyMake/CatalogBodyMake';
 // Dashboard

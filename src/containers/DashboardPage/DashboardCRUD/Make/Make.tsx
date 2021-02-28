@@ -10,6 +10,7 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+import FullImageGalleryModal from 'src/components/ImageRelated/FullImageGalleryModal/FullImageGalleryModal';
 
 /*3rd party lib*/
 import {
@@ -44,6 +45,7 @@ import {
   TReceivedSeriesObj,
   TReceivedMakeWheelbaseObj,
 } from 'src/store/types/dashboard';
+
 import {
   setFilterReference,
   convertHeader,
@@ -52,10 +54,10 @@ import {
   onClearAllSelectedImages,
   emptyStringWhenUndefinedOrNull,
 } from 'src/shared/Utils';
-
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
+import { UPLOAD_TO_BRAND } from 'src/shared/constants';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 
 const { Option } = Select;
@@ -267,6 +269,11 @@ const Make: React.FC<Props> = ({
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+  // state to store temporary images before user uploads
+  const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
+  const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
+  const [fullImageGalleryVisible, setFullImageGalleryVisible] = useState(false);
+  const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
 
   // edit image gallery
 
@@ -324,7 +331,7 @@ const Make: React.FC<Props> = ({
               <Button
                 type="link"
                 title="Edit Brand"
-                className="make__brand-btn--edit"
+                className="make__brand-btn--closer make__brand-btn--edit"
                 onClick={() => {
                   onPopulateUpdateBrandModal(record);
 
@@ -336,7 +343,8 @@ const Make: React.FC<Props> = ({
               </Button>
               <Button
                 type="link"
-                className="make__brand-btn--edit"
+                title="Disable brand"
+                className="make__brand-btn--closer make__brand-btn--edit"
                 onClick={() => {
                   alert('disable - supposed to set available to false');
                 }}
@@ -345,6 +353,19 @@ const Make: React.FC<Props> = ({
               </Button>
               <Button
                 type="link"
+                title="Edit Images"
+                className="make__brand-btn--closer make__brand-btn--edit"
+                onClick={() => {
+                  setFullImageGalleryVisible(true);
+                  setImageGalleryTargetModelId(record.brandId);
+                  setFullImageGalleryImagesArray(record.brandImages);
+                }}
+              >
+                <i className="fas fa-file-image"></i>
+              </Button>
+              <Button
+                type="link"
+                className="make__brand-btn--closer"
                 title="Delete Brand"
                 danger
                 onClick={() => {
@@ -1842,6 +1863,29 @@ const Make: React.FC<Props> = ({
   };
 
   /* ================================ */
+  // Image Gallery Modal
+  /* ================================ */
+  let fullImageGalleryModal = (
+    <FullImageGalleryModal
+      indexKey={'brand'}
+      modelName={UPLOAD_TO_BRAND}
+      modelId={imageGalleryTargetModelId}
+      uploadSelectedFiles={uploadSelectedFiles}
+      setUploadSelectedFiles={setUploadSelectedFiles}
+      imagesPreviewUrls={fullGalleryImagesPreviewUrls}
+      setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
+      visible={fullImageGalleryVisible}
+      setVisible={setFullImageGalleryVisible}
+      loading={loading !== undefined && loading}
+      showUpdateModal={showUpdateModal}
+      imagesArray={fullImageGalleryImagesArray}
+      setShowUpdateModal={setShowUpdateModal}
+      onDeleteUploadImage={onDeleteUploadImage}
+      onClearAllSelectedImages={onClearAllSelectedImages}
+    />
+  );
+
+  /* ================================ */
   // Delete Modals
   /* ================================ */
   //  Delete Make Wheelbase Modal
@@ -2130,6 +2174,20 @@ const Make: React.FC<Props> = ({
     }
   }, [makesArray]);
 
+  useEffect(() => {
+    if (fullImageGalleryVisible && imageGalleryTargetModelId !== -1) {
+      //  check if image gallery is opened
+    }
+  }, [fullImageGalleryVisible, imageGalleryTargetModelId]);
+
+  // if upload is successful, then do a get request just to refresh the images
+  useEffect(() => {
+    if (successMessage && successMessage.toLowerCase() === 'Upload successful!'.toLowerCase()) {
+      console.log(successMessage);
+      onGetBrands();
+    }
+  }, [successMessage, onGetBrands]);
+
   /* -------------------- */
   // success notification
   /* -------------------- */
@@ -2232,6 +2290,7 @@ const Make: React.FC<Props> = ({
       {deleteWheelbaseModal}
       {deleteBrandModal}
       {deleteMakeModal}
+      {fullImageGalleryModal}
 
       <NavbarComponent activePage="make" defaultOpenKeys="dashboard" />
       <Layout>

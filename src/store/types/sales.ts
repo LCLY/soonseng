@@ -148,7 +148,6 @@ export interface GetSalesBodyMakesAction {
   length_id: number;
   tire: number;
   body_id: number;
-  auth_token: string | null;
 }
 export interface GetSalesBodyMakesStartAction {
   type: typeof actionTypes.GET_SALES_BODYMAKES_START;

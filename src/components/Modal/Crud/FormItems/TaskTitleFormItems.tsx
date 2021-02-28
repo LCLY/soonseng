@@ -5,7 +5,7 @@ import { Form, Input } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { handleKeyDown } from 'src/shared/Utils';
 import TextArea from 'antd/lib/input/TextArea';
-interface ServiceTypesFormItemsProps {
+interface TaskTitleFormItemsProps {
   crud: 'create' | 'update' | 'delete';
   /** The form instance from antd  */
   antdForm: FormInstance<any>;
@@ -13,12 +13,13 @@ interface ServiceTypesFormItemsProps {
   onFinish: (values: any) => void;
 }
 
-type Props = ServiceTypesFormItemsProps;
+type Props = TaskTitleFormItemsProps;
 
-const ServiceTypesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
+const TaskTitleFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
   return (
     <>
       <Form
+        name="service task"
         form={antdForm}
         // name="createBrand"
         onKeyDown={(e) => {
@@ -45,10 +46,13 @@ const ServiceTypesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) =>
           <TextArea rows={3} placeholder="Type description here" />
         </Form.Item>
 
+        <Form.Item hidden name="service_type_id" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
         {/* Add this part for update modal form only */}
         {crud === 'update' && (
           <>
-            <Form.Item hidden name="id" rules={[{ required: true }]}>
+            <Form.Item hidden name="task_title_id" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
           </>
@@ -58,4 +62,4 @@ const ServiceTypesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) =>
   );
 };
 
-export default ServiceTypesFormItems;
+export default TaskTitleFormItems;

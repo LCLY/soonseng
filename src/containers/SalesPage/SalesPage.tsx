@@ -502,8 +502,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetSalesBodies: (length_id, tire) => dispatch(actions.getSalesBodies(length_id, tire)),
     onRemoveAnOrder: (orderId, localOrdersArray) => dispatch(actions.removeAnOrder(orderId, localOrdersArray)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
-    onGetSalesBodyMakes: (length_id, tire, body_id, auth_token) =>
-      dispatch(actions.getSalesBodyMakes(length_id, tire, body_id, auth_token)),
+    onGetSalesBodyMakes: (length_id, tire, body_id) => dispatch(actions.getSalesBodyMakes(length_id, tire, body_id)),
   };
 };
 

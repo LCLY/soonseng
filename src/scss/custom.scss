@@ -48,9 +48,10 @@ svg {
   white-space: nowrap;
 }
 
-.ant-table-tbody {
+.ant-table-body {
   &::-webkit-scrollbar {
     width: 10px !important;
+    height: 5px !important;
   }
   &::-webkit-scrollbar-thumb {
     background: $secondary-color-2 !important;

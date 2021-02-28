@@ -335,6 +335,23 @@ export {
   updateServiceTypeFailed,
   updateServiceTypeStart,
   updateServiceTypeSucceed,
+  // Service/Task Title
+  getServiceTasks,
+  getServiceTasksFailed,
+  getServiceTasksStart,
+  getServiceTasksSucceed,
+  createServiceTask,
+  createServiceTaskFailed,
+  createServiceTaskStart,
+  createServiceTaskSucceed,
+  deleteServiceTask,
+  deleteServiceTaskFailed,
+  deleteServiceTaskStart,
+  deleteServiceTaskSucceed,
+  updateServiceTask,
+  updateServiceTaskFailed,
+  updateServiceTaskStart,
+  updateServiceTaskSucceed,
 } from './dashboard/index';
 
 export {
@@ -376,22 +393,52 @@ export {
   /* ==================== */
   // Task
   /* ==================== */
-  createTask,
-  createTaskFailed,
-  createTaskStart,
-  createTaskSucceed,
-  deleteTask,
-  deleteTaskFailed,
-  deleteTaskStart,
-  deleteTaskSucceed,
-  getTasks,
-  getTasksFailed,
-  getTasksStart,
-  getTasksSucceed,
-  updateTask,
-  updateTaskFailed,
-  updateTaskStart,
-  updateTaskSucceed,
+  // createTask,
+  // createTaskFailed,
+  // createTaskStart,
+  // createTaskSucceed,
+  // deleteTask,
+  // deleteTaskFailed,
+  // deleteTaskStart,
+  // deleteTaskSucceed,
+  // getTasks,
+  // getTasksFailed,
+  // getTasksStart,
+  // getTasksSucceed,
+  // updateTask,
+  // updateTaskFailed,
+  // updateTaskStart,
+  // updateTaskSucceed,
+  /* ==================== */
+  // Intake & Jobs
+  /* ==================== */
+  createIntakeSummary,
+  createIntakeSummaryFailed,
+  createIntakeSummaryStart,
+  createIntakeSummarySucceed,
+  deleteIntakeSummary,
+  deleteIntakeSummaryFailed,
+  deleteIntakeSummaryStart,
+  deleteIntakeSummarySucceed,
+  getIntakeSummary,
+  getIntakeSummaryFailed,
+  getIntakeSummaryStart,
+  getIntakeSummarySucceed,
+  updateIntakeSummary,
+  updateIntakeSummaryFailed,
+  updateIntakeSummaryStart,
+  updateIntakeSummarySucceed,
+  /* ==================== */
+  // Specific Intake & Jobs
+  /* ==================== */
+  getSpecificIntakeJobs,
+  getSpecificIntakeJobsFailed,
+  getSpecificIntakeJobsStart,
+  getSpecificIntakeJobsSucceed,
+  updateSpecificIntakeJobs,
+  updateSpecificIntakeJobsFailed,
+  updateSpecificIntakeJobsStart,
+  updateSpecificIntakeJobsSucceed,
   /* ==================== */
   // Get all users
   /* ==================== */

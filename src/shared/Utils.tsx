@@ -40,19 +40,15 @@ export const findByTestAttribute = (component: any, attribute: string) => {
 /**
  * Setting token into the header config for axios
  * If user is not authenticated, the bearer token will become Bearer null
- * @param {AppActions} action
  * @return {*}
  */
 /* ========================================== */
-export const setAxiosHeaderToken = (action: AppActions) => {
-  let config = {};
-  if ('auth_token' in action) {
-    config = {
-      headers: {
-        Authorization: 'Bearer ' + action.auth_token,
-      },
-    };
-  }
+export const getAxiosHeaderToken = () => {
+  let config = {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('Authorization'),
+    },
+  };
   return config;
 };
 
@@ -325,25 +321,6 @@ export const onPopulateImagesArray = (
   imagesArray.map(storeValue);
 
   setGalleryImages(tempArray);
-};
-
-/* =========================================================== */
-/**
- * Create header config that contains token
- * @param {AppActions} action
- * @return {*}
- */
-/* =========================================================== */
-export const configAuthToken = (action: AppActions) => {
-  let config = {};
-  if ('auth_token' in action) {
-    config = {
-      headers: {
-        Authorization: 'Bearer ' + action.auth_token,
-      },
-    };
-  }
-  return config;
 };
 
 /* =========================================================== */

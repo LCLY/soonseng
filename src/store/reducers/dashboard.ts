@@ -53,6 +53,8 @@ const initialState: DashboardInitialState = {
   jobStatusArray: null,
   // service types array
   serviceTypesArray: null,
+  // task title array
+  serviceTasksArray: null,
 };
 
 /* ============================================================================================ */
@@ -1595,6 +1597,137 @@ const deleteServiceTypeFailed = (state: DashboardInitialState, action: AppAction
   return state;
 };
 
+/* -------------------------- */
+/* Service Task Titles  */
+/* -------------------------- */
+/* -------------------------- */
+/* Create Service Task  */
+/* -------------------------- */
+const createServiceTaskStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const createServiceTaskSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const createServiceTaskFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get Service Titles  */
+/* -------------------------- */
+const getServiceTasksStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+    serviceTasksArray: null,
+  });
+};
+
+const getServiceTasksSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const getServiceTasksFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update Service Task  */
+/* -------------------------- */
+const updateServiceTaskStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const updateServiceTaskSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const updateServiceTaskFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* delete Service Task  */
+/* -------------------------- */
+const deleteServiceTaskStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const deleteServiceTaskSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const deleteServiceTaskFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
 /* ============================================================================================ */
 /* ============================================================================================ */
 
@@ -2089,6 +2222,38 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return deleteServiceTypeSucceed(state, action);
     case actionTypes.DELETE_SERVICETYPE_FAILED:
       return deleteServiceTypeFailed(state, action);
+
+    /* =================================== */
+    //  Task Title
+    /* =================================== */
+    // Get all task title
+    case actionTypes.GET_SERVICE_TASKS_START:
+      return getServiceTasksStart(state, action);
+    case actionTypes.GET_SERVICE_TASKS_SUCCEED:
+      return getServiceTasksSucceed(state, action);
+    case actionTypes.GET_SERVICE_TASKS_FAILED:
+      return getServiceTasksFailed(state, action);
+    // Create task title
+    case actionTypes.CREATE_SERVICE_TASK_START:
+      return createServiceTaskStart(state, action);
+    case actionTypes.CREATE_SERVICE_TASK_SUCCEED:
+      return createServiceTaskSucceed(state, action);
+    case actionTypes.CREATE_SERVICE_TASK_FAILED:
+      return createServiceTaskFailed(state, action);
+    // Update task title
+    case actionTypes.UPDATE_SERVICE_TASK_START:
+      return updateServiceTaskStart(state, action);
+    case actionTypes.UPDATE_SERVICE_TASK_SUCCEED:
+      return updateServiceTaskSucceed(state, action);
+    case actionTypes.UPDATE_SERVICE_TASK_FAILED:
+      return updateServiceTaskFailed(state, action);
+    // Delete task title
+    case actionTypes.DELETE_SERVICE_TASK_START:
+      return deleteServiceTaskStart(state, action);
+    case actionTypes.DELETE_SERVICE_TASK_SUCCEED:
+      return deleteServiceTaskSucceed(state, action);
+    case actionTypes.DELETE_SERVICE_TASK_FAILED:
+      return deleteServiceTaskFailed(state, action);
     default:
       return state;
   }

@@ -49,7 +49,6 @@ type Props = CatalogPageProps & StateProps & DispatchProps & RouteComponentProps
 const CatalogPage: React.FC<Props> = ({
   history,
   accessObj,
-  auth_token,
   dashboardLoading,
   successMessage,
   errorMessage,
@@ -465,9 +464,8 @@ const CatalogPage: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (auth_token === undefined) return;
-    onGetCatalogMakes(auth_token);
-  }, [onGetCatalogMakes, auth_token]);
+    onGetCatalogMakes();
+  }, [onGetCatalogMakes]);
 
   /* -------------------- */
   // success notification
@@ -519,6 +517,8 @@ const CatalogPage: React.FC<Props> = ({
 
   useEffect(() => {
     if (catalogMakesArray && catalogMakesArray !== undefined && keepTrackSeriesMake) {
+      // keepTrackSeriesMake is to keep track which "model" it is currently uploading to
+      // so when the array updates, it can replenish the array with the latest items
       let filteredBrandArray = catalogMakesArray.filter(
         (catalogMake) => catalogMake.brand.id === keepTrackSeriesMake.brand_id,
       );
@@ -533,11 +533,10 @@ const CatalogPage: React.FC<Props> = ({
 
   useEffect(() => {
     if (successMessage) {
-      if (auth_token === undefined) return;
       // everytime when succeed get catalog again
-      onGetCatalogMakes(auth_token);
+      onGetCatalogMakes();
     }
-  }, [auth_token, successMessage, onGetCatalogMakes]);
+  }, [successMessage, onGetCatalogMakes]);
   /* ------------------ */
   // error notification
   /* ------------------ */
@@ -858,7 +857,6 @@ const CatalogPage: React.FC<Props> = ({
 interface StateProps {
   loading?: boolean;
   accessObj?: TUserAccess;
-  auth_token?: string | null;
   dashboardLoading?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
@@ -868,7 +866,6 @@ const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.catalog.loading,
     accessObj: state.auth.accessObj,
-    auth_token: state.auth.auth_token,
     dashboardLoading: state.dashboard.loading,
     errorMessage: state.dashboard.errorMessage,
     successMessage: state.dashboard.successMessage,
@@ -890,12 +887,12 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onCreateMake: (createMakeData, imageTag, uploadSelectedFiles) =>
       dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
+    onGetCatalogMakes: () => dispatch(actions.getCatalogMakes()),
     onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
       dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
     onDeleteMake: (make_id) => dispatch(actions.deleteMake(make_id)),
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
-    onGetCatalogMakes: (auth_token) => dispatch(actions.getCatalogMakes(auth_token)),
     onCreateSeries: (brand_id, title) => dispatch(actions.createSeries(brand_id, title)),
     onDeleteSeries: (brand_id, series_id) => dispatch(actions.deleteSeries(brand_id, series_id)),
     onUpdateSeries: (brand_id, series_id, title) => dispatch(actions.updateSeries(brand_id, series_id, title)),

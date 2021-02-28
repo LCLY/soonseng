@@ -1,5 +1,10 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
-import { TReceivedJobStatusObj, TReceivedServiceTypesObj } from '../dashboard';
+import {
+  IServiceTaskFormData,
+  TReceivedJobStatusObj,
+  TReceivedServiceTypesObj,
+  TReceivedServiceTaskObj,
+} from '../dashboard';
 
 /* =============================================================================================== */
 // Job Status
@@ -184,5 +189,86 @@ export interface DeleteServiceTypesSucceedAction {
 }
 export interface DeleteServiceTypesFailedAction {
   type: typeof actionTypes.DELETE_SERVICETYPE_FAILED;
+  errorMessage: string;
+}
+
+/* ============================================================== */
+// Service Task Title
+/* ============================================================== */
+/* ----------------------------------- */
+// Create Task Title
+/* ----------------------------------- */
+export interface CreateServiceTaskAction {
+  type: typeof actionTypes.CREATE_SERVICE_TASK;
+  serviceTaskFormData: IServiceTaskFormData;
+}
+export interface CreateServiceTaskStartAction {
+  type: typeof actionTypes.CREATE_SERVICE_TASK_START;
+}
+export interface CreateServiceTaskSucceedAction {
+  type: typeof actionTypes.CREATE_SERVICE_TASK_SUCCEED;
+  serviceTasksArray: TReceivedServiceTaskObj[];
+  successMessage: string;
+}
+export interface CreateServiceTaskFailedAction {
+  type: typeof actionTypes.CREATE_SERVICE_TASK_FAILED;
+  errorMessage: string;
+}
+/* ----------------------------------- */
+// Get Tasks Title
+/* ----------------------------------- */
+export interface GetServiceTasksAction {
+  type: typeof actionTypes.GET_SERVICE_TASKS;
+  service_type_id: number;
+}
+export interface GetServiceTasksStartAction {
+  type: typeof actionTypes.GET_SERVICE_TASKS_START;
+}
+export interface GetServiceTasksSucceedAction {
+  type: typeof actionTypes.GET_SERVICE_TASKS_SUCCEED;
+  serviceTasksArray: TReceivedServiceTaskObj[];
+}
+export interface GetServiceTasksFailedAction {
+  type: typeof actionTypes.GET_SERVICE_TASKS_FAILED;
+  errorMessage: string;
+}
+/* ----------------------------------- */
+// Update Task Title
+/* ----------------------------------- */
+export interface UpdateServiceTaskAction {
+  type: typeof actionTypes.UPDATE_SERVICE_TASK;
+  service_task_id: number;
+  serviceTaskFormData: IServiceTaskFormData;
+}
+export interface UpdateServiceTaskStartAction {
+  type: typeof actionTypes.UPDATE_SERVICE_TASK_START;
+}
+export interface UpdateServiceTaskSucceedAction {
+  type: typeof actionTypes.UPDATE_SERVICE_TASK_SUCCEED;
+  serviceTasksArray: TReceivedServiceTaskObj[];
+  successMessage: string;
+}
+export interface UpdateServiceTaskFailedAction {
+  type: typeof actionTypes.UPDATE_SERVICE_TASK_FAILED;
+  errorMessage: string;
+}
+/* ----------------------------------- */
+// Delete Task Title
+/* ----------------------------------- */
+export interface DeleteServiceTaskAction {
+  type: typeof actionTypes.DELETE_SERVICE_TASK;
+  service_task_id: number;
+  service_type_id: number;
+}
+export interface DeleteServiceTaskStartAction {
+  type: typeof actionTypes.DELETE_SERVICE_TASK_START;
+}
+export interface DeleteServiceTaskSucceedAction {
+  type: typeof actionTypes.DELETE_SERVICE_TASK_SUCCEED;
+  serviceTasksArray: TReceivedServiceTaskObj[];
+  successMessage: string;
+}
+export interface DeleteServiceTaskFailedAction {
+  type: typeof actionTypes.DELETE_SERVICE_TASK_FAILED;
   errorMessage: string;
 }

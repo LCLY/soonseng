@@ -427,17 +427,16 @@ const NavbarComponent: React.FC<Props> = ({
 };
 
 interface StateProps {
-  auth_token?: string | null;
   authenticated?: boolean;
   accessObj?: TUserAccess;
   projectVersion?: string;
+  auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
   localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
-    auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
     projectVersion: state.general.projectVersion,
     localOrdersArray: state.sales.localOrdersArray,
@@ -449,7 +448,7 @@ interface DispatchProps {
   onGetUserInfo: typeof actions.getUserInfo;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
-  return { onGetUserInfo: (auth_token) => dispatch(actions.getUserInfo(auth_token)) };
+  return { onGetUserInfo: () => dispatch(actions.getUserInfo()) };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavbarComponent));

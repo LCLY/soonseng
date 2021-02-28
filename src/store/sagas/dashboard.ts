@@ -1,7 +1,7 @@
 import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
-import { setPromiseError, succeedActionWithImageUpload } from 'src/shared/Utils';
+import { getAxiosHeaderToken, setPromiseError, succeedActionWithImageUpload } from 'src/shared/Utils';
 import axios from 'axios';
 import {
   UPLOAD_TO_MAKE,
@@ -1602,6 +1602,7 @@ export function* getServiceTypesSaga(_action: AppActions) {
 //    Create Service Types
 /* ------------------------------- */
 export function* createServiceTypeSaga(action: AppActions) {
+  console.log('call');
   yield put(actions.createServiceTypeStart());
 
   let url = process.env.REACT_APP_API + `/job_monitoring/service_types`;
@@ -1672,6 +1673,116 @@ export function* deleteServiceTypeSaga(action: AppActions) {
       yield setPromiseError(error, actions.deleteServiceTypeFailed, error.response.data.error);
     } else {
       yield setPromiseError(error, actions.deleteServiceTypeFailed, 'Update Service Types Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Get Service Tasks
+/* ------------------------------- */
+export function* getServiceTasksSaga(action: AppActions) {
+  yield put(actions.getServiceTasksStart());
+
+  let url = '';
+
+  if ('service_type_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/service_types/${action.service_type_id}/service_tasks`;
+  }
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getServiceTasksSucceed(response.data.service_tasks));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getServiceTasksFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getServiceTasksFailed, 'Get Service Types Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Create Service Task
+/* ------------------------------- */
+export function* createServiceTaskSaga(action: AppActions) {
+  yield put(actions.createServiceTaskStart());
+
+  let url = '';
+
+  if ('serviceTaskFormData' in action) {
+    url =
+      process.env.REACT_APP_API +
+      `/job_monitoring/service_types/${action.serviceTaskFormData.service_type_id}/service_tasks`;
+  }
+
+  let service_task = {};
+  if ('serviceTaskFormData' in action) {
+    service_task = {
+      title: action.serviceTaskFormData.title,
+      description: action.serviceTaskFormData.description,
+    };
+  }
+
+  try {
+    let response = yield axios.post(url, { service_task }, getAxiosHeaderToken());
+    yield put(actions.createServiceTaskSucceed(response.data.service_tasks, 'Service Task Created'));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createServiceTaskFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createServiceTaskFailed, 'Create Service Types Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Update Service Task
+/* ------------------------------- */
+export function* updateServiceTaskSaga(action: AppActions) {
+  yield put(actions.updateServiceTaskStart());
+  let url = '';
+  if ('serviceTaskFormData' in action && 'service_task_id' in action) {
+    url =
+      process.env.REACT_APP_API +
+      `/job_monitoring/service_types/${action.serviceTaskFormData.service_type_id}/service_tasks/${action.service_task_id}`;
+  }
+
+  let service_task = {};
+  if ('serviceTaskFormData' in action) {
+    service_task = {
+      title: action.serviceTaskFormData.title,
+      description: action.serviceTaskFormData.description,
+    };
+  }
+
+  try {
+    let response = yield axios.put(url, { service_task }, getAxiosHeaderToken());
+    yield put(actions.updateServiceTaskSucceed(response.data.service_tasks, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateServiceTaskFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateServiceTaskFailed, 'Update Service Types Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete Service Task
+/* ------------------------------- */
+export function* deleteServiceTaskSaga(action: AppActions) {
+  yield put(actions.deleteServiceTaskStart());
+  let url = '';
+  if ('service_type_id' in action && 'service_task_id' in action) {
+    url =
+      process.env.REACT_APP_API +
+      `/job_monitoring/service_types/${action.service_type_id}/service_tasks/${action.service_task_id}`;
+  }
+
+  try {
+    let response = yield axios.delete(url, getAxiosHeaderToken());
+    yield put(actions.deleteServiceTaskSucceed(response.data.service_tasks, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteServiceTaskFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteServiceTaskFailed, 'Update Service Types Error');
     }
   }
 }

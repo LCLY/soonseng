@@ -139,6 +139,10 @@
       padding: 0.5rem 2rem !important;
       @include shadow-func(0, 0.2rem, 0.5rem, 0.1rem, rgba(0, 0, 0, 0.425));
 
+      &--closer {
+        padding: 0 8px !important;
+      }
+
       // edit button
       &--edit {
         color: #1890ff !important;

@@ -10,11 +10,11 @@ const initialState: TaskInitialState = {
   errorMessage: null,
   successMessage: null,
   // task
-  taskObj: null,
-  tasksArray: null,
   // users array
   allUsersArray: null,
   usersByRolesArray: null,
+  intakeSummaryArray: null,
+  specificIntakeJobsObj: null,
 };
 
 /* ============================================================================================ */
@@ -27,89 +27,230 @@ const clearTaskState = (state: TaskInitialState, _action: AppActions) => {
 /* -------------------------- */
 /* Create task */
 /* -------------------------- */
-const createTaskStart = (state: TaskInitialState, _action: AppActions) => {
+// const createTaskStart = (state: TaskInitialState, _action: AppActions) => {
+//   return updateObject(state, { errorMessage: null, loading: true });
+// };
+// const createTaskSucceed = (state: TaskInitialState, action: AppActions) => {
+//   if ('successMessage' in action && 'tasksArray' in action) {
+//     return updateObject(state, {
+//       errorMessage: null,
+//       loading: false,
+//       tasksArray: action.tasksArray,
+//       successMessage: action.successMessage,
+//     });
+//   }
+//   return state;
+// };
+// const createTaskFailed = (state: TaskInitialState, action: AppActions) => {
+//   if ('errorMessage' in action) {
+//     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+//   }
+//   return state;
+// };
+// /* -------------------------- */
+// /* Get tasks */
+// /* -------------------------- */
+// const getTasksStart = (state: TaskInitialState, _action: AppActions) => {
+//   return updateObject(state, { errorMessage: null, loading: true });
+// };
+// const getTasksSucceed = (state: TaskInitialState, action: AppActions) => {
+//   if ('tasksArray' in action) {
+//     return updateObject(state, {
+//       errorMessage: null,
+//       loading: false,
+//       tasksArray: action.tasksArray,
+//     });
+//   }
+//   return state;
+// };
+// const getTasksFailed = (state: TaskInitialState, action: AppActions) => {
+//   if ('errorMessage' in action) {
+//     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+//   }
+//   return state;
+// };
+// /* -------------------------- */
+// /* Update task */
+// /* -------------------------- */
+// const updateTaskStart = (state: TaskInitialState, _action: AppActions) => {
+//   return updateObject(state, { errorMessage: null, loading: true });
+// };
+// const updateTaskSucceed = (state: TaskInitialState, action: AppActions) => {
+//   if ('tasksArray' in action && 'successMessage' in action) {
+//     return updateObject(state, {
+//       errorMessage: null,
+//       loading: false,
+//       tasksArray: action.tasksArray,
+//       successMessage: action.successMessage,
+//     });
+//   }
+//   return state;
+// };
+// const updateTaskFailed = (state: TaskInitialState, action: AppActions) => {
+//   if ('errorMessage' in action) {
+//     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+//   }
+//   return state;
+// };
+// /* -------------------------- */
+// /* Delete task */
+// /* -------------------------- */
+// const deleteTaskStart = (state: TaskInitialState, _action: AppActions) => {
+//   return updateObject(state, { errorMessage: null, loading: true });
+// };
+// const deleteTaskSucceed = (state: TaskInitialState, action: AppActions) => {
+//   if ('tasksArray' in action && 'successMessage' in action) {
+//     return updateObject(state, {
+//       errorMessage: null,
+//       loading: false,
+//       tasksArray: action.tasksArray,
+//       successMessage: action.successMessage,
+//     });
+//   }
+//   return state;
+// };
+// const deleteTaskFailed = (state: TaskInitialState, action: AppActions) => {
+//   if ('errorMessage' in action) {
+//     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+//   }
+//   return state;
+// };
+
+/* ============================================================================================ */
+// Intakes and Jobs
+/* ============================================================================================ */
+/* -------------------------- */
+/* Create Intake and Jobs */
+/* -------------------------- */
+const createIntakeSummaryStart = (state: TaskInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const createTaskSucceed = (state: TaskInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'tasksArray' in action) {
+const createIntakeSummarySucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'intakeSummaryArray' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
-      tasksArray: action.tasksArray,
+      intakeSummaryArray: action.intakeSummaryArray,
       successMessage: action.successMessage,
     });
   }
   return state;
 };
-const createTaskFailed = (state: TaskInitialState, action: AppActions) => {
+const createIntakeSummaryFailed = (state: TaskInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
   return state;
 };
 /* -------------------------- */
-/* Get tasks */
+/* Get Intakes and Jobs */
 /* -------------------------- */
-const getTasksStart = (state: TaskInitialState, _action: AppActions) => {
+const getIntakeSummaryStart = (state: TaskInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const getTasksSucceed = (state: TaskInitialState, action: AppActions) => {
-  if ('tasksArray' in action) {
+const getIntakeSummarySucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('intakeSummaryArray' in action) {
     return updateObject(state, {
-      errorMessage: null,
       loading: false,
-      tasksArray: action.tasksArray,
+      errorMessage: null,
+      intakeSummaryArray: action.intakeSummaryArray,
     });
   }
   return state;
 };
-const getTasksFailed = (state: TaskInitialState, action: AppActions) => {
+const getIntakeSummaryFailed = (state: TaskInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
   return state;
 };
 /* -------------------------- */
-/* Update task */
+/* Update Intake and Jobs */
 /* -------------------------- */
-const updateTaskStart = (state: TaskInitialState, _action: AppActions) => {
+const updateIntakeSummaryStart = (state: TaskInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const updateTaskSucceed = (state: TaskInitialState, action: AppActions) => {
-  if ('tasksArray' in action && 'successMessage' in action) {
+const updateIntakeSummarySucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('intakeSummaryArray' in action && 'successMessage' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
-      tasksArray: action.tasksArray,
+      intakeSummaryArray: action.intakeSummaryArray,
       successMessage: action.successMessage,
     });
   }
   return state;
 };
-const updateTaskFailed = (state: TaskInitialState, action: AppActions) => {
+const updateIntakeSummaryFailed = (state: TaskInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* --------------------------- */
+/* Delete task Intake and Jobs */
+/* --------------------------- */
+const deleteIntakeSummaryStart = (state: TaskInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteIntakeSummarySucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('intakeSummaryArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      intakeSummaryArray: action.intakeSummaryArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteIntakeSummaryFailed = (state: TaskInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get Specific Intakes and Jobs */
+/* -------------------------- */
+const getSpecificIntakeJobsStart = (state: TaskInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true, specificIntakeJobsObj: null });
+};
+const getSpecificIntakeJobsSucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('specificIntakeJobsObj' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      specificIntakeJobsObj: action.specificIntakeJobsObj,
+    });
+  }
+  return state;
+};
+const getSpecificIntakeJobsFailed = (state: TaskInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
   return state;
 };
 /* -------------------------- */
-/* Delete task */
+/* Update Specific Intake and Jobs */
 /* -------------------------- */
-const deleteTaskStart = (state: TaskInitialState, _action: AppActions) => {
+const updateSpecificIntakeJobsStart = (state: TaskInitialState, _action: AppActions) => {
   return updateObject(state, { errorMessage: null, loading: true });
 };
-const deleteTaskSucceed = (state: TaskInitialState, action: AppActions) => {
-  if ('tasksArray' in action && 'successMessage' in action) {
+const updateSpecificIntakeJobsSucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('specificIntakeJobsObj' in action && 'successMessage' in action) {
     return updateObject(state, {
       errorMessage: null,
       loading: false,
-      tasksArray: action.tasksArray,
+      specificIntakeJobsObj: action.specificIntakeJobsObj,
       successMessage: action.successMessage,
     });
   }
   return state;
 };
-const deleteTaskFailed = (state: TaskInitialState, action: AppActions) => {
+const updateSpecificIntakeJobsFailed = (state: TaskInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
   }
@@ -168,40 +309,90 @@ const getUsersByRolesFailed = (state: TaskInitialState, action: AppActions) => {
 
 const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, action) => {
   switch (action.type) {
-    /* =================================== */
-    //  Tasks
-    /* =================================== */
-    // Create task
+    // Clear State
     case actionTypes.CLEAR_TASK_STATE:
+      /* =================================== */
+      //  Tasks
+      /* =================================== */
       return clearTaskState(state, action);
     // Create task
-    case actionTypes.CREATE_TASK_START:
-      return createTaskStart(state, action);
-    case actionTypes.CREATE_TASK_SUCCEED:
-      return createTaskSucceed(state, action);
-    case actionTypes.CREATE_TASK_FAILED:
-      return createTaskFailed(state, action);
-    // Get tasks
-    case actionTypes.GET_TASKS_START:
-      return getTasksStart(state, action);
-    case actionTypes.GET_TASKS_SUCCEED:
-      return getTasksSucceed(state, action);
-    case actionTypes.GET_TASKS_FAILED:
-      return getTasksFailed(state, action);
-    // Update task
-    case actionTypes.UPDATE_TASK_START:
-      return updateTaskStart(state, action);
-    case actionTypes.UPDATE_TASK_SUCCEED:
-      return updateTaskSucceed(state, action);
-    case actionTypes.UPDATE_TASK_FAILED:
-      return updateTaskFailed(state, action);
-    // Delete task
-    case actionTypes.DELETE_TASK_START:
-      return deleteTaskStart(state, action);
-    case actionTypes.DELETE_TASK_SUCCEED:
-      return deleteTaskSucceed(state, action);
-    case actionTypes.DELETE_TASK_FAILED:
-      return deleteTaskFailed(state, action);
+    // case actionTypes.CREATE_TASK_START:
+    //   return createTaskStart(state, action);
+    // case actionTypes.CREATE_TASK_SUCCEED:
+    //   return createTaskSucceed(state, action);
+    // case actionTypes.CREATE_TASK_FAILED:
+    //   return createTaskFailed(state, action);
+    // // Get tasks
+    // case actionTypes.GET_TASKS_START:
+    //   return getTasksStart(state, action);
+    // case actionTypes.GET_TASKS_SUCCEED:
+    //   return getTasksSucceed(state, action);
+    // case actionTypes.GET_TASKS_FAILED:
+    //   return getTasksFailed(state, action);
+    // // Update task
+    // case actionTypes.UPDATE_TASK_START:
+    //   return updateTaskStart(state, action);
+    // case actionTypes.UPDATE_TASK_SUCCEED:
+    //   return updateTaskSucceed(state, action);
+    // case actionTypes.UPDATE_TASK_FAILED:
+    //   return updateTaskFailed(state, action);
+    // // Delete task
+    // case actionTypes.DELETE_TASK_START:
+    //   return deleteTaskStart(state, action);
+    // case actionTypes.DELETE_TASK_SUCCEED:
+    //   return deleteTaskSucceed(state, action);
+    // case actionTypes.DELETE_TASK_FAILED:
+    //   return deleteTaskFailed(state, action);
+    /* =================================== */
+    //  Intakes & Jobs
+    /* =================================== */
+    // Create Intake
+    case actionTypes.CREATE_INTAKE_SUMMARY_START:
+      return createIntakeSummaryStart(state, action);
+    case actionTypes.CREATE_INTAKE_SUMMARY_SUCCEED:
+      return createIntakeSummarySucceed(state, action);
+    case actionTypes.CREATE_INTAKE_SUMMARY_FAILED:
+      return createIntakeSummaryFailed(state, action);
+    // Get Intakes
+    case actionTypes.GET_INTAKE_SUMMARY_START:
+      return getIntakeSummaryStart(state, action);
+    case actionTypes.GET_INTAKE_SUMMARY_SUCCEED:
+      return getIntakeSummarySucceed(state, action);
+    case actionTypes.GET_INTAKE_SUMMARY_FAILED:
+      return getIntakeSummaryFailed(state, action);
+    // Update Intake
+    case actionTypes.UPDATE_INTAKE_SUMMARY_START:
+      return updateIntakeSummaryStart(state, action);
+    case actionTypes.UPDATE_INTAKE_SUMMARY_SUCCEED:
+      return updateIntakeSummarySucceed(state, action);
+    case actionTypes.UPDATE_INTAKE_SUMMARY_FAILED:
+      return updateIntakeSummaryFailed(state, action);
+    // Delete Intake
+    case actionTypes.DELETE_INTAKE_SUMMARY_START:
+      return deleteIntakeSummaryStart(state, action);
+    case actionTypes.DELETE_INTAKE_SUMMARY_SUCCEED:
+      return deleteIntakeSummarySucceed(state, action);
+    case actionTypes.DELETE_INTAKE_SUMMARY_FAILED:
+      return deleteIntakeSummaryFailed(state, action);
+    /* ------------------------ */
+    // Get Specific Intake
+    /* ------------------------ */
+    case actionTypes.GET_SPECIFIC_INTAKE_JOBS_START:
+      return getSpecificIntakeJobsStart(state, action);
+    case actionTypes.GET_SPECIFIC_INTAKE_JOBS_SUCCEED:
+      return getSpecificIntakeJobsSucceed(state, action);
+    case actionTypes.GET_SPECIFIC_INTAKE_JOBS_FAILED:
+      return getSpecificIntakeJobsFailed(state, action);
+    /* ------------------------ */
+    // Update Specific Intake
+    /* ------------------------ */
+    case actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_START:
+      return updateSpecificIntakeJobsStart(state, action);
+    case actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_SUCCEED:
+      return updateSpecificIntakeJobsSucceed(state, action);
+    case actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_FAILED:
+      return updateSpecificIntakeJobsFailed(state, action);
+
     /* =================================== */
     // Get all Users
     /* =================================== */

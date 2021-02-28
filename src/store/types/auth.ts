@@ -92,7 +92,6 @@ export type TReceivedUserInfoObj = {
 /* Api call */
 export interface GetUserInfoAction {
   type: typeof actionTypes.GET_USER_INFO;
-  auth_token: string | null;
 }
 
 export interface GetUserInfoStartAction {
