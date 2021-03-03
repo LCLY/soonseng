@@ -233,21 +233,19 @@
   // logo on both sides
   /* ===================== */
   &__logo {
-    height: 100%;
-    width: 12.5rem;
     object-fit: cover;
-    border: 1px solid $translucent-grey;
+    // border: 1px solid $translucent-grey;
 
     @include respond-to($small-phone) {
-      height: auto;
-      width: 13vw;
+      height: 4rem;
+      width: 4.5rem;
     }
     @include respond-to($phone-only) {
-      height: auto;
+      height: 10rem;
       width: 10rem;
     }
     @include respond-to($tablet-portrait-up) {
-      height: auto;
+      height: 10rem;
       width: 12.5rem;
     }
   }

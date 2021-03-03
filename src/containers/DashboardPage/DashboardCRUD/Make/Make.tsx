@@ -2175,15 +2175,19 @@ const Make: React.FC<Props> = ({
   }, [makesArray]);
 
   useEffect(() => {
-    if (fullImageGalleryVisible && imageGalleryTargetModelId !== -1) {
+    if (fullImageGalleryVisible && imageGalleryTargetModelId !== -1 && brandsArray) {
       //  check if image gallery is opened
+      // then use the target model id to filter out the brands array
+      let targetBrand = brandsArray.filter((brand) => brand.id === imageGalleryTargetModelId);
+      if (targetBrand.length > 0) {
+        setFullImageGalleryImagesArray(targetBrand[0].images);
+      }
     }
-  }, [fullImageGalleryVisible, imageGalleryTargetModelId]);
+  }, [brandsArray, fullImageGalleryVisible, imageGalleryTargetModelId]);
 
   // if upload is successful, then do a get request just to refresh the images
   useEffect(() => {
-    if (successMessage && successMessage.toLowerCase() === 'Upload successful!'.toLowerCase()) {
-      console.log(successMessage);
+    if (successMessage && (successMessage.toLowerCase() === 'Upload successful!'.toLowerCase() || successMessage.toLowerCase() === 'Delete successful'.toLowerCase())) {
       onGetBrands();
     }
   }, [successMessage, onGetBrands]);

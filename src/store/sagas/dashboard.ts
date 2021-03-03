@@ -205,6 +205,7 @@ export function* getBrandsSaga(_action: AppActions) {
 
   try {
     let response = yield axios.get(url);
+
     yield put(actions.getBrandsSucceed(response.data.brands));
   } catch (error) {
     if (error.response) {
