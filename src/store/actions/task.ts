@@ -1,6 +1,11 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
-import { IIntakeJobsFormData, TReceivedIntakeSummaryObj, TReceivedSpecificIntakeJobsObj } from '../types/task';
+import {
+  IIntakeJobsFormData,
+  IReceivedIntakeJobsObj,
+  TReceivedIntakeSummaryObj,
+  TReceivedSpecificIntakeJobsObj,
+} from '../types/task';
 import { TReceivedUserInfoObj } from '../types/auth';
 
 /* ============================================================================================ */
@@ -104,32 +109,33 @@ export const clearTaskState = (): AppActions => {
 // /*  ------------------------- */
 // //  Delete Task
 // /*  ------------------------- */
-// export const deleteTask = (task_id: number): AppActions => {
-//   return {
-//     type: actionTypes.DELETE_TASK,
-//     task_id: task_id,
-//   };
-// };
+export const deleteTask = (intake_id: number, task_id: number): AppActions => {
+  return {
+    type: actionTypes.DELETE_TASK,
+    intake_id: intake_id,
+    task_id: task_id,
+  };
+};
 
-// export const deleteTaskStart = (): AppActions => {
-//   return {
-//     type: actionTypes.DELETE_TASK_START,
-//   };
-// };
+export const deleteTaskStart = (): AppActions => {
+  return {
+    type: actionTypes.DELETE_TASK_START,
+  };
+};
 
-// export const deleteTaskSucceed = (tasksArray: TReceivedTaskObj[], successMessage: string): AppActions => {
-//   return {
-//     type: actionTypes.DELETE_TASK_SUCCEED,
-//     tasksArray: tasksArray,
-//     successMessage: successMessage,
-//   };
-// };
-// export const deleteTaskFailed = (errorMessage: string): AppActions => {
-//   return {
-//     type: actionTypes.DELETE_TASK_FAILED,
-//     errorMessage: errorMessage,
-//   };
-// };
+export const deleteTaskSucceed = (tasksArray: IReceivedIntakeJobsObj[], successMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_TASK_SUCCEED,
+    tasksArray: tasksArray,
+    successMessage: successMessage,
+  };
+};
+export const deleteTaskFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.DELETE_TASK_FAILED,
+    errorMessage: errorMessage,
+  };
+};
 
 /* ============================================================================================ */
 //  Intakes & Jobs

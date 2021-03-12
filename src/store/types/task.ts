@@ -9,7 +9,7 @@ export interface TaskInitialState {
   readonly errorMessage?: string | null;
   readonly successMessage?: string | null;
   // readonly taskObj?: TReceivedTaskObj | null;
-  // readonly tasksArray?: TReceivedTaskObj[] | null;
+  readonly tasksArray?: IReceivedIntakeJobsObj[] | null;
   readonly allUsersArray?: TReceivedUserInfoObj[] | null;
   readonly usersByRolesArray?: TReceivedUserInfoObj[] | null;
   readonly intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
@@ -89,25 +89,27 @@ export interface ClearTaskAction {
 //   type: typeof actionTypes.UPDATE_TASK_FAILED;
 //   errorMessage: string;
 // }
+
 // /* ----------------------------------- */
 // // Delete Task
 // /* ----------------------------------- */
-// export interface DeleteTaskAction {
-//   type: typeof actionTypes.DELETE_TASK;
-//   task_id: number;
-// }
-// export interface DeleteTaskStartAction {
-//   type: typeof actionTypes.DELETE_TASK_START;
-// }
-// export interface DeleteTaskSucceedAction {
-//   type: typeof actionTypes.DELETE_TASK_SUCCEED;
-//   tasksArray: TReceivedTaskObj[];
-//   successMessage: string;
-// }
-// export interface DeleteTaskFailedAction {
-//   type: typeof actionTypes.DELETE_TASK_FAILED;
-//   errorMessage: string;
-// }
+export interface DeleteTaskAction {
+  type: typeof actionTypes.DELETE_TASK;
+  task_id: number;
+  intake_id: number;
+}
+export interface DeleteTaskStartAction {
+  type: typeof actionTypes.DELETE_TASK_START;
+}
+export interface DeleteTaskSucceedAction {
+  type: typeof actionTypes.DELETE_TASK_SUCCEED;
+  tasksArray: IReceivedIntakeJobsObj[];
+  successMessage: string;
+}
+export interface DeleteTaskFailedAction {
+  type: typeof actionTypes.DELETE_TASK_FAILED;
+  errorMessage: string;
+}
 
 /* ============================================================== */
 // Intakes & Jobs - Task Page
@@ -360,10 +362,10 @@ export type TaskActionTypes =
   // | UpdateTaskStartAction
   // | UpdateTaskSucceedAction
   // | UpdateTaskFailedAction
-  // | DeleteTaskAction
-  // | DeleteTaskStartAction
-  // | DeleteTaskSucceedAction
-  // | DeleteTaskFailedAction
+  | DeleteTaskAction
+  | DeleteTaskStartAction
+  | DeleteTaskSucceedAction
+  | DeleteTaskFailedAction
   /* -------------------- */
   // Intake
   /* -------------------- */

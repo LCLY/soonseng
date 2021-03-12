@@ -8,7 +8,7 @@ import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 /* Util */
 import { ActionCableContext } from 'src/index';
-import { TServiceTypeTaskDict } from 'src/store/types/task';
+import { TReceivedSpecificIntakeJobsObj, TServiceTypeTaskDict } from 'src/store/types/task';
 import { IServiceTaskDropdown, TTaskTableState } from 'src/containers/TaskPage/TaskPage';
 
 interface IntakeJobsModalProps {
@@ -51,8 +51,6 @@ interface IntakeJobsModalProps {
   /** crud method - create | update | delete */
   crud: 'create' | 'update' | 'delete';
   intake_id?: number | null;
-  editingKey: string;
-  setEditingKey: React.Dispatch<React.SetStateAction<string>>;
   serviceTypeTaskDict: TServiceTypeTaskDict;
   setServiceTypeTaskDict: React.Dispatch<React.SetStateAction<TServiceTypeTaskDict | null>>;
   serviceTaskDropdown: IServiceTaskDropdown;
@@ -71,8 +69,6 @@ const IntakeJobsModal: React.FC<Props> = ({
   loading,
   count,
   setCount,
-  editingKey,
-  setEditingKey,
   showModal,
   warningText,
   modalWidth = 520,
@@ -93,7 +89,9 @@ const IntakeJobsModal: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
 
-  const [incomingData, setIncomingData] = useState<any | null>(null);
+  const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
+    null,
+  );
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
   /* ================================================== */
@@ -108,14 +106,15 @@ const IntakeJobsModal: React.FC<Props> = ({
       { channel: 'JobMonitoringChannel', intake_id: intake_id },
       {
         connected: () => console.log('specific intake connected'),
-        received: (res: any) => setIncomingData(res.data),
+        received: (res: any) => setIncomingSpecificIntakeData(res.data),
       },
     );
 
     cableRef.current = channel;
   }, [cableRef, intake_id, cableApp.cable.subscriptions]);
 
-  console.log('specific intake incomingdata', incomingData);
+  console.log('specific intake incomingdata', incomingSpecificIntakeData);
+
   /* ================================================== */
   /* ================================================== */
   return (
@@ -168,7 +167,6 @@ const IntakeJobsModal: React.FC<Props> = ({
           confirmLoading={loading}
           onCancel={() => {
             if (antdForm === undefined) return;
-            setEditingKey('');
             setTaskTableState(null);
             setServiceTaskDropdown({});
             setCount(0);
@@ -185,14 +183,15 @@ const IntakeJobsModal: React.FC<Props> = ({
               setCount={setCount}
               antdForm={antdForm}
               onFinish={onFinish}
-              editingKey={editingKey}
-              setEditingKey={setEditingKey}
+              intake_id={intake_id}
+              taskTableState={taskTableState}
+              setTaskTableState={setTaskTableState}
+              serviceTypeTaskDict={serviceTypeTaskDict}
               serviceTaskDropdown={serviceTaskDropdown}
               setServiceTaskDropdown={setServiceTaskDropdown}
-              taskTableState={taskTableState}
-              serviceTypeTaskDict={serviceTypeTaskDict}
               setServiceTypeTaskDict={setServiceTypeTaskDict}
-              setTaskTableState={setTaskTableState}
+              incomingSpecificIntakeData={incomingSpecificIntakeData}
+              setIncomingSpecificIntakeData={setIncomingSpecificIntakeData}
             />
           )}
         </Modal>

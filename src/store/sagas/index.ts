@@ -108,7 +108,7 @@ import {
   // createTaskSaga,
   // getTasksSaga,
   // updateTaskSaga,
-  // deleteTaskSaga,
+  deleteTaskSaga,
   getAllUsersSaga,
   getUsersByRolesSaga,
   // intakes jobs
@@ -233,7 +233,7 @@ export function* watchTask() {
   // yield all([takeEvery<TaskActionTypes>(actionTypes.CREATE_TASK, createTaskSaga)]);
   // yield all([takeEvery<TaskActionTypes>(actionTypes.GET_TASKS, getTasksSaga)]);
   // yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_TASK, updateTaskSaga)]);
-  // yield all([takeEvery<TaskActionTypes>(actionTypes.DELETE_TASK, deleteTaskSaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.DELETE_TASK, deleteTaskSaga)]);
   // Intake Summary
   yield all([takeEvery<TaskActionTypes>(actionTypes.GET_INTAKE_SUMMARY, getIntakeSummarySaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.CREATE_INTAKE_SUMMARY, createIntakeSummarySaga)]);

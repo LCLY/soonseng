@@ -89,28 +89,27 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 //     }
 //   }
 // }
-// /* ------------------------------- */
-// //    Delete Task
-// /* ------------------------------- */
-// export function* deleteTaskSaga(action: AppActions) {
-//   yield put(actions.deleteTaskStart());
-//   let url = '';
+/* ------------------------------- */
+//    Delete Task
+/* ------------------------------- */
+export function* deleteTaskSaga(action: AppActions) {
+  yield put(actions.deleteTaskStart());
+  if (!('task_id' in action) || !('intake_id' in action)) return;
+  let url = process.env.REACT_APP_API + `/job_monitoring/intakes/${action.intake_id}/jobs/${action.task_id}`;
 
-//   if ('task_id' in action) {
-//     url = process.env.REACT_APP_API + `/job_monitoring/jobs/${action.task_id}`;
-//   }
-
-//   try {
-//     let response = yield axios.delete(url);
-//     yield put(actions.deleteTaskSucceed(response.data.jobs, response.data.success));
-//   } catch (error) {
-//     if (error.response) {
-//       yield setPromiseError(error, actions.deleteTaskFailed, error.response.data.error);
-//     } else {
-//       yield setPromiseError(error, actions.deleteTaskFailed, 'Error');
-//     }
-//   }
-// }
+  console.log(url);
+  try {
+    let response = yield axios.delete(url, getAxiosHeaderToken());
+    console.log(response);
+    yield put(actions.deleteTaskSucceed(response.data.jobs, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteTaskFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteTaskFailed, 'Error');
+    }
+  }
+}
 
 /* ====================================================================================== */
 // Intakes & Jobs - Pages

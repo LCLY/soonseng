@@ -91,7 +91,6 @@ const TaskPage: React.FC<Props> = ({
   const [count, setCount] = useState(0);
 
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
-  const [editingKey, setEditingKey] = useState('');
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [specificIntakeId, setSpecificIntakeId] = useState<null | undefined | number>(null);
@@ -227,6 +226,7 @@ const TaskPage: React.FC<Props> = ({
   };
 
   const onUpdateIntakeAndJobsFinish = (values: {
+    [key: string]: any;
     bay: string;
     description: string;
     intakeId: string;
@@ -234,13 +234,15 @@ const TaskPage: React.FC<Props> = ({
     registrationNumber: string;
   }) => {
     let resultJobs: IJobFormData[] = [];
+    console.log(values);
     (taskTableState as any).forEach((task: any, index: number) => {
+      console.log(task);
       let taskObj = {
         id: task[`taskId${index}`],
-        assigned_to_ids: task[`assign${index}`],
-        job_status_id: task[`taskStatus${index}`],
-        service_task_id: task[`taskTitle${index}`],
-        description: task[`taskDescription${index}`],
+        assigned_to_ids: values[`assign${index}`],
+        job_status_id: values[`taskStatus${index}`],
+        service_task_id: values[`taskTitle${index}`],
+        description: values[`taskDescription${index}`],
       };
       resultJobs.push(taskObj);
     });
@@ -254,6 +256,7 @@ const TaskPage: React.FC<Props> = ({
       },
       jobs: resultJobs,
     };
+    console.log(intakeJobsFormData);
     onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
   };
 
@@ -395,8 +398,6 @@ const TaskPage: React.FC<Props> = ({
             modalWidth={1200}
             count={count}
             setCount={setCount}
-            editingKey={editingKey}
-            setEditingKey={setEditingKey}
             modalTitle={'Create New Intake'}
             antdForm={createIntakeJobsForm}
             showModal={showCreateModal}
@@ -417,12 +418,10 @@ const TaskPage: React.FC<Props> = ({
             modalWidth={1200}
             count={count}
             setCount={setCount}
-            editingKey={editingKey}
             intake_id={specificIntakeId}
             modalTitle={'Update Intake'}
             antdForm={updateIntakeJobsForm}
             showModal={showUpdateModal}
-            setEditingKey={setEditingKey}
             visible={showUpdateModal.intake_job}
             onFinish={onUpdateIntakeAndJobsFinish}
             setShowModal={setShowUpdateModal}

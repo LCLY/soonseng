@@ -11,6 +11,7 @@ const initialState: TaskInitialState = {
   successMessage: null,
   // task
   // users array
+  tasksArray: null,
   allUsersArray: null,
   usersByRolesArray: null,
   intakeSummaryArray: null,
@@ -95,26 +96,26 @@ const clearTaskState = (state: TaskInitialState, _action: AppActions) => {
 // /* -------------------------- */
 // /* Delete task */
 // /* -------------------------- */
-// const deleteTaskStart = (state: TaskInitialState, _action: AppActions) => {
-//   return updateObject(state, { errorMessage: null, loading: true });
-// };
-// const deleteTaskSucceed = (state: TaskInitialState, action: AppActions) => {
-//   if ('tasksArray' in action && 'successMessage' in action) {
-//     return updateObject(state, {
-//       errorMessage: null,
-//       loading: false,
-//       tasksArray: action.tasksArray,
-//       successMessage: action.successMessage,
-//     });
-//   }
-//   return state;
-// };
-// const deleteTaskFailed = (state: TaskInitialState, action: AppActions) => {
-//   if ('errorMessage' in action) {
-//     return updateObject(state, { errorMessage: action.errorMessage, loading: false });
-//   }
-//   return state;
-// };
+const deleteTaskStart = (state: TaskInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteTaskSucceed = (state: TaskInitialState, action: AppActions) => {
+  if ('tasksArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      tasksArray: action.tasksArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteTaskFailed = (state: TaskInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 // Intakes and Jobs
@@ -337,12 +338,12 @@ const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, ac
     // case actionTypes.UPDATE_TASK_FAILED:
     //   return updateTaskFailed(state, action);
     // // Delete task
-    // case actionTypes.DELETE_TASK_START:
-    //   return deleteTaskStart(state, action);
-    // case actionTypes.DELETE_TASK_SUCCEED:
-    //   return deleteTaskSucceed(state, action);
-    // case actionTypes.DELETE_TASK_FAILED:
-    //   return deleteTaskFailed(state, action);
+    case actionTypes.DELETE_TASK_START:
+      return deleteTaskStart(state, action);
+    case actionTypes.DELETE_TASK_SUCCEED:
+      return deleteTaskSucceed(state, action);
+    case actionTypes.DELETE_TASK_FAILED:
+      return deleteTaskFailed(state, action);
     /* =================================== */
     //  Intakes & Jobs
     /* =================================== */
