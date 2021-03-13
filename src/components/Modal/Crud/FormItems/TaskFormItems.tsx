@@ -420,7 +420,6 @@ const TaskFormItems: React.FC<Props> = ({
                     title="Sure to delete?"
                     onConfirm={() => {
                       if (intake_id === null || intake_id === undefined) return;
-                      console.log(record);
                       handleDelete(intake_id, parseInt((record as any)[`taskId${record.key}`]));
                     }}
                   >

@@ -96,11 +96,9 @@ export function* deleteTaskSaga(action: AppActions) {
   yield put(actions.deleteTaskStart());
   if (!('task_id' in action) || !('intake_id' in action)) return;
   let url = process.env.REACT_APP_API + `/job_monitoring/intakes/${action.intake_id}/jobs/${action.task_id}`;
-
-  console.log(url);
   try {
     let response = yield axios.delete(url, getAxiosHeaderToken());
-    console.log(response);
+    console.log('%cDELETE', 'color:yellow', response);
     yield put(actions.deleteTaskSucceed(response.data.jobs, response.data.success));
   } catch (error) {
     if (error.response) {
