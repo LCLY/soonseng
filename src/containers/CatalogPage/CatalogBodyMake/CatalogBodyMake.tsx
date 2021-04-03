@@ -681,7 +681,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                             ></div>
                           </>
                         ) : (
-                          <Skeleton.Image className="catalog__card-image--skeleton" />
+                          <Skeleton.Image className="catalogbodymake__card-image--skeleton" />
                         )}
                         <div className="catalogbodymake__card-overlay">
                           <div className="catalogbodymake__card-overlay-content">
@@ -774,7 +774,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                       {accessObj?.showAdminDashboard && (
                         <Tooltip title={`Edit / Delete ${bodyMake.body.title}`}>
                           <Dropdown
-                            className="catalog__dropdown-more catalog__dropdown-more--make"
+                            className="catalogbodymake__dropdown-more catalogbodymake__dropdown-more--make"
                             overlay={
                               <BodyMakeMenu
                                 bodyMakeObj={bodyMake}
@@ -796,12 +796,14 @@ const CatalogBodyMake: React.FC<Props> = ({
                             setLightboxOpen(true);
                             setLightboxImagesArray(bodyMake.images);
                           }}
-                          className={`catalog__dropdown-more 
-                        ${bodyMake.images.length === 0 ? 'catalog__dropdown-more--disabled' : ''}                       
+                          className={`catalogbodymake__dropdown-more 
+                        ${
+                          bodyMake.images.length === 0 ? 'catalogbodymake__dropdown-more--disabled' : ''
+                        }                       
                         ${
                           accessObj?.showAdminDashboard
-                            ? 'catalog__dropdown-more--image'
-                            : 'catalog__dropdown-more--make'
+                            ? 'catalogbodymake__dropdown-more--image'
+                            : 'catalogbodymake__dropdown-more--make'
                         }                          
                           `}
                         >
@@ -1508,7 +1510,7 @@ const CatalogBodyMake: React.FC<Props> = ({
 
       <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
         <CustomContainer>
-          <div className="catalog__outerdiv">
+          <div className="catalogbodymake__outerdiv">
             {makeFromCatalogBodyMake && (
               <>
                 <CatalogFilter
@@ -1519,7 +1521,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                 />
               </>
             )}
-            <div className="catalog__div">
+            <div className="catalogbodymake__div">
               {bodyMakeWithWheelbaseArray && catalogMake ? (
                 <>
                   <section className="catalogbodymake__section-div">
@@ -1587,7 +1589,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                                         title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series}`}
                                       >
                                         <div
-                                          className="catalog__dropdown-more"
+                                          className="catalogbodymake__dropdown-more"
                                           onClick={() => {
                                             setDeleteModalContent({
                                               ...deleteModalContent,

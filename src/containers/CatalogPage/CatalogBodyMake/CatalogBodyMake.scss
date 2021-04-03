@@ -1,4 +1,12 @@
 .catalogbodymake {
+  &__div {
+    position: relative;
+    padding: 5rem 1rem 5rem 1rem;
+
+    @include respond-to($small-phone) {
+      padding: 2rem 0 2rem 0;
+    }
+  }
   &__innerdiv {
     // div wrapping the steps and the content
     display: flex;
@@ -26,6 +34,14 @@
     @include respond-to($tablet-landscape-up) {
       padding: 0.5rem;
       min-height: 70vh;
+    }
+  }
+
+  &__outerdiv {
+    display: block;
+    padding-top: 7.6rem; //height of navbar
+    @include respond-to($small-phone) {
+      padding-top: 5rem; //height of navbar
     }
   }
 
@@ -94,6 +110,94 @@
       }
       @include respond-to($tablet-landscape-up) {
         width: 100%;
+      }
+    }
+  }
+
+  /* =================================== */
+  // the dropdown for series
+  /* =================================== */
+  &__dropdown {
+    &-more {
+      cursor: pointer;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 1rem;
+      font-size: 1.2rem;
+      background: white;
+      border: 1px solid transparent !important;
+      color: black !important;
+      margin-bottom: 0.3rem;
+      @include shadow-func(0, 0, 0.5rem, 0.2rem, rgba(0, 0, 0, 0.2));
+      @include respond-to($small-phone) {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+      }
+
+      &:hover {
+        transition: all 0.5s ease;
+        border: 1px solid white !important;
+        color: white !important;
+        background: $primary-color-4;
+      }
+      &:active {
+        transition: all 0.2s ease;
+        background: white;
+      }
+
+      /* ----------------------------------------------- */
+      // variation of the dropdown for each make card
+      /* ----------------------------------------------- */
+      &--make {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+        background: white;
+        color: $primary-color-4;
+        border: 2px solid rgba(204, 204, 204, 1);
+
+        &:hover {
+          transition: all 0.5s ease;
+          border: 1px solid white;
+          color: white;
+          background: darken($primary-color-3, 5%);
+        }
+        &:active {
+          transition: none;
+          background: $primary-color-2;
+        }
+      }
+
+      &--image {
+        position: absolute;
+        top: 1rem;
+        right: 5rem;
+        z-index: 2;
+        background: white;
+        color: $primary-color-4;
+        border: 2px solid rgba(204, 204, 204, 1);
+
+        &:hover {
+          transition: all 0.5s ease;
+          border: 1px solid white;
+          color: white;
+          background: darken($primary-color-3, 5%);
+        }
+        &:active {
+          transition: none;
+          background: $primary-color-2;
+        }
+      }
+
+      &--disabled {
+        pointer-events: none;
+        opacity: 0;
       }
     }
   }
@@ -475,6 +579,12 @@
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
+      }
+
+      &--skeleton {
+        width: 100% !important;
+        height: 100% !important;
+        background: darken($primary-color-4, 6%) !important;
       }
     }
 

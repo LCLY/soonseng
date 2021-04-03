@@ -328,33 +328,6 @@ export const updateSpecificIntakeJobsFailed = (errorMessage: string): AppActions
 };
 
 /* ============================================================================================ */
-//  Get All Users
-/* ============================================================================================ */
-export const getAllUsers = (): AppActions => {
-  return {
-    type: actionTypes.GET_ALL_USERS,
-  };
-};
-
-export const getAllUsersStart = (): AppActions => {
-  return {
-    type: actionTypes.GET_ALL_USERS_START,
-  };
-};
-
-export const getAllUsersSucceed = (allUsersArray: TReceivedUserInfoObj[]): AppActions => {
-  return {
-    type: actionTypes.GET_ALL_USERS_SUCCEED,
-    allUsersArray: allUsersArray,
-  };
-};
-export const getAllUsersFailed = (errorMessage: string): AppActions => {
-  return {
-    type: actionTypes.GET_ALL_USERS_FAILED,
-    errorMessage: errorMessage,
-  };
-};
-/* ============================================================================================ */
 //  Get Users By Roles
 /* ============================================================================================ */
 export const getUsersByRoles = (role_id: number | undefined, title: string | undefined): AppActions => {

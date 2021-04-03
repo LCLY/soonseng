@@ -83,6 +83,47 @@ export const deleteUploadImageFailed = (errorMessage: string): AppActions => {
 
 export {
   /* ---------------- */
+  // Users
+  /* ---------------- */
+  getUsers,
+  getUsersStart,
+  getUsersFailed,
+  getUsersSucceed,
+  createUser,
+  createUserFailed,
+  createUserStart,
+  createUserSucceed,
+  updateUser,
+  updateUserFailed,
+  updateUserStart,
+  updateUserSucceed,
+  deleteUser,
+  deleteUserFailed,
+  deleteUserStart,
+  deleteUserSucceed,
+  /* ---------------- */
+  // Role
+  /* ---------------- */
+  getRoles,
+  getRolesStart,
+  getRolesFailed,
+  getRolesSucceed,
+  createRole,
+  createRoleFailed,
+  createRoleStart,
+  createRoleSucceed,
+  updateRole,
+  updateRoleFailed,
+  updateRoleStart,
+  updateRoleSucceed,
+  deleteRole,
+  deleteRoleFailed,
+  deleteRoleStart,
+  deleteRoleSucceed,
+} from './users';
+
+export {
+  /* ---------------- */
   // Standard charges and fees
   /* ---------------- */
   getChargesFees,
@@ -324,23 +365,23 @@ export {
 } from './accessory';
 
 export {
-  // Job Status
-  getJobStatus,
-  getJobStatusFailed,
-  getJobStatusStart,
-  getJobStatusSucceed,
-  createJobStatus,
-  createJobStatusFailed,
-  createJobStatusStart,
-  createJobStatusSucceed,
-  updateJobStatus,
-  updateJobStatusFailed,
-  updateJobStatusStart,
-  updateJobStatusSucceed,
-  deleteJobStatus,
-  deleteJobStatusFailed,
-  deleteJobStatusStart,
-  deleteJobStatusSucceed,
+  // Intake Status
+  getIntakeStatus,
+  getIntakeStatusFailed,
+  getIntakeStatusStart,
+  getIntakeStatusSucceed,
+  createIntakeStatus,
+  createIntakeStatusFailed,
+  createIntakeStatusStart,
+  createIntakeStatusSucceed,
+  updateIntakeStatus,
+  updateIntakeStatusFailed,
+  updateIntakeStatusStart,
+  updateIntakeStatusSucceed,
+  deleteIntakeStatus,
+  deleteIntakeStatusFailed,
+  deleteIntakeStatusStart,
+  deleteIntakeStatusSucceed,
   // Service/job Types
   getServiceTypes,
   getServiceTypesFailed,

@@ -15,7 +15,7 @@ export function* getCatalogMakesSaga(_action: AppActions) {
 
   let url = process.env.REACT_APP_API + `/pages/catalog/makes`;
 
-  try {
+try {
     let response = yield axios.get(url, getAxiosHeaderToken());
     yield put(actions.getCatalogMakesSucceed(response.data.makes));
   } catch (error) {

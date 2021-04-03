@@ -8,8 +8,6 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
-import LightboxComponent from 'src/components/ImageRelated/LightboxComponent/LightboxComponent';
-import FullImageGalleryModal from 'src/components/ImageRelated/FullImageGalleryModal/FullImageGalleryModal';
 /*3rd party lib*/
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,23 +16,15 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Tabs, Tooltip, message, Skeleton, Menu, Dropdown } from 'antd';
+import { Empty, Form, Tabs, Tooltip, message, Menu, Dropdown } from 'antd';
 
 /* Util */
-import {
-  TCreateMakeData,
-  TReceivedImageObj,
-  TReceivedMakeObj,
-  TReceivedSeriesObj,
-  TUpdateMakeData,
-} from 'src/store/types/dashboard';
+import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { RootState } from 'src';
 import holy5trucks from 'src/img/5trucks.jpg';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
-import { UPLOAD_TO_MAKE } from 'src/shared/constants';
-import { onClearAllSelectedImages } from 'src/shared/Utils';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog';
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
@@ -49,7 +39,6 @@ type Props = CatalogPageProps & StateProps & DispatchProps & RouteComponentProps
 const CatalogPage: React.FC<Props> = ({
   history,
   accessObj,
-  dashboardLoading,
   successMessage,
   errorMessage,
   catalogMakesArray,
@@ -60,7 +49,6 @@ const CatalogPage: React.FC<Props> = ({
   onDeleteMake,
   onUpdateMake,
   onGetCatalogMakes,
-  onDeleteUploadImage,
   onClearDashboardState,
 }) => {
   /* ================================================== */
@@ -78,17 +66,6 @@ const CatalogPage: React.FC<Props> = ({
     series: false,
     make: false,
   });
-
-  const [photoIndex, setPhotoIndex] = useState(0);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxImagesArray, setLightboxImagesArray] = useState<TReceivedImageObj[]>([]);
-  const [fullImageGalleryVisible, setFullImageGalleryVisible] = useState(false);
-  const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
-  const [keepTrackSeriesMake, setKeepTrackSeriesMake] = useState<{
-    series_id: number;
-    make_id: number;
-    brand_id: number;
-  } | null>(null);
 
   const [localLoading, setLocalLoading] = useState(false);
 
@@ -120,8 +97,6 @@ const CatalogPage: React.FC<Props> = ({
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
-  const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
-  const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
 
   /* ================================================== */
   /*  methods  */
@@ -259,21 +234,6 @@ const CatalogPage: React.FC<Props> = ({
     <div className="catalog__menu-outerdiv">
       <Menu className="catalog__menu">
         <Menu.Item
-          onClick={() => {
-            setFullImageGalleryVisible(true);
-            setFullImageGalleryImagesArray(props.makeObj.images);
-            setKeepTrackSeriesMake({
-              ...keepTrackSeriesMake,
-              make_id: props.makeObj.id,
-              series_id: props.seriesObj.id,
-              brand_id: props.makeObj.brand.id,
-            });
-            setImageGalleryTargetModelId(props.makeObj.id);
-          }}
-        >
-          <i className="fas fa-images"></i> &nbsp;&nbsp;Edit Images
-        </Menu.Item>
-        <Menu.Item
           className="catalog__menu-item"
           onClick={() => {
             let price: number | null = null;
@@ -364,73 +324,87 @@ const CatalogPage: React.FC<Props> = ({
         </div>
         <div className="catalog__section-series-innerdiv">
           {series.makes.length > 0 ? (
-            <div className={`catalog__grid`}>
-              {series.makes
-                .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
-                .map((make) => {
-                  let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
-                    series.title,
-                    '',
-                  )}-${convertSpaceInStringWithChar(make.title, '')}`;
-                  let cardUniqueKey = uuidv4();
-                  return (
-                    <div key={cardUniqueKey} className="catalog__card-outerdiv">
-                      <div
-                        className="catalog__card"
-                        onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
-                      >
-                        {make.images.length > 0 ? (
-                          <>
-                            <img
-                              className="catalog__card-image"
-                              src={make.images[0].url}
-                              alt={make.images[0].filename}
-                            />
-                            <div
-                              className="catalog__card-image-blurbg"
-                              style={{ backgroundImage: `url(${make.images[0].url})` }}
-                            ></div>
-                          </>
-                        ) : (
-                          <Skeleton.Image className="catalog__card-image--skeleton" />
+            // <div className={`catalog__grid`}>
+            // {series.makes
+            //   .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
+            //   .map((make) => {
+            //     let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
+            //       series.title,
+            //       '',
+            //     )}-${convertSpaceInStringWithChar(make.title, '')}`;
+            //     let cardUniqueKey = uuidv4();
+            //     return (
+            //       <div key={cardUniqueKey} className="catalog__card-outerdiv">
+            //         <div
+            //           className="catalog__card"
+            //           onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
+            //         >
+            //           {make.images.length > 0 ? (
+            //             <>
+            //               <img
+            //                 className="catalog__card-image"
+            //                 src={make.images[0].url}
+            //                 alt={make.images[0].filename}
+            //               />
+            //               <div
+            //                 className="catalog__card-image-blurbg"
+            //                 style={{ backgroundImage: `url(${make.images[0].url})` }}
+            //               ></div>
+            //             </>
+            //           ) : (
+            //             <Skeleton.Image className="catalog__card-image--skeleton" />
+            //           )}
+            //         </div>
+            //         <div className="catalog__card-label">{make.title}</div>
+            //         {accessObj?.showAdminDashboard && (
+            //           <Tooltip title={`Edit / Delete ${make.title}`}>
+            //             <Dropdown
+            //               className="catalog__dropdown-more catalog__dropdown-more--make"
+            //               overlay={<MakeMenu makeObj={make} seriesObj={series} />}
+            //               trigger={['click']}
+            //             >
+            //               <i className="fas fa-ellipsis-h"></i>
+            //             </Dropdown>
+            //           </Tooltip>
+            //         )}
+            //       </div>
+            //     );
+            //   })}
+            // </div>
+            <div className="catalog__series-outerdiv">
+              <div className="catalog__series-image">image</div>
+              <div>
+                {series.makes
+                  .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
+                  .map((make) => {
+                    let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
+                      series.title,
+                      '',
+                    )}-${convertSpaceInStringWithChar(make.title, '')}`;
+                    let cardUniqueKey = uuidv4();
+                    return (
+                      <div className="catalog__row-div-parent" key={cardUniqueKey}>
+                        <div
+                          className="catalog__row-div"
+                          onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
+                        >
+                          <div>{make.title}</div>
+                        </div>
+                        {accessObj?.showAdminDashboard && (
+                          <Tooltip title={`Edit / Delete ${make.title}`}>
+                            <Dropdown
+                              className="catalog__dropdown-more catalog__dropdown-more--make"
+                              overlay={<MakeMenu makeObj={make} seriesObj={series} />}
+                              trigger={['click']}
+                            >
+                              <i className="fas fa-ellipsis-h"></i>
+                            </Dropdown>
+                          </Tooltip>
                         )}
                       </div>
-                      <div className="catalog__card-label">{make.title}</div>
-                      {accessObj?.showAdminDashboard && (
-                        <Tooltip title={`Edit / Delete ${make.title}`}>
-                          <Dropdown
-                            className="catalog__dropdown-more catalog__dropdown-more--make"
-                            overlay={<MakeMenu makeObj={make} seriesObj={series} />}
-                            trigger={['click']}
-                          >
-                            <i className="fas fa-ellipsis-h"></i>
-                          </Dropdown>
-                        </Tooltip>
-                      )}
-
-                      {/* View Image button */}
-                      <Tooltip title={`View Images`}>
-                        <div
-                          onClick={() => {
-                            setPhotoIndex(0);
-                            setLightboxOpen(true);
-                            setLightboxImagesArray(make.images);
-                          }}
-                          className={`catalog__dropdown-more 
-                        ${make.images.length === 0 ? 'catalog__dropdown-more--disabled' : ''}                       
-                        ${
-                          accessObj?.showAdminDashboard
-                            ? 'catalog__dropdown-more--image'
-                            : 'catalog__dropdown-more--make'
-                        }                          
-                          `}
-                        >
-                          <i className="fas fa-images"></i>
-                        </div>
-                      </Tooltip>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+              </div>
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'çenter', justifyContent: 'center', height: '100%' }}>
@@ -439,16 +413,6 @@ const CatalogPage: React.FC<Props> = ({
           )}
         </div>
       </div>
-
-      {lightboxImagesArray.length > 0 && (
-        <LightboxComponent
-          photoIndex={photoIndex}
-          setPhotoIndex={setPhotoIndex}
-          isOpen={lightboxOpen}
-          setIsOpen={setLightboxOpen}
-          images={lightboxImagesArray}
-        />
-      )}
     </>
   );
 
@@ -516,22 +480,6 @@ const CatalogPage: React.FC<Props> = ({
   ]);
 
   useEffect(() => {
-    if (catalogMakesArray && catalogMakesArray !== undefined && keepTrackSeriesMake) {
-      // keepTrackSeriesMake is to keep track which "model" it is currently uploading to
-      // so when the array updates, it can replenish the array with the latest items
-      let filteredBrandArray = catalogMakesArray.filter(
-        (catalogMake) => catalogMake.brand.id === keepTrackSeriesMake.brand_id,
-      );
-
-      let filteredSeries = filteredBrandArray[0].series.filter(
-        (seriesChild) => seriesChild.id === keepTrackSeriesMake.series_id,
-      );
-      let filteredMake = filteredSeries[0].makes.filter((makeChild) => makeChild.id === keepTrackSeriesMake.make_id);
-      setFullImageGalleryImagesArray(filteredMake[0].images);
-    }
-  }, [catalogMakesArray, keepTrackSeriesMake]);
-
-  useEffect(() => {
     if (successMessage) {
       // everytime when succeed get catalog again
       onGetCatalogMakes();
@@ -546,14 +494,6 @@ const CatalogPage: React.FC<Props> = ({
       onClearDashboardState();
     }
   }, [errorMessage, onClearDashboardState]);
-
-  useEffect(() => {
-    if (document && lightboxOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [lightboxOpen]);
 
   /* ================================================== */
   /* ================================================== */
@@ -660,24 +600,6 @@ const CatalogPage: React.FC<Props> = ({
         warningText={deleteModalContent.make.warningText}
         backupWarningText={deleteModalContent.make.backupWarningText}
         loading={localLoading}
-      />
-
-      <FullImageGalleryModal
-        indexKey={'make'}
-        modelName={UPLOAD_TO_MAKE}
-        modelId={imageGalleryTargetModelId}
-        uploadSelectedFiles={uploadSelectedFiles}
-        setUploadSelectedFiles={setUploadSelectedFiles}
-        imagesPreviewUrls={fullGalleryImagesPreviewUrls}
-        setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
-        visible={fullImageGalleryVisible}
-        setVisible={setFullImageGalleryVisible}
-        loading={dashboardLoading !== undefined && dashboardLoading}
-        showUpdateModal={showUpdateModal}
-        imagesArray={fullImageGalleryImagesArray}
-        setShowUpdateModal={setShowUpdateModal}
-        onDeleteUploadImage={onDeleteUploadImage}
-        onClearAllSelectedImages={onClearAllSelectedImages}
       />
 
       <NavbarComponent activePage="catalog" defaultOpenKeys="product" />

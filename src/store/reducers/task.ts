@@ -12,7 +12,6 @@ const initialState: TaskInitialState = {
   // task
   // users array
   tasksArray: null,
-  allUsersArray: null,
   usersByRolesArray: null,
   intakeSummaryArray: null,
   specificIntakeJobsObj: null,
@@ -261,28 +260,6 @@ const updateSpecificIntakeJobsFailed = (state: TaskInitialState, action: AppActi
 /* ============================================================================================ */
 /* ============================================================================================ */
 /* -------------------------- */
-/* Get all users */
-/* -------------------------- */
-const getAllUsersStart = (state: TaskInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true });
-};
-const getAllUsersSucceed = (state: TaskInitialState, action: AppActions) => {
-  if ('allUsersArray' in action) {
-    return updateObject(state, {
-      errorMessage: null,
-      loading: false,
-      allUsersArray: action.allUsersArray,
-    });
-  }
-  return state;
-};
-const getAllUsersFailed = (state: TaskInitialState, action: AppActions) => {
-  if ('errorMessage' in action) {
-    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
-  }
-  return state;
-};
-/* -------------------------- */
 /* Get users by roles */
 /* -------------------------- */
 const getUsersByRolesStart = (state: TaskInitialState, _action: AppActions) => {
@@ -393,16 +370,7 @@ const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, ac
       return updateSpecificIntakeJobsSucceed(state, action);
     case actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_FAILED:
       return updateSpecificIntakeJobsFailed(state, action);
-
-    /* =================================== */
-    // Get all Users
-    /* =================================== */
-    case actionTypes.GET_ALL_USERS_START:
-      return getAllUsersStart(state, action);
-    case actionTypes.GET_ALL_USERS_SUCCEED:
-      return getAllUsersSucceed(state, action);
-    case actionTypes.GET_ALL_USERS_FAILED:
-      return getAllUsersFailed(state, action);
+  
     /* =================================== */
     // Get Users By Roles
     /* =================================== */

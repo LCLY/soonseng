@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext, useRef, MutableRefObject } from
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
+import SpecificIntake from './SpecificIntake/SpecificIntake';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
@@ -9,6 +10,7 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import IntakeJobsModal from 'src/components/Modal/IntakeJobsModal/IntakeJobsModal';
 /* 3rd party lib */
+import gsap from 'gsap';
 import axios from 'axios';
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -26,7 +28,7 @@ import {
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
-import { TReceivedJobStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 
 export type TTaskTableState = {
   key: string;
@@ -41,7 +43,7 @@ export type TTaskTableState = {
 
 type TIntakeTableState = {
   key: string;
-  dateTimeIn: string;
+  dateTimeIn: any;
   createdAt: string;
   regNumber: string;
   serviceType: string;
@@ -50,7 +52,7 @@ type TIntakeTableState = {
   description: string;
   bay: string;
 };
-interface IIntakeDict {
+export interface IIntakeDict {
   [intakeId: number]: TIntakeTableState;
 }
 
@@ -72,7 +74,7 @@ const TaskPage: React.FC<Props> = ({
   successMessage,
   serviceTypesArray,
   intakeSummaryArray,
-  onGetJobStatus,
+  onGetIntakeStatus,
   onGetIntakeSummary,
   onClearTaskState,
   onGetUsersByRoles,
@@ -90,6 +92,7 @@ const TaskPage: React.FC<Props> = ({
 
   const [count, setCount] = useState(0);
 
+  const [inEditMode, setInEditMode] = useState(false);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
@@ -119,20 +122,28 @@ const TaskPage: React.FC<Props> = ({
   const [intakeJobsColumns, setIntakeJobsColumns] = useState([
     {
       key: 'dateTimeIn',
-      title: 'Date Time In',
-      className: 'body__table-header--title',
+      title: 'Date',
       dataIndex: 'dateTimeIn',
-      width: 'auto',
+      width: '12rem',
       ellipsis: true,
-      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.dateTimeIn.localeCompare(b.dateTimeIn),
-      ...getColumnSearchProps(intakeJobsSearchInput, 'dateTimeIn', 'Date Time In'),
+      align: 'center',
+      sorter: (a: TIntakeTableState, b: TIntakeTableState) =>
+        a.dateTimeIn.format('DD-MM-YYYY HH:mm A').localeCompare(b.dateTimeIn.format('DD-MM-YYYY HH:mm A')),
+      render: (_: any, record: TIntakeTableState) => {
+        return (
+          <span className="task__table-col--datetime">
+            {record.dateTimeIn.format('DD-MM-YYYY')}
+            <br />
+            {record.dateTimeIn.format('HH:mm A')}
+          </span>
+        );
+      },
     },
     {
       key: 'regNumber',
-      title: 'Registration Number',
-      className: 'body__table-header--title',
+      title: 'Reg No',
       dataIndex: 'regNumber',
-      width: 'auto',
+      width: '20rem',
       ellipsis: true,
       sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.regNumber.localeCompare(b.regNumber),
       ...getColumnSearchProps(intakeJobsSearchInput, 'regNumber', 'Registration Number'),
@@ -151,7 +162,12 @@ const TaskPage: React.FC<Props> = ({
                     registrationNumber: record.regNumber,
                     bay: record.bay === '-' ? '' : record.bay,
                   });
-                  setShowUpdateModal({ ...showUpdateModal, intake_job: true });
+                  gsap.to('.task__table-div', {
+                    duration: 1,
+                    ease: 'ease',
+                    x: '-100%',
+                  });
+                  // setShowUpdateModal({ ...showUpdateModal, intake_job: true });
                   setSpecificIntakeId(parseInt(record.key));
                 }}
               >
@@ -165,17 +181,13 @@ const TaskPage: React.FC<Props> = ({
     {
       key: 'serviceType',
       title: 'Job Type',
-      className: 'body__table-header--title',
       dataIndex: 'serviceType',
       width: 'auto',
       ellipsis: true,
-      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.serviceType.localeCompare(b.serviceType),
-      ...getColumnSearchProps(intakeJobsSearchInput, 'serviceType', 'Job Type'),
     },
     {
       key: 'status',
       title: 'Status',
-      className: 'body__table-header--title',
       dataIndex: 'status',
       width: '10rem',
       ellipsis: true,
@@ -184,9 +196,9 @@ const TaskPage: React.FC<Props> = ({
     {
       key: 'bay',
       title: 'Bay',
-      className: 'body__table-header--title',
       dataIndex: 'bay',
-      width: 'auto',
+      width: '10rem',
+      align: 'center',
       ellipsis: true,
       sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.bay.localeCompare(b.bay),
       ...getColumnSearchProps(intakeJobsSearchInput, 'bay', 'Bay'),
@@ -200,6 +212,8 @@ const TaskPage: React.FC<Props> = ({
     bay: string;
     pickup: boolean;
     description: string;
+    assign: number[];
+    intakeStatus: number;
     registrationNumber: string;
   }) => {
     let resultJobs: IJobFormData[] = [];
@@ -207,8 +221,6 @@ const TaskPage: React.FC<Props> = ({
       let taskObj = {
         service_task_id: task[`taskTitle${index}`],
         description: task[`taskDescription${index}`],
-        job_status_id: task[`taskStatus${index}`],
-        assigned_to_ids: task[`assign${index}`],
       };
       resultJobs.push(taskObj);
     });
@@ -219,6 +231,8 @@ const TaskPage: React.FC<Props> = ({
         pick_up: values.pickup !== undefined ? values.pickup : false,
         description: values.description !== undefined ? values.description : '',
         registration: values.registrationNumber,
+        intake_status_id: values.intakeStatus,
+        assigned_to_ids: values.assign,
       },
       jobs: resultJobs,
     };
@@ -228,19 +242,17 @@ const TaskPage: React.FC<Props> = ({
   const onUpdateIntakeAndJobsFinish = (values: {
     [key: string]: any;
     bay: string;
-    description: string;
-    intakeId: string;
     pickup: boolean;
-    registrationNumber: string;
+    description: string;
+    assign: number[];
+    intakeId: string;
+    intakeStatus: number;
   }) => {
     let resultJobs: IJobFormData[] = [];
-    console.log(values);
+
     (taskTableState as any).forEach((task: any, index: number) => {
-      console.log(task);
       let taskObj = {
         id: task[`taskId${index}`],
-        assigned_to_ids: values[`assign${index}`],
-        job_status_id: values[`taskStatus${index}`],
         service_task_id: values[`taskTitle${index}`],
         description: values[`taskDescription${index}`],
       };
@@ -253,10 +265,11 @@ const TaskPage: React.FC<Props> = ({
         pick_up: values.pickup !== undefined ? values.pickup : false,
         description: values.description !== undefined ? values.description : '',
         registration: values.registrationNumber,
+        intake_status_id: values.intakeStatus,
+        assigned_to_ids: values.assign,
       },
       jobs: resultJobs,
     };
-    console.log(intakeJobsFormData);
     onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
   };
 
@@ -303,36 +316,39 @@ const TaskPage: React.FC<Props> = ({
 
   useEffect(() => {
     // onGetTasks();
-    onGetJobStatus();
+    onGetIntakeStatus();
     onGetServiceTypes();
     onGetUsersByRoles(undefined, '');
     onGetIntakeSummary();
-  }, [onGetJobStatus, onGetIntakeSummary, onGetUsersByRoles, onGetServiceTypes]);
+  }, [onGetIntakeStatus, onGetIntakeSummary, onGetUsersByRoles, onGetServiceTypes]);
 
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for Tasks
   /* ----------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TIntakeTableState[] = [];
+    // let tempArray: TIntakeTableState[] = [];
     let intakeDictObj: any = {};
     /** A function that stores desired keys and values into a tempArray */
     const storeValue = (intake: TReceivedIntakeSummaryObj) => {
       // only render when available value is true
 
       let serviceTypeOnlyArray: string[] = [];
-      intake.jobs.forEach((job) => serviceTypeOnlyArray.push(job.service_type));
+      if (intake.jobs !== undefined) {
+        intake.jobs.forEach((job) => serviceTypeOnlyArray.push(job.service_type));
+      }
 
       let uniqueService = [...new Set(serviceTypeOnlyArray)];
 
       intakeDictObj[intake.id] = {
         key: intake.id.toString(),
-        dateTimeIn: moment(intake.created_at).format('YYYY-MM-DD HH:mm A'), //formatted timestamp
+        dateTimeIn: moment(intake.created_at), //formatted timestamp
         createdAt: intake.created_at, //raw timestamp
         pickup: intake.pick_up,
         regNumber: intake.registration,
+        assign: intake.intake_users,
         description: intake.description,
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
-        status: `${uniqueService.length} / ${intake.jobs.length}`,
+        status: intake.intake_status.title,
         bay: intake.bay === '' ? '-' : intake.bay,
       };
     };
@@ -342,7 +358,7 @@ const TaskPage: React.FC<Props> = ({
       intakeSummaryArray.map(storeValue);
     }
     // update the state with tempArray
-    tempArray.sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b));
+    // tempArray.sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b));
     // setIntakeTableState(tempArray);
     setIntakeDict(intakeDictObj);
   }, [intakeSummaryArray]);
@@ -350,33 +366,36 @@ const TaskPage: React.FC<Props> = ({
   useEffect(() => {
     if (successMessage) {
       message.success(successMessage);
-      onClearTaskState();
+      setInEditMode(false);
       createIntakeJobsForm.resetFields();
       setShowCreateModal({
         ...showCreateModal,
         intake_job: false,
       });
+
+      onClearTaskState();
     }
   }, [successMessage, createIntakeJobsForm, onClearTaskState, showCreateModal]);
 
   useEffect(() => {
     // If there is incoming data, update the table or add a new row to the table
-    if (incomingData && typeof incomingData === 'object') {
+    if (incomingData && incomingData !== undefined && typeof incomingData === 'object') {
       let serviceTypeOnlyArray: string[] = [];
-      incomingData.jobs.forEach((job) => serviceTypeOnlyArray.push(job.service_type));
-
+      if (incomingData.jobs !== undefined) {
+        incomingData.jobs.forEach((job) => serviceTypeOnlyArray.push(job.service_type));
+      }
       let uniqueService = [...new Set(serviceTypeOnlyArray)];
 
       if (intakeDict === null) return;
       let intakeTableObj: TIntakeTableState = {
         key: incomingData.id.toString(),
-        dateTimeIn: moment(incomingData.created_at).format('YYYY-MM-DD HH:mm A'), //formatted timestamp
+        dateTimeIn: moment(incomingData.created_at), //formatted timestamp
         createdAt: incomingData.created_at, //raw timestamp
         pickup: incomingData.pick_up,
         regNumber: incomingData.registration,
         description: incomingData.description,
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
-        status: `${uniqueService.length} / ${incomingData.jobs.length}`,
+        status: incomingData.intake_status.title,
         bay: incomingData.bay === '' ? '-' : incomingData.bay,
       };
 
@@ -401,6 +420,8 @@ const TaskPage: React.FC<Props> = ({
             modalTitle={'Create New Intake'}
             antdForm={createIntakeJobsForm}
             showModal={showCreateModal}
+            intake_id={specificIntakeId}
+            // intakeDictObj={intakeDictObj}
             visible={showCreateModal.intake_job}
             onFinish={onCreateIntakeAndJobsFinish}
             setShowModal={setShowCreateModal}
@@ -418,6 +439,7 @@ const TaskPage: React.FC<Props> = ({
             modalWidth={1200}
             count={count}
             setCount={setCount}
+            // intakeDictObj={intakeDictObj}
             intake_id={specificIntakeId}
             modalTitle={'Update Intake'}
             antdForm={updateIntakeJobsForm}
@@ -446,7 +468,7 @@ const TaskPage: React.FC<Props> = ({
                 <section>
                   <>
                     {intakeSummaryArray && intakeDict ? (
-                      <section className="make__section">
+                      <section className="task__glass">
                         <div className="make__header-div ">
                           <div className="make__header-title">Tasks</div>
                           <Button
@@ -476,15 +498,39 @@ const TaskPage: React.FC<Props> = ({
                         {/* -------------------- */}
                         {/*     Intake Table      */}
                         {/* -------------------- */}
-                        <Table
-                          bordered
-                          // className="make__table"
-                          scroll={{ x: '89rem', y: 'auto' }}
-                          // components={components}
-                          dataSource={Object.values(intakeDict)}
-                          columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
-                          pagination={false}
-                        />
+                        <div className="task__table-wrapper">
+                          <div className="task__table-outerdiv">
+                            <div className="task__table-parent">
+                              <div className="task__table-div">
+                                <Table
+                                  bordered
+                                  className="task__table"
+                                  scroll={{ y: 600 }}
+                                  // components={components}
+                                  dataSource={Object.values(
+                                    intakeDict,
+                                  ).sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
+                                  columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
+                                  pagination={false}
+                                />
+                                <div className="task__specific-div">
+                                  <SpecificIntake
+                                    count={count}
+                                    setCount={setCount}
+                                    inEditMode={inEditMode}
+                                    setInEditMode={setInEditMode}
+                                    serviceTypeTaskDict={serviceTypeTaskDict}
+                                    setServiceTypeTaskDict={setServiceTypeTaskDict}
+                                    serviceTaskDropdown={serviceTaskDropdown}
+                                    setServiceTaskDropdown={setServiceTaskDropdown}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            {/* )} */}
+                          </div>
+                          <div className="task__table--pickup">Ready for pickup</div>
+                        </div>
                       </section>
                     ) : (
                       <div className="catalog__loading-div">
@@ -516,7 +562,7 @@ interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
-  jobStatusArray?: TReceivedJobStatusObj[] | null;
+  intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
 }
@@ -525,7 +571,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     loading: state.task.loading,
     errorMessage: state.task.errorMessage,
     successMessage: state.task.successMessage,
-    jobStatusArray: state.dashboard.jobStatusArray,
+    intakeStatusArray: state.dashboard.intakeStatusArray,
     intakeSummaryArray: state.task.intakeSummaryArray,
     serviceTypesArray: state.dashboard.serviceTypesArray,
   };
@@ -536,7 +582,7 @@ interface DispatchProps {
   // onCreateTask: typeof actions.createTask;
   // onUpdateTask: typeof actions.updateTask;
   // onDeleteTask: typeof actions.deleteTask;
-  onGetJobStatus: typeof actions.getJobStatus;
+  onGetIntakeStatus: typeof actions.getIntakeStatus;
   onClearTaskState: typeof actions.clearTaskState;
   onGetUsersByRoles: typeof actions.getUsersByRoles;
   onGetServiceTypes: typeof actions.getServiceTypes;
@@ -552,7 +598,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     // onCreateTask: (taskFormData) => dispatch(actions.createTask(taskFormData)),
     // onUpdateTask: (task_id, taskFormData) => dispatch(actions.updateTask(task_id, taskFormData)),
     onClearTaskState: () => dispatch(actions.clearTaskState()),
-    onGetJobStatus: () => dispatch(actions.getJobStatus()),
+    onGetIntakeStatus: () => dispatch(actions.getIntakeStatus()),
     onGetServiceTypes: () => dispatch(actions.getServiceTypes()),
     onGetIntakeSummary: () => dispatch(actions.getIntakeSummary()),
     onGetUsersByRoles: (role_id, title) => dispatch(actions.getUsersByRoles(role_id, title)),

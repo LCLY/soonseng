@@ -1,5 +1,41 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 // Central hub for all the types and actionTypes
+
+import {
+  CreateRoleAction,
+  CreateRoleFailedAction,
+  CreateRoleStartAction,
+  CreateRoleSucceedAction,
+  CreateUserAction,
+  CreateUserFailedAction,
+  CreateUserStartAction,
+  CreateUserSucceedAction,
+  DeleteRoleAction,
+  DeleteRoleFailedAction,
+  DeleteRoleStartAction,
+  DeleteRoleSucceedAction,
+  DeleteUserAction,
+  DeleteUserFailedAction,
+  DeleteUserStartAction,
+  DeleteUserSucceedAction,
+  GetRolesAction,
+  GetRolesFailedAction,
+  GetRolesStartAction,
+  GetRolesSucceedAction,
+  GetUsersAction,
+  GetUsersFailedAction,
+  GetUsersStartAction,
+  GetUsersSucceedAction,
+  UpdateRoleAction,
+  UpdateRoleFailedAction,
+  UpdateRoleStartAction,
+  UpdateRoleSucceedAction,
+  UpdateUserAction,
+  UpdateUserFailedAction,
+  UpdateUserStartAction,
+  UpdateUserSucceedAction,
+} from 'src/store/types/dashboard/users';
+
 import {
   CreateChargesFeesAction,
   CreateChargesFeesFailedAction,
@@ -142,22 +178,22 @@ import {
 } from 'src/store/types/dashboard/bodymake';
 
 import {
-  CreateJobStatusAction,
-  CreateJobStatusFailedAction,
-  CreateJobStatusStartAction,
-  CreateJobStatusSucceedAction,
-  DeleteJobStatusAction,
-  DeleteJobStatusFailedAction,
-  DeleteJobStatusStartAction,
-  DeleteJobStatusSucceedAction,
-  GetJobStatusAction,
-  GetJobStatusFailedAction,
-  GetJobStatusStartAction,
-  GetJobStatusSucceedAction,
-  UpdateJobStatusAction,
-  UpdateJobStatusFailedAction,
-  UpdateJobStatusStartAction,
-  UpdateJobStatusSucceedAction,
+  CreateIntakeStatusAction,
+  CreateIntakeStatusFailedAction,
+  CreateIntakeStatusStartAction,
+  CreateIntakeStatusSucceedAction,
+  DeleteIntakeStatusAction,
+  DeleteIntakeStatusFailedAction,
+  DeleteIntakeStatusStartAction,
+  DeleteIntakeStatusSucceedAction,
+  GetIntakeStatusAction,
+  GetIntakeStatusFailedAction,
+  GetIntakeStatusStartAction,
+  GetIntakeStatusSucceedAction,
+  UpdateIntakeStatusAction,
+  UpdateIntakeStatusFailedAction,
+  UpdateIntakeStatusStartAction,
+  UpdateIntakeStatusSucceedAction,
   CreateServiceTypesAction,
   CreateServiceTypesFailedAction,
   CreateServiceTypesStartAction,
@@ -284,6 +320,7 @@ import {
   DeleteMakeWheelbaseFailedAction,
 } from 'src/store/types/dashboard/make';
 import { PURGE } from 'redux-persist';
+import { TReceivedUserInfoObj } from './auth';
 
 // initialState for reducers
 export interface DashboardInitialState {
@@ -332,11 +369,14 @@ export interface DashboardInitialState {
   readonly imagesUploaded?: boolean;
   readonly imagesArray?: TReceivedImageObj[] | null;
   // job status array
-  readonly jobStatusArray?: TReceivedJobStatusObj[] | null;
+  readonly intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   // service types array
   readonly serviceTypesArray?: TReceivedServiceTypesObj[] | null;
   // task titles array
   readonly serviceTasksArray?: TReceivedServiceTaskObj[] | null;
+  // user/roles related
+  readonly usersArray?: TReceivedUserInfoObj[] | null;
+  readonly userRolesArray?: TReceivedUserRolesObj[] | null;
 }
 
 /* =============================================================================================== */
@@ -419,6 +459,21 @@ export interface DeleteUploadImageFailedAction {
 
 // All the general types used by the actions
 
+/* =============================================================================================== */
+// User Roles
+/* =============================================================================================== */
+// type
+export type TReceivedUserRolesObj = {
+  id: number;
+  title: string;
+  description: string;
+  priceSalesPage: boolean;
+  fullSalesPage: boolean;
+  viewSalesDashboard: boolean;
+  editSalesDashboard: boolean;
+  salesmenDashboard: boolean;
+  adminDashboard: boolean;
+};
 /* =============================================================================================== */
 // Standard Charges and Fees
 /* =============================================================================================== */
@@ -661,10 +716,10 @@ export type TReceivedBodyMakeAccessoryObj = {
 };
 
 /* ------------------------------------------- */
-// Job Status
+// Intake Status
 /* ------------------------------------------- */
 /* types */
-export type TReceivedJobStatusObj = {
+export type TReceivedIntakeStatusObj = {
   id: number;
   title: string;
   description: string;
@@ -715,6 +770,43 @@ export type DashboardActionTypes =
   | DeleteUploadImageStartAction
   | DeleteUploadImageSucceedAction
   | DeleteUploadImageFailedAction
+  /* ======================================================================== */
+  // User/Roles
+  /* ====================================================================== */
+  // users
+  | GetUsersAction
+  | GetUsersFailedAction
+  | GetUsersStartAction
+  | GetUsersSucceedAction
+  | CreateUserAction
+  | CreateUserFailedAction
+  | CreateUserStartAction
+  | CreateUserSucceedAction
+  | DeleteUserAction
+  | DeleteUserFailedAction
+  | DeleteUserStartAction
+  | DeleteUserSucceedAction
+  | UpdateUserAction
+  | UpdateUserFailedAction
+  | UpdateUserStartAction
+  | UpdateUserSucceedAction
+  // Roles
+  | GetRolesAction
+  | GetRolesFailedAction
+  | GetRolesStartAction
+  | GetRolesSucceedAction
+  | CreateRoleAction
+  | CreateRoleFailedAction
+  | CreateRoleStartAction
+  | CreateRoleSucceedAction
+  | DeleteRoleAction
+  | DeleteRoleFailedAction
+  | DeleteRoleStartAction
+  | DeleteRoleSucceedAction
+  | UpdateRoleAction
+  | UpdateRoleFailedAction
+  | UpdateRoleStartAction
+  | UpdateRoleSucceedAction
   /* ======================================================================== */
   // Standard Charges and fees
   /* ====================================================================== */
@@ -960,23 +1052,23 @@ export type DashboardActionTypes =
   /* ======================================================================= */
   // Job monitoring page
   /* ======================================================================= */
-  /* Job Status */
-  | CreateJobStatusAction
-  | CreateJobStatusStartAction
-  | CreateJobStatusFailedAction
-  | CreateJobStatusSucceedAction
-  | GetJobStatusAction
-  | GetJobStatusStartAction
-  | GetJobStatusFailedAction
-  | GetJobStatusSucceedAction
-  | DeleteJobStatusAction
-  | DeleteJobStatusStartAction
-  | DeleteJobStatusFailedAction
-  | DeleteJobStatusSucceedAction
-  | UpdateJobStatusAction
-  | UpdateJobStatusStartAction
-  | UpdateJobStatusFailedAction
-  | UpdateJobStatusSucceedAction
+  /* Intake Status */
+  | CreateIntakeStatusAction
+  | CreateIntakeStatusStartAction
+  | CreateIntakeStatusFailedAction
+  | CreateIntakeStatusSucceedAction
+  | GetIntakeStatusAction
+  | GetIntakeStatusStartAction
+  | GetIntakeStatusFailedAction
+  | GetIntakeStatusSucceedAction
+  | DeleteIntakeStatusAction
+  | DeleteIntakeStatusStartAction
+  | DeleteIntakeStatusFailedAction
+  | DeleteIntakeStatusSucceedAction
+  | UpdateIntakeStatusAction
+  | UpdateIntakeStatusStartAction
+  | UpdateIntakeStatusFailedAction
+  | UpdateIntakeStatusSucceedAction
   /* Service Types */
   | CreateServiceTypesAction
   | CreateServiceTypesStartAction

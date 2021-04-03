@@ -301,23 +301,23 @@ export {
   /* =========================================== */
   //  Job Monitoring
   /* =========================================== */
-  // Job Status
-  getJobStatus,
-  getJobStatusFailed,
-  getJobStatusStart,
-  getJobStatusSucceed,
-  createJobStatus,
-  createJobStatusFailed,
-  createJobStatusStart,
-  createJobStatusSucceed,
-  updateJobStatus,
-  updateJobStatusFailed,
-  updateJobStatusStart,
-  updateJobStatusSucceed,
-  deleteJobStatus,
-  deleteJobStatusFailed,
-  deleteJobStatusStart,
-  deleteJobStatusSucceed,
+  // Intake Status
+  getIntakeStatus,
+  getIntakeStatusFailed,
+  getIntakeStatusStart,
+  getIntakeStatusSucceed,
+  createIntakeStatus,
+  createIntakeStatusFailed,
+  createIntakeStatusStart,
+  createIntakeStatusSucceed,
+  updateIntakeStatus,
+  updateIntakeStatusFailed,
+  updateIntakeStatusStart,
+  updateIntakeStatusSucceed,
+  deleteIntakeStatus,
+  deleteIntakeStatusFailed,
+  deleteIntakeStatusStart,
+  deleteIntakeStatusSucceed,
   // Service/job Types
   getServiceTypes,
   getServiceTypesFailed,
@@ -352,6 +352,40 @@ export {
   updateServiceTaskFailed,
   updateServiceTaskStart,
   updateServiceTaskSucceed,
+  // Users
+  createUser,
+  createUserFailed,
+  createUserStart,
+  createUserSucceed,
+  deleteUser,
+  deleteUserFailed,
+  deleteUserStart,
+  deleteUserSucceed,
+  getUsers,
+  getUsersFailed,
+  getUsersStart,
+  getUsersSucceed,
+  updateUser,
+  updateUserStart,
+  updateUserFailed,
+  updateUserSucceed,
+  // Roles
+  getRoles,
+  getRolesFailed,
+  getRolesStart,
+  getRolesSucceed,
+  updateRole,
+  updateRoleStart,
+  updateRoleFailed,
+  updateRoleSucceed,
+  createRole,
+  createRoleFailed,
+  createRoleStart,
+  createRoleSucceed,
+  deleteRole,
+  deleteRoleFailed,
+  deleteRoleStart,
+  deleteRoleSucceed,
 } from './dashboard/index';
 
 export {
@@ -439,13 +473,6 @@ export {
   updateSpecificIntakeJobsFailed,
   updateSpecificIntakeJobsStart,
   updateSpecificIntakeJobsSucceed,
-  /* ==================== */
-  // Get all users
-  /* ==================== */
-  getAllUsers,
-  getAllUsersFailed,
-  getAllUsersStart,
-  getAllUsersSucceed,
   /* ==================== */
   // Get users by roles
   /* ==================== */

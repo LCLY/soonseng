@@ -180,6 +180,8 @@ export function* updateIntakeSummarySaga(action: AppActions) {
     console.log('%cSAGAS', 'color:green;font-weight:bolder', action.intakeJobsFormData);
   }
 
+  console.log('intake_and_jobs', intake_and_jobs);
+
   try {
     let response = yield axios.put(url, { intake_and_jobs }, getAxiosHeaderToken());
     yield put(actions.updateIntakeSummarySucceed(response.data.intakes, response.data.success));
@@ -199,11 +201,12 @@ export function* deleteIntakeSummarySaga(action: AppActions) {
   let url = '';
 
   if ('intake_id' in action) {
-    url = process.env.REACT_APP_API + `/job_monitoring/jobs/${action.intake_id}`;
+    url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes/${action.intake_id}`;
   }
 
   try {
-    let response = yield axios.delete(url);
+    let response = yield axios.delete(url, getAxiosHeaderToken());
+    console.log(response);
     yield put(actions.deleteIntakeSummarySucceed(response.data.intakes, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -270,24 +273,6 @@ export function* updateSpecificIntakeJobsSaga(action: AppActions) {
 /* ============================================================================================== */
 // Get Users
 /* ============================================================================================== */
-/* ------------------------------- */
-//    Get All Users
-/* ------------------------------- */
-export function* getAllUsersSaga(_action: AppActions) {
-  yield put(actions.getAllUsersStart());
-  let url = process.env.REACT_APP_API + `/user/users`;
-
-  try {
-    let response = yield axios.get(url);
-    yield put(actions.getAllUsersSucceed(response.data.jobs));
-  } catch (error) {
-    if (error.response) {
-      yield setPromiseError(error, actions.getAllUsersFailed, error.response.data.error);
-    } else {
-      yield setPromiseError(error, actions.getAllUsersFailed, 'Error');
-    }
-  }
-}
 /* ------------------------------- */
 //    Get Users By Roles
 /* ------------------------------- */

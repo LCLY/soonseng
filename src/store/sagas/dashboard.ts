@@ -87,6 +87,215 @@ export function* deleteUploadImageSaga(action: AppActions) {
 }
 
 /* ================================================================== */
+//   Users related
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Get All users
+/* ------------------------------- */
+export function* getUsersSaga(_action: AppActions) {
+  yield put(actions.getUsersStart());
+
+  let url = process.env.REACT_APP_API + `/user/users`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getUsersSucceed(response.data.users));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getUsersFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getUsersFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Create user
+/* ------------------------------- */
+export function* createUserSaga(action: AppActions) {
+  if (!('userFormData' in action)) return;
+  yield put(actions.createUserStart());
+
+  let url = process.env.REACT_APP_API + `/user/users`;
+
+  let user = {
+    first_name: action.userFormData.first_name,
+    last_name: action.userFormData.last_name,
+    email: action.userFormData.email,
+    encrypted_password: action.userFormData.encrypted_password,
+  };
+
+  try {
+    let response = yield axios.post(url, { user });
+    console.log(response);
+    yield put(actions.createUserSucceed(response.data.user, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createUserFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createUserFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Update User
+/* ------------------------------- */
+export function* updateUserSaga(action: AppActions) {
+  if (!('userFormData' in action) || !('user_id' in action)) return;
+  yield put(actions.updateUserStart());
+
+  let url = process.env.REACT_APP_API + `/user/users/${action.user_id}`;
+
+  let user = {
+    first_name: action.userFormData.first_name,
+    last_name: action.userFormData.last_name,
+    email: action.userFormData.email,
+    encrypted_password: action.userFormData.encrypted_password,
+  };
+
+  try {
+    let response = yield axios.put(url, { user });
+    yield put(actions.updateUserSucceed(response.data.standard_charges, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateUserFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateUserFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete User
+/* ------------------------------- */
+export function* deleteUserSaga(action: AppActions) {
+  if (!('user_id' in action)) return;
+
+  yield put(actions.deleteUserStart());
+  let url = process.env.REACT_APP_API + `/user/users/${action.user_id}`;
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteUserSucceed(response.data.standard_charges, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteUserFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteUserFailed, 'Error');
+    }
+  }
+}
+
+/* ================================================================== */
+//   Role related
+/* ================================================================== */
+
+/* ------------------------------- */
+//    Get All roles
+/* ------------------------------- */
+export function* getRolesSaga(_action: AppActions) {
+  yield put(actions.getRolesStart());
+
+  let url = process.env.REACT_APP_API + `/user/roles`;
+
+  try {
+    let response = yield axios.get(url);
+    yield put(actions.getRolesSucceed(response.data.roles));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.getRolesFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.getRolesFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Create role
+/* ------------------------------- */
+export function* createRoleSaga(action: AppActions) {
+  if (!('userRoleFormData' in action)) return;
+  yield put(actions.createRoleStart());
+
+  let url = process.env.REACT_APP_API + `/user/roles`;
+
+  let role = {
+    title: action.userRoleFormData.title,
+    description: action.userRoleFormData.description,
+    fullSalesPage: action.userRoleFormData.fullSalesPage,
+    priceSalesPage: action.userRoleFormData.priceSalesPage,
+    adminDashboard: action.userRoleFormData.adminDashboard,
+    editSalesDashboard: action.userRoleFormData.editSalesDashboard,
+    salesmenDashboard: action.userRoleFormData.salesmenDashboard,
+    viewSalesDashboard: action.userRoleFormData.viewSalesDashboard,
+  };
+
+  try {
+    let response = yield axios.post(url, { role });
+    yield put(actions.createRoleSucceed(response.data.roles, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.createRoleFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.createRoleFailed, 'Error');
+    }
+  }
+}
+
+/* ------------------------------- */
+//    Update Role
+/* ------------------------------- */
+export function* updateRoleSaga(action: AppActions) {
+  if (!('userRoleFormData' in action) || !('role_id' in action)) return;
+  yield put(actions.updateRoleStart());
+
+  let url = process.env.REACT_APP_API + `/user/roles/${action.role_id}`;
+
+  let role = {
+    title: action.userRoleFormData.title,
+    description: action.userRoleFormData.description,
+    fullSalesPage: action.userRoleFormData.fullSalesPage,
+    priceSalesPage: action.userRoleFormData.priceSalesPage,
+    adminDashboard: action.userRoleFormData.adminDashboard,
+    editSalesDashboard: action.userRoleFormData.editSalesDashboard,
+    salesmenDashboard: action.userRoleFormData.salesmenDashboard,
+    viewSalesDashboard: action.userRoleFormData.viewSalesDashboard,
+  };
+
+  try {
+    let response = yield axios.put(url, { role });
+    console.log(response);
+    yield put(actions.updateRoleSucceed(response.data.roles, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.updateRoleFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.updateRoleFailed, 'Error');
+    }
+  }
+}
+/* ------------------------------- */
+//    Delete Role
+/* ------------------------------- */
+export function* deleteRoleSaga(action: AppActions) {
+  if (!('role_id' in action)) return;
+
+  yield put(actions.deleteRoleStart());
+  let url = process.env.REACT_APP_API + `/user/roles/${action.role_id}`;
+
+  try {
+    let response = yield axios.delete(url);
+    yield put(actions.deleteRoleSucceed(response.data.roles, response.data.success));
+  } catch (error) {
+    if (error.response) {
+      yield setPromiseError(error, actions.deleteRoleFailed, error.response.data.error);
+    } else {
+      yield setPromiseError(error, actions.deleteRoleFailed, 'Error');
+    }
+  }
+}
+/* ================================================================== */
 //   Standard Charges and fees
 /* ================================================================== */
 
@@ -1789,98 +1998,98 @@ export function* deleteServiceTaskSaga(action: AppActions) {
 }
 
 /* ------------------------------- */
-//    Get Job Status
+//    Get Intake Status
 /* ------------------------------- */
-export function* getJobStatusSaga(_action: AppActions) {
-  yield put(actions.getJobStatusStart());
+export function* getIntakeStatusSaga(_action: AppActions) {
+  yield put(actions.getIntakeStatusStart());
 
-  let url = process.env.REACT_APP_API + `/job_monitoring/job_status`;
+  let url = process.env.REACT_APP_API + `/job_monitoring/intake_status`;
 
   try {
     let response = yield axios.get(url);
-    yield put(actions.getJobStatusSucceed(response.data.job_status));
+    yield put(actions.getIntakeStatusSucceed(response.data.intake_status));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.getJobStatusFailed, error.response.data.error);
+      yield setPromiseError(error, actions.getIntakeStatusFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.getJobStatusFailed, 'Get Job Status Error');
+      yield setPromiseError(error, actions.getIntakeStatusFailed, 'Get Job Status Error');
     }
   }
 }
 /* ------------------------------- */
-//    Create Job Status
+//    Create Intake Status
 /* ------------------------------- */
-export function* createJobStatusSaga(action: AppActions) {
-  yield put(actions.createJobStatusStart());
+export function* createIntakeStatusSaga(action: AppActions) {
+  yield put(actions.createIntakeStatusStart());
 
-  let url = process.env.REACT_APP_API + `/job_monitoring/job_status`;
+  let url = process.env.REACT_APP_API + `/job_monitoring/intake_status`;
 
-  let job_status = {};
+  let intake_status = {};
   if ('title' in action && 'description' in action) {
-    job_status = {
+    intake_status = {
       title: action.title,
       description: action.description,
     };
   }
 
   try {
-    let response = yield axios.post(url, { job_status });
-    yield put(actions.createJobStatusSucceed(response.data.job_status, response.data.success));
+    let response = yield axios.post(url, { intake_status });
+    yield put(actions.createIntakeStatusSucceed(response.data.intake_status, response.data.success));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.createJobStatusFailed, error.response.data.error);
+      yield setPromiseError(error, actions.createIntakeStatusFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.createJobStatusFailed, 'Create Job Status Error');
+      yield setPromiseError(error, actions.createIntakeStatusFailed, 'Create Job Status Error');
     }
   }
 }
 /* ------------------------------- */
-//    Update Job Status
+//    Update Intake Status
 /* ------------------------------- */
-export function* updateJobStatusSaga(action: AppActions) {
-  yield put(actions.updateJobStatusStart());
+export function* updateIntakeStatusSaga(action: AppActions) {
+  yield put(actions.updateIntakeStatusStart());
   let url = '';
-  if ('job_status_id' in action) {
-    url = process.env.REACT_APP_API + `/job_monitoring/job_status/${action.job_status_id}`;
+  if ('intake_status_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/intake_status/${action.intake_status_id}`;
   }
 
-  let job_status = {};
+  let intake_status = {};
   if ('title' in action && 'description' in action) {
-    job_status = {
+    intake_status = {
       title: action.title,
       description: action.description,
     };
   }
 
   try {
-    let response = yield axios.put(url, { job_status });
-    yield put(actions.updateJobStatusSucceed(response.data.job_status, response.data.success));
+    let response = yield axios.put(url, { intake_status });
+    yield put(actions.updateIntakeStatusSucceed(response.data.intake_status, response.data.success));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.updateJobStatusFailed, error.response.data.error);
+      yield setPromiseError(error, actions.updateIntakeStatusFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.updateJobStatusFailed, 'Update Job Status Error');
+      yield setPromiseError(error, actions.updateIntakeStatusFailed, 'Update Job Status Error');
     }
   }
 }
 /* ------------------------------- */
-//    Delete Job Status
+//    Delete Intake Status
 /* ------------------------------- */
-export function* deleteJobStatusSaga(action: AppActions) {
-  yield put(actions.deleteJobStatusStart());
+export function* deleteIntakeStatusSaga(action: AppActions) {
+  yield put(actions.deleteIntakeStatusStart());
   let url = '';
-  if ('job_status_id' in action) {
-    url = process.env.REACT_APP_API + `/job_monitoring/job_status/${action.job_status_id}`;
+  if ('intake_status_id' in action) {
+    url = process.env.REACT_APP_API + `/job_monitoring/intake_status/${action.intake_status_id}`;
   }
 
   try {
     let response = yield axios.delete(url);
-    yield put(actions.deleteJobStatusSucceed(response.data.job_status, response.data.success));
+    yield put(actions.deleteIntakeStatusSucceed(response.data.intake_status, response.data.success));
   } catch (error) {
     if (error.response) {
-      yield setPromiseError(error, actions.deleteJobStatusFailed, error.response.data.error);
+      yield setPromiseError(error, actions.deleteIntakeStatusFailed, error.response.data.error);
     } else {
-      yield setPromiseError(error, actions.deleteJobStatusFailed, 'Update Job Status Error');
+      yield setPromiseError(error, actions.deleteIntakeStatusFailed, 'Update Job Status Error');
     }
   }
 }

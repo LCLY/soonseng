@@ -2,9 +2,12 @@ import React from 'react';
 /* components */
 import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
 import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
+import UsersFormItems from 'src/components/Modal/Crud/FormItems/UsersFormItems';
+import RolesFormItems from 'src/components/Modal/Crud/FormItems/RolesFormItems';
 import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
 import BodyMakeFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeFormItems';
-import JobStatusFormItems from 'src/components/Modal/Crud/FormItems/JobStatusFormItems';
+import IntakeStatusFormItems from 'src/components/Modal/Crud/FormItems/IntakeStatusFormItems';
+import TaskTitleFormItems from 'src/components/Modal/Crud/FormItems/TaskTitleFormItems';
 import ServiceTypesFormItems from 'src/components/Modal/Crud/FormItems/ServiceTypesFormItems';
 import AccessoryMakeFormItems from 'src/components/Modal/Crud/FormItems/AccessoryMakeFormItems';
 import BodyAccessoryFormItems from 'src/components/Modal/Crud/FormItems/BodyAccessoryFormItems';
@@ -14,7 +17,6 @@ import BodyMakeAccessoryFormItems from 'src/components/Modal/Crud/FormItems/Body
 import { Modal } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import TaskTitleFormItems from './FormItems/TaskTitleFormItems';
 
 interface CrudModalProps extends ICategory {
   /** The title of the modal on top  */
@@ -66,16 +68,18 @@ export interface ICategory {
     | 'fees'
     | 'series'
     | 'make'
+    | 'roles'
     | 'body'
     | 'make_wheelbase'
     | 'body_make'
+    | 'users'
     | 'accessory'
     | 'body_accessory'
     | 'body_make_accessory'
     | 'wheelbase'
     | 'task'
     | 'task_title'
-    | 'job_status'
+    | 'intake_status'
     | 'service_type';
 }
 
@@ -229,14 +233,20 @@ const CrudModal: React.FC<Props> = ({
             <BodyMakeAccessoryFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
 
-          {category === 'job_status' && antdForm !== undefined && onFinish !== undefined && (
-            <JobStatusFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          {category === 'intake_status' && antdForm !== undefined && onFinish !== undefined && (
+            <IntakeStatusFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
           {category === 'service_type' && antdForm !== undefined && onFinish !== undefined && (
             <ServiceTypesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
           {category === 'task_title' && antdForm !== undefined && onFinish !== undefined && (
             <TaskTitleFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'users' && antdForm !== undefined && onFinish !== undefined && (
+            <UsersFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'roles' && antdForm !== undefined && onFinish !== undefined && (
+            <RolesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
         </Modal>
       )}

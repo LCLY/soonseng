@@ -111,6 +111,52 @@ export const DELETE_UPLOAD_IMAGE_FAILED = 'DELETE_UPLOAD_IMAGE_FAILED';
 
 /* ======================================================================================== */
 /* --------------------------------------------- */
+// Users
+/* --------------------------------------------- */
+
+export const GET_USERS = 'GET_USERS';
+export const GET_USERS_START = 'GET_USERS_START';
+export const GET_USERS_SUCCEED = 'GET_USERS_SUCCEED';
+export const GET_USERS_FAILED = 'GET_USERS_FAILED';
+
+export const CREATE_USER = 'CREATE_USER';
+export const CREATE_USER_START = 'CREATE_USER_START';
+export const CREATE_USER_SUCCEED = 'CREATE_USER_SUCCEED';
+export const CREATE_USER_FAILED = 'CREATE_USER_FAILED';
+
+export const UPDATE_USER = 'UPDATE_USER';
+export const UPDATE_USER_START = 'UPDATE_USER_START';
+export const UPDATE_USER_SUCCEED = 'UPDATE_USER_SUCCEED';
+export const UPDATE_USER_FAILED = 'UPDATE_USER_FAILED';
+
+export const DELETE_USER = 'DELETE_USER';
+export const DELETE_USER_START = 'DELETE_USER_START';
+export const DELETE_USER_SUCCEED = 'DELETE_USER_SUCCEED';
+export const DELETE_USER_FAILED = 'DELETE_USER_FAILED';
+/* --------------------------------------------- */
+// Users Roles
+/* --------------------------------------------- */
+export const GET_ROLES = 'GET_ROLES';
+export const GET_ROLES_START = 'GET_ROLES_START';
+export const GET_ROLES_SUCCEED = 'GET_ROLES_SUCCEED';
+export const GET_ROLES_FAILED = 'GET_ROLES_FAILED';
+
+export const CREATE_ROLE = 'CREATE_ROLE';
+export const CREATE_ROLE_START = 'CREATE_ROLE_START';
+export const CREATE_ROLE_SUCCEED = 'CREATE_ROLE_SUCCEED';
+export const CREATE_ROLE_FAILED = 'CREATE_ROLE_FAILED';
+
+export const UPDATE_ROLE = 'UPDATE_ROLE';
+export const UPDATE_ROLE_START = 'UPDATE_ROLE_START';
+export const UPDATE_ROLE_SUCCEED = 'UPDATE_ROLE_SUCCEED';
+export const UPDATE_ROLE_FAILED = 'UPDATE_ROLE_FAILED';
+
+export const DELETE_ROLE = 'DELETE_ROLE';
+export const DELETE_ROLE_START = 'DELETE_ROLE_START';
+export const DELETE_ROLE_SUCCEED = 'DELETE_ROLE_SUCCEED';
+export const DELETE_ROLE_FAILED = 'DELETE_ROLE_FAILED';
+
+/* --------------------------------------------- */
 // Standard Charges and fees
 /* --------------------------------------------- */
 // Getting all Standard Charges and fees Fees
@@ -452,28 +498,28 @@ export const DELETE_ACCESSORY_FAILED = 'DELETE_ACCESSORY_FAILED';
 
 export const CLEAR_TASK_STATE = 'CLEAR_TASK_STATE';
 /* --------------------------------------------- */
-// JOBSTATUS Page - JOBSTATUS
+// INTAKESTATUS Page - INTAKESTATUS
 /* --------------------------------------------- */
-// Create JOBSTATUS (Tail)
-export const CREATE_JOBSTATUS = 'CREATE_JOBSTATUS';
-export const CREATE_JOBSTATUS_START = 'CREATE_JOBSTATUS_START';
-export const CREATE_JOBSTATUS_SUCCEED = 'CREATE_JOBSTATUS_SUCCEED';
-export const CREATE_JOBSTATUS_FAILED = 'CREATE_JOBSTATUS_FAILED';
-// Get JOBSTATUS (Tail)
-export const GET_JOBSTATUS = 'GET_JOBSTATUS';
-export const GET_JOBSTATUS_START = 'GET_JOBSTATUS_START';
-export const GET_JOBSTATUS_SUCCEED = 'GET_JOBSTATUS_SUCCEED';
-export const GET_JOBSTATUS_FAILED = 'GET_JOBSTATUS_FAILED';
-// Update JOBSTATUS (Tail)
-export const UPDATE_JOBSTATUS = 'UPDATE_JOBSTATUS';
-export const UPDATE_JOBSTATUS_START = 'UPDATE_JOBSTATUS_START';
-export const UPDATE_JOBSTATUS_SUCCEED = 'UPDATE_JOBSTATUS_SUCCEED';
-export const UPDATE_JOBSTATUS_FAILED = 'UPDATE_JOBSTATUS_FAILED';
-// Delete JOBSTATUS (Tail)
-export const DELETE_JOBSTATUS = 'DELETE_JOBSTATUS';
-export const DELETE_JOBSTATUS_START = 'DELETE_JOBSTATUS_START';
-export const DELETE_JOBSTATUS_SUCCEED = 'DELETE_JOBSTATUS_SUCCEED';
-export const DELETE_JOBSTATUS_FAILED = 'DELETE_JOBSTATUS_FAILED';
+// Create INTAKESTATUS (Tail)
+export const CREATE_INTAKESTATUS = 'CREATE_INTAKESTATUS';
+export const CREATE_INTAKESTATUS_START = 'CREATE_INTAKESTATUS_START';
+export const CREATE_INTAKESTATUS_SUCCEED = 'CREATE_INTAKESTATUS_SUCCEED';
+export const CREATE_INTAKESTATUS_FAILED = 'CREATE_INTAKESTATUS_FAILED';
+// Get INTAKESTATUS (Tail)
+export const GET_INTAKESTATUS = 'GET_INTAKESTATUS';
+export const GET_INTAKESTATUS_START = 'GET_INTAKESTATUS_START';
+export const GET_INTAKESTATUS_SUCCEED = 'GET_INTAKESTATUS_SUCCEED';
+export const GET_INTAKESTATUS_FAILED = 'GET_INTAKESTATUS_FAILED';
+// Update INTAKESTATUS (Tail)
+export const UPDATE_INTAKESTATUS = 'UPDATE_INTAKESTATUS';
+export const UPDATE_INTAKESTATUS_START = 'UPDATE_INTAKESTATUS_START';
+export const UPDATE_INTAKESTATUS_SUCCEED = 'UPDATE_INTAKESTATUS_SUCCEED';
+export const UPDATE_INTAKESTATUS_FAILED = 'UPDATE_INTAKESTATUS_FAILED';
+// Delete INTAKESTATUS (Tail)
+export const DELETE_INTAKESTATUS = 'DELETE_INTAKESTATUS';
+export const DELETE_INTAKESTATUS_START = 'DELETE_INTAKESTATUS_START';
+export const DELETE_INTAKESTATUS_SUCCEED = 'DELETE_INTAKESTATUS_SUCCEED';
+export const DELETE_INTAKESTATUS_FAILED = 'DELETE_INTAKESTATUS_FAILED';
 
 /* --------------------------------------------- */
 // ServiceType Page - SERVICETYPE
@@ -584,10 +630,6 @@ export const UPDATE_SPECIFIC_INTAKE_JOBS_FAILED = 'UPDATE_SPECIFIC_INTAKE_JOBS_F
 /* -------------------------------------------------- */
 // Users
 /* -------------------------------------------------- */
-export const GET_ALL_USERS = 'GET_ALL_USERS';
-export const GET_ALL_USERS_START = 'GET_ALL_USERS_START';
-export const GET_ALL_USERS_SUCCEED = 'GET_ALL_USERS_SUCCEED';
-export const GET_ALL_USERS_FAILED = 'GET_ALL_USERS_FAILED';
 
 export const GET_USERS_BY_ROLES = 'GET_USERS_BY_ROLES';
 export const GET_USERS_BY_ROLES_START = 'GET_USERS_BY_ROLES_START';

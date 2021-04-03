@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 /* components */
-import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+// import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 /* 3rd party lib */
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -40,12 +40,12 @@ const MakeFormItems: React.FC<Props> = ({
   brandsArray,
   isDashboard,
   seriesArray,
-  imagesPreviewUrls,
+  // imagesPreviewUrls,
   onFinish,
   onGetBrands,
   onGetSeries,
-  setImagesPreviewUrls,
-  setUploadSelectedFiles,
+  // setImagesPreviewUrls,
+  // setUploadSelectedFiles,
 }) => {
   /* ======================== */
   /* useEffect */
@@ -275,11 +275,11 @@ const MakeFormItems: React.FC<Props> = ({
         </div>
 
         {/* The whole upload image component including buttons and image previews */}
-        <PreviewUploadImage
+        {/* <PreviewUploadImage
           imagesPreviewUrls={imagesPreviewUrls}
           setImagesPreviewUrls={setImagesPreviewUrls}
           setUploadSelectedFiles={setUploadSelectedFiles}
-        />
+        /> */}
 
         {crud === 'update' && (
           <Form.Item

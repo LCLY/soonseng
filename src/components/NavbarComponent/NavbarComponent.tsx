@@ -47,6 +47,7 @@ interface NavbarComponentProps {
     | 'bodymake'
     | 'accessory'
     | 'fees'
+    | 'users'
     | 'about'
     | 'task'
     | 'orders'
@@ -98,6 +99,11 @@ const NavbarComponent: React.FC<Props> = ({
   const dashboardMenu = (
     <div>
       <Menu className="navbar__dropdown-menu">
+        <Menu.Item key="user">
+          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.users}>
+            User Roles
+          </a>
+        </Menu.Item>
         <Menu.Item key="make">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
             Model
@@ -207,6 +213,11 @@ const NavbarComponent: React.FC<Props> = ({
                   icon={<i className="fas fa-columns margin_r-1"></i>}
                   title="Dashboard"
                 >
+                  <Menu.Item key="users">
+                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.users}>
+                      User Roles
+                    </a>
+                  </Menu.Item>
                   <Menu.Item key="make">
                     <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
                       Model

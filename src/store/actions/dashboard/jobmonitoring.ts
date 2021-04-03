@@ -2,131 +2,140 @@ import { AppActions } from '../../types/index';
 import * as actionTypes from '../actionTypes';
 import {
   IServiceTaskFormData,
-  TReceivedJobStatusObj,
   TReceivedServiceTypesObj,
   TReceivedServiceTaskObj,
+  TReceivedIntakeStatusObj,
 } from '../../types/dashboard';
 
 /* ============================================================================================ */
-// JobStatus
+// Intake Status
 /* ============================================================================================ */
 
 /* ----------------------------- */
-// Get JobStatus
+// Get Intake Status
 /* ---------------------------- */
-export const getJobStatus = (): AppActions => {
+export const getIntakeStatus = (): AppActions => {
   return {
-    type: actionTypes.GET_JOBSTATUS,
+    type: actionTypes.GET_INTAKESTATUS,
   };
 };
 
-export const getJobStatusStart = (): AppActions => {
+export const getIntakeStatusStart = (): AppActions => {
   return {
-    type: actionTypes.GET_JOBSTATUS_START,
+    type: actionTypes.GET_INTAKESTATUS_START,
   };
 };
 
-export const getJobStatusSucceed = (jobStatusArray: TReceivedJobStatusObj[]): AppActions => {
+export const getIntakeStatusSucceed = (intakeStatusArray: TReceivedIntakeStatusObj[]): AppActions => {
   return {
-    type: actionTypes.GET_JOBSTATUS_SUCCEED,
-    jobStatusArray: jobStatusArray,
+    type: actionTypes.GET_INTAKESTATUS_SUCCEED,
+    intakeStatusArray: intakeStatusArray,
   };
 };
-export const getJobStatusFailed = (errorMessage: string): AppActions => {
+export const getIntakeStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.GET_JOBSTATUS_FAILED,
+    type: actionTypes.GET_INTAKESTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };
 
 /* ------------------------------ */
-// Create Jobstatus
+// Create Intake Status
 /* ------------------------------ */
-export const createJobStatus = (title: string, description: string): AppActions => {
+export const createIntakeStatus = (title: string, description: string): AppActions => {
   return {
-    type: actionTypes.CREATE_JOBSTATUS,
+    type: actionTypes.CREATE_INTAKESTATUS,
     title: title,
     description: description,
   };
 };
 
-export const createJobStatusStart = (): AppActions => {
+export const createIntakeStatusStart = (): AppActions => {
   return {
-    type: actionTypes.CREATE_JOBSTATUS_START,
+    type: actionTypes.CREATE_INTAKESTATUS_START,
   };
 };
 
-export const createJobStatusSucceed = (jobStatusArray: TReceivedJobStatusObj[], successMessage: string): AppActions => {
+export const createIntakeStatusSucceed = (
+  intakeStatusArray: TReceivedIntakeStatusObj[],
+  successMessage: string,
+): AppActions => {
   return {
-    type: actionTypes.CREATE_JOBSTATUS_SUCCEED,
-    jobStatusArray: jobStatusArray,
+    type: actionTypes.CREATE_INTAKESTATUS_SUCCEED,
+    intakeStatusArray: intakeStatusArray,
     successMessage: successMessage,
   };
 };
-export const createJobStatusFailed = (errorMessage: string): AppActions => {
+export const createIntakeStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_JOBSTATUS_FAILED,
+    type: actionTypes.CREATE_INTAKESTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };
 
 /* ------------------------------ */
-// Update JobStatus
+// Update Intake Status
 /* ------------------------------ */
-export const updateJobStatus = (job_status_id: number, title: string, description: string): AppActions => {
+export const updateIntakeStatus = (intake_status_id: number, title: string, description: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_JOBSTATUS,
-    job_status_id: job_status_id,
+    type: actionTypes.UPDATE_INTAKESTATUS,
+    intake_status_id: intake_status_id,
     title: title,
     description: description,
   };
 };
 
-export const updateJobStatusStart = (): AppActions => {
+export const updateIntakeStatusStart = (): AppActions => {
   return {
-    type: actionTypes.UPDATE_JOBSTATUS_START,
+    type: actionTypes.UPDATE_INTAKESTATUS_START,
   };
 };
 
-export const updateJobStatusSucceed = (jobStatusArray: TReceivedJobStatusObj[], successMessage: string): AppActions => {
+export const updateIntakeStatusSucceed = (
+  intakeStatusArray: TReceivedIntakeStatusObj[],
+  successMessage: string,
+): AppActions => {
   return {
-    type: actionTypes.UPDATE_JOBSTATUS_SUCCEED,
-    jobStatusArray: jobStatusArray,
+    type: actionTypes.UPDATE_INTAKESTATUS_SUCCEED,
+    intakeStatusArray: intakeStatusArray,
     successMessage: successMessage,
   };
 };
-export const updateJobStatusFailed = (errorMessage: string): AppActions => {
+export const updateIntakeStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_JOBSTATUS_FAILED,
+    type: actionTypes.UPDATE_INTAKESTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };
 /* ------------------------------ */
-// Delete JobStatus
+// Delete Intake Status
 /* ------------------------------ */
-export const deleteJobStatus = (job_status_id: number): AppActions => {
+export const deleteIntakeStatus = (intake_status_id: number): AppActions => {
   return {
-    type: actionTypes.DELETE_JOBSTATUS,
-    job_status_id: job_status_id,
+    type: actionTypes.DELETE_INTAKESTATUS,
+    intake_status_id: intake_status_id,
   };
 };
 
-export const deleteJobStatusStart = (): AppActions => {
+export const deleteIntakeStatusStart = (): AppActions => {
   return {
-    type: actionTypes.DELETE_JOBSTATUS_START,
+    type: actionTypes.DELETE_INTAKESTATUS_START,
   };
 };
 
-export const deleteJobStatusSucceed = (jobStatusArray: TReceivedJobStatusObj[], successMessage: string): AppActions => {
+export const deleteIntakeStatusSucceed = (
+  intakeStatusArray: TReceivedIntakeStatusObj[],
+  successMessage: string,
+): AppActions => {
   return {
-    type: actionTypes.DELETE_JOBSTATUS_SUCCEED,
-    jobStatusArray: jobStatusArray,
+    type: actionTypes.DELETE_INTAKESTATUS_SUCCEED,
+    intakeStatusArray: intakeStatusArray,
     successMessage: successMessage,
   };
 };
-export const deleteJobStatusFailed = (errorMessage: string): AppActions => {
+export const deleteIntakeStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.DELETE_JOBSTATUS_FAILED,
+    type: actionTypes.DELETE_INTAKESTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };

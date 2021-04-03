@@ -57,6 +57,7 @@
         flex-direction: column;
         padding: 0 0 2rem 0;
       }
+
       @include respond-to($phone-only) {
         display: flex;
         flex-direction: column;
@@ -80,7 +81,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
 
         & .ant-empty-description {
@@ -100,7 +101,7 @@
         }
 
         @include respond-to($phone-only) {
-          min-height: 80rem;
+          min-height: 50rem;
           padding: 2rem 2rem 0 2rem;
         }
 
@@ -129,65 +130,91 @@
       }
     }
   }
+  &__row {
+    &-div {
+      display: flex;
+      cursor: pointer;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid white;
+      transition: all 0.5s ease;
+      padding: 0.8rem;
+      color: white;
+      width: 20rem;
+      // &:first-child {
+      //   border-top: 1px solid white;
+      // }
+      &:hover {
+        background: rgba($primary-color-4, 0.5);
+      }
+
+      &-parent {
+        &:first-child {
+          border-top: 1px solid white;
+        }
+        position: relative;
+      }
+    }
+  }
 
   /* ============================== */
   // Every grid within the series section
   /* ============================== */
-  &__grid {
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    justify-items: center;
+  // &__grid {
+  //   width: 100%;
+  //   height: 100%;
+  //   align-items: center;
+  //   justify-content: center;
+  //   justify-items: center;
 
-    display: grid;
-    // grid-auto-rows: 20rem; //height of each row
-    margin-bottom: auto;
+  //   display: grid;
+  //   // grid-auto-rows: 20rem; //height of each row
+  //   margin-bottom: auto;
 
-    @include respond-to($phone-only) {
-      padding: 0;
-      grid-gap: 1rem;
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 30vw; //height of each row
-    }
+  //   @include respond-to($phone-only) {
+  //     padding: 0;
+  //     grid-gap: 1rem;
+  //     grid-template-columns: repeat(2, 1fr);
+  //     grid-auto-rows: 30vw; //height of each row
+  //   }
 
-    @include respond-to($tablet-portrait-up) {
-      grid-gap: 2rem;
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 25vw; //height of each row
-    }
-    @include respond-to($tablet-landscape-up) {
-      grid-gap: 2rem;
-      grid-auto-rows: 18vw; //height of each row
-      grid-template-columns: repeat(3, 1fr);
-    }
-    @include respond-to($desktop-up) {
-      grid-gap: 2rem;
-      grid-auto-rows: 14vw; //height of each row
-    }
+  //   @include respond-to($tablet-portrait-up) {
+  //     grid-gap: 2rem;
+  //     grid-template-columns: repeat(2, 1fr);
+  //     grid-auto-rows: 25vw; //height of each row
+  //   }
+  //   @include respond-to($tablet-landscape-up) {
+  //     grid-gap: 2rem;
+  //     grid-auto-rows: 18vw; //height of each row
+  //     grid-template-columns: repeat(3, 1fr);
+  //   }
+  //   @include respond-to($desktop-up) {
+  //     grid-gap: 2rem;
+  //     grid-auto-rows: 14vw; //height of each row
+  //   }
 
-    @include respond-to($small-phone) {
-      grid-gap: 1rem;
-      padding: 0;
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 30vw; //height of each row
-    }
+  //   @include respond-to($small-phone) {
+  //     grid-gap: 1rem;
+  //     padding: 0;
+  //     grid-template-columns: repeat(2, 1fr);
+  //     grid-auto-rows: 30vw; //height of each row
+  //   }
 
-    /* ============================================ */
-    // number of columns when the array is odd number and last index
-    /* ============================================ */
-    &--full {
-      @include respond-to($phone-only) {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      @include respond-to($tablet-portrait-up) {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      @include respond-to($tablet-landscape-up) {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-  }
+  //   /* ============================================ */
+  //   // number of columns when the array is odd number and last index
+  //   /* ============================================ */
+  //   &--full {
+  //     @include respond-to($phone-only) {
+  //       grid-template-columns: repeat(2, 1fr);
+  //     }
+  //     @include respond-to($tablet-portrait-up) {
+  //       grid-template-columns: repeat(2, 1fr);
+  //     }
+  //     @include respond-to($tablet-landscape-up) {
+  //       grid-template-columns: repeat(4, 1fr);
+  //     }
+  //   }
+  // }
 
   &__banner {
     width: 100%;
@@ -210,147 +237,242 @@
     }
   }
 
+  /* =================================== */
+  // the dropdown for series
+  /* =================================== */
+  &__dropdown {
+    &-more {
+      cursor: pointer;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 1rem;
+      font-size: 1.2rem;
+      background: white;
+      border: 1px solid transparent !important;
+      color: black !important;
+      margin-bottom: 0.3rem;
+      @include shadow-func(0, 0, 0.5rem, 0.2rem, rgba(0, 0, 0, 0.2));
+      @include respond-to($small-phone) {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+      }
+
+      &:hover {
+        transition: all 0.5s ease;
+        border: 1px solid white !important;
+        color: white !important;
+        background: $primary-color-4;
+      }
+      &:active {
+        transition: all 0.2s ease;
+        background: white;
+      }
+
+      &--make {
+        top: 50%;
+        right: 1rem;
+        position: absolute;
+        transform: translateY(-50%);
+      }
+
+      /* ----------------------------------------------- */
+      // variation of the dropdown for each make card
+      /* ----------------------------------------------- */
+      // &--make {
+      //   position: absolute;
+      //   top: 1rem;
+      //   right: 1rem;
+      //   z-index: 2;
+      //   background: white;
+      //   color: $primary-color-4;
+      //   border: 2px solid rgba(204, 204, 204, 1);
+
+      //   &:hover {
+      //     transition: all 0.5s ease;
+      //     border: 1px solid white;
+      //     color: white;
+      //     background: darken($primary-color-3, 5%);
+      //   }
+      //   &:active {
+      //     transition: none;
+      //     background: $primary-color-2;
+      //   }
+      // }
+
+      &--image {
+        position: absolute;
+        top: 1rem;
+        right: 5rem;
+        z-index: 2;
+        background: white;
+        color: $primary-color-4;
+        border: 2px solid rgba(204, 204, 204, 1);
+
+        &:hover {
+          transition: all 0.5s ease;
+          border: 1px solid white;
+          color: white;
+          background: darken($primary-color-3, 5%);
+        }
+        &:active {
+          transition: none;
+          background: $primary-color-2;
+        }
+      }
+
+      &--disabled {
+        pointer-events: none;
+        opacity: 0;
+      }
+    }
+  }
+
   /* ====================== */
   // Card
   /* ====================== */
-  &__card {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    z-index: 1;
-    border: 1px solid rgba(255, 255, 255, 0.452);
-    overflow: hidden;
+  // &__card {
+  //   width: 100%;
+  //   height: 100%;
+  //   position: relative;
+  //   z-index: 1;
+  //   border: 1px solid rgba(255, 255, 255, 0.452);
+  //   overflow: hidden;
 
-    &-outerdiv {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      z-index: 1;
-    }
+  //   &-outerdiv {
+  //     width: 100%;
+  //     height: 100%;
+  //     position: relative;
+  //     z-index: 1;
+  //   }
 
-    /* =========================== */
-    // the image of the card
-    /* =========================== */
-    &-image {
-      left: 50%;
-      top: 50%;
-      position: absolute;
-      object-fit: cover;
-      color: white !important;
-      border-radius: 50%;
-      z-index: 2;
-      transform: translate(-50%, -50%);
-      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(255, 255, 255, 0.219));
+  //   /* =========================== */
+  //   // the image of the card
+  //   /* =========================== */
+  //   &-image {
+  //     left: 50%;
+  //     top: 50%;
+  //     position: absolute;
+  //     object-fit: cover;
+  //     color: white !important;
+  //     border-radius: 50%;
+  //     z-index: 2;
+  //     transform: translate(-50%, -50%);
+  //     @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(255, 255, 255, 0.219));
 
-      &--skeleton {
-        width: 100% !important;
-        height: 100% !important;
-        background: darken($primary-color-4, 6%) !important;
-      }
+  //     &--skeleton {
+  //       width: 100% !important;
+  //       height: 100% !important;
+  //       background: darken($primary-color-4, 6%) !important;
+  //     }
 
-      & .ant-skeleton-image-svg {
-        width: 5rem !important;
-        height: 5rem !important;
+  //     & .ant-skeleton-image-svg {
+  //       width: 5rem !important;
+  //       height: 5rem !important;
 
-        @include respond-to($small-phone) {
-          width: 3rem !important;
-          height: 3rem !important;
-        }
+  //       @include respond-to($small-phone) {
+  //         width: 3rem !important;
+  //         height: 3rem !important;
+  //       }
 
-        @include respond-to($desktop-up) {
-          width: 7vw !important;
-          height: 7vh !important;
-        }
-      }
+  //       @include respond-to($desktop-up) {
+  //         width: 7vw !important;
+  //         height: 7vh !important;
+  //       }
+  //     }
 
-      & .ant-skeleton-image-path {
-        fill: rgb(201, 197, 197) !important;
-      }
+  //     & .ant-skeleton-image-path {
+  //       fill: rgb(201, 197, 197) !important;
+  //     }
 
-      // the width and height
-      @include respond-to($small-phone) {
-        width: 25vw !important;
-        height: 25vw !important;
-      }
-      @include respond-to($phone-only) {
-        width: 25vw !important;
-        height: 25vw !important;
-      }
-      @include respond-to($tablet-portrait-up) {
-        width: 20vw !important;
-        height: 20vw !important;
-      }
-      @include respond-to($tablet-landscape-up) {
-        width: 15vw !important;
-        height: 15vw !important;
-      }
-      @include respond-to($desktop-up) {
-        width: 12vw !important;
-        height: 12vw !important;
-      }
-      @include respond-to($big-desktop-up) {
-        width: 10vw !important;
-        height: 10vw !important;
-      }
+  //     // the width and height
+  //     @include respond-to($small-phone) {
+  //       width: 25vw !important;
+  //       height: 25vw !important;
+  //     }
+  //     @include respond-to($phone-only) {
+  //       width: 25vw !important;
+  //       height: 25vw !important;
+  //     }
+  //     @include respond-to($tablet-portrait-up) {
+  //       width: 20vw !important;
+  //       height: 20vw !important;
+  //     }
+  //     @include respond-to($tablet-landscape-up) {
+  //       width: 15vw !important;
+  //       height: 15vw !important;
+  //     }
+  //     @include respond-to($desktop-up) {
+  //       width: 12vw !important;
+  //       height: 12vw !important;
+  //     }
+  //     @include respond-to($big-desktop-up) {
+  //       width: 10vw !important;
+  //       height: 10vw !important;
+  //     }
 
-      // blur bg for the image
-      &-blurbg {
-        z-index: 1;
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        top: 0;
-        left: 0;
-        /* Add the blur effect */
-        filter: blur(6px);
-        -webkit-filter: blur(6px);
+  //     // blur bg for the image
+  //     &-blurbg {
+  //       z-index: 1;
+  //       position: absolute;
+  //       height: 100%;
+  //       width: 100%;
+  //       top: 0;
+  //       left: 0;
+  //       /* Add the blur effect */
+  //       filter: blur(6px);
+  //       -webkit-filter: blur(6px);
 
-        /* Center and scale the image nicely */
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-      }
-    }
-    cursor: pointer;
-    &:hover {
-      transition: all 0.1s;
-      @include shadow-func(0, 0.1rem, 1.5rem, 0.8rem, rgba($primary-color-1, 0.5));
-    }
+  //       /* Center and scale the image nicely */
+  //       background-position: center;
+  //       background-repeat: no-repeat;
+  //       background-size: cover;
+  //     }
+  //   }
+  //   cursor: pointer;
+  //   &:hover {
+  //     transition: all 0.1s;
+  //     @include shadow-func(0, 0.1rem, 1.5rem, 0.8rem, rgba($primary-color-1, 0.5));
+  //   }
 
-    /* ------------------------ */
-    // label for make title
-    /* ------------------------ */
-    &-label {
-      position: absolute;
-      color: white;
-      bottom: 1rem;
-      right: -0.8rem;
+  //   /* ------------------------ */
+  //   // label for make title
+  //   /* ------------------------ */
+  //   // &-label {
+  //   //   position: absolute;
+  //   //   color: white;
+  //   //   bottom: 1rem;
+  //   //   right: -0.8rem;
 
-      border-left: 0.5rem solid white;
-      border-top-left-radius: 5rem;
-      z-index: 2;
-      padding: 0.5rem 2rem 0.5rem 2.5rem;
-      background: rgba(rgb(181, 21, 21), 0.7);
-      @include shadow-func(0rem, 0rem, 0.5rem, 0.05rem, rgba(255, 255, 255, 0.583));
+  //   //   border-left: 0.5rem solid white;
+  //   //   border-top-left-radius: 5rem;
+  //   //   z-index: 2;
+  //   //   padding: 0.5rem 2rem 0.5rem 2.5rem;
+  //   //   background: rgba(rgb(181, 21, 21), 0.7);
+  //   //   @include shadow-func(0rem, 0rem, 0.5rem, 0.05rem, rgba(255, 255, 255, 0.583));
 
-      @include respond-to($small-phone) {
-        font-size: 0.8rem;
-        padding: 0.2rem 0.5rem 0.2rem 1.5rem;
-        right: -0.3rem;
-      }
-      @include respond-to($phone-only) {
-        font-size: 1.2rem;
-      }
+  //   //   @include respond-to($small-phone) {
+  //   //     font-size: 0.8rem;
+  //   //     padding: 0.2rem 0.5rem 0.2rem 1.5rem;
+  //   //     right: -0.3rem;
+  //   //   }
+  //   //   @include respond-to($phone-only) {
+  //   //     font-size: 1.2rem;
+  //   //   }
 
-      @include respond-to($desktop-up) {
-        font-size: 1.5rem;
-      }
-    }
+  //   //   @include respond-to($desktop-up) {
+  //   //     font-size: 1.5rem;
+  //   //   }
+  //   // }
 
-    & .ant-carousel {
-      height: '100%' !important;
-    }
-  }
+  //   & .ant-carousel {
+  //     height: '100%' !important;
+  //   }
+  // }
 
   /* =================== */
   // The brand title
@@ -421,6 +543,12 @@
   // the series title
   /* ==================== */
   &__series {
+    &-outerdiv {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
     &-title {
       display: flex;
       align-items: center;
@@ -484,6 +612,14 @@
           margin: 0 2rem;
         }
       }
+    }
+
+    &-image {
+      display: block;
+      width: 100%;
+      height: 60rem;
+      margin-right: 5rem;
+      background: red;
     }
   }
 
@@ -584,94 +720,6 @@
       }
       @include respond-to($desktop-up) {
         display: block;
-      }
-    }
-  }
-
-  /* =================================== */
-  // the dropdown for series
-  /* =================================== */
-  &__dropdown {
-    &-more {
-      cursor: pointer;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 1rem;
-      font-size: 1.2rem;
-      background: white;
-      border: 1px solid transparent !important;
-      color: black !important;
-      margin-bottom: 0.3rem;
-      @include shadow-func(0, 0, 0.5rem, 0.2rem, rgba(0, 0, 0, 0.2));
-      @include respond-to($small-phone) {
-        width: 2rem;
-        height: 2rem;
-        font-size: 1rem;
-      }
-
-      &:hover {
-        transition: all 0.5s ease;
-        border: 1px solid white !important;
-        color: white !important;
-        background: $primary-color-4;
-      }
-      &:active {
-        transition: all 0.2s ease;
-        background: white;
-      }
-
-      /* ----------------------------------------------- */
-      // variation of the dropdown for each make card
-      /* ----------------------------------------------- */
-      &--make {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        z-index: 2;
-        background: white;
-        color: $primary-color-4;
-        border: 2px solid rgba(204, 204, 204, 1);
-
-        &:hover {
-          transition: all 0.5s ease;
-          border: 1px solid white;
-          color: white;
-          background: darken($primary-color-3, 5%);
-        }
-        &:active {
-          transition: none;
-          background: $primary-color-2;
-        }
-      }
-
-      &--image {
-        position: absolute;
-        top: 1rem;
-        right: 5rem;
-        z-index: 2;
-        background: white;
-        color: $primary-color-4;
-        border: 2px solid rgba(204, 204, 204, 1);
-
-        &:hover {
-          transition: all 0.5s ease;
-          border: 1px solid white;
-          color: white;
-          background: darken($primary-color-3, 5%);
-        }
-        &:active {
-          transition: none;
-          background: $primary-color-2;
-        }
-      }
-
-      &--disabled {
-        pointer-events: none;
-        opacity: 0;
       }
     }
   }

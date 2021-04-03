@@ -1,101 +1,101 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 import {
   IServiceTaskFormData,
-  TReceivedJobStatusObj,
+  TReceivedIntakeStatusObj,
   TReceivedServiceTypesObj,
   TReceivedServiceTaskObj,
 } from '../dashboard';
 
 /* =============================================================================================== */
-// Job Status
+// Intake Status
 /* =============================================================================================== */
 
 /* --------------------------- */
-// Create Job Status
+// Create Intake Status
 /* --------------------------- */
 /*  Api call */
-export interface CreateJobStatusAction {
-  type: typeof actionTypes.CREATE_JOBSTATUS;
+export interface CreateIntakeStatusAction {
+  type: typeof actionTypes.CREATE_INTAKESTATUS;
   title: string;
   description: string;
 }
 /*  States */
-export interface CreateJobStatusStartAction {
-  type: typeof actionTypes.CREATE_JOBSTATUS_START;
+export interface CreateIntakeStatusStartAction {
+  type: typeof actionTypes.CREATE_INTAKESTATUS_START;
 }
-export interface CreateJobStatusSucceedAction {
-  type: typeof actionTypes.CREATE_JOBSTATUS_SUCCEED;
-  jobStatusArray: TReceivedJobStatusObj[];
+export interface CreateIntakeStatusSucceedAction {
+  type: typeof actionTypes.CREATE_INTAKESTATUS_SUCCEED;
+  intakeStatusArray: TReceivedIntakeStatusObj[];
   successMessage: string;
 }
-export interface CreateJobStatusFailedAction {
-  type: typeof actionTypes.CREATE_JOBSTATUS_FAILED;
+export interface CreateIntakeStatusFailedAction {
+  type: typeof actionTypes.CREATE_INTAKESTATUS_FAILED;
   errorMessage: string;
 }
 
 /* --------------------------- */
-// Update Job Status
+// Update Intake Status
 /* --------------------------- */
 /* Api call */
-export interface UpdateJobStatusAction {
-  type: typeof actionTypes.UPDATE_JOBSTATUS;
-  job_status_id: number;
+export interface UpdateIntakeStatusAction {
+  type: typeof actionTypes.UPDATE_INTAKESTATUS;
+  intake_status_id: number;
   title: string;
   description: string;
 }
 /* States */
-export interface UpdateJobStatusStartAction {
-  type: typeof actionTypes.UPDATE_JOBSTATUS_START;
+export interface UpdateIntakeStatusStartAction {
+  type: typeof actionTypes.UPDATE_INTAKESTATUS_START;
 }
-export interface UpdateJobStatusSucceedAction {
-  type: typeof actionTypes.UPDATE_JOBSTATUS_SUCCEED;
-  jobStatusArray: TReceivedJobStatusObj[];
+export interface UpdateIntakeStatusSucceedAction {
+  type: typeof actionTypes.UPDATE_INTAKESTATUS_SUCCEED;
+  intakeStatusArray: TReceivedIntakeStatusObj[];
   successMessage: string;
 }
-export interface UpdateJobStatusFailedAction {
-  type: typeof actionTypes.UPDATE_JOBSTATUS_FAILED;
+export interface UpdateIntakeStatusFailedAction {
+  type: typeof actionTypes.UPDATE_INTAKESTATUS_FAILED;
   errorMessage: string;
 }
 
 /* --------------------------- */
-// Get All Job Status
+// Get All Intake Status
 /* --------------------------- */
 /* Api call */
-export interface GetJobStatusAction {
-  type: typeof actionTypes.GET_JOBSTATUS;
+export interface GetIntakeStatusAction {
+  type: typeof actionTypes.GET_INTAKESTATUS;
 }
 /* States */
-export interface GetJobStatusStartAction {
-  type: typeof actionTypes.GET_JOBSTATUS_START;
+export interface GetIntakeStatusStartAction {
+  type: typeof actionTypes.GET_INTAKESTATUS_START;
 }
-export interface GetJobStatusSucceedAction {
-  type: typeof actionTypes.GET_JOBSTATUS_SUCCEED;
-  jobStatusArray: TReceivedJobStatusObj[];
+export interface GetIntakeStatusSucceedAction {
+  type: typeof actionTypes.GET_INTAKESTATUS_SUCCEED;
+  intakeStatusArray: TReceivedIntakeStatusObj[];
 }
-export interface GetJobStatusFailedAction {
-  type: typeof actionTypes.GET_JOBSTATUS_FAILED;
+export interface GetIntakeStatusFailedAction {
+  type: typeof actionTypes.GET_INTAKESTATUS_FAILED;
   errorMessage: string;
 }
 
 /* --------------------------- */
-// Delete Job Status
+// Delete Intake Status
 /* --------------------------- */
 /* Api call */
-export interface DeleteJobStatusAction {
-  type: typeof actionTypes.DELETE_JOBSTATUS;
-  job_status_id: number;
+export interface DeleteIntakeStatusAction {
+  type: typeof actionTypes.DELETE_INTAKESTATUS;
+  intake_status_id: number;
 }
 /* States */
-export interface DeleteJobStatusStartAction {
-  type: typeof actionTypes.DELETE_JOBSTATUS_START;
+export interface DeleteIntakeStatusStartAction {
+  type: typeof actionTypes.DELETE_INTAKESTATUS_START;
 }
-export interface DeleteJobStatusSucceedAction {
-  type: typeof actionTypes.DELETE_JOBSTATUS_SUCCEED;
-  jobStatusArray: TReceivedJobStatusObj[];
+export interface DeleteIntakeStatusSucceedAction {
+  type: typeof actionTypes.DELETE_INTAKESTATUS_SUCCEED;
+  intakeStatusArray: TReceivedIntakeStatusObj[];
   successMessage: string;
 }
-export interface DeleteJobStatusFailedAction {
-  type: typeof actionTypes.DELETE_JOBSTATUS_FAILED;
+export interface DeleteIntakeStatusFailedAction {
+  type: typeof actionTypes.DELETE_INTAKESTATUS_FAILED;
   errorMessage: string;
 }
 

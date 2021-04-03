@@ -1,6 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import { TReceivedUserInfoObj } from './auth';
-import { TReceivedServiceTaskObj } from './dashboard';
+import { TReceivedIntakeStatusObj, TReceivedServiceTaskObj } from './dashboard';
 
 // initialState for reducers
 export interface TaskInitialState {
@@ -10,7 +10,6 @@ export interface TaskInitialState {
   readonly successMessage?: string | null;
   // readonly taskObj?: TReceivedTaskObj | null;
   readonly tasksArray?: IReceivedIntakeJobsObj[] | null;
-  readonly allUsersArray?: TReceivedUserInfoObj[] | null;
   readonly usersByRolesArray?: TReceivedUserInfoObj[] | null;
   readonly intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
   readonly specificIntakeJobsObj?: TReceivedSpecificIntakeJobsObj | null;
@@ -117,32 +116,51 @@ export interface DeleteTaskFailedAction {
 
 // Submit Form Data for creating both intake summary along with jobs
 export interface IIntakeSummaryFormData {
-  registration: string;
-  description: string;
-  pick_up: boolean;
   bay: string;
+  pick_up: boolean;
+  description: string;
+  registration: string;
+  intake_status_id: number;
+  assigned_to_ids: number[];
 }
 export interface IJobFormData {
-  id?: number;
   service_task_id: number;
   description: string;
-  job_status_id: number;
-  assigned_to_ids: number[];
 }
 export interface IIntakeJobsFormData {
   intake: IIntakeSummaryFormData;
   jobs: IJobFormData[];
 }
 
+export interface IIntakeUser {
+  id: number;
+  user: {
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    title: string;
+  };
+  intake: {
+    id: number;
+    registration: string;
+    description: string;
+    bay: string;
+    pick_up: boolean;
+  };
+}
+
 export type TReceivedIntakeSummaryObj = {
   created_at: string;
   updated_at: string;
   id: number;
-  bay: string;
   registration: string;
-  pick_up: boolean;
   description: string;
+  pick_up: boolean;
+  intake_status: TReceivedIntakeStatusObj;
+  bay: string;
   jobs: { service_type: string; job_status: string }[];
+  intake_users: IIntakeUser[];
 };
 
 /* ----------------------------------- */
@@ -232,6 +250,8 @@ export type TReceivedSpecificIntakeJobsObj = {
   pick_up: boolean;
   registration: string;
   description: string;
+  intake_status: TReceivedIntakeStatusObj;
+  intake_users: IIntakeUser[];
   jobs: IReceivedIntakeJobsObj[];
 };
 
@@ -292,25 +312,6 @@ export interface UpdateSpecificIntakeJobsSucceedAction {
 }
 export interface UpdateSpecificIntakeJobsFailedAction {
   type: typeof actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_FAILED;
-  errorMessage: string;
-}
-
-/* ============================================================== */
-// Get All Users
-/* ============================================================== */
-
-export interface GetAllUsersAction {
-  type: typeof actionTypes.GET_ALL_USERS;
-}
-export interface GetAllUsersStartAction {
-  type: typeof actionTypes.GET_ALL_USERS_START;
-}
-export interface GetAllUsersSucceedAction {
-  type: typeof actionTypes.GET_ALL_USERS_SUCCEED;
-  allUsersArray: TReceivedUserInfoObj[];
-}
-export interface GetAllUsersFailedAction {
-  type: typeof actionTypes.GET_ALL_USERS_FAILED;
   errorMessage: string;
 }
 
@@ -396,13 +397,6 @@ export type TaskActionTypes =
   | UpdateSpecificIntakeJobsStartAction
   | UpdateSpecificIntakeJobsSucceedAction
   | UpdateSpecificIntakeJobsFailedAction
-  /* -------------------- */
-  // Get all users
-  /* -------------------- */
-  | GetAllUsersAction
-  | GetAllUsersStartAction
-  | GetAllUsersSucceedAction
-  | GetAllUsersFailedAction
   /* -------------------- */
   // Get users by roles
   /* -------------------- */

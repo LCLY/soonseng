@@ -19,6 +19,7 @@ import CatalogBodyMake from 'src/containers/CatalogPage/CatalogBodyMake/CatalogB
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
 import Make from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
 import Body from 'src/containers/DashboardPage/DashboardCRUD/Body/Body';
+import UserRoles from './containers/DashboardPage/DashboardCRUD/UserRoles/UserRoles';
 import BodyMake from 'src/containers/DashboardPage/DashboardCRUD/BodyMake/BodyMake';
 import Accessory from 'src/containers/DashboardPage/DashboardCRUD/Accessory/Accessory';
 import ChargesFees from './containers/DashboardPage/DashboardCRUD/ChargesFees/ChargesFees';
@@ -90,6 +91,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id/:discount?`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         {/* Dashboard */}
+        <Route exact path={ROUTE_DASHBOARD.users} component={UserRoles} />
         <Route exact path={ROUTE_DASHBOARD.make} component={Make} />
         <Route exact path={ROUTE_DASHBOARD.body} component={Body} />
         <Route exact path={ROUTE_DASHBOARD.body_make} component={BodyMake} />

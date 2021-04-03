@@ -18,7 +18,7 @@ import {
   TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
-import { TReceivedJobStatusObj, TReceivedServiceTaskObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import { TReceivedIntakeStatusObj, TReceivedServiceTaskObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -33,6 +33,7 @@ interface TaskFormItemsProps {
   onFinish: (values: any) => void;
   taskTableState: TTaskTableState[] | null;
   count: number;
+  // intakeDictObj: IIntakeDict | null;
   setCount: React.Dispatch<React.SetStateAction<number>>;
   setTaskTableState: React.Dispatch<React.SetStateAction<TTaskTableState[] | null>>;
   serviceTypeTaskDict: TServiceTypeTaskDict | null;
@@ -62,11 +63,12 @@ const TaskFormItems: React.FC<Props> = ({
   setCount,
   onFinish,
   intake_id,
+  // intakeDictObj,
   onDeleteTask,
   taskTableState,
   setTaskTableState,
   // onGetServiceTasks,
-  jobStatusArray,
+  intakeStatusArray,
   // serviceTasksArray,
   // serviceTypesArray,
   usersByRolesArray,
@@ -83,10 +85,9 @@ const TaskFormItems: React.FC<Props> = ({
 
   // const isEditing = (record: TTaskTableState) => record.key === editingKey;
 
-  const tagRender = (props: any, record: TTaskTableState) => {
+  const tagRender = (props: any) => {
     if (usersByRolesArray === null || usersByRolesArray === undefined) return <></>;
-    let arrayOfUserIds = (record as any)[`assign${record.key}`];
-    if (arrayOfUserIds === undefined) return <></>;
+
     let userResultArray = usersByRolesArray.filter((user) => props.value === user.id);
     //
     return (
@@ -119,7 +120,7 @@ const TaskFormItems: React.FC<Props> = ({
       title: 'Service Type',
       className: 'body__table-header--title',
       dataIndex: 'taskType',
-      width: 'auto',
+      width: '18rem',
       ellipsis: true,
       editable: true,
       // sorter: (a: TTaskTableState, b: TTaskTableState) => a.taskType.localeCompare(b.taskType),
@@ -144,7 +145,7 @@ const TaskFormItems: React.FC<Props> = ({
                 optionFilterProp="children"
                 filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={(value: number) => {
-                  if (serviceTypeTaskDict) {
+                  if (serviceTypeTaskDict && typeof value === 'number') {
                     setServiceTaskDropdown({
                       ...serviceTaskDropdown,
                       [record.key]: {
@@ -252,24 +253,13 @@ const TaskFormItems: React.FC<Props> = ({
               ]}
             >
               <Select
+                disabled={true}
                 showSearch
-                placeholder="Select a job status"
+                placeholder="Select a Task title"
                 optionFilterProp="children"
                 filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
-                <Option value="">Select a status</Option>
-                {jobStatusArray &&
-                  jobStatusArray.map((jobStatus) => {
-                    return (
-                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={jobStatus.id}>
-                        {`${jobStatus.title}${
-                          jobStatus.description !== '' && jobStatus.description !== null
-                            ? ` - ${jobStatus.description}`
-                            : ''
-                        }`}
-                      </Option>
-                    );
-                  })}
+                <Option value="">Select a Task</Option>
               </Select>
             </Form.Item>
           );
@@ -302,94 +292,94 @@ const TaskFormItems: React.FC<Props> = ({
         );
       },
     },
-    {
-      key: 'assign',
-      title: 'Assigned',
-      className: 'body__table-header--title',
-      dataIndex: 'assign',
-      width: 'auto',
-      ellipsis: true,
-      editable: true,
-      // sorter: (a: TTaskTableState, b: TTaskTableState) => a.assign.localeCompare(b.assign),
-      render: (_text: any, record: TTaskTableState) => {
-        return (
-          <Form.Item
-            // label="Service Type"
-            name={`assign${record.key}`}
-            style={{ margin: 0 }}
-            rules={[
-              {
-                required: true,
-                message: `Please choose a service type!`,
-              },
-            ]}
-          >
-            <Select
-              mode="multiple"
-              placeholder="Please select mechanics"
-              optionFilterProp="children"
-              tagRender={(props) => tagRender(props, record)}
-              filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            >
-              {usersByRolesArray &&
-                usersByRolesArray.map((user) => {
-                  return (
-                    <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={parseInt(user.id.toString())}>
-                      {`${user.first_name} ${user.last_name} - ${user.roles.title}`}
-                    </Option>
-                  );
-                })}
-            </Select>
-          </Form.Item>
-        );
-      },
-    },
-    {
-      key: 'taskStatus',
-      title: 'Status',
-      className: 'body__table-header--title',
-      dataIndex: 'taskStatus',
-      width: 'auto',
-      ellipsis: true,
-      editable: true,
-      // sorter: (a: TTaskTableState, b: TTaskTableState) => a.taskStatus.localeCompare(b.taskStatus),
-      render: (_text: any, record: TTaskTableState) => {
-        return (
-          <Form.Item
-            // label="Status"
-            name={`taskStatus${record.key}`}
-            style={{ margin: 0 }}
-            rules={[
-              {
-                required: true,
-                message: `Please choose a status!`,
-              },
-            ]}
-          >
-            <Select
-              showSearch
-              placeholder="Select a job status"
-              optionFilterProp="children"
-              filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            >
-              <Option value="">Select a status</Option>
-              {jobStatusArray &&
-                jobStatusArray.map((jobStatus) => {
-                  return (
-                    <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={jobStatus.id}>
-                      {`${jobStatus.title}${
-                        jobStatus.description !== '' && jobStatus.description !== null
-                          ? ` - ${jobStatus.description}`
-                          : ''
-                      }`}
-                    </Option>
-                  );
-                })}
-            </Select>
-          </Form.Item>
-        );
-      },
-    },
+    // {
+    //   key: 'assign',
+    //   title: 'Assigned',
+    //   className: 'body__table-header--title',
+    //   dataIndex: 'assign',
+    //   width: 'auto',
+    //   ellipsis: true,
+    //   editable: true,
+    //   // sorter: (a: TTaskTableState, b: TTaskTableState) => a.assign.localeCompare(b.assign),
+    //   render: (_text: any, record: TTaskTableState) => {
+    //     return (
+    //       <Form.Item
+    //         // label="Service Type"
+    //         name={`assign${record.key}`}
+    //         style={{ margin: 0 }}
+    //         rules={[
+    //           {
+    //             required: true,
+    //             message: `Please choose a service type!`,
+    //           },
+    //         ]}
+    //       >
+    //         <Select
+    //           mode="multiple"
+    //           placeholder="Please select mechanics"
+    //           optionFilterProp="children"
+    //           tagRender={(props) => tagRender(props, record)}
+    //           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+    //         >
+    //           {usersByRolesArray &&
+    //             usersByRolesArray.map((user) => {
+    //               return (
+    //                 <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={parseInt(user.id.toString())}>
+    //                   {`${user.first_name} ${user.last_name} - ${user.roles.title}`}
+    //                 </Option>
+    //               );
+    //             })}
+    //         </Select>
+    //       </Form.Item>
+    //     );
+    //   },
+    // },
+    // {
+    //   key: 'taskStatus',
+    //   title: 'Status',
+    //   className: 'body__table-header--title',
+    //   dataIndex: 'taskStatus',
+    //   width: 'auto',
+    //   ellipsis: true,
+    //   editable: true,
+    //   // sorter: (a: TTaskTableState, b: TTaskTableState) => a.taskStatus.localeCompare(b.taskStatus),
+    //   render: (_text: any, record: TTaskTableState) => {
+    //     return (
+    //       <Form.Item
+    //         // label="Status"
+    //         name={`taskStatus${record.key}`}
+    //         style={{ margin: 0 }}
+    //         rules={[
+    //           {
+    //             required: true,
+    //             message: `Please choose a status!`,
+    //           },
+    //         ]}
+    //       >
+    //         <Select
+    //           showSearch
+    //           placeholder="Select a job status"
+    //           optionFilterProp="children"
+    //           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+    //         >
+    //           <Option value="">Select a status</Option>
+    //           {intakeStatusArray &&
+    //             intakeStatusArray.map((intakeStatus) => {
+    //               return (
+    //                 <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={intakeStatus.id}>
+    //                   {`${intakeStatus.title}${
+    //                     intakeStatus.description !== '' && intakeStatus.description !== null
+    //                       ? ` - ${intakeStatus.description}`
+    //                       : ''
+    //                   }`}
+    //                 </Option>
+    //               );
+    //             })}
+    //         </Select>
+    //       </Form.Item>
+    //     );
+    //   },
+    // },
     {
       title: 'Actions',
       dataIndex: 'operation',
@@ -478,11 +468,14 @@ const TaskFormItems: React.FC<Props> = ({
   //   }
   // }, [editingKey, serviceTasksArray, setServiceTaskDropdown]);
 
+  console.log(taskTableState);
+
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for Tasks
   /* ----------------------------------------------------- */
   useEffect(() => {
     if (crud === 'create') {
+      console.log('create');
       // when create no need to prefill the table, jz straight add a new empty row
       let tempArray: any[] = [];
       /** A function that stores desired keys and values into a tempArray */
@@ -501,7 +494,7 @@ const TaskFormItems: React.FC<Props> = ({
   }, [crud, setCount, setTaskTableState]);
 
   useEffect(() => {
-    if (crud === 'update' && jobStatusArray && jobStatusArray !== undefined) {
+    if (crud === 'update' && intakeStatusArray && intakeStatusArray !== undefined) {
       let tempArray: any[] = [];
       let tempDict: any = {};
       /** A function that stores desired keys and values into a tempArray */
@@ -509,7 +502,7 @@ const TaskFormItems: React.FC<Props> = ({
         let newAssignArray: number[] = [];
         task.assigned_to.forEach((user) => newAssignArray.push(user.user_id));
         // using string to extract the id
-        let filteredStatus = jobStatusArray.filter((status) => status.title === task.status);
+        let filteredStatus = intakeStatusArray.filter((status) => status.title === task.status);
 
         tempArray.push({
           key: index,
@@ -556,7 +549,7 @@ const TaskFormItems: React.FC<Props> = ({
     }
   }, [
     crud,
-    jobStatusArray,
+    intakeStatusArray,
     antdForm,
     setCount,
     setTaskTableState,
@@ -567,7 +560,7 @@ const TaskFormItems: React.FC<Props> = ({
 
   useEffect(() => {
     if (incomingSpecificIntakeData === null) return;
-    if (crud === 'update' && jobStatusArray && jobStatusArray !== undefined) {
+    if (crud === 'update' && intakeStatusArray && intakeStatusArray !== undefined) {
       let tempArray: any[] = [];
       let tempDict: any = {};
       /** A function that stores desired keys and values into a tempArray */
@@ -575,7 +568,7 @@ const TaskFormItems: React.FC<Props> = ({
         let newAssignArray: number[] = [];
         task.assigned_to.forEach((user) => newAssignArray.push(user.user_id));
         // using string to extract the id
-        let filteredStatus = jobStatusArray.filter((status) => status.title === task.status);
+        let filteredStatus = intakeStatusArray.filter((status) => status.title === task.status);
 
         tempArray.push({
           key: index,
@@ -618,7 +611,7 @@ const TaskFormItems: React.FC<Props> = ({
     }
   }, [
     crud,
-    jobStatusArray,
+    intakeStatusArray,
     antdForm,
     setCount,
     setTaskTableState,
@@ -702,6 +695,79 @@ const TaskFormItems: React.FC<Props> = ({
               <TextArea placeholder="Type Description here" />
             </Form.Item>
 
+            {/* ================================================== */}
+            {/* intake Status */}
+            {/* ================================================== */}
+            <Form.Item
+              label="Intake Status"
+              name="intakeStatus"
+              className="make__form-item task__form-input-left"
+              style={{ margin: 0 }}
+              rules={[
+                {
+                  required: true,
+                  message: `Please choose a intake status!`,
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                placeholder="Select an intake status"
+                optionFilterProp="children"
+                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                <Option value="">Select a status</Option>
+                {intakeStatusArray &&
+                  intakeStatusArray.map((intakeStatus) => {
+                    return (
+                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={intakeStatus.id}>
+                        {`${intakeStatus.title}${
+                          intakeStatus.description !== '' && intakeStatus.description !== null
+                            ? ` - ${intakeStatus.description}`
+                            : ''
+                        }`}
+                      </Option>
+                    );
+                  })}
+              </Select>
+            </Form.Item>
+
+            {/* ========================================= */}
+            {/* Assigned to Ids */}
+            {/* ========================================= */}
+            <Form.Item
+              label="Assignees"
+              name="assign"
+              style={{ margin: 0 }}
+              rules={[
+                {
+                  required: true,
+                  message: `Please choose a user!`,
+                },
+              ]}
+            >
+              <Select
+                mode="multiple"
+                placeholder="Please select mechanics"
+                optionFilterProp="children"
+                tagRender={(props) => tagRender(props)}
+                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {usersByRolesArray &&
+                  usersByRolesArray.map((user) => {
+                    return (
+                      <Option
+                        style={{ textTransform: 'capitalize' }}
+                        key={uuidv4()}
+                        value={parseInt(user.id.toString())}
+                      >
+                        {`${user.first_name} ${user.last_name} - ${user.roles.title}`}
+                      </Option>
+                    );
+                  })}
+              </Select>
+            </Form.Item>
+
             {/* Add this part for update modal form only */}
             {crud === 'update' && (
               <>
@@ -752,14 +818,14 @@ const TaskFormItems: React.FC<Props> = ({
 
 interface StateProps {
   serviceTasksArray?: TReceivedServiceTaskObj[] | null;
-  jobStatusArray?: TReceivedJobStatusObj[] | null;
+  intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   usersByRolesArray?: TReceivedUserInfoObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
   specificIntakeJobsObj?: TReceivedSpecificIntakeJobsObj | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
-    jobStatusArray: state.dashboard.jobStatusArray,
+    intakeStatusArray: state.dashboard.intakeStatusArray,
     usersByRolesArray: state.task.usersByRolesArray,
     serviceTasksArray: state.dashboard.serviceTasksArray,
     serviceTypesArray: state.dashboard.serviceTypesArray,

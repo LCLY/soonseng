@@ -72,11 +72,11 @@ import {
   getChargesFeesSaga,
   updateChargesFeesSaga,
   deleteChargesFeesSaga,
-  // Job Status
-  getJobStatusSaga,
-  createJobStatusSaga,
-  deleteJobStatusSaga,
-  updateJobStatusSaga,
+  // Intake Status
+  getIntakeStatusSaga,
+  createIntakeStatusSaga,
+  deleteIntakeStatusSaga,
+  updateIntakeStatusSaga,
   // Service Types
   getServiceTypesSaga,
   createServiceTypeSaga,
@@ -87,6 +87,15 @@ import {
   createServiceTaskSaga,
   deleteServiceTaskSaga,
   updateServiceTaskSaga,
+  // user related
+  createUserSaga,
+  deleteUserSaga,
+  getUsersSaga,
+  updateUserSaga,
+  createRoleSaga,
+  deleteRoleSaga,
+  updateRoleSaga,
+  getRolesSaga,
 } from './dashboard';
 
 import {
@@ -109,7 +118,6 @@ import {
   // getTasksSaga,
   // updateTaskSaga,
   deleteTaskSaga,
-  getAllUsersSaga,
   getUsersByRolesSaga,
   // intakes jobs
   getIntakeSummarySaga,
@@ -212,10 +220,10 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_ACCESSORY, updateAccessorySaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_ACCESSORY, deleteAccessorySaga)]);
   // Job Status
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_JOBSTATUS, getJobStatusSaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_JOBSTATUS, createJobStatusSaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_JOBSTATUS, deleteJobStatusSaga)]);
-  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_JOBSTATUS, updateJobStatusSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_INTAKESTATUS, getIntakeStatusSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_INTAKESTATUS, createIntakeStatusSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_INTAKESTATUS, deleteIntakeStatusSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_INTAKESTATUS, updateIntakeStatusSaga)]);
   // Service Types
   yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_SERVICETYPES, getServiceTypesSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_SERVICETYPE, createServiceTypeSaga)]);
@@ -226,6 +234,16 @@ export function* watchDashboard() {
   yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_SERVICE_TASK, createServiceTaskSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_SERVICE_TASK, deleteServiceTaskSaga)]);
   yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_SERVICE_TASK, updateServiceTaskSaga)]);
+  // User Related
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_USERS, getUsersSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_USER, createUserSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_USER, deleteUserSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_USER, updateUserSaga)]);
+  // Role Related
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.GET_ROLES, getRolesSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.CREATE_ROLE, createRoleSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.DELETE_ROLE, deleteRoleSaga)]);
+  yield all([takeEvery<DashboardActionTypes>(actionTypes.UPDATE_ROLE, updateRoleSaga)]);
 }
 
 export function* watchTask() {
@@ -242,7 +260,5 @@ export function* watchTask() {
   // Specific Intake Jobs
   yield all([takeEvery<TaskActionTypes>(actionTypes.GET_SPECIFIC_INTAKE_JOBS, getSpecificIntakeJobsSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS, updateSpecificIntakeJobsSaga)]);
-  // Get Users
-  yield all([takeEvery<TaskActionTypes>(actionTypes.GET_ALL_USERS, getAllUsersSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.GET_USERS_BY_ROLES, getUsersByRolesSaga)]);
 }

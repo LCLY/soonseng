@@ -113,7 +113,7 @@ const IntakeJobsModal: React.FC<Props> = ({
     cableRef.current = channel;
   }, [cableRef, intake_id, cableApp.cable.subscriptions]);
 
-  console.log('specific intake incomingdata', incomingSpecificIntakeData);
+  // console.log('specific intake incomingdata', incomingSpecificIntakeData);
 
   /* ================================================== */
   /* ================================================== */

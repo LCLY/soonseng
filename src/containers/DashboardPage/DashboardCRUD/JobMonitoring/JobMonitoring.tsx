@@ -18,8 +18,8 @@ import { PlusCircleTwoTone, MinusCircleTwoTone } from '@ant-design/icons';
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
 import {
+  TReceivedIntakeStatusObj,
   IServiceTaskFormData,
-  TReceivedJobStatusObj,
   TReceivedServiceTypesObj,
   TReceivedServiceTaskObj,
 } from 'src/store/types/dashboard';
@@ -34,7 +34,7 @@ type TServiceTypesTableState = {
   title: string;
   description: string;
 };
-type TJobStatusTableState = {
+type TIntakeStatusTableState = {
   key: string;
   id: number;
   title: string;
@@ -45,14 +45,14 @@ type Props = JobMonitoringProps & StateProps & DispatchProps;
 
 const JobMonitoring: React.FC<Props> = ({
   loading,
-  jobStatusArray,
+  intakeStatusArray,
   successMessage,
   serviceTasksArray,
   serviceTypesArray,
-  onGetJobStatus,
-  onCreateJobStatus,
-  onDeleteJobStatus,
-  onUpdateJobStatus,
+  onGetIntakeStatus,
+  onCreateIntakeStatus,
+  onDeleteIntakeStatus,
+  onUpdateIntakeStatus,
   onGetServiceTypes,
   onCreateServiceType,
   onUpdateServiceType,
@@ -69,29 +69,29 @@ const JobMonitoring: React.FC<Props> = ({
 
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
     service_type: false,
-    job_status: false,
+    intake_status: false,
     task_title: false,
   });
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
     service_type: false,
-    job_status: false,
+    intake_status: false,
     task_title: false,
   });
   const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
     service_type: false,
-    job_status: false,
+    intake_status: false,
     task_title: false,
   });
   const [deleteModalContent, setDeleteModalContent] = useState({
-    job_status: { id: -1, title: '' },
+    intake_status: { id: -1, title: '' },
     service_type: { id: -1, title: '' },
     task_title: { task_title_id: -1, service_type_id: -1, title: '' },
   });
 
   const [createServiceTypeForm] = Form.useForm();
   const [updateServiceTypeForm] = Form.useForm();
-  const [createJobStatusForm] = Form.useForm();
-  const [updateJobStatusForm] = Form.useForm();
+  const [createIntakeStatusForm] = Form.useForm();
+  const [updateIntakeStatusForm] = Form.useForm();
   const [createServiceTaskForm] = Form.useForm();
   const [updateServiceTaskForm] = Form.useForm();
 
@@ -99,10 +99,10 @@ const JobMonitoring: React.FC<Props> = ({
 
   // Table states
   const [serviceTypesTableState, setServiceTypesTableState] = useState<TServiceTypesTableState[]>([]);
-  const [jobStatusTableState, setJobStatusTableState] = useState<TJobStatusTableState[]>([]);
+  const [intakeStatusTableState, setIntakeStatusTableState] = useState<TIntakeStatusTableState[]>([]);
 
   let serviceTypesSearchInput = null; //this is for filter on antd table
-  let jobStatusSearchInput = null; //this is for filter on antd table
+  let intakeStatusSearchInput = null; //this is for filter on antd table
 
   const [serviceTypesColumns, setServiceTypesColumns] = useState([
     {
@@ -112,7 +112,7 @@ const JobMonitoring: React.FC<Props> = ({
       dataIndex: 'title',
 
       ellipsis: true,
-      sorter: (a: TJobStatusTableState, b: TJobStatusTableState) => a.title.localeCompare(b.title),
+      sorter: (a: TIntakeStatusTableState, b: TIntakeStatusTableState) => a.title.localeCompare(b.title),
       ...getColumnSearchProps(serviceTypesSearchInput, 'title', 'Title'),
     },
     {
@@ -122,7 +122,7 @@ const JobMonitoring: React.FC<Props> = ({
       dataIndex: 'description',
 
       ellipsis: true,
-      sorter: (a: TJobStatusTableState, b: TJobStatusTableState) => a.description.localeCompare(b.description),
+      sorter: (a: TIntakeStatusTableState, b: TIntakeStatusTableState) => a.description.localeCompare(b.description),
       ...getColumnSearchProps(serviceTypesSearchInput, 'description', 'Description'),
     },
     {
@@ -131,7 +131,7 @@ const JobMonitoring: React.FC<Props> = ({
       dataIndex: 'action',
       // fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TJobStatusTableState) => {
+      render: (_text: any, record: TIntakeStatusTableState) => {
         return (
           <>
             <div className="dashboard__btn-div">
@@ -195,7 +195,7 @@ const JobMonitoring: React.FC<Props> = ({
     },
   ]);
 
-  const [jobStatusColumns, setJobStatusColumns] = useState([
+  const [intakeStatusColumns, setIntakeStatusColumns] = useState([
     {
       key: 'title',
       title: 'Title',
@@ -203,8 +203,8 @@ const JobMonitoring: React.FC<Props> = ({
       dataIndex: 'title',
       width: 'auto',
       ellipsis: true,
-      sorter: (a: TJobStatusTableState, b: TJobStatusTableState) => a.title.localeCompare(b.title),
-      ...getColumnSearchProps(jobStatusSearchInput, 'title', 'Title'),
+      sorter: (a: TIntakeStatusTableState, b: TIntakeStatusTableState) => a.title.localeCompare(b.title),
+      ...getColumnSearchProps(intakeStatusSearchInput, 'title', 'Title'),
     },
     {
       key: 'description',
@@ -213,8 +213,8 @@ const JobMonitoring: React.FC<Props> = ({
       dataIndex: 'description',
       width: 'auto',
       ellipsis: true,
-      sorter: (a: TJobStatusTableState, b: TJobStatusTableState) => a.description.localeCompare(b.description),
-      ...getColumnSearchProps(jobStatusSearchInput, 'description', 'Description'),
+      sorter: (a: TIntakeStatusTableState, b: TIntakeStatusTableState) => a.description.localeCompare(b.description),
+      ...getColumnSearchProps(intakeStatusSearchInput, 'description', 'Description'),
     },
     {
       key: 'bodyAction',
@@ -222,7 +222,7 @@ const JobMonitoring: React.FC<Props> = ({
       dataIndex: 'action',
       // fixed: 'right',
       width: '17rem',
-      render: (_text: any, record: TJobStatusTableState) => {
+      render: (_text: any, record: TIntakeStatusTableState) => {
         return (
           <>
             <div className="dashboard__btn-div">
@@ -231,13 +231,13 @@ const JobMonitoring: React.FC<Props> = ({
                 className="make__brand-btn--edit"
                 onClick={() => {
                   // populate the accessory modal
-                  updateJobStatusForm.setFieldsValue({
+                  updateIntakeStatusForm.setFieldsValue({
                     id: record.id,
                     title: record.title,
                     description: record.description,
                   });
                   // show modal
-                  setShowUpdateModal({ ...showUpdateModal, job_status: true });
+                  setShowUpdateModal({ ...showUpdateModal, intake_status: true });
                 }}
               >
                 <i className="far fa-edit"></i>
@@ -256,10 +256,10 @@ const JobMonitoring: React.FC<Props> = ({
                 danger
                 onClick={() => {
                   // delete modal
-                  setShowDeleteModal({ ...showDeleteModal, job_status: true });
+                  setShowDeleteModal({ ...showDeleteModal, intake_status: true });
                   setDeleteModalContent({
                     ...deleteModalContent,
-                    job_status: { id: record.id, title: record.title },
+                    intake_status: { id: record.id, title: record.title },
                   });
                 }}
               >
@@ -275,15 +275,15 @@ const JobMonitoring: React.FC<Props> = ({
   /* ================================================== */
   /*  method */
   /* ================================================== */
-  /* Job Status */
-  const onCreateJobStatusFinish = (values: { title: string; description: string }) => {
-    onCreateJobStatus(values.title, values.description);
+  /* Intake Status */
+  const onCreateIntakeStatusFinish = (values: { title: string; description: string }) => {
+    onCreateIntakeStatus(values.title, values.description);
   };
-  const onUpdateJobStatusFinish = (values: { id: number; title: string; description: string }) => {
-    onUpdateJobStatus(values.id, values.title, values.description);
+  const onUpdateIntakeStatusFinish = (values: { id: number; title: string; description: string }) => {
+    onUpdateIntakeStatus(values.id, values.title, values.description);
   };
-  const onDeleteJobStatusFinish = () => {
-    onDeleteJobStatus(deleteModalContent.job_status.id);
+  const onDeleteIntakeStatusFinish = () => {
+    onDeleteIntakeStatus(deleteModalContent.intake_status.id);
   };
 
   /* Service Type */
@@ -418,33 +418,33 @@ const JobMonitoring: React.FC<Props> = ({
   /* ================================================== */
 
   useEffect(() => {
-    onGetJobStatus();
+    onGetIntakeStatus();
     onGetServiceTypes();
-  }, [onGetJobStatus, onGetServiceTypes]);
+  }, [onGetIntakeStatus, onGetServiceTypes]);
 
   /* ----------------------------------------------------- */
-  // initialize/populate the state of data array for job status and service types
+  // initialize/populate the state of data array for Intake status and service types
   /* ----------------------------------------------------- */
   useEffect(() => {
-    let tempArray: TJobStatusTableState[] = [];
+    let tempArray: TIntakeStatusTableState[] = [];
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (jobStatus: TReceivedJobStatusObj) => {
+    const storeValue = (intakeStatus: TReceivedIntakeStatusObj) => {
       // only render when available value is true
       tempArray.push({
         key: uuidv4(),
-        id: jobStatus.id,
-        title: jobStatus.title,
-        description: jobStatus.description && jobStatus.description !== '' ? jobStatus.description : '-',
+        id: intakeStatus.id,
+        title: intakeStatus.title,
+        description: intakeStatus.description && intakeStatus.description !== '' ? intakeStatus.description : '-',
       });
     };
 
-    if (jobStatusArray) {
+    if (intakeStatusArray) {
       // Execute function "storeValue" for every array index
-      jobStatusArray.map(storeValue);
+      intakeStatusArray.map(storeValue);
     }
     // update the state with tempArray
-    setJobStatusTableState(tempArray);
-  }, [jobStatusArray]);
+    setIntakeStatusTableState(tempArray);
+  }, [intakeStatusArray]);
 
   useEffect(() => {
     let tempArray: TServiceTypesTableState[] = [];
@@ -472,26 +472,26 @@ const JobMonitoring: React.FC<Props> = ({
       message.success(successMessage);
       onClearDashboardState();
 
-      createJobStatusForm.resetFields();
+      createIntakeStatusForm.resetFields();
       createServiceTypeForm.resetFields();
       createServiceTaskForm.resetFields();
 
       setShowCreateModal({
         ...showCreateModal,
         service_type: false,
-        job_status: false,
+        intake_status: false,
         task_title: false,
       });
       setShowUpdateModal({
         ...showUpdateModal,
         service_type: false,
-        job_status: false,
+        intake_status: false,
         task_title: false,
       });
       setShowDeleteModal({
         ...showDeleteModal,
         service_type: false,
-        job_status: false,
+        intake_status: false,
         task_title: false,
       });
     }
@@ -500,7 +500,7 @@ const JobMonitoring: React.FC<Props> = ({
     showDeleteModal,
     showUpdateModal,
     showCreateModal,
-    createJobStatusForm,
+    createIntakeStatusForm,
     createServiceTypeForm,
     createServiceTaskForm,
     onClearDashboardState,
@@ -510,44 +510,44 @@ const JobMonitoring: React.FC<Props> = ({
   /* ================================================== */
   return (
     <>
-      {/* Job Status */}
+      {/* Intake Status */}
       <CrudModal
         crud="create"
-        indexKey="job_status"
-        category="job_status"
-        modalTitle={'Create New Job Status'}
-        antdForm={createJobStatusForm}
+        indexKey="intake_status"
+        category="intake_status"
+        modalTitle={'Create New Intake Status'}
+        antdForm={createIntakeStatusForm}
         showModal={showCreateModal}
-        visible={showCreateModal.job_status}
-        onFinish={onCreateJobStatusFinish}
+        visible={showCreateModal.intake_status}
+        onFinish={onCreateIntakeStatusFinish}
         setShowModal={setShowCreateModal}
         loading={loading !== undefined && loading}
       />
       <CrudModal
         crud="update"
-        indexKey="job_status"
-        category="job_status"
-        modalTitle={'Update Job Status'}
-        antdForm={updateJobStatusForm}
+        indexKey="intake_status"
+        category="intake_status"
+        modalTitle={'Update Intake Status'}
+        antdForm={updateIntakeStatusForm}
         showModal={showUpdateModal}
-        visible={showUpdateModal.job_status}
-        onFinish={onUpdateJobStatusFinish}
+        visible={showUpdateModal.intake_status}
+        onFinish={onUpdateIntakeStatusFinish}
         setShowModal={setShowUpdateModal}
         loading={loading !== undefined && loading}
       />
 
       <CrudModal
-        category="job_status"
+        category="intake_status"
         crud={'delete'}
-        visible={showDeleteModal.job_status}
-        indexKey="job_status"
+        visible={showDeleteModal.intake_status}
+        indexKey="intake_status"
         showModal={showDeleteModal}
-        onDelete={onDeleteJobStatusFinish}
+        onDelete={onDeleteIntakeStatusFinish}
         setShowModal={setShowDeleteModal}
         loading={loading !== undefined && loading}
-        modalTitle={'Delete Job Status'}
-        warningText={deleteModalContent.job_status.title}
-        backupWarningText={'this job status'}
+        modalTitle={'Delete Intake Status'}
+        warningText={deleteModalContent.intake_status.title}
+        backupWarningText={'this Intake status'}
       />
 
       {/* Service Type */}
@@ -637,7 +637,7 @@ const JobMonitoring: React.FC<Props> = ({
               <div className="make__tab-outerdiv">
                 <section>
                   <>
-                    {jobStatusArray && serviceTypesArray ? (
+                    {intakeStatusArray && serviceTypesArray ? (
                       <>
                         <section className="make__section">
                           <div className="make__header-div ">
@@ -673,13 +673,13 @@ const JobMonitoring: React.FC<Props> = ({
 
                         <section className="make__section">
                           <div className="make__header-div ">
-                            <div className="make__header-title">Job Status</div>
+                            <div className="make__header-title">Intake Status</div>
                             <Button
                               type="primary"
                               className="make__brand-btn"
-                              onClick={() => setShowCreateModal({ ...showCreateModal, job_status: true })}
+                              onClick={() => setShowCreateModal({ ...showCreateModal, intake_status: true })}
                             >
-                              Create New Job Status
+                              Create New Intake Status
                             </Button>
                           </div>
 
@@ -690,8 +690,8 @@ const JobMonitoring: React.FC<Props> = ({
                             bordered
                             className="make__table"
                             scroll={{ x: '89rem', y: 600 }}
-                            dataSource={jobStatusTableState}
-                            columns={convertHeader(jobStatusColumns, setJobStatusColumns)}
+                            dataSource={intakeStatusTableState}
+                            columns={convertHeader(intakeStatusColumns, setIntakeStatusColumns)}
                             // components={components}
 
                             // pagination={false}
@@ -718,7 +718,7 @@ interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
-  jobStatusArray?: TReceivedJobStatusObj[] | null;
+  intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   serviceTasksArray?: TReceivedServiceTaskObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
 }
@@ -727,17 +727,17 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     loading: state.dashboard.loading,
     errorMessage: state.dashboard.errorMessage,
     successMessage: state.dashboard.successMessage,
-    jobStatusArray: state.dashboard.jobStatusArray,
+    intakeStatusArray: state.dashboard.intakeStatusArray,
     serviceTasksArray: state.dashboard.serviceTasksArray,
     serviceTypesArray: state.dashboard.serviceTypesArray,
   };
 };
 
 interface DispatchProps {
-  onGetJobStatus: typeof actions.getJobStatus;
-  onCreateJobStatus: typeof actions.createJobStatus;
-  onUpdateJobStatus: typeof actions.updateJobStatus;
-  onDeleteJobStatus: typeof actions.deleteJobStatus;
+  onGetIntakeStatus: typeof actions.getIntakeStatus;
+  onCreateIntakeStatus: typeof actions.createIntakeStatus;
+  onUpdateIntakeStatus: typeof actions.updateIntakeStatus;
+  onDeleteIntakeStatus: typeof actions.deleteIntakeStatus;
   onGetServiceTypes: typeof actions.getServiceTypes;
   onCreateServiceType: typeof actions.createServiceType;
   onUpdateServiceType: typeof actions.updateServiceType;
@@ -751,11 +751,11 @@ interface DispatchProps {
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
-    onGetJobStatus: () => dispatch(actions.getJobStatus()),
-    onUpdateJobStatus: (job_status_id, title, description) =>
-      dispatch(actions.updateJobStatus(job_status_id, title, description)),
-    onDeleteJobStatus: (job_status_id) => dispatch(actions.deleteJobStatus(job_status_id)),
-    onCreateJobStatus: (title, description) => dispatch(actions.createJobStatus(title, description)),
+    onGetIntakeStatus: () => dispatch(actions.getIntakeStatus()),
+    onUpdateIntakeStatus: (intake_status_id, title, description) =>
+      dispatch(actions.updateIntakeStatus(intake_status_id, title, description)),
+    onDeleteIntakeStatus: (intake_status_id) => dispatch(actions.deleteIntakeStatus(intake_status_id)),
+    onCreateIntakeStatus: (title, description) => dispatch(actions.createIntakeStatus(title, description)),
     onGetServiceTypes: () => dispatch(actions.getServiceTypes()),
     onUpdateServiceType: (service_type_id, title, description) =>
       dispatch(actions.updateServiceType(service_type_id, title, description)),
