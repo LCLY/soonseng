@@ -46,7 +46,7 @@
       }
       & .ant-table-body {
         overflow: auto !important;
-        max-height: 27rem !important;
+        max-height: 20rem !important;
         border-bottom: 1px solid white;
       }
 
@@ -89,6 +89,26 @@
         font-family: $font-firesans !important;
         height: 10px !important;
         // padding: 0 !important;
+      }
+    }
+
+    &-description {
+      margin-top: 1rem;
+      &-outerdiv {
+        display: flex;
+        align-items: center;
+      }
+      &-text {
+        margin-right: 1rem;
+        font-family: $font-pragati;
+        font-size: 2rem;
+      }
+      &-div {
+        border: 1px solid white;
+        border-radius: 1rem;
+        padding: 0.5rem;
+        background: rgba(94, 96, 100, 0.575);
+        width: 100%;
       }
     }
   }
@@ -153,7 +173,6 @@
     }
 
     &-left {
-      cursor: pointer;
       border-right: 1px solid white;
       height: 100%;
       background: white;
@@ -251,6 +270,14 @@
       font-size: 1.2rem !important;
       color: white !important;
       background: rgb(61, 62, 70) !important;
+
+      // description but for intake
+      &--intakedesc {
+        font-size: 1.5rem !important;
+        padding: 1rem !important;
+        height: 4rem !important;
+        font-family: $font-firesans;
+      }
     }
     &-checkbox {
       margin: 0 !important;
@@ -268,7 +295,7 @@
         margin: 0 !important;
         font-family: $font-dmsans !important;
         color: rgb(1, 12, 36);
-        width: 15rem;
+        // width: 15rem;
 
         &-input {
           font-size: 2rem !important;
@@ -438,6 +465,22 @@
       color: rgb(1, 12, 36);
       font-size: 2rem;
       padding: 0.5rem 3rem;
+
+      // &--normaluser {
+      //   background: none;
+      //   padding: 0;
+      //   color: white;
+      // }
+    }
+
+    &-outerdiv {
+      &--normaluser {
+        display: flex;
+        // align-items: center;
+        // justify-content: center;
+        // flex-direction: column;
+        width: 100%;
+      }
     }
   }
 
@@ -455,6 +498,7 @@
       display: flex;
       justify-content: flex-end;
       font-size: 1.2rem;
+      margin-top: 1rem;
       font-family: $font-roboto;
     }
   }

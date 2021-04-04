@@ -5,7 +5,7 @@ import './SpecificIntake.scss';
 /* 3rd party lib */
 import gsap from 'gsap';
 import moment from 'moment';
-import { Popconfirm, Table, Tooltip, Form, Button, Checkbox, Input, Select } from 'antd';
+import { Popconfirm, Table, Tooltip, Form, Button, Input, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 /* Util */
@@ -54,7 +54,7 @@ const SpecificIntake: React.FC<Props> = ({
   count,
   setCount,
   loading,
-  // onDeleteTask,
+  auth_token,
   inEditMode,
   setInEditMode,
   onGetServiceTypes,
@@ -75,6 +75,7 @@ const SpecificIntake: React.FC<Props> = ({
   /* ================================================== */
 
   const [updateIntakeJobsForm] = Form.useForm();
+  const [clickedUpdate, setClickedUpdate] = useState(false); //boolean to keep track if user has clicked update
   const [originalTaskArraylength, setOriginalTaskArraylength] = useState(0);
   const [updateTaskTableState, setUpdateTaskTableState] = useState<TUpdateTaskTableState[] | null>(null);
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
@@ -93,6 +94,14 @@ const SpecificIntake: React.FC<Props> = ({
   /* ================================================== */
   /*  method */
   /* ================================================== */
+
+  const goBackToIntakes = () => {
+    gsap.to('.task__table-div', {
+      duration: 1,
+      ease: 'ease',
+      x: '0',
+    });
+  };
 
   const handleAdd = () => {
     if (updateTaskTableState === null) return;
@@ -427,6 +436,13 @@ const SpecificIntake: React.FC<Props> = ({
     onGetServiceTypes();
   }, [onGetServiceTypes]);
 
+  useEffect(() => {
+    // if user is not logged in, then he shouldnt be able to edit
+    if (auth_token === null) {
+      setInEditMode(false);
+    }
+  }, [auth_token, setInEditMode]);
+
   // useEffect(() => {
   //   if (specificIntakeJobsObj === null) {
   //     gsap.to('.task__table-div', {
@@ -446,7 +462,6 @@ const SpecificIntake: React.FC<Props> = ({
 
   useEffect(() => {
     if (specificIntakeJobsObj) {
-      console.log('SPECIFIC INTAKE JOB', specificIntakeJobsObj);
       setCurrentSpecificIntakeJobsObj(specificIntakeJobsObj);
     }
   }, [specificIntakeJobsObj]);
@@ -461,6 +476,7 @@ const SpecificIntake: React.FC<Props> = ({
         bay: currentSpecificIntakeJobsObj.bay,
         intakeId: currentSpecificIntakeJobsObj.id,
         pickup: currentSpecificIntakeJobsObj.pick_up,
+        description: currentSpecificIntakeJobsObj.description,
         intakeStatus: currentSpecificIntakeJobsObj.intake_status.id,
         registrationNumber: currentSpecificIntakeJobsObj.registration,
       });
@@ -532,8 +548,15 @@ const SpecificIntake: React.FC<Props> = ({
   useEffect(() => {
     if (incomingSpecificIntakeData) {
       setCurrentSpecificIntakeJobsObj(incomingSpecificIntakeData);
+
+      // if user is an admin that has clicked update, then swap the screen back
+      if (clickedUpdate) {
+        setClickedUpdate(false); //reset
+        goBackToIntakes(); //animate back to homescreen
+      }
+      setIncomingSpecificIntakeData(null);
     }
-  }, [incomingSpecificIntakeData]);
+  }, [clickedUpdate, incomingSpecificIntakeData]);
 
   useEffect(() => {
     if (specificIntakeJobsObj === undefined || specificIntakeJobsObj === null) return;
@@ -541,7 +564,9 @@ const SpecificIntake: React.FC<Props> = ({
       { channel: 'JobMonitoringChannel', intake_id: specificIntakeJobsObj.id },
       {
         connected: () => console.log('specific intake connected'),
-        received: (res: any) => setIncomingSpecificIntakeData(res.data),
+        received: (res: any) => {
+          setIncomingSpecificIntakeData(res.data);
+        },
       },
     );
 
@@ -619,11 +644,7 @@ const SpecificIntake: React.FC<Props> = ({
                   onClick={() => {
                     // setInEditMode(false);
                     setBeforeDeleteState(null);
-                    gsap.to('.task__table-div', {
-                      duration: 1,
-                      ease: 'ease',
-                      x: '0',
-                    });
+                    goBackToIntakes();
                   }}
                 >
                   <i className="fas fa-arrow-circle-left" /> <div className="specificintake__back-text">Back</div>
@@ -632,8 +653,8 @@ const SpecificIntake: React.FC<Props> = ({
 
               <div className="flex-align-center">
                 {/* {inEditMode && <div style={{ marginRight: '1rem' }}>(Editing)</div>} */}
-                {!inEditMode && (
-                  <>
+                <>
+                  {inEditMode && (
                     <Popconfirm
                       title={`Sure to delete Intake for ${currentSpecificIntakeJobsObj.registration}?`}
                       onConfirm={() => onDeleteIntakeSummary(currentSpecificIntakeJobsObj.id)}
@@ -642,18 +663,19 @@ const SpecificIntake: React.FC<Props> = ({
                         <i className="fas fa-trash-alt"></i>
                       </span>
                     </Popconfirm>
+                  )}
 
-                    <span
-                      className="specificintake__button-task specificintake__button-task--edit"
-                      onClick={() => {
-                        setInEditMode(true);
-                        setBeforeDeleteState(updateTaskTableState);
-                      }}
-                    >
-                      <i className="fas fa-pen"></i>
-                    </span>
-                  </>
-                )}
+                  {/* <span
+                    className="specificintake__button-task specificintake__button-task--edit"
+                    onClick={() => {
+                      setInEditMode(true);
+                      setBeforeDeleteState(updateTaskTableState);
+                    }}
+                  >
+                    <i className="fas fa-pen"></i>
+                  </span> */}
+                </>
+
                 {inEditMode && (
                   <>
                     {/* <span
@@ -677,7 +699,10 @@ const SpecificIntake: React.FC<Props> = ({
                     <Button
                       loading={loading !== undefined && loading}
                       className="specificintake__button-task specificintake__button-task--save"
-                      onClick={() => updateIntakeJobsForm.submit()}
+                      onClick={() => {
+                        updateIntakeJobsForm.submit();
+                        setClickedUpdate(true);
+                      }}
                     >
                       Update
                     </Button>
@@ -686,21 +711,19 @@ const SpecificIntake: React.FC<Props> = ({
               </div>
             </div>
             <section className="specificintake__section-top">
+              {/* REGISTRATION */}
               <div className="specificintake__row--registration">
-                <div className="flex">
-                  {inEditMode ? (
-                    <Form.Item
-                      className="specificintake__form-item--registration"
-                      name="registrationNumber"
-                      rules={[{ required: true, message: 'Input Registration Number here!' }]}
-                    >
-                      <Input placeholder="e.g. DCG1199" className="specificintake__form-item--registration-input" />
-                    </Form.Item>
-                  ) : (
-                    <div className="specificintake__registration-div">{currentSpecificIntakeJobsObj.registration}</div>
-                  )}
-
-                  {inEditMode ? (
+                {inEditMode ? (
+                  <div className="flex">
+                    <div>
+                      <Form.Item
+                        className="specificintake__form-item--registration"
+                        name="registrationNumber"
+                        rules={[{ required: true, message: 'Input Registration Number here!' }]}
+                      >
+                        <Input placeholder="e.g. DCG1199" className="specificintake__form-item--registration-input" />
+                      </Form.Item>
+                    </div>
                     <div>
                       <Form.Item
                         name="bay"
@@ -710,23 +733,27 @@ const SpecificIntake: React.FC<Props> = ({
                         <Select className="specificintake__select--bay">
                           {baysList.map((child) => (
                             <Option value={child} key={uuidv4()}>
-                              {child}
+                              Bay {child}
                             </Option>
                           ))}
                         </Select>
                       </Form.Item>
                     </div>
-                  ) : (
-                    <div className="specificintake__bay-div">
+                  </div>
+                ) : (
+                  <div className="specificintake__registration-outerdiv--normaluser">
+                    <div className="specificintake__registration-div">{currentSpecificIntakeJobsObj.registration}</div>
+                    <div className="specificintake__bay-div ">
                       {currentSpecificIntakeJobsObj.bay === '' ||
                       currentSpecificIntakeJobsObj.bay === null ||
                       currentSpecificIntakeJobsObj.bay === undefined
                         ? '-'
-                        : currentSpecificIntakeJobsObj.bay}
+                        : `Bay ${currentSpecificIntakeJobsObj.bay}`}
                     </div>
-                  )}
-                </div>
-                {inEditMode ? (
+                  </div>
+                )}
+
+                {/* {inEditMode ? (
                   <div className="flex-align-center">
                     <Form.Item label="" name="pickup" valuePropName="checked" className="specificintake__form-checkbox">
                       <Checkbox>Ready for Pick Up</Checkbox>
@@ -743,8 +770,10 @@ const SpecificIntake: React.FC<Props> = ({
                       }`}
                     ></div>
                   </div>
-                )}
+                )} */}
               </div>
+
+              {/* DIV WRAPPING ALL 3 FORMITEMS */}
               <div className="specificintake__box-outerdiv">
                 {/* ==================================================== */}
                 {/* Intake Status */}
@@ -870,6 +899,45 @@ const SpecificIntake: React.FC<Props> = ({
                   </div>
                 </div>
               </div>
+
+              <section className="specificintake__section-description">
+                {inEditMode ? (
+                  <Form.Item
+                    // label="Description"
+                    name={`description`}
+                    className="specificintake__form-item--task"
+                    style={{ margin: 0 }}
+                    rules={[
+                      {
+                        required: false,
+                      },
+                    ]}
+                  >
+                    <Input
+                      className="specificintake__form-input specificintake__form-input--intakedesc"
+                      placeholder="Type description here"
+                    />
+                  </Form.Item>
+                ) : (
+                  <>
+                    {currentSpecificIntakeJobsObj && (
+                      <>
+                        {currentSpecificIntakeJobsObj.description !== null &&
+                          currentSpecificIntakeJobsObj.description !== undefined &&
+                          currentSpecificIntakeJobsObj.description !== '' && (
+                            <div className="specificintake__section-description-outerdiv">
+                              <span className="specificintake__section-description-text">Note:</span>
+                              <div className="specificintake__section-description-div">
+                                {currentSpecificIntakeJobsObj.description}
+                              </div>
+                            </div>
+                          )}
+                      </>
+                    )}
+                  </>
+                )}
+              </section>
+
               <div className="specificintake__lastupdated-div">
                 Last Updated: {moment(currentSpecificIntakeJobsObj.updated_at).format('YYYY-MM-DD HH:mm A')}
               </div>
@@ -932,10 +1000,12 @@ interface StateProps {
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   usersByRolesArray?: TReceivedUserInfoObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
+  auth_token?: string | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.task.loading,
+    auth_token: state.auth.auth_token,
     specificIntakeJobsObj: state.task.specificIntakeJobsObj,
     intakeStatusArray: state.dashboard.intakeStatusArray,
     usersByRolesArray: state.task.usersByRolesArray,
