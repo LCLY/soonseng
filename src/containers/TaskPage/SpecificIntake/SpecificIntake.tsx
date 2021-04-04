@@ -35,7 +35,18 @@ interface SpecificIntakeProps {
   setServiceTaskDropdown: React.Dispatch<React.SetStateAction<IServiceTaskDropdown>>;
   inEditMode: boolean;
   setInEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  beforeDeleteState: TUpdateTaskTableState[] | null;
+  setBeforeDeleteState: React.Dispatch<React.SetStateAction<TUpdateTaskTableState[] | null>>;
 }
+
+export type TUpdateTaskTableState = {
+  key: number;
+  taskId: string;
+  taskType: string;
+  taskTitle: string;
+  taskTitleString?: string;
+  taskDescription: string;
+};
 
 type Props = SpecificIntakeProps & StateProps & DispatchProps;
 
@@ -43,7 +54,7 @@ const SpecificIntake: React.FC<Props> = ({
   count,
   setCount,
   loading,
-  onDeleteTask,
+  // onDeleteTask,
   inEditMode,
   setInEditMode,
   onGetServiceTypes,
@@ -53,48 +64,15 @@ const SpecificIntake: React.FC<Props> = ({
   serviceTypeTaskDict,
   specificIntakeJobsObj,
   serviceTaskDropdown,
+  beforeDeleteState,
   setServiceTaskDropdown,
   onDeleteIntakeSummary,
   onUpdateIntakeSummary,
+  setBeforeDeleteState,
 }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  type TUpdateTaskTableState = {
-    key: number;
-    taskId: string;
-    taskType: string;
-    taskTitle: string;
-    taskTitleString?: string;
-    taskDescription: string;
-  };
-
-  const [typing, setTyping] = useState<{ isTyping: boolean; typingTimeout: any }>({
-    isTyping: false,
-    typingTimeout: null,
-  });
-  const updateCustomizedFieldHandler = (
-    formItemsObject: any,
-    tempTaskTableState: any,
-    labelName: string,
-    value: string,
-    rowIndex: number,
-  ) => {
-    if (typing.typingTimeout) {
-      clearTimeout(typing.typingTimeout);
-    }
-    setTyping({
-      ...typing,
-      isTyping: false,
-      typingTimeout: setTimeout(function () {
-        // after 3 seconds, send target value to backend
-        let result = { ...formItemsObject, [labelName]: value };
-        (tempTaskTableState as any)[rowIndex] = result;
-
-        setUpdateTaskTableState(tempTaskTableState);
-      }, 500),
-    });
-  };
 
   const [updateIntakeJobsForm] = Form.useForm();
   const [originalTaskArraylength, setOriginalTaskArraylength] = useState(0);
@@ -190,9 +168,9 @@ const SpecificIntake: React.FC<Props> = ({
     );
   };
 
-  const handleDelete = (intake_id: number, taskId: number) => {
-    onDeleteTask(intake_id, taskId);
-  };
+  // const handleDelete = (intake_id: number, taskId: number) => {
+  //   onDeleteTask(intake_id, taskId);
+  // };
 
   /* ================================================== */
   /*  components */
@@ -239,18 +217,6 @@ const SpecificIntake: React.FC<Props> = ({
                     optionFilterProp="children"
                     className="specificintake__select specificintake__select--task"
                     filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                    onChange={(value: number) => {
-                      if (serviceTypeTaskDict && typeof value === 'number') {
-                        setServiceTaskDropdown({
-                          ...serviceTaskDropdown,
-                          [record.key]: {
-                            serviceTask: '',
-                            serviceTaskDropdownArray: serviceTypeTaskDict[value].serviceTasksArray,
-                          },
-                        });
-                      }
-                      updateIntakeJobsForm.setFieldsValue({ [`taskTitle${record.key}`]: '' });
-                    }}
                   >
                     <Option value="">Select a Job Type</Option>
                     {serviceTypeTaskDict &&
@@ -322,12 +288,6 @@ const SpecificIntake: React.FC<Props> = ({
                 optionFilterProp="children"
                 className="specificintake__select specificintake__select--task"
                 filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                onChange={(e) =>
-                  setServiceTaskDropdown({
-                    ...serviceTaskDropdown,
-                    [record.key]: { ...serviceTaskDropdown[record.key], serviceTask: e.toString() },
-                  })
-                }
               >
                 <Option value="">Select a Task</Option>
                 {dropdownArrayExist &&
@@ -421,22 +381,22 @@ const SpecificIntake: React.FC<Props> = ({
           <>
             {updateTaskTableState && updateTaskTableState.length >= 1 ? (
               <>
-                {(record as any)[`taskId${record.key}`] === undefined ? (
-                  // this is for normal delete
-                  <Button
-                    type="link"
-                    danger
-                    title="Delete"
-                    onClick={() => {
-                      if (updateTaskTableState === null) return;
-                      const dataSource = [...updateTaskTableState];
-                      // setCount(count - 1);
-                      setUpdateTaskTableState(dataSource.filter((item) => item.key !== record.key));
-                    }}
-                  >
-                    <i className="far fa-trash-alt"></i>
-                  </Button>
-                ) : (
+                {/* {(record as any)[`taskId${record.key}`] === undefined ? ( */}
+                {/* // this is for normal delete */}
+                <Button
+                  type="link"
+                  danger
+                  title="Delete"
+                  onClick={() => {
+                    if (updateTaskTableState === null) return;
+                    const dataSource = [...updateTaskTableState];
+                    // setCount(count - 1);
+                    setUpdateTaskTableState(dataSource.filter((item) => item.key !== record.key));
+                  }}
+                >
+                  <i className="far fa-trash-alt"></i>
+                </Button>
+                {/* ) : (
                   // this is for api delete
                   <Popconfirm
                     title="Sure to delete?"
@@ -449,7 +409,7 @@ const SpecificIntake: React.FC<Props> = ({
                       <i className="far fa-trash-alt"></i>
                     </Button>
                   </Popconfirm>
-                )}
+                )} */}
               </>
             ) : null}
           </>
@@ -599,14 +559,29 @@ const SpecificIntake: React.FC<Props> = ({
 
             let formItemsObject = (tempTaskTableState as any)[rowIndex];
 
-            if (labelName.includes('taskDescription')) {
-              // add buffer so it wont force rerender on every keystroke
-              updateCustomizedFieldHandler(formItemsObject, tempTaskTableState, labelName, currentValue, rowIndex);
-            } else {
-              let result = { ...formItemsObject, [labelName]: currentValue };
-              (tempTaskTableState as any)[rowIndex] = result;
-              // normally update the state
-              setUpdateTaskTableState(tempTaskTableState);
+            let result = { ...formItemsObject, [labelName]: currentValue };
+            (tempTaskTableState as any)[rowIndex] = result;
+            // normally update the state
+            setUpdateTaskTableState(tempTaskTableState);
+
+            if (labelName.includes('taskType')) {
+              if (serviceTypeTaskDict) {
+                setServiceTaskDropdown({
+                  ...serviceTaskDropdown,
+                  [rowIndex]: {
+                    serviceTask: '',
+                    serviceTaskDropdownArray: serviceTypeTaskDict[currentValue].serviceTasksArray,
+                  },
+                });
+              }
+              updateIntakeJobsForm.setFieldsValue({ [`taskTitle${rowIndex}`]: '' });
+            }
+
+            if (labelName.includes('taskTitle')) {
+              setServiceTaskDropdown({
+                ...serviceTaskDropdown,
+                [rowIndex]: { ...serviceTaskDropdown[rowIndex], serviceTask: currentValue },
+              });
             }
           }}
           onFinish={(values) => {
@@ -623,6 +598,7 @@ const SpecificIntake: React.FC<Props> = ({
                   className="specificintake__back"
                   onClick={() => {
                     setInEditMode(false);
+                    setBeforeDeleteState(null);
                     gsap.to('.task__table-div', {
                       duration: 1,
                       ease: 'ease',
@@ -649,7 +625,10 @@ const SpecificIntake: React.FC<Props> = ({
 
                     <span
                       className="specificintake__button-task specificintake__button-task--edit"
-                      onClick={() => setInEditMode(true)}
+                      onClick={() => {
+                        setInEditMode(true);
+                        setBeforeDeleteState(updateTaskTableState);
+                      }}
                     >
                       <i className="fas fa-pen"></i>
                     </span>
@@ -664,7 +643,11 @@ const SpecificIntake: React.FC<Props> = ({
                         // restore the array to original
                         if (updateTaskTableState === null) return;
                         let tempArray = [...updateTaskTableState];
-                        setUpdateTaskTableState(tempArray.slice(0, originalTaskArraylength));
+                        if (beforeDeleteState) {
+                          setUpdateTaskTableState(beforeDeleteState);
+                        } else {
+                          setUpdateTaskTableState(tempArray.slice(0, originalTaskArraylength));
+                        }
                         setInEditMode(false);
                       }}
                     >
@@ -933,7 +916,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 };
 
 interface DispatchProps {
-  onDeleteTask: typeof actions.deleteTask;
+  // onDeleteTask: typeof actions.deleteTask;
   onClearTaskState: typeof actions.clearTaskState;
   onGetServiceTypes: typeof actions.getServiceTypes;
   onDeleteIntakeSummary: typeof actions.deleteIntakeSummary;
@@ -944,7 +927,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onGetServiceTypes: () => dispatch(actions.getServiceTypes()),
     onClearTaskState: () => dispatch(actions.clearTaskState()),
-    onDeleteTask: (intake_id, task_id) => dispatch(actions.deleteTask(intake_id, task_id)),
+    // onDeleteTask: (intake_id, task_id) => dispatch(actions.deleteTask(intake_id, task_id)),
     onDeleteIntakeSummary: (intake_id) => dispatch(actions.deleteIntakeSummary(intake_id)),
     onUpdateIntakeSummary: (intake_id, intakeJobsFormData) =>
       dispatch(actions.updateIntakeSummary(intake_id, intakeJobsFormData)),

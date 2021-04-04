@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useRef, MutableRefObject } from
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
-import SpecificIntake from './SpecificIntake/SpecificIntake';
+import SpecificIntake, { TUpdateTaskTableState } from './SpecificIntake/SpecificIntake';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
@@ -98,6 +98,7 @@ const TaskPage: React.FC<Props> = ({
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [specificIntakeId, setSpecificIntakeId] = useState<null | undefined | number>(null);
   const [serviceTaskDropdown, setServiceTaskDropdown] = useState<IServiceTaskDropdown>({});
+  const [beforeDeleteState, setBeforeDeleteState] = useState<TUpdateTaskTableState[] | null>(null);
   // const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({ fees: false });
 
   // Forms
@@ -367,6 +368,7 @@ const TaskPage: React.FC<Props> = ({
     if (successMessage) {
       message.success(successMessage);
       setInEditMode(false);
+      setBeforeDeleteState(null); //make sure that before delete state is null after successfully updated
       createIntakeJobsForm.resetFields();
       setShowCreateModal({
         ...showCreateModal,
@@ -385,6 +387,8 @@ const TaskPage: React.FC<Props> = ({
         incomingData.jobs.forEach((job) => serviceTypeOnlyArray.push(job.service_type));
       }
       let uniqueService = [...new Set(serviceTypeOnlyArray)];
+
+      console.log('incoming', incomingData);
 
       if (intakeDict === null) return;
       let intakeTableObj: TIntakeTableState = {
@@ -519,6 +523,8 @@ const TaskPage: React.FC<Props> = ({
                                     setCount={setCount}
                                     inEditMode={inEditMode}
                                     setInEditMode={setInEditMode}
+                                    beforeDeleteState={beforeDeleteState}
+                                    setBeforeDeleteState={setBeforeDeleteState}
                                     serviceTypeTaskDict={serviceTypeTaskDict}
                                     setServiceTypeTaskDict={setServiceTypeTaskDict}
                                     serviceTaskDropdown={serviceTaskDropdown}

@@ -98,7 +98,6 @@ export function* deleteTaskSaga(action: AppActions) {
   let url = process.env.REACT_APP_API + `/job_monitoring/intakes/${action.intake_id}/jobs/${action.task_id}`;
   try {
     let response = yield axios.delete(url, getAxiosHeaderToken());
-    console.log('%cDELETE', 'color:yellow', response);
     yield put(actions.deleteTaskSucceed(response.data.jobs, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -177,10 +176,7 @@ export function* updateIntakeSummarySaga(action: AppActions) {
       intake: action.intakeJobsFormData.intake,
       jobs: action.intakeJobsFormData.jobs,
     };
-    console.log('%cSAGAS', 'color:green;font-weight:bolder', action.intakeJobsFormData);
   }
-
-  console.log('intake_and_jobs', intake_and_jobs);
 
   try {
     let response = yield axios.put(url, { intake_and_jobs }, getAxiosHeaderToken());
