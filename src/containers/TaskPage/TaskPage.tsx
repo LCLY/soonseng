@@ -93,7 +93,7 @@ const TaskPage: React.FC<Props> = ({
 
   const [count, setCount] = useState(0);
 
-  const [inEditMode, setInEditMode] = useState(false);
+  const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
@@ -372,7 +372,7 @@ const TaskPage: React.FC<Props> = ({
     if (successMessage) {
       message.success(successMessage);
 
-      setInEditMode(false);
+      // setInEditMode(false);
       setBeforeDeleteState(null); //make sure that before delete state is null after successfully updated
       createIntakeJobsForm.resetFields();
       setShowCreateModal({

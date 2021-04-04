@@ -64,7 +64,7 @@ const SpecificIntake: React.FC<Props> = ({
   serviceTypeTaskDict,
   specificIntakeJobsObj,
   serviceTaskDropdown,
-  beforeDeleteState,
+  // beforeDeleteState,
   setServiceTaskDropdown,
   onDeleteIntakeSummary,
   onUpdateIntakeSummary,
@@ -81,6 +81,7 @@ const SpecificIntake: React.FC<Props> = ({
     null,
   );
 
+  console.log(originalTaskArraylength);
   const [
     currentSpecificIntakeJobsObj,
     setCurrentSpecificIntakeJobsObj,
@@ -616,7 +617,7 @@ const SpecificIntake: React.FC<Props> = ({
                 <div
                   className="specificintake__back"
                   onClick={() => {
-                    setInEditMode(false);
+                    // setInEditMode(false);
                     setBeforeDeleteState(null);
                     gsap.to('.task__table-div', {
                       duration: 1,
@@ -630,7 +631,7 @@ const SpecificIntake: React.FC<Props> = ({
               </div>
 
               <div className="flex-align-center">
-                {inEditMode && <div style={{ marginRight: '1rem' }}>(Editing)</div>}
+                {/* {inEditMode && <div style={{ marginRight: '1rem' }}>(Editing)</div>} */}
                 {!inEditMode && (
                   <>
                     <Popconfirm
@@ -655,7 +656,7 @@ const SpecificIntake: React.FC<Props> = ({
                 )}
                 {inEditMode && (
                   <>
-                    <span
+                    {/* <span
                       className="specificintake__button-task specificintake__button-task--cancel"
                       onClick={() => {
                         // when user is trying to cancel everything
@@ -667,18 +668,18 @@ const SpecificIntake: React.FC<Props> = ({
                         } else {
                           setUpdateTaskTableState(tempArray.slice(0, originalTaskArraylength));
                         }
-                        setInEditMode(false);
+                        // setInEditMode(false);
                       }}
                     >
                       Cancel
-                    </span>
+                    </span> */}
 
                     <Button
                       loading={loading !== undefined && loading}
                       className="specificintake__button-task specificintake__button-task--save"
                       onClick={() => updateIntakeJobsForm.submit()}
                     >
-                      Save
+                      Update
                     </Button>
                   </>
                 )}
@@ -899,7 +900,11 @@ const SpecificIntake: React.FC<Props> = ({
               )}
               {inEditMode && (
                 <div className="specificintake__add-div">
-                  <Button onClick={() => handleAdd()} type="primary" style={{ marginBottom: 16 }}>
+                  <Button
+                    onClick={() => handleAdd()}
+                    type="primary"
+                    style={{ marginBottom: 16, background: '#c54747' }}
+                  >
                     Add a row
                   </Button>
                 </div>
