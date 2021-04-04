@@ -152,7 +152,13 @@ const TaskPage: React.FC<Props> = ({
       render: (_text: any, record: TIntakeTableState) => {
         return (
           <>
-            <Tooltip title={record.description}>
+            <Tooltip
+              title={`${record.regNumber}${
+                record.description !== undefined && record.description !== null && record.description !== ''
+                  ? ` (${record.description})`
+                  : ''
+              }`}
+            >
               <span
                 className="task__link"
                 style={{ color: record.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
@@ -165,11 +171,7 @@ const TaskPage: React.FC<Props> = ({
                     registrationNumber: record.regNumber,
                     bay: record.bay === '-' ? '' : record.bay,
                   });
-                  gsap.to('.task__table-div', {
-                    duration: 1,
-                    ease: 'ease',
-                    x: '-100%',
-                  });
+                  goSpecificIntake();
                   // setShowUpdateModal({ ...showUpdateModal, intake_job: true });
                   setSpecificIntakeId(parseInt(record.key));
                 }}
@@ -211,6 +213,15 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   /*  method */
   /* ================================================== */
+
+  const goSpecificIntake = () => {
+    gsap.to('.task__table-div', {
+      duration: 1,
+      ease: 'ease',
+      x: '-100%',
+    });
+  };
+
   const onCreateIntakeAndJobsFinish = (values: {
     bay: string;
     pickup: boolean;
