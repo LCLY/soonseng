@@ -179,7 +179,9 @@ export function* updateIntakeSummarySaga(action: AppActions) {
   }
 
   try {
+    // console.log(intake_and_jobs);
     let response = yield axios.put(url, { intake_and_jobs }, getAxiosHeaderToken());
+    // console.log(response);
     yield put(actions.updateIntakeSummarySucceed(response.data.intakes, response.data.success));
   } catch (error) {
     if (error.response) {

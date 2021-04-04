@@ -200,6 +200,7 @@ const deleteIntakeSummarySucceed = (state: TaskInitialState, action: AppActions)
       loading: false,
       intakeSummaryArray: action.intakeSummaryArray,
       successMessage: action.successMessage,
+      specificIntakeJobsObj: null, //make it null after being deleted
     });
   }
   return state;
@@ -211,6 +212,12 @@ const deleteIntakeSummaryFailed = (state: TaskInitialState, action: AppActions) 
   return state;
 };
 
+/* -------------------------- */
+/* Clear Specific Intakes and Jobs */
+/* -------------------------- */
+const clearSpecificIntakeJobs = (state: TaskInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true, specificIntakeJobsObj: null });
+};
 /* -------------------------- */
 /* Get Specific Intakes and Jobs */
 /* -------------------------- */
@@ -353,6 +360,11 @@ const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, ac
     case actionTypes.DELETE_INTAKE_SUMMARY_FAILED:
       return deleteIntakeSummaryFailed(state, action);
     /* ------------------------ */
+    // Clear Specific Intake
+    /* ------------------------ */
+    case actionTypes.CLEAR_SPECIFIC_INTAKE_JOBS:
+      return clearSpecificIntakeJobs(state, action);
+    /* ------------------------ */
     // Get Specific Intake
     /* ------------------------ */
     case actionTypes.GET_SPECIFIC_INTAKE_JOBS_START:
@@ -370,7 +382,7 @@ const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, ac
       return updateSpecificIntakeJobsSucceed(state, action);
     case actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_FAILED:
       return updateSpecificIntakeJobsFailed(state, action);
-  
+
     /* =================================== */
     // Get Users By Roles
     /* =================================== */

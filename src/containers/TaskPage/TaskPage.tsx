@@ -25,6 +25,7 @@ import {
   IIntakeJobsFormData,
   IJobFormData,
   TReceivedIntakeSummaryObj,
+  TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
@@ -106,7 +107,7 @@ const TaskPage: React.FC<Props> = ({
   const [updateIntakeJobsForm] = Form.useForm();
 
   // Incoming websocket data
-  const [incomingData, setIncomingData] = useState<TReceivedIntakeSummaryObj | null>(null);
+  const [incomingData, setIncomingData] = useState<{ data: TReceivedIntakeSummaryObj; action: string } | null>(null);
   // Table states
   const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
   // const [intakeTableState, setIntakeTableState] = useState<TIntakeTableState[]>([]);
@@ -154,6 +155,7 @@ const TaskPage: React.FC<Props> = ({
             <Tooltip title={record.description}>
               <span
                 className="task__link"
+                style={{ color: record.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
                 onClick={() => {
                   onGetSpecificIntakeJobs(parseInt(record.key));
                   updateIntakeJobsForm.setFieldsValue({
@@ -287,7 +289,9 @@ const TaskPage: React.FC<Props> = ({
       { channel: 'JobMonitoringChannel' },
       {
         connected: () => console.log('connected'),
-        received: (res: any) => setIncomingData(res.data),
+        received: (res: any) => {
+          setIncomingData(res);
+        },
       },
     );
 
@@ -367,6 +371,7 @@ const TaskPage: React.FC<Props> = ({
   useEffect(() => {
     if (successMessage) {
       message.success(successMessage);
+
       setInEditMode(false);
       setBeforeDeleteState(null); //make sure that before delete state is null after successfully updated
       createIntakeJobsForm.resetFields();
@@ -382,28 +387,44 @@ const TaskPage: React.FC<Props> = ({
   useEffect(() => {
     // If there is incoming data, update the table or add a new row to the table
     if (incomingData && incomingData !== undefined && typeof incomingData === 'object') {
+      if (intakeDict) {
+        let sortedIntakeArray = Object.values(intakeDict).sort((a: TIntakeTableState, b: TIntakeTableState) =>
+          sortByCreatedAt(a, b),
+        );
+
+        let rowIndexInTable = sortedIntakeArray.findIndex((child) => parseInt(child.key) === incomingData.data.id);
+
+        gsap.to(`.intakesummary__row-${incomingData.data.id}`, {
+          duration: 0.2,
+          background: '#245676',
+          onComplete: () =>
+            gsap.to(`.intakesummary__row-${incomingData.data.id}`, {
+              duration: 0.2,
+              background: (rowIndexInTable + 1) % 2 === 0 ? '#051231' : '#010c24', //+ 1 because 0 is not odd or even
+            }),
+        });
+      }
+
       let serviceTypeOnlyArray: string[] = [];
-      if (incomingData.jobs !== undefined) {
-        incomingData.jobs.forEach((job) => serviceTypeOnlyArray.push(job.service_type));
+      if (incomingData.data.jobs !== undefined) {
+        incomingData.data.jobs.forEach((job) => serviceTypeOnlyArray.push(job.service_type));
       }
       let uniqueService = [...new Set(serviceTypeOnlyArray)];
 
-      console.log('incoming', incomingData);
-
       if (intakeDict === null) return;
       let intakeTableObj: TIntakeTableState = {
-        key: incomingData.id.toString(),
-        dateTimeIn: moment(incomingData.created_at), //formatted timestamp
-        createdAt: incomingData.created_at, //raw timestamp
-        pickup: incomingData.pick_up,
-        regNumber: incomingData.registration,
-        description: incomingData.description,
+        key: incomingData.data.id.toString(),
+        dateTimeIn: moment(incomingData.data.created_at), //formatted timestamp
+        createdAt: incomingData.data.created_at, //raw timestamp
+        pickup: incomingData.data.pick_up,
+        regNumber: incomingData.data.registration,
+        description: incomingData.data.description,
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
-        status: incomingData.intake_status.title,
-        bay: incomingData.bay === '' ? '-' : incomingData.bay,
+        status: incomingData.data.intake_status.title,
+        bay: incomingData.data.bay === '' ? '-' : incomingData.data.bay,
       };
 
-      intakeDict[incomingData.id] = intakeTableObj;
+      intakeDict[incomingData.data.id] = intakeTableObj;
       setIncomingData(null);
     }
   }, [intakeDict, incomingData]);
@@ -511,6 +532,7 @@ const TaskPage: React.FC<Props> = ({
                                   className="task__table"
                                   scroll={{ y: 600 }}
                                   // components={components}
+                                  rowClassName={(record) => `intakesummary__row-${record.key}`}
                                   dataSource={Object.values(
                                     intakeDict,
                                   ).sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
@@ -571,6 +593,7 @@ interface StateProps {
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
+  specificIntakeJobsObj?: TReceivedSpecificIntakeJobsObj | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
@@ -580,14 +603,11 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     intakeStatusArray: state.dashboard.intakeStatusArray,
     intakeSummaryArray: state.task.intakeSummaryArray,
     serviceTypesArray: state.dashboard.serviceTypesArray,
+    specificIntakeJobsObj: state.task.specificIntakeJobsObj,
   };
 };
 
 interface DispatchProps {
-  // onGetTasks: typeof actions.getTasks;
-  // onCreateTask: typeof actions.createTask;
-  // onUpdateTask: typeof actions.updateTask;
-  // onDeleteTask: typeof actions.deleteTask;
   onGetIntakeStatus: typeof actions.getIntakeStatus;
   onClearTaskState: typeof actions.clearTaskState;
   onGetUsersByRoles: typeof actions.getUsersByRoles;

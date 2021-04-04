@@ -276,6 +276,12 @@ export type IReceivedIntakeJobsObj = {
 };
 
 /* --------------------------------------------- */
+// Clear Specific Intake & Jobs
+/* --------------------------------------------- */
+export interface ClearSpecificIntakeJobsAction {
+  type: typeof actionTypes.CLEAR_SPECIFIC_INTAKE_JOBS;
+}
+/* --------------------------------------------- */
 // Get Specific Intake & Jobs
 /* --------------------------------------------- */
 export interface GetSpecificIntakeJobsAction {
@@ -389,6 +395,7 @@ export type TaskActionTypes =
   /* -------------------- */
   // Specific Intake & Jobs
   /* -------------------- */
+  | ClearSpecificIntakeJobsAction
   | GetSpecificIntakeJobsAction
   | GetSpecificIntakeJobsStartAction
   | GetSpecificIntakeJobsSucceedAction

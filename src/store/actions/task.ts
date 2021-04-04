@@ -269,6 +269,12 @@ export const deleteIntakeSummaryFailed = (errorMessage: string): AppActions => {
 /* -------------------------------------------- */
 // Specific Intake and Jobs
 /* -------------------------------------------- */
+// clear specific intake
+export const clearSpecificIntakeJobs = (): AppActions => {
+  return {
+    type: actionTypes.CLEAR_SPECIFIC_INTAKE_JOBS,
+  };
+};
 // get specific
 export const getSpecificIntakeJobs = (intake_id: number): AppActions => {
   return {

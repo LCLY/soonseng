@@ -6,10 +6,10 @@
     // margin-right: 1rem;
     border: none;
     & tr {
-      background: rgb(1, 12, 36) !important;
+      background: #010c24;
 
       &:nth-child(odd) {
-        background: rgb(5, 18, 49) !important;
+        background: #051231;
       }
     }
 
@@ -99,7 +99,7 @@
   &__link {
     cursor: pointer;
     // color: $primary-color-4;
-    color: rgb(223, 116, 113);
+    color: #df7471;
     text-underline-offset: 0.3rem;
     font-size: 1.6rem;
     font-family: $font-bebasneue !important;

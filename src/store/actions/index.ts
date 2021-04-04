@@ -465,6 +465,7 @@ export {
   /* ==================== */
   // Specific Intake & Jobs
   /* ==================== */
+  clearSpecificIntakeJobs,
   getSpecificIntakeJobs,
   getSpecificIntakeJobsFailed,
   getSpecificIntakeJobsStart,

@@ -256,7 +256,7 @@ const SpecificIntake: React.FC<Props> = ({
       title: 'Service Task',
       className: 'specificintake__table-header',
       dataIndex: 'taskTitle',
-      width: '18rem',
+      width: 'auto',
       ellipsis: true,
       editable: true,
       render: (_text: any, record: TUpdateTaskTableState) => {
@@ -426,14 +426,32 @@ const SpecificIntake: React.FC<Props> = ({
     onGetServiceTypes();
   }, [onGetServiceTypes]);
 
+  // useEffect(() => {
+  //   if (specificIntakeJobsObj === null) {
+  //     gsap.to('.task__table-div', {
+  //       duration: 1,
+  //       ease: 'ease',
+  //       x: '0',
+  //     });
+  //     setCurrentSpecificIntakeJobsObj(null);
+  //   } else {
+  //     gsap.to('.task__table-div', {
+  //       duration: 1,
+  //       ease: 'ease',
+  //       x: '-100%',
+  //     });
+  //   }
+  // }, [specificIntakeJobsObj]);
+
   useEffect(() => {
     if (specificIntakeJobsObj) {
+      console.log('SPECIFIC INTAKE JOB', specificIntakeJobsObj);
       setCurrentSpecificIntakeJobsObj(specificIntakeJobsObj);
     }
   }, [specificIntakeJobsObj]);
 
   useEffect(() => {
-    if (currentSpecificIntakeJobsObj) {
+    if (currentSpecificIntakeJobsObj && specificIntakeJobsObj) {
       let usersId: number[] = [];
       currentSpecificIntakeJobsObj.intake_users.forEach((child) => usersId.push(child.user.id));
 
@@ -446,7 +464,7 @@ const SpecificIntake: React.FC<Props> = ({
         registrationNumber: currentSpecificIntakeJobsObj.registration,
       });
     }
-  }, [currentSpecificIntakeJobsObj, updateIntakeJobsForm]);
+  }, [currentSpecificIntakeJobsObj, specificIntakeJobsObj, updateIntakeJobsForm]);
 
   useEffect(() => {
     if (updateTaskTableState === null || updateTaskTableState.length < 1) return;
@@ -490,7 +508,7 @@ const SpecificIntake: React.FC<Props> = ({
       }
     };
 
-    if (currentSpecificIntakeJobsObj) {
+    if (currentSpecificIntakeJobsObj && specificIntakeJobsObj) {
       // Execute function "storeValue" for every array index
       currentSpecificIntakeJobsObj.jobs.map(storeValue);
       setOriginalTaskArraylength(currentSpecificIntakeJobsObj.jobs.length);
@@ -504,6 +522,7 @@ const SpecificIntake: React.FC<Props> = ({
     setCount,
     intakeStatusArray,
     setUpdateTaskTableState,
+    specificIntakeJobsObj,
     serviceTypeTaskDict,
     currentSpecificIntakeJobsObj,
     setServiceTaskDropdown,
@@ -533,7 +552,7 @@ const SpecificIntake: React.FC<Props> = ({
 
   return (
     <>
-      {currentSpecificIntakeJobsObj ? (
+      {typeof currentSpecificIntakeJobsObj === 'object' && currentSpecificIntakeJobsObj && specificIntakeJobsObj ? (
         <Form
           className="specificintake__form"
           form={updateIntakeJobsForm}
@@ -773,7 +792,11 @@ const SpecificIntake: React.FC<Props> = ({
                         </Select>
                       </Form.Item>
                     ) : (
-                      <> {currentSpecificIntakeJobsObj.intake_status.title}</>
+                      <>
+                        {typeof currentSpecificIntakeJobsObj === 'object'
+                          ? currentSpecificIntakeJobsObj.intake_status.title
+                          : ''}
+                      </>
                     )}
                   </div>
                 </div>
