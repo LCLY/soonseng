@@ -902,22 +902,25 @@ const SpecificIntake: React.FC<Props> = ({
 
               <section className="specificintake__section-description">
                 {inEditMode ? (
-                  <Form.Item
-                    // label="Description"
-                    name={`description`}
-                    className="specificintake__form-item--task"
-                    style={{ margin: 0 }}
-                    rules={[
-                      {
-                        required: false,
-                      },
-                    ]}
-                  >
-                    <Input
-                      className="specificintake__form-input specificintake__form-input--intakedesc"
-                      placeholder="Type description here"
-                    />
-                  </Form.Item>
+                  <div className="specificintake__section-description-outerdiv">
+                    <span className="specificintake__section-description-text">Note:</span>
+                    <Form.Item
+                      // label="Description"
+                      name={`description`}
+                      className="specificintake__form-item--task"
+                      style={{ margin: 0, width: '100%' }}
+                      rules={[
+                        {
+                          required: false,
+                        },
+                      ]}
+                    >
+                      <Input
+                        className="specificintake__form-input specificintake__form-input--intakedesc"
+                        placeholder="Type description here"
+                      />
+                    </Form.Item>
+                  </div>
                 ) : (
                   <>
                     {currentSpecificIntakeJobsObj && (
