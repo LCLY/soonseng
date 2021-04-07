@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useContext, MutableRefObject } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useContext, MutableRefObject } from 'react';
 import { RootState } from 'src';
-import './SpecificIntake.scss';
+import './UpdateSpecificIntake.scss';
 /* components */
 /* 3rd party lib */
 import gsap from 'gsap';
@@ -26,7 +26,7 @@ import {
 
 const { Option } = Select;
 
-interface SpecificIntakeProps {
+interface UpdateSpecificIntakeProps {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
   serviceTypeTaskDict: TServiceTypeTaskDict | null;
@@ -37,6 +37,8 @@ interface SpecificIntakeProps {
   setInEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   beforeDeleteState: TUpdateTaskTableState[] | null;
   setBeforeDeleteState: React.Dispatch<React.SetStateAction<TUpdateTaskTableState[] | null>>;
+
+  setCurrentPage: React.Dispatch<React.SetStateAction<'main' | 'update' | 'create'>>;
 }
 
 export type TUpdateTaskTableState = {
@@ -48,14 +50,15 @@ export type TUpdateTaskTableState = {
   taskDescription: string;
 };
 
-type Props = SpecificIntakeProps & StateProps & DispatchProps;
+type Props = UpdateSpecificIntakeProps & StateProps & DispatchProps;
 
-const SpecificIntake: React.FC<Props> = ({
+const UpdateSpecificIntake: React.FC<Props> = ({
   count,
   setCount,
   loading,
   auth_token,
   inEditMode,
+  setCurrentPage,
   setInEditMode,
   onGetServiceTypes,
   usersByRolesArray,
@@ -76,13 +79,11 @@ const SpecificIntake: React.FC<Props> = ({
 
   const [updateIntakeJobsForm] = Form.useForm();
   const [clickedUpdate, setClickedUpdate] = useState(false); //boolean to keep track if user has clicked update
-  const [originalTaskArraylength, setOriginalTaskArraylength] = useState(0);
   const [updateTaskTableState, setUpdateTaskTableState] = useState<TUpdateTaskTableState[] | null>(null);
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
     null,
   );
 
-  console.log(originalTaskArraylength);
   const [
     currentSpecificIntakeJobsObj,
     setCurrentSpecificIntakeJobsObj,
@@ -95,13 +96,14 @@ const SpecificIntake: React.FC<Props> = ({
   /*  method */
   /* ================================================== */
 
-  const goBackToIntakes = () => {
+  const goBackToIntakes = useCallback(() => {
+    setCurrentPage('main');
     gsap.to('.task__table-div', {
       duration: 1,
       ease: 'ease',
       x: '0',
     });
-  };
+  }, [setCurrentPage]);
 
   const handleAdd = () => {
     if (updateTaskTableState === null) return;
@@ -192,7 +194,7 @@ const SpecificIntake: React.FC<Props> = ({
     {
       key: 'taskType',
       title: 'Service Type',
-      className: 'specificintake__table-header',
+      className: 'updatespecificintake__table-header',
       dataIndex: 'taskType',
       width: '15rem',
       ellipsis: true,
@@ -212,7 +214,7 @@ const SpecificIntake: React.FC<Props> = ({
                 <Form.Item
                   // label="Service Type"
                   name={`taskType${record.key}`}
-                  className="specificintake__form-item--task"
+                  className="updatespecificintake__form-item--task"
                   style={{ margin: 0 }}
                   rules={[
                     {
@@ -225,7 +227,7 @@ const SpecificIntake: React.FC<Props> = ({
                     showSearch
                     placeholder="Select a Job Type"
                     optionFilterProp="children"
-                    className="specificintake__select specificintake__select--task"
+                    className="updatespecificintake__select updatespecificintake__select--task"
                     filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     <Option value="">Select a Job Type</Option>
@@ -253,7 +255,7 @@ const SpecificIntake: React.FC<Props> = ({
                 </Form.Item>
               </>
             ) : (
-              <div className="specificintake__table-column">
+              <div className="updatespecificintake__table-column">
                 {filteredServiceTypes.length > 0 ? filteredServiceTypes[0].title : ''}
               </div>
             )}
@@ -264,7 +266,7 @@ const SpecificIntake: React.FC<Props> = ({
     {
       key: 'taskTitle',
       title: 'Service Task',
-      className: 'specificintake__table-header',
+      className: 'updatespecificintake__table-header',
       dataIndex: 'taskTitle',
       width: 'auto',
       ellipsis: true,
@@ -273,22 +275,21 @@ const SpecificIntake: React.FC<Props> = ({
         let serviceTaskTitle = (record as any)[`taskTitleString${record.key}`];
 
         if (!inEditMode) {
-          return <div className="specificintake__table-column">{serviceTaskTitle}</div>;
+          return <div className="updatespecificintake__table-column">{serviceTaskTitle}</div>;
         }
-
-        if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
+        if (record.key !== undefined && Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
           let dropdownArrayExist = Object.keys(serviceTaskDropdown[record.key]).length > 0;
           let dropdownArray = serviceTaskDropdown[record.key].serviceTaskDropdownArray;
           return (
             <Form.Item
               // label="Service Type"
               name={`taskTitle${record.key}`}
-              className="specificintake__form-item--task"
+              className="updatespecificintake__form-item--task"
               style={{ margin: 0 }}
               rules={[
                 {
                   required: true,
-                  message: `Please choose a service type!`,
+                  message: `Please choose a service task!`,
                 },
               ]}
             >
@@ -296,7 +297,7 @@ const SpecificIntake: React.FC<Props> = ({
                 showSearch
                 placeholder="Select a Task title"
                 optionFilterProp="children"
-                className="specificintake__select specificintake__select--task"
+                className="updatespecificintake__select updatespecificintake__select--task"
                 filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
@@ -319,7 +320,7 @@ const SpecificIntake: React.FC<Props> = ({
             <Form.Item
               // label="Service Type"
               name={`taskTitle${record.key}`}
-              className="specificintake__form-item--task"
+              className="updatespecificintake__form-item--task"
               style={{ margin: 0 }}
               rules={[
                 {
@@ -333,7 +334,7 @@ const SpecificIntake: React.FC<Props> = ({
                 showSearch
                 placeholder="Select a Task title"
                 optionFilterProp="children"
-                className="specificintake__select specificintake__select--task specificintake__select--disabled"
+                className="updatespecificintake__select updatespecificintake__select--task updatespecificintake__select--disabled"
                 filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
@@ -346,7 +347,7 @@ const SpecificIntake: React.FC<Props> = ({
     {
       key: 'taskDescription',
       title: 'Description',
-      className: 'specificintake__table-header',
+      className: 'updatespecificintake__table-header',
       dataIndex: 'taskDescription',
       width: 'auto',
       ellipsis: true,
@@ -356,7 +357,7 @@ const SpecificIntake: React.FC<Props> = ({
         return (
           <>
             {!inEditMode ? (
-              <div className="specificintake__table-column">
+              <div className="updatespecificintake__table-column">
                 {(record as any)[`taskDescription${record.key}`] === '' ||
                 (record as any)[`taskDescription${record.key}`] === null
                   ? '-'
@@ -365,7 +366,7 @@ const SpecificIntake: React.FC<Props> = ({
             ) : (
               <Form.Item
                 // label="Description"
-                className="specificintake__form-item--task"
+                className="updatespecificintake__form-item--task"
                 name={`taskDescription${record.key}`}
                 style={{ margin: 0 }}
                 rules={[
@@ -374,7 +375,7 @@ const SpecificIntake: React.FC<Props> = ({
                   },
                 ]}
               >
-                <Input className="specificintake__form-input" placeholder="Type description here" />
+                <Input className="updatespecificintake__form-input" placeholder="Type description here" />
               </Form.Item>
             )}
           </>
@@ -528,7 +529,6 @@ const SpecificIntake: React.FC<Props> = ({
     if (currentSpecificIntakeJobsObj && specificIntakeJobsObj) {
       // Execute function "storeValue" for every array index
       currentSpecificIntakeJobsObj.jobs.map(storeValue);
-      setOriginalTaskArraylength(currentSpecificIntakeJobsObj.jobs.length);
       setCount(currentSpecificIntakeJobsObj.jobs.length);
     }
 
@@ -556,14 +556,14 @@ const SpecificIntake: React.FC<Props> = ({
       }
       setIncomingSpecificIntakeData(null);
     }
-  }, [clickedUpdate, incomingSpecificIntakeData]);
+  }, [goBackToIntakes, clickedUpdate, incomingSpecificIntakeData]);
 
   useEffect(() => {
     if (specificIntakeJobsObj === undefined || specificIntakeJobsObj === null) return;
     const channel = cableApp.cable.subscriptions.create(
       { channel: 'JobMonitoringChannel', intake_id: specificIntakeJobsObj.id },
       {
-        connected: () => console.log('specific intake connected'),
+        connected: () => console.log('Specific intake connected'),
         received: (res: any) => {
           setIncomingSpecificIntakeData(res.data);
         },
@@ -580,7 +580,7 @@ const SpecificIntake: React.FC<Props> = ({
     <>
       {typeof currentSpecificIntakeJobsObj === 'object' && currentSpecificIntakeJobsObj && specificIntakeJobsObj ? (
         <Form
-          className="specificintake__form"
+          className="updatespecificintake__form"
           form={updateIntakeJobsForm}
           onKeyDown={(e) => {
             handleKeyDown(e, updateIntakeJobsForm);
@@ -606,10 +606,10 @@ const SpecificIntake: React.FC<Props> = ({
 
             let result = { ...formItemsObject, [labelName]: currentValue };
             (tempTaskTableState as any)[rowIndex] = result;
-            // normally update the state
+            // normally update the table state
             setUpdateTaskTableState(tempTaskTableState);
 
-            if (labelName.includes('taskType')) {
+            if (labelName.includes('taskType') && currentValue !== '') {
               if (serviceTypeTaskDict) {
                 setServiceTaskDropdown({
                   ...serviceTaskDropdown,
@@ -636,18 +636,18 @@ const SpecificIntake: React.FC<Props> = ({
           <Form.Item hidden name="intakeId" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <div className="specificintake__outerdiv">
-            <div className="specificintake__nav-outerdiv">
+          <div className="updatespecificintake__outerdiv">
+            <div className="updatespecificintake__nav-outerdiv">
               <div className="flex-align-center">
                 <div
-                  className="specificintake__back"
+                  className="updatespecificintake__back"
                   onClick={() => {
                     // setInEditMode(false);
                     setBeforeDeleteState(null);
                     goBackToIntakes();
                   }}
                 >
-                  <i className="fas fa-arrow-circle-left" /> <div className="specificintake__back-text">Back</div>
+                  <i className="fas fa-arrow-circle-left" /> <div className="updatespecificintake__back-text">Back</div>
                 </div>
               </div>
 
@@ -659,14 +659,14 @@ const SpecificIntake: React.FC<Props> = ({
                       title={`Sure to delete Intake for ${currentSpecificIntakeJobsObj.registration}?`}
                       onConfirm={() => onDeleteIntakeSummary(currentSpecificIntakeJobsObj.id)}
                     >
-                      <span className="specificintake__button-task specificintake__button-task--delete">
-                        <i className="fas fa-trash-alt"></i>
+                      <span className="updatespecificintake__button-task updatespecificintake__button-task--delete">
+                        <i className="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete Intake
                       </span>
                     </Popconfirm>
                   )}
 
                   {/* <span
-                    className="specificintake__button-task specificintake__button-task--edit"
+                    className="updatespecificintake__button-task updatespecificintake__button-task--edit"
                     onClick={() => {
                       setInEditMode(true);
                       setBeforeDeleteState(updateTaskTableState);
@@ -675,65 +675,35 @@ const SpecificIntake: React.FC<Props> = ({
                     <i className="fas fa-pen"></i>
                   </span> */}
                 </>
-
-                {inEditMode && (
-                  <>
-                    {/* <span
-                      className="specificintake__button-task specificintake__button-task--cancel"
-                      onClick={() => {
-                        // when user is trying to cancel everything
-                        // restore the array to original
-                        if (updateTaskTableState === null) return;
-                        let tempArray = [...updateTaskTableState];
-                        if (beforeDeleteState) {
-                          setUpdateTaskTableState(beforeDeleteState);
-                        } else {
-                          setUpdateTaskTableState(tempArray.slice(0, originalTaskArraylength));
-                        }
-                        // setInEditMode(false);
-                      }}
-                    >
-                      Cancel
-                    </span> */}
-
-                    <Button
-                      loading={loading !== undefined && loading}
-                      className="specificintake__button-task specificintake__button-task--save"
-                      onClick={() => {
-                        updateIntakeJobsForm.submit();
-                        setClickedUpdate(true);
-                      }}
-                    >
-                      Update
-                    </Button>
-                  </>
-                )}
               </div>
             </div>
-            <section className="specificintake__section-top">
+            <section className="updatespecificintake__section-top">
               {/* REGISTRATION */}
-              <div className="specificintake__row--registration">
+              <div className="updatespecificintake__row--registration">
                 {inEditMode ? (
-                  <div className="flex">
-                    <div>
+                  <div className="flex" style={{ width: '100%' }}>
+                    <div style={{ width: '100%' }}>
                       <Form.Item
-                        className="specificintake__form-item--registration"
+                        className="updatespecificintake__form-item--registration"
                         name="registrationNumber"
                         rules={[{ required: true, message: 'Input Registration Number here!' }]}
                       >
-                        <Input placeholder="e.g. DCG1199" className="specificintake__form-item--registration-input" />
+                        <Input
+                          placeholder="e.g. DCG1199"
+                          className="updatespecificintake__form-item--registration-input"
+                        />
                       </Form.Item>
                     </div>
                     <div>
                       <Form.Item
                         name="bay"
-                        className="specificintake__form-item--bay"
+                        className="updatespecificintake__form-item--bay"
                         rules={[{ required: true, message: 'Select a bay!' }]}
                       >
-                        <Select className="specificintake__select--bay">
+                        <Select className="updatespecificintake__select--bay">
                           {baysList.map((child) => (
                             <Option value={child} key={uuidv4()}>
-                              Bay {child}
+                              BAY {child}
                             </Option>
                           ))}
                         </Select>
@@ -741,9 +711,11 @@ const SpecificIntake: React.FC<Props> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="specificintake__registration-outerdiv--normaluser">
-                    <div className="specificintake__registration-div">{currentSpecificIntakeJobsObj.registration}</div>
-                    <div className="specificintake__bay-div ">
+                  <div className="updatespecificintake__registration-outerdiv--normaluser">
+                    <div className="updatespecificintake__registration-div">
+                      {currentSpecificIntakeJobsObj.registration}
+                    </div>
+                    <div className="updatespecificintake__bay-div ">
                       {currentSpecificIntakeJobsObj.bay === '' ||
                       currentSpecificIntakeJobsObj.bay === null ||
                       currentSpecificIntakeJobsObj.bay === undefined
@@ -755,18 +727,18 @@ const SpecificIntake: React.FC<Props> = ({
 
                 {/* {inEditMode ? (
                   <div className="flex-align-center">
-                    <Form.Item label="" name="pickup" valuePropName="checked" className="specificintake__form-checkbox">
+                    <Form.Item label="" name="pickup" valuePropName="checked" className="updatespecificintake__form-checkbox">
                       <Checkbox>Ready for Pick Up</Checkbox>
                     </Form.Item>
                   </div>
                 ) : (
-                  <div className="specificintake__pickup-div">
+                  <div className="updatespecificintake__pickup-div">
                     Ready to Pick Up:
                     <div
-                      className={`specificintake__pickup-circle ${
+                      className={`updatespecificintake__pickup-circle ${
                         currentSpecificIntakeJobsObj.pick_up
-                          ? 'specificintake__pickup-circle--green'
-                          : 'specificintake__pickup-circle--red'
+                          ? 'updatespecificintake__pickup-circle--green'
+                          : 'updatespecificintake__pickup-circle--red'
                       }`}
                     ></div>
                   </div>
@@ -774,22 +746,22 @@ const SpecificIntake: React.FC<Props> = ({
               </div>
 
               {/* DIV WRAPPING ALL 3 FORMITEMS */}
-              <div className="specificintake__box-outerdiv">
+              <div className="updatespecificintake__box-outerdiv">
                 {/* ==================================================== */}
                 {/* Intake Status */}
                 {/* ==================================================== */}
-                <div className="specificintake__box specificintake__box--status">
+                <div className="updatespecificintake__box updatespecificintake__box--status">
                   <Tooltip title="Intake Status">
-                    <div className="specificintake__box-left">
-                      <i className="fas fa-tasks specificintake__box-icon"></i>
+                    <div className="updatespecificintake__box-left">
+                      <i className="fas fa-tasks updatespecificintake__box-icon"></i>
                     </div>
                   </Tooltip>
-                  <div className="specificintake__box-right">
+                  <div className="updatespecificintake__box-right">
                     {inEditMode ? (
                       <Form.Item
                         name="intakeStatus"
                         style={{ margin: 0 }}
-                        className="specificintake__form-item--intake"
+                        className="updatespecificintake__form-item--intake"
                         rules={[
                           {
                             required: true,
@@ -799,9 +771,9 @@ const SpecificIntake: React.FC<Props> = ({
                       >
                         <Select
                           showSearch
-                          placeholder="Select a job status"
+                          placeholder="Select an intake status"
                           optionFilterProp="children"
-                          className="specificintake__select"
+                          className="updatespecificintake__select"
                           filterOption={(input, option) =>
                             option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                           }
@@ -834,14 +806,14 @@ const SpecificIntake: React.FC<Props> = ({
                 {/* ==================================================== */}
                 {/* Intake Time */}
                 {/* ==================================================== */}
-                <div className="specificintake__box specificintake__box--dock">
+                <div className="updatespecificintake__box updatespecificintake__box--dock">
                   <Tooltip title="Docked Date & Time">
-                    <div className="specificintake__box-left">
-                      <i className="fas fa-clock specificintake__box-icon"></i>
+                    <div className="updatespecificintake__box-left">
+                      <i className="fas fa-clock updatespecificintake__box-icon"></i>
                     </div>
                   </Tooltip>
 
-                  <div className="specificintake__box-right">
+                  <div className="updatespecificintake__box-right">
                     <div>
                       <div>{moment(currentSpecificIntakeJobsObj.created_at).format('YYYY-MM-DD')}</div>
                       <div>{moment(currentSpecificIntakeJobsObj.created_at).format('HH:mm A')}</div>
@@ -852,20 +824,20 @@ const SpecificIntake: React.FC<Props> = ({
                 {/* ==================================================== */}
                 {/* Intake Users */}
                 {/* ==================================================== */}
-                <div className="specificintake__box specificintake__box--users">
+                <div className="updatespecificintake__box updatespecificintake__box--users">
                   <Tooltip title="Task Assignees">
-                    <div className="specificintake__box-left">
-                      <i className="fas fa-users specificintake__box-icon"></i>
+                    <div className="updatespecificintake__box-left">
+                      <i className="fas fa-users updatespecificintake__box-icon"></i>
                     </div>
                   </Tooltip>
-                  <div className="specificintake__box-right specificintake__box-right--users">
+                  <div className="updatespecificintake__box-right updatespecificintake__box-right--users">
                     {inEditMode ? (
-                      <Form.Item name="assign" className="specificintake__form-item--users" style={{ margin: 0 }}>
+                      <Form.Item name="assign" className="updatespecificintake__form-item--users" style={{ margin: 0 }}>
                         <Select
                           mode="multiple"
                           placeholder="Please select mechanics"
                           optionFilterProp="children"
-                          className="specificintake__select"
+                          className="updatespecificintake__select"
                           tagRender={(props) => tagRender(props)}
                           filterOption={(input, option) =>
                             option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -900,14 +872,14 @@ const SpecificIntake: React.FC<Props> = ({
                 </div>
               </div>
 
-              <section className="specificintake__section-description">
+              <section className="updatespecificintake__section-description">
                 {inEditMode ? (
-                  <div className="specificintake__section-description-outerdiv">
-                    <span className="specificintake__section-description-text">Note:</span>
+                  <div className="updatespecificintake__section-description-outerdiv">
+                    <span className="updatespecificintake__section-description-text">Note:</span>
                     <Form.Item
                       // label="Description"
                       name={`description`}
-                      className="specificintake__form-item--task"
+                      className="updatespecificintake__form-item--task"
                       style={{ margin: 0, width: '100%' }}
                       rules={[
                         {
@@ -916,7 +888,7 @@ const SpecificIntake: React.FC<Props> = ({
                       ]}
                     >
                       <Input
-                        className="specificintake__form-input specificintake__form-input--intakedesc"
+                        className="updatespecificintake__form-input updatespecificintake__form-input--intakedesc"
                         placeholder="Type description here"
                       />
                     </Form.Item>
@@ -928,9 +900,9 @@ const SpecificIntake: React.FC<Props> = ({
                         {currentSpecificIntakeJobsObj.description !== null &&
                           currentSpecificIntakeJobsObj.description !== undefined &&
                           currentSpecificIntakeJobsObj.description !== '' && (
-                            <div className="specificintake__section-description-outerdiv">
-                              <span className="specificintake__section-description-text">Note:</span>
-                              <div className="specificintake__section-description-div">
+                            <div className="updatespecificintake__section-description-outerdiv">
+                              <span className="updatespecificintake__section-description-text">Note:</span>
+                              <div className="updatespecificintake__section-description-div">
                                 {currentSpecificIntakeJobsObj.description}
                               </div>
                             </div>
@@ -941,51 +913,68 @@ const SpecificIntake: React.FC<Props> = ({
                 )}
               </section>
 
-              <div className="specificintake__lastupdated-div">
+              <div className="updatespecificintake__lastupdated-div">
                 Last Updated: {moment(currentSpecificIntakeJobsObj.updated_at).format('YYYY-MM-DD HH:mm A')}
               </div>
             </section>
-            <section className="specificintake__section-bottom">
-              <div className="specificintake__section-bottom-title">List of Services</div>
-              {updateTaskTableState && (
-                <Table
-                  bordered
-                  // components={{
-                  //   body: {
-                  //     cell: EditableCell,
-                  //   },
-                  // }}
-                  className="specificintake__table"
-                  scroll={{ y: 300 }}
-                  dataSource={updateTaskTableState}
-                  columns={
-                    inEditMode
-                      ? (taskColumnsSettings as any)
-                      : (taskColumnsSettings.filter((child) => child.title !== 'Actions') as any)
-                  } //remove actions when its in edit mode
-                  // columns={mergedColumns}
-                  // rowClassName="editable-row"
-                  // columns={convertHeader(taskColumns, setTaskColumns)}
-                  pagination={false}
-                />
-              )}
-              {inEditMode && (
-                <div className="specificintake__add-div">
-                  <Button
-                    onClick={() => handleAdd()}
-                    type="primary"
-                    style={{ marginBottom: 16, background: '#c54747' }}
-                  >
-                    Add a row
-                  </Button>
+
+            <section className="updatespecificintake__section-bottom">
+              <div>
+                <div className="updatespecificintake__section-bottom-title-div">
+                  <div className="updatespecificintake__section-bottom-title">List of Services</div>
+                  {inEditMode && (
+                    <div className="updatespecificintake__add-div">
+                      <span className="updatespecificintake__add-button" onClick={() => handleAdd()}>
+                        <i className="fas fa-plus-square"></i>&nbsp;&nbsp;Add service
+                      </span>
+                    </div>
+                  )}
                 </div>
+                {updateTaskTableState && (
+                  <Table
+                    bordered
+                    // components={{
+                    //   body: {
+                    //     cell: EditableCell,
+                    //   },
+                    // }}
+                    className="updatespecificintake__table"
+                    scroll={{ y: 300 }}
+                    dataSource={updateTaskTableState}
+                    columns={
+                      inEditMode
+                        ? (taskColumnsSettings as any)
+                        : (taskColumnsSettings.filter((child) => child.title !== 'Actions') as any)
+                    } //remove actions when its in edit mode
+                    // columns={mergedColumns}
+                    // rowClassName="editable-row"
+                    // columns={convertHeader(taskColumns, setTaskColumns)}
+                    pagination={false}
+                  />
+                )}
+              </div>
+              {inEditMode && (
+                <>
+                  <div className="updatespecificintake__button-div-bottom">
+                    <Button
+                      loading={loading !== undefined && loading}
+                      className="updatespecificintake__button-task updatespecificintake__button-task--save"
+                      onClick={() => {
+                        updateIntakeJobsForm.submit();
+                        setClickedUpdate(true);
+                      }}
+                    >
+                      Update
+                    </Button>
+                  </div>
+                </>
               )}
             </section>
           </div>
         </Form>
       ) : (
-        <div className="specificintake__loading-outerdiv">
-          <div className="specificintake__loading">
+        <div className="updatespecificintake__loading-outerdiv">
+          <div className="updatespecificintake__loading">
             <div></div>
             <div></div>
             <div></div>
@@ -1035,4 +1024,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpecificIntake);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateSpecificIntake);

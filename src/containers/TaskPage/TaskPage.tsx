@@ -2,13 +2,16 @@ import React, { useEffect, useState, useContext, useRef, MutableRefObject } from
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
-import SpecificIntake, { TUpdateTaskTableState } from './SpecificIntake/SpecificIntake';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import IntakeJobsModal from 'src/components/Modal/IntakeJobsModal/IntakeJobsModal';
+import CreateSpecificIntake from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
+import UpdateSpecificIntake, {
+  TUpdateTaskTableState,
+} from 'src/containers/TaskPage//UpdateSpecificIntake/UpdateSpecificIntake';
 /* 3rd party lib */
 import gsap from 'gsap';
 import axios from 'axios';
@@ -72,6 +75,7 @@ const TaskPage: React.FC<Props> = ({
   loading,
   // onGetTasks,
   // onCreateTask,
+  auth_token,
   successMessage,
   serviceTypesArray,
   intakeSummaryArray,
@@ -92,6 +96,7 @@ const TaskPage: React.FC<Props> = ({
   const cableRef = useRef() as MutableRefObject<any>;
 
   const [count, setCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState<'main' | 'update' | 'create'>('main');
 
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
@@ -171,7 +176,7 @@ const TaskPage: React.FC<Props> = ({
                     registrationNumber: record.regNumber,
                     bay: record.bay === '-' ? '' : record.bay,
                   });
-                  goSpecificIntake();
+                  goToUpdateSpecificIntake();
                   // setShowUpdateModal({ ...showUpdateModal, intake_job: true });
                   setSpecificIntakeId(parseInt(record.key));
                 }}
@@ -214,11 +219,20 @@ const TaskPage: React.FC<Props> = ({
   /*  method */
   /* ================================================== */
 
-  const goSpecificIntake = () => {
+  const goToUpdateSpecificIntake = () => {
+    setCurrentPage('update');
     gsap.to('.task__table-div', {
       duration: 1,
       ease: 'ease',
       x: '-100%',
+    });
+  };
+  const goToCreateSpecificIntake = () => {
+    setCurrentPage('create');
+    gsap.to('.task__table-div', {
+      duration: 1,
+      ease: 'ease',
+      x: '100%',
     });
   };
 
@@ -299,7 +313,7 @@ const TaskPage: React.FC<Props> = ({
     const channel = cableApp.cable.subscriptions.create(
       { channel: 'JobMonitoringChannel' },
       {
-        connected: () => console.log('connected'),
+        connected: () => console.log('Intakes connected'),
         received: (res: any) => {
           setIncomingData(res);
         },
@@ -389,6 +403,13 @@ const TaskPage: React.FC<Props> = ({
       setShowCreateModal({
         ...showCreateModal,
         intake_job: false,
+      });
+
+      setCurrentPage('main');
+      gsap.to('.task__table-div', {
+        duration: 1,
+        ease: 'ease',
+        x: '0',
       });
 
       onClearTaskState();
@@ -506,12 +527,25 @@ const TaskPage: React.FC<Props> = ({
                     {intakeSummaryArray && intakeDict ? (
                       <section className="task__glass">
                         <div className="make__header-div ">
-                          <div className="make__header-title">Tasks</div>
+                          <div className="make__header-title">
+                            {auth_token === null ? (
+                              'Intakes'
+                            ) : (
+                              <>
+                                {currentPage === 'main'
+                                  ? 'Intakes'
+                                  : currentPage === 'update'
+                                  ? 'Update Intake'
+                                  : 'Create Intake'}
+                              </>
+                            )}
+                          </div>
                           <Button
                             type="primary"
                             className="make__brand-btn"
                             onClick={() => {
-                              setShowCreateModal({ ...showCreateModal, intake_job: true });
+                              goToCreateSpecificIntake();
+                              // setShowCreateModal({ ...showCreateModal, intake_job: true });
                               if (taskTableState === null) return;
                               const newData: any = {
                                 key: count.toString(),
@@ -538,6 +572,17 @@ const TaskPage: React.FC<Props> = ({
                           <div className="task__table-outerdiv">
                             <div className="task__table-parent">
                               <div className="task__table-div">
+                                <div className="task__specific-div task__specific-div--create">
+                                  <CreateSpecificIntake
+                                    count={count}
+                                    setCount={setCount}
+                                    setCurrentPage={setCurrentPage}
+                                    serviceTypeTaskDict={serviceTypeTaskDict}
+                                    setServiceTypeTaskDict={setServiceTypeTaskDict}
+                                    serviceTaskDropdown={serviceTaskDropdown}
+                                    setServiceTaskDropdown={setServiceTaskDropdown}
+                                  />
+                                </div>
                                 <Table
                                   bordered
                                   className="task__table"
@@ -550,12 +595,13 @@ const TaskPage: React.FC<Props> = ({
                                   columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
                                   pagination={false}
                                 />
-                                <div className="task__specific-div">
-                                  <SpecificIntake
+                                <div className="task__specific-div task__specific-div--update">
+                                  <UpdateSpecificIntake
                                     count={count}
                                     setCount={setCount}
                                     inEditMode={inEditMode}
                                     setInEditMode={setInEditMode}
+                                    setCurrentPage={setCurrentPage}
                                     beforeDeleteState={beforeDeleteState}
                                     setBeforeDeleteState={setBeforeDeleteState}
                                     serviceTypeTaskDict={serviceTypeTaskDict}
@@ -601,6 +647,7 @@ interface StateProps {
   loading?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
+  auth_token?: string | null;
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
@@ -609,6 +656,7 @@ interface StateProps {
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.task.loading,
+    auth_token: state.auth.auth_token,
     errorMessage: state.task.errorMessage,
     successMessage: state.task.successMessage,
     intakeStatusArray: state.dashboard.intakeStatusArray,
