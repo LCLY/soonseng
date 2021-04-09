@@ -67,6 +67,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
   /* ================================================== */
 
   const goBackToIntakes = () => {
+    createIntakeJobsForm.resetFields();
     setCurrentPage('main');
     gsap.to('.task__table-div', {
       duration: 1,
@@ -443,7 +444,6 @@ const CreateSpecificIntake: React.FC<Props> = ({
               <div
                 className="updatespecificintake__back"
                 onClick={() => {
-                  // setInEditMode(false);
                   goBackToIntakes();
                 }}
               >
@@ -452,25 +452,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
             </div>
 
             <div className="createspecificintake__back-outerdiv">
-              <div className="flex-align-center">
-                {/* <span
-                  className="createspecificintake__button-task createspecificintake__button-task--cancel"
-                  onClick={() => {
-                    goBackToIntakes();
-                  }}
-                >
-                  Cancel
-                </span> */}
-                {/* <Button
-                  loading={loading !== undefined && loading}
-                  className="createspecificintake__button-task createspecificintake__button-task--save"
-                  onClick={() => {
-                    createIntakeJobsForm.submit();
-                  }}
-                >
-                  Create
-                </Button> */}
-              </div>
+              <div className="flex-align-center"></div>
             </div>
           </div>
           <section className="createspecificintake__section-top">

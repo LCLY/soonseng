@@ -407,20 +407,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                 >
                   <i className="far fa-trash-alt"></i>
                 </Button>
-                {/* ) : (
-                  // this is for api delete
-                  <Popconfirm
-                    title="Sure to delete?"
-                    onConfirm={() => {
-                      if (specificIntakeJobsObj === null || specificIntakeJobsObj === undefined) return;
-                      handleDelete(specificIntakeJobsObj.id, parseInt((record as any)[`taskId${record.key}`]));
-                    }}
-                  >
-                    <Button type="link" danger title="Delete">
-                      <i className="far fa-trash-alt"></i>
-                    </Button>
-                  </Popconfirm>
-                )} */}
               </>
             ) : null}
           </>
@@ -444,27 +430,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     }
   }, [auth_token, setInEditMode]);
 
-  // useEffect(() => {
-  //   if (specificIntakeJobsObj === null) {
-  //     gsap.to('.task__table-div', {
-  //       duration: 1,
-  //       ease: 'ease',
-  //       x: '0',
-  //     });
-  //     setCurrentSpecificIntakeJobsObj(null);
-  //   } else {
-  //     gsap.to('.task__table-div', {
-  //       duration: 1,
-  //       ease: 'ease',
-  //       x: '-100%',
-  //     });
-  //   }
-  // }, [specificIntakeJobsObj]);
-
   useEffect(() => {
-    if (specificIntakeJobsObj) {
-      setCurrentSpecificIntakeJobsObj(specificIntakeJobsObj);
-    }
+    if (specificIntakeJobsObj === undefined) return;
+    setCurrentSpecificIntakeJobsObj(specificIntakeJobsObj);
   }, [specificIntakeJobsObj]);
 
   useEffect(() => {
@@ -565,13 +533,17 @@ const UpdateSpecificIntake: React.FC<Props> = ({
       {
         connected: () => console.log('Specific intake connected'),
         received: (res: any) => {
-          setIncomingSpecificIntakeData(res.data);
+          if (res.action === 'destroy') {
+            goBackToIntakes();
+          } else {
+            setIncomingSpecificIntakeData(res.data);
+          }
         },
       },
     );
 
     cableRef.current = channel;
-  }, [cableRef, specificIntakeJobsObj, cableApp.cable.subscriptions]);
+  }, [cableRef, goBackToIntakes, specificIntakeJobsObj, cableApp.cable.subscriptions]);
 
   /* ================================================== */
   /* ================================================== */

@@ -315,13 +315,22 @@ const TaskPage: React.FC<Props> = ({
       {
         connected: () => console.log('Intakes connected'),
         received: (res: any) => {
-          setIncomingData(res);
+          if (res.action === 'destroy') {
+            // if action is delete/destroy
+            let tempIntakeDict = { ...intakeDict }; //copy object first
+            let destroyedIntakeId = res.data.id; //get the destoyed intake id
+            // delete the whole key and value from the dict
+            delete tempIntakeDict[destroyedIntakeId];
+            setIntakeDict(tempIntakeDict); //update it
+          } else {
+            setIncomingData(res);
+          }
         },
       },
     );
 
     cableRef.current = channel;
-  }, [cableRef, cableApp.cable.subscriptions]);
+  }, [cableRef, intakeDict, cableApp.cable.subscriptions]);
 
   useEffect(() => {
     if (serviceTypesArray) {
