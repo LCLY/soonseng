@@ -129,6 +129,7 @@ export function* createIntakeSummarySaga(action: AppActions) {
     console.log(action.intakeJobsFormData);
   }
 
+  console.log('formdata', intake_and_jobs)
   try {
     let response = yield axios.post(url, { intake_and_jobs }, getAxiosHeaderToken());
     yield put(actions.createIntakeSummarySucceed(response.data.intakes, response.data.success));

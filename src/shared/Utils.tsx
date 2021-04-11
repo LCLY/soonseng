@@ -371,6 +371,28 @@ export const emptyStringWhenUndefinedOrNull = (incomingString: string): string =
   }
   return incomingString;
 };
+
+/* =========================================================== */
+/**
+ * A helper function that will return desired string or number if
+ * the value is undefined or null
+ * return the value itself otherwise
+ * @param {any} incomingData
+ * @return {*}  {string}
+ */
+/* =========================================================== */
+export const desiredValueWhenUndefinedOrNull = (incomingData: any, desiredValue: string | number) => {
+  if (incomingData === undefined || incomingData === null) {
+    return desiredValue;
+  }
+  if (
+    (typeof incomingData === 'string' && incomingData === '') ||
+    (typeof incomingData === 'number' && incomingData === 0)
+  ) {
+    return desiredValue;
+  }
+  return incomingData;
+};
 /* =========================================================== */
 /**
  * A helper function that will return 0 when

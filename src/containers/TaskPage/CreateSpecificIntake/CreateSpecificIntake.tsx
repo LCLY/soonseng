@@ -20,10 +20,11 @@ const { Option } = Select;
 
 interface CreateSpecificIntakeProps {
   count: number;
+  createIntakeJobsForm: any;
+  serviceTaskDropdown: IServiceTaskDropdown;
   setCount: React.Dispatch<React.SetStateAction<number>>;
   serviceTypeTaskDict: TServiceTypeTaskDict | null;
   setServiceTypeTaskDict: React.Dispatch<React.SetStateAction<TServiceTypeTaskDict | null>>;
-  serviceTaskDropdown: IServiceTaskDropdown;
   setServiceTaskDropdown: React.Dispatch<React.SetStateAction<IServiceTaskDropdown>>;
   setCurrentPage: React.Dispatch<React.SetStateAction<'main' | 'update' | 'create'>>;
 }
@@ -50,6 +51,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
   serviceTypesArray,
   serviceTypeTaskDict,
   serviceTaskDropdown,
+  createIntakeJobsForm,
   // beforeDeleteState,
   setServiceTaskDropdown,
   onCreateIntakeSummary,
@@ -58,7 +60,6 @@ const CreateSpecificIntake: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
 
-  const [createIntakeJobsForm] = Form.useForm();
   const [createTaskTableState, setCreateTaskTableState] = useState<TTaskTableState[]>([]);
 
   const baysList = ['1', '2', '3', '4', '5', '6', '7', '8'];
@@ -117,10 +118,11 @@ const CreateSpecificIntake: React.FC<Props> = ({
         description: values.description !== undefined ? values.description : '',
         registration: values.registrationNumber,
         intake_status_id: values.intakeStatus,
-        assigned_to_ids: values.assign,
+        assigned_to_ids: values.assign === undefined ? [] : values.assign,
       },
       jobs: resultJobs,
     };
+
     onCreateIntakeSummary(intakeJobsFormData);
   };
 

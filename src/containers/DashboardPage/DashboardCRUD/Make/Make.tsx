@@ -954,34 +954,51 @@ const Make: React.FC<Props> = ({
 
     return (
       <>
-        {seriesArray &&
-          seriesArray.map((series) => (
-            <div>
-              {series.title}{' '}
-              <Button
-                className="make__brand-btn--edit"
-                type="link"
-                title="Edit Series"
-                onClick={() => {
-                  // delete modal
-                  setShowUpdateModal({ ...showUpdateModal, series: true });
-                }}
-              >
-                <i className="far fa-edit"></i>
-              </Button>
-              <Button
-                type="link"
-                danger
-                title="Delete Series"
-                onClick={() => {
-                  // delete modal
-                  setShowDeleteModal({ ...showDeleteModal, series: true });
-                }}
-              >
-                <i className="far fa-trash-alt"></i>
-              </Button>
-            </div>
-          ))}
+        {seriesArray && (
+          <>
+            {seriesArray.length > 0
+              ? seriesArray.map((series) => (
+                  <div>
+                    {series.title}
+                    <Button
+                      className="make__brand-btn--edit"
+                      type="link"
+                      title="Edit Series"
+                      onClick={() => {
+                        // delete modal
+                        setShowUpdateModal({ ...showUpdateModal, series: true });
+                      }}
+                    >
+                      <i className="far fa-edit"></i>
+                    </Button>
+                    <Button
+                      type="link"
+                      title="Edit Images"
+                      className="make__brand-btn--closer make__brand-btn--edit"
+                      onClick={() => {
+                        setFullImageGalleryVisible(true);
+                        setImageGalleryTargetModelId(series.id);
+                        // setFullImageGalleryImagesArray(record.brandImages);
+                      }}
+                    >
+                      <i className="fas fa-file-image"></i>
+                    </Button>
+                    <Button
+                      type="link"
+                      danger
+                      title="Delete Series"
+                      onClick={() => {
+                        // delete modal
+                        setShowDeleteModal({ ...showDeleteModal, series: true });
+                      }}
+                    >
+                      <i className="far fa-trash-alt"></i>
+                    </Button>
+                  </div>
+                ))
+              : 'No series yet'}
+          </>
+        )}
 
         <TableImageViewer
           record={record}
@@ -2187,7 +2204,11 @@ const Make: React.FC<Props> = ({
 
   // if upload is successful, then do a get request just to refresh the images
   useEffect(() => {
-    if (successMessage && (successMessage.toLowerCase() === 'Upload successful!'.toLowerCase() || successMessage.toLowerCase() === 'Delete successful'.toLowerCase())) {
+    if (
+      successMessage &&
+      (successMessage.toLowerCase() === 'Upload successful!'.toLowerCase() ||
+        successMessage.toLowerCase() === 'Delete successful'.toLowerCase())
+    ) {
       onGetBrands();
     }
   }, [successMessage, onGetBrands]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import './CatalogPage.scss';
 /*components*/
 import Footer from 'src/components/Footer/Footer';
@@ -9,11 +9,13 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
+import gsap from 'gsap';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
+import NumberFormat from 'react-number-format';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Empty, Form, Tabs, Tooltip, message, Menu, Dropdown } from 'antd';
@@ -21,10 +23,12 @@ import { Empty, Form, Tabs, Tooltip, message, Menu, Dropdown } from 'antd';
 /* Util */
 import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { RootState } from 'src';
+import soonseng_placeholder from 'src/img/soonseng_logo_red.png';
 import holy5trucks from 'src/img/5trucks.jpg';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
+import { desiredValueWhenUndefinedOrNull } from 'src/shared/Utils';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog';
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
@@ -67,10 +71,14 @@ const CatalogPage: React.FC<Props> = ({
     make: false,
   });
 
+  // if undefined meaning there's no make
+  const [selectedMake, setSelectedMake] = useState<TReceivedMakeObj | null | undefined>(null);
+
   const [localLoading, setLocalLoading] = useState(false);
 
   const [activeBrandTab, setActiveBrandTab] = useState('brand1');
   const [activeSeriesTab, setActiveSeriesTab] = useState('series1');
+  const [activeSeriesId, setActiveSeriesId] = useState(-1);
 
   const [modalContent, setModalContent] = useState({
     make: { makeTitle: '', seriesTitle: '' },
@@ -101,6 +109,35 @@ const CatalogPage: React.FC<Props> = ({
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
+  /* ---------------- */
+  //  Animation
+  /* ---------------- */
+
+  const animateMakesAppear = useCallback(() => {
+    gsap.fromTo(
+      `.catalog__row-div-parent-${activeSeriesId}`,
+      { x: '120%', duration: 0.5 },
+      { x: 0, duration: 0.5, stagger: { each: 0.05, from: 'end' } },
+    );
+  }, [activeSeriesId]);
+
+  const animateStatsAppear = () => {
+    gsap.fromTo('.catalog__series-content-line', { margin: '0 100%', duration: 1 }, { margin: 0, duration: 1 });
+    gsap.fromTo('.catalog__series-content-title', { x: '100%', duration: 1 }, { x: 0, duration: 1 });
+    gsap.fromTo(
+      '.catalog__series-content-button',
+      { x: '150%', duration: 1, ease: Back.easeOut.config(3) },
+      { x: '0', duration: 1, ease: Back.easeOut.config(3) },
+    );
+    gsap.fromTo(
+      '.catalog__series-content-row',
+      { x: '-120%' },
+      {
+        x: '0',
+        stagger: { each: 0.05, from: 'start' }, // 0.1 seconds between when each ".box" element starts animating
+      },
+    );
+  };
   /* ---------------- */
   //  Series
   /* ---------------- */
@@ -324,69 +361,150 @@ const CatalogPage: React.FC<Props> = ({
         </div>
         <div className="catalog__section-series-innerdiv">
           {series.makes.length > 0 ? (
-            // <div className={`catalog__grid`}>
-            // {series.makes
-            //   .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
-            //   .map((make) => {
-            //     let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
-            //       series.title,
-            //       '',
-            //     )}-${convertSpaceInStringWithChar(make.title, '')}`;
-            //     let cardUniqueKey = uuidv4();
-            //     return (
-            //       <div key={cardUniqueKey} className="catalog__card-outerdiv">
-            //         <div
-            //           className="catalog__card"
-            //           onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
-            //         >
-            //           {make.images.length > 0 ? (
-            //             <>
-            //               <img
-            //                 className="catalog__card-image"
-            //                 src={make.images[0].url}
-            //                 alt={make.images[0].filename}
-            //               />
-            //               <div
-            //                 className="catalog__card-image-blurbg"
-            //                 style={{ backgroundImage: `url(${make.images[0].url})` }}
-            //               ></div>
-            //             </>
-            //           ) : (
-            //             <Skeleton.Image className="catalog__card-image--skeleton" />
-            //           )}
-            //         </div>
-            //         <div className="catalog__card-label">{make.title}</div>
-            //         {accessObj?.showAdminDashboard && (
-            //           <Tooltip title={`Edit / Delete ${make.title}`}>
-            //             <Dropdown
-            //               className="catalog__dropdown-more catalog__dropdown-more--make"
-            //               overlay={<MakeMenu makeObj={make} seriesObj={series} />}
-            //               trigger={['click']}
-            //             >
-            //               <i className="fas fa-ellipsis-h"></i>
-            //             </Dropdown>
-            //           </Tooltip>
-            //         )}
-            //       </div>
-            //     );
-            //   })}
-            // </div>
             <div className="catalog__series-outerdiv">
-              <div className="catalog__series-image">image</div>
-              <div>
+              <div className="catalog__series-image-div">
+                {selectedMake ? (
+                  <>
+                    <img className="catalog__series-image" alt="placeholder" src={soonseng_placeholder} />
+                    <div className="catalog__series-overlay"></div>
+                    <div className="catalog__series-content">
+                      <div>
+                        <div className="catalog__series-content-line"></div>
+                        <div className="catalog__series-content-title">
+                          <h2>{selectedMake?.title}</h2>
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Config</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(selectedMake.config, '-')}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Torque</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(selectedMake.torque, '-')}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Horsepower</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(`${selectedMake.horsepower}PS`, '-')}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Emission</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(selectedMake.emission, '-')}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Tire Count</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(selectedMake.tire, '-')}
+                        </div>
+                      </div>
+
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Transmission</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(selectedMake.transmission, '-')}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Engine Capacity</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(selectedMake.engine_cap, '-')}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">ABS</div>
+                        <div className="catalog__series-content-row-info">
+                          {selectedMake.abs ? 'Available' : 'Not Available'}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">Year</div>
+                        <div className="catalog__series-content-row-info">
+                          {(selectedMake.year && selectedMake.year.toLowerCase() === 'Invalid Date'.toLowerCase()) ||
+                          selectedMake.year === null ||
+                          selectedMake.year === undefined
+                            ? '-'
+                            : selectedMake.year}
+                        </div>
+                      </div>
+                      <div className="catalog__series-content-row">
+                        <div className="catalog__series-content-row-label">GVW</div>
+                        <div className="catalog__series-content-row-info">
+                          {desiredValueWhenUndefinedOrNull(`${selectedMake.gvw}KG`, '-')}
+                        </div>
+                      </div>
+                      {accessObj?.showPriceSalesPage && (
+                        <div className="catalog__series-content-row">
+                          <div className="catalog__series-content-row-label catalog__series-content-row-label--price">
+                            Price
+                          </div>
+                          <div className="catalog__series-content-row-info catalog__series-content-row-info--price">
+                            {selectedMake.price === null ||
+                            selectedMake.price === undefined ||
+                            selectedMake.price === 0 ? (
+                              '-'
+                            ) : (
+                              <>
+                                RM
+                                <NumberFormat
+                                  value={selectedMake.price}
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div>
+                        <div className="catalog__series-content-button-div">
+                          <span
+                            className="catalog__series-content-button"
+                            onClick={() => {
+                              let model_detail = `${selectedMake.brand.title}-${convertSpaceInStringWithChar(
+                                series.title,
+                                '',
+                              )}-${convertSpaceInStringWithChar(selectedMake.title, '')}`;
+                              history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${selectedMake.id}`);
+                            }}
+                          >
+                            Go To Model&nbsp;<i className="fas fa-chevron-circle-right"></i>
+                          </span>
+                        </div>
+                        <div className="catalog__series-content-line"></div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div>loading</div>
+                )}
+              </div>
+              <div className="catalog__div-makelist">
                 {series.makes
                   .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
                   .map((make) => {
-                    let model_detail = `${catalog.brand.title}-${convertSpaceInStringWithChar(
-                      series.title,
-                      '',
-                    )}-${convertSpaceInStringWithChar(make.title, '')}`;
                     let cardUniqueKey = uuidv4();
                     return (
-                      <div className="catalog__row-div-parent" key={cardUniqueKey}>
+                      <div
+                        className={`catalog__row-div-parent catalog__row-div-parent-${series.id}`}
+                        key={cardUniqueKey}
+                      >
                         <div
-                          className="catalog__row-div"
-                          onClick={() => history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`)}
+                          className={`catalog__row-div ${make.id === selectedMake?.id ? 'active' : ''}`}
+                          onClick={() => {
+                            setSelectedMake(make);
+
+                            if (selectedMake) {
+                              animateStatsAppear();
+                            }
+                            // history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`);
+                          }}
                         >
                           <div>{make.title}</div>
                         </div>
@@ -428,8 +546,59 @@ const CatalogPage: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
+    if (selectedMake) {
+      animateStatsAppear();
+    }
+  }, [selectedMake]);
+
+  useEffect(() => {
+    animateMakesAppear();
+  }, [animateMakesAppear]);
+
+  useEffect(() => {
+    // animate makes everytime a new series is chosen
+    if (activeSeriesTab) {
+      console.log('change');
+      let index = parseInt(activeSeriesTab.replace('series', '')) - 1;
+
+      animateMakesAppear();
+
+      if (
+        catalogMakesArray &&
+        catalogMakesArray.length > 0 &&
+        catalogMakesArray[0].series.length > 0 &&
+        catalogMakesArray[0].series[index].makes.length > 0
+      ) {
+        setActiveSeriesId(catalogMakesArray[0].series[index].id);
+        setSelectedMake(catalogMakesArray[0].series[index].makes[0]);
+      } else {
+        setSelectedMake(undefined); //undefined when there's no make
+      }
+    }
+  }, [activeSeriesTab, animateMakesAppear, catalogMakesArray]);
+
+  useEffect(() => {
     onGetCatalogMakes();
   }, [onGetCatalogMakes]);
+
+  useEffect(() => {
+    //  after successful data retrieve, select the first series from first brand
+    if (catalogMakesArray) {
+      // first make sure that there is >= 1 catalog makes
+      // then make sure that series is also >= 1
+      // then make sure that makes within series is also >= 1 then proceed
+      if (
+        catalogMakesArray.length > 0 &&
+        catalogMakesArray[0].series.length > 0 &&
+        catalogMakesArray[0].series[0].makes.length > 0
+      ) {
+        setActiveSeriesId(catalogMakesArray[0].series[0].id);
+        setSelectedMake(catalogMakesArray[0].series[0].makes[0]);
+      } else {
+        setSelectedMake(undefined); //undefined when there's no make
+      }
+    }
+  }, [catalogMakesArray]);
 
   /* -------------------- */
   // success notification
@@ -671,6 +840,13 @@ const CatalogPage: React.FC<Props> = ({
                                     activeKey={activeSeriesTab}
                                     onTabClick={(activeKey: string) => {
                                       setActiveSeriesTab(activeKey);
+                                      // if makes has items then choose the first one always
+                                      if (catalog.series[index].makes.length > 0) {
+                                        setActiveSeriesId(catalog.series[index].id);
+                                        setSelectedMake(catalog.series[index].makes[0]);
+                                      } else {
+                                        setSelectedMake(undefined);
+                                      }
                                     }}
                                   >
                                     {catalog.series.map((series, index) => {

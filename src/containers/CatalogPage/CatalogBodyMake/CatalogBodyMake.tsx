@@ -254,7 +254,12 @@ const CatalogBodyMake: React.FC<Props> = ({
       },
       {
         title: 'Year',
-        data: catalogMake.year !== null && catalogMake.year !== '' ? `${catalogMake.year}` : '-',
+        data:
+          catalogMake.year === null ||
+          catalogMake.year === '' ||
+          (catalogMake.year && catalogMake.year.toLowerCase() === 'Invalid Date'.toLowerCase())
+            ? '-'
+            : `${catalogMake.year}`,
       },
       {
         title: 'GVW',

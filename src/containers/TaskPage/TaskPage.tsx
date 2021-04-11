@@ -529,7 +529,7 @@ const TaskPage: React.FC<Props> = ({
         <LayoutComponent activeKey="accessory">
           <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
-              <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button>
+              {/* <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button> */}
               <div className="make__tab-outerdiv">
                 <section>
                   <>
@@ -586,6 +586,7 @@ const TaskPage: React.FC<Props> = ({
                                     count={count}
                                     setCount={setCount}
                                     setCurrentPage={setCurrentPage}
+                                    createIntakeJobsForm={createIntakeJobsForm}
                                     serviceTypeTaskDict={serviceTypeTaskDict}
                                     setServiceTypeTaskDict={setServiceTypeTaskDict}
                                     serviceTaskDropdown={serviceTaskDropdown}
