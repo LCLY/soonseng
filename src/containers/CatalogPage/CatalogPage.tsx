@@ -112,7 +112,6 @@ const CatalogPage: React.FC<Props> = ({
   /* ---------------- */
   //  Animation
   /* ---------------- */
-
   const animateMakesAppear = useCallback(() => {
     gsap.fromTo(
       `.catalog__row-div-parent-${activeSeriesId}`,
