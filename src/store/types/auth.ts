@@ -44,7 +44,7 @@ export interface AssignAccessAction {
 /* Api call */
 export interface SignInAction {
   type: typeof actionTypes.SIGN_IN;
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -87,7 +87,7 @@ export interface IUserRoles {
 
 export type TReceivedUserInfoObj = {
   id: number;
-  email: string;
+  username: string;
   first_name: string;
   last_name: string;
   roles: IUserRoles;

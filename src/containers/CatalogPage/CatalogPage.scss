@@ -36,7 +36,6 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    // padding-bottom: 10%;
   }
 
   /* ======================= */
@@ -646,11 +645,11 @@
     &-image {
       object-fit: cover;
       width: 100%;
-      // height: 100%;
+      height: 100%;
       border-radius: 1rem;
-      // transform: translateY(-2rem);
-      // opacity: 50%;
-      // filter: blur(3px);
+      &--placeholder {
+        height: auto;
+      }
 
       &-div {
         position: relative;
@@ -662,8 +661,10 @@
         margin-right: 5rem;
         background: white;
         border-radius: 1rem;
-        padding: 0 5rem;
         box-shadow: 5px 5px 15px 0.5px rgba(0, 0, 0, 0.6);
+        &--placeholder {
+          padding: 0 5rem;
+        }
       }
     }
 
@@ -671,6 +672,7 @@
       position: absolute;
       left: 0;
       top: 0;
+      min-width: 30rem;
       width: 40%;
       height: 100%;
       background: rgba(0, 0, 0, 0.8);
@@ -682,6 +684,7 @@
       left: 0;
       top: 0;
       width: 40%;
+      min-width: 30rem;
       height: 100%;
       border-radius: 1rem;
       overflow: hidden;
@@ -843,6 +846,16 @@
         margin-left: 1rem;
         margin-right: 1rem;
       }
+
+      &--addmodel {
+        margin: 0.5rem 0 0 0;
+      }
+
+      &--brand {
+        padding-top: 1.3rem;
+        padding-bottom: 1.3rem;
+        margin: 1rem 0 0 0;
+      }
     }
 
     /* --------------------- */
@@ -998,6 +1011,10 @@
             padding: 0.5rem 1.5rem !important;
             min-width: 10rem !important;
           }
+        }
+
+        & > .ant-tabs-nav > .ant-tabs-nav-wrap {
+          flex: none !important;
         }
       }
     }

@@ -128,7 +128,6 @@ export function* createUserSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { user });
-    console.log(response);
     yield put(actions.createUserSucceed(response.data.user, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -265,7 +264,6 @@ export function* updateRoleSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { role });
-    console.log(response);
     yield put(actions.updateRoleSucceed(response.data.roles, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -620,7 +618,6 @@ export function* deleteWheelbaseSaga(action: AppActions) {
 
   try {
     let response = yield axios.delete(url);
-    console.log(response);
     yield put(actions.deleteWheelbaseSucceed(response.data.wheelbases, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -748,7 +745,6 @@ export function* updateMakeSaga(action: AppActions) {
         { imageTag: action.imageTag, imageFiles: action.imageFiles },
       );
     }
-    console.log(response);
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.updateMakeFailed, error.response.data.error);
@@ -1812,7 +1808,6 @@ export function* getServiceTypesSaga(_action: AppActions) {
 //    Create Service Types
 /* ------------------------------- */
 export function* createServiceTypeSaga(action: AppActions) {
-  console.log('call');
   yield put(actions.createServiceTypeStart());
 
   let url = process.env.REACT_APP_API + `/job_monitoring/service_types`;

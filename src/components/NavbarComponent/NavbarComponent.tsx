@@ -19,7 +19,7 @@ import SoonSengLogo from 'src/img/soonseng_logo.png';
 import {
   ROUTE_HOME,
   ROUTE_LOGIN,
-  ROUTE_SALES,
+  // ROUTE_SALES,
   ROUTE_LOGOUT,
   ROUTE_TASK,
   // ROUTE_ORDERS,
@@ -34,26 +34,28 @@ import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 
 const { SubMenu } = Menu;
 
+export type TActivePage =
+  | 'catalog'
+  | 'home'
+  | 'sales'
+  | 'body'
+  | 'about'
+  | 'product'
+  | 'contact'
+  | 'bodymake'
+  | 'accessory'
+  | 'fees'
+  | 'users'
+  | 'about'
+  | 'task'
+  | 'orders'
+  | 'make'
+  | 'login'
+  | 'job_monitoring';
+
 interface NavbarComponentProps {
   /** Shows which active page it is currently */
-  activePage?:
-    | 'catalog'
-    | 'home'
-    | 'sales'
-    | 'body'
-    | 'about'
-    | 'product'
-    | 'contact'
-    | 'bodymake'
-    | 'accessory'
-    | 'fees'
-    | 'users'
-    | 'about'
-    | 'task'
-    | 'orders'
-    | 'make'
-    | 'login'
-    | 'job_monitoring';
+  activePage?: TActivePage;
   defaultOpenKeys?: 'product' | 'dashboard';
 }
 
@@ -65,7 +67,23 @@ type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentP
  * @param history history from react-router-dom
  * @category Components
  */
-
+/**
+ *
+ *
+ * @param {*} {
+ *   history,
+ *   // auth_token,
+ *   accessObj,
+ *   userInfoObj,
+ *   activePage,
+ *   // onGetUserInfo,
+ *   authenticated,
+ *   projectVersion,
+ *   defaultOpenKeys,
+ *   localOrdersArray,
+ * }
+ * @return {*}
+ */
 const NavbarComponent: React.FC<Props> = ({
   history,
   // auth_token,
@@ -195,11 +213,11 @@ const NavbarComponent: React.FC<Props> = ({
                   </a>
                 </Menu.Item>
               </SubMenu>
-              <Menu.Item key="sales" icon={<i className="fas fa-balance-scale"></i>}>
+              {/* <Menu.Item key="sales" icon={<i className="fas fa-balance-scale"></i>}>
                 <a className="navbar__link" href={ROUTE_SALES}>
                   Sales
                 </a>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item key="task" icon={<i className="fas fa-tasks"></i>}>
                 <a className="navbar__link" href={ROUTE_TASK}>
                   Task
@@ -357,11 +375,11 @@ const NavbarComponent: React.FC<Props> = ({
                   </span>
                 </Dropdown>
               </div>
-              <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
+              {/* <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_SALES}>
                   <i className="fas fa-balance-scale"></i>&nbsp;Sales
                 </a>
-              </div>
+              </div> */}
               <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_TASK}>
                   <i className="fas fa-tasks"></i>&nbsp;Task
@@ -390,6 +408,14 @@ const NavbarComponent: React.FC<Props> = ({
                   </Dropdown>
                 </div>
               ) : null}
+
+              {accessObj?.showSalesDashboard && (
+                <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
+                  <a className="navbar__link" href={ROUTE_DASHBOARD.body}>
+                    <i className="fas fa-columns"></i>&nbsp;Dashboard
+                  </a>
+                </div>
+              )}
             </div>
             <div className="navbar__right-div">
               {/* only show if user info exist or not a normal user */}

@@ -16,6 +16,7 @@ import {
   UPLOAD_TO_BODY,
   UPLOAD_TO_BODY_MAKE,
   UPLOAD_TO_ACCESSORY,
+  UPLOAD_TO_SERIES,
 } from 'src/shared/constants';
 import { AppActions } from 'src/store/types';
 import * as actions from 'src/store/actions/index';
@@ -36,7 +37,8 @@ interface FullImageGalleryModalProps {
     | typeof UPLOAD_TO_BRAND
     | typeof UPLOAD_TO_BODY
     | typeof UPLOAD_TO_BODY_MAKE
-    | typeof UPLOAD_TO_ACCESSORY;
+    | typeof UPLOAD_TO_ACCESSORY
+    | typeof UPLOAD_TO_SERIES;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   /** To target what images we are doing  */
   indexKey: string;
@@ -45,8 +47,6 @@ interface FullImageGalleryModalProps {
   /** api call to delete upload image by passing in array of ids */
   onDeleteUploadImage: (ids: number[]) => AppActions;
   /** for showing update modal when user clicks on upload image button */
-  showUpdateModal: { [key: string]: boolean };
-  setShowUpdateModal: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
   /** Whether to show the edit mode image gallery */
   // showEditImageGallery: boolean;
   // setShowEditImageGallery: React.Dispatch<React.SetStateAction<boolean>>;
@@ -83,7 +83,6 @@ const FullImageGalleryModal: React.FC<Props> = ({
   uploadSelectedFiles,
   setUploadSelectedFiles,
   setImagesPreviewUrls,
-  // setShowUpdateModal,
 }) => {
   const [galleryImages, setGalleryImages] = useState<TGalleryImageArrayObj[]>([]);
   const [showEditImageGallery, setShowEditImageGallery] = useState(false);

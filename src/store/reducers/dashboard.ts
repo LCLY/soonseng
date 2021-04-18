@@ -695,7 +695,7 @@ const deleteMakeFailed = (state: DashboardInitialState, action: AppActions) => {
 /* Get Series  */
 /* -------------------------- */
 const getSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { seriesArray: null, errorMessage: null });
+  return updateObject(state, { errorMessage: null });
 };
 const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('seriesArray' in action) {

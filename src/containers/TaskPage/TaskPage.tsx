@@ -33,6 +33,7 @@ import {
 } from 'src/store/types/task';
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import { TUserAccess } from 'src/store/types/auth';
 
 export type TTaskTableState = {
   key: string;
@@ -75,6 +76,7 @@ const TaskPage: React.FC<Props> = ({
   loading,
   // onGetTasks,
   // onCreateTask,
+  accessObj,
   auth_token,
   successMessage,
   serviceTypesArray,
@@ -549,31 +551,32 @@ const TaskPage: React.FC<Props> = ({
                               </>
                             )}
                           </div>
-                          <Button
-                            type="primary"
-                            className="make__brand-btn"
-                            onClick={() => {
-                              goToCreateSpecificIntake();
-                              // setShowCreateModal({ ...showCreateModal, intake_job: true });
-                              if (taskTableState === null) return;
-                              const newData: any = {
-                                key: count.toString(),
-                                [`assign${count}`]: [],
-                                [`taskType${count}`]: '',
-                                [`taskTitle${count}`]: '',
-                                [`taskStatus${count}`]: '',
-                                [`taskDescription${count}`]: '',
-                              };
-                              let tempArray = [...taskTableState];
-                              tempArray.push(newData);
-                              setCount(1);
-                              setTaskTableState(tempArray);
-                            }}
-                          >
-                            Create New Intake
-                          </Button>
+                          {accessObj?.showSalesDashboard && (
+                            <Button
+                              type="primary"
+                              className="make__brand-btn"
+                              onClick={() => {
+                                goToCreateSpecificIntake();
+                                // setShowCreateModal({ ...showCreateModal, intake_job: true });
+                                if (taskTableState === null) return;
+                                const newData: any = {
+                                  key: count.toString(),
+                                  [`assign${count}`]: [],
+                                  [`taskType${count}`]: '',
+                                  [`taskTitle${count}`]: '',
+                                  [`taskStatus${count}`]: '',
+                                  [`taskDescription${count}`]: '',
+                                };
+                                let tempArray = [...taskTableState];
+                                tempArray.push(newData);
+                                setCount(1);
+                                setTaskTableState(tempArray);
+                              }}
+                            >
+                              Create New Intake
+                            </Button>
+                          )}
                         </div>
-
                         {/* -------------------- */}
                         {/*     Intake Table      */}
                         {/* -------------------- */}
@@ -655,6 +658,7 @@ const TaskPage: React.FC<Props> = ({
 
 interface StateProps {
   loading?: boolean;
+  accessObj?: TUserAccess;
   errorMessage?: string | null;
   successMessage?: string | null;
   auth_token?: string | null;
@@ -666,6 +670,7 @@ interface StateProps {
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.task.loading,
+    accessObj: state.auth.accessObj,
     auth_token: state.auth.auth_token,
     errorMessage: state.task.errorMessage,
     successMessage: state.task.successMessage,

@@ -583,8 +583,9 @@ export type TReceivedMakeObj = {
 export type TReceivedSeriesObj = {
   id: number;
   title: string;
-  brand_id: number;
+  brand: number;
   available: boolean;
+  images: TReceivedImageObj[];
 };
 
 /* ---------------------------------------- */

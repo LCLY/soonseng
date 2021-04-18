@@ -21,17 +21,17 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Empty, Form, Tabs, Tooltip, message, Menu, Dropdown } from 'antd';
 
 /* Util */
-import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { RootState } from 'src';
-import soonseng_placeholder from 'src/img/soonseng_logo_red.png';
 import holy5trucks from 'src/img/5trucks.jpg';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
+import soonseng_placeholder from 'src/img/soonseng_logo_red.png';
 import { desiredValueWhenUndefinedOrNull } from 'src/shared/Utils';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog';
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
+import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
 const { TabPane } = Tabs;
@@ -59,14 +59,17 @@ const CatalogPage: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({
+    brand: false,
     series: false,
     make: false,
   });
   const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({
+    brand: false,
     series: false,
     make: false,
   });
   const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({
+    brand: false,
     series: false,
     make: false,
   });
@@ -89,11 +92,11 @@ const CatalogPage: React.FC<Props> = ({
     make: { makeId: -1, warningText: '', backupWarningText: 'this model' },
   });
 
-  const [makeFilter, setMakeFilter] = useState('');
   const [createMakeForm] = Form.useForm();
   const [updateMakeForm] = Form.useForm();
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
+  const [makeFilter, setMakeFilter] = useState('');
   const [showSearch, setShowSearch] = useState(false);
 
   const { width } = useWindowDimensions();
@@ -335,36 +338,27 @@ const CatalogPage: React.FC<Props> = ({
   }) => (
     <>
       <div className="catalog__section-series-outerdiv">
-        <div className="catalog__series-top-div">
-          <div className="catalog__series-title-outerdiv"></div>
-
-          {accessObj?.showAdminDashboard && (
-            <Tooltip title="Add Model">
-              <div
-                className="catalog__button-series"
-                onClick={() => {
-                  setModalContent({
-                    ...modalContent,
-                    make: { seriesTitle: series.title, makeTitle: '' },
-                  });
-                  createMakeForm.setFieldsValue({ makeSeriesId: series.id, makeBrandId: catalog.brand.id });
-                  // show the modal
-                  setShowCreateModal({ ...showCreateModal, make: true });
-                }}
-              >
-                <PlusCircleOutlined className="catalog__button-icon catalog__button-icon--make" />
-                &nbsp;&nbsp;Add Model
-              </div>
-            </Tooltip>
-          )}
-        </div>
         <div className="catalog__section-series-innerdiv">
           {series.makes.length > 0 ? (
             <div className="catalog__series-outerdiv">
-              <div className="catalog__series-image-div">
+              <div
+                className={
+                  series.images.length > 0
+                    ? 'catalog__series-image-div'
+                    : 'catalog__series-image-div catalog__series-image-div--placeholder'
+                }
+              >
                 {selectedMake ? (
                   <>
-                    <img className="catalog__series-image" alt="placeholder" src={soonseng_placeholder} />
+                    {series.images.length > 0 ? (
+                      <img className="catalog__series-image" alt={series.images[0].tag} src={series.images[0].url} />
+                    ) : (
+                      <img
+                        className="catalog__series-image catalog__series-image--placeholder"
+                        alt="placeholder"
+                        src={soonseng_placeholder}
+                      />
+                    )}
                     <div className="catalog__series-overlay"></div>
                     <div className="catalog__series-content">
                       <div>
@@ -485,42 +479,63 @@ const CatalogPage: React.FC<Props> = ({
                 )}
               </div>
               <div className="catalog__div-makelist">
-                {series.makes
-                  .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
-                  .map((make) => {
-                    let cardUniqueKey = uuidv4();
-                    return (
-                      <div
-                        className={`catalog__row-div-parent catalog__row-div-parent-${series.id}`}
-                        key={cardUniqueKey}
-                      >
+                <>
+                  {series.makes
+                    .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
+                    .map((make) => {
+                      let cardUniqueKey = uuidv4();
+                      return (
                         <div
-                          className={`catalog__row-div ${make.id === selectedMake?.id ? 'active' : ''}`}
-                          onClick={() => {
-                            setSelectedMake(make);
-
-                            if (selectedMake) {
-                              animateStatsAppear();
-                            }
-                            // history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`);
-                          }}
+                          className={`catalog__row-div-parent catalog__row-div-parent-${series.id}`}
+                          key={cardUniqueKey}
                         >
-                          <div>{make.title}</div>
+                          <div
+                            className={`catalog__row-div ${make.id === selectedMake?.id ? 'active' : ''}`}
+                            onClick={() => {
+                              setSelectedMake(make);
+
+                              if (selectedMake) {
+                                animateStatsAppear();
+                              }
+                              // history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`);
+                            }}
+                          >
+                            <div>{make.title}</div>
+                          </div>
+                          {accessObj?.showAdminDashboard && (
+                            <Tooltip title={`Edit / Delete ${make.title}`}>
+                              <Dropdown
+                                className="catalog__dropdown-more catalog__dropdown-more--make"
+                                overlay={<MakeMenu makeObj={make} seriesObj={series} />}
+                                trigger={['click']}
+                              >
+                                <i className="fas fa-ellipsis-h"></i>
+                              </Dropdown>
+                            </Tooltip>
+                          )}
                         </div>
-                        {accessObj?.showAdminDashboard && (
-                          <Tooltip title={`Edit / Delete ${make.title}`}>
-                            <Dropdown
-                              className="catalog__dropdown-more catalog__dropdown-more--make"
-                              overlay={<MakeMenu makeObj={make} seriesObj={series} />}
-                              trigger={['click']}
-                            >
-                              <i className="fas fa-ellipsis-h"></i>
-                            </Dropdown>
-                          </Tooltip>
-                        )}
+                      );
+                    })}
+                  {accessObj?.showAdminDashboard && (
+                    <Tooltip title="Add Model">
+                      <div
+                        className={`catalog__button-series catalog__button-series--addmodel catalog__row-div-parent-${series.id}`}
+                        onClick={() => {
+                          setModalContent({
+                            ...modalContent,
+                            make: { seriesTitle: series.title, makeTitle: '' },
+                          });
+                          createMakeForm.setFieldsValue({ makeSeriesId: series.id, makeBrandId: catalog.brand.id });
+                          // show the modal
+                          setShowCreateModal({ ...showCreateModal, make: true });
+                        }}
+                      >
+                        <PlusCircleOutlined className="catalog__button-icon catalog__button-icon--make" />
+                        &nbsp;&nbsp;Add Model
                       </div>
-                    );
-                  })}
+                    </Tooltip>
+                  )}
+                </>
               </div>
             </div>
           ) : (
@@ -536,6 +551,9 @@ const CatalogPage: React.FC<Props> = ({
   /* ================================================== */
   /*  useEffect  */
   /* ================================================== */
+  useEffect(() => {
+    gsap.config({ nullTargetWarn: false });
+  }, []);
   // on mount, always start user at the top of the page
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -557,11 +575,8 @@ const CatalogPage: React.FC<Props> = ({
   useEffect(() => {
     // animate makes everytime a new series is chosen
     if (activeSeriesTab) {
-      console.log('change');
       let index = parseInt(activeSeriesTab.replace('series', '')) - 1;
-
       animateMakesAppear();
-
       if (
         catalogMakesArray &&
         catalogMakesArray.length > 0 &&
@@ -797,6 +812,24 @@ const CatalogPage: React.FC<Props> = ({
                         setActiveSeriesTab('series1');
                         setActiveBrandTab(activeKey);
                       }}
+                      tabBarExtraContent={{
+                        right: (
+                          <>
+                            {accessObj?.showAdminDashboard && (
+                              <div
+                                className="catalog__button-series catalog__button-series--brand"
+                                onClick={() => {
+                                  // show the modal
+                                  setShowCreateModal({ ...showCreateModal, series: true });
+                                }}
+                              >
+                                <PlusCircleOutlined className="catalog__button-icon" />
+                                &nbsp;&nbsp;Add Brand
+                              </div>
+                            )}
+                          </>
+                        ),
+                      }}
                     >
                       {catalogMakesArray.map((catalog, index) => {
                         return (
@@ -804,35 +837,35 @@ const CatalogPage: React.FC<Props> = ({
                           <TabPane tab={catalog.brand.title} key={`brand${index + 1}`}>
                             <div className="catalog__brand-div" key={uuidv4()}>
                               {/* ================================= */}
-                              {/* Brand title */}
-                              {/* ================================= */}
-                              <div className="catalog__brand-innerdiv">
-                                {/* <div className="catalog__brand-title">{catalog.brand.title}</div> */}
-                                {accessObj?.showAdminDashboard && (
-                                  <div
-                                    className="catalog__button-series"
-                                    onClick={() => {
-                                      // set the brand id in the form
-                                      createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
-                                      // set the content so that modal can display the brand title
-                                      let seriesModalContent = { ...modalContent };
-                                      seriesModalContent.series.brandTitle = catalog.brand.title;
-                                      setModalContent(seriesModalContent);
-                                      // show the modal
-                                      setShowCreateModal({ ...showCreateModal, series: true });
-                                    }}
-                                  >
-                                    <PlusCircleOutlined className="catalog__button-icon" />
-                                    &nbsp;&nbsp;Add Series
-                                  </div>
-                                )}
-                              </div>
-                              {/* ================================= */}
                               {/* series section */}
                               {/* ================================= */}
                               <section className="catalog__section-series">
                                 {catalog.series.length > 0 ? (
                                   <Tabs
+                                    tabBarExtraContent={{
+                                      right: (
+                                        <>
+                                          {accessObj?.showAdminDashboard && (
+                                            <div
+                                              className="catalog__button-series"
+                                              onClick={() => {
+                                                // set the brand id in the form
+                                                createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
+                                                // set the content so that modal can display the brand title
+                                                let seriesModalContent = { ...modalContent };
+                                                seriesModalContent.series.brandTitle = catalog.brand.title;
+                                                setModalContent(seriesModalContent);
+                                                // show the modal
+                                                setShowCreateModal({ ...showCreateModal, series: true });
+                                              }}
+                                            >
+                                              <PlusCircleOutlined className="catalog__button-icon" />
+                                              &nbsp;&nbsp;Add Series
+                                            </div>
+                                          )}
+                                        </>
+                                      ),
+                                    }}
                                     tabPosition="top"
                                     className="catalog__tabs-outerdiv glass-shadow"
                                     animated={{ tabPane: true }}
@@ -840,9 +873,12 @@ const CatalogPage: React.FC<Props> = ({
                                     onTabClick={(activeKey: string) => {
                                       setActiveSeriesTab(activeKey);
                                       // if makes has items then choose the first one always
-                                      if (catalog.series[index].makes.length > 0) {
-                                        setActiveSeriesId(catalog.series[index].id);
-                                        setSelectedMake(catalog.series[index].makes[0]);
+                                      if (
+                                        Object.keys(catalog.series[0]).includes('makes') &&
+                                        catalog.series[0].makes.length > 0
+                                      ) {
+                                        setActiveSeriesId(catalog.series[0].id);
+                                        setSelectedMake(catalog.series[0].makes[0]);
                                       } else {
                                         setSelectedMake(undefined);
                                       }

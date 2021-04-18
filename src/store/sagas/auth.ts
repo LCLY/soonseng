@@ -18,9 +18,9 @@ export function* signInSaga(action: AppActions) {
 
   let user = {};
 
-  if ('email' in action && 'password' in action) {
+  if ('username' in action && 'password' in action) {
     user = {
-      email: action.email,
+      username: action.username,
       password: action.password,
     };
   }

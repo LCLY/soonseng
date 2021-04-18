@@ -28,10 +28,10 @@ export const assignAccess = (accessObj: TUserAccess): AppActions => {
 /* ------------------------------------------- */
 // Sign in
 /* ------------------------------------------- */
-export const signIn = (email: string, password: string): AppActions => {
+export const signIn = (username: string, password: string): AppActions => {
   return {
     type: actionTypes.SIGN_IN,
-    email: email,
+    username: username,
     password: password,
   };
 };

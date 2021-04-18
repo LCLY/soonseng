@@ -376,6 +376,7 @@
 
       & .ant-collapse-arrow {
         top: 50% !important;
+        padding: 0 !important;
         transform: translateY(-50%) !important;
         @include respond-to($small-phone) {
           font-size: 0.8rem !important;

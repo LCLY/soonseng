@@ -26,7 +26,7 @@ type TUserTableState = {
   userId: number;
   firstName: string;
   lastName: string;
-  email: string;
+  username: string;
   role: string;
 };
 
@@ -116,14 +116,14 @@ const UserRoles: React.FC<Props> = ({
       ...getColumnSearchProps(usersSearchInput, 'lastName', 'Last Name'),
     },
     {
-      key: 'email',
-      title: 'Email',
+      key: 'username',
+      title: 'Username',
       className: 'body__table-header--title',
-      dataIndex: 'email',
+      dataIndex: 'username',
       width: 'auto',
       ellipsis: true,
-      sorter: (a: TUserTableState, b: TUserTableState) => a.email.localeCompare(b.email),
-      ...getColumnSearchProps(usersSearchInput, 'email', 'Email'),
+      sorter: (a: TUserTableState, b: TUserTableState) => a.username.localeCompare(b.username),
+      ...getColumnSearchProps(usersSearchInput, 'username', 'Username'),
     },
     {
       key: 'role',
@@ -384,7 +384,7 @@ const UserRoles: React.FC<Props> = ({
         userId: user.id,
         firstName: user.first_name,
         lastName: user.last_name,
-        email: user.email === '' ? '-' : user.email,
+        username: user.username === '' ? '-' : user.username,
         role: user.roles.title,
       });
     };

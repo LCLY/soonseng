@@ -1274,9 +1274,7 @@ const CatalogBodyMake: React.FC<Props> = ({
         visible={fullImageGalleryVisible}
         setVisible={setFullImageGalleryVisible}
         loading={dashboardLoading !== undefined && dashboardLoading}
-        showUpdateModal={showUpdateModal}
         imagesArray={fullImageGalleryImagesArray}
-        setShowUpdateModal={setShowUpdateModal}
         onDeleteUploadImage={onDeleteUploadImage}
         onClearAllSelectedImages={onClearAllSelectedImages}
       />

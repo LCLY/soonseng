@@ -1,5 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
-import { TReceivedBodyMakeObj, TReceivedBrandObj, TReceivedMakeObj, TReceivedWheelbaseObj } from './dashboard';
+import {
+  TReceivedBodyMakeObj,
+  TReceivedBrandObj,
+  TReceivedImageObj,
+  TReceivedMakeObj,
+  TReceivedWheelbaseObj,
+} from './dashboard';
 
 // initialState for reducers
 export interface CatalogInitialState {
@@ -28,8 +34,9 @@ export interface ClearCatalogStateAction {
 export type TCatalogSeries = {
   id: number;
   title: string;
-  brand_id: number;
+  brand: number;
   available: boolean;
+  images: TReceivedImageObj[];
   makes: TReceivedMakeObj[];
 };
 export type TReceivedCatalogMakeObj = {
