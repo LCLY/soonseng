@@ -475,7 +475,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                     name="bay"
                     className="createspecificintake__form-item--bay"
                     initialValue={''}
-                    rules={[{ required: true, message: 'Select a bay!' }]}
+                    rules={[{ required: false, message: 'Select a bay!' }]}
                   >
                     <Select className="createspecificintake__select--bay">
                       <Option value="">Select a bay</Option>

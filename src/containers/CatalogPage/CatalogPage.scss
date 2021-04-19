@@ -270,6 +270,7 @@
   /* =================================== */
   &__dropdown {
     &-more {
+      z-index: 2;
       cursor: pointer;
       width: 3rem;
       height: 3rem;
@@ -935,6 +936,8 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
+      width: 100% !important;
+
       @include respond-to($small-phone) {
         font-size: 1.7rem;
       }
@@ -1015,6 +1018,10 @@
 
         & > .ant-tabs-nav > .ant-tabs-nav-wrap {
           flex: none !important;
+        }
+
+        & .ant-tabs-tab-btn {
+          width: 100% !important;
         }
       }
     }

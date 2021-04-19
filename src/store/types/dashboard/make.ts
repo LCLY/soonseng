@@ -20,8 +20,6 @@ export interface CreateBrandAction {
   type: typeof actionTypes.CREATE_BRAND;
   title: string;
   description: string;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateBrandStartAction {
@@ -45,8 +43,6 @@ export interface UpdateBrandAction {
   brand_id: number;
   title: string;
   description: string;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface UpdateBrandStartAction {
@@ -216,8 +212,6 @@ export interface DeleteWheelbaseFailedAction {
 export interface CreateMakeAction {
   type: typeof actionTypes.CREATE_MAKE;
   createMakeData: TCreateMakeData;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface CreateMakeStartAction {
@@ -259,8 +253,6 @@ export interface GetMakesFailedAction {
 export interface UpdateMakeAction {
   type: typeof actionTypes.UPDATE_MAKE;
   updateMakeData: TUpdateMakeData;
-  imageTag: string | null; //for upload images
-  imageFiles: FileList | null; //for upload images
 }
 /*  States */
 export interface UpdateMakeStartAction {

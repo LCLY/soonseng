@@ -353,14 +353,14 @@ const CatalogBodyMake: React.FC<Props> = ({
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
       year: emptyStringWhenUndefinedOrNull(moment(values.year).format('YYYY').toString()),
     };
-
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
-    } else {
-      onUpdateMake(updateMakeData, null, null);
-    }
+    onUpdateMake(updateMakeData);
+    // if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+    //   // if there are files being selected to be uploaded
+    //   // then send the tag and image files to the api call
+    //   onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
+    // } else {
+    //   onUpdateMake(updateMakeData, null, null);
+    // }
   };
   /* --------------------- */
   // Make Wheelbase
@@ -1797,8 +1797,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
     onGetChargesFees: () => dispatch(actions.getChargesFees()),
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
-    onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
-      dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    onUpdateMake: (updateMakeData) => dispatch(actions.updateMake(updateMakeData)),
     onCreateBodyMake: (createBodyMakeData, imageTag, imageFiles) =>
       dispatch(actions.createBodyMake(createBodyMakeData, imageTag, imageFiles)),
     onUpdateBodyMake: (updateBodyMakeData, imageTag, imageFiles) =>

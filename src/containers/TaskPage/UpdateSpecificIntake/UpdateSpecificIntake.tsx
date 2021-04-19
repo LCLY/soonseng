@@ -670,7 +670,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                       <Form.Item
                         name="bay"
                         className="updatespecificintake__form-item--bay"
-                        rules={[{ required: true, message: 'Select a bay!' }]}
+                        rules={[{ required: false, message: 'Select a bay!' }]}
                       >
                         <Select className="updatespecificintake__select--bay">
                           {baysList.map((child) => (

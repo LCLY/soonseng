@@ -3,6 +3,7 @@ import React from 'react';
 import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
 import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
 import UsersFormItems from 'src/components/Modal/Crud/FormItems/UsersFormItems';
+import BrandFormItems from 'src/components/Modal/Crud/FormItems/BrandFormItems';
 import RolesFormItems from 'src/components/Modal/Crud/FormItems/RolesFormItems';
 import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
 import BodyMakeFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeFormItems';
@@ -69,6 +70,7 @@ export interface ICategory {
     | 'series'
     | 'make'
     | 'roles'
+    | 'brand'
     | 'body'
     | 'make_wheelbase'
     | 'body_make'
@@ -173,22 +175,9 @@ const CrudModal: React.FC<Props> = ({
           {category === 'series' && antdForm !== undefined && onFinish !== undefined && (
             <SeriesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
-          {category === 'make' &&
-            antdForm !== undefined &&
-            onFinish !== undefined &&
-            imagesPreviewUrls !== undefined &&
-            setImagesPreviewUrls !== undefined &&
-            setUploadSelectedFiles !== undefined && (
-              <MakeFormItems
-                crud={crud}
-                antdForm={antdForm}
-                onFinish={onFinish}
-                isDashboard={isDashboard}
-                imagesPreviewUrls={imagesPreviewUrls}
-                setImagesPreviewUrls={setImagesPreviewUrls}
-                setUploadSelectedFiles={setUploadSelectedFiles}
-              />
-            )}
+          {category === 'make' && antdForm !== undefined && onFinish !== undefined && (
+            <MakeFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} isDashboard={isDashboard} />
+          )}
           {category === 'make_wheelbase' && antdForm !== undefined && onFinish !== undefined && (
             <MakeWheelbaseFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
@@ -247,6 +236,9 @@ const CrudModal: React.FC<Props> = ({
           )}
           {category === 'roles' && antdForm !== undefined && onFinish !== undefined && (
             <RolesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
+          )}
+          {category === 'brand' && antdForm !== undefined && onFinish !== undefined && (
+            <BrandFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
         </Modal>
       )}

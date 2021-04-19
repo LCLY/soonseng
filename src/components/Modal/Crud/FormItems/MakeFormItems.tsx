@@ -20,16 +20,10 @@ interface MakeFormItemsProps {
   crud: 'create' | 'update' | 'delete';
   /** boolean to know if this modal is for dashboard or other place */
   isDashboard?: boolean;
-  /** url for preview images */
-  imagesPreviewUrls: string[];
   /** The form instance from antd  */
   antdForm: FormInstance<any>;
   /** onFinish method when user click ok*/
   onFinish: (values: any) => void;
-  /** set action for image preview urls */
-  setImagesPreviewUrls: React.Dispatch<React.SetStateAction<string[]>>;
-  /** setState action to set the selected files to upload*/
-  setUploadSelectedFiles: React.Dispatch<React.SetStateAction<FileList | null | undefined>>;
 }
 
 type Props = MakeFormItemsProps & StateProps & DispatchProps;
@@ -40,12 +34,9 @@ const MakeFormItems: React.FC<Props> = ({
   brandsArray,
   isDashboard,
   seriesArray,
-  // imagesPreviewUrls,
   onFinish,
   onGetBrands,
   onGetSeries,
-  // setImagesPreviewUrls,
-  // setUploadSelectedFiles,
 }) => {
   /* ======================== */
   /* useEffect */

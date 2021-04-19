@@ -197,14 +197,14 @@ const TaskPage: React.FC<Props> = ({
       width: 'auto',
       ellipsis: true,
     },
-    {
-      key: 'status',
-      title: 'Status',
-      dataIndex: 'status',
-      width: '10rem',
-      ellipsis: true,
-      align: 'center',
-    },
+    // {
+    //   key: 'status',
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   width: '10rem',
+    //   ellipsis: true,
+    //   align: 'center',
+    // },
     {
       key: 'bay',
       title: 'Bay',

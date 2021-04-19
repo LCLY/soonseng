@@ -3,13 +3,7 @@ import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import { getAxiosHeaderToken, setPromiseError, succeedActionWithImageUpload } from 'src/shared/Utils';
 import axios from 'axios';
-import {
-  UPLOAD_TO_MAKE,
-  UPLOAD_TO_BRAND,
-  UPLOAD_TO_BODY,
-  UPLOAD_TO_BODY_MAKE,
-  UPLOAD_TO_ACCESSORY,
-} from 'src/shared/constants';
+import { UPLOAD_TO_MAKE, UPLOAD_TO_BODY, UPLOAD_TO_BODY_MAKE, UPLOAD_TO_ACCESSORY } from 'src/shared/constants';
 
 /**
  * A boolean to check whether image has been uploaded
@@ -441,17 +435,7 @@ export function* createBrandSaga(action: AppActions) {
   }
   try {
     let response = yield axios.post(url, { brand });
-    if ('imageTag' in action && 'imageFiles' in action) {
-      yield succeedActionWithImageUpload(
-        UPLOAD_TO_BRAND,
-        response,
-        imageIsUploaded,
-        actions.uploadImage,
-        response.data.brands,
-        actions.createBrandSucceed,
-        { imageTag: action.imageTag, imageFiles: action.imageFiles },
-      );
-    }
+    yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.createBrandFailed, error.response.data.error);
@@ -482,17 +466,7 @@ export function* updateBrandSaga(action: AppActions) {
   }
   try {
     let response = yield axios.put(url, { brand });
-    if ('imageTag' in action && 'imageFiles' in action) {
-      yield succeedActionWithImageUpload(
-        UPLOAD_TO_BRAND,
-        response,
-        imageIsUploaded,
-        actions.uploadImage,
-        response.data.brands,
-        actions.updateBrandSucceed,
-        { imageTag: action.imageTag, imageFiles: action.imageFiles },
-      );
-    }
+    yield put(actions.updateBrandSucceed(response.data.brands, response.data.success));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBrandFailed, error.response.data.error);

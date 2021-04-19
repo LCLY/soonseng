@@ -738,28 +738,11 @@ const Make: React.FC<Props> = ({
   /* ===================================== */
   // Brand
   /* ===================================== */
-  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; imageTag: string }) => {
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onCreateBrand(values.brandTitle, values.brandDescription, values.imageTag, uploadSelectedFiles);
-    } else {
-      onCreateBrand(values.brandTitle, values.brandDescription, null, null);
-    }
+  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string }) => {
+    onCreateBrand(values.brandTitle, values.brandDescription);
   };
-  const onEditBrandFinish = (values: {
-    brandId: number;
-    brandTitle: string;
-    brandDescription: string;
-    imageTag: string;
-  }) => {
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription, values.imageTag, uploadSelectedFiles);
-    } else {
-      onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription, null, null);
-    }
+  const onEditBrandFinish = (values: { brandId: number; brandTitle: string; brandDescription: string }) => {
+    onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription);
   };
 
   /* ===================================== */
@@ -824,13 +807,14 @@ const Make: React.FC<Props> = ({
       price: convertPriceToFloat(values.price),
     };
 
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onCreateMake(createMakeData, values.imageTag, uploadSelectedFiles);
-    } else {
-      onCreateMake(createMakeData, null, null); //call create make api
-    }
+    onCreateMake(createMakeData);
+    // if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+    //   // if there are files being selected to be uploaded
+    //   // then send the tag and image files to the api call
+    //   onCreateMake(createMakeData, values.imageTag, uploadSelectedFiles);
+    // } else {
+    //   onCreateMake(createMakeData, null, null); //call create make api
+    // }
   };
 
   // Edit Make
@@ -853,14 +837,14 @@ const Make: React.FC<Props> = ({
       emission: emptyStringWhenUndefinedOrNull(values.emission),
       price: convertPriceToFloat(values.price),
     };
-
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
-    } else {
-      onUpdateMake(updateMakeData, null, null);
-    }
+    onUpdateMake(updateMakeData);
+    // if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+    //   // if there are files being selected to be uploaded
+    //   // then send the tag and image files to the api call
+    //   onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
+    // } else {
+    //   onUpdateMake(updateMakeData, null, null);
+    // }
   };
 
   /* ===================================== */
@@ -2634,10 +2618,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     // Brand
     onGetBrands: () => dispatch(actions.getBrands()),
-    onCreateBrand: (title, description, tag, imageFiles) =>
-      dispatch(actions.createBrand(title, description, tag, imageFiles)),
-    onUpdateBrand: (brand_id, title, description, imageTag, imageFiles) =>
-      dispatch(actions.updateBrand(brand_id, title, description, imageTag, imageFiles)),
+    onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
+    onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
     onDeleteBrand: (brand_id) => dispatch(actions.deleteBrand(brand_id)),
     // Wheelbase
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
@@ -2647,10 +2629,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onDeleteWheelbase: (wheelbase_id) => dispatch(actions.deleteWheelbase(wheelbase_id)),
     // Make
     onGetMakes: () => dispatch(actions.getMakes()),
-    onCreateMake: (createMakeData, imageTag, uploadSelectedFiles) =>
-      dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
-    onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
-      dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    onCreateMake: (createMakeData) => dispatch(actions.createMake(createMakeData)),
+    onUpdateMake: (updateMakeData) => dispatch(actions.updateMake(updateMakeData)),
     onDeleteMake: (make_id) => dispatch(actions.deleteMake(make_id)),
     //  Series
     onGetSeries: (brand_id) => dispatch(actions.getSeries(brand_id)),

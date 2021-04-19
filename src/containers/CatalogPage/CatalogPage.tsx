@@ -6,7 +6,7 @@ import CrudModal from 'src/components/Modal/Crud/CrudModal';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
-import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
+// import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 /*3rd party lib*/
 import gsap from 'gsap';
@@ -46,6 +46,9 @@ const CatalogPage: React.FC<Props> = ({
   successMessage,
   errorMessage,
   catalogMakesArray,
+  onCreateBrand,
+  onUpdateBrand,
+  onDeleteBrand,
   onCreateSeries,
   onDeleteSeries,
   onUpdateSeries,
@@ -90,14 +93,17 @@ const CatalogPage: React.FC<Props> = ({
   const [deleteModalContent, setDeleteModalContent] = useState({
     series: { brandId: -1, seriesId: -1, warningText: '', backupWarningText: 'this series' },
     make: { makeId: -1, warningText: '', backupWarningText: 'this model' },
+    brand: { brandId: -1, warningText: '', backupWarningText: 'this brand' },
   });
 
   const [createMakeForm] = Form.useForm();
   const [updateMakeForm] = Form.useForm();
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
-  const [makeFilter, setMakeFilter] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
+  const [createBrandForm] = Form.useForm();
+  const [updateBrandForm] = Form.useForm();
+  // const [makeFilter, setMakeFilter] = useState('');
+  // const [showSearch, setShowSearch] = useState(false);
 
   const { width } = useWindowDimensions();
 
@@ -105,7 +111,7 @@ const CatalogPage: React.FC<Props> = ({
   /*   Image related states   */
   /* ======================== */
   // Upload states
-  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  // const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
 
@@ -179,13 +185,14 @@ const CatalogPage: React.FC<Props> = ({
       price: convertPriceToFloat(values.price),
     };
 
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onCreateMake(createMakeData, values.imageTag, uploadSelectedFiles);
-    } else {
-      onCreateMake(createMakeData, null, null); //call create make api
-    }
+    onCreateMake(createMakeData);
+    // if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+    //   // if there are files being selected to be uploaded
+    //   // then send the tag and image files to the api call
+    //   onCreateMake(createMakeData, values.imageTag, uploadSelectedFiles);
+    // } else {
+    //   onCreateMake(createMakeData, null, null); //call create make api
+    // }
   };
 
   // Update Make
@@ -209,14 +216,14 @@ const CatalogPage: React.FC<Props> = ({
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
       year: emptyStringWhenUndefinedOrNull(moment(values.year).format('YYYY').toString()),
     };
-
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
-    } else {
-      onUpdateMake(updateMakeData, null, null);
-    }
+    onUpdateMake(updateMakeData);
+    // if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+    //   // if there are files being selected to be uploaded
+    //   // then send the tag and image files to the api call
+    //   onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
+    // } else {
+    //   onUpdateMake(updateMakeData, null, null);
+    // }
   };
 
   const onDeleteMakeFinish = () => {
@@ -224,9 +231,59 @@ const CatalogPage: React.FC<Props> = ({
     onDeleteMake(deleteModalContent.make.makeId);
   };
 
+  const onCreateBrandFinish = (values: { brandDescription: string | null; brandTitle: string }) => {
+    setLocalLoading(true);
+    onCreateBrand(values.brandTitle, values.brandDescription ? values.brandDescription : '');
+  };
+
+  const onUpdateBrandFinish = (values: { brandDescription: string | null; brandId: number; brandTitle: string }) => {
+    setLocalLoading(true);
+    onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription ? values.brandDescription : '');
+  };
+  const onDeleteBrandFinish = () => {
+    setLocalLoading(true);
+    onDeleteBrand(deleteModalContent.brand.brandId);
+  };
+
   /* ================================================== */
   /*  components  */
   /* ================================================== */
+  const BrandMenu = ({ catalog }: { catalog: TReceivedCatalogMakeObj }) => (
+    <Menu className="catalog__menu">
+      <Menu.Item
+        className="catalog__menu-item"
+        onClick={() => {
+          updateBrandForm.setFieldsValue({
+            brandId: catalog.brand.id,
+            brandTitle: catalog.brand.title,
+            brandDescription: catalog.brand.description,
+          });
+          setShowUpdateModal({ ...showUpdateModal, brand: true });
+        }}
+      >
+        <i className="fas fa-edit" />
+        &nbsp;&nbsp;Edit Brand
+      </Menu.Item>
+      <Menu.Item
+        className="catalog__menu-item--danger"
+        danger
+        onClick={() => {
+          setDeleteModalContent({
+            ...deleteModalContent,
+            brand: {
+              brandId: catalog.brand.id,
+              warningText: catalog.brand.title,
+              backupWarningText: 'this brand',
+            },
+          });
+          setShowDeleteModal({ ...showDeleteModal, brand: true });
+        }}
+      >
+        <i className="fas fa-trash-alt" />
+        &nbsp;&nbsp;Delete Brand
+      </Menu.Item>
+    </Menu>
+  );
   const SeriesMenu = (props: { seriesTitle: string; brandId: number; seriesId: number }) => (
     <Menu className="catalog__menu">
       <Menu.Item
@@ -481,7 +538,7 @@ const CatalogPage: React.FC<Props> = ({
               <div className="catalog__div-makelist">
                 <>
                   {series.makes
-                    .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
+                    // .filter((make) => make.title.toLowerCase().includes(makeFilter.toLowerCase()))
                     .map((make) => {
                       let cardUniqueKey = uuidv4();
                       return (
@@ -635,20 +692,26 @@ const CatalogPage: React.FC<Props> = ({
           ...showCreateModal,
           series: false,
           make: false,
+          brand: false,
         });
         setShowUpdateModal({
           ...showUpdateModal,
           series: false,
           make: false,
+          brand: false,
         });
         setShowDeleteModal({
           ...showDeleteModal,
           series: false,
           make: false,
+          brand: false,
         });
 
         if (successMessage === 'Series deleted') {
           setActiveSeriesTab('series1');
+        }
+        if (successMessage === 'Brand deleted') {
+          setActiveBrandTab('brand1');
         }
       }, 1000);
     }
@@ -690,6 +753,46 @@ const CatalogPage: React.FC<Props> = ({
       {/* ====================================== */}
       {/* Modals */}
       {/* ====================================== */}
+      {/* -------------------------------- */}
+      {/* Brand */}
+      {/* -------------------------------- */}
+      <CrudModal
+        crud={'create'}
+        indexKey={'brand'}
+        category={'brand'}
+        modalTitle={'Create Brand'}
+        antdForm={createBrandForm}
+        showModal={showCreateModal}
+        visible={showCreateModal.brand}
+        onFinish={onCreateBrandFinish}
+        setShowModal={setShowCreateModal}
+        loading={localLoading}
+      />
+      <CrudModal
+        crud={'update'}
+        indexKey={'brand'}
+        category={'brand'}
+        modalTitle={'Update Brand'}
+        antdForm={updateBrandForm}
+        showModal={showUpdateModal}
+        visible={showUpdateModal.brand}
+        onFinish={onUpdateBrandFinish}
+        setShowModal={setShowUpdateModal}
+        loading={localLoading}
+      />
+      <CrudModal
+        crud={'delete'}
+        indexKey={'brand'}
+        category={'brand'}
+        modalTitle={`Delete Brand`}
+        showModal={showDeleteModal}
+        visible={showDeleteModal.brand}
+        onDelete={onDeleteBrandFinish}
+        setShowModal={setShowDeleteModal}
+        warningText={deleteModalContent.brand.warningText}
+        backupWarningText={deleteModalContent.brand.backupWarningText}
+        loading={localLoading}
+      />
       {/* -------------------------------- */}
       {/* Series */}
       {/* -------------------------------- */}
@@ -747,9 +850,6 @@ const CatalogPage: React.FC<Props> = ({
         visible={showCreateModal.make}
         onFinish={onCreateMakeFinish}
         setShowModal={setShowCreateModal}
-        imagesPreviewUrls={imagesPreviewUrls}
-        setImagesPreviewUrls={setImagesPreviewUrls}
-        setUploadSelectedFiles={setUploadSelectedFiles}
         loading={localLoading}
       />
 
@@ -767,7 +867,6 @@ const CatalogPage: React.FC<Props> = ({
         setShowModal={setShowUpdateModal}
         imagesPreviewUrls={imagesPreviewUrls}
         setImagesPreviewUrls={setImagesPreviewUrls}
-        setUploadSelectedFiles={setUploadSelectedFiles}
         loading={localLoading}
       />
 
@@ -790,7 +889,7 @@ const CatalogPage: React.FC<Props> = ({
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
         <CustomContainer>
           <div className="catalog__outerdiv">
-            {catalogMakesArray && (
+            {/* {catalogMakesArray && (
               <>
                 <CatalogFilter
                   showSearch={showSearch}
@@ -799,7 +898,7 @@ const CatalogPage: React.FC<Props> = ({
                   setFilterString={setMakeFilter}
                 />
               </>
-            )}
+            )} */}
             <div className="catalog__div">
               {catalogMakesArray ? (
                 catalogMakesArray.length > 0 ? (
@@ -820,7 +919,7 @@ const CatalogPage: React.FC<Props> = ({
                                 className="catalog__button-series catalog__button-series--brand"
                                 onClick={() => {
                                   // show the modal
-                                  setShowCreateModal({ ...showCreateModal, series: true });
+                                  setShowCreateModal({ ...showCreateModal, brand: true });
                                 }}
                               >
                                 <PlusCircleOutlined className="catalog__button-icon" />
@@ -834,7 +933,27 @@ const CatalogPage: React.FC<Props> = ({
                       {catalogMakesArray.map((catalog, index) => {
                         return (
                           // div wrapping brand along with its series
-                          <TabPane tab={catalog.brand.title} key={`brand${index + 1}`}>
+                          <TabPane
+                            tab={
+                              <div className="catalog__tabs-title">
+                                <div>{catalog.brand.title}</div>
+                                <div>
+                                  {accessObj?.showAdminDashboard && (
+                                    <Tooltip title={`Edit / Delete ${catalog.brand.title}`}>
+                                      <Dropdown
+                                        className="catalog__dropdown-more"
+                                        overlay={<BrandMenu catalog={catalog} />}
+                                        trigger={['click']}
+                                      >
+                                        <i className="fas fa-cogs" />
+                                      </Dropdown>
+                                    </Tooltip>
+                                  )}
+                                </div>
+                              </div>
+                            }
+                            key={`brand${index + 1}`}
+                          >
                             <div className="catalog__brand-div" key={uuidv4()}>
                               {/* ================================= */}
                               {/* series section */}
@@ -871,6 +990,7 @@ const CatalogPage: React.FC<Props> = ({
                                     animated={{ tabPane: true }}
                                     activeKey={activeSeriesTab}
                                     onTabClick={(activeKey: string) => {
+                                      if (activeSeriesTab === activeKey) return;
                                       setActiveSeriesTab(activeKey);
                                       // if makes has items then choose the first one always
                                       if (
@@ -895,24 +1015,26 @@ const CatalogPage: React.FC<Props> = ({
                                         <TabPane
                                           tab={
                                             <div className="catalog__tabs-title">
-                                              <span>{series.title}</span>
-                                              {accessObj?.showAdminDashboard && (
-                                                <Tooltip title={`Edit / Delete ${series.title}`}>
-                                                  <Dropdown
-                                                    className="catalog__dropdown-more"
-                                                    overlay={
-                                                      <SeriesMenu
-                                                        seriesTitle={series.title}
-                                                        brandId={catalog.brand.id}
-                                                        seriesId={series.id}
-                                                      />
-                                                    }
-                                                    trigger={['click']}
-                                                  >
-                                                    <i className="fas fa-cogs" />
-                                                  </Dropdown>
-                                                </Tooltip>
-                                              )}
+                                              <div>{series.title}</div>
+                                              <div>
+                                                {accessObj?.showAdminDashboard && (
+                                                  <Tooltip title={`Edit / Delete ${series.title}`}>
+                                                    <Dropdown
+                                                      className="catalog__dropdown-more"
+                                                      overlay={
+                                                        <SeriesMenu
+                                                          seriesTitle={series.title}
+                                                          brandId={catalog.brand.id}
+                                                          seriesId={series.id}
+                                                        />
+                                                      }
+                                                      trigger={['click']}
+                                                    >
+                                                      <i className="fas fa-cogs" />
+                                                    </Dropdown>
+                                                  </Tooltip>
+                                                )}
+                                              </div>
                                             </div>
                                           }
                                           key={`series${index + 1}`}
@@ -1006,6 +1128,9 @@ const mapStateToProps = (state: RootState): StateProps | void => {
   };
 };
 interface DispatchProps {
+  onCreateBrand: typeof actions.createBrand;
+  onUpdateBrand: typeof actions.updateBrand;
+  onDeleteBrand: typeof actions.deleteBrand;
   onCreateMake: typeof actions.createMake;
   onUpdateMake: typeof actions.updateMake;
   onDeleteMake: typeof actions.deleteMake;
@@ -1018,11 +1143,12 @@ interface DispatchProps {
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
-    onCreateMake: (createMakeData, imageTag, uploadSelectedFiles) =>
-      dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
+    onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
+    onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
+    onDeleteBrand: (brand_id) => dispatch(actions.deleteBrand(brand_id)),
+    onCreateMake: (createMakeData) => dispatch(actions.createMake(createMakeData)),
     onGetCatalogMakes: () => dispatch(actions.getCatalogMakes()),
-    onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
-      dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    onUpdateMake: (updateMakeData) => dispatch(actions.updateMake(updateMakeData)),
     onDeleteMake: (make_id) => dispatch(actions.deleteMake(make_id)),
     onClearDashboardState: () => dispatch(actions.clearDashboardState()),
     onDeleteUploadImage: (ids) => dispatch(actions.deleteUploadImage(ids)),
