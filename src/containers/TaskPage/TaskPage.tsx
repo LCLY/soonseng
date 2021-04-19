@@ -160,11 +160,16 @@ const TaskPage: React.FC<Props> = ({
         return (
           <>
             <Tooltip
-              title={`${record.regNumber}${
-                record.description !== undefined && record.description !== null && record.description !== ''
-                  ? ` (${record.description})`
-                  : ''
-              }`}
+              title={
+                <>
+                  <span className="all-uppercase">{record.regNumber}</span>
+                  <span>{`${
+                    record.description !== undefined && record.description !== null && record.description !== ''
+                      ? ` (${record.description})`
+                      : ''
+                  }`}</span>
+                </>
+              }
             >
               <span
                 className="task__link"

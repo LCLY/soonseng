@@ -626,6 +626,13 @@ const CatalogPage: React.FC<Props> = ({
   }, [selectedMake]);
 
   useEffect(() => {
+    if (activeBrandTab) {
+      animateStatsAppear();
+      animateMakesAppear();
+    }
+  }, [activeBrandTab, animateMakesAppear]);
+
+  useEffect(() => {
     animateMakesAppear();
   }, [animateMakesAppear]);
 
