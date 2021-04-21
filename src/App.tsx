@@ -63,14 +63,16 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
     // set the version of the project so we can know which version we at and what should we do at which point
     // in this point of time, at version 1, we are clearing up all the localstorage
     if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
-      onSaveProjectVersion('v1.04');
+      onSaveProjectVersion('v1.05');
     }
   }, [projectVersion, onSaveProjectVersion]);
 
   useEffect(() => {
-    if (projectVersion !== 'v1.04') {
+    if (projectVersion === undefined) return;
+    let projectVersionInt = projectVersion.substring(1);
+    if (parseFloat(projectVersionInt) <= 1.04) {
       //if the project is v1.0 then clear out the localstorage, update the version to v1.02
-      onClearLocalStorage('v1.04');
+      onClearLocalStorage('v1.05');
       persistor.purge();
     }
   }, [projectVersion, onClearLocalStorage]);

@@ -409,13 +409,16 @@ const NavbarComponent: React.FC<Props> = ({
                 </div>
               ) : null}
 
-              {accessObj?.showSalesDashboard && (
+              {/* ================================================================== */}
+              {/* NEW DASHBOARD */}
+              {/* ================================================================== */}
+              {/* {accessObj?.showSalesDashboard && (
                 <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
                   <a className="navbar__link" href={ROUTE_DASHBOARD.body}>
                     <i className="fas fa-columns"></i>&nbsp;Dashboard
                   </a>
                 </div>
-              )}
+              )} */}
             </div>
             <div className="navbar__right-div">
               {/* only show if user info exist or not a normal user */}

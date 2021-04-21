@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 /* Util */
 import { Dispatch, AnyAction } from 'redux';
 import { IServiceTaskDropdown } from '../TaskPage';
-import { handleKeyDown } from 'src/shared/Utils';
 import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj } from 'src/store/types/auth';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
@@ -135,14 +134,14 @@ const CreateSpecificIntake: React.FC<Props> = ({
       <div className="flex-align-center">
         {userResultArray.map((user) => {
           // let randomColor = Math.floor(Math.random() * 16777215).toString(16);
-          let firstNameChar = user.first_name.length > 0 ? user.first_name.charAt(0) : '';
-          let lastNameChar = user.last_name.length > 0 ? user.last_name.charAt(0) : '';
+          let firstChar = user.username.charAt(0);
+          let secondChar = user.username.charAt(1);
           return (
-            <Tooltip title={`${user.first_name} ${user.last_name}`} key={uuidv4()}>
+            <Tooltip title={`${user.first_name} ${user.last_name ? user.last_name : ''}`} key={uuidv4()}>
               <div className="task__form-user-div" key={uuidv4()}>
                 <div>
-                  <span className="task__form-user-text">{firstNameChar}</span>
-                  <span className="task__form-user-text">{lastNameChar}</span>
+                  <span className="task__form-user-text">{firstChar}</span>
+                  <span className="task__form-user-text">{secondChar}</span>
                 </div>
               </div>
             </Tooltip>
@@ -389,9 +388,6 @@ const CreateSpecificIntake: React.FC<Props> = ({
       <Form
         className="createspecificintake__form"
         form={createIntakeJobsForm}
-        onKeyDown={(e) => {
-          handleKeyDown(e, createIntakeJobsForm);
-        }}
         onFieldsChange={(e) => {
           if (createTaskTableState === null) return;
           let tempTaskTableState = [...createTaskTableState];
@@ -567,7 +563,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                               key={uuidv4()}
                               value={parseInt(user.id.toString())}
                             >
-                              {`${user.first_name} ${user.last_name} - ${user.roles.title}`}
+                              {`${user.first_name} ${user.last_name ? user.last_name : ''} - ${user.roles.title}`}
                             </Option>
                           );
                         })}

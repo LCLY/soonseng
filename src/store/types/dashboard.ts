@@ -606,6 +606,8 @@ export type TReceivedWheelbaseObj = {
 // type
 export type TReceivedMakeWheelbaseObj = {
   id: number;
+  price: number;
+  original: boolean;
   make: TReceivedMakeObj;
   wheelbase: TReceivedWheelbaseObj;
 };

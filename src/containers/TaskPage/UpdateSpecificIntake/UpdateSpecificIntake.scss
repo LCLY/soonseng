@@ -196,17 +196,19 @@
     }
 
     &-right {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+      display: grid;
+      place-items: center;
       font-family: $font-firesans;
       width: 100%;
       min-height: 10rem;
-      max-height: 15rem;
-      overflow-y: auto;
+      max-height: 12.5rem;
       @include customScrollbar();
+      overflow-y: auto;
       &--users {
-        margin: 0.3rem 0.3rem 0.3rem 0;
+        padding: 0.3rem 0.3rem 0.3rem 0;
       }
     }
   }
@@ -234,7 +236,7 @@
         margin-right: 1rem;
         font-family: $font-firesans;
         &:hover {
-          background: rgb(61, 62, 70);
+          background: $form-items-grey;
         }
       }
 
@@ -289,7 +291,7 @@
       height: 2.5rem !important;
       font-size: 1.2rem !important;
       color: white !important;
-      background: rgb(61, 62, 70) !important;
+      background: $form-items-grey !important;
 
       // description but for intake
       &--intakedesc {
@@ -387,6 +389,7 @@
       &--users {
         width: 90% !important;
         max-width: 17rem !important;
+        padding: 1rem 0 !important;
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
         }
@@ -406,7 +409,7 @@
     // general styling for select dropdown
     & .ant-select-selector {
       color: white !important;
-      background: rgb(61, 62, 70) !important;
+      background: $form-items-grey !important;
       height: 100% !important;
     }
     & .ant-select-selection-search-input {
@@ -729,7 +732,7 @@
       // background: $secondary-color-1 !important;
 
       &:hover {
-        background: rgb(61, 62, 70);
+        background: $form-items-grey;
       }
 
       &:active {
@@ -741,4 +744,28 @@
 
 .ant-select-item {
   font-size: 1.2rem !important;
+  color: rgba(255, 255, 255, 0.507) !important;
+}
+
+.ant-select-dropdown {
+  background: $form-items-grey !important;
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled).ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: $soft-red !important;
+  color: white !important;
+  & svg {
+    fill: white !important;
+  }
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  & svg {
+    fill: white !important;
+  }
+  color: white !important;
+  background: $soft-red !important;
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: #6a6a6a87 !important;
+  color: white !important;
 }
