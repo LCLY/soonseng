@@ -402,7 +402,9 @@ export interface ClearMakeWheelbaseAction {
 export interface CreateMakeWheelbaseAction {
   type: typeof actionTypes.CREATE_MAKEWHEELBASE;
   make_id: number;
+  original: boolean;
   wheelbase_id: number;
+  extension_price: number;
 }
 /*  States */
 export interface CreateMakeWheelbaseStartAction {

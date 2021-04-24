@@ -65,7 +65,7 @@ export interface GetCatalogMakesFailedAction {
 
 // catalog body make array contains a main wheelbase object and a body make array
 export type TReceivedCatalogBodyMake = {
-  make_wheelbase: { id: number; wheelbase: TReceivedWheelbaseObj };
+  make_wheelbase: { id: number; original: boolean; price: number; wheelbase: TReceivedWheelbaseObj };
   body_makes: TReceivedBodyMakeObj[];
 };
 

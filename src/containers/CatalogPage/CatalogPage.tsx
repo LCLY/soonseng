@@ -973,7 +973,7 @@ const CatalogPage: React.FC<Props> = ({
                                         <>
                                           {accessObj?.showAdminDashboard && (
                                             <div
-                                              className="catalog__button-series"
+                                              className="catalog__button-series catalog__button-sheen"
                                               onClick={() => {
                                                 // set the brand id in the form
                                                 createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });

@@ -188,7 +188,7 @@ const Make: React.FC<Props> = ({
   // make wheelbase
   makeWheelbasesArray,
   onGetMakeWheelbases,
-  onCreateMakeWheelbase,
+  // onCreateMakeWheelbase,
   onUpdateMakeWheelbase,
   onDeleteMakeWheelbase,
   // image
@@ -850,8 +850,9 @@ const Make: React.FC<Props> = ({
   /* ===================================== */
   // Make Wheelbase
   /* ===================================== */
-  const onCreateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number }) => {
-    onCreateMakeWheelbase(values.makeId, values.wheelbaseId);
+  const onCreateMakeWheelbaseFinish = (_values: { wheelbaseId: number; makeId: number }) => {
+    alert('DISABLED CREATE MAKE WHEELBASE');
+    // onCreateMakeWheelbase(values.makeId, values.wheelbaseId);
   };
   const onUpdateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number; makeWheelbaseId: number }) => {
     onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId);
@@ -2639,7 +2640,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onDeleteSeries: (brand_id, series_id) => dispatch(actions.deleteSeries(brand_id, series_id)),
     // Make wheelbase
     onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
-    onCreateMakeWheelbase: (make_id, wheelbase_id) => dispatch(actions.createMakeWheelbase(make_id, wheelbase_id)),
+    onCreateMakeWheelbase: (make_id, wheelbase_id, original, extension_price) =>
+      dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, original, extension_price)),
     onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id) =>
       dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id)),
     onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>

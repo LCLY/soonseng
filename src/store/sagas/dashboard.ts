@@ -877,9 +877,11 @@ export function* createMakeWheelbaseSaga(action: AppActions) {
 
   let data = {};
   // Type guard, check if the "key" exist in the action object
-  if ('make_id' in action && 'wheelbase_id' in action) {
+  if ('make_id' in action && 'wheelbase_id' in action && 'extension_price' in action && 'original' in action) {
     url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase`;
     data = {
+      original: action.original,
+      price: action.extension_price,
       wheelbase_id: action.wheelbase_id,
     };
   }

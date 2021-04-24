@@ -163,7 +163,7 @@
         transition: none;
       }
       &:hover {
-        background: rgba($primary-color-4, 0.5);
+        background: rgba($primary-color-3, 0.25);
         color: #fff;
         &:before {
           transform: skewX(-45deg) translateX(30rem);
@@ -762,6 +762,7 @@
         cursor: pointer;
         border: 1px solid white;
         padding: 0.5rem 2rem;
+        @include sheenEffect(rgba(255, 255, 255, 0.205));
         // margin-bottom: 1rem;
         &:hover {
           background: rgba(255, 255, 255, 0.323);
@@ -824,6 +825,7 @@
       white-space: nowrap;
       background: rgba(255, 255, 255, 0.233);
       background: linear-gradient(to right, rgba(153, 153, 153, 0.85), rgba(197, 197, 197, 0.124));
+      @include sheenEffect(rgba(255, 255, 255, 0.205));
 
       &:hover {
         transition: all 0.5s ease;
@@ -857,6 +859,10 @@
         padding-bottom: 1.3rem;
         margin: 1rem 0 0 0;
       }
+    }
+
+    &-sheen {
+      @include sheenEffect(rgba(255, 255, 255, 0.205));
     }
 
     /* --------------------- */

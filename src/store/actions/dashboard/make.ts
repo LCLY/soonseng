@@ -524,11 +524,18 @@ export const clearMakeWheelbase = (): AppActions => {
 /* ----------------------------- */
 // Create Make Wheelbase(head)
 /* ----------------------------- */
-export const createMakeWheelbase = (make_id: number, wheelbase_id: number): AppActions => {
+export const createMakeWheelbase = (
+  make_id: number,
+  wheelbase_id: number,
+  original: boolean,
+  extension_price: number,
+): AppActions => {
   return {
     type: actionTypes.CREATE_MAKEWHEELBASE,
     make_id: make_id,
+    original: original,
     wheelbase_id: wheelbase_id,
+    extension_price: extension_price,
   };
 };
 

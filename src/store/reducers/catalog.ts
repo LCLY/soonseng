@@ -56,7 +56,7 @@ const getCatalogMakesFailed = (state: CatalogInitialState, action: AppActions) =
 /* Get Catalog Body Makes
 /* ============================================================================================ */
 const getCatalogBodyMakesStart = (state: CatalogInitialState, _action: AppActions) => {
-  return updateObject(state, { errorMessage: null, loading: true, catalogBodyMakesArray: null });
+  return updateObject(state, { errorMessage: null, loading: true });
 };
 const getCatalogBodyMakesSucceed = (state: CatalogInitialState, action: AppActions) => {
   if ('catalogBodyMakesArray' in action && 'makeFromCatalogBodyMake' in action) {
