@@ -2,7 +2,6 @@ import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import './QuotationPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
-// import Container from 'src/components/CustomContainer/CustomContainer';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
@@ -15,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import html2canvas from 'html2canvas';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
-import { Menu, Dropdown, Modal, Form } from 'antd';
+import { Menu, Dropdown, Modal, Form, Input } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { DownloadOutlined, CaretDownOutlined } from '@ant-design/icons';
 /* Util */
@@ -49,22 +48,31 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   const { width } = useWindowDimensions();
   const [currentBrandObj, setCurrentBrandObj] = useState<TReceivedBrandObj | null>(null);
   const [updateRoadtaxForm] = Form.useForm();
+  const [companyNameForm] = Form.useForm();
   const [newRoadTax, setNewRoadTax] = useState(0);
   const [showRoadtaxModal, setShowRoadtaxModal] = useState(false);
   const [captureRef, setCaptureRef] = useState<{ current: HTMLElement } | null>(null);
+  const [showOptions, setShowOptions] = useState(false);
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   /* ================================================== */
   /*  method */
   /* ================================================== */
-  const captureHandler = () => {
+  const captureHandler = (values: { companyName: string }) => {
     if (captureRef !== null) {
-      html2canvas(captureRef.current).then((_canvas) => {
+      html2canvas(captureRef.current, {
+        allowTaint: false,
+        useCORS: true,
+        logging: true,
+      }).then((_canvas) => {
         let pdf = new jsPDF('p', 'px', 'a4');
         let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
         let srcWidth = captureRef.current.scrollWidth;
 
         let margin = 18; // narrow margin - 1.27 cm (36);
         let scale = (pWidth - margin * 2) / srcWidth;
+
         pdf.html(captureRef.current, {
           x: margin,
           y: 0,
@@ -72,7 +80,12 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
             scale: scale,
           },
           callback: function () {
-            pdf.save('quotation.pdf');
+            let documentName = `${values.companyName} QUOTATION (${moment().format('DD-MM-YYYY')})`;
+            documentName = documentName.toUpperCase();
+            pdf.save(`${documentName}.pdf`);
+            setShowCustomerModal(false);
+            setDownloading(false);
+            companyNameForm.resetFields();
           },
         });
       });
@@ -82,12 +95,43 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   /* ================================================== */
   /*  component */
   /* ================================================== */
+  const CustomerModal = (
+    <Modal
+      title="Add Customer/Company Name"
+      visible={showCustomerModal}
+      okText="Download"
+      onOk={() => companyNameForm.submit()}
+      confirmLoading={downloading}
+      onCancel={() => setShowCustomerModal(false)}
+    >
+      <Form
+        onSubmitCapture={() => setDownloading(true)}
+        form={companyNameForm}
+        onFinish={(values) => captureHandler(values)}
+      >
+        <Form.Item name="companyName">
+          <Input autoFocus placeholder="Type Customer/Company Name here" />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
 
   const QuotationMenu = () => (
     <Menu className="catalog__menu">
-      <Menu.Item className="catalog__menu-item" onClick={() => captureHandler()}>
+      <Menu.Item
+        className="catalog__menu-item"
+        onClick={() => {
+          setShowCustomerModal(true);
+          setShowOptions(false);
+        }}
+      >
         <DownloadOutlined style={{ margin: 0 }} />
         &nbsp;&nbsp;Download as PDF
+      </Menu.Item>
+      <Menu.Item className="catalog__menu-item" onClick={() => alert('EDIT PRICE')}>
+        <i className="fas fa-tags" style={{ margin: 0 }}></i>
+        {/* <DownloadOutlined style={{ margin: 0 }} /> */}
+        &nbsp;&nbsp;Edit Price
       </Menu.Item>
       <Menu.Item className="catalog__menu-item" onClick={() => setShowRoadtaxModal(true)}>
         <i className="fas fa-edit" />
@@ -121,7 +165,12 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
               <div className={`${hidden}quotation__top-div`}>
                 <div>
                   {leftImageUrl !== '' && (
-                    <img alt="leftlogo" className={`${hidden}quotation__logo`} src={leftImageUrl} />
+                    <img
+                      alt="leftlogo"
+                      className={`${hidden}quotation__logo`}
+                      src={leftImageUrl}
+                      crossOrigin="anonymous"
+                    />
                   )}
                 </div>
                 <div>
@@ -143,7 +192,12 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                 </div>
                 <div>
                   {rightImageUrl !== '' && (
-                    <img alt="rightlogo" className={`${hidden}quotation__logo`} src={rightImageUrl} />
+                    <img
+                      alt="rightlogo"
+                      className={`${hidden}quotation__logo`}
+                      src={rightImageUrl}
+                      crossOrigin="anonymous"
+                    />
                   )}
                 </div>
               </div>
@@ -182,7 +236,10 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                     <div>
                       <div>
                         Year :&nbsp;
-                        {bodyMakeObj.make_wheelbase.make.year && bodyMakeObj.make_wheelbase.make.year !== '' ? (
+                        {bodyMakeObj.make_wheelbase.make.year &&
+                        bodyMakeObj.make_wheelbase.make.year !== '' &&
+                        bodyMakeObj.make_wheelbase.make.year !== undefined &&
+                        bodyMakeObj.make_wheelbase.make.year.toLowerCase() !== 'Invalid Date'.toLowerCase() ? (
                           bodyMakeObj.make_wheelbase.make.year
                         ) : (
                           <span className="margin_l-1"> - </span>
@@ -230,9 +287,25 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                                   : /* else check if year is equal to current, show "NEW MODEL YEAR CURRENTYEAR - model name"*/
                                   parseInt(bodyMakeObj.make_wheelbase.make.year) ===
                                     parseInt(moment().format('YYYY').toString())
-                                  ? `NEW MODEL YEAR ${bodyMakeObj.make_wheelbase.make.year} - ${bodyMakeObj.make_wheelbase.make.title}`
+                                  ? `NEW MODEL YEAR ${
+                                      bodyMakeObj.make_wheelbase.make.year &&
+                                      bodyMakeObj.make_wheelbase.make.year !== '' &&
+                                      bodyMakeObj.make_wheelbase.make.year !== undefined &&
+                                      bodyMakeObj.make_wheelbase.make.year.toLowerCase() !==
+                                        'Invalid date'.toLowerCase()
+                                        ? bodyMakeObj.make_wheelbase.make.year
+                                        : ''
+                                    } - ${bodyMakeObj.make_wheelbase.make.title}`
                                   : /* else show MODEL YEAR - model name */
-                                    `MODEL ${bodyMakeObj.make_wheelbase.make.year} ${bodyMakeObj.make_wheelbase.make.title}`}
+                                    `MODEL ${
+                                      bodyMakeObj.make_wheelbase.make.year &&
+                                      bodyMakeObj.make_wheelbase.make.year !== '' &&
+                                      bodyMakeObj.make_wheelbase.make.year !== undefined &&
+                                      bodyMakeObj.make_wheelbase.make.year.toLowerCase() !==
+                                        'Invalid date'.toLowerCase()
+                                        ? bodyMakeObj.make_wheelbase.make.year
+                                        : ''
+                                    } ${bodyMakeObj.make_wheelbase.make.title}`}
                               </>
                             </span>
                           </div>
@@ -264,6 +337,24 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                                   displayType={'text'}
                                   thousandSeparator={true}
                                   value={bodyMakeObj.price.toFixed(2)}
+                                />
+                              ) : (
+                                <span className="sales__overview-dash">-</span>
+                              )}
+                            </>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div className={`${hidden}quotation__orderedlist-row`}>
+                          <div>UBS Extension Price</div>
+                          <div>
+                            <>
+                              {bodyMakeObj.price && bodyMakeObj.price !== 0 ? (
+                                <NumberFormat
+                                  displayType={'text'}
+                                  thousandSeparator={true}
+                                  value={bodyMakeObj.make_wheelbase.price.toFixed(2)}
                                 />
                               ) : (
                                 <span className="sales__overview-dash">-</span>
@@ -677,6 +768,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
   return (
     <>
       {/* Modal */}
+      {CustomerModal}
       <Modal
         centered
         title="Edit Road Tax"
@@ -712,7 +804,12 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
         {/* <Container> */}
         <div className="quotation__section-outerdiv">
           <div className="quotation__button-div">
-            <Dropdown overlay={<QuotationMenu />} trigger={['click']}>
+            <Dropdown
+              visible={showOptions}
+              overlay={<QuotationMenu />}
+              onVisibleChange={(e) => setShowOptions(e)}
+              trigger={['click']}
+            >
               <div className="quotation__button">
                 More Options <CaretDownOutlined />
               </div>
@@ -725,7 +822,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
               <QuotationComponent hidden="hidden" />
             </>
           ) : (
-            <div className="catalog__loading-div">
+            <div className="quotation__loader-div">
               <Ripple />
             </div>
           )}

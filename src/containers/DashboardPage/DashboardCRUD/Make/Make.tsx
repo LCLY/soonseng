@@ -189,7 +189,7 @@ const Make: React.FC<Props> = ({
   makeWheelbasesArray,
   onGetMakeWheelbases,
   // onCreateMakeWheelbase,
-  onUpdateMakeWheelbase,
+  // onUpdateMakeWheelbase,
   onDeleteMakeWheelbase,
   // image
   imagesUploaded,
@@ -854,9 +854,9 @@ const Make: React.FC<Props> = ({
     alert('DISABLED CREATE MAKE WHEELBASE');
     // onCreateMakeWheelbase(values.makeId, values.wheelbaseId);
   };
-  const onUpdateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number; makeWheelbaseId: number }) => {
-    onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId);
-  };
+  // const onUpdateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number; makeWheelbaseId: number }) => {
+  //   onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId);
+  // };
 
   /**
    * For user to be able to press enter and submit the form
@@ -1733,57 +1733,57 @@ const Make: React.FC<Props> = ({
   );
 
   /* Update MakeWheelbase Form */
-  let updateMakeWheelbaseFormComponent = (
-    <>
-      <Form
-        form={updateMakeWheelbaseForm}
-        // name="updateMakeWheelbase"
-        onKeyDown={(e) => handleKeyDown(e, updateMakeWheelbaseForm)}
-        onFinish={onUpdateMakeWheelbaseFinish}
-      >
-        {/* The rest of the form items */}
-        {makeWheelbaseFormItems}
-        {/* Id for update */}
-        <Form.Item
-          hidden
-          label="makeWheelbaseId"
-          name="makeWheelbaseId"
-          rules={[{ required: true, message: 'Assign makewheelbase id!' }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
-    </>
-  );
+  // let updateMakeWheelbaseFormComponent = (
+  //   <>
+  //     <Form
+  //       form={updateMakeWheelbaseForm}
+  //       // name="updateMakeWheelbase"
+  //       onKeyDown={(e) => handleKeyDown(e, updateMakeWheelbaseForm)}
+  //       onFinish={onUpdateMakeWheelbaseFinish}
+  //     >
+  //       {/* The rest of the form items */}
+  //       {makeWheelbaseFormItems}
+  //       {/* Id for update */}
+  //       <Form.Item
+  //         hidden
+  //         label="makeWheelbaseId"
+  //         name="makeWheelbaseId"
+  //         rules={[{ required: true, message: 'Assign makewheelbase id!' }]}
+  //       >
+  //         <Input />
+  //       </Form.Item>
+  //     </Form>
+  //   </>
+  // );
 
   /* Edit MakeWheelbase Modal */
-  let updateMakeWheelbaseModal = (
-    <Modal
-      centered
-      title={
-        <>
-          Edit Configuration
-          {selectedMake ? (
-            <>
-              &nbsp;for
-              <span className="make__modal-title--card">{` ${selectedMake.makeBrandTitle} - ${selectedMake.makeTitle}`}</span>
-            </>
-          ) : (
-            ''
-          )}
-        </>
-      }
-      visible={showUpdateModal.make_wheelbase}
-      onOk={updateMakeWheelbaseForm.submit}
-      confirmLoading={loading}
-      onCancel={() => {
-        setShowUpdateModal({ ...showUpdateModal, make_wheelbase: false });
-      }}
-    >
-      {/* the content within the modal */}
-      {updateMakeWheelbaseFormComponent}
-    </Modal>
-  );
+  // let updateMakeWheelbaseModal = (
+  //   <Modal
+  //     centered
+  //     title={
+  //       <>
+  //         Edit Configuration
+  //         {selectedMake ? (
+  //           <>
+  //             &nbsp;for
+  //             <span className="make__modal-title--card">{` ${selectedMake.makeBrandTitle} - ${selectedMake.makeTitle}`}</span>
+  //           </>
+  //         ) : (
+  //           ''
+  //         )}
+  //       </>
+  //     }
+  //     visible={showUpdateModal.make_wheelbase}
+  //     onOk={updateMakeWheelbaseForm.submit}
+  //     confirmLoading={loading}
+  //     onCancel={() => {
+  //       setShowUpdateModal({ ...showUpdateModal, make_wheelbase: false });
+  //     }}
+  //   >
+  //     {/* the content within the modal */}
+  //     {updateMakeWheelbaseFormComponent}
+  //   </Modal>
+  // );
   /* =================================== */
   /* Make wheelbase expanded component*/
   /* =================================== */
@@ -2403,7 +2403,7 @@ const Make: React.FC<Props> = ({
       {createSeriesModal}
       {updateSeriesModal}
       {createMakeWheelbaseModal}
-      {updateMakeWheelbaseModal}
+      {/* {updateMakeWheelbaseModal} */}
       {deleteMakeWheelbaseModal}
       {deleteWheelbaseModal}
       {deleteBrandModal}
@@ -2642,8 +2642,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
     onCreateMakeWheelbase: (make_id, wheelbase_id, original, extension_price) =>
       dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, original, extension_price)),
-    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id) =>
-      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id)),
+    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id, original, extension_price) =>
+      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id, original, extension_price)),
     onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>
       dispatch(actions.deleteMakeWheelbase(make_id, make_wheelbase_id)),
     // Image

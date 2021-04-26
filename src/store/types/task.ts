@@ -9,6 +9,7 @@ export interface TaskInitialState {
   readonly errorMessage?: string | null;
   readonly successMessage?: string | null;
   // readonly taskObj?: TReceivedTaskObj | null;
+  readonly specificIntakeLogs?: IIntakeLogs[] | null;
   readonly tasksArray?: IReceivedIntakeJobsObj[] | null;
   readonly usersByRolesArray?: TReceivedUserInfoObj[] | null;
   readonly intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
@@ -127,9 +128,15 @@ export interface IJobFormData {
   service_task_id: number;
   description: string;
 }
+export interface ILogsFormData {
+  title: string;
+  description: string;
+  user_id: number;
+}
 export interface IIntakeJobsFormData {
   intake: IIntakeSummaryFormData;
   jobs: IJobFormData[];
+  logs: ILogsFormData;
 }
 
 export interface IIntakeUser {
@@ -139,7 +146,7 @@ export interface IIntakeUser {
     email: string;
     first_name: string;
     last_name: string;
-    title: string;
+    role: string;
   };
   intake: {
     id: number;
@@ -242,6 +249,14 @@ export interface DeleteIntakeSummaryFailedAction {
 /* ====================================================================== */
 // Specific Intake
 /* ====================================================================== */
+
+export interface IIntakeLogs {
+  intake: string;
+  created_by: string;
+  title: string;
+  description: string;
+}
+
 export type TReceivedSpecificIntakeJobsObj = {
   created_at: string;
   updated_at: string;
@@ -250,9 +265,10 @@ export type TReceivedSpecificIntakeJobsObj = {
   pick_up: boolean;
   registration: string;
   description: string;
-  intake_status: TReceivedIntakeStatusObj;
+  intake_logs: IIntakeLogs[];
   intake_users: IIntakeUser[];
   jobs: IReceivedIntakeJobsObj[];
+  intake_status: TReceivedIntakeStatusObj;
 };
 
 // Assigned Mechanics/Others
@@ -319,6 +335,14 @@ export interface UpdateSpecificIntakeJobsSucceedAction {
 export interface UpdateSpecificIntakeJobsFailedAction {
   type: typeof actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_FAILED;
   errorMessage: string;
+}
+
+/* --------------------------------------------- */
+// Set Specific Intake Logs
+/* --------------------------------------------- */
+export interface SetSpecificIntakeLogsAction {
+  type: typeof actionTypes.SET_SPECIFIC_INTAKE_LOGS;
+  specificIntakeLogs: IIntakeLogs[] | null;
 }
 
 /* ============================================================== */
@@ -404,6 +428,7 @@ export type TaskActionTypes =
   | UpdateSpecificIntakeJobsStartAction
   | UpdateSpecificIntakeJobsSucceedAction
   | UpdateSpecificIntakeJobsFailedAction
+  | SetSpecificIntakeLogsAction
   /* -------------------- */
   // Get users by roles
   /* -------------------- */

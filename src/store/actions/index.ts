@@ -474,6 +474,7 @@ export {
   updateSpecificIntakeJobsFailed,
   updateSpecificIntakeJobsStart,
   updateSpecificIntakeJobsSucceed,
+  setSpecificIntakeLogs,
   /* ==================== */
   // Get users by roles
   /* ==================== */

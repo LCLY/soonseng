@@ -2,6 +2,7 @@ import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
 import {
   IIntakeJobsFormData,
+  IIntakeLogs,
   IReceivedIntakeJobsObj,
   TReceivedIntakeSummaryObj,
   TReceivedSpecificIntakeJobsObj,
@@ -360,5 +361,15 @@ export const getUsersByRolesFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.GET_USERS_BY_ROLES_FAILED,
     errorMessage: errorMessage,
+  };
+};
+
+/* ============================================================================================ */
+//  Set Specific Intake Logs - for the specific intake's logs on task page
+/* ============================================================================================ */
+export const setSpecificIntakeLogs = (specificIntakeLogs: IIntakeLogs[]): AppActions => {
+  return {
+    type: actionTypes.SET_SPECIFIC_INTAKE_LOGS,
+    specificIntakeLogs: specificIntakeLogs,
   };
 };

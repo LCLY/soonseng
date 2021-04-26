@@ -629,6 +629,8 @@ export const UPDATE_SPECIFIC_INTAKE_JOBS_START = 'UPDATE_SPECIFIC_INTAKE_JOBS_ST
 export const UPDATE_SPECIFIC_INTAKE_JOBS_SUCCEED = 'UPDATE_SPECIFIC_INTAKE_JOBS_SUCCEED';
 export const UPDATE_SPECIFIC_INTAKE_JOBS_FAILED = 'UPDATE_SPECIFIC_INTAKE_JOBS_FAILED';
 
+export const SET_SPECIFIC_INTAKE_LOGS = 'SET_SPECIFIC_INTAKE_LOGS';
+
 /* -------------------------------------------------- */
 // Users
 /* -------------------------------------------------- */

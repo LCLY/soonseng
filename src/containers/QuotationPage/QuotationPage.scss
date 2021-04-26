@@ -685,6 +685,26 @@
       // font-family: $font-firesans;
     }
   }
+
+  &__loader {
+    &-div {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      @include respond-to($small-phone) {
+        height: 80vh;
+      }
+      @include respond-to($phone-only) {
+        height: 80vh;
+      }
+      @include respond-to($tablet-portrait-up) {
+        height: 80vh;
+      }
+      @include respond-to($tablet-landscape-up) {
+        height: 100vh;
+      }
+    }
+  }
 }
 
 /* ============================================================================================== */

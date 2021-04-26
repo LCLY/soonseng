@@ -116,6 +116,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   onCreateMakeWheelbase,
   onDeleteMakeWheelbase,
   onGetBodyAccessories,
+  onUpdateMakeWheelbase,
   onClearDashboardState,
   onGetCatalogBodyMakes,
   onGetBodyMakeAccessories,
@@ -159,6 +160,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [createBodyMakeForm] = Form.useForm();
   const [updateBodyMakeForm] = Form.useForm();
   const [createMakeWheelbaseForm] = Form.useForm();
+  const [updateMakeWheelbaseForm] = Form.useForm();
 
   const [isExtended, setIsExtended] = useState(false); //isExtended === !original
 
@@ -174,6 +176,7 @@ const CatalogBodyMake: React.FC<Props> = ({
     make: false,
     accessory: false,
     body_make: false,
+    make_wheelbase: false,
     body_make_accessory: false,
   });
   const [showDeleteModal, setShowDeleteModal] = useState<ICrudModal>({
@@ -372,6 +375,22 @@ const CatalogBodyMake: React.FC<Props> = ({
   }) => {
     // since make wheelbase needs original, extended is the opposite of extended so we needa flip the boolean value
     onCreateMakeWheelbase(
+      values.makeId,
+      values.wheelbaseId,
+      !values.extended,
+      convertPriceToFloat(values.extensionPrice),
+    );
+  };
+  const onUpdateMakeWheelbaseFinish = (values: {
+    makeWheelbaseId: number;
+    wheelbaseId: number;
+    makeId: number;
+    extensionPrice: string;
+    extended: boolean;
+  }) => {
+    // since make wheelbase needs original, extended is the opposite of extended so we needa flip the boolean value
+    onUpdateMakeWheelbase(
+      values.makeWheelbaseId,
       values.makeId,
       values.wheelbaseId,
       !values.extended,
@@ -669,7 +688,7 @@ const CatalogBodyMake: React.FC<Props> = ({
         wheelbaseBodyMake.make_wheelbase.price !== null && (
           <div className="catalogbodymake__extended">
             <i className="fas fa-tags"></i>
-            Extended price:
+            UBS (Wheelbase Extension):
             <div className="catalogbodymake__extended-price">
               RM
               <NumberFormat
@@ -873,10 +892,102 @@ const CatalogBodyMake: React.FC<Props> = ({
             )}
           </div>
         ) : (
-          <div className="catalogbodymake__empty-bodymake">
-            <Empty />
-          </div>
+          <>
+            {accessObj?.showAdminDashboard ? (
+              <>
+                <div className="catalogbodymake__grid">
+                  {accessObj?.showAdminDashboard && (
+                    // <Tooltip title={`Add Body for ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm configuration`}>
+                    <div
+                      className="catalogbodymake__button-body--grid"
+                      onClick={() => {
+                        setModalContent({
+                          ...modalContent,
+                          body_make: { makeWheelbaseTitle: wheelbaseBodyMake.make_wheelbase.wheelbase.title },
+                        });
+                        if (makeObj !== undefined) {
+                          createBodyMakeForm.setFieldsValue({
+                            makeId: makeObj.id,
+                            makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+                          });
+                        }
+                        // show the modal
+                        setShowCreateModal({ ...showCreateModal, body_make: true });
+                      }}
+                    >
+                      <div className="flex-align-center">
+                        <PlusCircleOutlined className="catalogbodymake__button-body-icon" />
+                        <span className="catalogbodymake__button-body-text">&nbsp;&nbsp;Add Body</span>
+                      </div>
+                    </div>
+                    // </Tooltip>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="catalogbodymake__empty-bodymake">
+                <Empty /> hello bitch
+              </div>
+            )}
+          </>
         )}
+      </div>
+    </>
+  );
+
+  const MakeWheelbaseMenu = ({
+    catalogMake,
+    wheelbaseBodyMake,
+  }: {
+    catalogMake: TReceivedMakeObj;
+    wheelbaseBodyMake: TReceivedCatalogBodyMake;
+  }) => (
+    <>
+      <div className="catalog__menu-outerdiv">
+        <Menu className="catalog__menu">
+          <Menu.Item
+            className="catalog__menu-item"
+            onClick={() => {
+              setShowUpdateModal({ ...showUpdateModal, make_wheelbase: true });
+              setIsExtended(!wheelbaseBodyMake.make_wheelbase.original);
+              updateMakeWheelbaseForm.setFieldsValue({
+                wheelbaseId: wheelbaseBodyMake.make_wheelbase.wheelbase.id,
+                extensionPrice: wheelbaseBodyMake.make_wheelbase.price,
+                extended: !wheelbaseBodyMake.make_wheelbase.original,
+                makeId: catalogMake.id,
+                makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+              });
+            }}
+          >
+            <i className="fas fa-edit" />
+            &nbsp;&nbsp;Edit Configuration
+          </Menu.Item>
+
+          <Menu.Item
+            danger
+            className="catalog__menu-item--danger"
+            onClick={() => {
+              setDeleteModalContent({
+                ...deleteModalContent,
+                make_wheelbase: {
+                  makeId: catalogMake.id,
+                  makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
+                  text: {
+                    wheelbase: wheelbaseBodyMake.make_wheelbase.wheelbase.title,
+                    series: catalogMake.series,
+                    bodyMakesLength: wheelbaseBodyMake.body_makes.length.toString(),
+                  },
+                  warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
+                  backupWarningText: `this configuration from ${catalogMake.series}`,
+                },
+              });
+              setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
+            }}
+          >
+            <i className="fas fa-trash-alt" />
+            &nbsp;&nbsp;Delete Configuration
+          </Menu.Item>
+        </Menu>
       </div>
     </>
   );
@@ -976,7 +1087,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   let makeWheelbaseFormItems = (
     <>
       <Form.Item
-        className="make__form-item "
+        className="make__form-item"
         label="Wheelbase"
         name="wheelbaseId"
         rules={[{ required: true, message: 'Select wheelbase!' }]}
@@ -990,13 +1101,21 @@ const CatalogBodyMake: React.FC<Props> = ({
           }
         >
           {wheelbasesArray &&
-            wheelbasesArray.map((wheelbase) => {
-              return (
-                <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
-                  {wheelbase.title + 'mm'}
-                </Option>
-              );
-            })}
+            bodyMakeWithWheelbaseArray &&
+            bodyMakeWithWheelbaseArray !== undefined &&
+            wheelbasesArray
+              .filter((mainArrayChild) =>
+                bodyMakeWithWheelbaseArray.every(
+                  (filterArrayChild) => filterArrayChild.make_wheelbase.wheelbase.id !== mainArrayChild.id,
+                ),
+              )
+              .map((wheelbase) => {
+                return (
+                  <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
+                    {wheelbase.title + 'mm'}
+                  </Option>
+                );
+              })}
         </Select>
       </Form.Item>
       {isExtended && (
@@ -1041,11 +1160,43 @@ const CatalogBodyMake: React.FC<Props> = ({
     >
       <Form
         form={createMakeWheelbaseForm}
-        // name="createMakeWheelbase"
         onKeyDown={(e) => handleKeyDown(e, createMakeWheelbaseForm)}
         onFinish={onCreateMakeWheelbaseFinish}
       >
         {makeWheelbaseFormItems}
+      </Form>
+    </Modal>
+  );
+  let updateMakeWheelbaseModal = (
+    <Modal
+      title={
+        <>
+          Update Configuration
+          <>
+            &nbsp;for
+            <span className="make__modal-title--card">{` ${modalContent.make_wheelbase.seriesTitle}`}</span>
+          </>
+        </>
+      }
+      centered
+      visible={showUpdateModal.make_wheelbase}
+      onOk={updateMakeWheelbaseForm.submit}
+      confirmLoading={dashboardLoading !== undefined && dashboardLoading}
+      onCancel={() => {
+        setIsExtended(false);
+        setShowUpdateModal({ ...showUpdateModal, make_wheelbase: false });
+        updateMakeWheelbaseForm.resetFields();
+      }}
+    >
+      <Form
+        form={updateMakeWheelbaseForm}
+        onKeyDown={(e) => handleKeyDown(e, updateMakeWheelbaseForm)}
+        onFinish={onUpdateMakeWheelbaseFinish}
+      >
+        {makeWheelbaseFormItems}
+        <Form.Item hidden name="makeWheelbaseId" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
       </Form>
     </Modal>
   );
@@ -1178,6 +1329,7 @@ const CatalogBodyMake: React.FC<Props> = ({
       if (successMessage === 'Make Wheelbase deleted') {
         setActiveConfigurationTab('wheelbase1');
       }
+      setIsExtended(false);
 
       // close all the modals if successful
       setShowCreateModal({
@@ -1267,6 +1419,7 @@ const CatalogBodyMake: React.FC<Props> = ({
       {/* ====================================== */}
       {/* Make Wheelbase */}
       {createMakeWheelbaseModal}
+      {updateMakeWheelbaseModal}
       {/* -------------------------------- */}
       {/* Model/Make */}
       {/* -------------------------------- */}
@@ -1736,42 +1889,36 @@ const CatalogBodyMake: React.FC<Props> = ({
                               ),
                             }}
                           >
-                            {bodyMakeWithWheelbaseArray.map((wheelbaseBodyMake, index) => (
+                            {bodyMakeWithWheelbaseArray.map((wheelbaseBodyMake: TReceivedCatalogBodyMake, index) => (
                               <TabPane
                                 tab={
                                   <div className="catalog__tabs-title">
-                                    <span>
+                                    <span style={{ display: 'inline-block' }}>
                                       {wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm
                                       {wheelbaseBodyMake.make_wheelbase.original === true ? '' : ' (Extended)'}
                                     </span>
-                                    {accessObj?.showAdminDashboard && (
-                                      <Tooltip
-                                        title={`Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series}`}
-                                      >
-                                        <div
-                                          className="catalogbodymake__dropdown-more"
-                                          onClick={() => {
-                                            setDeleteModalContent({
-                                              ...deleteModalContent,
-                                              make_wheelbase: {
-                                                makeId: catalogMake.id,
-                                                makeWheelbaseId: wheelbaseBodyMake.make_wheelbase.id,
-                                                text: {
-                                                  wheelbase: wheelbaseBodyMake.make_wheelbase.wheelbase.title,
-                                                  series: catalogMake.series,
-                                                  bodyMakesLength: wheelbaseBodyMake.body_makes.length.toString(),
-                                                },
-                                                warningText: `${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm from ${catalogMake.series} along with other ${wheelbaseBodyMake.body_makes.length} bodies`,
-                                                backupWarningText: `this configuration from ${catalogMake.series}`,
-                                              },
-                                            });
-                                            setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
-                                          }}
-                                        >
-                                          <i className="fas fa-trash-alt"></i>
+                                    <>
+                                      {accessObj?.showAdminDashboard && (
+                                        <div style={{ marginLeft: '1.8rem' }}>
+                                          <Tooltip
+                                            title={`Edit / Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm`}
+                                          >
+                                            <Dropdown
+                                              className="catalogbodymake__dropdown-more catalogbodymake__dropdown-more--make"
+                                              overlay={
+                                                <MakeWheelbaseMenu
+                                                  catalogMake={catalogMake}
+                                                  wheelbaseBodyMake={wheelbaseBodyMake}
+                                                />
+                                              }
+                                              trigger={['click']}
+                                            >
+                                              <i className="fas fa-ellipsis-h"></i>
+                                            </Dropdown>
+                                          </Tooltip>
                                         </div>
-                                      </Tooltip>
-                                    )}
+                                      )}
+                                    </>
                                   </div>
                                 }
                                 key={`wheelbase${index + 1}`}
@@ -1945,6 +2092,7 @@ interface DispatchProps {
   onGetCatalogBodyMakes: typeof actions.getCatalogBodyMakes;
   onGetSalesAccessories: typeof actions.getSalesAccessories;
   onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
+  onUpdateMakeWheelbase: typeof actions.updateMakeWheelbase;
   onDeleteMakeWheelbase: typeof actions.deleteMakeWheelbase;
   onClearDashboardState: typeof actions.clearDashboardState;
   onGetBodyAccessories: typeof actions.getBodyAccessories;
@@ -1977,6 +2125,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onCreateMakeWheelbase: (make_id, wheelbase_id, original, extension_price) =>
       dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, original, extension_price)),
+    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id, original, extension_price) =>
+      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id, original, extension_price)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CatalogBodyMake));

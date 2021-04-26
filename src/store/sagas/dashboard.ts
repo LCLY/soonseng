@@ -901,18 +901,24 @@ export function* createMakeWheelbaseSaga(action: AppActions) {
 //    Update Make Wheelbase
 /* ------------------------------- */
 export function* updateMakeWheelbaseSaga(action: AppActions) {
+  if (
+    !('make_id' in action) ||
+    !('make_wheelbase_id' in action) ||
+    !('wheelbase_id' in action) ||
+    !('extension_price' in action) ||
+    !('original' in action)
+  )
+    return;
   yield put(actions.updateMakeWheelbaseStart());
-
-  let url = '';
 
   let data = {};
   // Type guard, check if the "key" exist in the action object
-  if ('make_wheelbase_id' in action && 'make_id' in action && 'wheelbase_id' in action) {
-    url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase/${action.make_wheelbase_id}`;
-    data = {
-      wheelbase_id: action.wheelbase_id,
-    };
-  }
+  let url = process.env.REACT_APP_API + `/head/makes/${action.make_id}/make_wheelbase/${action.make_wheelbase_id}`;
+  data = {
+    original: action.original,
+    price: action.extension_price,
+    wheelbase_id: action.wheelbase_id,
+  };
 
   try {
     let response = yield axios.put(url, data);

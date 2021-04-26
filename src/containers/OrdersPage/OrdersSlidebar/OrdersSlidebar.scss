@@ -558,7 +558,16 @@
         &-div {
           z-index: 2;
           cursor: pointer;
-          border: 1px solid white;
+          // border: 1px solid black;
+          @include shadow-func(0.15rem, 0.15rem, 0.3rem, 0.05rem, rgba(34, 34, 34, 0.25));
+          // @include shadow-func(0px, 0px 50px, 50px, rgb(0, 0, 0));
+          background: white;
+          color: $soft-red;
+          width: 2rem;
+          height: 2rem;
+          border-radius: 50%;
+          display: grid;
+          place-items: center;
 
           margin-left: 1rem;
           @include respond-to($small-phone) {
@@ -573,11 +582,21 @@
 
           &:hover {
             transition: all 0.5s ease;
-            color: $primary-color-1;
+            color: white;
+            background: $soft-red;
+            @include shadow-func(0.15rem, 0.15rem, 0.5rem, 0.1rem, rgba(34, 34, 34, 0.4));
+
             & .sales__overview-more-icon {
               transition: all 0.5s ease;
               color: white;
             }
+          }
+
+          &:active {
+            transition: none;
+            background: white;
+            color: $soft-red;
+            @include shadow-func(0.15rem, 0.15rem, 0.3rem, 0.05rem, rgba(34, 34, 34, 0.25));
           }
         }
       }

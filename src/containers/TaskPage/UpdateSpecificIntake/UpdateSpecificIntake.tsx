@@ -22,6 +22,7 @@ import {
   TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
+import { emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
 const { Option } = Select;
 
@@ -57,6 +58,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   loading,
   auth_token,
   inEditMode,
+  userInfoObj,
   setCurrentPage,
   setInEditMode,
   onGetServiceTypes,
@@ -71,6 +73,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   onDeleteIntakeSummary,
   onUpdateIntakeSummary,
   setBeforeDeleteState,
+  onSetSpecificIntakeLogs,
 }) => {
   /* ================================================== */
   /*  state */
@@ -127,7 +130,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     assign: number[];
     intakeId: string;
     intakeStatus: number;
+    intakeUpdateDescription: string;
   }) => {
+    if (userInfoObj === null || userInfoObj === undefined) return;
     let resultJobs: IJobFormData[] = [];
 
     (updateTaskTableState as any).forEach((task: any, index: number) => {
@@ -149,6 +154,13 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         assigned_to_ids: values.assign,
       },
       jobs: resultJobs,
+      logs: {
+        title: `Intake updated at ${moment().format('DD/MM/YYYY HH:mm')} by ${
+          userInfoObj.first_name
+        } ${emptyStringWhenUndefinedOrNull(userInfoObj.last_name)}`,
+        description: values.intakeUpdateDescription,
+        user_id: userInfoObj.id,
+      },
     };
     onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
   };
@@ -429,9 +441,10 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   }, [auth_token, setInEditMode]);
 
   useEffect(() => {
-    if (specificIntakeJobsObj === undefined) return;
+    if (specificIntakeJobsObj === undefined || specificIntakeJobsObj === null) return;
     setCurrentSpecificIntakeJobsObj(specificIntakeJobsObj);
-  }, [specificIntakeJobsObj]);
+    onSetSpecificIntakeLogs(specificIntakeJobsObj.intake_logs);
+  }, [specificIntakeJobsObj, onSetSpecificIntakeLogs]);
 
   useEffect(() => {
     if (currentSpecificIntakeJobsObj && specificIntakeJobsObj) {
@@ -514,6 +527,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   useEffect(() => {
     if (incomingSpecificIntakeData) {
       setCurrentSpecificIntakeJobsObj(incomingSpecificIntakeData);
+      onSetSpecificIntakeLogs(incomingSpecificIntakeData.intake_logs);
 
       // if user is an admin that has clicked update, then swap the screen back
       if (clickedUpdate) {
@@ -522,7 +536,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
       }
       setIncomingSpecificIntakeData(null);
     }
-  }, [goBackToIntakes, clickedUpdate, incomingSpecificIntakeData]);
+  }, [goBackToIntakes, onSetSpecificIntakeLogs, clickedUpdate, incomingSpecificIntakeData]);
 
   useEffect(() => {
     if (specificIntakeJobsObj === undefined || specificIntakeJobsObj === null) return;
@@ -534,6 +548,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
           if (res.action === 'destroy') {
             goBackToIntakes();
           } else {
+            updateIntakeJobsForm.setFieldsValue({ intakeUpdateDescription: '' });
             setIncomingSpecificIntakeData(res.data);
           }
         },
@@ -541,7 +556,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     );
 
     cableRef.current = channel;
-  }, [cableRef, goBackToIntakes, specificIntakeJobsObj, cableApp.cable.subscriptions]);
+  }, [cableRef, updateIntakeJobsForm, goBackToIntakes, specificIntakeJobsObj, cableApp.cable.subscriptions]);
 
   /* ================================================== */
   /* ================================================== */
@@ -924,16 +939,34 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               {inEditMode && (
                 <>
                   <div className="updatespecificintake__button-div-bottom">
-                    <Button
-                      loading={loading !== undefined && loading}
-                      className="updatespecificintake__button-task updatespecificintake__button-task--save"
-                      onClick={() => {
+                    <Popconfirm
+                      placement="topRight"
+                      title={
+                        <>
+                          <div>Additional Update Note</div>
+                          <Form.Item
+                            className="updatespecificintake__form-item make__form-item"
+                            name="intakeUpdateDescription"
+                            rules={[{ required: false }]}
+                          >
+                            <Input placeholder="Type note here" />
+                          </Form.Item>
+                        </>
+                      }
+                      onConfirm={() => {
                         updateIntakeJobsForm.submit();
                         setClickedUpdate(true);
                       }}
+                      okText="Continue"
+                      cancelText="Cancel"
                     >
-                      Update
-                    </Button>
+                      <Button
+                        loading={loading !== undefined && loading}
+                        className="updatespecificintake__button-task updatespecificintake__button-task--save"
+                      >
+                        Update
+                      </Button>
+                    </Popconfirm>
                   </div>
                 </>
               )}
@@ -956,16 +989,18 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
 interface StateProps {
   loading?: boolean;
+  auth_token?: string | null;
+  userInfoObj?: TReceivedUserInfoObj | null;
   specificIntakeJobsObj?: TReceivedSpecificIntakeJobsObj | null;
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   usersByRolesArray?: TReceivedUserInfoObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
-  auth_token?: string | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.task.loading,
     auth_token: state.auth.auth_token,
+    userInfoObj: state.auth.userInfoObj,
     specificIntakeJobsObj: state.task.specificIntakeJobsObj,
     intakeStatusArray: state.dashboard.intakeStatusArray,
     usersByRolesArray: state.task.usersByRolesArray,
@@ -974,21 +1009,21 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 };
 
 interface DispatchProps {
-  // onDeleteTask: typeof actions.deleteTask;
   onClearTaskState: typeof actions.clearTaskState;
   onGetServiceTypes: typeof actions.getServiceTypes;
   onDeleteIntakeSummary: typeof actions.deleteIntakeSummary;
   onUpdateIntakeSummary: typeof actions.updateIntakeSummary;
+  onSetSpecificIntakeLogs: typeof actions.setSpecificIntakeLogs;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onGetServiceTypes: () => dispatch(actions.getServiceTypes()),
     onClearTaskState: () => dispatch(actions.clearTaskState()),
-    // onDeleteTask: (intake_id, task_id) => dispatch(actions.deleteTask(intake_id, task_id)),
     onDeleteIntakeSummary: (intake_id) => dispatch(actions.deleteIntakeSummary(intake_id)),
     onUpdateIntakeSummary: (intake_id, intakeJobsFormData) =>
       dispatch(actions.updateIntakeSummary(intake_id, intakeJobsFormData)),
+    onSetSpecificIntakeLogs: (specificIntakeLogs) => dispatch(actions.setSpecificIntakeLogs(specificIntakeLogs)),
   };
 };
 

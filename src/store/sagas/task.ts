@@ -125,11 +125,11 @@ export function* createIntakeSummarySaga(action: AppActions) {
     intake_and_jobs = {
       intake: action.intakeJobsFormData.intake,
       jobs: action.intakeJobsFormData.jobs,
+      logs: action.intakeJobsFormData.logs,
     };
-    console.log(action.intakeJobsFormData);
   }
 
-  console.log('formdata', intake_and_jobs)
+  console.log('formdata', intake_and_jobs);
   try {
     let response = yield axios.post(url, { intake_and_jobs }, getAxiosHeaderToken());
     yield put(actions.createIntakeSummarySucceed(response.data.intakes, response.data.success));
@@ -176,6 +176,7 @@ export function* updateIntakeSummarySaga(action: AppActions) {
     intake_and_jobs = {
       intake: action.intakeJobsFormData.intake,
       jobs: action.intakeJobsFormData.jobs,
+      logs: action.intakeJobsFormData.logs,
     };
   }
 

@@ -447,7 +447,9 @@ export interface UpdateMakeWheelbaseAction {
   type: typeof actionTypes.UPDATE_MAKEWHEELBASE;
   make_wheelbase_id: number;
   make_id: number;
+  original: boolean;
   wheelbase_id: number;
+  extension_price: number;
 }
 /*  States */
 export interface UpdateMakeWheelbaseStartAction {

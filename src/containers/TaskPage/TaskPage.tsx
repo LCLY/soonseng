@@ -7,7 +7,7 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
-import IntakeJobsModal from 'src/components/Modal/IntakeJobsModal/IntakeJobsModal';
+// import IntakeJobsModal from 'src/components/Modal/IntakeJobsModal/IntakeJobsModal';
 import CreateSpecificIntake from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
 import UpdateSpecificIntake, {
   TUpdateTaskTableState,
@@ -25,8 +25,9 @@ import holy5truck from 'src/img/5trucks.jpg';
 import { ActionCableContext } from 'src/index';
 import * as actions from 'src/store/actions/index';
 import {
-  IIntakeJobsFormData,
-  IJobFormData,
+  // IIntakeJobsFormData,
+  IIntakeLogs,
+  // IJobFormData,
   TReceivedIntakeSummaryObj,
   TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
@@ -73,12 +74,14 @@ interface TaskPageProps {}
 type Props = TaskPageProps & StateProps & DispatchProps;
 
 const TaskPage: React.FC<Props> = ({
-  loading,
+  // loading,
   // onGetTasks,
   // onCreateTask,
   accessObj,
   auth_token,
+  // userInfoObj,
   successMessage,
+  specificIntakeLogs,
   serviceTypesArray,
   intakeSummaryArray,
   onGetIntakeStatus,
@@ -87,8 +90,8 @@ const TaskPage: React.FC<Props> = ({
   onGetUsersByRoles,
   onGetServiceTypes,
   onGetSpecificIntakeJobs,
-  onCreateIntakeSummary,
-  onUpdateIntakeSummary,
+  // onCreateIntakeSummary,
+  // onUpdateIntakeSummary,
 }) => {
   /* ================================================== */
   /*  state */
@@ -103,8 +106,8 @@ const TaskPage: React.FC<Props> = ({
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
-  const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
-  const [specificIntakeId, setSpecificIntakeId] = useState<null | undefined | number>(null);
+  // const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
+  // const [specificIntakeId, setSpecificIntakeId] = useState<null | undefined | number>(null);
   const [serviceTaskDropdown, setServiceTaskDropdown] = useState<IServiceTaskDropdown>({});
   const [beforeDeleteState, setBeforeDeleteState] = useState<TUpdateTaskTableState[] | null>(null);
   // const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({ fees: false });
@@ -185,7 +188,7 @@ const TaskPage: React.FC<Props> = ({
                   });
                   goToUpdateSpecificIntake();
                   // setShowUpdateModal({ ...showUpdateModal, intake_job: true });
-                  setSpecificIntakeId(parseInt(record.key));
+                  // setSpecificIntakeId(parseInt(record.key));
                 }}
               >
                 {record.regNumber}
@@ -243,70 +246,76 @@ const TaskPage: React.FC<Props> = ({
     });
   };
 
-  const onCreateIntakeAndJobsFinish = (values: {
-    bay: string;
-    pickup: boolean;
-    description: string;
-    assign: number[];
-    intakeStatus: number;
-    registrationNumber: string;
-  }) => {
-    let resultJobs: IJobFormData[] = [];
-    (taskTableState as any).forEach((task: any, index: number) => {
-      let taskObj = {
-        service_task_id: task[`taskTitle${index}`],
-        description: task[`taskDescription${index}`],
-      };
-      resultJobs.push(taskObj);
-    });
+  // const onCreateIntakeAndJobsFinish = (values: {
+  //   bay: string;
+  //   pickup: boolean;
+  //   description: string;
+  //   assign: number[];
+  //   intakeStatus: number;
+  //   registrationNumber: string;
+  // }) => {
+  //   if (userInfoObj === null || userInfoObj === undefined) return;
+  //   let resultJobs: IJobFormData[] = [];
+  //   (taskTableState as any).forEach((task: any, index: number) => {
+  //     let taskObj = {
+  //       service_task_id: task[`taskTitle${index}`],
+  //       description: task[`taskDescription${index}`],
+  //     };
+  //     resultJobs.push(taskObj);
+  //   });
 
-    let intakeJobsFormData: IIntakeJobsFormData = {
-      intake: {
-        bay: values.bay !== undefined ? values.bay : '',
-        pick_up: values.pickup !== undefined ? values.pickup : false,
-        description: values.description !== undefined ? values.description : '',
-        registration: values.registrationNumber,
-        intake_status_id: values.intakeStatus,
-        assigned_to_ids: values.assign,
-      },
-      jobs: resultJobs,
-    };
-    onCreateIntakeSummary(intakeJobsFormData);
-  };
+  //   let intakeJobsFormData: IIntakeJobsFormData = {
+  //     intake: {
+  //       bay: values.bay !== undefined ? values.bay : '',
+  //       pick_up: values.pickup !== undefined ? values.pickup : false,
+  //       description: values.description !== undefined ? values.description : '',
+  //       registration: values.registrationNumber,
+  //       intake_status_id: values.intakeStatus,
+  //       assigned_to_ids: values.assign,
+  //     },
+  //     jobs: resultJobs,
+  //     logs: {
+  //       title: `Intake updated at ${moment().format('DD/MM/YYYY HH:mm')} by ${userInfoObj.username}`,
+  //       description: 'TEST',
+  //       user_id: userInfoObj.id,
+  //     },
+  //   };
+  //   onCreateIntakeSummary(intakeJobsFormData);
+  // };
 
-  const onUpdateIntakeAndJobsFinish = (values: {
-    [key: string]: any;
-    bay: string;
-    pickup: boolean;
-    description: string;
-    assign: number[];
-    intakeId: string;
-    intakeStatus: number;
-  }) => {
-    let resultJobs: IJobFormData[] = [];
+  // const onUpdateIntakeAndJobsFinish = (values: {
+  //   [key: string]: any;
+  //   bay: string;
+  //   pickup: boolean;
+  //   description: string;
+  //   assign: number[];
+  //   intakeId: string;
+  //   intakeStatus: number;
+  // }) => {
+  //   let resultJobs: IJobFormData[] = [];
 
-    (taskTableState as any).forEach((task: any, index: number) => {
-      let taskObj = {
-        id: task[`taskId${index}`],
-        service_task_id: values[`taskTitle${index}`],
-        description: values[`taskDescription${index}`],
-      };
-      resultJobs.push(taskObj);
-    });
+  //   (taskTableState as any).forEach((task: any, index: number) => {
+  //     let taskObj = {
+  //       id: task[`taskId${index}`],
+  //       service_task_id: values[`taskTitle${index}`],
+  //       description: values[`taskDescription${index}`],
+  //     };
+  //     resultJobs.push(taskObj);
+  //   });
 
-    let intakeJobsFormData: IIntakeJobsFormData = {
-      intake: {
-        bay: values.bay !== undefined ? values.bay : '',
-        pick_up: values.pickup !== undefined ? values.pickup : false,
-        description: values.description !== undefined ? values.description : '',
-        registration: values.registrationNumber,
-        intake_status_id: values.intakeStatus,
-        assigned_to_ids: values.assign,
-      },
-      jobs: resultJobs,
-    };
-    onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
-  };
+  //   let intakeJobsFormData: IIntakeJobsFormData = {
+  //     intake: {
+  //       bay: values.bay !== undefined ? values.bay : '',
+  //       pick_up: values.pickup !== undefined ? values.pickup : false,
+  //       description: values.description !== undefined ? values.description : '',
+  //       registration: values.registrationNumber,
+  //       intake_status_id: values.intakeStatus,
+  //       assigned_to_ids: values.assign,
+  //     },
+  //     jobs: resultJobs,
+  //   };
+  //   onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
+  // };
 
   // sort array using created at date
   const sortByCreatedAt = (a: TIntakeTableState, b: TIntakeTableState) => {
@@ -482,7 +491,7 @@ const TaskPage: React.FC<Props> = ({
 
   return (
     <>
-      {serviceTypeTaskDict && (
+      {/* {serviceTypeTaskDict && (
         <>
           <IntakeJobsModal
             crud="create"
@@ -529,7 +538,7 @@ const TaskPage: React.FC<Props> = ({
             loading={loading !== undefined && loading}
           />
         </>
-      )}
+      )} */}
 
       <NavbarComponent activePage="task" defaultOpenKeys="dashboard" />
       <Layout>
@@ -632,7 +641,13 @@ const TaskPage: React.FC<Props> = ({
                             </div>
                             {/* )} */}
                           </div>
-                          <div className="task__table--pickup">Ready for pickup</div>
+                          <div className="task__table--pickup">
+                            {currentPage === 'main' || currentPage === 'create' ? (
+                              <p> Ready for pickup</p>
+                            ) : (
+                              <div>{specificIntakeLogs && specificIntakeLogs.map((child) => <p>{child.title}</p>)}</div>
+                            )}
+                          </div>
                         </div>
                       </section>
                     ) : (
@@ -667,6 +682,7 @@ interface StateProps {
   errorMessage?: string | null;
   successMessage?: string | null;
   auth_token?: string | null;
+  specificIntakeLogs?: IIntakeLogs[] | null;
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
@@ -679,6 +695,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     auth_token: state.auth.auth_token,
     errorMessage: state.task.errorMessage,
     successMessage: state.task.successMessage,
+    specificIntakeLogs: state.task.specificIntakeLogs,
     intakeStatusArray: state.dashboard.intakeStatusArray,
     intakeSummaryArray: state.task.intakeSummaryArray,
     serviceTypesArray: state.dashboard.serviceTypesArray,

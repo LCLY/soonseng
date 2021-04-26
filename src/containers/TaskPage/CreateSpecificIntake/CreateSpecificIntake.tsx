@@ -3,6 +3,7 @@ import { RootState } from 'src';
 import './CreateSpecificIntake.scss';
 /* components */
 /* 3rd party lib */
+import moment from 'moment';
 import gsap from 'gsap';
 import { Table, Tooltip, Form, Button, Input, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
@@ -43,6 +44,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
   count,
   setCount,
   loading,
+  userInfoObj,
   setCurrentPage,
   onGetServiceTypes,
   usersByRolesArray,
@@ -99,6 +101,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
     assign: number[];
     intakeStatus: number;
   }) => {
+    if (userInfoObj === null || userInfoObj === undefined) return;
     let resultJobs: IJobFormData[] = [];
 
     (createTaskTableState as any).forEach((task: any, index: number) => {
@@ -120,6 +123,11 @@ const CreateSpecificIntake: React.FC<Props> = ({
         assigned_to_ids: values.assign === undefined ? [] : values.assign,
       },
       jobs: resultJobs,
+      logs: {
+        title: `Intake created at ${moment().format('DD/MM/YYYY HH:mm')} by ${userInfoObj.username}`,
+        description: 'TEST',
+        user_id: userInfoObj.id,
+      },
     };
 
     onCreateIntakeSummary(intakeJobsFormData);
@@ -643,6 +651,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
 
 interface StateProps {
   loading?: boolean;
+  userInfoObj?: TReceivedUserInfoObj | null;
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   usersByRolesArray?: TReceivedUserInfoObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
@@ -650,6 +659,7 @@ interface StateProps {
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.task.loading,
+    userInfoObj: state.auth.userInfoObj,
     intakeStatusArray: state.dashboard.intakeStatusArray,
     usersByRolesArray: state.task.usersByRolesArray,
     serviceTypesArray: state.dashboard.serviceTypesArray,

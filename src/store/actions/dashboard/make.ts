@@ -594,12 +594,20 @@ export const getMakeWheelbasesFailed = (errorMessage: string): AppActions => {
 /* -------------------------- */
 // Update Make Wheelbase
 /* -------------------------- */
-export const updateMakeWheelbase = (make_wheelbase_id: number, make_id: number, wheelbase_id: number): AppActions => {
+export const updateMakeWheelbase = (
+  make_wheelbase_id: number,
+  make_id: number,
+  wheelbase_id: number,
+  original: boolean,
+  extension_price: number,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKEWHEELBASE,
     make_wheelbase_id: make_wheelbase_id,
     make_id: make_id,
     wheelbase_id: wheelbase_id,
+    original: original,
+    extension_price: extension_price,
   };
 };
 

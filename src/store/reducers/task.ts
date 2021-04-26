@@ -13,6 +13,7 @@ const initialState: TaskInitialState = {
   // users array
   tasksArray: null,
   usersByRolesArray: null,
+  specificIntakeLogs: null,
   intakeSummaryArray: null,
   specificIntakeJobsObj: null,
 };
@@ -264,6 +265,16 @@ const updateSpecificIntakeJobsFailed = (state: TaskInitialState, action: AppActi
   return state;
 };
 
+/* -------------------------- */
+/* Set Specific Intake Logs */
+/* -------------------------- */
+const setSpecificIntakeLogs = (state: TaskInitialState, action: AppActions) => {
+  if ('specificIntakeLogs' in action) {
+    return updateObject(state, { specificIntakeLogs: action.specificIntakeLogs });
+  }
+  return state;
+};
+
 /* ============================================================================================ */
 /* ============================================================================================ */
 /* -------------------------- */
@@ -382,6 +393,11 @@ const reducer: Reducer<TaskInitialState, AppActions> = (state = initialState, ac
       return updateSpecificIntakeJobsSucceed(state, action);
     case actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS_FAILED:
       return updateSpecificIntakeJobsFailed(state, action);
+    /* ------------------------ */
+    // Set Specific Intake Logs
+    /* ------------------------ */
+    case actionTypes.SET_SPECIFIC_INTAKE_LOGS:
+      return setSpecificIntakeLogs(state, action);
 
     /* =================================== */
     // Get Users By Roles
