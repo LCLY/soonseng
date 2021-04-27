@@ -33,9 +33,10 @@ const OrdersSlidebar: React.FC<Props> = ({
   style,
   history,
   accessObj,
-  localOrdersArray,
-  onRemoveAnOrder,
+  localOrdersDict,
+  // onRemoveAnOrder,
   setShowOrderSlidebar,
+  onSetLocalOrdersDict,
 }) => {
   /* ================================================== */
   /*  state */
@@ -80,14 +81,14 @@ const OrdersSlidebar: React.FC<Props> = ({
   /* ================================================== */
 
   useEffect(() => {
-    if (localOrdersArray) {
-      localOrdersArray.map((order) =>
+    if (localOrdersDict) {
+      Object.keys(localOrdersDict).map((orderId) =>
         setCheckedConfigurations((prevState) => {
-          return { ...prevState, [order.id]: false };
+          return { ...prevState, [orderId]: false };
         }),
       );
     }
-  }, [localOrdersArray, setCheckedConfigurations]);
+  }, [localOrdersDict, setCheckedConfigurations]);
 
   useEffect(() => {
     if (checkedConfigurations) {
@@ -248,9 +249,9 @@ const OrdersSlidebar: React.FC<Props> = ({
         }}
         onCancel={() => setCompareModalOpen(false)}
       >
-        {localOrdersArray !== undefined &&
+        {localOrdersDict !== undefined &&
           checkedConfigurations &&
-          localOrdersArray.map((order) => {
+          Object.values(localOrdersDict).map((order) => {
             const { bodyMakeObj } = order;
             return (
               <React.Fragment key={uuidv4()}>
@@ -285,15 +286,16 @@ const OrdersSlidebar: React.FC<Props> = ({
             </a>
           </div>
           <div className="flex-align-center">
-            {localOrdersArray && (
+            {localOrdersDict && (
               <div className="ordersslidebar__total-items">
                 <div>
-                  Total:&nbsp;<span className="ordersslidebar__total-text">{localOrdersArray.length}&nbsp;items</span>
+                  Total:&nbsp;
+                  <span className="ordersslidebar__total-text">{Object.keys(localOrdersDict).length}&nbsp;items</span>
                 </div>
 
                 <div className="ordersslidebar__btn-comparison-div">
                   <Button
-                    disabled={localOrdersArray.length <= 1}
+                    disabled={Object.keys(localOrdersDict).length <= 1}
                     className="ordersslidebar__btn-comparison"
                     type="primary"
                     onClick={() => setCompareModalOpen(true)}
@@ -308,8 +310,8 @@ const OrdersSlidebar: React.FC<Props> = ({
         </div>
 
         <div className="ordersslidebar__bottom-div">
-          {localOrdersArray && localOrdersArray.length > 0 ? (
-            [...localOrdersArray]
+          {localOrdersDict && Object.keys(localOrdersDict).length > 0 ? (
+            [...Object.values(localOrdersDict)]
               .slice(0) //here it would display how many orders based on second param in slice
               .reverse()
               .map((order, index) => {
@@ -489,10 +491,15 @@ const OrdersSlidebar: React.FC<Props> = ({
                       danger
                       className="catalog__menu-item--danger"
                       onClick={() => {
-                        if (onRemoveAnOrder !== undefined) {
-                          console.log('hello');
-                          onRemoveAnOrder(order.id, localOrdersArray);
-                        }
+                        // if (onRemoveAnOrder !== undefined) {
+                        //   console.log('hello');
+                        //   onRemoveAnOrder(order.id, localOrdersArray);
+                        // }
+                        if (localOrdersDict === undefined) return;
+                        let copiedLocalOrdersDict = { ...localOrdersDict };
+                        // copy the object first then remove the item from the object, then update the whole thing
+                        delete copiedLocalOrdersDict[order.id];
+                        onSetLocalOrdersDict(copiedLocalOrdersDict);
                       }}
                     >
                       Remove from order
@@ -926,19 +933,23 @@ const OrdersSlidebar: React.FC<Props> = ({
 interface StateProps {
   accessObj?: TUserAccess;
   localOrdersArray?: TLocalOrderObj[];
+  localOrdersDict?: { [key: string]: TLocalOrderObj };
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
+    localOrdersDict: state.sales.localOrdersDict,
     localOrdersArray: state.sales.localOrdersArray,
   };
 };
 
 interface DispatchProps {
   onRemoveAnOrder?: typeof actions.removeAnOrder;
+  onSetLocalOrdersDict: typeof actions.setLocalOrdersDict;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
+    onSetLocalOrdersDict: (localOrdersDict) => dispatch(actions.setLocalOrdersDict(localOrdersDict)),
     onRemoveAnOrder: (orderId, localOrdersArray) => dispatch(actions.removeAnOrder(orderId, localOrdersArray)),
   };
 };

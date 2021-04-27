@@ -37,13 +37,12 @@ import NumberFormat from 'react-number-format';
 import { LeftCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 /* Util */
-
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
-// import { ROUTE_ORDERS } from 'src/shared/routes';
-import hino_banner from 'src/img/hino_banner.jpg';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
+import soonseng_placeholder_white from 'src/img/soonseng_logo_white.png';
+import soonseng_placeholder_red from 'src/img/soonseng_logo_red.png';
 import { handleKeyDown, onClearAllSelectedImages } from 'src/shared/Utils';
 import { TReceivedCatalogBodyMake } from 'src/store/types/catalog';
 import {
@@ -93,13 +92,14 @@ const CatalogBodyMake: React.FC<Props> = ({
   accessObj,
   errorMessage,
   successMessage,
+  wheelbasesArray,
+  localOrdersDict,
   chargesFeesArray,
   dashboardLoading,
   localOrdersArray,
-  wheelbasesArray,
-  bodyMakeWithWheelbaseArray,
   makeFromCatalogBodyMake,
   generalAccessoriesArray,
+  bodyMakeWithWheelbaseArray,
   bodyRelatedAccessoriesArray,
   dimensionRelatedAccessoriesArray,
   onUpdateMake,
@@ -119,6 +119,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   onUpdateMakeWheelbase,
   onClearDashboardState,
   onGetCatalogBodyMakes,
+  onSetLocalOrdersDict,
   onGetBodyMakeAccessories,
   onGetBodyAssociatedAccessories,
   onGetDimensionAssociatedAccessories,
@@ -324,11 +325,12 @@ const CatalogBodyMake: React.FC<Props> = ({
       // push that updated orderObj with the latest accessories array
       copyArray.push(tempOrderObj);
 
+      onSetLocalOrdersDict({ ...localOrdersDict, [orderObj.id]: tempOrderObj });
+
       onStoreLocalOrders(copyArray);
       const { bodyMakeObj } = tempOrderObj;
       if (bodyMakeObj) {
         const { make_wheelbase } = bodyMakeObj;
-        console.log(make_wheelbase);
         message.success(
           `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
         );
@@ -732,7 +734,17 @@ const CatalogBodyMake: React.FC<Props> = ({
                             ></div>
                           </>
                         ) : (
-                          <Skeleton.Image className="catalogbodymake__card-image--skeleton" />
+                          <>
+                            <div className="catalogbodymake__card-image--placeholder-div">
+                              <img
+                                className="catalogbodymake__card-image--placeholder"
+                                alt="placeholder"
+                                src={soonseng_placeholder_white}
+                              />
+                            </div>
+
+                            {/*  <Skeleton.Image className="catalogbodymake__card-image--skeleton" /> */}
+                          </>
                         )}
                         <div className="catalogbodymake__card-overlay">
                           <div className="catalogbodymake__card-overlay-content">
@@ -1868,7 +1880,22 @@ const CatalogBodyMake: React.FC<Props> = ({
                     </div>
                     <section className="catalogbodymake__section-banner">
                       <div className="catalogbodymake__banner-div">
-                        <img className="catalogbodymake__banner" src={hino_banner} alt="banner" />
+                        {/* @TODO - change to using series image */}
+                        {catalogMake.images.length > 0 ? (
+                          <img
+                            className="catalogbodymake__banner"
+                            src={catalogMake.images[0].url}
+                            alt={catalogMake.images[0].filename}
+                          />
+                        ) : (
+                          <div className="catalogbodymake__banner-innerdiv">
+                            <img
+                              className="catalogbodymake__banner catalogbodymake__banner--placeholder"
+                              src={soonseng_placeholder_red}
+                              alt="placeholder_red"
+                            />
+                          </div>
+                        )}
                       </div>
                       <MakeDetailsComponent catalogMake={catalogMake} />
                     </section>
@@ -2087,6 +2114,7 @@ interface StateProps {
   errorMessage?: string | null;
   successMessage?: string | null;
   localOrdersArray?: TLocalOrderObj[];
+  localOrdersDict?: { [key: string]: TLocalOrderObj };
   makeFromCatalogBodyMake?: TReceivedMakeObj | null;
   wheelbasesArray?: TReceivedWheelbaseObj[] | null;
   chargesFeesArray?: TReceivedChargesFeesObj[] | null;
@@ -2101,6 +2129,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     dashboardLoading: state.dashboard.loading,
     errorMessage: state.dashboard.errorMessage,
     successMessage: state.dashboard.successMessage,
+    localOrdersDict: state.sales.localOrdersDict,
     localOrdersArray: state.sales.localOrdersArray,
     wheelbasesArray: state.dashboard.wheelbasesArray,
     chargesFeesArray: state.dashboard.chargesFeesArray,
@@ -2123,6 +2152,7 @@ interface DispatchProps {
   onGetChargesFees: typeof actions.getChargesFees;
   onStoreLocalOrders: typeof actions.storeLocalOrders;
   onDeleteUploadImage: typeof actions.deleteUploadImage;
+  onSetLocalOrdersDict: typeof actions.setLocalOrdersDict;
   onGetCatalogBodyMakes: typeof actions.getCatalogBodyMakes;
   onGetSalesAccessories: typeof actions.getSalesAccessories;
   onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
@@ -2157,6 +2187,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetBodyMakeAccessories: (body_make_id) => dispatch(actions.getBodyMakeAccessories(body_make_id)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
     onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
+    onSetLocalOrdersDict: (localOrdersDict) => dispatch(actions.setLocalOrdersDict(localOrdersDict)),
     onCreateMakeWheelbase: (make_id, wheelbase_id, original, extension_price) =>
       dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, original, extension_price)),
     onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id, original, extension_price) =>

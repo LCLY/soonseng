@@ -59,6 +59,7 @@ export const SET_ACCESSORY_TYPE = 'SET_ACCESSORY_TYPE';
 export const CLEAR_SALES_STATE = 'CLEAR_SALES_STATE';
 
 export const STORE_LOCAL_ORDERS = 'STORE_LOCAL_ORDERS';
+export const SET_LOCAL_ORDERS_DICT = 'SET_LOCAL_ORDERS_DICT';
 export const REMOVE_AN_ORDER = 'REMOVE_AN_ORDER';
 
 // Get Lengths in sales page

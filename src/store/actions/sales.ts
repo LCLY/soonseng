@@ -32,6 +32,15 @@ export const storeLocalOrders = (localOrdersArray: TLocalOrderObj[]): AppActions
   };
 };
 /* ------------------------------- */
+// set local orders dictionary
+/* ------------------------------- */
+export const setLocalOrdersDict = (localOrdersDict: { [key: string]: TLocalOrderObj }): AppActions => {
+  return {
+    type: actionTypes.SET_LOCAL_ORDERS_DICT,
+    localOrdersDict: localOrdersDict,
+  };
+};
+/* ------------------------------- */
 // Remove a local order
 /* ------------------------------- */
 export const removeAnOrder = (orderId: string, localOrdersArray: TLocalOrderObj[]): AppActions => {

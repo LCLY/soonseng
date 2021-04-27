@@ -593,7 +593,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersArray }) => {
                         <div>Rubber&nbsp;Mats</div>
                         <div>Alarm&nbsp;System</div>
                         <div>Central&nbsp;Locking</div>
-                        <div>Kangaroo&nbsp;Bar</div>
+                        {/* <div>Kangaroo&nbsp;Bar</div> */}
                       </div>
                       <div>
                         <img className={`${hidden}quotation__accessorieslist-img`} src={warranty} alt="warranty" />

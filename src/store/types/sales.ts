@@ -31,6 +31,7 @@ export interface SalesInitialState {
   readonly salesBrandsArray?: TReceivedSalesMakesObj[] | null;
   // local orders array / quotation objects array
   readonly localOrdersArray?: TLocalOrderObj[];
+  readonly localOrdersDict?: { [key: string]: TLocalOrderObj };
   // boolean to know whether fetch successful
   readonly getSalesLengthsSucceed?: boolean | null;
   readonly getSalesBodiesSucceed?: boolean | null;
@@ -223,6 +224,14 @@ export interface GetSalesMakesFailedAction {
   errorMessage: string;
 }
 
+/* ============================================ */
+// Set Local Orders Dictionary
+/* ============================================ */
+export interface SetLocalOrdersDictAction {
+  type: typeof actionTypes.SET_LOCAL_ORDERS_DICT;
+  localOrdersDict: { [key: string]: TLocalOrderObj };
+}
+
 /* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
@@ -235,6 +244,7 @@ export type SalesActionTypes =
   // Local quotation/ orders
   /* -------------------------- */
   // Store Local Orders
+  | SetLocalOrdersDictAction
   | StoreLocalOrdersAction
   // remove a local Order
   | RemoveAnOrderAction
