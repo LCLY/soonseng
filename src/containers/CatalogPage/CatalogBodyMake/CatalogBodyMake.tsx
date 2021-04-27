@@ -131,6 +131,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [crudAccessoryModalOpen, setCrudAccessoryModalOpen] = useState(false);
   const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
   const [showAllEmpty, setShowAllEmpty] = useState(false);
+  const [filteredWheelbasesArray, setFilteredWheelbasesArray] = useState<TReceivedWheelbaseObj[] | null>(null);
 
   // need to refer to both the pop up and also the dropdown button itself
   const [showSearch, setShowSearch] = useState(false);
@@ -144,6 +145,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [showMenu, setShowMenu] = useState<{ [key: string]: boolean }>({});
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImagesArray, setLightboxImagesArray] = useState<TReceivedImageObj[]>([]);
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
@@ -936,9 +938,11 @@ const CatalogBodyMake: React.FC<Props> = ({
   );
 
   const MakeWheelbaseMenu = ({
+    index,
     catalogMake,
     wheelbaseBodyMake,
   }: {
+    index: number;
     catalogMake: TReceivedMakeObj;
     wheelbaseBodyMake: TReceivedCatalogBodyMake;
   }) => (
@@ -948,6 +952,7 @@ const CatalogBodyMake: React.FC<Props> = ({
           <Menu.Item
             className="catalog__menu-item"
             onClick={() => {
+              setShowMenu({ ...showMenu, [`makeWheelbase${index}`]: false });
               setShowUpdateModal({ ...showUpdateModal, make_wheelbase: true });
               setIsExtended(!wheelbaseBodyMake.make_wheelbase.original);
               updateMakeWheelbaseForm.setFieldsValue({
@@ -967,6 +972,7 @@ const CatalogBodyMake: React.FC<Props> = ({
             danger
             className="catalog__menu-item--danger"
             onClick={() => {
+              setShowMenu({ ...showMenu, [`makeWheelbase${index}`]: false });
               setDeleteModalContent({
                 ...deleteModalContent,
                 make_wheelbase: {
@@ -1086,38 +1092,6 @@ const CatalogBodyMake: React.FC<Props> = ({
   /* Make Wheelbase Form Items */
   let makeWheelbaseFormItems = (
     <>
-      <Form.Item
-        className="make__form-item"
-        label="Wheelbase"
-        name="wheelbaseId"
-        rules={[{ required: true, message: 'Select wheelbase!' }]}
-      >
-        <Select
-          showSearch
-          placeholder="Select a wheelbase"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {wheelbasesArray &&
-            bodyMakeWithWheelbaseArray &&
-            bodyMakeWithWheelbaseArray !== undefined &&
-            wheelbasesArray
-              .filter((mainArrayChild) =>
-                bodyMakeWithWheelbaseArray.every(
-                  (filterArrayChild) => filterArrayChild.make_wheelbase.wheelbase.id !== mainArrayChild.id,
-                ),
-              )
-              .map((wheelbase) => {
-                return (
-                  <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={wheelbase.id}>
-                    {wheelbase.title + 'mm'}
-                  </Option>
-                );
-              })}
-        </Select>
-      </Form.Item>
       {isExtended && (
         <Form.Item
           className="make__form-item"
@@ -1163,6 +1137,35 @@ const CatalogBodyMake: React.FC<Props> = ({
         onKeyDown={(e) => handleKeyDown(e, createMakeWheelbaseForm)}
         onFinish={onCreateMakeWheelbaseFinish}
       >
+        <Form.Item
+          className="make__form-item"
+          label="Wheelbase"
+          name="wheelbaseId"
+          rules={[{ required: true, message: 'Select wheelbase!' }]}
+        >
+          <Select
+            showSearch
+            placeholder="Select a wheelbase"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {filteredWheelbasesArray &&
+              filteredWheelbasesArray.map((wheelbase) => {
+                return (
+                  <Option
+                    style={{ textTransform: 'capitalize' }}
+                    key={uuidv4()}
+                    label={wheelbase.title}
+                    value={wheelbase.id}
+                  >
+                    {wheelbase.title + 'mm'}
+                  </Option>
+                );
+              })}
+          </Select>
+        </Form.Item>
         {makeWheelbaseFormItems}
       </Form>
     </Modal>
@@ -1185,7 +1188,7 @@ const CatalogBodyMake: React.FC<Props> = ({
       onCancel={() => {
         setIsExtended(false);
         setShowUpdateModal({ ...showUpdateModal, make_wheelbase: false });
-        updateMakeWheelbaseForm.resetFields();
+        // updateMakeWheelbaseForm.resetFields();
       }}
     >
       <Form
@@ -1193,6 +1196,14 @@ const CatalogBodyMake: React.FC<Props> = ({
         onKeyDown={(e) => handleKeyDown(e, updateMakeWheelbaseForm)}
         onFinish={onUpdateMakeWheelbaseFinish}
       >
+        <Form.Item
+          className="make__form-item"
+          hidden
+          name="wheelbaseId"
+          rules={[{ required: true, message: 'Provide a wheelbase!' }]}
+        >
+          <Input />
+        </Form.Item>
         {makeWheelbaseFormItems}
         <Form.Item hidden name="makeWheelbaseId" rules={[{ required: true }]}>
           <Input />
@@ -1309,6 +1320,24 @@ const CatalogBodyMake: React.FC<Props> = ({
   useEffect(() => {
     onGetCatalogBodyMakes(parseInt(match.params.make_id));
   }, [onGetCatalogBodyMakes, match.params.make_id]);
+
+  useEffect(() => {
+    if (
+      wheelbasesArray === null ||
+      wheelbasesArray === undefined ||
+      bodyMakeWithWheelbaseArray === null ||
+      bodyMakeWithWheelbaseArray === undefined
+    )
+      return;
+
+    let newFilteredArray = wheelbasesArray.filter((mainArrayChild) =>
+      bodyMakeWithWheelbaseArray.every(
+        (filterArrayChild) => filterArrayChild.make_wheelbase.wheelbase.id !== mainArrayChild.id,
+      ),
+    );
+
+    setFilteredWheelbasesArray(newFilteredArray);
+  }, [wheelbasesArray, bodyMakeWithWheelbaseArray]);
 
   /* -------------------- */
   // success notification
@@ -1853,7 +1882,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                         {accessObj?.showAdminDashboard ? (
                           <Tabs
                             animated={{ tabPane: true }}
-                            className="catalog__tabs-outerdiv"
+                            className="catalogbodymake__tabs-outerdiv"
                             activeKey={activeConfigurationTab}
                             onTabClick={(activeKey: string) => setActiveConfigurationTab(activeKey)}
                             tabPosition={'top'}
@@ -1899,14 +1928,19 @@ const CatalogBodyMake: React.FC<Props> = ({
                                     </span>
                                     <>
                                       {accessObj?.showAdminDashboard && (
-                                        <div style={{ marginLeft: '1.8rem' }}>
+                                        <div style={{ marginLeft: '0rem' }}>
                                           <Tooltip
                                             title={`Edit / Delete ${wheelbaseBodyMake.make_wheelbase.wheelbase.title}mm`}
                                           >
                                             <Dropdown
-                                              className="catalogbodymake__dropdown-more catalogbodymake__dropdown-more--make"
+                                              visible={showMenu[`makeWheelbase${index}`]}
+                                              onVisibleChange={(e) =>
+                                                setShowMenu({ ...showMenu, [`makeWheelbase${index}`]: e })
+                                              }
+                                              className="catalogbodymake__dropdown-more "
                                               overlay={
                                                 <MakeWheelbaseMenu
+                                                  index={index}
                                                   catalogMake={catalogMake}
                                                   wheelbaseBodyMake={wheelbaseBodyMake}
                                                 />
@@ -1968,7 +2002,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                             ) : (
                               <Tabs
                                 animated={{ tabPane: true }}
-                                className="catalog__tabs-outerdiv"
+                                className="catalogbodymake__tabs-outerdiv"
                                 activeKey={activeConfigurationTab}
                                 onTabClick={(activeKey: string) => setActiveConfigurationTab(activeKey)}
                                 tabPosition={'top'}

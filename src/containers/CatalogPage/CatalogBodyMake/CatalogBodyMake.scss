@@ -1201,4 +1201,45 @@
       border-bottom: 1px solid white;
     }
   }
+
+  &__tabs {
+    &-outerdiv {
+      & .ant-tabs-nav-wrap {
+        color: white;
+        // padding: 0 3rem !important;
+        @include respond-to($small-phone) {
+          padding: 0 1.5rem !important;
+        }
+      }
+      & .ant-tabs-tab {
+        user-select: none;
+        transition: all 0.5s ease;
+        font-size: 2rem !important;
+        padding: 1rem 2rem !important;
+        text-align: center !important;
+        margin: 1rem 0 0 0 !important;
+        font-family: $font-bebasneue !important;
+        &:hover {
+          background: rgba(255, 255, 255, 0.425);
+          color: white;
+        }
+        @include respond-to($small-phone) {
+          padding: 0.8rem 1rem 0.8rem 1.5rem !important;
+        }
+      }
+
+      & .ant-tabs-tab:last-child {
+        background: red !important;
+        padding: 1rem 3rem 1rem 1rem !important;
+      }
+      & .ant-tabs-tab-active {
+        color: $primary-color-4 !important;
+        background: white !important;
+      }
+
+      & .ant-tabs-nav-more {
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.693), rgba(255, 255, 255, 0.35)) !important;
+      }
+    }
+  }
 }
