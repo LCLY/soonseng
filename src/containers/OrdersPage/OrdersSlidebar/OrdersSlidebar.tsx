@@ -10,7 +10,7 @@ import NumberFormat from 'react-number-format';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { InfoCircleOutlined, CaretRightOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Tooltip, Empty, Form, Menu, Collapse, Checkbox, Modal } from 'antd';
+import { Button, Dropdown, Tooltip, Empty, Menu, Collapse, Checkbox, Modal } from 'antd';
 /* Util */
 import { RootState } from 'src';
 import { TUserAccess } from 'src/store/types/auth';
@@ -18,7 +18,7 @@ import * as actions from 'src/store/actions/index';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
 import { ROUTE_CATALOG, ROUTE_COMPARISON, ROUTE_ORDERS } from 'src/shared/routes';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
-import { convertPriceToFloat, convertSpaceInStringWithChar, handleKeyDown } from 'src/shared/Utils';
+import { convertSpaceInStringWithChar } from 'src/shared/Utils';
 const { Panel } = Collapse;
 
 interface OrdersSlidebarProps {
@@ -41,15 +41,15 @@ const OrdersSlidebar: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  const [discountForm] = Form.useForm();
-  const [clickedOrder, setClickedOrder] = useState<TLocalOrderObj | null>(null);
-  const [showDiscountModal, setShowDiscountModal] = useState(false);
-  const [showDiscountInput, setShowDiscountInput] = useState(false);
+  // const [discountForm] = Form.useForm();
+  // const [clickedOrder, setClickedOrder] = useState<TLocalOrderObj | null>(null);
+  // const [showDiscountModal, setShowDiscountModal] = useState(false);
+  // const [showDiscountInput, setShowDiscountInput] = useState(false);
+  const [totalChecked, setTotalChecked] = useState(0);
   const [compareModalOpen, setCompareModalOpen] = useState(false);
+  const [selectedMoreThanFour, setSelectedMoreThanFour] = useState(false);
   const [expandedModelCollapse, setExpandedModelCollapse] = useState<string | string[]>([]);
   const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
-  const [selectedMoreThanFour, setSelectedMoreThanFour] = useState(false);
-  const [totalChecked, setTotalChecked] = useState(0);
   const [checkedConfigurations, setCheckedConfigurations] = useState<{ [orderId: string]: boolean } | null>(null);
 
   /* ================================================== */
@@ -121,7 +121,7 @@ const OrdersSlidebar: React.FC<Props> = ({
       {/* ========================================================= */}
       {/* Discount modal */}
       {/* ========================================================= */}
-      <Modal
+      {/* <Modal
         title="Setting Discount"
         visible={showDiscountModal}
         onCancel={() => {
@@ -214,7 +214,7 @@ const OrdersSlidebar: React.FC<Props> = ({
         ) : (
           <div>Are you setting discount for this quotation?</div>
         )}
-      </Modal>
+      </Modal> */}
 
       {/* ========================================================= */}
       {/* Comparison modal */}
@@ -484,8 +484,18 @@ const OrdersSlidebar: React.FC<Props> = ({
                       <Menu.Item
                         className="catalog__menu-item"
                         onClick={() => {
-                          setShowDiscountModal(true);
-                          setClickedOrder(order);
+                          // setShowDiscountModal(true);
+                          // setClickedOrder(order);
+
+                          if (order && order.bodyMakeObj) {
+                            const { length, make_wheelbase, body } = order.bodyMakeObj;
+                            history.push(
+                              `/quotation/${convertSpaceInStringWithChar(
+                                `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
+                                '',
+                              )}/${order.id}`,
+                            );
+                          }
                         }}
                       >
                         Generate quotation

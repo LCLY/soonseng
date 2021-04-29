@@ -28,6 +28,7 @@ import * as actions from 'src/store/actions/index';
 import {
   // IIntakeJobsFormData,
   IIntakeLogs,
+  IIntakeUser,
   // IJobFormData,
   TReceivedIntakeSummaryObj,
   TReceivedSpecificIntakeJobsObj,
@@ -58,6 +59,7 @@ type TIntakeTableState = {
   serviceType: string;
   status: string;
   pickup: boolean;
+  assign: IIntakeUser[];
   description: string;
   bay: string;
 };
@@ -200,14 +202,36 @@ const TaskPage: React.FC<Props> = ({
       width: 'auto',
       ellipsis: true,
     },
-    // {
-    //   key: 'status',
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    //   width: '10rem',
-    //   ellipsis: true,
-    //   align: 'center',
-    // },
+    {
+      key: 'assignees',
+      title: 'Assignees',
+      dataIndex: 'assignees',
+      width: '10rem',
+      ellipsis: true,
+      align: 'center',
+      render: (_text: any, record: TIntakeTableState) => {
+        return (
+          <Tooltip
+            title={
+              <>
+                <ol>
+                  {record.assign.length > 0
+                    ? record.assign.map((child) => (
+                        <li key={`assignees${child.id}`} className="task__table-assignees">
+                          {child.user.first_name}&nbsp;
+                          {child.user.last_name ? child.user.last_name : ''}
+                        </li>
+                      ))
+                    : '-'}
+                </ol>
+              </>
+            }
+          >
+            <i className="fas fa-user"></i> x {record.assign.length}
+          </Tooltip>
+        );
+      },
+    },
     {
       key: 'bay',
       title: 'Bay',
@@ -215,8 +239,8 @@ const TaskPage: React.FC<Props> = ({
       width: '10rem',
       align: 'center',
       ellipsis: true,
-      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.bay.localeCompare(b.bay),
-      ...getColumnSearchProps(intakeJobsSearchInput, 'bay', 'Bay'),
+      // sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.bay.localeCompare(b.bay),
+      // ...getColumnSearchProps(intakeJobsSearchInput, 'bay', 'Bay'),
     },
   ]);
 
@@ -476,6 +500,7 @@ const TaskPage: React.FC<Props> = ({
         dateTimeIn: moment(incomingData.data.created_at), //formatted timestamp
         createdAt: incomingData.data.created_at, //raw timestamp
         pickup: incomingData.data.pick_up,
+        assign: incomingData.data.intake_users,
         regNumber: incomingData.data.registration,
         description: incomingData.data.description,
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
@@ -643,10 +668,11 @@ const TaskPage: React.FC<Props> = ({
                             </div>
                             {/* )} */}
                           </div>
-                          <div className="task__table--pickup">
-                            {currentPage === 'main' || currentPage === 'create' ? (
-                              <p> Ready for pickup</p>
-                            ) : (
+                          {currentPage === 'update' && (
+                            <div className="task__table--pickup">
+                              {/* {currentPage === 'main' || currentPage === 'create' ? (
+                                <p> Ready for pickup</p>
+                              ) : ( */}
                               <div style={{ height: '100%' }}>
                                 <div className="task__table--pickup-title">Intake Logs</div>
                                 <div className="task__collapse-div">
@@ -709,8 +735,9 @@ const TaskPage: React.FC<Props> = ({
                                   )}
                                 </div>
                               </div>
-                            )}
-                          </div>
+                              {/* )} */}
+                            </div>
+                          )}
                         </div>
                       </section>
                     ) : (

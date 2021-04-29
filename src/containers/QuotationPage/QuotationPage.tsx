@@ -329,8 +329,6 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersDict, accessObj, onS
             <Button
               className="quotation__edit-top-btn"
               onClick={() => {
-                // resets the current changes
-                console.log('RESET!!!!!!!!!!!!!!!!!!!!!!!!', localOrdersDict[match.params.order_id]);
                 setEditChanges(localOrdersDict[match.params.order_id]);
                 setInEditPriceMode(false);
               }}

@@ -4,6 +4,7 @@
     width: 95rem;
     padding: 3rem;
     background: white;
+    margin-bottom: 3rem;
 
     @include respond-to($small-phone) {
       width: 95%;

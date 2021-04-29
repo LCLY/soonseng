@@ -168,7 +168,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
   const tagRender = (props: any) => {
     if (usersByRolesArray === null || usersByRolesArray === undefined) return <></>;
-
     let userResultArray = usersByRolesArray.filter((user) => props.value === user.id);
     //
     return (
@@ -809,7 +808,22 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                 {/* Intake Users */}
                 {/* ==================================================== */}
                 <div className="updatespecificintake__box updatespecificintake__box--users">
-                  <Tooltip title="Task Assignees">
+                  <Tooltip
+                    title={
+                      currentSpecificIntakeJobsObj.intake_users.length > 0 ? (
+                        <ol>
+                          {currentSpecificIntakeJobsObj.intake_users.map((child) => (
+                            <li key={`assignees${child.id}`} className="task__table-assignees">
+                              {child.user.first_name}&nbsp;
+                              {child.user.last_name ? child.user.last_name : ''}
+                            </li>
+                          ))}
+                        </ol>
+                      ) : (
+                        'Task Assignees'
+                      )
+                    }
+                  >
                     <div className="updatespecificintake__box-left">
                       <i className="fas fa-users updatespecificintake__box-icon"></i>
                     </div>
