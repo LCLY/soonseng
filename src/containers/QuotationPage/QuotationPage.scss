@@ -351,6 +351,7 @@
   &__orderedlist {
     margin-left: 2rem;
     margin-bottom: 0.5rem;
+    cursor: pointer;
 
     @include respond-to($small-phone) {
       margin-left: 1rem;
@@ -703,6 +704,50 @@
       @include respond-to($tablet-landscape-up) {
         height: 100vh;
       }
+    }
+  }
+
+  /* ============================ */
+  // price edit mode
+  /* ============================ */
+  &__edit {
+    &-top {
+      position: fixed;
+      left: 0;
+      width: 100vw;
+      height: 10vh;
+      background: rgb(6, 24, 60);
+      z-index: 2000;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      // place-items: center;
+      font-family: $font-bebasneue;
+      font-size: 2rem;
+      padding: 0 2rem;
+
+      &-title {
+        transform: translateY(2px);
+      }
+
+      &-btn {
+        font-family: $font-firesans;
+        padding: 0 1rem !important;
+        height: 2.5rem !important;
+        font-size: 1.3rem !important;
+        &--save {
+          padding: 0 1.5rem !important;
+          margin-left: 1rem;
+        }
+      }
+    }
+
+    &-price {
+      width: 11rem;
+      text-align: right;
+      border: 1.5px dashed rgba(94, 94, 94, 0.611);
+      padding: 0 0.5rem;
     }
   }
 }

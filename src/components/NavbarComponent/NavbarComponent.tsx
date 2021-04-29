@@ -94,7 +94,7 @@ const NavbarComponent: React.FC<Props> = ({
   authenticated,
   projectVersion,
   defaultOpenKeys,
-  localOrdersArray,
+  localOrdersDict,
 }) => {
   /* ======================================= */
   // state
@@ -338,8 +338,13 @@ const NavbarComponent: React.FC<Props> = ({
             />
           </Navbar.Brand>
           <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
-            {localOrdersArray !== undefined && (
-              <Badge count={localOrdersArray.length} showZero size="small" className="navbar__icon-cart--mobile">
+            {localOrdersDict !== undefined && (
+              <Badge
+                count={Object.keys(localOrdersDict).length}
+                showZero
+                size="small"
+                className="navbar__icon-cart--mobile"
+              >
                 <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
               </Badge>
             )}
@@ -444,8 +449,8 @@ const NavbarComponent: React.FC<Props> = ({
               </div>
 
               <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
-                {localOrdersArray !== undefined && (
-                  <Badge count={localOrdersArray.length} showZero size="small">
+                {localOrdersDict !== undefined && (
+                  <Badge count={Object.keys(localOrdersDict).length} showZero size="small">
                     {/* <a className={`navbar__link`} href={ROUTE_ORDERS}> */}
                     <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
                     {/* </a> */}
@@ -472,14 +477,14 @@ interface StateProps {
   projectVersion?: string;
   auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
-  localOrdersArray?: TLocalOrderObj[];
+  localOrdersDict?: { [key: string]: TLocalOrderObj };
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
     userInfoObj: state.auth.userInfoObj,
     projectVersion: state.general.projectVersion,
-    localOrdersArray: state.sales.localOrdersArray,
+    localOrdersDict: state.sales.localOrdersDict,
     authenticated: state.auth.auth_token !== null,
   };
 };

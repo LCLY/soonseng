@@ -16,7 +16,7 @@ import { RootState } from 'src';
 import { TUserAccess } from 'src/store/types/auth';
 import * as actions from 'src/store/actions/index';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
-import { ROUTE_COMPARISON, ROUTE_ORDERS, ROUTE_SALES } from 'src/shared/routes';
+import { ROUTE_CATALOG, ROUTE_COMPARISON, ROUTE_ORDERS } from 'src/shared/routes';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { convertPriceToFloat, convertSpaceInStringWithChar, handleKeyDown } from 'src/shared/Utils';
 const { Panel } = Collapse;
@@ -144,12 +144,12 @@ const OrdersSlidebar: React.FC<Props> = ({
                 onClick={() => {
                   if (clickedOrder && clickedOrder.bodyMakeObj) {
                     const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
-                    history.push({
-                      pathname: `/quotation/${convertSpaceInStringWithChar(
+                    history.push(
+                      `/quotation/${convertSpaceInStringWithChar(
                         `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
                         '',
                       )}/${clickedOrder.id}`,
-                    });
+                    );
                   }
                 }}
               >
@@ -184,12 +184,16 @@ const OrdersSlidebar: React.FC<Props> = ({
             onFinish={(values) => {
               if (clickedOrder && clickedOrder.bodyMakeObj) {
                 const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
-                history.push({
-                  pathname: `/quotation/${convertSpaceInStringWithChar(
+                history.push(
+                  `/quotation/${convertSpaceInStringWithChar(
                     `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
                     '',
-                  )}/${clickedOrder.id}/${convertPriceToFloat(values.discount)}`,
-                });
+                  )}/${clickedOrder.id}`,
+                );
+
+                let tempOrder = { ...localOrdersDict };
+                tempOrder[clickedOrder.id]['discount'] = convertPriceToFloat(values.discount);
+                onSetLocalOrdersDict(tempOrder);
               }
             }}
           >
@@ -320,7 +324,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                   price: number;
                 };
 
-                let processingFeesArray = order.chargesFeesArray.filter(
+                let processingFeesArray = Object.values(order.chargesFeesDict).filter(
                   (charges) => charges.title !== 'JPJ Registration & E Hak Milik',
                 );
 
@@ -379,7 +383,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                 let totalAccessoriesPrice = 0;
 
                 // get total of general accessories
-                let generalAccessoriesTotalPrice = order.generalAccessoriesArray.reduce(
+                let generalAccessoriesTotalPrice = Object.values(order.generalAccessoriesArray).reduce(
                   (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
                     return currentTotal + accessoryObj.price;
                   },
@@ -387,19 +391,18 @@ const OrdersSlidebar: React.FC<Props> = ({
                 );
 
                 // get total of body related accessories
-                let bodyRelatedAccessoriesTotalPrice = order.bodyRelatedAccessoriesArray.reduce(
+                let bodyRelatedAccessoriesTotalPrice = Object.values(order.bodyRelatedAccessoriesArray).reduce(
                   (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
                     return currentTotal + accessoryObj.price;
                   },
                   0,
                 );
                 // get total of dimension related accessories
-                let dimensionRelatedAccessoriesTotalPrice = order.dimensionRelatedAccessoriesArray.reduce(
-                  (currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
-                    return currentTotal + dimensionAccessoryObj.price;
-                  },
-                  0,
-                );
+                let dimensionRelatedAccessoriesTotalPrice = Object.values(
+                  order.dimensionRelatedAccessoriesArray,
+                ).reduce((currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
+                  return currentTotal + dimensionAccessoryObj.price;
+                }, 0);
 
                 totalAccessoriesPrice =
                   generalAccessoriesTotalPrice +
@@ -430,35 +433,36 @@ const OrdersSlidebar: React.FC<Props> = ({
                   price: number;
                 };
 
-                let tempModelSubtotalPrice = modelSubtotalPrice;
-                tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
-                let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
-                roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
-                roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
+                // let tempModelSubtotalPrice = modelSubtotalPrice;
+                // tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
+                // let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
+                // roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
+                // roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
 
-                let JPJEHakMilik = order.chargesFeesArray.filter(
-                  (charges) => charges.title === 'JPJ Registration & E Hak Milik',
-                );
+                // let JPJEHakMilik = Object.values(order.chargesFeesDict).filter(
+                //   (charges) => charges.title === 'JPJ Registration & E Hak Milik',
+                // );
 
-                let insuranceArray = [
-                  {
-                    title: 'Road tax (1year)',
-                    price: 1015,
-                  },
-                  {
-                    title: JPJEHakMilik[0].title,
-                    price: JPJEHakMilik[0].price,
-                  },
-                  {
-                    title: 'INSURANCE PREMIUM (windscreen included)',
-                    price: roundedModelSubtotalPrice,
-                  },
-                ];
+                // let insuranceArray = [
+                //   {
+                //     title: 'Road tax (1year)',
+                //     price: 1015,
+                //   },
+                //   {
+                //     title: JPJEHakMilik[0].title,
+                //     price: JPJEHakMilik[0].price,
+                //   },
+                //   {
+                //     title: 'INSURANCE PREMIUM (windscreen included)',
+                //     price: roundedModelSubtotalPrice,
+                //   },
+                // ];
 
                 /* ======================== */
                 // Insurance subtotal price
                 /* ====================== */
-                let insuranceSubtotalPrice = insuranceArray.reduce(
+                if (order.insuranceDict === null) return null;
+                let insuranceSubtotalPrice = Object.values(order.insuranceDict).reduce(
                   (currentTotal: number, insuranceObj: insuranceType) => {
                     return currentTotal + insuranceObj.price;
                   },
@@ -498,6 +502,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                         if (localOrdersDict === undefined) return;
                         let copiedLocalOrdersDict = { ...localOrdersDict };
                         // copy the object first then remove the item from the object, then update the whole thing
+
                         delete copiedLocalOrdersDict[order.id];
                         onSetLocalOrdersDict(copiedLocalOrdersDict);
                       }}
@@ -701,13 +706,13 @@ const OrdersSlidebar: React.FC<Props> = ({
                                 {order.generalAccessoriesArray &&
                                   order.bodyRelatedAccessoriesArray &&
                                   order.dimensionRelatedAccessoriesArray &&
-                                  order.generalAccessoriesArray.length === 0 &&
-                                  order.bodyRelatedAccessoriesArray.length === 0 &&
-                                  order.dimensionRelatedAccessoriesArray.length === 0 && <span>None</span>}
+                                  Object.keys(order.generalAccessoriesArray).length === 0 &&
+                                  Object.keys(order.bodyRelatedAccessoriesArray).length === 0 &&
+                                  Object.keys(order.dimensionRelatedAccessoriesArray).length === 0 && <span>None</span>}
                                 <>
                                   {order.generalAccessoriesArray &&
-                                    order.generalAccessoriesArray.length > 0 &&
-                                    order.generalAccessoriesArray.map((accessory) => (
+                                    Object.keys(order.generalAccessoriesArray).length > 0 &&
+                                    Object.values(order.generalAccessoriesArray).map((accessory) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span>{accessory.title} </span>
@@ -730,8 +735,8 @@ const OrdersSlidebar: React.FC<Props> = ({
                                 </>
                                 <>
                                   {order.bodyRelatedAccessoriesArray &&
-                                    order.bodyRelatedAccessoriesArray.length > 0 &&
-                                    order.bodyRelatedAccessoriesArray.map((accessory) => (
+                                    Object.keys(order.bodyRelatedAccessoriesArray).length > 0 &&
+                                    Object.values(order.bodyRelatedAccessoriesArray).map((accessory) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span>{accessory.title} </span>
@@ -754,8 +759,8 @@ const OrdersSlidebar: React.FC<Props> = ({
                                 </>
                                 <>
                                   {order.dimensionRelatedAccessoriesArray &&
-                                    order.dimensionRelatedAccessoriesArray.length > 0 &&
-                                    order.dimensionRelatedAccessoriesArray.map((dimension) => (
+                                    Object.keys(order.dimensionRelatedAccessoriesArray).length > 0 &&
+                                    Object.values(order.dimensionRelatedAccessoriesArray).map((dimension) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span> {dimension.accessory.title} </span>
@@ -848,7 +853,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                                   key={`insurance${index}`}
                                 >
                                   <ul className="ordersslidebar__overview-list">
-                                    {insuranceArray.map((item) => (
+                                    {Object.values(order.insuranceDict).map((item) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span> {item.title}</span>
@@ -912,12 +917,8 @@ const OrdersSlidebar: React.FC<Props> = ({
           ) : (
             <div className="ordersslidebar__overview-empty-div">
               <Empty description={<span>You have no order currently</span>}>
-                <Button
-                  className="ordersslidebar__overview-empty-btn"
-                  type="primary"
-                  // onClick={() => history.push('/sales')}
-                >
-                  <a className="ordersslidebar__overview-link" href={ROUTE_SALES}>
+                <Button className="ordersslidebar__overview-empty-btn" type="primary">
+                  <a className="ordersslidebar__overview-link" href={ROUTE_CATALOG}>
                     Make a new order
                   </a>
                 </Button>
@@ -932,25 +933,21 @@ const OrdersSlidebar: React.FC<Props> = ({
 
 interface StateProps {
   accessObj?: TUserAccess;
-  localOrdersArray?: TLocalOrderObj[];
   localOrdersDict?: { [key: string]: TLocalOrderObj };
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
     localOrdersDict: state.sales.localOrdersDict,
-    localOrdersArray: state.sales.localOrdersArray,
   };
 };
 
 interface DispatchProps {
-  onRemoveAnOrder?: typeof actions.removeAnOrder;
   onSetLocalOrdersDict: typeof actions.setLocalOrdersDict;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     onSetLocalOrdersDict: (localOrdersDict) => dispatch(actions.setLocalOrdersDict(localOrdersDict)),
-    onRemoveAnOrder: (orderId, localOrdersArray) => dispatch(actions.removeAnOrder(orderId, localOrdersArray)),
   };
 };
 

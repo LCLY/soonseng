@@ -6,20 +6,20 @@
     // margin-right: 1rem;
     border: none;
     & tr {
-      background: #010c24;
+      background: $dark-blue-3;
 
       &:hover {
         outline: thin dashed rgb(72, 104, 126);
       }
 
       &:nth-child(odd) {
-        background: #051231;
+        background: $dark-blue-2;
       }
     }
 
     & .ant-table-body {
       padding: 0.5rem 0 0.5rem 0.5rem;
-      background: #010c24;
+      background: $dark-blue-3;
     }
 
     & {

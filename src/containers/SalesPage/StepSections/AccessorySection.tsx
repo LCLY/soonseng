@@ -261,7 +261,7 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                             // Boolean
                             let objExistInGeneralAccessoriesArray =
                               currentOrderObj !== undefined &&
-                              currentOrderObj.generalAccessoriesArray.includes(accessory);
+                              Object.values(currentOrderObj.generalAccessoriesArray).includes(accessory);
                             return (
                               <div
                                 key={uuidv4()}
@@ -288,16 +288,17 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                                   //  if currentLength has an id
                                   if (objExistInGeneralAccessoriesArray) {
                                     //  Filter the current general accessories array and only return the rest that doesnt match that id
-                                    let arrayAfterDelete = [...currentOrderObj.generalAccessoriesArray].filter(
-                                      (accessoryObj) => {
-                                        return accessoryObj.id !== accessory.id;
-                                      },
-                                    );
+                                    // let arrayAfterDelete = [...currentOrderObj.generalAccessoriesArray].filter(
+                                    //   (accessoryObj) => {
+                                    //     return accessoryObj.id !== accessory.id;
+                                    //   },
+                                    // );
+                                    delete currentOrderObj['generalAccessoriesArray'][accessory.id];
 
                                     let totalArrayAfterDelete =
-                                      arrayAfterDelete.length +
-                                      currentOrderObj.bodyRelatedAccessoriesArray.length +
-                                      currentOrderObj.dimensionRelatedAccessoriesArray.length;
+                                      Object.keys(currentOrderObj.generalAccessoriesArray).length +
+                                      Object.keys(currentOrderObj.bodyRelatedAccessoriesArray).length +
+                                      Object.keys(currentOrderObj.dimensionRelatedAccessoriesArray).length;
 
                                     // if after delete and nothing is left from the total array, then make the accessory null again
                                     if (totalArrayAfterDelete === 0) {
@@ -305,16 +306,17 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                                     }
                                     setCurrentOrderObj({
                                       ...currentOrderObj,
-                                      generalAccessoriesArray: arrayAfterDelete,
+                                      generalAccessoriesArray: currentOrderObj['generalAccessoriesArray'],
                                     });
                                   } else {
                                     // spread the array
-                                    let tempArray = [...currentOrderObj.generalAccessoriesArray];
+                                    // let tempArray = [...currentOrderObj.generalAccessoriesArray];
                                     // add new accessory into the array and update the state
-                                    tempArray.push(accessory);
+                                    // tempArray.push(accessory);
+
                                     setCurrentOrderObj({
                                       ...currentOrderObj,
-                                      generalAccessoriesArray: tempArray,
+                                      generalAccessoriesArray: { [accessory.id]: accessory },
                                     });
                                   }
                                 }}
@@ -352,7 +354,9 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                           {bodyRelatedAccessoriesArray.map((accessory) => {
                             let objExistInBodyRelatedAccessoriesArray =
                               currentOrderObj !== undefined &&
-                              currentOrderObj.bodyRelatedAccessoriesArray.includes(accessory);
+                              Object.keys(currentOrderObj.bodyRelatedAccessoriesArray).includes(
+                                accessory.id.toString(),
+                              );
                             return (
                               <div
                                 key={uuidv4()}
@@ -377,15 +381,21 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                                   //  if currentLength has an id
                                   if (objExistInBodyRelatedAccessoriesArray) {
                                     //  Filter the current general accessories array and only return the rest that doesnt match that id
-                                    let arrayAfterDelete = [...currentOrderObj.bodyRelatedAccessoriesArray].filter(
-                                      (accessoryObj) => {
-                                        return accessoryObj.id !== accessory.id;
-                                      },
-                                    );
+                                    // let arrayAfterDelete = [...currentOrderObj.bodyRelatedAccessoriesArray].filter(
+                                    //   (accessoryObj) => {
+                                    //     return accessoryObj.id !== accessory.id;
+                                    //   },
+                                    // );
+
                                     let totalArrayAfterDelete =
-                                      arrayAfterDelete.length +
-                                      currentOrderObj.generalAccessoriesArray.length +
-                                      currentOrderObj.dimensionRelatedAccessoriesArray.length;
+                                      Object.keys(currentOrderObj.generalAccessoriesArray).length +
+                                      Object.keys(currentOrderObj.bodyRelatedAccessoriesArray).length +
+                                      Object.keys(currentOrderObj.dimensionRelatedAccessoriesArray).length;
+
+                                    // let totalArrayAfterDelete =
+                                    //   arrayAfterDelete.length +
+                                    //   currentOrderObj.generalAccessoriesArray.length +
+                                    //   currentOrderObj.dimensionRelatedAccessoriesArray.length;
 
                                     // if after delete and nothing is left from the total array, then make the accessory null again
                                     if (totalArrayAfterDelete === 0) {
@@ -393,16 +403,16 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                                     }
                                     setCurrentOrderObj({
                                       ...currentOrderObj,
-                                      bodyRelatedAccessoriesArray: arrayAfterDelete,
+                                      bodyRelatedAccessoriesArray: currentOrderObj['bodyRelatedAccessoriesArray'],
                                     });
                                   } else {
                                     // spread the array
-                                    let tempArray = [...currentOrderObj.bodyRelatedAccessoriesArray];
+                                    // let tempArray = [...currentOrderObj.bodyRelatedAccessoriesArray];
                                     // add new accessory into the array and update the state
-                                    tempArray.push(accessory);
+                                    // tempArray.push(accessory);
                                     setCurrentOrderObj({
                                       ...currentOrderObj,
-                                      bodyRelatedAccessoriesArray: tempArray,
+                                      bodyRelatedAccessoriesArray: { [accessory.id]: accessory },
                                     });
                                   }
                                 }}
@@ -440,7 +450,9 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                         {dimensionRelatedAccessoriesArray.map((dimensionRelatedAccessory) => {
                           let objExistInDimensionRelatedAccessoriesArray =
                             currentOrderObj !== undefined &&
-                            currentOrderObj.dimensionRelatedAccessoriesArray.includes(dimensionRelatedAccessory);
+                            Object.keys(currentOrderObj.dimensionRelatedAccessoriesArray).includes(
+                              dimensionRelatedAccessory.id.toString(),
+                            );
                           return (
                             <div
                               key={uuidv4()}
@@ -464,15 +476,20 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                                 //  if currentLength has an id
                                 if (objExistInDimensionRelatedAccessoriesArray) {
                                   //  Filter the current general accessories array and only return the rest that doesnt match that id
-                                  let arrayAfterDelete = [...currentOrderObj.dimensionRelatedAccessoriesArray].filter(
-                                    (dimensionObj) => {
-                                      return dimensionObj.id !== dimensionRelatedAccessory.id;
-                                    },
-                                  );
+                                  // let arrayAfterDelete = [...currentOrderObj.dimensionRelatedAccessoriesArray].filter(
+                                  //   (dimensionObj) => {
+                                  //     return dimensionObj.id !== dimensionRelatedAccessory.id;
+                                  //   },
+                                  // );
+
+                                  delete currentOrderObj['dimensionRelatedAccessoriesArray'][
+                                    dimensionRelatedAccessory.id
+                                  ];
+
                                   let totalArrayAfterDelete =
-                                    arrayAfterDelete.length +
-                                    currentOrderObj.generalAccessoriesArray.length +
-                                    currentOrderObj.bodyRelatedAccessoriesArray.length;
+                                    Object.keys(currentOrderObj.generalAccessoriesArray).length +
+                                    Object.keys(currentOrderObj.bodyRelatedAccessoriesArray).length +
+                                    Object.keys(currentOrderObj.dimensionRelatedAccessoriesArray).length;
 
                                   // if after delete and nothing is left from the total array, then make the accessory null again
                                   if (totalArrayAfterDelete === 0) {
@@ -480,16 +497,20 @@ const AccessorySection: React.FC<Props> = ({ history }) => {
                                   }
                                   setCurrentOrderObj({
                                     ...currentOrderObj,
-                                    dimensionRelatedAccessoriesArray: arrayAfterDelete,
+                                    dimensionRelatedAccessoriesArray:
+                                      currentOrderObj['dimensionRelatedAccessoriesArray'],
                                   });
                                 } else {
                                   // spread the array
-                                  let tempArray = [...currentOrderObj.dimensionRelatedAccessoriesArray];
+                                  // let tempArray = [...currentOrderObj.dimensionRelatedAccessoriesArray];
                                   // add new accessory into the array and update the state
-                                  tempArray.push(dimensionRelatedAccessory);
+                                  // tempArray.push(dimensionRelatedAccessory);
+
                                   setCurrentOrderObj({
                                     ...currentOrderObj,
-                                    dimensionRelatedAccessoriesArray: tempArray,
+                                    dimensionRelatedAccessoriesArray: {
+                                      [dimensionRelatedAccessory.id]: dimensionRelatedAccessory,
+                                    },
                                   });
                                 }
                               }}

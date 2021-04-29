@@ -673,8 +673,9 @@
       transform: translateX(-2rem);
       transition: 0.3s ease;
       background: rgba($primary-color-3, 1);
-      padding: 1rem;
+
       z-index: 3;
+      overflow: auto;
 
       @include respond-to($small-phone) {
         width: auto;
@@ -733,7 +734,10 @@
       /* -------------------- */
       &-content {
         height: 100%;
+        overflow: auto;
         color: white;
+        padding: 1rem;
+        @include customScrollbar();
         @include respond-to($small-phone) {
           font-size: 0.8rem;
         }

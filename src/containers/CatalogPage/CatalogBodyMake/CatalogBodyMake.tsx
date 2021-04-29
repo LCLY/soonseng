@@ -96,7 +96,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   localOrdersDict,
   chargesFeesArray,
   dashboardLoading,
-  localOrdersArray,
+  // localOrdersArray,
   makeFromCatalogBodyMake,
   generalAccessoriesArray,
   bodyMakeWithWheelbaseArray,
@@ -109,7 +109,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   onUpdateBodyMake,
   onDeleteBodyMake,
   onCreateBodyMake,
-  onStoreLocalOrders,
+  // onStoreLocalOrders,
   onGetChargesFees,
   onDeleteUploadImage,
   onGetSalesAccessories,
@@ -210,12 +210,14 @@ const CatalogBodyMake: React.FC<Props> = ({
     id: '',
     tireCount: -1,
     bodyObj: null,
+    discount: null,
     lengthObj: null,
-    generalAccessoriesArray: [],
-    dimensionRelatedAccessoriesArray: [],
-    bodyRelatedAccessoriesArray: [],
     bodyMakeObj: null,
-    chargesFeesArray: [],
+    insuranceDict: null,
+    chargesFeesDict: {},
+    generalAccessoriesArray: {},
+    bodyRelatedAccessoriesArray: {},
+    dimensionRelatedAccessoriesArray: {},
   });
   const [accessoriesLength, setAccessoriesLength] = useState<{ general: number; body: number; dimension: number }>({
     general: -1,
@@ -284,59 +286,115 @@ const CatalogBodyMake: React.FC<Props> = ({
   /*  method */
   /* ================================================== */
   const onGenerateQuotation = () => {
-    let tempGeneralAccessoriesArray: TReceivedAccessoryObj[] = [];
-    let tempBodyRelatedAccessoriesArray: TReceivedAccessoryObj[] = [];
-    let tempDimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[] = [];
-
+    let tempOrderObj = { ...orderObj };
     // push the accessories into each respective arrays
     if (currentCheckedGeneralAccessories) {
       for (let uniqueId in currentCheckedGeneralAccessories) {
         if (currentCheckedGeneralAccessories[uniqueId].checked === true) {
-          tempGeneralAccessoriesArray.push(currentCheckedGeneralAccessories[uniqueId].accessory);
+          tempOrderObj['generalAccessoriesArray'][currentCheckedGeneralAccessories[uniqueId].accessory.id] =
+            currentCheckedGeneralAccessories[uniqueId].accessory;
         }
       }
     }
     if (currentCheckedBodyAccessories) {
       for (let uniqueId in currentCheckedBodyAccessories) {
         if (currentCheckedBodyAccessories[uniqueId].checked === true) {
-          tempBodyRelatedAccessoriesArray.push(currentCheckedBodyAccessories[uniqueId].accessory);
+          tempOrderObj['bodyRelatedAccessoriesArray'][currentCheckedBodyAccessories[uniqueId].accessory.id] =
+            currentCheckedBodyAccessories[uniqueId].accessory;
         }
       }
     }
     if (currentCheckedDimensionAccessories) {
       for (let uniqueId in currentCheckedDimensionAccessories) {
         if (currentCheckedDimensionAccessories[uniqueId].checked === true) {
-          tempDimensionRelatedAccessoriesArray.push(currentCheckedDimensionAccessories[uniqueId].accessory);
+          tempOrderObj['dimensionRelatedAccessoriesArray'][currentCheckedDimensionAccessories[uniqueId].accessory.id] =
+            currentCheckedDimensionAccessories[uniqueId].accessory;
         }
       }
     }
 
-    if (localOrdersArray !== undefined) {
-      let copyArray = [...localOrdersArray];
-      let tempOrderObj = { ...orderObj };
-      tempOrderObj.generalAccessoriesArray = tempGeneralAccessoriesArray;
-      tempOrderObj.bodyRelatedAccessoriesArray = tempBodyRelatedAccessoriesArray;
-      tempOrderObj.dimensionRelatedAccessoriesArray = tempDimensionRelatedAccessoriesArray;
+    let totalAccessoriesLength =
+      Object.keys(tempOrderObj.generalAccessoriesArray).length +
+      Object.keys(tempOrderObj.bodyRelatedAccessoriesArray).length +
+      Object.keys(tempOrderObj.dimensionRelatedAccessoriesArray).length;
 
-      let totalAccessoriesLength =
-        tempGeneralAccessoriesArray.length +
-        tempBodyRelatedAccessoriesArray.length +
-        tempDimensionRelatedAccessoriesArray.length;
-      // push that updated orderObj with the latest accessories array
-      copyArray.push(tempOrderObj);
+    /* ============================================================= */
+    // creating the processing fees dict
+    /* ============================================================= */
 
-      onSetLocalOrdersDict({ ...localOrdersDict, [orderObj.id]: tempOrderObj });
+    let totalAccessoriesPrice = 0;
+    const getTotalPrice = (accessoriesArray: any) => {
+      return Object.values(accessoriesArray).reduce((currentTotal: number, accessoryObj: any) => {
+        return currentTotal + accessoryObj.price;
+      }, 0);
+    };
 
-      onStoreLocalOrders(copyArray);
-      const { bodyMakeObj } = tempOrderObj;
-      if (bodyMakeObj) {
-        const { make_wheelbase } = bodyMakeObj;
-        message.success(
-          `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
-        );
-      }
-      setPickAccessoryModalOpen(false);
+    let generalAccessoriesTotalPrice = getTotalPrice(tempOrderObj.generalAccessoriesArray);
+    let bodyRelatedAccessoriesTotalPrice = getTotalPrice(tempOrderObj.bodyRelatedAccessoriesArray);
+    let dimensionRelatedAccessoriesTotalPrice = getTotalPrice(tempOrderObj.dimensionRelatedAccessoriesArray);
+
+    totalAccessoriesPrice =
+      generalAccessoriesTotalPrice + bodyRelatedAccessoriesTotalPrice + dimensionRelatedAccessoriesTotalPrice;
+
+    let processingFees = Object.values(tempOrderObj.chargesFeesDict).reduce(
+      (currentTotal: number, processingFeeObj: TReceivedChargesFeesObj) => {
+        return currentTotal + processingFeeObj.price;
+      },
+      0,
+    );
+
+    let modelSubtotalPrice = 0;
+    if (tempOrderObj.bodyMakeObj) {
+      modelSubtotalPrice =
+        tempOrderObj.bodyMakeObj.make_wheelbase.make.price +
+        tempOrderObj.bodyMakeObj.price +
+        totalAccessoriesPrice +
+        processingFees;
     }
+
+    let tempModelSubtotalPrice = modelSubtotalPrice;
+    tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
+    let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
+    roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
+    roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
+
+    if (chargesFeesArray === null || chargesFeesArray === undefined) return;
+
+    let JPJEHakMilik = chargesFeesArray.filter((charges) => charges.title === 'JPJ Registration & E Hak Milik');
+
+    let insuranceDict = {
+      insurance_roadtax: {
+        id: 'insurance_roadtax',
+        title: 'Road tax (1year)',
+        price: 1015,
+      },
+      insurance_jpj: {
+        id: 'insurance_jpj',
+        title: JPJEHakMilik[0].title,
+        price: JPJEHakMilik[0].price,
+      },
+      insurance_premium: {
+        id: 'insurance_premium',
+        title: 'INSURANCE PREMIUM (windscreen included)',
+        price: roundedModelSubtotalPrice,
+      },
+    };
+
+    tempOrderObj['insuranceDict'] = insuranceDict;
+
+    onSetLocalOrdersDict({ ...localOrdersDict, [orderObj.id]: tempOrderObj });
+
+    // onStoreLocalOrders(copyArray);
+    const { bodyMakeObj } = tempOrderObj;
+    if (bodyMakeObj) {
+      const { make_wheelbase } = bodyMakeObj;
+      message.success(
+        `${make_wheelbase.wheelbase.title}mm ${bodyMakeObj.length.title}ft ${make_wheelbase.make.brand.title} ${make_wheelbase.make.series} ${make_wheelbase.make.title} ${bodyMakeObj.body.title} with ${totalAccessoriesLength} accessories added to orders!`,
+        1,
+      );
+    }
+    setPickAccessoryModalOpen(false);
+    // }
   };
 
   /* ======================================== */
@@ -1250,8 +1308,12 @@ const CatalogBodyMake: React.FC<Props> = ({
 
   useEffect(() => {
     if (chargesFeesArray) {
+      let tempChargesFeesDict = {};
+      let filteredArray = chargesFeesArray.filter((charges) => charges.title !== 'JPJ Registration & E Hak Milik');
+      // get rid of JPJ Registration for charges Fees dict
+      filteredArray.forEach((fee) => ((tempChargesFeesDict as any)[fee.id] = fee));
       setOrderObj((prevState) => {
-        return { ...prevState, chargesFeesArray: chargesFeesArray };
+        return { ...prevState, chargesFeesDict: tempChargesFeesDict };
       });
     }
   }, [chargesFeesArray]);

@@ -57,13 +57,27 @@ export interface ClearSalesStateAction {
 export type TLocalOrderObj = {
   id: string;
   tireCount: number;
+  discount: number | null;
   bodyObj: TReceivedBodyObj | null;
   lengthObj: TReceivedSalesLengthObj | null;
-  generalAccessoriesArray: TReceivedAccessoryObj[];
-  dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
-  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
   bodyMakeObj: TReceivedBodyMakeObj | null;
-  chargesFeesArray: TReceivedChargesFeesObj[];
+  // processingFeesDict: TProcessingFeesDict;
+  insuranceDict: TInsuranceDict | null;
+  chargesFeesDict: { [id: string]: TReceivedChargesFeesObj };
+  generalAccessoriesArray: { [id: string]: TReceivedAccessoryObj };
+  bodyRelatedAccessoriesArray: { [id: string]: TReceivedAccessoryObj };
+  dimensionRelatedAccessoriesArray: { [id: string]: TReceivedDimensionAccessoryObj };
+};
+
+export interface IInsurance {
+  id: string;
+  title: string;
+  price: number;
+}
+export type TInsuranceDict = {
+  insurance_roadtax: IInsurance;
+  insurance_jpj: IInsurance;
+  insurance_premium: IInsurance;
 };
 
 export interface StoreLocalOrdersAction {

@@ -63,16 +63,16 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
     // set the version of the project so we can know which version we at and what should we do at which point
     // in this point of time, at version 1, we are clearing up all the localstorage
     if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
-      onSaveProjectVersion('v1.06');
+      onSaveProjectVersion('v1.084');
     }
   }, [projectVersion, onSaveProjectVersion]);
 
   useEffect(() => {
     if (projectVersion === undefined) return;
     let projectVersionInt = projectVersion.substring(1);
-    if (parseFloat(projectVersionInt) <= 1.06) {
+    if (parseFloat(projectVersionInt) < 1.084) {
       //if the project is v1.0 then clear out the localstorage, update the version to v1.02
-      onClearLocalStorage('v1.06');
+      onClearLocalStorage('v1.084');
       persistor.purge();
     }
   }, [projectVersion, onClearLocalStorage]);
@@ -90,7 +90,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_ORDERS} component={OrdersPage} />
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
         <Route exact path={`${ROUTE_CATALOG}/:series_id/:make_detail/:make_id`} component={CatalogBodyMake} />
-        <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id/:discount?`} component={QuotationPage} />
+        <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         {/* Dashboard */}
         <Route exact path={ROUTE_DASHBOARD.users} component={UserRoles} />
@@ -121,7 +121,7 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={ROUTE_CATALOG} component={CatalogPage} />
         <Route exact path={ROUTE_TASK} component={TaskPage} />
         <Route exact path={`${ROUTE_CATALOG}/:series_id/:make_detail/:make_id`} component={CatalogBodyMake} />
-        <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id/:discount?`} component={QuotationPage} />
+        <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
         {/* authentication */}
         <Route exact path={ROUTE_LOGIN} component={LoginPage} />

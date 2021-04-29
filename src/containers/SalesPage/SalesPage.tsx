@@ -115,18 +115,20 @@ const SalesPage: React.FC<Props> = ({
     id: '',
     tireCount: -1,
     bodyObj: null,
+    discount: null,
     lengthObj: null,
-    generalAccessoriesArray: [],
-    dimensionRelatedAccessoriesArray: [],
-    bodyRelatedAccessoriesArray: [],
+    generalAccessoriesArray: {},
+    dimensionRelatedAccessoriesArray: {},
+    bodyRelatedAccessoriesArray: {},
     bodyMakeObj: null,
-    chargesFeesArray: [],
+    insuranceDict: null,
+    chargesFeesDict: {},
   });
 
   let totalAccessoriesArrayLength =
-    currentOrderObj.generalAccessoriesArray.length +
-    currentOrderObj.bodyRelatedAccessoriesArray.length +
-    currentOrderObj.dimensionRelatedAccessoriesArray.length;
+    Object.values(currentOrderObj.generalAccessoriesArray).length +
+    Object.values(currentOrderObj.bodyRelatedAccessoriesArray).length +
+    Object.values(currentOrderObj.dimensionRelatedAccessoriesArray).length;
 
   /** Current Steps of the antd steps component */
   const [currentStep, setCurrentStep] = useState(0);
