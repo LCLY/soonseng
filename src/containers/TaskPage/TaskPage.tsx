@@ -77,12 +77,8 @@ interface TaskPageProps {}
 type Props = TaskPageProps & StateProps & DispatchProps;
 
 const TaskPage: React.FC<Props> = ({
-  // loading,
-  // onGetTasks,
-  // onCreateTask,
   accessObj,
   auth_token,
-  // userInfoObj,
   successMessage,
   specificIntakeLogs,
   serviceTypesArray,
@@ -93,8 +89,7 @@ const TaskPage: React.FC<Props> = ({
   onGetUsersByRoles,
   onGetServiceTypes,
   onGetSpecificIntakeJobs,
-  // onCreateIntakeSummary,
-  // onUpdateIntakeSummary,
+  onSetSpecificIntakeLogs,
 }) => {
   /* ================================================== */
   /*  state */
@@ -109,11 +104,8 @@ const TaskPage: React.FC<Props> = ({
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
-  // const [showUpdateModal, setShowUpdateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
-  // const [specificIntakeId, setSpecificIntakeId] = useState<null | undefined | number>(null);
   const [serviceTaskDropdown, setServiceTaskDropdown] = useState<IServiceTaskDropdown>({});
   const [beforeDeleteState, setBeforeDeleteState] = useState<TUpdateTaskTableState[] | null>(null);
-  // const [showDeleteModal, setShowDeleteModal] = useState<{ [key: string]: boolean }>({ fees: false });
 
   // Forms
   const [createIntakeJobsForm] = Form.useForm();
@@ -422,6 +414,13 @@ const TaskPage: React.FC<Props> = ({
   }, [intakeSummaryArray]);
 
   useEffect(() => {
+    // whenever the page is not in update, reset the specific intake logs
+    if (currentPage !== 'update') {
+      onSetSpecificIntakeLogs(null);
+    }
+  }, [currentPage, onSetSpecificIntakeLogs]);
+
+  useEffect(() => {
     if (successMessage) {
       message.success(successMessage);
 
@@ -651,9 +650,9 @@ const TaskPage: React.FC<Props> = ({
                               <div style={{ height: '100%' }}>
                                 <div className="task__table--pickup-title">Intake Logs</div>
                                 <div className="task__collapse-div">
-                                  <Collapse accordion className="task__collapse">
-                                    {specificIntakeLogs &&
-                                      [...specificIntakeLogs].reverse().map((child, index) => (
+                                  {specificIntakeLogs ? (
+                                    <Collapse accordion className="task__collapse">
+                                      {[...specificIntakeLogs].reverse().map((child, index) => (
                                         <Panel
                                           header={
                                             <div className="task__collapse-header">
@@ -689,7 +688,25 @@ const TaskPage: React.FC<Props> = ({
                                           </div>
                                         </Panel>
                                       ))}
-                                  </Collapse>
+                                    </Collapse>
+                                  ) : (
+                                    <div className="task__collapse-spin">
+                                      <div className="lds-spinner">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -758,19 +775,17 @@ interface DispatchProps {
   onCreateIntakeSummary: typeof actions.createIntakeSummary;
   onUpdateIntakeSummary: typeof actions.updateIntakeSummary;
   onGetSpecificIntakeJobs: typeof actions.getSpecificIntakeJobs;
+  onSetSpecificIntakeLogs: typeof actions.setSpecificIntakeLogs;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
-    // onGetTasks: () => dispatch(actions.getTasks()),
-    // onDeleteTask: (task_id) => dispatch(actions.deleteTask(task_id)),
-    // onCreateTask: (taskFormData) => dispatch(actions.createTask(taskFormData)),
-    // onUpdateTask: (task_id, taskFormData) => dispatch(actions.updateTask(task_id, taskFormData)),
     onClearTaskState: () => dispatch(actions.clearTaskState()),
     onGetIntakeStatus: () => dispatch(actions.getIntakeStatus()),
     onGetServiceTypes: () => dispatch(actions.getServiceTypes()),
     onGetIntakeSummary: () => dispatch(actions.getIntakeSummary()),
     onGetUsersByRoles: (role_id, title) => dispatch(actions.getUsersByRoles(role_id, title)),
     onGetSpecificIntakeJobs: (intake_id) => dispatch(actions.getSpecificIntakeJobs(intake_id)),
+    onSetSpecificIntakeLogs: (specificIntakeLogs) => dispatch(actions.setSpecificIntakeLogs(specificIntakeLogs)),
     onCreateIntakeSummary: (intakeJobsFormData) => dispatch(actions.createIntakeSummary(intakeJobsFormData)),
     onUpdateIntakeSummary: (intake_id, intakeJobsFormData) =>
       dispatch(actions.updateIntakeSummary(intake_id, intakeJobsFormData)),

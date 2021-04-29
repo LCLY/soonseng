@@ -100,6 +100,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
   const goBackToIntakes = useCallback(() => {
     setCurrentPage('main');
+    // onSetSpecificIntakeLogs(null);
     gsap.to('.task__table-div', {
       duration: 1,
       ease: 'ease',

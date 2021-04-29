@@ -367,7 +367,7 @@ export const getUsersByRolesFailed = (errorMessage: string): AppActions => {
 /* ============================================================================================ */
 //  Set Specific Intake Logs - for the specific intake's logs on task page
 /* ============================================================================================ */
-export const setSpecificIntakeLogs = (specificIntakeLogs: IIntakeLogs[]): AppActions => {
+export const setSpecificIntakeLogs = (specificIntakeLogs: IIntakeLogs[] | null): AppActions => {
   return {
     type: actionTypes.SET_SPECIFIC_INTAKE_LOGS,
     specificIntakeLogs: specificIntakeLogs,
