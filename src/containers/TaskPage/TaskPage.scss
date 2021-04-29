@@ -55,10 +55,19 @@
     }
 
     &--pickup {
-      background: rgba(60, 59, 59, 0.392);
+      background: $dark-blue-1;
+      border: 1px solid rgba(255, 255, 255, 0.371);
       width: 30%;
-      margin-left: 1rem;
-      border-radius: 1rem;
+      // margin-left: 1rem;
+      // border-radius: 1rem;
+      &-title {
+        height: 35px;
+        color: white;
+        font-family: $font-firesans;
+        display: grid;
+        place-items: center;
+        background: $soft-red;
+      }
     }
     & .ant-table-thead tr th {
       background: $soft-red !important;
@@ -233,6 +242,121 @@
       }
       100% {
         transform: translate(24px, 0);
+      }
+    }
+  }
+
+  &__collapse {
+    border: none !important;
+
+    /* ====================================== */
+    // Header of the panel
+    /* ====================================== */
+    & .ant-collapse-header {
+      color: white !important;
+      font-family: $font-pragati;
+      font-size: 1.3rem;
+      & .anticon {
+        font-size: 1rem !important;
+      }
+    }
+
+    // the content of the expanded panels/dropdown
+    & .ant-collapse-item {
+      border-top: 1px solid grey;
+      border-left: none;
+      border-right: none;
+      font-size: 1.4rem;
+
+      &:not(:last-child) {
+        border-bottom: none;
+      }
+      &:last-child {
+        border-bottom: 1px solid grey;
+      }
+    }
+    & .ant-collapse-item:nth-child(odd) {
+      background: $dark-blue-2;
+    }
+    & .ant-collapse-item:nth-child(even) {
+      background: $dark-blue-3;
+    }
+
+    & .ant-collapse-content-box {
+      color: white;
+      font-family: $font-pragati;
+      background: #203052;
+      padding: 1rem 0.5rem 0.5rem 0.5rem !important;
+    }
+    &-div {
+      overflow: auto;
+      // since height of title is 35px, needa minus its height with 35px
+      height: calc(100% - 35px);
+      @include customScrollbar(0.2rem, 0.1rem, 1rem, white, rgba(255, 255, 255, 0.337));
+    }
+
+    /* ================================ */
+    // the title/header of each panel
+    /* ================================ */
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      // the title on the left
+      &-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: calc(100% - 6rem);
+      }
+
+      // the time on the right
+      &-time {
+        display: flex;
+        align-items: center;
+        & .fa-clock {
+          margin-right: 0.5rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    /* ================================ */
+    // the content of within the expanded panel
+    /* ================================ */
+    &-content {
+      background: $form-items-grey;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px dashed rgba(255, 255, 255, 0.392);
+    }
+
+    /* ================================ */
+    // row of note, description and user
+    /* ================================ */
+    &-row {
+      display: flex;
+      // align-items: center;
+      line-height: normal;
+      &-label {
+        width: 6.5rem;
+      }
+      &-description {
+        // display: flex;
+        width: calc(100% - 6.5rem);
+        word-wrap: break-word;
+        max-height: 10rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        @include customScrollbar(0.3rem, 0.3rem, 1rem, $soft-red, white);
+      }
+      &--user {
+        & .fa-user {
+          font-size: 0.8rem;
+          margin-right: 0.5rem;
+        }
+        justify-content: flex-end;
       }
     }
   }

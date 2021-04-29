@@ -255,6 +255,7 @@ export interface IIntakeLogs {
   created_by: string;
   title: string;
   description: string;
+  created_at: string;
 }
 
 export type TReceivedSpecificIntakeJobsObj = {

@@ -18,7 +18,8 @@ import axios from 'axios';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Button, Layout, Form, Table, message, Tooltip } from 'antd';
+import { Button, Layout, Collapse, Form, Table, message, Tooltip } from 'antd';
+
 /* Util */
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
@@ -35,6 +36,8 @@ import {
 import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 import { TUserAccess } from 'src/store/types/auth';
+
+const { Panel } = Collapse;
 
 export type TTaskTableState = {
   key: string;
@@ -645,7 +648,50 @@ const TaskPage: React.FC<Props> = ({
                             {currentPage === 'main' || currentPage === 'create' ? (
                               <p> Ready for pickup</p>
                             ) : (
-                              <div>{specificIntakeLogs && specificIntakeLogs.map((child) => <p>{child.title}</p>)}</div>
+                              <div style={{ height: '100%' }}>
+                                <div className="task__table--pickup-title">Intake Logs</div>
+                                <div className="task__collapse-div">
+                                  <Collapse accordion className="task__collapse">
+                                    {specificIntakeLogs &&
+                                      [...specificIntakeLogs].reverse().map((child, index) => (
+                                        <Panel
+                                          header={
+                                            <div className="task__collapse-header">
+                                              <div className="task__collapse-header-title">
+                                                {child.title === '' ? '-' : child.title}
+                                              </div>
+                                              <div className="task__collapse-header-time">
+                                                <i className="fas fa-clock"></i>
+                                                {moment(child.created_at).format('HH:mm:A')}
+                                              </div>
+                                            </div>
+                                          }
+                                          key={`log${index}`}
+                                        >
+                                          <section className="task__collapse-content">
+                                            <div className="task__collapse-row">
+                                              <div className="task__collapse-row-label">Note:</div>
+                                              <div className="task__collapse-row-description">
+                                                {child.description === '' ? '-' : child.description}
+                                              </div>
+                                            </div>
+                                            <div className="task__collapse-row">
+                                              <div className="task__collapse-row-label">Updated at:</div>
+                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm:A')}</div>
+                                            </div>
+                                          </section>
+                                          <div className="task__collapse-row task__collapse-row--user">
+                                            <div>
+                                              <i className="fas fa-user"></i>
+                                            </div>
+                                            &nbsp;
+                                            <div>{child.created_by}</div>
+                                          </div>
+                                        </Panel>
+                                      ))}
+                                  </Collapse>
+                                </div>
+                              </div>
                             )}
                           </div>
                         </div>
