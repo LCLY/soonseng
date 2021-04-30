@@ -74,6 +74,7 @@ const signInFailed = (state: AuthInitialState, action: AppActions) => {
 /* ============================================================================================ */
 // remove the auth token and resets the access obj all back to false
 const signOut = (state: AuthInitialState, _action: AppActions) => {
+  localStorage.clear();
   return updateObject(state, {
     auth_token: null,
     userInfoObj: null,

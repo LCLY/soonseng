@@ -1,0 +1,32 @@
+.userroles {
+  &__access {
+    &-text {
+      display: inline-block;
+      width: 15rem;
+    }
+    &-outerdiv {
+      & .fa-check-circle {
+        color: $success-color-4;
+      }
+
+      & .fa-times-circle {
+        color: $primary-color-2;
+      }
+    }
+  }
+
+  &__checkbox {
+    &-outerdiv {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    &-row {
+      display: flex;
+      align-items: center;
+    }
+
+    &-col {
+      width: 50%;
+    }
+  }
+}

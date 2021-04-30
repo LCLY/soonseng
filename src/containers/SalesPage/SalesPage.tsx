@@ -115,18 +115,20 @@ const SalesPage: React.FC<Props> = ({
     id: '',
     tireCount: -1,
     bodyObj: null,
+    discount: null,
     lengthObj: null,
-    generalAccessoriesArray: [],
-    dimensionRelatedAccessoriesArray: [],
-    bodyRelatedAccessoriesArray: [],
+    generalAccessoriesArray: {},
+    dimensionRelatedAccessoriesArray: {},
+    bodyRelatedAccessoriesArray: {},
     bodyMakeObj: null,
-    chargesFeesArray: [],
+    insuranceDict: null,
+    chargesFeesDict: {},
   });
 
   let totalAccessoriesArrayLength =
-    currentOrderObj.generalAccessoriesArray.length +
-    currentOrderObj.bodyRelatedAccessoriesArray.length +
-    currentOrderObj.dimensionRelatedAccessoriesArray.length;
+    Object.values(currentOrderObj.generalAccessoriesArray).length +
+    Object.values(currentOrderObj.bodyRelatedAccessoriesArray).length +
+    Object.values(currentOrderObj.dimensionRelatedAccessoriesArray).length;
 
   /** Current Steps of the antd steps component */
   const [currentStep, setCurrentStep] = useState(0);
@@ -502,8 +504,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetSalesBodies: (length_id, tire) => dispatch(actions.getSalesBodies(length_id, tire)),
     onRemoveAnOrder: (orderId, localOrdersArray) => dispatch(actions.removeAnOrder(orderId, localOrdersArray)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
-    onGetSalesBodyMakes: (length_id, tire, body_id, auth_token) =>
-      dispatch(actions.getSalesBodyMakes(length_id, tire, body_id, auth_token)),
+    onGetSalesBodyMakes: (length_id, tire, body_id) => dispatch(actions.getSalesBodyMakes(length_id, tire, body_id)),
   };
 };
 

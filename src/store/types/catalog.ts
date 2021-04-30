@@ -1,5 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
-import { TReceivedBodyMakeObj, TReceivedBrandObj, TReceivedMakeObj, TReceivedWheelbaseObj } from './dashboard';
+import {
+  TReceivedBodyMakeObj,
+  TReceivedBrandObj,
+  TReceivedImageObj,
+  TReceivedMakeObj,
+  TReceivedWheelbaseObj,
+} from './dashboard';
 
 // initialState for reducers
 export interface CatalogInitialState {
@@ -28,8 +34,9 @@ export interface ClearCatalogStateAction {
 export type TCatalogSeries = {
   id: number;
   title: string;
-  brand_id: number;
+  brand: number;
   available: boolean;
+  images: TReceivedImageObj[];
   makes: TReceivedMakeObj[];
 };
 export type TReceivedCatalogMakeObj = {
@@ -39,7 +46,6 @@ export type TReceivedCatalogMakeObj = {
 
 export interface GetCatalogMakesAction {
   type: typeof actionTypes.GET_CATALOG_MAKES;
-  auth_token: string | null;
 }
 export interface GetCatalogMakesStartAction {
   type: typeof actionTypes.GET_CATALOG_MAKES_START;
@@ -59,7 +65,7 @@ export interface GetCatalogMakesFailedAction {
 
 // catalog body make array contains a main wheelbase object and a body make array
 export type TReceivedCatalogBodyMake = {
-  make_wheelbase: { id: number; wheelbase: TReceivedWheelbaseObj };
+  make_wheelbase: { id: number; original: boolean; price: number; wheelbase: TReceivedWheelbaseObj };
   body_makes: TReceivedBodyMakeObj[];
 };
 

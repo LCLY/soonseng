@@ -2,7 +2,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import axios from 'axios';
-import { setAxiosHeaderToken, setPromiseError } from 'src/shared/Utils';
+import { getAxiosHeaderToken, setPromiseError } from 'src/shared/Utils';
 
 /* ================================================================== */
 //   Catalog
@@ -10,15 +10,13 @@ import { setAxiosHeaderToken, setPromiseError } from 'src/shared/Utils';
 /* ------------------------------- */
 //   Make
 /* ------------------------------- */
-export function* getCatalogMakesSaga(action: AppActions) {
+export function* getCatalogMakesSaga(_action: AppActions) {
   yield put(actions.getCatalogMakesStart());
-  // Setting Axios header token config
-  let config = setAxiosHeaderToken(action);
 
   let url = process.env.REACT_APP_API + `/pages/catalog/makes`;
 
-  try {
-    let response = yield axios.get(url, config);
+try {
+    let response = yield axios.get(url, getAxiosHeaderToken());
     yield put(actions.getCatalogMakesSucceed(response.data.makes));
   } catch (error) {
     if (error.response) {

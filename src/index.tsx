@@ -47,7 +47,7 @@ const composeEnhancers =
     : null || compose;
 
 // you want to store only a subset of your state of reducer one
-const saveSalesSubsetFilter = createFilter('sales', ['localOrdersArray']);
+const saveSalesSubsetFilter = createFilter('sales', ['localOrdersDict']);
 const saveAuthSubsetFilter = createFilter('auth', ['auth_token', 'accessObj', 'userInfoObj']);
 const saveGeneralSubsetFilter = createFilter('general', ['projectVersion']);
 

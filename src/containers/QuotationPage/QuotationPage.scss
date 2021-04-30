@@ -4,6 +4,7 @@
     width: 95rem;
     padding: 3rem;
     background: white;
+    margin-bottom: 3rem;
 
     @include respond-to($small-phone) {
       width: 95%;
@@ -233,21 +234,19 @@
   // logo on both sides
   /* ===================== */
   &__logo {
-    height: 100%;
-    width: 12.5rem;
     object-fit: cover;
-    border: 1px solid $translucent-grey;
+    // border: 1px solid $translucent-grey;
 
     @include respond-to($small-phone) {
-      height: auto;
-      width: 13vw;
+      height: 4rem;
+      width: 4.5rem;
     }
     @include respond-to($phone-only) {
-      height: auto;
+      height: 10rem;
       width: 10rem;
     }
     @include respond-to($tablet-portrait-up) {
-      height: auto;
+      height: 10rem;
       width: 12.5rem;
     }
   }
@@ -353,6 +352,7 @@
   &__orderedlist {
     margin-left: 2rem;
     margin-bottom: 0.5rem;
+    cursor: pointer;
 
     @include respond-to($small-phone) {
       margin-left: 1rem;
@@ -685,6 +685,70 @@
       margin-top: 0.5rem;
       font-weight: bolder;
       // font-family: $font-firesans;
+    }
+  }
+
+  &__loader {
+    &-div {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      @include respond-to($small-phone) {
+        height: 80vh;
+      }
+      @include respond-to($phone-only) {
+        height: 80vh;
+      }
+      @include respond-to($tablet-portrait-up) {
+        height: 80vh;
+      }
+      @include respond-to($tablet-landscape-up) {
+        height: 100vh;
+      }
+    }
+  }
+
+  /* ============================ */
+  // price edit mode
+  /* ============================ */
+  &__edit {
+    &-top {
+      position: fixed;
+      left: 0;
+      width: 100vw;
+      height: 10vh;
+      background: rgb(6, 24, 60);
+      z-index: 2000;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      // place-items: center;
+      font-family: $font-bebasneue;
+      font-size: 2rem;
+      padding: 0 2rem;
+
+      &-title {
+        transform: translateY(2px);
+      }
+
+      &-btn {
+        font-family: $font-firesans;
+        padding: 0 1rem !important;
+        height: 2.5rem !important;
+        font-size: 1.3rem !important;
+        &--save {
+          padding: 0 1.5rem !important;
+          margin-left: 1rem;
+        }
+      }
+    }
+
+    &-price {
+      width: 11rem;
+      text-align: right;
+      border: 1.5px dashed rgba(94, 94, 94, 0.611);
+      padding: 0 0.5rem;
     }
   }
 }

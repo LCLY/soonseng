@@ -40,19 +40,15 @@ export const findByTestAttribute = (component: any, attribute: string) => {
 /**
  * Setting token into the header config for axios
  * If user is not authenticated, the bearer token will become Bearer null
- * @param {AppActions} action
  * @return {*}
  */
 /* ========================================== */
-export const setAxiosHeaderToken = (action: AppActions) => {
-  let config = {};
-  if ('auth_token' in action) {
-    config = {
-      headers: {
-        Authorization: 'Bearer ' + action.auth_token,
-      },
-    };
-  }
+export const getAxiosHeaderToken = () => {
+  let config = {
+    headers: {
+      Authorization: 'Bearer ' + localStorage.getItem('Authorization'),
+    },
+  };
   return config;
 };
 
@@ -329,25 +325,6 @@ export const onPopulateImagesArray = (
 
 /* =========================================================== */
 /**
- * Create header config that contains token
- * @param {AppActions} action
- * @return {*}
- */
-/* =========================================================== */
-export const configAuthToken = (action: AppActions) => {
-  let config = {};
-  if ('auth_token' in action) {
-    config = {
-      headers: {
-        Authorization: 'Bearer ' + action.auth_token,
-      },
-    };
-  }
-  return config;
-};
-
-/* =========================================================== */
-/**
  * This util function is gonna take in a huge array and break it
  * into smaller chunks of array
  * the size will determine the length of the smaller arrays
@@ -393,6 +370,28 @@ export const emptyStringWhenUndefinedOrNull = (incomingString: string): string =
     return '';
   }
   return incomingString;
+};
+
+/* =========================================================== */
+/**
+ * A helper function that will return desired string or number if
+ * the value is undefined or null
+ * return the value itself otherwise
+ * @param {any} incomingData
+ * @return {*}  {string}
+ */
+/* =========================================================== */
+export const desiredValueWhenUndefinedOrNull = (incomingData: any, desiredValue: string | number) => {
+  if (incomingData === undefined || incomingData === null) {
+    return desiredValue;
+  }
+  if (
+    (typeof incomingData === 'string' && incomingData === '') ||
+    (typeof incomingData === 'number' && incomingData === 0)
+  ) {
+    return desiredValue;
+  }
+  return incomingData;
 };
 /* =========================================================== */
 /**

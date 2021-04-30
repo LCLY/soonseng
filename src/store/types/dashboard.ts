@@ -1,5 +1,41 @@
 import * as actionTypes from 'src/store/actions/actionTypes';
 // Central hub for all the types and actionTypes
+
+import {
+  CreateRoleAction,
+  CreateRoleFailedAction,
+  CreateRoleStartAction,
+  CreateRoleSucceedAction,
+  CreateUserAction,
+  CreateUserFailedAction,
+  CreateUserStartAction,
+  CreateUserSucceedAction,
+  DeleteRoleAction,
+  DeleteRoleFailedAction,
+  DeleteRoleStartAction,
+  DeleteRoleSucceedAction,
+  DeleteUserAction,
+  DeleteUserFailedAction,
+  DeleteUserStartAction,
+  DeleteUserSucceedAction,
+  GetRolesAction,
+  GetRolesFailedAction,
+  GetRolesStartAction,
+  GetRolesSucceedAction,
+  GetUsersAction,
+  GetUsersFailedAction,
+  GetUsersStartAction,
+  GetUsersSucceedAction,
+  UpdateRoleAction,
+  UpdateRoleFailedAction,
+  UpdateRoleStartAction,
+  UpdateRoleSucceedAction,
+  UpdateUserAction,
+  UpdateUserFailedAction,
+  UpdateUserStartAction,
+  UpdateUserSucceedAction,
+} from 'src/store/types/dashboard/users';
+
 import {
   CreateChargesFeesAction,
   CreateChargesFeesFailedAction,
@@ -142,38 +178,57 @@ import {
 } from 'src/store/types/dashboard/bodymake';
 
 import {
-  CreateJobStatusAction,
-  CreateJobStatusFailedAction,
-  CreateJobStatusStartAction,
-  CreateJobStatusSucceedAction,
+  CreateIntakeStatusAction,
+  CreateIntakeStatusFailedAction,
+  CreateIntakeStatusStartAction,
+  CreateIntakeStatusSucceedAction,
+  DeleteIntakeStatusAction,
+  DeleteIntakeStatusFailedAction,
+  DeleteIntakeStatusStartAction,
+  DeleteIntakeStatusSucceedAction,
+  GetIntakeStatusAction,
+  GetIntakeStatusFailedAction,
+  GetIntakeStatusStartAction,
+  GetIntakeStatusSucceedAction,
+  UpdateIntakeStatusAction,
+  UpdateIntakeStatusFailedAction,
+  UpdateIntakeStatusStartAction,
+  UpdateIntakeStatusSucceedAction,
   CreateServiceTypesAction,
   CreateServiceTypesFailedAction,
   CreateServiceTypesStartAction,
   CreateServiceTypesSucceedAction,
-  DeleteJobStatusAction,
-  DeleteJobStatusFailedAction,
-  DeleteJobStatusStartAction,
-  DeleteJobStatusSucceedAction,
   DeleteServiceTypesAction,
   DeleteServiceTypesFailedAction,
   DeleteServiceTypesStartAction,
   DeleteServiceTypesSucceedAction,
-  GetJobStatusAction,
-  GetJobStatusFailedAction,
-  GetJobStatusStartAction,
-  GetJobStatusSucceedAction,
   GetServiceTypesAction,
   GetServiceTypesFailedAction,
   GetServiceTypesStartAction,
   GetServiceTypesSucceedAction,
-  UpdateJobStatusAction,
-  UpdateJobStatusFailedAction,
-  UpdateJobStatusStartAction,
-  UpdateJobStatusSucceedAction,
   UpdateServiceTypesAction,
   UpdateServiceTypesFailedAction,
   UpdateServiceTypesStartAction,
   UpdateServiceTypesSucceedAction,
+  /* -------------------- */
+  // Task Title
+  /* -------------------- */
+  CreateServiceTaskAction,
+  CreateServiceTaskStartAction,
+  CreateServiceTaskSucceedAction,
+  CreateServiceTaskFailedAction,
+  GetServiceTasksAction,
+  GetServiceTasksStartAction,
+  GetServiceTasksSucceedAction,
+  GetServiceTasksFailedAction,
+  UpdateServiceTaskAction,
+  UpdateServiceTaskStartAction,
+  UpdateServiceTaskSucceedAction,
+  UpdateServiceTaskFailedAction,
+  DeleteServiceTaskAction,
+  DeleteServiceTaskStartAction,
+  DeleteServiceTaskSucceedAction,
+  DeleteServiceTaskFailedAction,
 } from 'src/store/types/dashboard/jobmonitoring';
 
 import {
@@ -265,6 +320,7 @@ import {
   DeleteMakeWheelbaseFailedAction,
 } from 'src/store/types/dashboard/make';
 import { PURGE } from 'redux-persist';
+import { TReceivedUserInfoObj } from './auth';
 
 // initialState for reducers
 export interface DashboardInitialState {
@@ -313,9 +369,14 @@ export interface DashboardInitialState {
   readonly imagesUploaded?: boolean;
   readonly imagesArray?: TReceivedImageObj[] | null;
   // job status array
-  readonly jobStatusArray?: TReceivedJobStatusObj[] | null;
+  readonly intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   // service types array
   readonly serviceTypesArray?: TReceivedServiceTypesObj[] | null;
+  // task titles array
+  readonly serviceTasksArray?: TReceivedServiceTaskObj[] | null;
+  // user/roles related
+  readonly usersArray?: TReceivedUserInfoObj[] | null;
+  readonly userRolesArray?: TReceivedUserRolesObj[] | null;
 }
 
 /* =============================================================================================== */
@@ -398,6 +459,21 @@ export interface DeleteUploadImageFailedAction {
 
 // All the general types used by the actions
 
+/* =============================================================================================== */
+// User Roles
+/* =============================================================================================== */
+// type
+export type TReceivedUserRolesObj = {
+  id: number;
+  title: string;
+  description: string;
+  priceSalesPage: boolean;
+  fullSalesPage: boolean;
+  viewSalesDashboard: boolean;
+  editSalesDashboard: boolean;
+  salesmenDashboard: boolean;
+  adminDashboard: boolean;
+};
 /* =============================================================================================== */
 // Standard Charges and Fees
 /* =============================================================================================== */
@@ -507,8 +583,9 @@ export type TReceivedMakeObj = {
 export type TReceivedSeriesObj = {
   id: number;
   title: string;
-  brand_id: number;
+  brand: number;
   available: boolean;
+  images: TReceivedImageObj[];
 };
 
 /* ---------------------------------------- */
@@ -529,6 +606,8 @@ export type TReceivedWheelbaseObj = {
 // type
 export type TReceivedMakeWheelbaseObj = {
   id: number;
+  price: number;
+  original: boolean;
   make: TReceivedMakeObj;
   wheelbase: TReceivedWheelbaseObj;
 };
@@ -640,10 +719,10 @@ export type TReceivedBodyMakeAccessoryObj = {
 };
 
 /* ------------------------------------------- */
-// Job Status
+// Intake Status
 /* ------------------------------------------- */
 /* types */
-export type TReceivedJobStatusObj = {
+export type TReceivedIntakeStatusObj = {
   id: number;
   title: string;
   description: string;
@@ -658,6 +737,23 @@ export type TReceivedServiceTypesObj = {
   title: string;
   description: string;
 };
+/* ------------------------------------------- */
+// Task Title
+/* ------------------------------------------- */
+
+export type TReceivedServiceTaskObj = {
+  id: number;
+  title: string;
+  description: string | null;
+  service_type: TReceivedServiceTypesObj;
+};
+
+export interface IServiceTaskFormData {
+  title: string;
+  description: string;
+  service_type_id: number;
+}
+
 /* ================================================================================================= */
 // Combine and export all action types
 /* ================================================================================================= */
@@ -677,6 +773,43 @@ export type DashboardActionTypes =
   | DeleteUploadImageStartAction
   | DeleteUploadImageSucceedAction
   | DeleteUploadImageFailedAction
+  /* ======================================================================== */
+  // User/Roles
+  /* ====================================================================== */
+  // users
+  | GetUsersAction
+  | GetUsersFailedAction
+  | GetUsersStartAction
+  | GetUsersSucceedAction
+  | CreateUserAction
+  | CreateUserFailedAction
+  | CreateUserStartAction
+  | CreateUserSucceedAction
+  | DeleteUserAction
+  | DeleteUserFailedAction
+  | DeleteUserStartAction
+  | DeleteUserSucceedAction
+  | UpdateUserAction
+  | UpdateUserFailedAction
+  | UpdateUserStartAction
+  | UpdateUserSucceedAction
+  // Roles
+  | GetRolesAction
+  | GetRolesFailedAction
+  | GetRolesStartAction
+  | GetRolesSucceedAction
+  | CreateRoleAction
+  | CreateRoleFailedAction
+  | CreateRoleStartAction
+  | CreateRoleSucceedAction
+  | DeleteRoleAction
+  | DeleteRoleFailedAction
+  | DeleteRoleStartAction
+  | DeleteRoleSucceedAction
+  | UpdateRoleAction
+  | UpdateRoleFailedAction
+  | UpdateRoleStartAction
+  | UpdateRoleSucceedAction
   /* ======================================================================== */
   // Standard Charges and fees
   /* ====================================================================== */
@@ -922,23 +1055,23 @@ export type DashboardActionTypes =
   /* ======================================================================= */
   // Job monitoring page
   /* ======================================================================= */
-  /* Job Status */
-  | CreateJobStatusAction
-  | CreateJobStatusStartAction
-  | CreateJobStatusFailedAction
-  | CreateJobStatusSucceedAction
-  | GetJobStatusAction
-  | GetJobStatusStartAction
-  | GetJobStatusFailedAction
-  | GetJobStatusSucceedAction
-  | DeleteJobStatusAction
-  | DeleteJobStatusStartAction
-  | DeleteJobStatusFailedAction
-  | DeleteJobStatusSucceedAction
-  | UpdateJobStatusAction
-  | UpdateJobStatusStartAction
-  | UpdateJobStatusFailedAction
-  | UpdateJobStatusSucceedAction
+  /* Intake Status */
+  | CreateIntakeStatusAction
+  | CreateIntakeStatusStartAction
+  | CreateIntakeStatusFailedAction
+  | CreateIntakeStatusSucceedAction
+  | GetIntakeStatusAction
+  | GetIntakeStatusStartAction
+  | GetIntakeStatusFailedAction
+  | GetIntakeStatusSucceedAction
+  | DeleteIntakeStatusAction
+  | DeleteIntakeStatusStartAction
+  | DeleteIntakeStatusFailedAction
+  | DeleteIntakeStatusSucceedAction
+  | UpdateIntakeStatusAction
+  | UpdateIntakeStatusStartAction
+  | UpdateIntakeStatusFailedAction
+  | UpdateIntakeStatusSucceedAction
   /* Service Types */
   | CreateServiceTypesAction
   | CreateServiceTypesStartAction
@@ -955,4 +1088,21 @@ export type DashboardActionTypes =
   | DeleteServiceTypesAction
   | DeleteServiceTypesStartAction
   | DeleteServiceTypesFailedAction
-  | DeleteServiceTypesSucceedAction;
+  | DeleteServiceTypesSucceedAction
+  /* Service Task title */
+  | CreateServiceTaskAction
+  | CreateServiceTaskStartAction
+  | CreateServiceTaskSucceedAction
+  | CreateServiceTaskFailedAction
+  | GetServiceTasksAction
+  | GetServiceTasksStartAction
+  | GetServiceTasksSucceedAction
+  | GetServiceTasksFailedAction
+  | UpdateServiceTaskAction
+  | UpdateServiceTaskStartAction
+  | UpdateServiceTaskSucceedAction
+  | UpdateServiceTaskFailedAction
+  | DeleteServiceTaskAction
+  | DeleteServiceTaskStartAction
+  | DeleteServiceTaskSucceedAction
+  | DeleteServiceTaskFailedAction;

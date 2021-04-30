@@ -4,18 +4,17 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { handleKeyDown } from 'src/shared/Utils';
-import TextArea from 'antd/lib/input/TextArea';
-interface FeesFormItemsProps {
-  crud: 'create' | 'update' | 'delete';
+interface CommitIntakeFormItemsProps {
+  crud: 'create' | 'update';
   /** The form instance from antd  */
   antdForm: FormInstance<any>;
   /** onFinish method when user click ok*/
   onFinish: (values: any) => void;
 }
 
-type Props = FeesFormItemsProps;
+type Props = CommitIntakeFormItemsProps;
 
-const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
+const CommitIntakeFormItems: React.FC<Props> = ({ antdForm, onFinish }) => {
   return (
     <>
       <Form
@@ -28,34 +27,30 @@ const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
           if (onFinish !== undefined) onFinish(values);
         }}
       >
+        {/* The rest of the form items */}
         <Form.Item
           className="make__form-item"
           label="Title"
-          name="title"
-          rules={[{ required: true, message: 'Input title here!' }]}
+          name="intakeCommitTitle"
+          rules={[{ required: true, message: 'Input commit message here!' }]}
         >
-          <Input placeholder="Type title here" />
+          <Input placeholder="Type commit message here" />
         </Form.Item>
         <Form.Item
           className="make__form-item"
           label="Description"
-          name="description"
-          rules={[{ required: false, message: 'Input description here!' }]}
+          name="intakeCommitDescription"
+          rules={[{ required: true, message: 'Input commit description here!' }]}
         >
-          <TextArea rows={3} placeholder="Type description here" />
+          <Input placeholder="Type commit description here" />
         </Form.Item>
 
-        {/* Add this part for update modal form only */}
-        {crud === 'update' && (
-          <>
-            <Form.Item hidden name="id" rules={[{ required: true }]}>
-              <Input />
-            </Form.Item>
-          </>
-        )}
+        <Form.Item hidden name="userId" rules={[{ required: true, message: 'Required user id!' }]}>
+          <Input />
+        </Form.Item>
       </Form>
     </>
   );
 };
 
-export default FeesFormItems;
+export default CommitIntakeFormItems;

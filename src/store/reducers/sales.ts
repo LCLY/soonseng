@@ -24,6 +24,7 @@ const initialState: SalesInitialState = {
   salesBrandsArray: null,
   // local orders array containing multiple objects inside
   localOrdersArray: [],
+  localOrdersDict: {},
   // others
   errorMessage: null,
   successMessage: null,
@@ -60,6 +61,14 @@ export const storeLocalOrders = (state: SalesInitialState, action: AppActions) =
   if ('localOrdersArray' in action) {
     return updateObject(state, {
       localOrdersArray: action.localOrdersArray,
+    });
+  }
+  return state;
+};
+export const setLocalOrdersDict = (state: SalesInitialState, action: AppActions) => {
+  if ('localOrdersDict' in action) {
+    return updateObject(state, {
+      localOrdersDict: action.localOrdersDict,
     });
   }
   return state;
@@ -244,6 +253,8 @@ const reducer: Reducer<SalesInitialState, AppActions> = (state = initialState, a
     //  Store local orders
     case actionTypes.STORE_LOCAL_ORDERS:
       return storeLocalOrders(state, action);
+    case actionTypes.SET_LOCAL_ORDERS_DICT:
+      return setLocalOrdersDict(state, action);
     //  Remove a local order
     case actionTypes.REMOVE_AN_ORDER:
       return removeAnOrder(state, action);

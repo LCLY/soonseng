@@ -5,7 +5,7 @@ import { Form, Input } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { handleKeyDown } from 'src/shared/Utils';
 import TextArea from 'antd/lib/input/TextArea';
-interface FeesFormItemsProps {
+interface ServiceTypesFormItemsProps {
   crud: 'create' | 'update' | 'delete';
   /** The form instance from antd  */
   antdForm: FormInstance<any>;
@@ -13,9 +13,9 @@ interface FeesFormItemsProps {
   onFinish: (values: any) => void;
 }
 
-type Props = FeesFormItemsProps;
+type Props = ServiceTypesFormItemsProps;
 
-const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
+const ServiceTypesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
   return (
     <>
       <Form
@@ -58,4 +58,4 @@ const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
   );
 };
 
-export default FeesFormItems;
+export default ServiceTypesFormItems;

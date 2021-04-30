@@ -16,5 +16,6 @@ export const STEPS_OVERVIEW = 'Overview';
 export const UPLOAD_TO_MAKE = 'Make';
 export const UPLOAD_TO_BRAND = 'Brand';
 export const UPLOAD_TO_BODY = 'Body';
+export const UPLOAD_TO_SERIES = 'Series';
 export const UPLOAD_TO_BODY_MAKE = 'BodyMake';
 export const UPLOAD_TO_ACCESSORY = 'Accessory';
