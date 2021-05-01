@@ -382,34 +382,35 @@ const QuotationComponent: React.FC<Props> = ({
                             </div>
                           </div>
                         </li>
-                        {!currentOrderObj.bodyMakeObj.make_wheelbase.original && (
-                          <li>
-                            <div className={`quotation__orderedlist-row`}>
-                              <div>UBS Extension Price</div>
-                              <div>
-                                {inEditPriceMode ? (
-                                  <QuotationPriceInput
-                                    tempEditChanges={tempEditChanges}
-                                    onSetEditChanges={onSetEditChanges}
-                                    indexKey={'bodyMakeObj.make_wheelbase.price'}
-                                  />
-                                ) : (
-                                  <>
-                                    {currentOrderObj.bodyMakeObj.price && currentOrderObj.bodyMakeObj.price !== 0 ? (
-                                      <NumberFormat
-                                        displayType={'text'}
-                                        thousandSeparator={true}
-                                        value={currentOrderObj.bodyMakeObj.make_wheelbase.price.toFixed(2)}
-                                      />
-                                    ) : (
-                                      <span className="sales__overview-dash">-</span>
-                                    )}
-                                  </>
-                                )}
+                        {!currentOrderObj.bodyMakeObj.make_wheelbase.original &&
+                          currentOrderObj.bodyMakeObj.make_wheelbase.price !== 0 && (
+                            <li>
+                              <div className={`quotation__orderedlist-row`}>
+                                <div>UBS Extension Price</div>
+                                <div>
+                                  {inEditPriceMode ? (
+                                    <QuotationPriceInput
+                                      tempEditChanges={tempEditChanges}
+                                      onSetEditChanges={onSetEditChanges}
+                                      indexKey={'bodyMakeObj.make_wheelbase.price'}
+                                    />
+                                  ) : (
+                                    <>
+                                      {currentOrderObj.bodyMakeObj.price && currentOrderObj.bodyMakeObj.price !== 0 ? (
+                                        <NumberFormat
+                                          displayType={'text'}
+                                          thousandSeparator={true}
+                                          value={currentOrderObj.bodyMakeObj.make_wheelbase.price.toFixed(2)}
+                                        />
+                                      ) : (
+                                        <span className="sales__overview-dash">-</span>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </li>
-                        )}
+                            </li>
+                          )}
 
                         {/* Accessories */}
                         <>

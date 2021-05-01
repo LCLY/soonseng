@@ -583,7 +583,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
 
             <section className="createspecificintake__section-description">
               <div className="createspecificintake__section-description-outerdiv">
-                <span className="createspecificintake__section-description-text">Note:</span>
+                <span className="createspecificintake__section-description-text">Description:</span>
                 <Form.Item
                   // label="Description"
                   name={`description`}

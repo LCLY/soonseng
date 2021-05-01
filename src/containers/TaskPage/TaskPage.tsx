@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useContext, useRef, MutableRefObject } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useContext, useRef, MutableRefObject } from 'react';
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
+import MobileTaskTable from './MobileTaskTable/MobileTaskTable';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
-// import IntakeJobsModal from 'src/components/Modal/IntakeJobsModal/IntakeJobsModal';
 import CreateSpecificIntake from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
 import UpdateSpecificIntake, {
   TUpdateTaskTableState,
@@ -25,6 +25,7 @@ import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import { ActionCableContext } from 'src/index';
 import * as actions from 'src/store/actions/index';
+import { TaskPageContext } from './TaskPageContext';
 import {
   // IIntakeJobsFormData,
   IIntakeLogs,
@@ -51,7 +52,7 @@ export type TTaskTableState = {
   assign: number[];
 };
 
-type TIntakeTableState = {
+export type TIntakeTableState = {
   key: string;
   dateTimeIn: any;
   createdAt: string;
@@ -248,14 +249,15 @@ const TaskPage: React.FC<Props> = ({
   /*  method */
   /* ================================================== */
 
-  const goToUpdateSpecificIntake = () => {
+  const goToUpdateSpecificIntake = useCallback(() => {
     setCurrentPage('update');
     gsap.to('.task__table-div', {
       duration: 1,
       ease: 'ease',
       x: '-100%',
     });
-  };
+  }, []);
+
   const goToCreateSpecificIntake = () => {
     setCurrentPage('create');
     gsap.to('.task__table-div', {
@@ -265,81 +267,30 @@ const TaskPage: React.FC<Props> = ({
     });
   };
 
-  // const onCreateIntakeAndJobsFinish = (values: {
-  //   bay: string;
-  //   pickup: boolean;
-  //   description: string;
-  //   assign: number[];
-  //   intakeStatus: number;
-  //   registrationNumber: string;
-  // }) => {
-  //   if (userInfoObj === null || userInfoObj === undefined) return;
-  //   let resultJobs: IJobFormData[] = [];
-  //   (taskTableState as any).forEach((task: any, index: number) => {
-  //     let taskObj = {
-  //       service_task_id: task[`taskTitle${index}`],
-  //       description: task[`taskDescription${index}`],
-  //     };
-  //     resultJobs.push(taskObj);
-  //   });
-
-  //   let intakeJobsFormData: IIntakeJobsFormData = {
-  //     intake: {
-  //       bay: values.bay !== undefined ? values.bay : '',
-  //       pick_up: values.pickup !== undefined ? values.pickup : false,
-  //       description: values.description !== undefined ? values.description : '',
-  //       registration: values.registrationNumber,
-  //       intake_status_id: values.intakeStatus,
-  //       assigned_to_ids: values.assign,
-  //     },
-  //     jobs: resultJobs,
-  //     logs: {
-  //       title: `Intake updated at ${moment().format('DD/MM/YYYY HH:mm')} by ${userInfoObj.username}`,
-  //       description: 'TEST',
-  //       user_id: userInfoObj.id,
-  //     },
-  //   };
-  //   onCreateIntakeSummary(intakeJobsFormData);
-  // };
-
-  // const onUpdateIntakeAndJobsFinish = (values: {
-  //   [key: string]: any;
-  //   bay: string;
-  //   pickup: boolean;
-  //   description: string;
-  //   assign: number[];
-  //   intakeId: string;
-  //   intakeStatus: number;
-  // }) => {
-  //   let resultJobs: IJobFormData[] = [];
-
-  //   (taskTableState as any).forEach((task: any, index: number) => {
-  //     let taskObj = {
-  //       id: task[`taskId${index}`],
-  //       service_task_id: values[`taskTitle${index}`],
-  //       description: values[`taskDescription${index}`],
-  //     };
-  //     resultJobs.push(taskObj);
-  //   });
-
-  //   let intakeJobsFormData: IIntakeJobsFormData = {
-  //     intake: {
-  //       bay: values.bay !== undefined ? values.bay : '',
-  //       pick_up: values.pickup !== undefined ? values.pickup : false,
-  //       description: values.description !== undefined ? values.description : '',
-  //       registration: values.registrationNumber,
-  //       intake_status_id: values.intakeStatus,
-  //       assigned_to_ids: values.assign,
-  //     },
-  //     jobs: resultJobs,
-  //   };
-  //   onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
-  // };
-
   // sort array using created at date
   const sortByCreatedAt = (a: TIntakeTableState, b: TIntakeTableState) => {
     return moment(b.createdAt).diff(moment(a.createdAt));
   };
+
+  const contextValue = useMemo(
+    () => ({
+      incomingData,
+      setIncomingData,
+      intakeDict,
+      updateIntakeJobsForm,
+      goToUpdateSpecificIntake,
+      onGetSpecificIntakeJobs,
+    }),
+    [
+      incomingData,
+      setIncomingData,
+      intakeDict,
+      updateIntakeJobsForm,
+      goToUpdateSpecificIntake,
+      onGetSpecificIntakeJobs,
+    ],
+  );
+
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
@@ -518,55 +469,6 @@ const TaskPage: React.FC<Props> = ({
 
   return (
     <>
-      {/* {serviceTypeTaskDict && (
-        <>
-          <IntakeJobsModal
-            crud="create"
-            indexKey={'intake_job'}
-            modalWidth={1200}
-            count={count}
-            setCount={setCount}
-            modalTitle={'Create New Intake'}
-            antdForm={createIntakeJobsForm}
-            showModal={showCreateModal}
-            intake_id={specificIntakeId}
-            // intakeDictObj={intakeDictObj}
-            visible={showCreateModal.intake_job}
-            onFinish={onCreateIntakeAndJobsFinish}
-            setShowModal={setShowCreateModal}
-            taskTableState={taskTableState}
-            setTaskTableState={setTaskTableState}
-            serviceTypeTaskDict={serviceTypeTaskDict}
-            serviceTaskDropdown={serviceTaskDropdown}
-            setServiceTaskDropdown={setServiceTaskDropdown}
-            setServiceTypeTaskDict={setServiceTypeTaskDict}
-            loading={loading !== undefined && loading}
-          />
-          <IntakeJobsModal
-            crud="update"
-            indexKey={'intake_job'}
-            modalWidth={1200}
-            count={count}
-            setCount={setCount}
-            // intakeDictObj={intakeDictObj}
-            intake_id={specificIntakeId}
-            modalTitle={'Update Intake'}
-            antdForm={updateIntakeJobsForm}
-            showModal={showUpdateModal}
-            visible={showUpdateModal.intake_job}
-            onFinish={onUpdateIntakeAndJobsFinish}
-            setShowModal={setShowUpdateModal}
-            taskTableState={taskTableState}
-            setTaskTableState={setTaskTableState}
-            serviceTypeTaskDict={serviceTypeTaskDict}
-            serviceTaskDropdown={serviceTaskDropdown}
-            setServiceTaskDropdown={setServiceTaskDropdown}
-            setServiceTypeTaskDict={setServiceTypeTaskDict}
-            loading={loading !== undefined && loading}
-          />
-        </>
-      )} */}
-
       <NavbarComponent activePage="task" defaultOpenKeys="dashboard" />
       <Layout>
         <LayoutComponent activeKey="accessory">
@@ -578,7 +480,7 @@ const TaskPage: React.FC<Props> = ({
                   <>
                     {intakeSummaryArray && intakeDict ? (
                       <section className="task__glass">
-                        <div className="make__header-div ">
+                        <div className="task__header-div ">
                           <div className="make__header-title">
                             {auth_token === null ? (
                               'Intakes'
@@ -614,13 +516,14 @@ const TaskPage: React.FC<Props> = ({
                                 setTaskTableState(tempArray);
                               }}
                             >
-                              Create New Intake
+                              Create <span className="task__button-text">&nbsp;New Intake</span>
                             </Button>
                           )}
                         </div>
                         {/* -------------------- */}
                         {/*     Intake Table      */}
                         {/* -------------------- */}
+
                         <div className="task__table-wrapper">
                           <div className="task__table-outerdiv">
                             <div className="task__table-parent">
@@ -637,6 +540,9 @@ const TaskPage: React.FC<Props> = ({
                                     setServiceTaskDropdown={setServiceTaskDropdown}
                                   />
                                 </div>
+                                <TaskPageContext.Provider value={contextValue}>
+                                  <MobileTaskTable />
+                                </TaskPageContext.Provider>
                                 <Table
                                   bordered
                                   className="task__table"
@@ -666,7 +572,6 @@ const TaskPage: React.FC<Props> = ({
                                 </div>
                               </div>
                             </div>
-                            {/* )} */}
                           </div>
                           {currentPage === 'update' && (
                             <div className="task__table--pickup">

@@ -1,0 +1,84 @@
+.mobiletasktable {
+  &__div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+
+    @include respond-to($small-phone) {
+      display: block;
+    }
+    @include respond-to($phone-only) {
+      display: none;
+    }
+
+    @include respond-to($tablet-landscape-up) {
+      display: none;
+    }
+
+    &-servicetype {
+      font-family: $font-courgette;
+      color: rgb(255, 218, 211);
+      margin-right: 3rem;
+    }
+
+    &-description {
+      font-family: $font-pragati;
+    }
+
+    &-createdat {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-family: $font-firesans;
+    }
+  }
+
+  &__intake {
+    &-row {
+      border: 1px solid rgba(178, 195, 225, 0.514);
+      border-radius: 1rem;
+      margin: 1rem;
+      padding: 1rem;
+      background: #091a41;
+      &-parent {
+        position: relative;
+      }
+      &:hover {
+        background: #14295a;
+        transition: all 0.5s ease;
+      }
+    }
+  }
+
+  &__assignees {
+    position: absolute;
+    background: $soft-red;
+    border-radius: 50%;
+    right: 0.3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4.5rem;
+    height: 4.5rem;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    border: 1px solid white;
+    font-family: $font-pragati !important;
+    display: grid;
+    place-items: center;
+  }
+
+  &__title {
+    color: #df7471;
+    font-size: 3rem;
+    font-family: $font-bebasneue !important;
+    &--bay {
+      color: white;
+    }
+  }
+}

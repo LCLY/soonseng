@@ -134,17 +134,14 @@ const CatalogPage: React.FC<Props> = ({
   const animateStatsAppear = (brandIndex: number, seriesIndex: number) => {
     gsap.fromTo('.catalog__series-content-line', { margin: '0 100%', duration: 1 }, { margin: 0, duration: 1 });
     gsap.fromTo('.catalog__series-content-title', { x: '100%', duration: 1 }, { x: 0, duration: 1 });
-    gsap.fromTo(
-      '.catalog__series-content-button',
-      { x: '150%', duration: 1, ease: Back.easeOut.config(3) },
-      { x: '0', duration: 1, ease: Back.easeOut.config(3) },
-    );
+    gsap.fromTo('.catalog__series-content-button-div', { x: '100%', duration: 1 }, { x: 0, duration: 1 });
 
     gsap.fromTo(
       `.catalog__series-content-row-${brandIndex}-${seriesIndex}`,
       { x: '-120%' },
       {
         x: '0',
+        duration: 0.4,
         stagger: { each: 0.05, from: 'start' }, // 0.1 seconds between when each ".box" element starts animating
       },
     );
@@ -969,16 +966,6 @@ const CatalogPage: React.FC<Props> = ({
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
         <CustomContainer>
           <div className="catalog__outerdiv">
-            {/* {catalogMakesArray && (
-              <>
-                <CatalogFilter
-                  showSearch={showSearch}
-                  setShowSearch={setShowSearch}
-                  filterString={makeFilter}
-                  setFilterString={setMakeFilter}
-                />
-              </>
-            )} */}
             <div className="catalog__div">
               {catalogMakesArray ? (
                 catalogMakesArray.length > 0 ? (
