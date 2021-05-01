@@ -298,7 +298,7 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
                           </div>
                         </div>
                       </li>
-                      {!bodyMakeObj.make_wheelbase.original && (
+                      {!bodyMakeObj.make_wheelbase.original && bodyMakeObj.make_wheelbase.price !== 0 && (
                         <li>
                           <div className={`hiddenquotation__orderedlist-row`}>
                             <div>UBS Extension Price</div>

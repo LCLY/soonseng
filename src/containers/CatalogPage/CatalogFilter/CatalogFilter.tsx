@@ -143,7 +143,6 @@ const CatalogFilter: React.FC<Props> = ({ showSearch, filterString, setFilterStr
                 setShowSearch(false);
               }
             }}
-            autoFocus
             allowClear
             ref={searchInputRef}
             className="catalog__search-input"

@@ -16,6 +16,7 @@
   }
   &__outerdiv {
     display: block;
+    min-height: 100vh;
     padding-top: 7.6rem; //height of navbar
     @include respond-to($small-phone) {
       padding-top: 5rem; //height of navbar
@@ -28,6 +29,18 @@
 
     @include respond-to($small-phone) {
       padding: 2rem 0 2rem 0;
+    }
+
+    &-makelist {
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($phone-only) {
+        display: none;
+      }
+      @include respond-to($tablet-landscape-up) {
+        display: block;
+      }
     }
   }
 
@@ -624,6 +637,9 @@
         align-items: center;
       }
     }
+    &-bgcover {
+      background-image: radial-gradient(rgba(0, 0, 0, 0.193) 30%, rgb(38, 38, 38));
+    }
 
     &-top {
       /* --------------------------------------------------------- */
@@ -664,12 +680,24 @@
         justify-content: center;
         width: 100%;
         height: 60rem;
-        margin-right: 5rem;
         background: white;
         border-radius: 1rem;
         box-shadow: 5px 5px 15px 0.5px rgba(0, 0, 0, 0.6);
         &--placeholder {
           padding: 0 5rem;
+        }
+
+        @include respond-to($small-phone) {
+          margin-right: 0;
+        }
+        @include respond-to($phone-only) {
+          margin-right: 0;
+        }
+        @include respond-to($tablet-landscape-up) {
+          margin-right: 2rem;
+        }
+        @include respond-to($desktop-up) {
+          margin-right: 5rem;
         }
       }
     }
@@ -678,19 +706,25 @@
       position: absolute;
       left: 0;
       top: 0;
-      min-width: 30rem;
-      width: 40%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
       border-radius: 1rem 0 0 1rem;
+
+      @include respond-to($small-phone) {
+        width: 100%;
+
+        background: rgba(0, 0, 0, 0.4);
+      }
+      @include respond-to($phone-only) {
+        width: 40%;
+        min-width: 30rem;
+        background: rgba(0, 0, 0, 0.8);
+      }
     }
 
     &-content {
       position: absolute;
       left: 0;
       top: 0;
-      width: 40%;
-      min-width: 30rem;
       height: 100%;
       border-radius: 1rem;
       overflow: hidden;
@@ -701,12 +735,85 @@
       flex-direction: column;
       justify-content: space-between;
       @include customScrollbar();
+
+      @include respond-to($small-phone) {
+        width: 100%;
+      }
+      @include respond-to($phone-only) {
+        width: 40%;
+        min-width: 30rem;
+      }
+
       & h2 {
         color: white;
         font-weight: bolder;
         font-size: 2.5rem;
         margin: 0;
         font-family: $font-bebasneue;
+
+        @include respond-to($small-phone) {
+          display: none;
+        }
+        @include respond-to($phone-only) {
+          display: none;
+        }
+        @include respond-to($tablet-landscape-up) {
+          display: block;
+        }
+      }
+
+      &-select {
+        color: white !important;
+        font-weight: bolder !important;
+        font-size: 2.5rem !important;
+        margin: 0 !important;
+        font-family: $font-bebasneue !important;
+        width: 100%;
+
+        @include respond-to($small-phone) {
+          display: block !important;
+        }
+        @include respond-to($phone-only) {
+          display: block !important;
+        }
+        @include respond-to($tablet-landscape-up) {
+          display: none !important;
+        }
+
+        & .ant-select-selector {
+          color: white !important;
+          background: $form-items-grey !important;
+          height: 100% !important;
+        }
+        & .ant-select-selection-search-input {
+          height: 100% !important;
+          width: 100% !important;
+        }
+
+        & .ant-select-selection-item {
+          display: flex;
+          align-items: center;
+        }
+        & .ant-select-arrow {
+          color: white !important;
+        }
+
+        &
+          .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+          .ant-select-selector {
+          border-color: rgba(255, 255, 255, 0.618) !important;
+        }
+
+        /* ---------------------- */
+        // disabled select dropdown styling
+        /* ---------------------- */
+        &--disabled {
+          & .ant-select-selector {
+            color: rgb(138, 138, 138) !important;
+            background: rgb(47, 47, 48) !important;
+            height: 100% !important;
+          }
+        }
       }
 
       /* ========================= */

@@ -18,7 +18,7 @@ import { AnyAction, Dispatch } from 'redux';
 import NumberFormat from 'react-number-format';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Tabs, Tooltip, message, Menu, Dropdown } from 'antd';
+import { Empty, Form, Tabs, Tooltip, message, Select, Menu, Dropdown } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -34,6 +34,7 @@ import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPa
 import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
+const { Option } = Select;
 const { TabPane } = Tabs;
 
 interface CatalogPageProps {}
@@ -130,19 +131,17 @@ const CatalogPage: React.FC<Props> = ({
     );
   }, [activeSeriesId]);
 
-  const animateStatsAppear = (brandIndex: number) => {
+  const animateStatsAppear = (brandIndex: number, seriesIndex: number) => {
     gsap.fromTo('.catalog__series-content-line', { margin: '0 100%', duration: 1 }, { margin: 0, duration: 1 });
     gsap.fromTo('.catalog__series-content-title', { x: '100%', duration: 1 }, { x: 0, duration: 1 });
+    gsap.fromTo('.catalog__series-content-button-div', { x: '100%', duration: 1 }, { x: 0, duration: 1 });
+
     gsap.fromTo(
-      '.catalog__series-content-button',
-      { x: '150%', duration: 1, ease: Back.easeOut.config(3) },
-      { x: '0', duration: 1, ease: Back.easeOut.config(3) },
-    );
-    gsap.fromTo(
-      `.catalog__series-content-row-${brandIndex}`,
+      `.catalog__series-content-row-${brandIndex}-${seriesIndex}`,
       { x: '-120%' },
       {
         x: '0',
+        duration: 0.4,
         stagger: { each: 0.05, from: 'start' }, // 0.1 seconds between when each ".box" element starts animating
       },
     );
@@ -390,8 +389,10 @@ const CatalogPage: React.FC<Props> = ({
     series,
     catalog,
     brandIndex,
+    seriesIndex,
   }: {
     brandIndex: number;
+    seriesIndex: number;
     series: TCatalogSeries;
     catalog: TReceivedCatalogMakeObj;
     arrayIsOddNumberAndMakeLengthLessThanThree: boolean;
@@ -408,6 +409,7 @@ const CatalogPage: React.FC<Props> = ({
                     : 'catalog__series-image-div catalog__series-image-div--placeholder'
                 }
               >
+                <div className="catalog__series-bgcover bg-cover"></div>
                 {selectedMake ? (
                   <>
                     {series.images.length > 0 ? (
@@ -425,58 +427,92 @@ const CatalogPage: React.FC<Props> = ({
                         <div className="catalog__series-content-line"></div>
                         <div className="catalog__series-content-title">
                           <h2>{selectedMake?.title}</h2>
+                          <Select
+                            placeholder="Select a model"
+                            className="catalog__series-content-select"
+                            value={selectedMake?.id}
+                            onChange={(e) => {
+                              setSelectedMake(series.makes.filter((make) => make.id === e)[0]);
+                            }}
+                          >
+                            {series.makes.map((make, index) => {
+                              return (
+                                <Option key={`dropdownmake${index}`} value={make.id}>
+                                  {make.title}
+                                </Option>
+                              );
+                            })}
+                          </Select>
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Config</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.config, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Torque</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.torque, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Horsepower</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(`${selectedMake.horsepower}PS`, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Emission</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.emission, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Tire Count</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.tire, '-')}
                         </div>
                       </div>
 
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Transmission</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.transmission, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Engine Capacity</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.engine_cap, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">ABS</div>
                         <div className="catalog__series-content-row-info">
                           {selectedMake.abs ? 'Available' : 'Not Available'}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Year</div>
                         <div className="catalog__series-content-row-info">
                           {(selectedMake.year && selectedMake.year.toLowerCase() === 'Invalid Date'.toLowerCase()) ||
@@ -486,14 +522,18 @@ const CatalogPage: React.FC<Props> = ({
                             : selectedMake.year}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">GVW</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(`${selectedMake.gvw}KG`, '-')}
                         </div>
                       </div>
                       {accessObj?.showPriceSalesPage && (
-                        <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                        <div
+                          className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                        >
                           <div className="catalog__series-content-row-label catalog__series-content-row-label--price">
                             Price
                           </div>
@@ -555,7 +595,7 @@ const CatalogPage: React.FC<Props> = ({
                               setSelectedMake(make);
 
                               if (selectedMake) {
-                                animateStatsAppear(brandIndex);
+                                animateStatsAppear(brandIndex, seriesIndex);
                               }
                               // history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`);
                             }}
@@ -645,10 +685,19 @@ const CatalogPage: React.FC<Props> = ({
   useEffect(() => {
     if (activeBrandTab) {
       let brandIndex = parseInt(activeBrandTab.replace('brand', '')) - 1;
-      animateStatsAppear(brandIndex);
+      let seriesIndex = parseInt(activeSeriesTab.replace('series', '')) - 1;
+      animateStatsAppear(brandIndex, seriesIndex);
       animateMakesAppear();
     }
-  }, [activeBrandTab, animateMakesAppear]);
+  }, [activeBrandTab, activeSeriesTab, animateMakesAppear]);
+
+  useEffect(() => {
+    if (selectedMake) {
+      let brandIndex = parseInt(activeBrandTab.replace('brand', '')) - 1;
+      let seriesIndex = parseInt(activeSeriesTab.replace('series', '')) - 1;
+      animateStatsAppear(brandIndex, seriesIndex);
+    }
+  }, [activeBrandTab, activeSeriesTab, selectedMake]);
 
   useEffect(() => {
     animateMakesAppear();
@@ -671,7 +720,6 @@ const CatalogPage: React.FC<Props> = ({
       } else {
         setSelectedMake(undefined); //undefined when there's no make
       }
-      setMounted(true);
     }
   }, [activeBrandTab, activeSeriesTab, animateMakesAppear, catalogMakesArray]);
 
@@ -918,23 +966,13 @@ const CatalogPage: React.FC<Props> = ({
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
         <CustomContainer>
           <div className="catalog__outerdiv">
-            {/* {catalogMakesArray && (
-              <>
-                <CatalogFilter
-                  showSearch={showSearch}
-                  setShowSearch={setShowSearch}
-                  filterString={makeFilter}
-                  setFilterString={setMakeFilter}
-                />
-              </>
-            )} */}
             <div className="catalog__div">
               {catalogMakesArray ? (
                 catalogMakesArray.length > 0 ? (
                   <div className="catalog__innerdiv">
                     <Tabs
                       activeKey={activeBrandTab}
-                      tabPosition={width < 900 ? 'top' : 'left'}
+                      tabPosition={width < 1200 ? 'top' : 'left'}
                       className="catalog__tabs-outerdiv--brand"
                       onTabClick={(activeKey: string) => {
                         setActiveSeriesTab('series1');
@@ -1042,12 +1080,12 @@ const CatalogPage: React.FC<Props> = ({
                                       }
                                     }}
                                   >
-                                    {catalog.series.map((series, index) => {
+                                    {catalog.series.map((series, seriesIndex) => {
                                       // if array is odd number, on the last row, make it display flex
                                       let arrayIsOddNumberAndMakeLengthLessThanThree =
                                         catalog.series.length % 2 !== 0 &&
-                                        index === catalog.series.length - 1 &&
-                                        catalog.series[index].makes.length > 3;
+                                        seriesIndex === catalog.series.length - 1 &&
+                                        catalog.series[seriesIndex].makes.length > 3;
 
                                       return (
                                         <TabPane
@@ -1075,7 +1113,7 @@ const CatalogPage: React.FC<Props> = ({
                                               </div>
                                             </div>
                                           }
-                                          key={`series${index + 1}`}
+                                          key={`series${seriesIndex + 1}`}
                                         >
                                           <div
                                             className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
@@ -1089,6 +1127,7 @@ const CatalogPage: React.FC<Props> = ({
                                                 series={series}
                                                 catalog={catalog}
                                                 brandIndex={brandIndex}
+                                                seriesIndex={seriesIndex}
                                                 arrayIsOddNumberAndMakeLengthLessThanThree={
                                                   arrayIsOddNumberAndMakeLengthLessThanThree
                                                 }
@@ -1103,6 +1142,7 @@ const CatalogPage: React.FC<Props> = ({
                                                     series={series}
                                                     catalog={catalog}
                                                     brandIndex={brandIndex}
+                                                    seriesIndex={seriesIndex}
                                                     arrayIsOddNumberAndMakeLengthLessThanThree={
                                                       arrayIsOddNumberAndMakeLengthLessThanThree
                                                     }

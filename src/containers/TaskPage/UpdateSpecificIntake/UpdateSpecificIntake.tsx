@@ -873,7 +873,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               <section className="updatespecificintake__section-description">
                 {inEditMode ? (
                   <div className="updatespecificintake__section-description-outerdiv">
-                    <span className="updatespecificintake__section-description-text">Note:</span>
+                    <span className="updatespecificintake__section-description-text">Description:</span>
                     <Form.Item
                       // label="Description"
                       name={`description`}
