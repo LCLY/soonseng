@@ -392,10 +392,7 @@ export {
   // clear sales state
   clearSalesState,
   // Store local orders
-  storeLocalOrders,
   setLocalOrdersDict,
-  // Remove a local
-  removeAnOrder,
   // get sales lengths
   getSalesLengths,
   getSalesLengthsStart,

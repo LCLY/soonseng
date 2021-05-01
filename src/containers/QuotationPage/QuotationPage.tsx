@@ -32,6 +32,59 @@ import { TUserAccess } from 'src/store/types/auth';
 import { convertPriceToFloat, handleKeyDown } from 'src/shared/Utils';
 import HiddenQuotationComponent from './HiddenQuotationComponent';
 
+// export const standardAccessories = {
+//   'Air-Container': 'Air-Container',
+//   'Radio CD Player': 'Radio CD Player',
+//   'Cab Floor Mat': 'Cab Floor Mat',
+//   Mudguards: 'Mudguards',
+//   'First Aid Kit': 'First Aid Kit',
+//   'Safety Triangle': 'Safety Triangle',
+//   'Fire Extinguisher': 'Fire Extinguisher',
+//   'Tubeless tires': 'Tubeless tires',
+//   'Rubber Mats': 'Rubber Mats',
+//   'Alarm System': 'Alarm System',
+//   'Central Locking': 'Central Locking',
+//   'Reverse Camera': 'Reverse Camera',
+//   'Kangaroo Bar': 'Kangaroo Bar',
+// };
+
+export const standardAccessories = [
+  'Air-Container',
+  'Radio CD Player',
+  'Cab Floor Mat',
+  'Mudguards',
+  'First Aid Kit',
+  'Safety Triangle',
+  'Fire Extinguisher',
+  'Tubeless tires',
+  'Rubber Mats',
+  'Alarm System',
+  'Central Locking',
+  'Reverse Camera',
+  'Kangaroo Bar',
+];
+export const standardAccessoriesSelectOptions = [
+  { label: 'Air-Container', value: 'Air-Container' },
+  { label: 'Radio CD Player', value: 'Radio CD Player' },
+  { label: 'Cab Floor Mat', value: 'Cab Floor Mat' },
+  { label: 'Mudguards', value: 'Mudguards' },
+  { label: 'First Aid Kit', value: 'First Aid Kit' },
+  { label: 'Safety Triangle', value: 'Safety Triangle' },
+  { label: 'Fire Extinguisher', value: 'Fire Extinguisher' },
+  { label: 'Tubeless tires', value: 'Tubeless tires' },
+  { label: 'Rubber Mats', value: 'Rubber Mats' },
+  { label: 'Alarm System', value: 'Alarm System' },
+  { label: 'Central Locking', value: 'Central Locking' },
+  { label: 'Reverse Camera', value: 'Reverse Camera' },
+  { label: 'Kangaroo Bar', value: 'Kangaroo Bar' },
+];
+
+export const afterSalesStrings = {
+  line_1: '5 Years or 300,000km Warranty',
+  line_2: '3 Times Free Service Programme (1st-3rd service)',
+  line_3: 'Hino Best FIT Service Contract',
+};
+
 // function useOutsideAlerter(wrapperRef: any, innerWrapperRef: any, setInEditPriceMode: any) {
 //   useEffect(() => {
 //     /**
@@ -232,16 +285,27 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersDict, accessObj, onS
         <DownloadOutlined style={{ margin: 0 }} />
         &nbsp;&nbsp;Download as PDF
       </Menu.Item>
-      <Menu.Item className="catalog__menu-item" onClick={() => setInEditPriceMode(true)}>
+      <Menu.Item
+        className="catalog__menu-item"
+        onClick={() => {
+          setInEditPriceMode(true);
+          setShowOptions(false);
+        }}
+      >
         <i className="fas fa-tags" style={{ margin: 0 }}></i>
         &nbsp;&nbsp;Edit Price
       </Menu.Item>
       {/* only show add discount button when discount is not null */}
       {localOrdersDict !== undefined && !localOrdersDict[match.params.order_id].discount ? (
-        <Menu.Item className="catalog__menu-item" onClick={() => setShowDiscountModal(true)}>
+        <Menu.Item
+          className="catalog__menu-item"
+          onClick={() => {
+            setShowDiscountModal(true);
+            setShowOptions(false);
+          }}
+        >
           <i className="fas fa-percent" style={{ margin: 0 }}></i>
           &nbsp;&nbsp;Add Discount
-          {discountModal}
         </Menu.Item>
       ) : (
         <Menu.Item
@@ -267,6 +331,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersDict, accessObj, onS
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
+
   useEffect(() => {
     if (localOrdersDict === undefined) return;
     let selectedOrder = localOrdersDict[match.params.order_id];
@@ -318,7 +383,7 @@ const QuotationPage: React.FC<Props> = ({ match, localOrdersDict, accessObj, onS
     <>
       {/* Modal */}
       {CustomerModal}
-
+      {discountModal}
       <div>
         <NavbarComponent />
         <div className="quotation__edit-top">
@@ -410,15 +475,20 @@ interface StateProps {
 }
 
 const mapStateToProps = (state: RootState): StateProps | void => {
-  return { accessObj: state.auth.accessObj, localOrdersDict: state.sales.localOrdersDict };
+  return {
+    accessObj: state.auth.accessObj,
+    localOrdersDict: state.sales.localOrdersDict,
+  };
 };
 
 interface DispatchProps {
+  onGetBrands: typeof actions.getBrands;
   onSetLocalOrdersDict: typeof actions.setLocalOrdersDict;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
+    onGetBrands: () => dispatch(actions.getBrands()),
     onSetLocalOrdersDict: (localOrdersDict) => dispatch(actions.setLocalOrdersDict(localOrdersDict)),
   };
 };

@@ -25,12 +25,7 @@ export const clearSalesState = (): AppActions => {
 /* ------------------------------- */
 // Store local orders
 /* ------------------------------- */
-export const storeLocalOrders = (localOrdersArray: TLocalOrderObj[]): AppActions => {
-  return {
-    type: actionTypes.STORE_LOCAL_ORDERS,
-    localOrdersArray: localOrdersArray,
-  };
-};
+
 /* ------------------------------- */
 // set local orders dictionary
 /* ------------------------------- */
@@ -38,16 +33,6 @@ export const setLocalOrdersDict = (localOrdersDict: { [key: string]: TLocalOrder
   return {
     type: actionTypes.SET_LOCAL_ORDERS_DICT,
     localOrdersDict: localOrdersDict,
-  };
-};
-/* ------------------------------- */
-// Remove a local order
-/* ------------------------------- */
-export const removeAnOrder = (orderId: string, localOrdersArray: TLocalOrderObj[]): AppActions => {
-  return {
-    type: actionTypes.REMOVE_AN_ORDER,
-    orderId: orderId,
-    localOrdersArray: localOrdersArray,
   };
 };
 

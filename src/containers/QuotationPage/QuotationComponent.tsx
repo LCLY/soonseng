@@ -2,26 +2,29 @@ import React, { useState, useEffect } from 'react';
 import './QuotationPage.scss';
 /* components */
 import QuotationPriceInput from './QuotationPriceInput';
+import QuotationStringInput from './QuotationStringInput';
 /* 3rd party lib */
+import _ from 'lodash';
 import moment from 'moment';
+import { Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import NumberFormat from 'react-number-format';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 /* Util */
-import warranty from 'src/img/quotation3.jpg';
 import { TUserAccess } from 'src/store/types/auth';
+import { standardAccessoriesSelectOptions } from './QuotationPage';
 import { IInsurance, TInsuranceDict, TLocalOrderObj } from 'src/store/types/sales';
 import { TReceivedBrandObj, TReceivedChargesFeesObj } from 'src/store/types/dashboard';
 
 interface QuotationComponentProps {
   inEditPriceMode?: boolean;
-  accessObj: TUserAccess | undefined;
+  quotationOrder: TLocalOrderObj;
   currentBrandObj: TReceivedBrandObj;
+  accessObj: TUserAccess | undefined;
   tempEditChanges?: TLocalOrderObj | null;
+  localOrdersDict: { [key: string]: TLocalOrderObj };
   setInEditPriceMode?: React.Dispatch<React.SetStateAction<boolean>>;
   onSetEditChanges?: React.Dispatch<React.SetStateAction<TLocalOrderObj | null>>;
-  quotationOrder: TLocalOrderObj;
-  localOrdersDict: { [key: string]: TLocalOrderObj };
 }
 
 interface MatchParams {
@@ -44,6 +47,8 @@ const QuotationComponent: React.FC<Props> = ({
   /* ================================================== */
   const [grandTotalPrice, setGrandTotalPrice] = useState(0);
   const [modelSubtotalPrice, setModelSubtotalPrice] = useState(0);
+
+  const [selectValues, setSelectValues] = useState<string[]>([]);
   const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj | null>(null);
 
   /* ================================================== */
@@ -51,9 +56,6 @@ const QuotationComponent: React.FC<Props> = ({
   /* ================================================== */
   /* ================================================== */
   /*  useEffect */
-  /* ================================================== */
-
-  /* ================================================== */
   /* ================================================== */
 
   useEffect(() => {
@@ -156,6 +158,19 @@ const QuotationComponent: React.FC<Props> = ({
     }
   }, [inEditPriceMode, quotationOrder, tempEditChanges]);
 
+  useEffect(() => {
+    let tempSelectValues: string[] = [];
+    if (tempEditChanges) {
+      // fill the options array
+      tempEditChanges.standardAccessories.forEach((child) => {
+        tempSelectValues.push(child);
+      });
+      setSelectValues(tempSelectValues);
+    }
+  }, [tempEditChanges]);
+
+  /* ================================================== */
+  /* ================================================== */
   return (
     <>
       {currentOrderObj && currentOrderObj.bodyMakeObj && (
@@ -200,7 +215,15 @@ const QuotationComponent: React.FC<Props> = ({
             </div>
 
             <section className={`quotation__content-div`}>
-              <div className={`quotation__content-innerdiv`}>
+              <div
+                className={`quotation__content-innerdiv`}
+                onDoubleClick={() => {
+                  if (accessObj === undefined || setInEditPriceMode === undefined) return;
+                  if (accessObj.showPriceSalesPage) {
+                    setInEditPriceMode(true);
+                  }
+                }}
+              >
                 <div className={`quotation__makedetail-div`}>
                   <div className={`quotation__makedetail-div-left`}>
                     <div>Make / Model :&nbsp;{currentOrderObj.bodyMakeObj.make_wheelbase.make.title}</div>
@@ -266,15 +289,7 @@ const QuotationComponent: React.FC<Props> = ({
                 </div>
 
                 <div>
-                  <div
-                    className={`quotation__price-div`}
-                    onDoubleClick={() => {
-                      if (accessObj === undefined || setInEditPriceMode === undefined) return;
-                      if (accessObj.showPriceSalesPage) {
-                        setInEditPriceMode(true);
-                      }
-                    }}
-                  >
+                  <div className={`quotation__price-div`}>
                     <div className={`quotation__price-unit`}>RM</div>
                     <div>
                       <ol type="a" className={`quotation__orderedlist`}>
@@ -633,15 +648,45 @@ const QuotationComponent: React.FC<Props> = ({
                 {/* After Sales Programme */}
                 {/* ========================= */}
                 <div className={`quotation__salesprogram-div`}>
-                  <div>
+                  <div className="quotation__salesprogram-div--left">
                     <div className={`quotation__salesprogram-title`}>
                       <span>After&nbsp;Sales&nbsp;Programme:</span>
                     </div>
-                    <div>5 Years or 300,000km Warranty</div>
-                    <div>3 Times Free Service Programme (1st-3rd service)</div>
-                    <div className={`quotation__salesprogram-contract`}>Hino Best FIT Service Contract</div>
+                    <div>
+                      {inEditPriceMode ? (
+                        <QuotationStringInput
+                          indexKey="afterSalesStrings.line_1"
+                          tempEditChanges={tempEditChanges}
+                          onSetEditChanges={onSetEditChanges}
+                        />
+                      ) : (
+                        currentOrderObj.afterSalesStrings.line_1
+                      )}
+                    </div>
+                    <div>
+                      {inEditPriceMode ? (
+                        <QuotationStringInput
+                          indexKey="afterSalesStrings.line_2"
+                          tempEditChanges={tempEditChanges}
+                          onSetEditChanges={onSetEditChanges}
+                        />
+                      ) : (
+                        currentOrderObj.afterSalesStrings.line_2
+                      )}
+                    </div>
+                    <div className={`quotation__salesprogram-contract`}>
+                      {inEditPriceMode ? (
+                        <QuotationStringInput
+                          indexKey="afterSalesStrings.line_3"
+                          tempEditChanges={tempEditChanges}
+                          onSetEditChanges={onSetEditChanges}
+                        />
+                      ) : (
+                        currentOrderObj.afterSalesStrings.line_3
+                      )}
+                    </div>
                   </div>
-                  <div>
+                  <div className="quotation__salesprogram-div--right">
                     <table className={`quotation__salesprogram-table`}>
                       <tbody>
                         <tr>
@@ -671,27 +716,48 @@ const QuotationComponent: React.FC<Props> = ({
                   <div className={`quotation__accessorieslist-standard`}>
                     <span>Standard&nbsp;Accessories:</span>
                   </div>
+                  <div>
+                    {inEditPriceMode && (
+                      <Select
+                        value={selectValues}
+                        options={standardAccessoriesSelectOptions}
+                        onChange={(newValue: string[]) => {
+                          setSelectValues(newValue);
+                          if (onSetEditChanges !== undefined && tempEditChanges !== undefined && tempEditChanges) {
+                            let tempChanges = _.cloneDeep(tempEditChanges);
+                            _.set(tempChanges, 'standardAccessories', newValue);
+                            onSetEditChanges(tempChanges);
+                          }
+                        }}
+                        mode="multiple"
+                        maxTagCount="responsive"
+                        className="quotation__accessorieslist-select"
+                        placeholder="Select accessories"
+                      />
+                    )}
+                  </div>
                   <div className={`quotation__accessorieslist-content`}>
-                    <div>
-                      <div>Air-Container</div>
-                      <div>Radio&nbsp;CD&nbsp;Player</div>
-                      <div>Cab&nbsp;Floor&nbsp;Mat</div>
-                      <div>Mudguards</div>
+                    <div
+                      className={`quotation__accessorieslist-content-grid`}
+                      style={{
+                        gridTemplateColumns:
+                          currentBrandObj.images.filter((child) => child.tag === 'Warranty').length > 0
+                            ? 'repeat(3, 1fr)'
+                            : 'repeat(4, 1fr)',
+                      }}
+                    >
+                      {currentOrderObj.standardAccessories.map((acc) => (
+                        <div key={`quotation${acc}`}>{acc}</div>
+                      ))}
                     </div>
                     <div>
-                      <div>First&nbsp;Aid&nbsp;Kit</div>
-                      <div>Safety&nbsp;Triangle</div>
-                      <div>Fire&nbsp;Extinguisher</div>
-                      <div>Tubeless&nbsp;tires</div>
-                    </div>
-                    <div>
-                      <div>Rubber&nbsp;Mats</div>
-                      <div>Alarm&nbsp;System</div>
-                      <div>Central&nbsp;Locking</div>
-                      {/* <div>Kangaroo&nbsp;Bar</div> */}
-                    </div>
-                    <div>
-                      <img className={`quotation__accessorieslist-img`} src={warranty} alt="warranty" />
+                      {currentBrandObj.images.filter((child) => child.tag === 'Warranty').length > 0 && (
+                        <img
+                          className={`quotation__accessorieslist-img`}
+                          src={currentBrandObj.images.filter((child) => child.tag === 'Warranty')[0].url}
+                          alt="warranty"
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
