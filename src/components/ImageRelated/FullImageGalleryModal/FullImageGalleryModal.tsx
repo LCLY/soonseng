@@ -248,6 +248,9 @@ const FullImageGalleryModal: React.FC<Props> = ({
                                 <Option style={{ textTransform: 'capitalize' }} value="Brand Top Right">
                                   Brand Top Right
                                 </Option>
+                                <Option style={{ textTransform: 'capitalize' }} value="Warranty">
+                                  Warranty
+                                </Option>
                               </Select>
                             </Form.Item>
                           </Form>

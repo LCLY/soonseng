@@ -108,6 +108,11 @@
           padding: 2rem;
         }
         @include customScrollbar(0.2rem, 0.2rem, 1rem, white, rgba(255, 255, 255, 0.604));
+
+        // center empty icon in the middle
+        &--empty {
+          align-items: center;
+        }
       }
 
       &-outerdiv {

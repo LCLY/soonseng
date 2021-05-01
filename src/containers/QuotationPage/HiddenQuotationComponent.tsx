@@ -15,14 +15,15 @@ import { TReceivedBrandObj, TReceivedChargesFeesObj } from 'src/store/types/dash
 // this component is for the hidden/ready to be printed
 interface HiddenQuotationComponentProps {
   width: number;
-  accessObj: TUserAccess | undefined;
-  currentBrandObj: TReceivedBrandObj;
-  quotationOrder: TLocalOrderObj;
   setCaptureRef: React.Dispatch<
     React.SetStateAction<{
       current: HTMLElement;
     } | null>
   >;
+  accessObj: TUserAccess | undefined;
+  currentBrandObj: TReceivedBrandObj;
+  quotationOrder: TLocalOrderObj;
+  brandsArray?: TReceivedBrandObj[] | null;
 }
 
 interface MatchParams {
@@ -108,6 +109,8 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
     bodyMakeObj,
     insuranceDict,
     chargesFeesDict,
+    afterSalesStrings,
+    standardAccessories,
     generalAccessoriesArray,
     bodyRelatedAccessoriesArray,
     dimensionRelatedAccessoriesArray,
@@ -496,9 +499,9 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
                   <div className={`hiddenquotation__salesprogram-title`}>
                     <span>After&nbsp;Sales&nbsp;Programme:</span>
                   </div>
-                  <div>5 Years or 300,000km Warranty</div>
-                  <div>3 Times Free Service Programme (1st-3rd service)</div>
-                  <div className={`hiddenquotation__salesprogram-contract`}>Hino Best FIT Service Contract</div>
+                  <div>{afterSalesStrings.line_1}</div>
+                  <div>{afterSalesStrings.line_2}</div>
+                  <div className={`hiddenquotation__salesprogram-contract`}>{afterSalesStrings.line_3}</div>
                 </div>
                 <div>
                   <table className={`hiddenquotation__salesprogram-table`}>
@@ -531,23 +534,10 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
                   <span>Standard&nbsp;Accessories:</span>
                 </div>
                 <div className={`hiddenquotation__accessorieslist-content`}>
-                  <div>
-                    <div>Air-Container</div>
-                    <div>Radio&nbsp;CD&nbsp;Player</div>
-                    <div>Cab&nbsp;Floor&nbsp;Mat</div>
-                    <div>Mudguards</div>
-                  </div>
-                  <div>
-                    <div>First&nbsp;Aid&nbsp;Kit</div>
-                    <div>Safety&nbsp;Triangle</div>
-                    <div>Fire&nbsp;Extinguisher</div>
-                    <div>Tubeless&nbsp;tires</div>
-                  </div>
-                  <div>
-                    <div>Rubber&nbsp;Mats</div>
-                    <div>Alarm&nbsp;System</div>
-                    <div>Central&nbsp;Locking</div>
-                    {/* <div>Kangaroo&nbsp;Bar</div> */}
+                  <div className={`quotation__accessorieslist-content-grid`}>
+                    {standardAccessories.map((acc) => (
+                      <div key={`hiddenquotation${acc}`}>{acc}</div>
+                    ))}
                   </div>
                   <div>
                     <img className={`hiddenquotation__accessorieslist-img`} src={warranty} alt="warranty" />

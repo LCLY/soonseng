@@ -57,6 +57,7 @@ import {
   TUpdateMakeData,
 } from 'src/store/types/dashboard';
 import { UPLOAD_TO_BODY_MAKE } from 'src/shared/constants';
+import { afterSalesStrings, standardAccessories } from 'src/containers/QuotationPage/QuotationPage';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { TUpdateMakeFinishValues } from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
 import { checkInchExist, convertPriceToFloat, emptyStringWhenUndefinedOrNull, formatFeetInch } from 'src/shared/Utils';
@@ -218,6 +219,8 @@ const CatalogBodyMake: React.FC<Props> = ({
     generalAccessoriesArray: {},
     bodyRelatedAccessoriesArray: {},
     dimensionRelatedAccessoriesArray: {},
+    afterSalesStrings: afterSalesStrings,
+    standardAccessories: standardAccessories,
   });
   const [accessoriesLength, setAccessoriesLength] = useState<{ general: number; body: number; dimension: number }>({
     general: -1,
@@ -1942,6 +1945,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                     </div>
                     <section className="catalogbodymake__section-banner">
                       <div className="catalogbodymake__banner-div">
+                        <div className="catalogbodymake__banner-bgcover bg-cover"></div>
                         {/* @TODO - change to using series image */}
                         {catalogMake.images.length > 0 ? (
                           <img
@@ -2175,7 +2179,6 @@ interface StateProps {
   dashboardLoading?: boolean;
   errorMessage?: string | null;
   successMessage?: string | null;
-  localOrdersArray?: TLocalOrderObj[];
   localOrdersDict?: { [key: string]: TLocalOrderObj };
   makeFromCatalogBodyMake?: TReceivedMakeObj | null;
   wheelbasesArray?: TReceivedWheelbaseObj[] | null;
@@ -2192,7 +2195,6 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     errorMessage: state.dashboard.errorMessage,
     successMessage: state.dashboard.successMessage,
     localOrdersDict: state.sales.localOrdersDict,
-    localOrdersArray: state.sales.localOrdersArray,
     wheelbasesArray: state.dashboard.wheelbasesArray,
     chargesFeesArray: state.dashboard.chargesFeesArray,
     bodyMakeWithWheelbaseArray: state.catalog.catalogBodyMakesArray,
@@ -2212,7 +2214,6 @@ interface DispatchProps {
   onUpdateBodyMake: typeof actions.updateBodyMake;
   onDeleteBodyMake: typeof actions.deleteBodyMake;
   onGetChargesFees: typeof actions.getChargesFees;
-  onStoreLocalOrders: typeof actions.storeLocalOrders;
   onDeleteUploadImage: typeof actions.deleteUploadImage;
   onSetLocalOrdersDict: typeof actions.setLocalOrdersDict;
   onGetCatalogBodyMakes: typeof actions.getCatalogBodyMakes;
@@ -2248,7 +2249,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetDimensionAssociatedAccessories: () => dispatch(actions.getDimensionAssociatedAccessories()),
     onGetBodyMakeAccessories: (body_make_id) => dispatch(actions.getBodyMakeAccessories(body_make_id)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
-    onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onSetLocalOrdersDict: (localOrdersDict) => dispatch(actions.setLocalOrdersDict(localOrdersDict)),
     onCreateMakeWheelbase: (make_id, wheelbase_id, original, extension_price) =>
       dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, original, extension_price)),

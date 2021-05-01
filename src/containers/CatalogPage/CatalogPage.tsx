@@ -77,6 +77,7 @@ const CatalogPage: React.FC<Props> = ({
     make: false,
   });
 
+  const [mounted, setMounted] = useState(false);
   // if undefined meaning there's no make
   const [selectedMake, setSelectedMake] = useState<TReceivedMakeObj | null | undefined>(null);
 
@@ -129,7 +130,7 @@ const CatalogPage: React.FC<Props> = ({
     );
   }, [activeSeriesId]);
 
-  const animateStatsAppear = () => {
+  const animateStatsAppear = (brandIndex: number) => {
     gsap.fromTo('.catalog__series-content-line', { margin: '0 100%', duration: 1 }, { margin: 0, duration: 1 });
     gsap.fromTo('.catalog__series-content-title', { x: '100%', duration: 1 }, { x: 0, duration: 1 });
     gsap.fromTo(
@@ -138,7 +139,7 @@ const CatalogPage: React.FC<Props> = ({
       { x: '0', duration: 1, ease: Back.easeOut.config(3) },
     );
     gsap.fromTo(
-      '.catalog__series-content-row',
+      `.catalog__series-content-row-${brandIndex}`,
       { x: '-120%' },
       {
         x: '0',
@@ -388,15 +389,17 @@ const CatalogPage: React.FC<Props> = ({
   const SeriesMakesGrid = ({
     series,
     catalog,
+    brandIndex,
   }: {
+    brandIndex: number;
     series: TCatalogSeries;
     catalog: TReceivedCatalogMakeObj;
     arrayIsOddNumberAndMakeLengthLessThanThree: boolean;
   }) => (
     <>
       <div className="catalog__section-series-outerdiv">
-        <div className="catalog__section-series-innerdiv">
-          {series.makes.length > 0 ? (
+        {series.makes.length > 0 ? (
+          <div className="catalog__section-series-innerdiv">
             <div className="catalog__series-outerdiv">
               <div
                 className={
@@ -424,56 +427,56 @@ const CatalogPage: React.FC<Props> = ({
                           <h2>{selectedMake?.title}</h2>
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Config</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.config, '-')}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Torque</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.torque, '-')}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Horsepower</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(`${selectedMake.horsepower}PS`, '-')}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Emission</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.emission, '-')}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Tire Count</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.tire, '-')}
                         </div>
                       </div>
 
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Transmission</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.transmission, '-')}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Engine Capacity</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.engine_cap, '-')}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">ABS</div>
                         <div className="catalog__series-content-row-info">
                           {selectedMake.abs ? 'Available' : 'Not Available'}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">Year</div>
                         <div className="catalog__series-content-row-info">
                           {(selectedMake.year && selectedMake.year.toLowerCase() === 'Invalid Date'.toLowerCase()) ||
@@ -483,14 +486,14 @@ const CatalogPage: React.FC<Props> = ({
                             : selectedMake.year}
                         </div>
                       </div>
-                      <div className="catalog__series-content-row">
+                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                         <div className="catalog__series-content-row-label">GVW</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(`${selectedMake.gvw}KG`, '-')}
                         </div>
                       </div>
                       {accessObj?.showPriceSalesPage && (
-                        <div className="catalog__series-content-row">
+                        <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
                           <div className="catalog__series-content-row-label catalog__series-content-row-label--price">
                             Price
                           </div>
@@ -552,7 +555,7 @@ const CatalogPage: React.FC<Props> = ({
                               setSelectedMake(make);
 
                               if (selectedMake) {
-                                animateStatsAppear();
+                                animateStatsAppear(brandIndex);
                               }
                               // history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`);
                             }}
@@ -595,12 +598,32 @@ const CatalogPage: React.FC<Props> = ({
                 </>
               </div>
             </div>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'çenter', justifyContent: 'center', height: '100%' }}>
-              <Empty />
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="catalog__section-series-innerdiv catalog__section-series-innerdiv--empty">
+            <Empty description={''}>
+              {accessObj?.showAdminDashboard && (
+                <Tooltip title="Add Model">
+                  <div
+                    className={`catalog__button-series catalog__button-series--addmodel catalog__row-div-parent-${series.id}`}
+                    onClick={() => {
+                      setModalContent({
+                        ...modalContent,
+                        make: { seriesTitle: series.title, makeTitle: '' },
+                      });
+                      createMakeForm.setFieldsValue({ makeSeriesId: series.id, makeBrandId: catalog.brand.id });
+                      // show the modal
+                      setShowCreateModal({ ...showCreateModal, make: true });
+                    }}
+                  >
+                    <PlusCircleOutlined className="catalog__button-icon catalog__button-icon--make" />
+                    &nbsp;&nbsp;Add Model
+                  </div>
+                </Tooltip>
+              )}
+            </Empty>
+          </div>
+        )}
       </div>
     </>
   );
@@ -620,14 +643,9 @@ const CatalogPage: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (selectedMake) {
-      animateStatsAppear();
-    }
-  }, [selectedMake]);
-
-  useEffect(() => {
     if (activeBrandTab) {
-      animateStatsAppear();
+      let brandIndex = parseInt(activeBrandTab.replace('brand', '')) - 1;
+      animateStatsAppear(brandIndex);
       animateMakesAppear();
     }
   }, [activeBrandTab, animateMakesAppear]);
@@ -639,21 +657,23 @@ const CatalogPage: React.FC<Props> = ({
   useEffect(() => {
     // animate makes everytime a new series is chosen
     if (activeSeriesTab) {
-      let index = parseInt(activeSeriesTab.replace('series', '')) - 1;
+      let brandIndex = parseInt(activeBrandTab.replace('brand', '')) - 1;
+      let seriesIndex = parseInt(activeSeriesTab.replace('series', '')) - 1;
       animateMakesAppear();
       if (
         catalogMakesArray &&
         catalogMakesArray.length > 0 &&
-        catalogMakesArray[0].series.length > 0 &&
-        catalogMakesArray[0].series[index].makes.length > 0
+        catalogMakesArray[brandIndex].series.length > 0 &&
+        catalogMakesArray[brandIndex].series[seriesIndex].makes.length > 0
       ) {
-        setActiveSeriesId(catalogMakesArray[0].series[index].id);
-        setSelectedMake(catalogMakesArray[0].series[index].makes[0]);
+        setActiveSeriesId(catalogMakesArray[brandIndex].series[seriesIndex].id);
+        setSelectedMake(catalogMakesArray[brandIndex].series[seriesIndex].makes[0]);
       } else {
         setSelectedMake(undefined); //undefined when there's no make
       }
+      setMounted(true);
     }
-  }, [activeSeriesTab, animateMakesAppear, catalogMakesArray]);
+  }, [activeBrandTab, activeSeriesTab, animateMakesAppear, catalogMakesArray]);
 
   useEffect(() => {
     onGetCatalogMakes();
@@ -661,7 +681,7 @@ const CatalogPage: React.FC<Props> = ({
 
   useEffect(() => {
     //  after successful data retrieve, select the first series from first brand
-    if (catalogMakesArray) {
+    if (catalogMakesArray && !mounted) {
       // first make sure that there is >= 1 catalog makes
       // then make sure that series is also >= 1
       // then make sure that makes within series is also >= 1 then proceed
@@ -675,8 +695,10 @@ const CatalogPage: React.FC<Props> = ({
       } else {
         setSelectedMake(undefined); //undefined when there's no make
       }
+
+      setMounted(true);
     }
-  }, [catalogMakesArray]);
+  }, [catalogMakesArray, mounted]);
 
   /* -------------------- */
   // success notification
@@ -917,6 +939,15 @@ const CatalogPage: React.FC<Props> = ({
                       onTabClick={(activeKey: string) => {
                         setActiveSeriesTab('series1');
                         setActiveBrandTab(activeKey);
+
+                        let index = parseInt(activeKey.replace('brand', '')) - 1;
+                        let seriesLength = catalogMakesArray[index].series.length;
+                        let makesLength = catalogMakesArray[index].series[0].makes.length;
+                        // when brand changes tab
+                        // if series and makes both have 1 item, automatically sets to the first make
+                        if (seriesLength > 0 && makesLength > 0) {
+                          setSelectedMake(catalogMakesArray[index].series[0].makes[0]);
+                        }
                       }}
                       tabBarExtraContent={{
                         right: (
@@ -937,7 +968,7 @@ const CatalogPage: React.FC<Props> = ({
                         ),
                       }}
                     >
-                      {catalogMakesArray.map((catalog, index) => {
+                      {catalogMakesArray.map((catalog, brandIndex) => {
                         return (
                           // div wrapping brand along with its series
                           <TabPane
@@ -959,7 +990,7 @@ const CatalogPage: React.FC<Props> = ({
                                 </div>
                               </div>
                             }
-                            key={`brand${index + 1}`}
+                            key={`brand${brandIndex + 1}`}
                           >
                             <div className="catalog__brand-div" key={uuidv4()}>
                               {/* ================================= */}
@@ -1057,6 +1088,7 @@ const CatalogPage: React.FC<Props> = ({
                                               <SeriesMakesGrid
                                                 series={series}
                                                 catalog={catalog}
+                                                brandIndex={brandIndex}
                                                 arrayIsOddNumberAndMakeLengthLessThanThree={
                                                   arrayIsOddNumberAndMakeLengthLessThanThree
                                                 }
@@ -1070,6 +1102,7 @@ const CatalogPage: React.FC<Props> = ({
                                                   <SeriesMakesGrid
                                                     series={series}
                                                     catalog={catalog}
+                                                    brandIndex={brandIndex}
                                                     arrayIsOddNumberAndMakeLengthLessThanThree={
                                                       arrayIsOddNumberAndMakeLengthLessThanThree
                                                     }
@@ -1084,7 +1117,26 @@ const CatalogPage: React.FC<Props> = ({
                                   </Tabs>
                                 ) : (
                                   <div className="catalog__empty-series glass-shadow">
-                                    <Empty />
+                                    <Empty description="">
+                                      {accessObj?.showAdminDashboard && (
+                                        <div
+                                          className="catalog__button-series catalog__button-sheen"
+                                          onClick={() => {
+                                            // set the brand id in the form
+                                            createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
+                                            // set the content so that modal can display the brand title
+                                            let seriesModalContent = { ...modalContent };
+                                            seriesModalContent.series.brandTitle = catalog.brand.title;
+                                            setModalContent(seriesModalContent);
+                                            // show the modal
+                                            setShowCreateModal({ ...showCreateModal, series: true });
+                                          }}
+                                        >
+                                          <PlusCircleOutlined className="catalog__button-icon" />
+                                          &nbsp;&nbsp;Add Series
+                                        </div>
+                                      )}
+                                    </Empty>
                                   </div>
                                 )}
                               </section>

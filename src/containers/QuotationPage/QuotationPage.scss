@@ -65,6 +65,17 @@
   }
 
   /* ================ */
+  // Input
+  /* ================ */
+  &__input {
+    &-salesprogram {
+      padding: 0 0.5rem !important;
+      width: 100% !important;
+      margin-bottom: 0.2rem !important;
+      border: 1px dashed black !important;
+    }
+  }
+  /* ================ */
   // Button
   /* ================ */
   &__button {
@@ -246,7 +257,7 @@
       width: 10rem;
     }
     @include respond-to($tablet-portrait-up) {
-      height: 10rem;
+      height: 13rem;
       width: 12.5rem;
     }
   }
@@ -537,6 +548,15 @@
         font-size: 0.8rem;
         margin-top: 2rem;
       }
+
+      &--left {
+        width: 55%;
+        margin-right: 2rem;
+      }
+
+      &--right {
+        width: 40%;
+      }
     }
 
     /* ------------------------------ */
@@ -544,6 +564,7 @@
     /* ------------------------------ */
     &-title {
       font-weight: bolder;
+      width: 100%;
       // text-decoration: underline;
       margin-bottom: 0.5rem;
       @include respond-to($small-phone) {
@@ -631,6 +652,22 @@
       margin-top: 1rem;
     }
 
+    &-select {
+      width: 100%;
+      margin-top: 0.5rem !important;
+      & .ant-select-selector {
+        border: 1px dashed black !important;
+      }
+
+      & .ant-select-selection-item {
+        background: rgb(19, 43, 102) !important;
+        color: white;
+        & svg {
+          color: white !important;
+        }
+      }
+    }
+
     /* ---------------- */
     // the title "Standard accessories"
     /* ---------------- */
@@ -666,6 +703,11 @@
       align-items: center;
       @include respond-to($small-phone) {
         font-size: 0.8rem;
+      }
+      &-grid {
+        width: 100%;
+        display: grid;
+        // grid-template-columns: repeat(3, 1fr) !important;
       }
     }
   }

@@ -30,7 +30,6 @@ export interface SalesInitialState {
   readonly salesBrandObj?: TReceivedSalesMakesObj | null;
   readonly salesBrandsArray?: TReceivedSalesMakesObj[] | null;
   // local orders array / quotation objects array
-  readonly localOrdersArray?: TLocalOrderObj[];
   readonly localOrdersDict?: { [key: string]: TLocalOrderObj };
   // boolean to know whether fetch successful
   readonly getSalesLengthsSucceed?: boolean | null;
@@ -58,16 +57,23 @@ export type TLocalOrderObj = {
   id: string;
   tireCount: number;
   discount: number | null;
+  standardAccessories: string[];
+  afterSalesStrings: IAfterSales;
   bodyObj: TReceivedBodyObj | null;
-  lengthObj: TReceivedSalesLengthObj | null;
-  bodyMakeObj: TReceivedBodyMakeObj | null;
-  // processingFeesDict: TProcessingFeesDict;
   insuranceDict: TInsuranceDict | null;
+  bodyMakeObj: TReceivedBodyMakeObj | null;
+  lengthObj: TReceivedSalesLengthObj | null;
   chargesFeesDict: { [id: string]: TReceivedChargesFeesObj };
   generalAccessoriesArray: { [id: string]: TReceivedAccessoryObj };
   bodyRelatedAccessoriesArray: { [id: string]: TReceivedAccessoryObj };
   dimensionRelatedAccessoriesArray: { [id: string]: TReceivedDimensionAccessoryObj };
 };
+
+export interface IAfterSales {
+  line_1: string;
+  line_2: string;
+  line_3: string;
+}
 
 export interface IInsurance {
   id: string;
@@ -79,18 +85,6 @@ export type TInsuranceDict = {
   insurance_jpj: IInsurance;
   insurance_premium: IInsurance;
 };
-
-export interface StoreLocalOrdersAction {
-  type: typeof actionTypes.STORE_LOCAL_ORDERS;
-  localOrdersArray: TLocalOrderObj[];
-}
-
-/* Remove one quotation / order using order unique ID  */
-export interface RemoveAnOrderAction {
-  type: typeof actionTypes.REMOVE_AN_ORDER;
-  orderId: string;
-  localOrdersArray: TLocalOrderObj[];
-}
 
 /* ------------------ */
 // Get Lengths
@@ -259,9 +253,6 @@ export type SalesActionTypes =
   /* -------------------------- */
   // Store Local Orders
   | SetLocalOrdersDictAction
-  | StoreLocalOrdersAction
-  // remove a local Order
-  | RemoveAnOrderAction
   /* ------------------------ */
   // Lengths
   /* ------------------------ */

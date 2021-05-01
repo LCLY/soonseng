@@ -3,7 +3,7 @@ import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import { getAxiosHeaderToken, setPromiseError, succeedActionWithImageUpload } from 'src/shared/Utils';
 import axios from 'axios';
-import { UPLOAD_TO_MAKE, UPLOAD_TO_BODY, UPLOAD_TO_BODY_MAKE, UPLOAD_TO_ACCESSORY } from 'src/shared/constants';
+import { UPLOAD_TO_BODY, UPLOAD_TO_BODY_MAKE, UPLOAD_TO_ACCESSORY } from 'src/shared/constants';
 
 /**
  * A boolean to check whether image has been uploaded
@@ -636,17 +636,7 @@ export function* createMakeSaga(action: AppActions) {
   }
   try {
     let response = yield axios.post(url, { make });
-    if ('imageTag' in action && 'imageFiles' in action) {
-      yield succeedActionWithImageUpload(
-        UPLOAD_TO_MAKE,
-        response,
-        imageIsUploaded,
-        actions.uploadImage,
-        response.data.makes,
-        actions.createMakeSucceed,
-        { imageTag: action.imageTag, imageFiles: action.imageFiles },
-      );
-    }
+    yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.createMakeFailed, error.response.data.error);
@@ -708,17 +698,7 @@ export function* updateMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { make });
-    if ('imageTag' in action && 'imageFiles' in action) {
-      yield succeedActionWithImageUpload(
-        UPLOAD_TO_MAKE,
-        response,
-        imageIsUploaded,
-        actions.uploadImage,
-        response.data.makes,
-        actions.updateMakeSucceed,
-        { imageTag: action.imageTag, imageFiles: action.imageFiles },
-      );
-    }
+    yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.updateMakeFailed, error.response.data.error);

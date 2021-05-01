@@ -15,7 +15,6 @@ import SoonSengLogo from 'src/img/soonseng_logo.png';
 import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 import { TActivePage } from '../NavbarComponent/NavbarComponent';
-import { TLocalOrderObj } from 'src/store/types/sales';
 
 const { SubMenu } = Menu;
 
@@ -161,14 +160,12 @@ interface StateProps {
   projectVersion?: string;
   auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
-  localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
     userInfoObj: state.auth.userInfoObj,
     projectVersion: state.general.projectVersion,
-    localOrdersArray: state.sales.localOrdersArray,
     authenticated: state.auth.auth_token !== null,
   };
 };
