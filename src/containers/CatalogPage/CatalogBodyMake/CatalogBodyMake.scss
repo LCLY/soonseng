@@ -102,6 +102,10 @@
     height: 100%;
     object-fit: cover;
 
+    &-bgcover {
+      background-image: radial-gradient(rgba(255, 255, 255, 0) 30%, rgb(38, 38, 38));
+    }
+
     &--placeholder {
       width: 100%;
       height: auto;
@@ -121,6 +125,8 @@
     // div wrapping the banner
     /* -------------- */
     &-div {
+      position: relative;
+
       @include respond-to($tablet-portrait-up) {
         width: 100%;
       }
