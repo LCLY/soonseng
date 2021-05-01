@@ -18,7 +18,7 @@ import { AnyAction, Dispatch } from 'redux';
 import NumberFormat from 'react-number-format';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Empty, Form, Tabs, Tooltip, message, Menu, Dropdown } from 'antd';
+import { Empty, Form, Tabs, Tooltip, message, Select, Menu, Dropdown } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -34,6 +34,7 @@ import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPa
 import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
+const { Option } = Select;
 const { TabPane } = Tabs;
 
 interface CatalogPageProps {}
@@ -411,6 +412,7 @@ const CatalogPage: React.FC<Props> = ({
                     : 'catalog__series-image-div catalog__series-image-div--placeholder'
                 }
               >
+                <div className="catalog__series-bgcover bg-cover"></div>
                 {selectedMake ? (
                   <>
                     {series.images.length > 0 ? (
@@ -428,6 +430,27 @@ const CatalogPage: React.FC<Props> = ({
                         <div className="catalog__series-content-line"></div>
                         <div className="catalog__series-content-title">
                           <h2>{selectedMake?.title}</h2>
+                          <Select
+                            showSearch
+                            placeholder="Select a model"
+                            optionFilterProp="children"
+                            className="catalog__series-content-select"
+                            filterOption={(input, option) =>
+                              option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                            value={selectedMake?.id}
+                            onChange={(e) => {
+                              setSelectedMake(series.makes.filter((make) => make.id === e)[0]);
+                            }}
+                          >
+                            {series.makes.map((make, index) => {
+                              return (
+                                <Option key={`dropdownmake${index}`} value={make.id}>
+                                  {make.title}
+                                </Option>
+                              );
+                            })}
+                          </Select>
                         </div>
                       </div>
                       <div
@@ -967,7 +990,7 @@ const CatalogPage: React.FC<Props> = ({
                   <div className="catalog__innerdiv">
                     <Tabs
                       activeKey={activeBrandTab}
-                      tabPosition={width < 900 ? 'top' : 'left'}
+                      tabPosition={width < 1200 ? 'top' : 'left'}
                       className="catalog__tabs-outerdiv--brand"
                       onTabClick={(activeKey: string) => {
                         setActiveSeriesTab('series1');
