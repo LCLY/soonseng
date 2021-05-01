@@ -130,7 +130,7 @@ const CatalogPage: React.FC<Props> = ({
     );
   }, [activeSeriesId]);
 
-  const animateStatsAppear = (brandIndex: number) => {
+  const animateStatsAppear = (brandIndex: number, seriesIndex: number) => {
     gsap.fromTo('.catalog__series-content-line', { margin: '0 100%', duration: 1 }, { margin: 0, duration: 1 });
     gsap.fromTo('.catalog__series-content-title', { x: '100%', duration: 1 }, { x: 0, duration: 1 });
     gsap.fromTo(
@@ -138,8 +138,9 @@ const CatalogPage: React.FC<Props> = ({
       { x: '150%', duration: 1, ease: Back.easeOut.config(3) },
       { x: '0', duration: 1, ease: Back.easeOut.config(3) },
     );
+
     gsap.fromTo(
-      `.catalog__series-content-row-${brandIndex}`,
+      `.catalog__series-content-row-${brandIndex}-${seriesIndex}`,
       { x: '-120%' },
       {
         x: '0',
@@ -390,8 +391,10 @@ const CatalogPage: React.FC<Props> = ({
     series,
     catalog,
     brandIndex,
+    seriesIndex,
   }: {
     brandIndex: number;
+    seriesIndex: number;
     series: TCatalogSeries;
     catalog: TReceivedCatalogMakeObj;
     arrayIsOddNumberAndMakeLengthLessThanThree: boolean;
@@ -427,56 +430,74 @@ const CatalogPage: React.FC<Props> = ({
                           <h2>{selectedMake?.title}</h2>
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Config</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.config, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Torque</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.torque, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Horsepower</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(`${selectedMake.horsepower}PS`, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Emission</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.emission, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Tire Count</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.tire, '-')}
                         </div>
                       </div>
 
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Transmission</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.transmission, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Engine Capacity</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(selectedMake.engine_cap, '-')}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">ABS</div>
                         <div className="catalog__series-content-row-info">
                           {selectedMake.abs ? 'Available' : 'Not Available'}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">Year</div>
                         <div className="catalog__series-content-row-info">
                           {(selectedMake.year && selectedMake.year.toLowerCase() === 'Invalid Date'.toLowerCase()) ||
@@ -486,14 +507,18 @@ const CatalogPage: React.FC<Props> = ({
                             : selectedMake.year}
                         </div>
                       </div>
-                      <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                      <div
+                        className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                      >
                         <div className="catalog__series-content-row-label">GVW</div>
                         <div className="catalog__series-content-row-info">
                           {desiredValueWhenUndefinedOrNull(`${selectedMake.gvw}KG`, '-')}
                         </div>
                       </div>
                       {accessObj?.showPriceSalesPage && (
-                        <div className={`catalog__series-content-row catalog__series-content-row-${brandIndex}`}>
+                        <div
+                          className={`catalog__series-content-row catalog__series-content-row-${brandIndex}-${seriesIndex}`}
+                        >
                           <div className="catalog__series-content-row-label catalog__series-content-row-label--price">
                             Price
                           </div>
@@ -555,7 +580,7 @@ const CatalogPage: React.FC<Props> = ({
                               setSelectedMake(make);
 
                               if (selectedMake) {
-                                animateStatsAppear(brandIndex);
+                                animateStatsAppear(brandIndex, seriesIndex);
                               }
                               // history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`);
                             }}
@@ -645,10 +670,19 @@ const CatalogPage: React.FC<Props> = ({
   useEffect(() => {
     if (activeBrandTab) {
       let brandIndex = parseInt(activeBrandTab.replace('brand', '')) - 1;
-      animateStatsAppear(brandIndex);
+      let seriesIndex = parseInt(activeSeriesTab.replace('series', '')) - 1;
+      animateStatsAppear(brandIndex, seriesIndex);
       animateMakesAppear();
     }
-  }, [activeBrandTab, animateMakesAppear]);
+  }, [activeBrandTab, activeSeriesTab, animateMakesAppear]);
+
+  useEffect(() => {
+    if (selectedMake) {
+      let brandIndex = parseInt(activeBrandTab.replace('brand', '')) - 1;
+      let seriesIndex = parseInt(activeSeriesTab.replace('series', '')) - 1;
+      animateStatsAppear(brandIndex, seriesIndex);
+    }
+  }, [activeBrandTab, activeSeriesTab, selectedMake]);
 
   useEffect(() => {
     animateMakesAppear();
@@ -671,7 +705,6 @@ const CatalogPage: React.FC<Props> = ({
       } else {
         setSelectedMake(undefined); //undefined when there's no make
       }
-      setMounted(true);
     }
   }, [activeBrandTab, activeSeriesTab, animateMakesAppear, catalogMakesArray]);
 
@@ -1042,12 +1075,12 @@ const CatalogPage: React.FC<Props> = ({
                                       }
                                     }}
                                   >
-                                    {catalog.series.map((series, index) => {
+                                    {catalog.series.map((series, seriesIndex) => {
                                       // if array is odd number, on the last row, make it display flex
                                       let arrayIsOddNumberAndMakeLengthLessThanThree =
                                         catalog.series.length % 2 !== 0 &&
-                                        index === catalog.series.length - 1 &&
-                                        catalog.series[index].makes.length > 3;
+                                        seriesIndex === catalog.series.length - 1 &&
+                                        catalog.series[seriesIndex].makes.length > 3;
 
                                       return (
                                         <TabPane
@@ -1075,7 +1108,7 @@ const CatalogPage: React.FC<Props> = ({
                                               </div>
                                             </div>
                                           }
-                                          key={`series${index + 1}`}
+                                          key={`series${seriesIndex + 1}`}
                                         >
                                           <div
                                             className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
@@ -1089,6 +1122,7 @@ const CatalogPage: React.FC<Props> = ({
                                                 series={series}
                                                 catalog={catalog}
                                                 brandIndex={brandIndex}
+                                                seriesIndex={seriesIndex}
                                                 arrayIsOddNumberAndMakeLengthLessThanThree={
                                                   arrayIsOddNumberAndMakeLengthLessThanThree
                                                 }
@@ -1103,6 +1137,7 @@ const CatalogPage: React.FC<Props> = ({
                                                     series={series}
                                                     catalog={catalog}
                                                     brandIndex={brandIndex}
+                                                    seriesIndex={seriesIndex}
                                                     arrayIsOddNumberAndMakeLengthLessThanThree={
                                                       arrayIsOddNumberAndMakeLengthLessThanThree
                                                     }
