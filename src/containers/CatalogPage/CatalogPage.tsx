@@ -431,13 +431,8 @@ const CatalogPage: React.FC<Props> = ({
                         <div className="catalog__series-content-title">
                           <h2>{selectedMake?.title}</h2>
                           <Select
-                            showSearch
                             placeholder="Select a model"
-                            optionFilterProp="children"
                             className="catalog__series-content-select"
-                            filterOption={(input, option) =>
-                              option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                            }
                             value={selectedMake?.id}
                             onChange={(e) => {
                               setSelectedMake(series.makes.filter((make) => make.id === e)[0]);
