@@ -720,8 +720,7 @@
     &--mobile {
       position: fixed;
       z-index: 1000;
-      width: 95vw;
-      height: 90vh;
+
       background: $dark-blue-2;
       left: 50%;
       border-radius: 1rem;
@@ -729,6 +728,15 @@
       transform: translate(-50%, -50%);
       border: 1px solid white;
       @include shadow-func(1px, 3px, 15px, 0.5px, rgba(255, 255, 255, 0.433));
+
+      @include respond-to($small-phone) {
+        width: 95vw;
+        height: 90vh;
+      }
+      @include respond-to($phone-only) {
+        width: 80vw;
+        height: 90vh;
+      }
     }
   }
 
