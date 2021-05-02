@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 /* containers */
 // Authentication
 import Logout from 'src/containers/Authentication/Logout/Logout';
@@ -58,23 +58,27 @@ type Props = AppProps & StateProps & DispatchProps;
 
 const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion, onClearLocalStorage }) => {
   let route = null;
+  const [versionChecked, setVersionChecked] = useState(false);
 
   useEffect(() => {
     // set the version of the project so we can know which version we at and what should we do at which point
     // in this point of time, at version 1, we are clearing up all the localstorage
     if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
-      onSaveProjectVersion('v1.086');
+      onSaveProjectVersion('v1.089');
     }
   }, [projectVersion, onSaveProjectVersion]);
 
   useEffect(() => {
     if (projectVersion === undefined) return;
+
     let projectVersionInt = projectVersion.substring(1);
-    if (parseFloat(projectVersionInt) < 1.086) {
+    if (parseFloat(projectVersionInt) < 1.089) {
       //if the project is v1.0 then clear out the localstorage, update the version to v1.02
-      onClearLocalStorage('v1.086');
+      onClearLocalStorage('v1.089');
       persistor.purge();
+      window.location.href = ROUTE_LOGOUT; //force user to logout
     }
+    setVersionChecked(true);
   }, [projectVersion, onClearLocalStorage]);
 
   if (accessObj?.showSalesDashboard) {
@@ -132,11 +136,8 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
     );
   }
 
-  return (
-    <>
-      <Suspense fallback={<p>Loading...</p>}>{route}</Suspense>
-    </>
-  );
+  // only proceed after version is checked
+  return <>{versionChecked && <Suspense fallback={<p>Loading...</p>}>{route}</Suspense>}</>;
 };
 
 interface StateProps {

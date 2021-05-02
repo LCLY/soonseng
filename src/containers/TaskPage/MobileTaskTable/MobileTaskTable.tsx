@@ -3,6 +3,7 @@ import './MobileTaskTable.scss';
 /* components */
 /* 3rd party lib */
 import moment from 'moment';
+import gsap from 'gsap';
 import { Empty, Tooltip } from 'antd';
 /* Util */
 import { TIntakeTableState } from '../TaskPage';
@@ -30,6 +31,11 @@ const MobileTaskTable: React.FC<Props> = () => {
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
+
+  useEffect(() => {
+    gsap.config({ nullTargetWarn: false });
+  }, []);
+
   useEffect(() => {
     if (taskPageContext === null) return;
     const { incomingData, intakeDict, setIncomingData } = taskPageContext;
@@ -181,7 +187,9 @@ const MobileTaskTable: React.FC<Props> = () => {
                   ))}
               </>
             ) : (
-              <Empty />
+              <div className="mobiletasktable__div-empty">
+                <Empty />
+              </div>
             )}
           </>
         )}
