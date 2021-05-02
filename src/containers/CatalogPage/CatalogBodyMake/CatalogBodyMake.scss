@@ -103,7 +103,7 @@
     object-fit: cover;
 
     &-bgcover {
-      background-image: radial-gradient(rgba(255, 255, 255, 0) 30%, rgb(38, 38, 38));
+      background-image: radial-gradient(rgba(70, 70, 70, 0.4) 10%, rgb(38, 38, 38) 85%);
     }
 
     &--placeholder {
@@ -126,7 +126,6 @@
     /* -------------- */
     &-div {
       position: relative;
-
       @include respond-to($tablet-portrait-up) {
         width: 100%;
       }
