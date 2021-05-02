@@ -9,8 +9,7 @@
     overflow: auto;
 
     @include respond-to($small-phone) {
-      display: grid;
-      place-items: center;
+      display: block;
     }
     @include respond-to($phone-only) {
       display: none;
@@ -37,6 +36,12 @@
       margin-top: 1rem;
       font-size: 1.2rem;
       font-family: $font-firesans;
+    }
+
+    &-empty {
+      display: grid;
+      place-items: center;
+      height: 100%;
     }
   }
 
