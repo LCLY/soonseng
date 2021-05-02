@@ -86,7 +86,7 @@ type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentP
  */
 const NavbarComponent: React.FC<Props> = ({
   history,
-  // auth_token,
+  auth_token,
   accessObj,
   userInfoObj,
   activePage,
@@ -290,7 +290,7 @@ const NavbarComponent: React.FC<Props> = ({
           <div className="navbar__mobilesidebar-admin">
             <>
               <div className="">
-                {userInfoObj?.roles.title}&nbsp;{accessObj?.showSalesDashboard ? projectVersion : ''}
+                {userInfoObj?.roles.title}&nbsp;{auth_token ? projectVersion : ''}
               </div>
             </>
           </div>

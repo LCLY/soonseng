@@ -165,6 +165,7 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [updateBodyMakeForm] = Form.useForm();
   const [createMakeWheelbaseForm] = Form.useForm();
   const [updateMakeWheelbaseForm] = Form.useForm();
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
 
   const [isExtended, setIsExtended] = useState(false); //isExtended === !original
 
@@ -748,7 +749,7 @@ const CatalogBodyMake: React.FC<Props> = ({
           </Tooltip>
         )}
       </div> */}
-      <div>
+      <div className="catalogbodymake__view-outerdiv">
         {!wheelbaseBodyMake.make_wheelbase.original &&
           wheelbaseBodyMake.make_wheelbase.price !== undefined &&
           wheelbaseBodyMake.make_wheelbase.price !== null && (
@@ -765,9 +766,19 @@ const CatalogBodyMake: React.FC<Props> = ({
               </div>
             </div>
           )}
-        <div>
-          <i className="fas fa-th-list"></i>
-          <i className="fas fa-th-list"></i>
+        <div className="catalogbodymake__view-div">
+          <div
+            className={`catalogbodymake__view-icon ${viewMode === 'list' ? 'active' : ''}`}
+            onClick={() => setViewMode('list')}
+          >
+            <i className="fas fa-list-ul"></i> <span className="catalogbodymake__view-text">List View</span>
+          </div>
+          <div
+            className={`catalogbodymake__view-icon ${viewMode === 'grid' ? 'active' : ''}`}
+            onClick={() => setViewMode('grid')}
+          >
+            <i className="fas fa-th"></i> <span className="catalogbodymake__view-text">Grid View</span>
+          </div>
         </div>
       </div>
       <div className="catalogbodymake__innerdiv">
@@ -1007,7 +1018,7 @@ const CatalogBodyMake: React.FC<Props> = ({
               </>
             ) : (
               <div className="catalogbodymake__empty-bodymake">
-                <Empty /> hello bitch
+                <Empty />
               </div>
             )}
           </>

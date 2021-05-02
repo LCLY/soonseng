@@ -224,6 +224,78 @@
     }
   }
 
+  &__view {
+    &-div {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+
+      & .active {
+        background: $soft-red;
+        pointer-events: none;
+        &:hover {
+          background: $soft-red;
+        }
+      }
+    }
+
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    &-text {
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($tablet-portrait-up) {
+        display: inline-block;
+      }
+    }
+    &-icon {
+      border: 1px solid white;
+      color: white;
+      // background: $soft-red;
+
+      border-radius: 0.5rem;
+      margin: 0.5rem;
+      line-height: normal;
+
+      cursor: pointer;
+      user-select: none;
+      &:hover {
+        background: rgba($primary-color-3, 0.5);
+      }
+      @include sheenEffect($primary-color-4);
+      &:active {
+        transition: none;
+        background: none !important;
+      }
+
+      @include respond-to($small-phone) {
+        width: 3rem;
+        height: 3rem;
+        display: grid;
+        place-items: center;
+      }
+      @include respond-to($small-phone) {
+        width: 3rem;
+        height: 3rem;
+        display: grid;
+        place-items: center;
+      }
+
+      @include respond-to($tablet-portrait-up) {
+        padding: 0.6rem;
+      }
+    }
+  }
+
   /* ========================== */
   // the detail beside the banner
   /* ========================== */
@@ -1228,7 +1300,7 @@
     color: white;
     font-family: $font-firesans;
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
     & .fa-tags {
       margin-right: 1rem;
     }

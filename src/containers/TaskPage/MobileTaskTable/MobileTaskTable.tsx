@@ -147,7 +147,7 @@ const MobileTaskTable: React.FC<Props> = () => {
                           </Tooltip>
                         </div>
                         <div className="mobiletasktable__div-servicetype">
-                          {child.serviceType === '-' ? 'No service yet' : child.serviceType}
+                          {child.serviceType === '-' ? 'No job yet' : child.serviceType}
                         </div>
                         {child.description !== '' && child.description && (
                           <div className="mobiletasktable__div-description">Description: {child.description}</div>

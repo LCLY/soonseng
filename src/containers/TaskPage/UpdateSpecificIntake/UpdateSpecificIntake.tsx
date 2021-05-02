@@ -5,7 +5,7 @@ import './UpdateSpecificIntake.scss';
 /* 3rd party lib */
 import gsap from 'gsap';
 import moment from 'moment';
-import { Popconfirm, Table, Tooltip, Form, Button, Input, Select } from 'antd';
+import { Popconfirm, Table, Tooltip, Form, Button, Input, Select, Collapse } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 /* Util */
@@ -17,6 +17,7 @@ import { TReceivedUserInfoObj } from 'src/store/types/auth';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 import {
   IIntakeJobsFormData,
+  IIntakeLogs,
   IJobFormData,
   IReceivedIntakeJobsObj,
   TReceivedSpecificIntakeJobsObj,
@@ -25,6 +26,7 @@ import {
 import { emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
 const { Option } = Select;
+const { Panel } = Collapse;
 
 interface UpdateSpecificIntakeProps {
   count: number;
@@ -62,6 +64,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   setCurrentPage,
   setInEditMode,
   onGetServiceTypes,
+  specificIntakeLogs,
   usersByRolesArray,
   intakeStatusArray,
   serviceTypesArray,
@@ -85,6 +88,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
     null,
   );
+  const [showHistoryLog, setShowHistoryLog] = useState(false);
 
   const [
     currentSpecificIntakeJobsObj,
@@ -425,6 +429,68 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     },
   ];
 
+  let specificIntakeLogsComponent = (
+    <>
+      <div className="updatespecificintake__logs--mobile">
+        {specificIntakeLogs ? (
+          <Collapse accordion className="task__collapse">
+            {[...specificIntakeLogs].reverse().map((child, index) => (
+              <Panel
+                header={
+                  <div className="task__collapse-header">
+                    <div className="task__collapse-header-title">{child.title === '' ? '-' : child.title}</div>
+                    <div className="task__collapse-header-time">
+                      <i className="fas fa-clock"></i>
+                      {moment(child.created_at).format('HH:mm:A')}
+                    </div>
+                  </div>
+                }
+                key={`log${index}`}
+              >
+                <section className="task__collapse-content">
+                  <div className="task__collapse-row">
+                    <div className="task__collapse-row-label">Note:</div>
+                    <div className="task__collapse-row-description">
+                      {child.description === '' ? '-' : child.description}
+                    </div>
+                  </div>
+                  <div className="task__collapse-row">
+                    <div className="task__collapse-row-label">Updated at:</div>
+                    <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm:A')}</div>
+                  </div>
+                </section>
+                <div className="task__collapse-row task__collapse-row--user">
+                  <div>
+                    <i className="fas fa-user"></i>
+                  </div>
+                  &nbsp;
+                  <div>{child.created_by}</div>
+                </div>
+              </Panel>
+            ))}
+          </Collapse>
+        ) : (
+          <div className="task__collapse-spin">
+            <div className="lds-spinner">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
@@ -563,6 +629,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
   return (
     <>
+      {showHistoryLog && <>{specificIntakeLogsComponent}</>}
       {typeof currentSpecificIntakeJobsObj === 'object' && currentSpecificIntakeJobsObj && specificIntakeJobsObj ? (
         <Form
           className="updatespecificintake__form"
@@ -636,26 +703,23 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               <div className="flex-align-center">
                 {/* {inEditMode && <div style={{ marginRight: '1rem' }}>(Editing)</div>} */}
                 <>
+                  <div className="updatespecificintake__button-logs" onClick={() => setShowHistoryLog(true)}>
+                    <i className="fas fa-clipboard-list"></i>
+                  </div>
+
                   {inEditMode && (
                     <Popconfirm
                       title={`Sure to delete Intake for ${currentSpecificIntakeJobsObj.registration}?`}
                       onConfirm={() => onDeleteIntakeSummary(currentSpecificIntakeJobsObj.id)}
                     >
                       <span className="updatespecificintake__button-task updatespecificintake__button-task--delete">
-                        <i className="fas fa-trash-alt"></i>&nbsp;&nbsp;Delete Intake
+                        <i className="fas fa-trash-alt"></i>
+                        <span className="updatespecificintake__button-task--delete-text">
+                          &nbsp;&nbsp;Delete Intake
+                        </span>
                       </span>
                     </Popconfirm>
                   )}
-
-                  {/* <span
-                    className="updatespecificintake__button-task updatespecificintake__button-task--edit"
-                    onClick={() => {
-                      setInEditMode(true);
-                      setBeforeDeleteState(updateTaskTableState);
-                    }}
-                  >
-                    <i className="fas fa-pen"></i>
-                  </span> */}
                 </>
               </div>
             </div>
@@ -707,25 +771,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     </div>
                   </div>
                 )}
-
-                {/* {inEditMode ? (
-                  <div className="flex-align-center">
-                    <Form.Item label="" name="pickup" valuePropName="checked" className="updatespecificintake__form-checkbox">
-                      <Checkbox>Ready for Pick Up</Checkbox>
-                    </Form.Item>
-                  </div>
-                ) : (
-                  <div className="updatespecificintake__pickup-div">
-                    Ready to Pick Up:
-                    <div
-                      className={`updatespecificintake__pickup-circle ${
-                        currentSpecificIntakeJobsObj.pick_up
-                          ? 'updatespecificintake__pickup-circle--green'
-                          : 'updatespecificintake__pickup-circle--red'
-                      }`}
-                    ></div>
-                  </div>
-                )} */}
               </div>
 
               {/* DIV WRAPPING ALL 3 FORMITEMS */}
@@ -1006,6 +1051,7 @@ interface StateProps {
   loading?: boolean;
   auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
+  specificIntakeLogs?: IIntakeLogs[] | null;
   specificIntakeJobsObj?: TReceivedSpecificIntakeJobsObj | null;
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   usersByRolesArray?: TReceivedUserInfoObj[] | null;
@@ -1019,6 +1065,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     specificIntakeJobsObj: state.task.specificIntakeJobsObj,
     intakeStatusArray: state.dashboard.intakeStatusArray,
     usersByRolesArray: state.task.usersByRolesArray,
+    specificIntakeLogs: state.task.specificIntakeLogs,
     serviceTypesArray: state.dashboard.serviceTypesArray,
   };
 };
