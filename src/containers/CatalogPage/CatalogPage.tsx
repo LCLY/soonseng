@@ -1090,74 +1090,77 @@ const CatalogPage: React.FC<Props> = ({
 
                                         return (
                                           <>
-                                            {!accessObj?.showAdminDashboard && series.makes.length > 0 && (
-                                              <TabPane
-                                                tab={
-                                                  <div className="catalog__tabs-title">
-                                                    <div>{series.title}</div>
-                                                    <div>
-                                                      {accessObj?.showAdminDashboard && (
-                                                        <Tooltip title={`Edit / Delete ${series.title}`}>
-                                                          <Dropdown
-                                                            className="catalog__dropdown-more"
-                                                            overlay={
-                                                              <SeriesMenu
-                                                                seriesTitle={series.title}
-                                                                brandId={catalog.brand.id}
-                                                                seriesId={series.id}
-                                                              />
-                                                            }
-                                                            trigger={['click']}
-                                                          >
-                                                            <i className="fas fa-cogs" />
-                                                          </Dropdown>
-                                                        </Tooltip>
-                                                      )}
+                                            {/* only render when normal user but has at least 1 make  */}
+                                            {/* and only render when admin user  */}
+                                            {(!accessObj?.showAdminDashboard && series.makes.length > 0) ||
+                                              (accessObj?.showAdminDashboard && (
+                                                <TabPane
+                                                  tab={
+                                                    <div className="catalog__tabs-title">
+                                                      <div>{series.title}</div>
+                                                      <div>
+                                                        {accessObj?.showAdminDashboard && (
+                                                          <Tooltip title={`Edit / Delete ${series.title}`}>
+                                                            <Dropdown
+                                                              className="catalog__dropdown-more"
+                                                              overlay={
+                                                                <SeriesMenu
+                                                                  seriesTitle={series.title}
+                                                                  brandId={catalog.brand.id}
+                                                                  seriesId={series.id}
+                                                                />
+                                                              }
+                                                              trigger={['click']}
+                                                            >
+                                                              <i className="fas fa-cogs" />
+                                                            </Dropdown>
+                                                          </Tooltip>
+                                                        )}
+                                                      </div>
                                                     </div>
-                                                  </div>
-                                                }
-                                                key={`series${seriesIndex + 1}`}
-                                              >
-                                                <div
-                                                  className={
-                                                    arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''
                                                   }
+                                                  key={`series${seriesIndex + 1}`}
                                                 >
-                                                  {/*  ================================================================ */}
-                                                  {/*    ADMIN - if user is admin show everything, if not only show
+                                                  <div
+                                                    className={
+                                                      arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''
+                                                    }
+                                                  >
+                                                    {/*  ================================================================ */}
+                                                    {/*    ADMIN - if user is admin show everything, if not only show
                                        those that the length is greater than 0 */}
-                                                  {/*  ================================================================ */}
-                                                  {accessObj?.showAdminDashboard ? (
-                                                    <SeriesMakesGrid
-                                                      series={series}
-                                                      catalog={catalog}
-                                                      brandIndex={brandIndex}
-                                                      seriesIndex={seriesIndex}
-                                                      arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                        arrayIsOddNumberAndMakeLengthLessThanThree
-                                                      }
-                                                    />
-                                                  ) : (
-                                                    /* ================================================================ */
-                                                    // NORMAL USER - if user is normal user only show the series that has item inside
-                                                    /* ================================================================ */
-                                                    <>
-                                                      {series.makes.length > 0 && (
-                                                        <SeriesMakesGrid
-                                                          series={series}
-                                                          catalog={catalog}
-                                                          brandIndex={brandIndex}
-                                                          seriesIndex={seriesIndex}
-                                                          arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                            arrayIsOddNumberAndMakeLengthLessThanThree
-                                                          }
-                                                        />
-                                                      )}
-                                                    </>
-                                                  )}
-                                                </div>
-                                              </TabPane>
-                                            )}
+                                                    {/*  ================================================================ */}
+                                                    {accessObj?.showAdminDashboard ? (
+                                                      <SeriesMakesGrid
+                                                        series={series}
+                                                        catalog={catalog}
+                                                        brandIndex={brandIndex}
+                                                        seriesIndex={seriesIndex}
+                                                        arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                          arrayIsOddNumberAndMakeLengthLessThanThree
+                                                        }
+                                                      />
+                                                    ) : (
+                                                      /* ================================================================ */
+                                                      // NORMAL USER - if user is normal user only show the series that has item inside
+                                                      /* ================================================================ */
+                                                      <>
+                                                        {series.makes.length > 0 && (
+                                                          <SeriesMakesGrid
+                                                            series={series}
+                                                            catalog={catalog}
+                                                            brandIndex={brandIndex}
+                                                            seriesIndex={seriesIndex}
+                                                            arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                              arrayIsOddNumberAndMakeLengthLessThanThree
+                                                            }
+                                                          />
+                                                        )}
+                                                      </>
+                                                    )}
+                                                  </div>
+                                                </TabPane>
+                                              ))}
                                           </>
                                         );
                                       })}
