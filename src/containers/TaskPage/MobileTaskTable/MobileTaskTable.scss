@@ -9,7 +9,8 @@
     overflow: auto;
 
     @include respond-to($small-phone) {
-      display: block;
+      display: grid;
+      place-items: center;
     }
     @include respond-to($phone-only) {
       display: none;
