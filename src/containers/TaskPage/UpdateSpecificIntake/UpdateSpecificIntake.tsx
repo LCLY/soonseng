@@ -899,7 +899,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                           currentSpecificIntakeJobsObj.description !== undefined &&
                           currentSpecificIntakeJobsObj.description !== '' && (
                             <div className="updatespecificintake__section-description-outerdiv">
-                              <span className="updatespecificintake__section-description-text">Note:</span>
+                              <span className="updatespecificintake__section-description-text">Description:</span>
                               <div className="updatespecificintake__section-description-div">
                                 {currentSpecificIntakeJobsObj.description}
                               </div>

@@ -109,12 +109,12 @@
 
         @include respond-to($small-phone) {
           min-height: 70vh;
-          padding: 0 0.5rem 1rem 0.5rem;
+          // padding: 0 0.5rem 1rem 0.5rem;
         }
 
         @include respond-to($phone-only) {
           min-height: 50rem;
-          padding: 2rem 2rem 0 2rem;
+          // padding: 2rem 2rem 0 2rem;
         }
 
         @include respond-to($tablet-portrait-up) {
@@ -1061,11 +1061,12 @@
       }
     }
     &-outerdiv {
+      padding: 1rem !important;
       & .ant-tabs-nav-wrap {
         color: white;
-        padding: 0 3rem !important;
+        // padding: 0 3rem !important;
         @include respond-to($small-phone) {
-          padding: 0 1.5rem !important;
+          // padding: 0 1.5rem !important;
         }
       }
       & .ant-tabs-tab {
