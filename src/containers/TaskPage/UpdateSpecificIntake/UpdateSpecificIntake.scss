@@ -6,6 +6,7 @@
     color: white;
     display: flex;
     flex-direction: column;
+    padding-top: 1rem;
   }
 
   &__title {
@@ -152,14 +153,48 @@
     border: 1px solid white;
     border-radius: 1rem;
     text-align: center;
-    width: 33.33%;
-    margin: 2rem 0;
 
     &:not(:first-child) {
       margin-left: 1rem;
     }
     &:not(:last-child) {
       margin-right: 1rem;
+    }
+
+    @include respond-to($small-phone) {
+      margin: 0.5rem 0;
+      height: 4rem;
+      width: 100%;
+      &:not(:first-child) {
+        margin-left: 0;
+      }
+      &:not(:last-child) {
+        margin-right: 0;
+      }
+    }
+    @include respond-to($phone-only) {
+      margin: 0.5rem 0;
+      height: 4rem;
+      width: 100%;
+      &:not(:first-child) {
+        margin-left: 0;
+      }
+      &:not(:last-child) {
+        margin-right: 0;
+      }
+    }
+
+    @include respond-to($tablet-portrait-up) {
+      margin-top: 2rem;
+      height: auto;
+      margin-bottom: 2rem;
+      width: 33.33%;
+      &:not(:first-child) {
+        margin-left: 1rem;
+      }
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
     }
 
     &--dock {
@@ -177,6 +212,21 @@
     &-outerdiv {
       display: flex;
       justify-content: space-between;
+
+      /* ===================================== */
+      // push box to stack on each other on smaller screen
+      /* ===================================== */
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        margin-top: 1rem;
+      }
+      @include respond-to($phone-only) {
+        margin-top: 1rem;
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
     }
 
     &-icon {
@@ -196,19 +246,55 @@
     }
 
     &-right {
-      // display: flex;
-      // align-items: center;
-      // justify-content: center;
       display: grid;
       place-items: center;
       font-family: $font-firesans;
       width: 100%;
-      min-height: 10rem;
-      max-height: 12.5rem;
+
       @include customScrollbar();
       overflow-y: auto;
+      @include respond-to($small-phone) {
+        height: 5rem;
+        min-height: 5rem;
+        max-height: 5rem;
+      }
+      @include respond-to($phone-only) {
+        height: 5rem;
+        min-height: 5rem;
+        max-height: 5rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        min-height: 10rem;
+        max-height: 12.5rem;
+      }
       &--users {
         padding: 0.3rem 0.3rem 0.3rem 0;
+      }
+
+      &--time {
+        display: flex;
+
+        @include respond-to($small-phone) {
+          flex-direction: row;
+        }
+        @include respond-to($phone-only) {
+          flex-direction: row;
+        }
+        @include respond-to($tablet-portrait-up) {
+          flex-direction: column;
+        }
+
+        &-left {
+          @include respond-to($small-phone) {
+            margin-right: 1rem;
+          }
+          @include respond-to($phone-only) {
+            margin-right: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            margin: 0;
+          }
+        }
       }
     }
   }
@@ -384,7 +470,18 @@
       /* ----------------------------- */
       &--intake {
         width: 90% !important;
-        max-width: 17rem !important;
+
+        @include respond-to($small-phone) {
+          max-width: 100% !important;
+        }
+        @include respond-to($phone-only) {
+          max-width: 100% !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 90% !important;
+          max-width: 17rem !important;
+        }
+
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
         }
@@ -425,8 +522,26 @@
       /* ----------------------------- */
       &--users {
         width: 90% !important;
-        max-width: 17rem !important;
-        padding: 1rem 0 !important;
+
+        @include respond-to($small-phone) {
+          max-width: 100% !important;
+          overflow: auto;
+          height: 3.4rem;
+          @include customScrollbar();
+        }
+        @include respond-to($phone-only) {
+          max-width: 100% !important;
+          overflow: auto;
+          height: 3.4rem;
+          @include customScrollbar();
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 90% !important;
+          height: auto;
+          padding: 1rem 0 !important;
+          max-width: 17rem !important;
+        }
+
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
         }

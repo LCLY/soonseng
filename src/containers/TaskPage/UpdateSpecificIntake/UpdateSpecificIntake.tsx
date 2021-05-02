@@ -643,7 +643,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
                   {inEditMode && (
                     <Popconfirm
-                      title={`Sure to delete Intake for ${currentSpecificIntakeJobsObj.registration}?`}
+                      title={
+                        <div className="updatespecificintake__popconfirm-content">
+                          Sure to delete Intake for {currentSpecificIntakeJobsObj.registration}?
+                        </div>
+                      }
                       onConfirm={() => onDeleteIntakeSummary(currentSpecificIntakeJobsObj.id)}
                     >
                       <span className="updatespecificintake__button-task updatespecificintake__button-task--delete">
@@ -776,9 +780,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                   </Tooltip>
 
                   <div className="updatespecificintake__box-right">
-                    <div>
-                      <div>{moment(currentSpecificIntakeJobsObj.created_at).format('YYYY-MM-DD')}</div>
-                      <div>{moment(currentSpecificIntakeJobsObj.created_at).format('HH:mm A')}</div>
+                    <div className="updatespecificintake__box-right--time">
+                      <div className="updatespecificintake__box-right--time-left">
+                        {moment(currentSpecificIntakeJobsObj.created_at).format('YYYY-MM-DD')}
+                      </div>
+                      <div>{moment(currentSpecificIntakeJobsObj.created_at).format('HH:mm')}</div>
                     </div>
                   </div>
                 </div>

@@ -144,6 +144,14 @@ svg {
   }
 }
 
+.ant-popconfirm {
+  max-width: 90% !important;
+}
+
+.ant-popover-message {
+  word-wrap: break-word;
+}
+
 /* ========================================================== */
 // React resizable
 /* ========================================================== */

@@ -131,11 +131,13 @@ const MobileTaskTable: React.FC<Props> = () => {
                               </>
                             }
                           >
-                            <span
-                              className="mobiletasktable__title"
-                              style={{ color: child.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
-                            >
-                              {child.regNumber}
+                            <div className="mobiletasktable__title-div">
+                              <span
+                                className="mobiletasktable__title-regNumber"
+                                style={{ color: child.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
+                              >
+                                {child.regNumber}
+                              </span>
                               {child.bay !== '-' ? (
                                 <span className="mobiletasktable__title--bay">
                                   &nbsp;&nbsp;-&nbsp;&nbsp;Bay {child.bay}
@@ -143,20 +145,20 @@ const MobileTaskTable: React.FC<Props> = () => {
                               ) : (
                                 ''
                               )}
-                            </span>
+                            </div>
                           </Tooltip>
                         </div>
                         <div className="mobiletasktable__div-servicetype">
-                          {child.serviceType === '-' ? 'No job yet' : child.serviceType}
+                          {child.serviceType === '-' ? 'No jobs yet, chill out...' : child.serviceType}
                         </div>
                         {child.description !== '' && child.description && (
                           <div className="mobiletasktable__div-description">Description: {child.description}</div>
                         )}
 
                         <div className="mobiletasktable__div-createdat">
-                          <i className="far fa-clock"></i>&nbsp;Created at&nbsp;
+                          Created at&nbsp;
                           {child.dateTimeIn.format('DD-MM-YYYY')}
-                          &nbsp;{child.dateTimeIn.format('HH:mm A')}
+                          &nbsp;&nbsp;<i className="far fa-clock"></i>&nbsp;{child.dateTimeIn.format('HH:mm')}
                         </div>
                       </div>
 
