@@ -80,7 +80,7 @@ interface TaskPageProps {}
 type Props = TaskPageProps & StateProps & DispatchProps;
 
 const TaskPage: React.FC<Props> = ({
-  accessObj,
+  // accessObj,
   auth_token,
   successMessage,
   specificIntakeLogs,
@@ -494,7 +494,7 @@ const TaskPage: React.FC<Props> = ({
                               </>
                             )}
                           </div>
-                          {accessObj?.showSalesDashboard && (
+                          {auth_token && (
                             <Button
                               type="primary"
                               className="make__brand-btn"

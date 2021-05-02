@@ -748,22 +748,28 @@ const CatalogBodyMake: React.FC<Props> = ({
           </Tooltip>
         )}
       </div> */}
-      {!wheelbaseBodyMake.make_wheelbase.original &&
-        wheelbaseBodyMake.make_wheelbase.price !== undefined &&
-        wheelbaseBodyMake.make_wheelbase.price !== null && (
-          <div className="catalogbodymake__extended">
-            <i className="fas fa-tags"></i>
-            UBS (Wheelbase Extension):
-            <div className="catalogbodymake__extended-price">
-              RM
-              <NumberFormat
-                value={wheelbaseBodyMake.make_wheelbase.price}
-                displayType={'text'}
-                thousandSeparator={true}
-              />
+      <div>
+        {!wheelbaseBodyMake.make_wheelbase.original &&
+          wheelbaseBodyMake.make_wheelbase.price !== undefined &&
+          wheelbaseBodyMake.make_wheelbase.price !== null && (
+            <div className="catalogbodymake__extended">
+              <i className="fas fa-tags"></i>
+              UBS (Wheelbase Extension):
+              <div className="catalogbodymake__extended-price">
+                RM
+                <NumberFormat
+                  value={wheelbaseBodyMake.make_wheelbase.price}
+                  displayType={'text'}
+                  thousandSeparator={true}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        <div>
+          <i className="fas fa-th-list"></i>
+          <i className="fas fa-th-list"></i>
+        </div>
+      </div>
       <div className="catalogbodymake__innerdiv">
         {wheelbaseBodyMake.body_makes.length > 0 ? (
           <div className="catalogbodymake__grid">
