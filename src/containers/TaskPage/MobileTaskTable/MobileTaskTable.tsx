@@ -3,7 +3,7 @@ import './MobileTaskTable.scss';
 /* components */
 /* 3rd party lib */
 import moment from 'moment';
-import { Tooltip } from 'antd';
+import { Empty, Tooltip } from 'antd';
 /* Util */
 import { TIntakeTableState } from '../TaskPage';
 import { TaskPageContext } from 'src/containers/TaskPage/TaskPageContext';
@@ -90,91 +90,99 @@ const MobileTaskTable: React.FC<Props> = () => {
       <div className="mobiletasktable__div">
         {intakeDict && (
           <>
-            {Object.values(intakeDict)
-              .sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))
-              .map((child: TIntakeTableState) => (
-                <div className="mobiletasktable__intake-row-parent" key={`mobileintake${child.key}`}>
-                  <div
-                    className={`mobiletasktable__intake-row mobileintakesummary__row-${child.key}`}
-                    onClick={() => {
-                      onGetSpecificIntakeJobs(parseInt(child.key));
-                      updateIntakeJobsForm.setFieldsValue({
-                        intakeId: child.key,
-                        pickup: child.pickup,
-                        description: child.description,
-                        registrationNumber: child.regNumber,
-                        bay: child.bay === '-' ? '' : child.bay,
-                      });
-                      goToUpdateSpecificIntake();
-                    }}
-                  >
-                    <div>
+            {Object.values(intakeDict).length > 0 ? (
+              <>
+                {Object.values(intakeDict)
+                  .sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))
+                  .map((child: TIntakeTableState) => (
+                    <div className="mobiletasktable__intake-row-parent" key={`mobileintake${child.key}`}>
+                      <div
+                        className={`mobiletasktable__intake-row mobileintakesummary__row-${child.key}`}
+                        onClick={() => {
+                          onGetSpecificIntakeJobs(parseInt(child.key));
+                          updateIntakeJobsForm.setFieldsValue({
+                            intakeId: child.key,
+                            pickup: child.pickup,
+                            description: child.description,
+                            registrationNumber: child.regNumber,
+                            bay: child.bay === '-' ? '' : child.bay,
+                          });
+                          goToUpdateSpecificIntake();
+                        }}
+                      >
+                        <div>
+                          <Tooltip
+                            title={
+                              <>
+                                <span className="all-uppercase">{child.regNumber}</span>
+                                <span>{`${
+                                  child.description !== undefined &&
+                                  child.description !== null &&
+                                  child.description !== ''
+                                    ? ` (${child.description})`
+                                    : ''
+                                }`}</span>
+                              </>
+                            }
+                          >
+                            <span
+                              className="mobiletasktable__title"
+                              style={{ color: child.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
+                            >
+                              {child.regNumber}
+                              {child.bay !== '-' ? (
+                                <span className="mobiletasktable__title--bay">
+                                  &nbsp;&nbsp;-&nbsp;&nbsp;Bay {child.bay}
+                                </span>
+                              ) : (
+                                ''
+                              )}
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <div className="mobiletasktable__div-servicetype">
+                          {child.serviceType === '-' ? 'No service yet' : child.serviceType}
+                        </div>
+                        {child.description !== '' && child.description && (
+                          <div className="mobiletasktable__div-description">Description: {child.description}</div>
+                        )}
+
+                        <div className="mobiletasktable__div-createdat">
+                          <i className="far fa-clock"></i>&nbsp;Created at&nbsp;
+                          {child.dateTimeIn.format('DD-MM-YYYY')}
+                          &nbsp;{child.dateTimeIn.format('HH:mm A')}
+                        </div>
+                      </div>
+
+                      {/* Assignees red circle */}
                       <Tooltip
                         title={
                           <>
-                            <span className="all-uppercase">{child.regNumber}</span>
-                            <span>{`${
-                              child.description !== undefined && child.description !== null && child.description !== ''
-                                ? ` (${child.description})`
-                                : ''
-                            }`}</span>
+                            <ol>
+                              {child.assign.length > 0
+                                ? child.assign.map((child) => (
+                                    <li key={`assignees${child.id}`} className="task__table-assignees">
+                                      {child.user.first_name}&nbsp;
+                                      {child.user.last_name ? child.user.last_name : ''}
+                                    </li>
+                                  ))
+                                : '-'}
+                            </ol>
                           </>
                         }
                       >
-                        <span
-                          className="mobiletasktable__title"
-                          style={{ color: child.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
-                        >
-                          {child.regNumber}
-                          {child.bay !== '-' ? (
-                            <span className="mobiletasktable__title--bay">
-                              &nbsp;&nbsp;-&nbsp;&nbsp;Bay {child.bay}
-                            </span>
-                          ) : (
-                            ''
-                          )}
+                        <span className="mobiletasktable__assignees">
+                          <div className="flex-align-center">
+                            <i className="fas fa-user"></i>&nbsp;x&nbsp;{child.assign.length}
+                          </div>
                         </span>
                       </Tooltip>
                     </div>
-                    <div className="mobiletasktable__div-servicetype">
-                      {child.serviceType === '-' ? 'No service yet' : child.serviceType}
-                    </div>
-                    {child.description !== '' && child.description && (
-                      <div className="mobiletasktable__div-description">Description: {child.description}</div>
-                    )}
-
-                    <div className="mobiletasktable__div-createdat">
-                      <i className="far fa-clock"></i>&nbsp;Created at&nbsp;
-                      {child.dateTimeIn.format('DD-MM-YYYY')}
-                      &nbsp;{child.dateTimeIn.format('HH:mm A')}
-                    </div>
-                  </div>
-
-                  {/* Assignees red circle */}
-                  <Tooltip
-                    title={
-                      <>
-                        <ol>
-                          {child.assign.length > 0
-                            ? child.assign.map((child) => (
-                                <li key={`assignees${child.id}`} className="task__table-assignees">
-                                  {child.user.first_name}&nbsp;
-                                  {child.user.last_name ? child.user.last_name : ''}
-                                </li>
-                              ))
-                            : '-'}
-                        </ol>
-                      </>
-                    }
-                  >
-                    <span className="mobiletasktable__assignees">
-                      <div className="flex-align-center">
-                        <i className="fas fa-user"></i>&nbsp;x&nbsp;{child.assign.length}
-                      </div>
-                    </span>
-                  </Tooltip>
-                </div>
-              ))}
+                  ))}
+              </>
+            ) : (
+              <Empty />
+            )}
           </>
         )}
       </div>

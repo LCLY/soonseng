@@ -129,7 +129,6 @@ export function* createIntakeSummarySaga(action: AppActions) {
     };
   }
 
-  console.log('formdata', intake_and_jobs);
   try {
     let response = yield axios.post(url, { intake_and_jobs }, getAxiosHeaderToken());
     yield put(actions.createIntakeSummarySucceed(response.data.intakes, response.data.success));
@@ -181,9 +180,7 @@ export function* updateIntakeSummarySaga(action: AppActions) {
   }
 
   try {
-    // console.log(intake_and_jobs);
     let response = yield axios.put(url, { intake_and_jobs }, getAxiosHeaderToken());
-    // console.log(response);
     yield put(actions.updateIntakeSummarySucceed(response.data.intakes, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -206,7 +203,6 @@ export function* deleteIntakeSummarySaga(action: AppActions) {
 
   try {
     let response = yield axios.delete(url, getAxiosHeaderToken());
-    console.log(response);
     yield put(actions.deleteIntakeSummarySucceed(response.data.intakes, response.data.success));
   } catch (error) {
     if (error.response) {
@@ -256,7 +252,6 @@ export function* updateSpecificIntakeJobsSaga(action: AppActions) {
       intake: action.intakeJobsFormData.intake,
       jobs: action.intakeJobsFormData.jobs,
     };
-    console.log('submit to backend', intake_and_jobs);
   }
   try {
     let response = yield axios.post(url, { intake_and_jobs }, getAxiosHeaderToken());

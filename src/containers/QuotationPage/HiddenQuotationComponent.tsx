@@ -534,7 +534,15 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
                   <span>Standard&nbsp;Accessories:</span>
                 </div>
                 <div className={`hiddenquotation__accessorieslist-content`}>
-                  <div className={`quotation__accessorieslist-content-grid`}>
+                  <div
+                    className={`hiddenquotation__accessorieslist-content-grid`}
+                    style={{
+                      gridTemplateColumns:
+                        currentBrandObj.images.filter((child) => child.tag === 'Warranty').length > 0
+                          ? 'repeat(3, 1fr)'
+                          : 'repeat(4, 1fr)',
+                    }} //change the grid column numbers depending on if warranty image exist
+                  >
                     {standardAccessories.map((acc) => (
                       <div key={`hiddenquotation${acc}`}>{acc}</div>
                     ))}

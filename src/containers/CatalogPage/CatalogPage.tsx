@@ -1008,180 +1008,191 @@ const CatalogPage: React.FC<Props> = ({
                     >
                       {catalogMakesArray.map((catalog, brandIndex) => {
                         return (
-                          // div wrapping brand along with its series
-                          <TabPane
-                            tab={
-                              <div className="catalog__tabs-title">
-                                <div>{catalog.brand.title}</div>
-                                <div>
-                                  {accessObj?.showAdminDashboard && (
-                                    <Tooltip title={`Edit / Delete ${catalog.brand.title}`}>
-                                      <Dropdown
-                                        className="catalog__dropdown-more"
-                                        overlay={<BrandMenu catalog={catalog} />}
-                                        trigger={['click']}
-                                      >
-                                        <i className="fas fa-cogs" />
-                                      </Dropdown>
-                                    </Tooltip>
-                                  )}
-                                </div>
-                              </div>
-                            }
-                            key={`brand${brandIndex + 1}`}
-                          >
-                            <div className="catalog__brand-div" key={uuidv4()}>
-                              {/* ================================= */}
-                              {/* series section */}
-                              {/* ================================= */}
-                              <section className="catalog__section-series">
-                                {catalog.series.length > 0 ? (
-                                  <Tabs
-                                    tabBarExtraContent={{
-                                      right: (
-                                        <>
-                                          {accessObj?.showAdminDashboard && (
-                                            <div
-                                              className="catalog__button-series catalog__button-sheen"
-                                              onClick={() => {
-                                                // set the brand id in the form
-                                                createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
-                                                // set the content so that modal can display the brand title
-                                                let seriesModalContent = { ...modalContent };
-                                                seriesModalContent.series.brandTitle = catalog.brand.title;
-                                                setModalContent(seriesModalContent);
-                                                // show the modal
-                                                setShowCreateModal({ ...showCreateModal, series: true });
-                                              }}
-                                            >
-                                              <PlusCircleOutlined className="catalog__button-icon" />
-                                              &nbsp;&nbsp;Add Series
-                                            </div>
-                                          )}
-                                        </>
-                                      ),
-                                    }}
-                                    tabPosition="top"
-                                    className="catalog__tabs-outerdiv glass-shadow"
-                                    animated={{ tabPane: true }}
-                                    activeKey={activeSeriesTab}
-                                    onTabClick={(activeKey: string) => {
-                                      if (activeSeriesTab === activeKey) return;
-                                      setActiveSeriesTab(activeKey);
-                                      // if makes has items then choose the first one always
-                                      if (
-                                        Object.keys(catalog.series[0]).includes('makes') &&
-                                        catalog.series[0].makes.length > 0
-                                      ) {
-                                        setActiveSeriesId(catalog.series[0].id);
-                                        setSelectedMake(catalog.series[0].makes[0]);
-                                      } else {
-                                        setSelectedMake(undefined);
-                                      }
-                                    }}
-                                  >
-                                    {catalog.series.map((series, seriesIndex) => {
-                                      // if array is odd number, on the last row, make it display flex
-                                      let arrayIsOddNumberAndMakeLengthLessThanThree =
-                                        catalog.series.length % 2 !== 0 &&
-                                        seriesIndex === catalog.series.length - 1 &&
-                                        catalog.series[seriesIndex].makes.length > 3;
-
-                                      return (
-                                        <TabPane
-                                          tab={
-                                            <div className="catalog__tabs-title">
-                                              <div>{series.title}</div>
-                                              <div>
-                                                {accessObj?.showAdminDashboard && (
-                                                  <Tooltip title={`Edit / Delete ${series.title}`}>
-                                                    <Dropdown
-                                                      className="catalog__dropdown-more"
-                                                      overlay={
-                                                        <SeriesMenu
-                                                          seriesTitle={series.title}
-                                                          brandId={catalog.brand.id}
-                                                          seriesId={series.id}
-                                                        />
-                                                      }
-                                                      trigger={['click']}
-                                                    >
-                                                      <i className="fas fa-cogs" />
-                                                    </Dropdown>
-                                                  </Tooltip>
-                                                )}
-                                              </div>
-                                            </div>
-                                          }
-                                          key={`series${seriesIndex + 1}`}
+                          <>
+                            {/* // div wrapping brand along with its series */}
+                            <TabPane
+                              tab={
+                                <div className="catalog__tabs-title">
+                                  <div>{catalog.brand.title}</div>
+                                  <div>
+                                    {accessObj?.showAdminDashboard && (
+                                      <Tooltip title={`Edit / Delete ${catalog.brand.title}`}>
+                                        <Dropdown
+                                          className="catalog__dropdown-more"
+                                          overlay={<BrandMenu catalog={catalog} />}
+                                          trigger={['click']}
                                         >
-                                          <div
-                                            className={arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''}
-                                          >
-                                            {/*  ================================================================ */}
-                                            {/*    ADMIN - if user is admin show everything, if not only show
-                                       those that the length is greater than 0 */}
-                                            {/*  ================================================================ */}
-                                            {accessObj?.showAdminDashboard ? (
-                                              <SeriesMakesGrid
-                                                series={series}
-                                                catalog={catalog}
-                                                brandIndex={brandIndex}
-                                                seriesIndex={seriesIndex}
-                                                arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                  arrayIsOddNumberAndMakeLengthLessThanThree
-                                                }
-                                              />
-                                            ) : (
-                                              /* ================================================================ */
-                                              // NORMAL USER - if user is normal user only show the series that has item inside
-                                              /* ================================================================ */
-                                              <>
-                                                {series.makes.length > 0 && (
-                                                  <SeriesMakesGrid
-                                                    series={series}
-                                                    catalog={catalog}
-                                                    brandIndex={brandIndex}
-                                                    seriesIndex={seriesIndex}
-                                                    arrayIsOddNumberAndMakeLengthLessThanThree={
-                                                      arrayIsOddNumberAndMakeLengthLessThanThree
-                                                    }
-                                                  />
-                                                )}
-                                              </>
-                                            )}
-                                          </div>
-                                        </TabPane>
-                                      );
-                                    })}
-                                  </Tabs>
-                                ) : (
-                                  <div className="catalog__empty-series glass-shadow">
-                                    <Empty description="">
-                                      {accessObj?.showAdminDashboard && (
-                                        <div
-                                          className="catalog__button-series catalog__button-sheen"
-                                          onClick={() => {
-                                            // set the brand id in the form
-                                            createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
-                                            // set the content so that modal can display the brand title
-                                            let seriesModalContent = { ...modalContent };
-                                            seriesModalContent.series.brandTitle = catalog.brand.title;
-                                            setModalContent(seriesModalContent);
-                                            // show the modal
-                                            setShowCreateModal({ ...showCreateModal, series: true });
-                                          }}
-                                        >
-                                          <PlusCircleOutlined className="catalog__button-icon" />
-                                          &nbsp;&nbsp;Add Series
-                                        </div>
-                                      )}
-                                    </Empty>
+                                          <i className="fas fa-cogs" />
+                                        </Dropdown>
+                                      </Tooltip>
+                                    )}
                                   </div>
-                                )}
-                              </section>
-                            </div>
-                          </TabPane>
+                                </div>
+                              }
+                              key={`brand${brandIndex + 1}`}
+                            >
+                              <div className="catalog__brand-div" key={uuidv4()}>
+                                {/* ================================= */}
+                                {/* series section */}
+                                {/* ================================= */}
+                                <section className="catalog__section-series">
+                                  {catalog.series.length > 0 ? (
+                                    <Tabs
+                                      tabBarExtraContent={{
+                                        right: (
+                                          <>
+                                            {accessObj?.showAdminDashboard && (
+                                              <div
+                                                className="catalog__button-series catalog__button-sheen"
+                                                onClick={() => {
+                                                  // set the brand id in the form
+                                                  createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
+                                                  // set the content so that modal can display the brand title
+                                                  let seriesModalContent = { ...modalContent };
+                                                  seriesModalContent.series.brandTitle = catalog.brand.title;
+                                                  setModalContent(seriesModalContent);
+                                                  // show the modal
+                                                  setShowCreateModal({ ...showCreateModal, series: true });
+                                                }}
+                                              >
+                                                <PlusCircleOutlined className="catalog__button-icon" />
+                                                &nbsp;&nbsp;Add Series
+                                              </div>
+                                            )}
+                                          </>
+                                        ),
+                                      }}
+                                      tabPosition="top"
+                                      className="catalog__tabs-outerdiv glass-shadow"
+                                      animated={{ tabPane: true }}
+                                      activeKey={activeSeriesTab}
+                                      onTabClick={(activeKey: string) => {
+                                        if (activeSeriesTab === activeKey) return;
+                                        setActiveSeriesTab(activeKey);
+                                        // if makes has items then choose the first one always
+                                        if (
+                                          Object.keys(catalog.series[0]).includes('makes') &&
+                                          catalog.series[0].makes.length > 0
+                                        ) {
+                                          setActiveSeriesId(catalog.series[0].id);
+                                          setSelectedMake(catalog.series[0].makes[0]);
+                                        } else {
+                                          setSelectedMake(undefined);
+                                        }
+                                      }}
+                                    >
+                                      {catalog.series.map((series, seriesIndex) => {
+                                        // if array is odd number, on the last row, make it display flex
+                                        let arrayIsOddNumberAndMakeLengthLessThanThree =
+                                          catalog.series.length % 2 !== 0 &&
+                                          seriesIndex === catalog.series.length - 1 &&
+                                          catalog.series[seriesIndex].makes.length > 3;
+
+                                        return (
+                                          <>
+                                            {/* only render when normal user but has at least 1 make  */}
+                                            {/* and only render when admin user  */}
+                                            {(!accessObj?.showAdminDashboard && series.makes.length > 0) ||
+                                              (accessObj?.showAdminDashboard && (
+                                                <TabPane
+                                                  tab={
+                                                    <div className="catalog__tabs-title">
+                                                      <div>{series.title}</div>
+                                                      <div>
+                                                        {accessObj?.showAdminDashboard && (
+                                                          <Tooltip title={`Edit / Delete ${series.title}`}>
+                                                            <Dropdown
+                                                              className="catalog__dropdown-more"
+                                                              overlay={
+                                                                <SeriesMenu
+                                                                  seriesTitle={series.title}
+                                                                  brandId={catalog.brand.id}
+                                                                  seriesId={series.id}
+                                                                />
+                                                              }
+                                                              trigger={['click']}
+                                                            >
+                                                              <i className="fas fa-cogs" />
+                                                            </Dropdown>
+                                                          </Tooltip>
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                  }
+                                                  key={`series${seriesIndex + 1}`}
+                                                >
+                                                  <div
+                                                    className={
+                                                      arrayIsOddNumberAndMakeLengthLessThanThree ? 'fullcolspan' : ''
+                                                    }
+                                                  >
+                                                    {/*  ================================================================ */}
+                                                    {/*    ADMIN - if user is admin show everything, if not only show
+                                       those that the length is greater than 0 */}
+                                                    {/*  ================================================================ */}
+                                                    {accessObj?.showAdminDashboard ? (
+                                                      <SeriesMakesGrid
+                                                        series={series}
+                                                        catalog={catalog}
+                                                        brandIndex={brandIndex}
+                                                        seriesIndex={seriesIndex}
+                                                        arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                          arrayIsOddNumberAndMakeLengthLessThanThree
+                                                        }
+                                                      />
+                                                    ) : (
+                                                      /* ================================================================ */
+                                                      // NORMAL USER - if user is normal user only show the series that has item inside
+                                                      /* ================================================================ */
+                                                      <>
+                                                        {series.makes.length > 0 && (
+                                                          <SeriesMakesGrid
+                                                            series={series}
+                                                            catalog={catalog}
+                                                            brandIndex={brandIndex}
+                                                            seriesIndex={seriesIndex}
+                                                            arrayIsOddNumberAndMakeLengthLessThanThree={
+                                                              arrayIsOddNumberAndMakeLengthLessThanThree
+                                                            }
+                                                          />
+                                                        )}
+                                                      </>
+                                                    )}
+                                                  </div>
+                                                </TabPane>
+                                              ))}
+                                          </>
+                                        );
+                                      })}
+                                    </Tabs>
+                                  ) : (
+                                    <div className="catalog__empty-series glass-shadow">
+                                      <Empty description="">
+                                        {accessObj?.showAdminDashboard && (
+                                          <div
+                                            className="catalog__button-series catalog__button-sheen"
+                                            onClick={() => {
+                                              // set the brand id in the form
+                                              createSeriesForm.setFieldsValue({ brand_id: catalog.brand.id });
+                                              // set the content so that modal can display the brand title
+                                              let seriesModalContent = { ...modalContent };
+                                              seriesModalContent.series.brandTitle = catalog.brand.title;
+                                              setModalContent(seriesModalContent);
+                                              // show the modal
+                                              setShowCreateModal({ ...showCreateModal, series: true });
+                                            }}
+                                          >
+                                            <PlusCircleOutlined className="catalog__button-icon" />
+                                            &nbsp;&nbsp;Add Series
+                                          </div>
+                                        )}
+                                      </Empty>
+                                    </div>
+                                  )}
+                                </section>
+                              </div>
+                            </TabPane>
+                          </>
                         );
                       })}
                     </Tabs>

@@ -2090,7 +2090,33 @@ const CatalogBodyMake: React.FC<Props> = ({
                                       Contact Jason for business inquiries
                                     </span>
                                   }
-                                />
+                                >
+                                  {accessObj?.showAdminDashboard && (
+                                    <Tooltip title="Add Configuration">
+                                      <div
+                                        className="catalog__button-series catalogbodymake__button-body"
+                                        onClick={() => {
+                                          // get make id and title
+                                          setModalContent({
+                                            ...modalContent,
+                                            make_wheelbase: {
+                                              seriesTitle: catalogMake.series,
+                                            },
+                                          });
+                                          setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
+                                          createMakeWheelbaseForm.setFieldsValue({
+                                            makeId: catalogMake.id,
+                                          });
+                                        }}
+                                      >
+                                        <PlusCircleOutlined className="catalog__button-icon" />
+                                        <span className="catalogbodymake__button-title">
+                                          &nbsp;&nbsp;Add Configuration
+                                        </span>
+                                      </div>
+                                    </Tooltip>
+                                  )}
+                                </Empty>
                               </div>
                             ) : (
                               <Tabs
@@ -2144,7 +2170,31 @@ const CatalogBodyMake: React.FC<Props> = ({
                                 Contact Jason for business inquiries
                               </span>
                             }
-                          />
+                          >
+                            {accessObj?.showAdminDashboard && (
+                              <Tooltip title="Add Configuration">
+                                <div
+                                  className="catalog__button-series catalogbodymake__button-body"
+                                  onClick={() => {
+                                    // get make id and title
+                                    setModalContent({
+                                      ...modalContent,
+                                      make_wheelbase: {
+                                        seriesTitle: catalogMake.series,
+                                      },
+                                    });
+                                    setShowCreateModal({ ...showCreateModal, make_wheelbase: true });
+                                    createMakeWheelbaseForm.setFieldsValue({
+                                      makeId: catalogMake.id,
+                                    });
+                                  }}
+                                >
+                                  <PlusCircleOutlined className="catalog__button-icon" />
+                                  <span className="catalogbodymake__button-title">&nbsp;&nbsp;Add Configuration</span>
+                                </div>
+                              </Tooltip>
+                            )}
+                          </Empty>
                         </div>
                       </div>
                     )}
