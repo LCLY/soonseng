@@ -129,6 +129,21 @@ svg {
   color: white !important;
 }
 
+/* ------------------------- */
+// popover
+/* ------------------------- */
+.ant-popover-inner {
+  border: 1px solid white !important;
+  background: #152448 !important;
+  & .ant-popover-title {
+    color: white !important;
+  }
+
+  & .ant-popover-message-title {
+    color: white !important;
+  }
+}
+
 /* ========================================================== */
 // React resizable
 /* ========================================================== */

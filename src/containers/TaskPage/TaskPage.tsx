@@ -309,6 +309,7 @@ const TaskPage: React.FC<Props> = ({
             delete tempIntakeDict[destroyedIntakeId];
             setIntakeDict(tempIntakeDict); //update it
           } else {
+            console.log('IN COMING DATA', res);
             setIncomingData(res);
           }
         },
