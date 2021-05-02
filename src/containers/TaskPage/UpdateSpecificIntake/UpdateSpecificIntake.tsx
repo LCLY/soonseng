@@ -5,7 +5,7 @@ import './UpdateSpecificIntake.scss';
 /* 3rd party lib */
 import gsap from 'gsap';
 import moment from 'moment';
-import { Popconfirm, Table, Tooltip, Form, Button, Input, Select, Collapse } from 'antd';
+import { Popconfirm, Table, Tooltip, Form, Button, Input, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 /* Util */
@@ -26,8 +26,6 @@ import {
 import { emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
 const { Option } = Select;
-const { Panel } = Collapse;
-
 interface UpdateSpecificIntakeProps {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
@@ -39,7 +37,7 @@ interface UpdateSpecificIntakeProps {
   setInEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   beforeDeleteState: TUpdateTaskTableState[] | null;
   setBeforeDeleteState: React.Dispatch<React.SetStateAction<TUpdateTaskTableState[] | null>>;
-
+  setShowMobileHistoryLogs: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentPage: React.Dispatch<React.SetStateAction<'main' | 'update' | 'create'>>;
 }
 
@@ -64,7 +62,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   setCurrentPage,
   setInEditMode,
   onGetServiceTypes,
-  specificIntakeLogs,
   usersByRolesArray,
   intakeStatusArray,
   serviceTypesArray,
@@ -77,6 +74,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   onUpdateIntakeSummary,
   setBeforeDeleteState,
   onSetSpecificIntakeLogs,
+  setShowMobileHistoryLogs,
 }) => {
   /* ================================================== */
   /*  state */
@@ -88,7 +86,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
     null,
   );
-  const [showHistoryLog, setShowHistoryLog] = useState(false);
 
   const [
     currentSpecificIntakeJobsObj,
@@ -429,68 +426,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     },
   ];
 
-  let specificIntakeLogsComponent = (
-    <>
-      <div className="updatespecificintake__logs--mobile">
-        {specificIntakeLogs ? (
-          <Collapse accordion className="task__collapse">
-            {[...specificIntakeLogs].reverse().map((child, index) => (
-              <Panel
-                header={
-                  <div className="task__collapse-header">
-                    <div className="task__collapse-header-title">{child.title === '' ? '-' : child.title}</div>
-                    <div className="task__collapse-header-time">
-                      <i className="fas fa-clock"></i>
-                      {moment(child.created_at).format('HH:mm:A')}
-                    </div>
-                  </div>
-                }
-                key={`log${index}`}
-              >
-                <section className="task__collapse-content">
-                  <div className="task__collapse-row">
-                    <div className="task__collapse-row-label">Note:</div>
-                    <div className="task__collapse-row-description">
-                      {child.description === '' ? '-' : child.description}
-                    </div>
-                  </div>
-                  <div className="task__collapse-row">
-                    <div className="task__collapse-row-label">Updated at:</div>
-                    <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm:A')}</div>
-                  </div>
-                </section>
-                <div className="task__collapse-row task__collapse-row--user">
-                  <div>
-                    <i className="fas fa-user"></i>
-                  </div>
-                  &nbsp;
-                  <div>{child.created_by}</div>
-                </div>
-              </Panel>
-            ))}
-          </Collapse>
-        ) : (
-          <div className="task__collapse-spin">
-            <div className="lds-spinner">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
-  );
-
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
@@ -629,7 +564,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
   return (
     <>
-      {showHistoryLog && <>{specificIntakeLogsComponent}</>}
       {typeof currentSpecificIntakeJobsObj === 'object' && currentSpecificIntakeJobsObj && specificIntakeJobsObj ? (
         <Form
           className="updatespecificintake__form"
@@ -703,7 +637,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               <div className="flex-align-center">
                 {/* {inEditMode && <div style={{ marginRight: '1rem' }}>(Editing)</div>} */}
                 <>
-                  <div className="updatespecificintake__button-logs" onClick={() => setShowHistoryLog(true)}>
+                  <div className="updatespecificintake__button-logs" onClick={() => setShowMobileHistoryLogs(true)}>
                     <i className="fas fa-clipboard-list"></i>
                   </div>
 

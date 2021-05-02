@@ -106,6 +106,7 @@ const TaskPage: React.FC<Props> = ({
 
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
+  const [showMobileHistoryLogs, setShowMobileHistoryLogs] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [serviceTaskDropdown, setServiceTaskDropdown] = useState<IServiceTaskDropdown>({});
   const [beforeDeleteState, setBeforeDeleteState] = useState<TUpdateTaskTableState[] | null>(null);
@@ -292,6 +293,77 @@ const TaskPage: React.FC<Props> = ({
   );
 
   /* ================================================== */
+  /*  components */
+  /* ================================================== */
+
+  let mobileSpecificIntakeLogsComponent = (
+    <>
+      <div className="updatespecificintake__logs--mobile">
+        <div className="updatespecificintake__logs-title">
+          <div>Intake History Logs</div>
+          <div className="updatespecificintake__logs-icon" onClick={() => setShowMobileHistoryLogs(false)}>
+            <i className="fas fa-times-circle"></i>
+          </div>
+        </div>
+        {specificIntakeLogs ? (
+          <Collapse accordion className="task__collapse">
+            {[...specificIntakeLogs].reverse().map((child, index) => (
+              <Panel
+                header={
+                  <div className="task__collapse-header">
+                    <div className="task__collapse-header-title">{child.title === '' ? '-' : child.title}</div>
+                    <div className="task__collapse-header-time">
+                      <i className="fas fa-clock"></i>
+                      {moment(child.created_at).format('HH:mm:A')}
+                    </div>
+                  </div>
+                }
+                key={`log${index}`}
+              >
+                <section className="task__collapse-content">
+                  <div className="task__collapse-row">
+                    <div className="task__collapse-row-label">Note:</div>
+                    <div className="task__collapse-row-description">
+                      {child.description === '' ? '-' : child.description}
+                    </div>
+                  </div>
+                  <div className="task__collapse-row">
+                    <div className="task__collapse-row-label">Updated at:</div>
+                    <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm:A')}</div>
+                  </div>
+                </section>
+                <div className="task__collapse-row task__collapse-row--user">
+                  <div>
+                    <i className="fas fa-user"></i>
+                  </div>
+                  &nbsp;
+                  <div>{child.created_by}</div>
+                </div>
+              </Panel>
+            ))}
+          </Collapse>
+        ) : (
+          <div className="task__collapse-spin">
+            <div className="lds-spinner">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+  /* ================================================== */
   /*  useEffect */
   /* ================================================== */
 
@@ -470,6 +542,7 @@ const TaskPage: React.FC<Props> = ({
 
   return (
     <>
+      {showMobileHistoryLogs && mobileSpecificIntakeLogsComponent}
       <NavbarComponent activePage="task" defaultOpenKeys="dashboard" />
       <Layout>
         <LayoutComponent activeKey="accessory">
@@ -569,6 +642,7 @@ const TaskPage: React.FC<Props> = ({
                                     setServiceTypeTaskDict={setServiceTypeTaskDict}
                                     serviceTaskDropdown={serviceTaskDropdown}
                                     setServiceTaskDropdown={setServiceTaskDropdown}
+                                    setShowMobileHistoryLogs={setShowMobileHistoryLogs}
                                   />
                                 </div>
                               </div>

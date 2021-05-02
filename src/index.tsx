@@ -33,7 +33,7 @@ import generalReducer from 'src/store/reducers/general';
 import taskReducer from 'src/store/reducers/task';
 
 export const CableApp: any = {};
-CableApp.cable = actioncable.createConsumer(`ws://ss-sales.herokuapp.com/api/v1/cable`);
+CableApp.cable = actioncable.createConsumer(`${process.env.REACT_APP_WS_API}`);
 
 export const ActionCableContext = React.createContext(CableApp);
 
