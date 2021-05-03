@@ -42,8 +42,10 @@ import {
   getColumnSearchProps,
   setFilterReference,
 } from 'src/shared/Utils';
-import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+
 import { TUserAccess } from 'src/store/types/auth';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -104,7 +106,7 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-
+  const { width } = useWindowDimensions();
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
 
@@ -287,12 +289,30 @@ const TaskPage: React.FC<Props> = ({
     return moment(b.createdAt).diff(moment(a.createdAt));
   };
 
+  const checkItemsHeight = useCallback(() => {
+    // IN MOBILE VIEW
+    if (currentPage === 'main') {
+      // In main view
+      if (intakeDict && Object.keys(intakeDict).length === 0) {
+        // empty array
+        gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
+      } else {
+        // contains item
+        gsap.to('.task__table-wrapper', { height: '80rem', maxHeight: '80rem', minHeight: 'calc(100vh - 20rem)' });
+      }
+    } else {
+      // In update/create intake view
+      gsap.to('.task__table-wrapper', { minHeight: '100vh', maxHeight: '100vh' });
+    }
+  }, [currentPage, intakeDict]);
+
   const contextValue = useMemo(
     () => ({
       intakeDict,
       filterText,
       setFilterText,
       incomingData,
+      checkItemsHeight,
       setIncomingData,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
@@ -302,6 +322,7 @@ const TaskPage: React.FC<Props> = ({
       intakeDict,
       filterText,
       incomingData,
+      checkItemsHeight,
       setFilterText,
       setIncomingData,
       updateIntakeJobsForm,
@@ -543,36 +564,14 @@ const TaskPage: React.FC<Props> = ({
     }
   }, [currentPage, onSetSpecificIntakeLogs]);
 
-  // useEffect(() => {
-  //   //  only show the filter on main page
-  //   if (currentPage !== 'main') {
-  //     gsap.fromTo(
-  //       '.task__searchbar-div',
-  //       {
-  //         width: '100%',
-  //         height: '3rem',
-  //         opacity: 1,
-  //         duration: 1,
-  //         delay: 0.25,
-  //         pointerEvents: 'none',
-  //       },
-  //       { width: 0, height: 0, opacity: 0, duration: 1 },
-  //     );
-  //     // gsap.to('.task__searchbar-div', { opacity: 0, duration: 0.5, delay: 0.25 });
-  //   } else {
-  //     gsap.fromTo(
-  //       '.task__searchbar-div',
-  //       {
-  //         width: 0,
-  //         height: 0,
-  //         opacity: 0,
-  //         duration: 1,
-  //         delay: 0.25,
-  //       },
-  //       { width: '100%', height: '3rem', opacity: 1, duration: 1, pointerEvents: 'initial' },
-  //     );
-  //   }
-  // }, [currentPage]);
+  useEffect(() => {
+    if (width < 1200) {
+      checkItemsHeight();
+    } else {
+      // IN DESKTOP VIEW
+      gsap.to('.task__table-wrapper', { minHeight: '70rem', maxHeight: '100vh' });
+    }
+  }, [width, checkItemsHeight]);
 
   useEffect(() => {
     if (successMessage) {
@@ -664,7 +663,7 @@ const TaskPage: React.FC<Props> = ({
       {showMobileHistoryLogs && mobileSpecificIntakeLogsComponent}
       <NavbarComponent activePage="task" defaultOpenKeys="dashboard" />
       <Layout>
-        <LayoutComponent activeKey="accessory">
+        <LayoutComponent>
           <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
               {/* <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button> */}

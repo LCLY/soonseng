@@ -7,7 +7,6 @@
     height: 100%;
     width: 100%;
     overflow: auto;
-    margin-top: 5.5rem;
     // padding-top: 1rem;
     border-top: 1px solid white;
 
@@ -15,7 +14,7 @@
       display: block;
     }
     @include respond-to($phone-only) {
-      display: none;
+      display: block;
     }
 
     @include respond-to($tablet-landscape-up) {
@@ -104,9 +103,13 @@
 
   &__emptyresult {
     &-div {
+      display: grid;
+      place-items: center;
       text-align: center;
       height: 100%;
-      margin-top: 15vh;
+      margin-top: -1.5rem;
+      // padding-bottom: 5.5rem;
+      // margin-top: 15vh;
     }
 
     &-title {

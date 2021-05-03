@@ -136,14 +136,23 @@ const MobileTaskTable: React.FC<Props> = () => {
 
   useEffect(() => {
     if (taskPageContext === null) return;
-    const { intakeDict, filterText } = taskPageContext;
-    //create the custom eases..
+    const { intakeDict, checkItemsHeight, filterText } = taskPageContext;
+
     if (intakeDict && filterText !== '' && Object.values(intakeDict).filter(checkFilterString).length === 0) {
+      // the text no result shaking/wiggling
       var tl = new TimelineMax({ repeat: 0, repeatDelay: 0 })
         .to('.mobiletasktable__emptyresult-title', 0.5, { rotation: 15 })
         .to('.mobiletasktable__emptyresult-title', 5, { rotation: 0, ease: Elastic.easeOut.config(0.9, 0.1) });
 
+      // when theres no result after filter, set to a fixed height
+      gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
+      gsap.to('.mobiletasktable__div', { overflow: 'hidden' });
+
       tl.play();
+    } else {
+      // set over flow back to auto
+      checkItemsHeight();
+      gsap.to('.mobiletasktable__div', { overflow: 'auto' });
     }
   }, [checkFilterString, taskPageContext]);
 
@@ -163,8 +172,14 @@ const MobileTaskTable: React.FC<Props> = () => {
   /* ================================================== */
   return (
     <>
-      <div className="mobiletasktable__div">
-        {intakeDict && (
+      {intakeDict && (
+        <div
+          className="mobiletasktable__div"
+          style={{
+            marginTop: Object.values(intakeDict).length === 0 ? 0 : '5.5rem',
+            paddingBottom: Object.values(intakeDict).length === 0 ? 0 : '5.5rem',
+          }}
+        >
           <>
             {Object.values(intakeDict).length > 0 ? (
               <>
@@ -281,8 +296,8 @@ const MobileTaskTable: React.FC<Props> = () => {
               </div>
             )}
           </>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };
