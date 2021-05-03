@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo, useContext, useRef, M
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
+import Backdrop from 'src/components/Backdrop/Backdrop';
 import MobileTaskTable from './MobileTaskTable/MobileTaskTable';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
@@ -107,6 +108,8 @@ const TaskPage: React.FC<Props> = ({
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showMobileHistoryLogs, setShowMobileHistoryLogs] = useState(false);
+  const [startLogsAnimation, setStartLogsAnimation] = useState(false);
+
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [serviceTaskDropdown, setServiceTaskDropdown] = useState<IServiceTaskDropdown>({});
   const [beforeDeleteState, setBeforeDeleteState] = useState<TUpdateTaskTableState[] | null>(null);
@@ -298,10 +301,18 @@ const TaskPage: React.FC<Props> = ({
 
   let mobileSpecificIntakeLogsComponent = (
     <>
+      <Backdrop
+        show={startLogsAnimation}
+        backdropZIndex={1000}
+        clicked={() => {
+          setStartLogsAnimation(false);
+        }}
+      />
+
       <div className="updatespecificintake__logs--mobile">
         <div className="updatespecificintake__logs-title">
           <div>Intake History Logs</div>
-          <div className="updatespecificintake__logs-icon" onClick={() => setShowMobileHistoryLogs(false)}>
+          <div className="updatespecificintake__logs-icon" onClick={() => setStartLogsAnimation(false)}>
             <i className="fas fa-times-circle"></i>
           </div>
         </div>
@@ -314,7 +325,7 @@ const TaskPage: React.FC<Props> = ({
                     <div className="task__collapse-header-title">{child.title === '' ? '-' : child.title}</div>
                     <div className="task__collapse-header-time">
                       <i className="fas fa-clock"></i>
-                      {moment(child.created_at).format('HH:mm:A')}
+                      {moment(child.created_at).format('HH:mm')}
                     </div>
                   </div>
                 }
@@ -536,6 +547,19 @@ const TaskPage: React.FC<Props> = ({
     }
   }, [intakeDict, incomingData]);
 
+  useEffect(() => {
+    if (startLogsAnimation) {
+      gsap.fromTo('.updatespecificintake__logs--mobile', { width: 0, height: 0 }, { width: '90vw', height: '90vh' });
+    } else {
+      gsap.to('.updatespecificintake__logs--mobile', { opacity: 0, duration: 0.2, delay: 0.1 }); //wait 1 second
+      gsap.fromTo(
+        '.updatespecificintake__logs--mobile',
+        { width: '90vw', height: '90vh', overflow: 'hidden' },
+        { width: 0, height: 0, onComplete: () => setShowMobileHistoryLogs(false) },
+      );
+    }
+  }, [startLogsAnimation]);
+
   /* ================================================== */
   /* ================================================== */
 
@@ -642,6 +666,7 @@ const TaskPage: React.FC<Props> = ({
                                     serviceTaskDropdown={serviceTaskDropdown}
                                     setServiceTaskDropdown={setServiceTaskDropdown}
                                     setShowMobileHistoryLogs={setShowMobileHistoryLogs}
+                                    setStartLogsAnimation={setStartLogsAnimation}
                                   />
                                 </div>
                               </div>
@@ -666,7 +691,7 @@ const TaskPage: React.FC<Props> = ({
                                               </div>
                                               <div className="task__collapse-header-time">
                                                 <i className="fas fa-clock"></i>
-                                                {moment(child.created_at).format('HH:mm:A')}
+                                                {moment(child.created_at).format('HH:mm')}
                                               </div>
                                             </div>
                                           }
@@ -681,7 +706,7 @@ const TaskPage: React.FC<Props> = ({
                                             </div>
                                             <div className="task__collapse-row">
                                               <div className="task__collapse-row-label">Updated at:</div>
-                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm:A')}</div>
+                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm')}</div>
                                             </div>
                                           </section>
                                           <div className="task__collapse-row task__collapse-row--user">

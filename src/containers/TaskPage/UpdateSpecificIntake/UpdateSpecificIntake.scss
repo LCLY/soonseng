@@ -269,6 +269,7 @@
       }
       &--users {
         padding: 0.3rem 0.3rem 0.3rem 0;
+        overflow: hidden;
       }
 
       &--time {
@@ -522,18 +523,21 @@
       /* ----------------------------- */
       &--users {
         width: 90% !important;
+        overflow: hidden !important;
 
         @include respond-to($small-phone) {
           max-width: 100% !important;
-          overflow: auto;
+          // overflow: auto;
+          overflow: hidden !important;
           height: 3.4rem;
-          @include customScrollbar();
+          // @include customScrollbar();
         }
         @include respond-to($phone-only) {
+          overflow: hidden !important;
           max-width: 100% !important;
-          overflow: auto;
+          // overflow: auto;
           height: 3.4rem;
-          @include customScrollbar();
+          // @include customScrollbar();
         }
         @include respond-to($tablet-portrait-up) {
           width: 90% !important;
@@ -544,6 +548,14 @@
 
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
+          overflow: hidden !important;
+        }
+
+        & .ant-select-selection-overflow {
+          display: flex !important;
+          overflow-y: hidden !important;
+          flex-wrap: nowrap;
+          width: 1rem !important; //not sure how this is working
         }
         &
           .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
@@ -630,20 +642,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      white-space: nowrap;
     }
   }
   &__registration {
     &-div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      text-align: center;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
       text-transform: uppercase;
       background: white;
       font-family: $font-dmsans;
       font-weight: bolder;
       color: rgb(1, 12, 36);
       font-size: 2rem;
-      padding: 0.5rem 3rem;
+      // padding: 0.5rem 3rem;
+      padding: 0.8rem 1rem 0rem 1rem;
+      width: 100%;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       // &--normaluser {
       //   background: none;
@@ -845,7 +865,7 @@
       @include shadow-func(1px, 3px, 15px, 0.5px, rgba(255, 255, 255, 0.433));
 
       @include respond-to($small-phone) {
-        width: 95vw;
+        width: 90vw;
         height: 90vh;
       }
       @include respond-to($phone-only) {

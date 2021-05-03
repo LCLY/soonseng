@@ -38,6 +38,7 @@ interface UpdateSpecificIntakeProps {
   beforeDeleteState: TUpdateTaskTableState[] | null;
   setBeforeDeleteState: React.Dispatch<React.SetStateAction<TUpdateTaskTableState[] | null>>;
   setShowMobileHistoryLogs: React.Dispatch<React.SetStateAction<boolean>>;
+  setStartLogsAnimation: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentPage: React.Dispatch<React.SetStateAction<'main' | 'update' | 'create'>>;
 }
 
@@ -71,6 +72,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   // beforeDeleteState,
   setServiceTaskDropdown,
   onDeleteIntakeSummary,
+  setStartLogsAnimation,
   onUpdateIntakeSummary,
   setBeforeDeleteState,
   onSetSpecificIntakeLogs,
@@ -637,7 +639,13 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               <div className="flex-align-center">
                 {/* {inEditMode && <div style={{ marginRight: '1rem' }}>(Editing)</div>} */}
                 <>
-                  <div className="updatespecificintake__button-logs" onClick={() => setShowMobileHistoryLogs(true)}>
+                  <div
+                    className="updatespecificintake__button-logs"
+                    onClick={() => {
+                      setStartLogsAnimation(true);
+                      setShowMobileHistoryLogs(true);
+                    }}
+                  >
                     <i className="fas fa-clipboard-list"></i>
                   </div>
 
@@ -697,9 +705,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                   </div>
                 ) : (
                   <div className="updatespecificintake__registration-outerdiv--normaluser">
-                    <div className="updatespecificintake__registration-div">
-                      {currentSpecificIntakeJobsObj.registration}
-                    </div>
+                    <Tooltip title={currentSpecificIntakeJobsObj.registration}>
+                      <div className="updatespecificintake__registration-div">
+                        {currentSpecificIntakeJobsObj.registration}
+                      </div>
+                    </Tooltip>
                     <div className="updatespecificintake__bay-div ">
                       {currentSpecificIntakeJobsObj.bay === '' ||
                       currentSpecificIntakeJobsObj.bay === null ||
@@ -735,15 +745,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                           },
                         ]}
                       >
-                        <Select
-                          showSearch
-                          placeholder="Select an intake status"
-                          optionFilterProp="children"
-                          className="updatespecificintake__select"
-                          filterOption={(input, option) =>
-                            option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
+                        <Select placeholder="Select an intake status" className="updatespecificintake__select">
                           <Option value="">Select a status</Option>
                           {intakeStatusArray &&
                             intakeStatusArray.map((intakeStatus) => {
@@ -842,13 +844,35 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                       </Form.Item>
                     ) : (
                       <div>
-                        {currentSpecificIntakeJobsObj.intake_users.length > 0
+                        {/* {currentSpecificIntakeJobsObj.intake_users.length > 0
                           ? currentSpecificIntakeJobsObj.intake_users.map((child) => (
                               <div key={uuidv4()}>
                                 {child.user.first_name} {child.user.last_name}
                               </div>
                             ))
-                          : '-'}
+                          : '-'} */}
+                        {currentSpecificIntakeJobsObj.intake_users.length > 0 ? (
+                          <Tooltip
+                            title={
+                              currentSpecificIntakeJobsObj.intake_users.length > 0 ? (
+                                <ol>
+                                  {currentSpecificIntakeJobsObj.intake_users.map((child) => (
+                                    <li key={`assignees${child.id}`} className="task__table-assignees">
+                                      {child.user.first_name}&nbsp;
+                                      {child.user.last_name ? child.user.last_name : ''}
+                                    </li>
+                                  ))}
+                                </ol>
+                              ) : (
+                                'Task Assignees'
+                              )
+                            }
+                          >
+                            <i className="fas fa-user"></i> x {currentSpecificIntakeJobsObj.intake_users.length}
+                          </Tooltip>
+                        ) : (
+                          '-'
+                        )}
                       </div>
                     )}
                   </div>
@@ -897,7 +921,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               </section>
 
               <div className="updatespecificintake__lastupdated-div">
-                Last Updated: {moment(currentSpecificIntakeJobsObj.updated_at).format('YYYY-MM-DD HH:mm A')}
+                Last Updated: {moment(currentSpecificIntakeJobsObj.updated_at).format('YYYY-MM-DD  HH:mm')}
               </div>
             </section>
 
@@ -958,6 +982,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                         setClickedUpdate(true);
                       }}
                       okText="Continue"
+                      okButtonProps={{ htmlType: 'submit' }}
                       cancelText="Cancel"
                     >
                       <Button
