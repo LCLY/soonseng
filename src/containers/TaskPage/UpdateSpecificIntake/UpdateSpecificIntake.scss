@@ -6,6 +6,7 @@
     color: white;
     display: flex;
     flex-direction: column;
+    padding-top: 1rem;
   }
 
   &__title {
@@ -152,15 +153,46 @@
     border: 1px solid white;
     border-radius: 1rem;
     text-align: center;
-    width: 33.33%;
-    margin: 2rem 0;
 
-    &:not(:first-child) {
-      margin-left: 1rem;
+    @include respond-to($small-phone) {
+      margin: 0.5rem 0;
+      height: 4rem;
+      width: 100%;
+      &:not(:first-child) {
+        margin-left: 0;
+      }
+      &:not(:last-child) {
+        margin-right: 0;
+      }
     }
-    &:not(:last-child) {
-      margin-right: 1rem;
+    @include respond-to($phone-only) {
+      margin: 0.5rem 0;
+      height: 4rem;
+      width: 100%;
+      &:not(:first-child) {
+        margin-left: 0;
+      }
+      &:not(:last-child) {
+        margin-right: 0;
+      }
     }
+
+    @include respond-to($tablet-portrait-up) {
+      margin-top: 2rem;
+      height: auto;
+      margin-bottom: 2rem;
+      width: 33.33%;
+      &:not(:first-child) {
+        margin-left: 1rem;
+      }
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
+
+    /* ------------------------------------- */
+    // dock
+    /* ------------------------------------- */
 
     &--dock {
       background: rgb(17, 30, 61) !important;
@@ -177,6 +209,21 @@
     &-outerdiv {
       display: flex;
       justify-content: space-between;
+
+      /* ===================================== */
+      // push box to stack on each other on smaller screen
+      /* ===================================== */
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        margin-top: 1rem;
+      }
+      @include respond-to($phone-only) {
+        margin-top: 1rem;
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
     }
 
     &-icon {
@@ -196,19 +243,56 @@
     }
 
     &-right {
-      // display: flex;
-      // align-items: center;
-      // justify-content: center;
       display: grid;
       place-items: center;
       font-family: $font-firesans;
       width: 100%;
-      min-height: 10rem;
-      max-height: 12.5rem;
+
       @include customScrollbar();
       overflow-y: auto;
+      @include respond-to($small-phone) {
+        height: 5rem;
+        min-height: 5rem;
+        max-height: 5rem;
+      }
+      @include respond-to($phone-only) {
+        height: 5rem;
+        min-height: 5rem;
+        max-height: 5rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        min-height: 10rem;
+        max-height: 12.5rem;
+      }
       &--users {
         padding: 0.3rem 0.3rem 0.3rem 0;
+        overflow: hidden;
+      }
+
+      &--time {
+        display: flex;
+
+        @include respond-to($small-phone) {
+          flex-direction: row;
+        }
+        @include respond-to($phone-only) {
+          flex-direction: row;
+        }
+        @include respond-to($tablet-portrait-up) {
+          flex-direction: column;
+        }
+
+        &-left {
+          @include respond-to($small-phone) {
+            margin-right: 1rem;
+          }
+          @include respond-to($phone-only) {
+            margin-right: 1rem;
+          }
+          @include respond-to($tablet-portrait-up) {
+            margin: 0;
+          }
+        }
       }
     }
   }
@@ -384,7 +468,18 @@
       /* ----------------------------- */
       &--intake {
         width: 90% !important;
-        max-width: 17rem !important;
+
+        @include respond-to($small-phone) {
+          max-width: 100% !important;
+        }
+        @include respond-to($phone-only) {
+          max-width: 100% !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 90% !important;
+          max-width: 17rem !important;
+        }
+
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
         }
@@ -425,10 +520,39 @@
       /* ----------------------------- */
       &--users {
         width: 90% !important;
-        max-width: 17rem !important;
-        padding: 1rem 0 !important;
+        overflow: hidden !important;
+
+        @include respond-to($small-phone) {
+          max-width: 100% !important;
+          // overflow: auto;
+          overflow: hidden !important;
+          height: 3.4rem;
+          // @include customScrollbar();
+        }
+        @include respond-to($phone-only) {
+          overflow: hidden !important;
+          max-width: 100% !important;
+          // overflow: auto;
+          height: 3.4rem;
+          // @include customScrollbar();
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 90% !important;
+          height: auto;
+          padding: 1rem 0 !important;
+          max-width: 17rem !important;
+        }
+
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
+          overflow: hidden !important;
+        }
+
+        & .ant-select-selection-overflow {
+          display: flex !important;
+          overflow-y: hidden !important;
+          flex-wrap: nowrap;
+          width: 1rem !important; //not sure how this is working
         }
         &
           .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
@@ -515,20 +639,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      white-space: nowrap;
     }
   }
   &__registration {
     &-div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      text-align: center;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
       text-transform: uppercase;
       background: white;
       font-family: $font-dmsans;
       font-weight: bolder;
       color: rgb(1, 12, 36);
       font-size: 2rem;
-      padding: 0.5rem 3rem;
+      // padding: 0.5rem 3rem;
+      padding: 0.8rem 1rem 0rem 1rem;
+      width: 100%;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       // &--normaluser {
       //   background: none;
@@ -730,7 +862,7 @@
       @include shadow-func(1px, 3px, 15px, 0.5px, rgba(255, 255, 255, 0.433));
 
       @include respond-to($small-phone) {
-        width: 95vw;
+        width: 90vw;
         height: 90vh;
       }
       @include respond-to($phone-only) {

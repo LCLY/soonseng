@@ -13,6 +13,8 @@ interface MobileTaskTableProps {
   goToUpdateSpecificIntake: () => void;
   onGetSpecificIntakeJobs: (key: number) => void;
   incomingData: IIncomingData | null;
+  filterText: string;
+  setFilterText: React.Dispatch<React.SetStateAction<string>>;
   setIncomingData: React.Dispatch<React.SetStateAction<IIncomingData | null>>;
 }
 
