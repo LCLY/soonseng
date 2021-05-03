@@ -673,7 +673,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               {/* REGISTRATION */}
               <div className="updatespecificintake__row--registration">
                 {inEditMode ? (
-                  <div className="flex" style={{ width: '100%' }}>
+                  <div className="updatespecificintake__div-registration">
                     <div style={{ width: '100%' }}>
                       <Form.Item
                         className="updatespecificintake__form-item--registration"

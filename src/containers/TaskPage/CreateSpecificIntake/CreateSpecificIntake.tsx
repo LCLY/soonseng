@@ -464,7 +464,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
           <section className="createspecificintake__section-top">
             {/* REGISTRATION */}
             <div className="createspecificintake__row--registration">
-              <div className="flex" style={{ width: '100%' }}>
+              <div className="createspecificintake__div-registration">
                 <div style={{ width: '100%' }}>
                   <Form.Item
                     className="createspecificintake__form-item--registration"
