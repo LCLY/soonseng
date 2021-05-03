@@ -19,7 +19,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Button, Layout, Collapse, Form, Table, message, Tooltip } from 'antd';
+import { Button, Layout, Collapse, Form, Table, message, Tooltip, Input } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -36,11 +36,17 @@ import {
   TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
-import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
+import {
+  convertHeader,
+  emptyStringWhenUndefinedOrNull,
+  getColumnSearchProps,
+  setFilterReference,
+} from 'src/shared/Utils';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 import { TUserAccess } from 'src/store/types/auth';
 
 const { Panel } = Collapse;
+const { Search } = Input;
 
 export type TTaskTableState = {
   key: string;
@@ -124,6 +130,11 @@ const TaskPage: React.FC<Props> = ({
   const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
   // const [intakeTableState, setIntakeTableState] = useState<TIntakeTableState[]>([]);
   const [serviceTypeTaskDict, setServiceTypeTaskDict] = useState<TServiceTypeTaskDict | null>(null);
+
+  const [filterText, setFilterText] = useState('');
+  // const [startShowFilterAnimation, setStartFilterAnimation] = useState(false)
+  // const [startHideFilterAnimation, setStartFilterAnimation] = useState(false)
+  // const [showFilterInput, setShowFilterInput] = useState(false);
 
   let intakeJobsSearchInput = null; //this is for filter on antd table
 
@@ -278,23 +289,76 @@ const TaskPage: React.FC<Props> = ({
 
   const contextValue = useMemo(
     () => ({
+      intakeDict,
+      filterText,
+      setFilterText,
       incomingData,
       setIncomingData,
-      intakeDict,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
     }),
     [
-      incomingData,
-      setIncomingData,
       intakeDict,
+      filterText,
+      incomingData,
+      setFilterText,
+      setIncomingData,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
     ],
   );
 
+  const checkFilterString = (intakeChild: TIntakeTableState) => {
+    let date = moment(intakeChild.createdAt).format('DD-MM-YYYY');
+    let time = moment(intakeChild.createdAt).format('HH:mm A');
+    let listOfUsers = intakeChild.assign.reduce(
+      (finalString, assignChild) =>
+        (finalString += `${assignChild.user.first_name} ${emptyStringWhenUndefinedOrNull(assignChild.user.last_name)} ${
+          assignChild.user.username
+        } ${assignChild.user.role} `),
+      '',
+    );
+
+    // if filtertext has nothing straight return the whole array
+    if (filterText === '') return intakeChild;
+    var searchedText = filterText.toLowerCase();
+
+    var pattern = filterText
+      .split('')
+      .map((x) => {
+        return `(?=.*${x})`;
+      })
+      .join('');
+
+    var regex = new RegExp(`${pattern}`, 'g');
+
+    // basically if there's a result, it will return array instead of null
+    let regexBoolean =
+      intakeChild.bay.toLowerCase().match(regex) ||
+      intakeChild.description.toLowerCase().match(regex) ||
+      intakeChild.assign.length.toString().match(regex) ||
+      intakeChild.serviceType.toLowerCase().match(regex) ||
+      date.toLowerCase().match(regex) ||
+      listOfUsers.toLowerCase().match(regex) ||
+      time.toLowerCase().match(regex) ||
+      intakeChild.regNumber.toLowerCase().match(regex);
+
+    // if not return the filtered result
+    // if includes doesnt return result, it will fallback to regex to get better tweaked result
+    return (
+      regexBoolean ||
+      intakeChild.bay.toLowerCase().includes(searchedText) ||
+      intakeChild.description.toLowerCase().includes(searchedText) ||
+      intakeChild.assign.length.toString().includes(searchedText) ||
+      intakeChild.serviceType.toLowerCase().includes(searchedText) ||
+      date.toLowerCase().includes(searchedText) ||
+      listOfUsers.toLowerCase().includes(searchedText) ||
+      time.toLowerCase().includes(searchedText) ||
+      intakeChild.regNumber.toLowerCase().includes(searchedText)
+    );
+  };
   /* ================================================== */
   /*  components */
   /* ================================================== */
@@ -423,6 +487,7 @@ const TaskPage: React.FC<Props> = ({
   }, [serviceTypesArray]);
 
   useEffect(() => {
+    gsap.config({ nullTargetWarn: false });
     // onGetTasks();
     onGetIntakeStatus();
     onGetServiceTypes();
@@ -477,6 +542,37 @@ const TaskPage: React.FC<Props> = ({
       onSetSpecificIntakeLogs(null);
     }
   }, [currentPage, onSetSpecificIntakeLogs]);
+
+  // useEffect(() => {
+  //   //  only show the filter on main page
+  //   if (currentPage !== 'main') {
+  //     gsap.fromTo(
+  //       '.task__searchbar-div',
+  //       {
+  //         width: '100%',
+  //         height: '3rem',
+  //         opacity: 1,
+  //         duration: 1,
+  //         delay: 0.25,
+  //         pointerEvents: 'none',
+  //       },
+  //       { width: 0, height: 0, opacity: 0, duration: 1 },
+  //     );
+  //     // gsap.to('.task__searchbar-div', { opacity: 0, duration: 0.5, delay: 0.25 });
+  //   } else {
+  //     gsap.fromTo(
+  //       '.task__searchbar-div',
+  //       {
+  //         width: 0,
+  //         height: 0,
+  //         opacity: 0,
+  //         duration: 1,
+  //         delay: 0.25,
+  //       },
+  //       { width: '100%', height: '3rem', opacity: 1, duration: 1, pointerEvents: 'initial' },
+  //     );
+  //   }
+  // }, [currentPage]);
 
   useEffect(() => {
     if (successMessage) {
@@ -617,11 +713,16 @@ const TaskPage: React.FC<Props> = ({
                             </Button>
                           )}
                         </div>
+
                         {/* -------------------- */}
                         {/*     Intake Table      */}
                         {/* -------------------- */}
 
                         <div className="task__table-wrapper">
+                          {/* -------------------- */}
+                          {/*     Search bar      */}
+                          {/* -------------------- */}
+
                           <div className="task__table-outerdiv">
                             <div className="task__table-parent">
                               <div className="task__table-div">
@@ -637,21 +738,34 @@ const TaskPage: React.FC<Props> = ({
                                     setServiceTaskDropdown={setServiceTaskDropdown}
                                   />
                                 </div>
-                                <TaskPageContext.Provider value={contextValue}>
-                                  <MobileTaskTable />
-                                </TaskPageContext.Provider>
-                                <Table
-                                  bordered
-                                  className="task__table"
-                                  scroll={{ y: 600 }}
-                                  // components={components}
-                                  rowClassName={(record) => `intakesummary__row-${record.key}`}
-                                  dataSource={Object.values(
-                                    intakeDict,
-                                  ).sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
-                                  columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
-                                  pagination={false}
-                                />
+
+                                <div>
+                                  <div className="task__searchbar-div">
+                                    <Search
+                                      value={filterText}
+                                      suffix={<i className="fas fa-times-circle" onClick={() => setFilterText('')}></i>}
+                                      placeholder="Type here to filter"
+                                      onChange={(e) => setFilterText(e.target.value)}
+                                      onSearch={(value) => setFilterText(value)}
+                                      enterButton={<i className="fas fa-filter"></i>}
+                                    />
+                                  </div>
+                                  <TaskPageContext.Provider value={contextValue}>
+                                    <MobileTaskTable />
+                                  </TaskPageContext.Provider>
+                                  <Table
+                                    bordered
+                                    className="task__table"
+                                    scroll={{ y: 600 }}
+                                    // components={components}
+                                    rowClassName={(record) => `intakesummary__row-${record.key}`}
+                                    dataSource={Object.values(intakeDict)
+                                      .filter(checkFilterString)
+                                      .sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
+                                    columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
+                                    pagination={false}
+                                  />
+                                </div>
                                 <div className="task__specific-div task__specific-div--update">
                                   <UpdateSpecificIntake
                                     count={count}
