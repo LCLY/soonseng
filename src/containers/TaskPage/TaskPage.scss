@@ -183,7 +183,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 2rem;
+
+      @include respond-to($small-phone) {
+        margin-bottom: 1rem;
+      }
+      @include respond-to($phone-only) {
+        margin-bottom: 1rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        margin-bottom: 1rem;
+      }
     }
   }
 
@@ -207,6 +216,7 @@
   // glass background
   /* ============================================== */
   &__glass {
+    transition: all 0.5s ease;
     margin-bottom: 2rem;
     @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
     background: rgba(158, 158, 158, 0.344);
@@ -459,6 +469,40 @@
       place-items: center;
       height: 100%;
       width: 100%;
+    }
+  }
+
+  /* ================================== */
+  // search/filter bar
+  /* ================================== */
+  &__searchbar {
+    &-div {
+      // margin-bottom: 1rem;
+      padding: 1rem;
+      & input {
+        color: white !important;
+        background: $form-items-grey;
+      }
+
+      & button {
+        background: $soft-red !important;
+        border: 1px solid white !important;
+      }
+
+      & .ant-input-affix-wrapper {
+        background: $form-items-grey !important;
+      }
+
+      * .ant-input-suffix {
+        color: white;
+        cursor: pointer;
+        &:hover {
+          color: rgba(255, 255, 255, 0.548);
+        }
+        &:active {
+          color: white;
+        }
+      }
     }
   }
 }
