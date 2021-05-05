@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback, useMemo, useContext, useRef, M
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
-import Backdrop from 'src/components/Backdrop/Backdrop';
 import MobileTaskTable from './MobileTaskTable/MobileTaskTable';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
@@ -21,7 +20,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Button, Layout, Collapse, Form, Table, message, Tooltip, Input } from 'antd';
+import { Button, Layout, Collapse, Form, Table, message, Tooltip } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -44,13 +43,11 @@ import {
   getColumnSearchProps,
   setFilterReference,
 } from 'src/shared/Utils';
-
 import { TUserAccess } from 'src/store/types/auth';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 
 const { Panel } = Collapse;
-const { Search } = Input;
 
 export type TTaskTableState = {
   key: string;
@@ -118,8 +115,6 @@ const TaskPage: React.FC<Props> = ({
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showMobileHistoryLogs, setShowMobileHistoryLogs] = useState(false);
-  const [startLogsAnimation, setStartLogsAnimation] = useState(false);
-
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [serviceTaskDropdown, setServiceTaskDropdown] = useState<IServiceTaskDropdown>({});
   const [beforeDeleteState, setBeforeDeleteState] = useState<TUpdateTaskTableState[] | null>(null);
@@ -324,96 +319,36 @@ const TaskPage: React.FC<Props> = ({
 
   const contextValue = useMemo(
     () => ({
-      intakeDict,
-      filterText,
-      setFilterText,
       incomingData,
       checkItemsHeight,
       setIncomingData,
+      intakeDict,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
     }),
     [
-      intakeDict,
-      filterText,
       incomingData,
       checkItemsHeight,
       setFilterText,
       setIncomingData,
+      intakeDict,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
     ],
   );
 
-  const checkFilterString = (intakeChild: TIntakeTableState) => {
-    let date = moment(intakeChild.createdAt).format('DD-MM-YYYY');
-    let time = moment(intakeChild.createdAt).format('HH:mm A');
-    let listOfUsers = intakeChild.assign.reduce(
-      (finalString, assignChild) =>
-        (finalString += `${assignChild.user.first_name} ${emptyStringWhenUndefinedOrNull(assignChild.user.last_name)} ${
-          assignChild.user.username
-        } ${assignChild.user.role} `),
-      '',
-    );
-
-    // if filtertext has nothing straight return the whole array
-    if (filterText === '') return intakeChild;
-    var searchedText = filterText.toLowerCase();
-
-    var pattern = filterText
-      .split('')
-      .map((x) => {
-        return `(?=.*${x})`;
-      })
-      .join('');
-
-    var regex = new RegExp(`${pattern}`, 'g');
-
-    // basically if there's a result, it will return array instead of null
-    let regexBoolean =
-      intakeChild.bay.toLowerCase().match(regex) ||
-      intakeChild.description.toLowerCase().match(regex) ||
-      intakeChild.assign.length.toString().match(regex) ||
-      intakeChild.serviceType.toLowerCase().match(regex) ||
-      date.toLowerCase().match(regex) ||
-      listOfUsers.toLowerCase().match(regex) ||
-      time.toLowerCase().match(regex) ||
-      intakeChild.regNumber.toLowerCase().match(regex);
-
-    // if not return the filtered result
-    // if includes doesnt return result, it will fallback to regex to get better tweaked result
-    return (
-      regexBoolean ||
-      intakeChild.bay.toLowerCase().includes(searchedText) ||
-      intakeChild.description.toLowerCase().includes(searchedText) ||
-      intakeChild.assign.length.toString().includes(searchedText) ||
-      intakeChild.serviceType.toLowerCase().includes(searchedText) ||
-      date.toLowerCase().includes(searchedText) ||
-      listOfUsers.toLowerCase().includes(searchedText) ||
-      time.toLowerCase().includes(searchedText) ||
-      intakeChild.regNumber.toLowerCase().includes(searchedText)
-    );
-  };
   /* ================================================== */
   /*  components */
   /* ================================================== */
 
   let mobileSpecificIntakeLogsComponent = (
     <>
-      <Backdrop
-        show={startLogsAnimation}
-        backdropZIndex={1000}
-        clicked={() => {
-          setStartLogsAnimation(false);
-        }}
-      />
-
       <div className="updatespecificintake__logs--mobile">
         <div className="updatespecificintake__logs-title">
           <div>Intake History Logs</div>
-          <div className="updatespecificintake__logs-icon" onClick={() => setStartLogsAnimation(false)}>
+          <div className="updatespecificintake__logs-icon" onClick={() => setShowMobileHistoryLogs(false)}>
             <i className="fas fa-times-circle"></i>
           </div>
         </div>
@@ -426,7 +361,7 @@ const TaskPage: React.FC<Props> = ({
                     <div className="task__collapse-header-title">{child.title === '' ? '-' : child.title}</div>
                     <div className="task__collapse-header-time">
                       <i className="fas fa-clock"></i>
-                      {moment(child.created_at).format('HH:mm')}
+                      {moment(child.created_at).format('HH:mm:A')}
                     </div>
                   </div>
                 }
@@ -493,6 +428,7 @@ const TaskPage: React.FC<Props> = ({
             delete tempIntakeDict[destroyedIntakeId];
             setIntakeDict(tempIntakeDict); //update it
           } else {
+            console.log('IN COMING DATA', res);
             setIncomingData(res);
           }
         },
@@ -524,7 +460,6 @@ const TaskPage: React.FC<Props> = ({
   }, [serviceTypesArray]);
 
   useEffect(() => {
-    gsap.config({ nullTargetWarn: false });
     // onGetTasks();
     onGetIntakeStatus();
     onGetServiceTypes();
@@ -658,19 +593,6 @@ const TaskPage: React.FC<Props> = ({
     }
   }, [intakeDict, incomingData]);
 
-  useEffect(() => {
-    if (startLogsAnimation) {
-      gsap.fromTo('.updatespecificintake__logs--mobile', { width: 0, height: 0 }, { width: '90vw', height: '90vh' });
-    } else {
-      gsap.to('.updatespecificintake__logs--mobile', { opacity: 0, duration: 0.2, delay: 0.1 }); //wait 1 second
-      gsap.fromTo(
-        '.updatespecificintake__logs--mobile',
-        { width: '90vw', height: '90vh', overflow: 'hidden' },
-        { width: 0, height: 0, onComplete: () => setShowMobileHistoryLogs(false) },
-      );
-    }
-  }, [startLogsAnimation]);
-
   /* ================================================== */
   /* ================================================== */
 
@@ -728,16 +650,11 @@ const TaskPage: React.FC<Props> = ({
                             </Button>
                           )}
                         </div>
-
                         {/* -------------------- */}
                         {/*     Intake Table      */}
                         {/* -------------------- */}
 
                         <div className="task__table-wrapper">
-                          {/* -------------------- */}
-                          {/*     Search bar      */}
-                          {/* -------------------- */}
-
                           <div className="task__table-outerdiv">
                             <div className="task__table-parent">
                               <div className="task__table-div">
@@ -755,34 +672,21 @@ const TaskPage: React.FC<Props> = ({
                                     setServiceTaskDropdown={setServiceTaskDropdown}
                                   />
                                 </div>
-
-                                <div>
-                                  <div className="task__searchbar-div">
-                                    <Search
-                                      value={filterText}
-                                      suffix={<i className="fas fa-times-circle" onClick={() => setFilterText('')}></i>}
-                                      placeholder="Type here to filter"
-                                      onChange={(e) => setFilterText(e.target.value)}
-                                      onSearch={(value) => setFilterText(value)}
-                                      enterButton={<i className="fas fa-filter"></i>}
-                                    />
-                                  </div>
-                                  <TaskPageContext.Provider value={contextValue}>
-                                    <MobileTaskTable />
-                                  </TaskPageContext.Provider>
-                                  <Table
-                                    bordered
-                                    className="task__table"
-                                    scroll={{ y: 600 }}
-                                    // components={components}
-                                    rowClassName={(record) => `intakesummary__row-${record.key}`}
-                                    dataSource={Object.values(intakeDict)
-                                      .filter(checkFilterString)
-                                      .sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
-                                    columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
-                                    pagination={false}
-                                  />
-                                </div>
+                                <TaskPageContext.Provider value={contextValue}>
+                                  <MobileTaskTable />
+                                </TaskPageContext.Provider>
+                                <Table
+                                  bordered
+                                  className="task__table"
+                                  scroll={{ y: 600 }}
+                                  // components={components}
+                                  rowClassName={(record) => `intakesummary__row-${record.key}`}
+                                  dataSource={Object.values(
+                                    intakeDict,
+                                  ).sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
+                                  columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
+                                  pagination={false}
+                                />
                                 <div className="task__specific-div task__specific-div--update">
                                   <UpdateSpecificIntake
                                     count={count}
@@ -797,7 +701,6 @@ const TaskPage: React.FC<Props> = ({
                                     serviceTaskDropdown={serviceTaskDropdown}
                                     setServiceTaskDropdown={setServiceTaskDropdown}
                                     setShowMobileHistoryLogs={setShowMobileHistoryLogs}
-                                    setStartLogsAnimation={setStartLogsAnimation}
                                   />
                                 </div>
                               </div>
@@ -822,7 +725,7 @@ const TaskPage: React.FC<Props> = ({
                                               </div>
                                               <div className="task__collapse-header-time">
                                                 <i className="fas fa-clock"></i>
-                                                {moment(child.created_at).format('HH:mm')}
+                                                {moment(child.created_at).format('HH:mm:A')}
                                               </div>
                                             </div>
                                           }
@@ -837,7 +740,7 @@ const TaskPage: React.FC<Props> = ({
                                             </div>
                                             <div className="task__collapse-row">
                                               <div className="task__collapse-row-label">Updated at:</div>
-                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm')}</div>
+                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm:A')}</div>
                                             </div>
                                           </section>
                                           <div className="task__collapse-row task__collapse-row--user">
