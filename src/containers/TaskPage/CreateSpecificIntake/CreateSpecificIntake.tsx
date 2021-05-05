@@ -517,7 +517,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                       name="intakeStatus"
                       style={{ margin: 0 }}
                       className="createspecificintake__form-item--intake"
-                      initialValue={intakeStatusArray.filter((child) => child.title === 'Docked')[0].id}
+                      initialValue={intakeStatusArray.filter((child) => child.title === 'In Queue')[0].id}
                       rules={[
                         {
                           required: true,
@@ -529,7 +529,6 @@ const CreateSpecificIntake: React.FC<Props> = ({
                         showSearch
                         placeholder="Select an intake status"
                         optionFilterProp="children"
-                        // defaultValue={intakeStatusArray?.filter((child) => child.title === 'Docked')[0].id}
                         className="createspecificintake__select"
                         filterOption={(input, option) =>
                           option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
