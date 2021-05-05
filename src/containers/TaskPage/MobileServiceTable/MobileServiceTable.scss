@@ -1,0 +1,85 @@
+.mobileservice {
+  &__table {
+    &-div {
+      overflow: auto;
+      padding-right: 1.5rem;
+      padding-left: 1rem;
+      padding-top: 1rem;
+    }
+  }
+  &__row {
+    &-div {
+      font-size: 1.2rem;
+      border: 1px solid white;
+      border-radius: 1rem;
+      background: #12244d;
+      padding: 0.5rem;
+      margin-bottom: 2rem;
+
+      &-parent {
+        position: relative;
+      }
+    }
+
+    &-number {
+      position: absolute;
+      background: rgb(59, 98, 150);
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid white;
+      top: -1rem;
+      left: -1rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      line-height: normal;
+      font-family: $font-firesans;
+    }
+  }
+
+  &__form {
+    &-row {
+      display: flex;
+      align-items: center;
+      width: calc(100% - 2rem) !important;
+
+      &-label {
+        width: 3.5rem;
+        margin-right: 0.5rem;
+      }
+    }
+
+    &-item {
+      width: 100% !important;
+    }
+  }
+
+  &__button {
+    &-delete {
+      position: absolute;
+      background: $soft-red;
+      right: -13px;
+      top: 50%;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      border: 1px solid white;
+      display: grid;
+      place-items: center;
+      transform: translateY(-50%);
+
+      &:active {
+        background: #c46c6c;
+      }
+    }
+  }
+
+  &__input {
+    width: 100% !important;
+
+    & .ant-select-selector {
+      width: 100% !important;
+    }
+  }
+}

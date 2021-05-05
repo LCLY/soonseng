@@ -9,9 +9,7 @@ interface BackDropProps {
 }
 type Props = BackDropProps;
 const Backdrop: React.FC<Props> = ({ show, backdropZIndex, clicked }) => {
-  return show ? (
-    <div className="Backdrop" style={{ zIndex: backdropZIndex }} onClick={clicked}></div>
-  ) : null;
+  return show ? <div className="Backdrop" style={{ zIndex: backdropZIndex }} onClick={clicked}></div> : null;
 };
 
 export default Backdrop;

@@ -9,6 +9,23 @@
     flex-direction: column;
   }
 
+  &__div {
+    &-registration {
+      display: flex;
+      width: 100%;
+      @include respond-to($small-phone) {
+        flex-direction: column;
+      }
+
+      @include respond-to($phone-only) {
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
+    }
+  }
+
   &__section {
     &-top {
       padding: 0 2rem;
@@ -24,6 +41,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      // overflow: auto;
 
       &-title {
         font-family: $font-bebasneue;
@@ -115,7 +133,16 @@
       &-text {
         margin-right: 1rem;
         font-family: $font-pragati;
-        font-size: 2rem;
+
+        @include respond-to($small-phone) {
+          font-size: 1.3rem;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.4rem;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 2rem;
+        }
       }
       &-div {
         border: 1px solid white;
@@ -143,6 +170,16 @@
   }
 
   &__table {
+    @include respond-to($small-phone) {
+      display: none;
+    }
+    @include respond-to($phone-only) {
+      display: none;
+    }
+    @include respond-to($tablet-portrait-up) {
+      display: block;
+    }
+
     &-header {
       padding-left: 1rem !important;
     }
@@ -154,13 +191,41 @@
     border-radius: 1rem;
     text-align: center;
     width: 50%;
-    margin: 2rem 0;
 
-    &:not(:first-child) {
-      margin-left: 1rem;
+    @include respond-to($small-phone) {
+      margin: 0.5rem 0;
+      height: 4rem;
+      width: 100%;
+      &:not(:first-child) {
+        margin-left: 0;
+      }
+      &:not(:last-child) {
+        margin-right: 0;
+      }
     }
-    &:not(:last-child) {
-      margin-right: 1rem;
+    @include respond-to($phone-only) {
+      margin: 0.5rem 0;
+      height: 4rem;
+      width: 100%;
+      &:not(:first-child) {
+        margin-left: 0;
+      }
+      &:not(:last-child) {
+        margin-right: 0;
+      }
+    }
+
+    @include respond-to($tablet-portrait-up) {
+      margin-top: 2rem;
+      height: auto;
+      margin-bottom: 2rem;
+      width: 50%;
+      &:not(:first-child) {
+        margin-left: 1rem;
+      }
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
     }
 
     &--dock {
@@ -179,6 +244,20 @@
       display: flex;
       justify-content: space-between;
       margin-top: 1rem;
+      /* ===================================== */
+      // push box to stack on each other on smaller screen
+      /* ===================================== */
+      @include respond-to($small-phone) {
+        flex-direction: column;
+        margin-top: 1rem;
+      }
+      @include respond-to($phone-only) {
+        margin-top: 1rem;
+        flex-direction: column;
+      }
+      @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+      }
     }
 
     &-icon {
@@ -207,8 +286,24 @@
       max-height: 15rem;
       overflow-y: auto;
       @include customScrollbar();
+      @include respond-to($small-phone) {
+        height: 5rem;
+        min-height: 5rem;
+        max-height: 5rem;
+      }
+      @include respond-to($phone-only) {
+        height: 5rem;
+        min-height: 5rem;
+        max-height: 5rem;
+      }
+      @include respond-to($tablet-portrait-up) {
+        min-height: 10rem;
+        max-height: 12.5rem;
+      }
+
       &--users {
         margin: 0.3rem 0.3rem 0.3rem 0;
+        overflow: hidden;
       }
     }
   }
@@ -287,11 +382,22 @@
 
       // description but for intake
       &--intakedesc {
-        font-size: 1.5rem !important;
         padding: 1rem !important;
-        height: 4rem !important;
         font-family: $font-firesans;
         width: 100% !important;
+
+        @include respond-to($small-phone) {
+          font-size: 1.3rem !important;
+          height: 3rem !important;
+        }
+        @include respond-to($phone-only) {
+          font-size: 1.4rem !important;
+          height: 3rem !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          font-size: 1.5rem !important;
+          height: 4rem !important;
+        }
       }
     }
     &-checkbox {
@@ -313,16 +419,33 @@
         // width: 15rem;
 
         &-input {
-          font-size: 2rem !important;
           padding: 0.5rem 1rem;
           font-weight: bolder !important;
           text-transform: uppercase;
+          @include respond-to($small-phone) {
+            font-size: 1.3rem !important;
+          }
+          @include respond-to($phone-only) {
+            font-size: 1.4rem !important;
+          }
+          @include respond-to($tablet-portrait-up) {
+            font-size: 2rem !important;
+          }
 
           &::placeholder {
             font-family: $font-firesans;
-            font-size: 2rem;
             font-weight: normal;
             text-transform: none;
+
+            @include respond-to($small-phone) {
+              font-size: 1.3rem !important;
+            }
+            @include respond-to($phone-only) {
+              font-size: 1.4rem !important;
+            }
+            @include respond-to($tablet-portrait-up) {
+              font-size: 2rem !important;
+            }
           }
         }
         & .ant-input:hover {
@@ -331,8 +454,19 @@
       }
 
       &--bay {
-        margin: 0 !important;
-        height: 100% !important;
+        @include respond-to($small-phone) {
+          margin-top: 1rem !important;
+          margin-bottom: 0 !important;
+        }
+
+        @include respond-to($phone-only) {
+          margin-bottom: 0 !important;
+          margin-top: 1rem !important;
+        }
+        @include respond-to($tablet-portrait-up) {
+          height: 100% !important;
+          margin: 0 !important;
+        }
       }
       /* ----------------------------- */
       // intake form item
@@ -343,6 +477,7 @@
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
         }
+
         &
           .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
           .ant-select-selector {
@@ -381,9 +516,39 @@
       /* ----------------------------- */
       &--users {
         width: 90% !important;
-        max-width: 20rem !important;
+        overflow: hidden;
+        // max-width: 20rem !important;
+
+        @include respond-to($small-phone) {
+          max-width: 100% !important;
+          // overflow: auto;
+          overflow: hidden !important;
+          height: 3.4rem;
+          // @include customScrollbar();
+        }
+        @include respond-to($phone-only) {
+          overflow: hidden !important;
+          max-width: 100% !important;
+          // overflow: auto;
+          height: 3.4rem;
+          // @include customScrollbar();
+        }
+        @include respond-to($tablet-portrait-up) {
+          width: 90% !important;
+          height: auto;
+          padding: 1rem 0 !important;
+          max-width: 17rem !important;
+        }
+
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
+          overflow: hidden !important;
+        }
+        & .ant-select-selection-overflow {
+          display: flex !important;
+          overflow-y: hidden !important;
+          flex-wrap: nowrap;
+          width: 1rem !important; //not sure how this is working
         }
         &
           .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)

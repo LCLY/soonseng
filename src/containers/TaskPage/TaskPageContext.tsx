@@ -10,9 +10,12 @@ interface IIncomingData {
 interface MobileTaskTableProps {
   intakeDict: IIntakeDict | null;
   updateIntakeJobsForm: any;
+  checkItemsHeight: () => void;
   goToUpdateSpecificIntake: () => void;
   onGetSpecificIntakeJobs: (key: number) => void;
   incomingData: IIncomingData | null;
+  filterText: string;
+  setFilterText: React.Dispatch<React.SetStateAction<string>>;
   setIncomingData: React.Dispatch<React.SetStateAction<IIncomingData | null>>;
 }
 

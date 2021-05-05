@@ -2,13 +2,16 @@ import React, { useEffect, useState, useCallback, useMemo, useContext, useRef, M
 import './TaskPage.scss';
 /* components */
 import Footer from 'src/components/Footer/Footer';
+import Backdrop from 'src/components/Backdrop/Backdrop';
 import MobileTaskTable from './MobileTaskTable/MobileTaskTable';
 import Ripple from 'src/components/Loading/LoadingIcons/Ripple/Ripple';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
-import CreateSpecificIntake from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
+import CreateSpecificIntake, {
+  TCreateTaskTableState,
+} from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
 import UpdateSpecificIntake, {
   TUpdateTaskTableState,
 } from 'src/containers/TaskPage//UpdateSpecificIntake/UpdateSpecificIntake';
@@ -18,7 +21,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Button, Layout, Collapse, Form, Table, message, Tooltip } from 'antd';
+import { Button, Layout, Collapse, Form, Table, message, Tooltip, Input } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -35,11 +38,19 @@ import {
   TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
-import { convertHeader, getColumnSearchProps, setFilterReference } from 'src/shared/Utils';
-import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import {
+  convertHeader,
+  emptyStringWhenUndefinedOrNull,
+  getColumnSearchProps,
+  setFilterReference,
+} from 'src/shared/Utils';
+
 import { TUserAccess } from 'src/store/types/auth';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
+import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 
 const { Panel } = Collapse;
+const { Search } = Input;
 
 export type TTaskTableState = {
   key: string;
@@ -97,7 +108,7 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-
+  const { width } = useWindowDimensions();
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
 
@@ -107,6 +118,8 @@ const TaskPage: React.FC<Props> = ({
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showMobileHistoryLogs, setShowMobileHistoryLogs] = useState(false);
+  const [startLogsAnimation, setStartLogsAnimation] = useState(false);
+
   const [showCreateModal, setShowCreateModal] = useState<{ [key: string]: boolean }>({ intake_job: false });
   const [serviceTaskDropdown, setServiceTaskDropdown] = useState<IServiceTaskDropdown>({});
   const [beforeDeleteState, setBeforeDeleteState] = useState<TUpdateTaskTableState[] | null>(null);
@@ -119,8 +132,11 @@ const TaskPage: React.FC<Props> = ({
   const [incomingData, setIncomingData] = useState<{ data: TReceivedIntakeSummaryObj; action: string } | null>(null);
   // Table states
   const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
+  const [createTaskTableState, setCreateTaskTableState] = useState<TCreateTaskTableState[]>([]);
   // const [intakeTableState, setIntakeTableState] = useState<TIntakeTableState[]>([]);
   const [serviceTypeTaskDict, setServiceTypeTaskDict] = useState<TServiceTypeTaskDict | null>(null);
+
+  const [filterText, setFilterText] = useState('');
 
   let intakeJobsSearchInput = null; //this is for filter on antd table
 
@@ -273,35 +289,131 @@ const TaskPage: React.FC<Props> = ({
     return moment(b.createdAt).diff(moment(a.createdAt));
   };
 
+  const checkItemsHeight = useCallback(() => {
+    // IN MOBILE VIEW
+    if (currentPage === 'main') {
+      // In main view
+      if (intakeDict && Object.keys(intakeDict).length > 0) {
+        // contains item
+        if (Object.keys(intakeDict).length > 4) {
+          gsap.to('.task__table-wrapper', { maxHeight: '80rem', minHeight: '80rem' });
+        } else {
+          gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
+        }
+      } else {
+        // empty array
+        gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
+      }
+    } else {
+      // In update/create intake view
+      if (currentPage === 'create') {
+        if (createTaskTableState.length > 0) {
+          if (Object.keys(createTaskTableState).length > 2) {
+            gsap.to('.task__table-wrapper', { maxHeight: '80rem', minHeight: '80rem' });
+          } else {
+            gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 12rem)', maxHeight: 'calc(100vh - 12rem)' });
+          }
+        } else {
+          gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 12rem)', maxHeight: 'calc(100vh - 12rem)' });
+        }
+      } else {
+        gsap.to('.task__table-wrapper', { minHeight: '80rem', height: '80rem', maxHeight: '80rem' });
+      }
+    }
+  }, [currentPage, intakeDict, createTaskTableState]);
+
   const contextValue = useMemo(
     () => ({
-      incomingData,
-      setIncomingData,
       intakeDict,
+      filterText,
+      setFilterText,
+      incomingData,
+      checkItemsHeight,
+      setIncomingData,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
     }),
     [
-      incomingData,
-      setIncomingData,
       intakeDict,
+      filterText,
+      incomingData,
+      checkItemsHeight,
+      setFilterText,
+      setIncomingData,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
     ],
   );
 
+  const checkFilterString = (intakeChild: TIntakeTableState) => {
+    let date = moment(intakeChild.createdAt).format('DD-MM-YYYY');
+    let time = moment(intakeChild.createdAt).format('HH:mm A');
+    let listOfUsers = intakeChild.assign.reduce(
+      (finalString, assignChild) =>
+        (finalString += `${assignChild.user.first_name} ${emptyStringWhenUndefinedOrNull(assignChild.user.last_name)} ${
+          assignChild.user.username
+        } ${assignChild.user.role} `),
+      '',
+    );
+
+    // if filtertext has nothing straight return the whole array
+    if (filterText === '') return intakeChild;
+    var searchedText = filterText.toLowerCase();
+
+    var pattern = filterText
+      .split('')
+      .map((x) => {
+        return `(?=.*${x})`;
+      })
+      .join('');
+
+    var regex = new RegExp(`${pattern}`, 'g');
+
+    // basically if there's a result, it will return array instead of null
+    let regexBoolean =
+      intakeChild.bay.toLowerCase().match(regex) ||
+      intakeChild.description.toLowerCase().match(regex) ||
+      intakeChild.assign.length.toString().match(regex) ||
+      intakeChild.serviceType.toLowerCase().match(regex) ||
+      date.toLowerCase().match(regex) ||
+      listOfUsers.toLowerCase().match(regex) ||
+      time.toLowerCase().match(regex) ||
+      intakeChild.regNumber.toLowerCase().match(regex);
+
+    // if not return the filtered result
+    // if includes doesnt return result, it will fallback to regex to get better tweaked result
+    return (
+      regexBoolean ||
+      intakeChild.bay.toLowerCase().includes(searchedText) ||
+      intakeChild.description.toLowerCase().includes(searchedText) ||
+      intakeChild.assign.length.toString().includes(searchedText) ||
+      intakeChild.serviceType.toLowerCase().includes(searchedText) ||
+      date.toLowerCase().includes(searchedText) ||
+      listOfUsers.toLowerCase().includes(searchedText) ||
+      time.toLowerCase().includes(searchedText) ||
+      intakeChild.regNumber.toLowerCase().includes(searchedText)
+    );
+  };
   /* ================================================== */
   /*  components */
   /* ================================================== */
 
   let mobileSpecificIntakeLogsComponent = (
     <>
+      <Backdrop
+        show={startLogsAnimation}
+        backdropZIndex={1000}
+        clicked={() => {
+          setStartLogsAnimation(false);
+        }}
+      />
+
       <div className="updatespecificintake__logs--mobile">
         <div className="updatespecificintake__logs-title">
           <div>Intake History Logs</div>
-          <div className="updatespecificintake__logs-icon" onClick={() => setShowMobileHistoryLogs(false)}>
+          <div className="updatespecificintake__logs-icon" onClick={() => setStartLogsAnimation(false)}>
             <i className="fas fa-times-circle"></i>
           </div>
         </div>
@@ -314,7 +426,7 @@ const TaskPage: React.FC<Props> = ({
                     <div className="task__collapse-header-title">{child.title === '' ? '-' : child.title}</div>
                     <div className="task__collapse-header-time">
                       <i className="fas fa-clock"></i>
-                      {moment(child.created_at).format('HH:mm:A')}
+                      {moment(child.created_at).format('HH:mm')}
                     </div>
                   </div>
                 }
@@ -381,7 +493,6 @@ const TaskPage: React.FC<Props> = ({
             delete tempIntakeDict[destroyedIntakeId];
             setIntakeDict(tempIntakeDict); //update it
           } else {
-            console.log('IN COMING DATA', res);
             setIncomingData(res);
           }
         },
@@ -413,6 +524,7 @@ const TaskPage: React.FC<Props> = ({
   }, [serviceTypesArray]);
 
   useEffect(() => {
+    gsap.config({ nullTargetWarn: false });
     // onGetTasks();
     onGetIntakeStatus();
     onGetServiceTypes();
@@ -467,6 +579,15 @@ const TaskPage: React.FC<Props> = ({
       onSetSpecificIntakeLogs(null);
     }
   }, [currentPage, onSetSpecificIntakeLogs]);
+
+  useEffect(() => {
+    if (width <= 576) {
+      checkItemsHeight();
+    } else {
+      // IN DESKTOP VIEW
+      gsap.to('.task__table-wrapper', { minHeight: '70rem', maxHeight: '100vh' });
+    }
+  }, [width, checkItemsHeight]);
 
   useEffect(() => {
     if (successMessage) {
@@ -537,6 +658,19 @@ const TaskPage: React.FC<Props> = ({
     }
   }, [intakeDict, incomingData]);
 
+  useEffect(() => {
+    if (startLogsAnimation) {
+      gsap.fromTo('.updatespecificintake__logs--mobile', { width: 0, height: 0 }, { width: '90vw', height: '90vh' });
+    } else {
+      gsap.to('.updatespecificintake__logs--mobile', { opacity: 0, duration: 0.2, delay: 0.1 }); //wait 1 second
+      gsap.fromTo(
+        '.updatespecificintake__logs--mobile',
+        { width: '90vw', height: '90vh', overflow: 'hidden' },
+        { width: 0, height: 0, onComplete: () => setShowMobileHistoryLogs(false) },
+      );
+    }
+  }, [startLogsAnimation]);
+
   /* ================================================== */
   /* ================================================== */
 
@@ -545,7 +679,7 @@ const TaskPage: React.FC<Props> = ({
       {showMobileHistoryLogs && mobileSpecificIntakeLogsComponent}
       <NavbarComponent activePage="task" defaultOpenKeys="dashboard" />
       <Layout>
-        <LayoutComponent activeKey="accessory">
+        <LayoutComponent>
           <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
               {/* <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button> */}
@@ -594,11 +728,16 @@ const TaskPage: React.FC<Props> = ({
                             </Button>
                           )}
                         </div>
+
                         {/* -------------------- */}
                         {/*     Intake Table      */}
                         {/* -------------------- */}
 
                         <div className="task__table-wrapper">
+                          {/* -------------------- */}
+                          {/*     Search bar      */}
+                          {/* -------------------- */}
+
                           <div className="task__table-outerdiv">
                             <div className="task__table-parent">
                               <div className="task__table-div">
@@ -607,6 +746,8 @@ const TaskPage: React.FC<Props> = ({
                                     count={count}
                                     setCount={setCount}
                                     setCurrentPage={setCurrentPage}
+                                    createTaskTableState={createTaskTableState}
+                                    setCreateTaskTableState={setCreateTaskTableState}
                                     createIntakeJobsForm={createIntakeJobsForm}
                                     serviceTypeTaskDict={serviceTypeTaskDict}
                                     setServiceTypeTaskDict={setServiceTypeTaskDict}
@@ -614,21 +755,34 @@ const TaskPage: React.FC<Props> = ({
                                     setServiceTaskDropdown={setServiceTaskDropdown}
                                   />
                                 </div>
-                                <TaskPageContext.Provider value={contextValue}>
-                                  <MobileTaskTable />
-                                </TaskPageContext.Provider>
-                                <Table
-                                  bordered
-                                  className="task__table"
-                                  scroll={{ y: 600 }}
-                                  // components={components}
-                                  rowClassName={(record) => `intakesummary__row-${record.key}`}
-                                  dataSource={Object.values(
-                                    intakeDict,
-                                  ).sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
-                                  columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
-                                  pagination={false}
-                                />
+
+                                <div>
+                                  <div className="task__searchbar-div">
+                                    <Search
+                                      value={filterText}
+                                      suffix={<i className="fas fa-times-circle" onClick={() => setFilterText('')}></i>}
+                                      placeholder="Type here to filter"
+                                      onChange={(e) => setFilterText(e.target.value)}
+                                      onSearch={(value) => setFilterText(value)}
+                                      enterButton={<i className="fas fa-filter"></i>}
+                                    />
+                                  </div>
+                                  <TaskPageContext.Provider value={contextValue}>
+                                    <MobileTaskTable />
+                                  </TaskPageContext.Provider>
+                                  <Table
+                                    bordered
+                                    className="task__table"
+                                    scroll={{ y: 600 }}
+                                    // components={components}
+                                    rowClassName={(record) => `intakesummary__row-${record.key}`}
+                                    dataSource={Object.values(intakeDict)
+                                      .filter(checkFilterString)
+                                      .sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
+                                    columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
+                                    pagination={false}
+                                  />
+                                </div>
                                 <div className="task__specific-div task__specific-div--update">
                                   <UpdateSpecificIntake
                                     count={count}
@@ -643,6 +797,7 @@ const TaskPage: React.FC<Props> = ({
                                     serviceTaskDropdown={serviceTaskDropdown}
                                     setServiceTaskDropdown={setServiceTaskDropdown}
                                     setShowMobileHistoryLogs={setShowMobileHistoryLogs}
+                                    setStartLogsAnimation={setStartLogsAnimation}
                                   />
                                 </div>
                               </div>
@@ -667,7 +822,7 @@ const TaskPage: React.FC<Props> = ({
                                               </div>
                                               <div className="task__collapse-header-time">
                                                 <i className="fas fa-clock"></i>
-                                                {moment(child.created_at).format('HH:mm:A')}
+                                                {moment(child.created_at).format('HH:mm')}
                                               </div>
                                             </div>
                                           }
@@ -682,7 +837,7 @@ const TaskPage: React.FC<Props> = ({
                                             </div>
                                             <div className="task__collapse-row">
                                               <div className="task__collapse-row-label">Updated at:</div>
-                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm:A')}</div>
+                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm')}</div>
                                             </div>
                                           </section>
                                           <div className="task__collapse-row task__collapse-row--user">
