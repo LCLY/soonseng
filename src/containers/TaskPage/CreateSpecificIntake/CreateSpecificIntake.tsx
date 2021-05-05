@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { RootState } from 'src';
 import './CreateSpecificIntake.scss';
 /* components */
+import MobileServiceTable from '../MobileServiceTable/MobileServiceTable';
 /* 3rd party lib */
 import moment from 'moment';
 import gsap from 'gsap';
@@ -12,6 +13,7 @@ import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { IServiceTaskDropdown } from '../TaskPage';
 import * as actions from 'src/store/actions/index';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedUserInfoObj } from 'src/store/types/auth';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 import { IJobFormData, IIntakeJobsFormData, TServiceTypeTaskDict } from 'src/store/types/task';
@@ -27,9 +29,11 @@ interface CreateSpecificIntakeProps {
   setServiceTypeTaskDict: React.Dispatch<React.SetStateAction<TServiceTypeTaskDict | null>>;
   setServiceTaskDropdown: React.Dispatch<React.SetStateAction<IServiceTaskDropdown>>;
   setCurrentPage: React.Dispatch<React.SetStateAction<'main' | 'update' | 'create'>>;
+  createTaskTableState: TCreateTaskTableState[];
+  setCreateTaskTableState: React.Dispatch<React.SetStateAction<TCreateTaskTableState[]>>;
 }
 
-export type TTaskTableState = {
+export type TCreateTaskTableState = {
   key: number;
   taskId: string;
   taskType: string;
@@ -53,6 +57,8 @@ const CreateSpecificIntake: React.FC<Props> = ({
   serviceTypeTaskDict,
   serviceTaskDropdown,
   createIntakeJobsForm,
+  createTaskTableState,
+  setCreateTaskTableState,
   // beforeDeleteState,
   setServiceTaskDropdown,
   onCreateIntakeSummary,
@@ -61,7 +67,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
 
-  const [createTaskTableState, setCreateTaskTableState] = useState<TTaskTableState[]>([]);
+  const { width } = useWindowDimensions();
 
   const baysList = ['1', '2', '3', '4', '5', '6', '7', '8'];
   /* ================================================== */
@@ -180,7 +186,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
       editable: true,
       // sorter: (a: TTaskTableState, b: TTaskTableState) => a.taskType.localeCompare(b.taskType),
 
-      render: (_text: any, record: TTaskTableState) => {
+      render: (_text: any, record: TCreateTaskTableState) => {
         if (serviceTypesArray === null || serviceTypesArray === undefined) return;
 
         return (
@@ -238,7 +244,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
       width: 'auto',
       ellipsis: true,
       editable: true,
-      render: (_text: any, record: TTaskTableState) => {
+      render: (_text: any, record: TCreateTaskTableState) => {
         if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
           let dropdownArrayExist = Object.keys(serviceTaskDropdown[record.key]).length > 0;
           let dropdownArray = serviceTaskDropdown[record.key].serviceTaskDropdownArray;
@@ -314,8 +320,8 @@ const CreateSpecificIntake: React.FC<Props> = ({
       width: 'auto',
       ellipsis: true,
       editable: true,
-      // sorter: (a: TTaskTableState, b: TTaskTableState) => a.taskDescription.localeCompare(b.taskDescription),
-      render: (_text: any, record: TTaskTableState) => {
+      // sorter: (a: TCreateTaskTableState, b: TCreateTaskTableState) => a.taskDescription.localeCompare(b.taskDescription),
+      render: (_text: any, record: TCreateTaskTableState) => {
         return (
           <Form.Item
             // label="Description"
@@ -337,7 +343,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
       title: 'Actions',
       dataIndex: 'operation',
       width: '8rem',
-      render: (_: any, record: TTaskTableState) => {
+      render: (_: any, record: TCreateTaskTableState) => {
         // const editable = isEditing(record);
         return (
           <>
@@ -604,7 +610,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
             </section>
           </section>
           <section className="createspecificintake__section-bottom">
-            <div>
+            <div className="createspecificintake__section-bottom-innerdiv">
               <div className="createspecificintake__section-bottom-title-div">
                 <div className="createspecificintake__section-bottom-title">List of Services</div>
 
@@ -614,22 +620,23 @@ const CreateSpecificIntake: React.FC<Props> = ({
                   </span>
                 </div>
               </div>
-              <Table
-                bordered
-                // components={{
-                //   body: {
-                //     cell: EditableCell,
-                //   },
-                // }}
-                className="createspecificintake__table"
-                scroll={{ y: 300 }}
-                dataSource={createTaskTableState}
-                columns={taskColumnsSettings} //remove actions when its in edit mode
-                // columns={mergedColumns}
-                // rowClassName="editable-row"
-                // columns={convertHeader(taskColumns, setTaskColumns)}
-                pagination={false}
-              />
+              {width >= 576 ? (
+                <Table
+                  bordered
+                  className="createspecificintake__table"
+                  scroll={{ y: 300 }}
+                  dataSource={createTaskTableState}
+                  columns={taskColumnsSettings} //remove actions when its in edit mode
+                  pagination={false}
+                />
+              ) : (
+                <MobileServiceTable
+                  serviceTaskDropdown={serviceTaskDropdown}
+                  serviceTypeTaskDict={serviceTypeTaskDict}
+                  createTaskTableState={createTaskTableState}
+                  setCreateTaskTableState={setCreateTaskTableState}
+                />
+              )}
             </div>
             <div className="updatespecificintake__button-div-bottom">
               <Button

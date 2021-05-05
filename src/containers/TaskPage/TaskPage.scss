@@ -113,8 +113,14 @@
 
     &-wrapper {
       display: flex;
-      min-height: 70rem;
-      max-height: 100vh;
+      @include respond-to($small-phone) {
+      }
+      @include respond-to($phone-only) {
+      }
+      @include respond-to($tablet-portrait-up) {
+        min-height: 70rem;
+        max-height: 100vh;
+      }
     }
 
     &-div {

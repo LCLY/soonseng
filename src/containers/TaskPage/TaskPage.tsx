@@ -9,7 +9,9 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
-import CreateSpecificIntake from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
+import CreateSpecificIntake, {
+  TCreateTaskTableState,
+} from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
 import UpdateSpecificIntake, {
   TUpdateTaskTableState,
 } from 'src/containers/TaskPage//UpdateSpecificIntake/UpdateSpecificIntake';
@@ -130,13 +132,11 @@ const TaskPage: React.FC<Props> = ({
   const [incomingData, setIncomingData] = useState<{ data: TReceivedIntakeSummaryObj; action: string } | null>(null);
   // Table states
   const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
+  const [createTaskTableState, setCreateTaskTableState] = useState<TCreateTaskTableState[]>([]);
   // const [intakeTableState, setIntakeTableState] = useState<TIntakeTableState[]>([]);
   const [serviceTypeTaskDict, setServiceTypeTaskDict] = useState<TServiceTypeTaskDict | null>(null);
 
   const [filterText, setFilterText] = useState('');
-  // const [startShowFilterAnimation, setStartFilterAnimation] = useState(false)
-  // const [startHideFilterAnimation, setStartFilterAnimation] = useState(false)
-  // const [showFilterInput, setShowFilterInput] = useState(false);
 
   let intakeJobsSearchInput = null; //this is for filter on antd table
 
@@ -293,18 +293,34 @@ const TaskPage: React.FC<Props> = ({
     // IN MOBILE VIEW
     if (currentPage === 'main') {
       // In main view
-      if (intakeDict && Object.keys(intakeDict).length === 0) {
+      if (intakeDict && Object.keys(intakeDict).length > 0) {
+        // contains item
+        if (Object.keys(intakeDict).length > 4) {
+          gsap.to('.task__table-wrapper', { maxHeight: '80rem', minHeight: '80rem' });
+        } else {
+          gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
+        }
+      } else {
         // empty array
         gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
-      } else {
-        // contains item
-        gsap.to('.task__table-wrapper', { height: '80rem', maxHeight: '80rem', minHeight: 'calc(100vh - 20rem)' });
       }
     } else {
       // In update/create intake view
-      gsap.to('.task__table-wrapper', { minHeight: '100vh', maxHeight: '100vh' });
+      if (currentPage === 'create') {
+        if (createTaskTableState.length > 0) {
+          if (Object.keys(createTaskTableState).length > 2) {
+            gsap.to('.task__table-wrapper', { maxHeight: '80rem', minHeight: '80rem' });
+          } else {
+            gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 12rem)', maxHeight: 'calc(100vh - 12rem)' });
+          }
+        } else {
+          gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 12rem)', maxHeight: 'calc(100vh - 12rem)' });
+        }
+      } else {
+        gsap.to('.task__table-wrapper', { minHeight: '80rem', height: '80rem', maxHeight: '80rem' });
+      }
     }
-  }, [currentPage, intakeDict]);
+  }, [currentPage, intakeDict, createTaskTableState]);
 
   const contextValue = useMemo(
     () => ({
@@ -565,7 +581,7 @@ const TaskPage: React.FC<Props> = ({
   }, [currentPage, onSetSpecificIntakeLogs]);
 
   useEffect(() => {
-    if (width < 1200) {
+    if (width <= 576) {
       checkItemsHeight();
     } else {
       // IN DESKTOP VIEW
@@ -730,6 +746,8 @@ const TaskPage: React.FC<Props> = ({
                                     count={count}
                                     setCount={setCount}
                                     setCurrentPage={setCurrentPage}
+                                    createTaskTableState={createTaskTableState}
+                                    setCreateTaskTableState={setCreateTaskTableState}
                                     createIntakeJobsForm={createIntakeJobsForm}
                                     serviceTypeTaskDict={serviceTypeTaskDict}
                                     setServiceTypeTaskDict={setServiceTypeTaskDict}
