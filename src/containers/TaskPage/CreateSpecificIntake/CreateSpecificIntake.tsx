@@ -512,41 +512,45 @@ const CreateSpecificIntake: React.FC<Props> = ({
                   </div>
                 </Tooltip>
                 <div className="createspecificintake__box-right">
-                  <Form.Item
-                    name="intakeStatus"
-                    style={{ margin: 0 }}
-                    className="createspecificintake__form-item--intake"
-                    initialValue={intakeStatusArray?.filter((child) => child.title === 'Docked')[0].id}
-                    rules={[
-                      {
-                        required: true,
-                        message: `Please choose a status!`,
-                      },
-                    ]}
-                  >
-                    <Select
-                      showSearch
-                      placeholder="Select an intake status"
-                      optionFilterProp="children"
-                      // defaultValue={intakeStatusArray?.filter((child) => child.title === 'Docked')[0].id}
-                      className="createspecificintake__select"
-                      filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  {intakeStatusArray !== undefined && intakeStatusArray && (
+                    <Form.Item
+                      name="intakeStatus"
+                      style={{ margin: 0 }}
+                      className="createspecificintake__form-item--intake"
+                      initialValue={intakeStatusArray.filter((child) => child.title === 'Docked')[0].id}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please choose a status!`,
+                        },
+                      ]}
                     >
-                      <Option value="">Select a status</Option>
-                      {intakeStatusArray &&
-                        intakeStatusArray.map((intakeStatus) => {
-                          return (
-                            <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={intakeStatus.id}>
-                              {`${intakeStatus.title}${
-                                intakeStatus.description !== '' && intakeStatus.description !== null
-                                  ? ` - ${intakeStatus.description}`
-                                  : ''
-                              }`}
-                            </Option>
-                          );
-                        })}
-                    </Select>
-                  </Form.Item>
+                      <Select
+                        showSearch
+                        placeholder="Select an intake status"
+                        optionFilterProp="children"
+                        // defaultValue={intakeStatusArray?.filter((child) => child.title === 'Docked')[0].id}
+                        className="createspecificintake__select"
+                        filterOption={(input, option) =>
+                          option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        <Option value="">Select a status</Option>
+                        {intakeStatusArray &&
+                          intakeStatusArray.map((intakeStatus) => {
+                            return (
+                              <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={intakeStatus.id}>
+                                {`${intakeStatus.title}${
+                                  intakeStatus.description !== '' && intakeStatus.description !== null
+                                    ? ` - ${intakeStatus.description}`
+                                    : ''
+                                }`}
+                              </Option>
+                            );
+                          })}
+                      </Select>
+                    </Form.Item>
+                  )}
                 </div>
               </div>
 
