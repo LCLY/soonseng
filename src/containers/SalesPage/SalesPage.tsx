@@ -49,7 +49,6 @@ import {
   TReceivedChargesFeesObj,
 } from 'src/store/types/dashboard';
 import { SalesPageContext } from './SalesPageContext';
-import { afterSalesStrings, standardAccessories } from '../QuotationPage/QuotationPage';
 
 const { Step } = Steps;
 
@@ -72,13 +71,15 @@ const SalesPage: React.FC<Props> = ({
   bodyMakesArray,
   // salesBrandsArray,
   chargesFeesArray,
-  localOrdersDict,
+  localOrdersArray,
   lengthsCategoriesArray,
   generalAccessoriesArray,
   bodyRelatedAccessoriesArray,
   dimensionRelatedAccessoriesArray,
   //  Miscellaneous
   onClearSalesState,
+  onStoreLocalOrders,
+  onRemoveAnOrder,
   // API calls
   onGetSalesLengths,
   onGetChargesFees,
@@ -114,22 +115,18 @@ const SalesPage: React.FC<Props> = ({
     id: '',
     tireCount: -1,
     bodyObj: null,
-    discount: null,
     lengthObj: null,
-    generalAccessoriesArray: {},
-    dimensionRelatedAccessoriesArray: {},
-    bodyRelatedAccessoriesArray: {},
+    generalAccessoriesArray: [],
+    dimensionRelatedAccessoriesArray: [],
+    bodyRelatedAccessoriesArray: [],
     bodyMakeObj: null,
-    insuranceDict: null,
-    chargesFeesDict: {},
-    afterSalesStrings: afterSalesStrings,
-    standardAccessories: standardAccessories,
+    chargesFeesArray: [],
   });
 
   let totalAccessoriesArrayLength =
-    Object.values(currentOrderObj.generalAccessoriesArray).length +
-    Object.values(currentOrderObj.bodyRelatedAccessoriesArray).length +
-    Object.values(currentOrderObj.dimensionRelatedAccessoriesArray).length;
+    currentOrderObj.generalAccessoriesArray.length +
+    currentOrderObj.bodyRelatedAccessoriesArray.length +
+    currentOrderObj.dimensionRelatedAccessoriesArray.length;
 
   /** Current Steps of the antd steps component */
   const [currentStep, setCurrentStep] = useState(0);
@@ -154,7 +151,7 @@ const SalesPage: React.FC<Props> = ({
       currentOrderObj,
       bodiesArray,
       bodyMakesArray,
-      localOrdersDict,
+      localOrdersArray,
       lengthsCategoriesArray,
       generalAccessoriesArray,
       totalAccessoriesArrayLength,
@@ -167,6 +164,8 @@ const SalesPage: React.FC<Props> = ({
       setCurrentOrderObj,
       setCurrentBodyMake,
       setCurrentAccessory,
+      onRemoveAnOrder,
+      onStoreLocalOrders,
       onGetSalesBodies,
       onGetSalesLengths,
       onGetSalesBodyMakes,
@@ -189,7 +188,7 @@ const SalesPage: React.FC<Props> = ({
       // arrays
       bodiesArray,
       bodyMakesArray,
-      localOrdersDict,
+      localOrdersArray,
       lengthsCategoriesArray,
       generalAccessoriesArray,
       totalAccessoriesArrayLength,
@@ -204,6 +203,8 @@ const SalesPage: React.FC<Props> = ({
       setCurrentBodyMake,
       setCurrentAccessory,
       // Redux Actions
+      onRemoveAnOrder,
+      onStoreLocalOrders,
       onGetSalesBodies,
       onGetSalesLengths,
       onGetSalesBodyMakes,
@@ -444,7 +445,7 @@ interface StateProps {
   // length category object
   lengthsCategoriesArray?: TReceivedSalesLengthCategoryObj[] | null;
   // array for local orders
-  localOrdersDict?: { [key: string]: TLocalOrderObj };
+  localOrdersArray?: TLocalOrderObj[];
   // Bool for get api
   getSalesMakesSucceed?: boolean | null;
   getSalesLengthsSucceed?: boolean | null;
@@ -460,7 +461,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     // Arrays
     bodiesArray: state.sales.bodiesArray,
     bodyMakesArray: state.sales.bodyMakesArray,
-    localOrdersDict: state.sales.localOrdersDict,
+    localOrdersArray: state.sales.localOrdersArray,
     salesBrandsArray: state.sales.salesBrandsArray,
     chargesFeesArray: state.dashboard.chargesFeesArray,
     lengthsCategoriesArray: state.sales.lengthsCategoriesArray,
@@ -481,6 +482,8 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 
 interface DispatchProps {
   onClearSalesState: typeof actions.clearSalesState;
+  onRemoveAnOrder: typeof actions.removeAnOrder;
+  onStoreLocalOrders: typeof actions.storeLocalOrders;
   onGetSalesMakes: typeof actions.getSalesMakes;
   onGetSalesLengths: typeof actions.getSalesLengths;
   onGetSalesBodies: typeof actions.getSalesBodies;
@@ -495,9 +498,12 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetChargesFees: () => dispatch(actions.getChargesFees()),
     onGetSalesLengths: (tire) => dispatch(actions.getSalesLengths(tire)),
     onGetSalesMakes: (length_id, tire) => dispatch(actions.getSalesMakes(length_id, tire)),
+    onStoreLocalOrders: (localOrdersArray) => dispatch(actions.storeLocalOrders(localOrdersArray)),
     onGetSalesBodies: (length_id, tire) => dispatch(actions.getSalesBodies(length_id, tire)),
+    onRemoveAnOrder: (orderId, localOrdersArray) => dispatch(actions.removeAnOrder(orderId, localOrdersArray)),
     onGetSalesAccessories: (body_make_id) => dispatch(actions.getSalesAccessories(body_make_id)),
-    onGetSalesBodyMakes: (length_id, tire, body_id) => dispatch(actions.getSalesBodyMakes(length_id, tire, body_id)),
+    onGetSalesBodyMakes: (length_id, tire, body_id, auth_token) =>
+      dispatch(actions.getSalesBodyMakes(length_id, tire, body_id, auth_token)),
   };
 };
 

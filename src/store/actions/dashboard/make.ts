@@ -45,11 +45,18 @@ export const getBrandsFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Create Brand
 /* ------------------------------ */
-export const createBrand = (title: string, description: string): AppActions => {
+export const createBrand = (
+  title: string,
+  description: string,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_BRAND,
     title: title,
     description: description,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -76,12 +83,20 @@ export const createBrandFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Update Brand
 /* ------------------------------ */
-export const updateBrand = (brand_id: number, title: string, description: string): AppActions => {
+export const updateBrand = (
+  brand_id: number,
+  title: string,
+  description: string,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_BRAND,
     brand_id: brand_id,
     title: title,
     description: description,
+    imageTag: imageTag, //for upload images
+    imageFiles: imageFiles, //for upload images
   };
 };
 
@@ -275,10 +290,16 @@ export const deleteWheelbaseFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Create Make
 /* ------------------ */
-export const createMake = (createMakeData: TCreateMakeData): AppActions => {
+export const createMake = (
+  createMakeData: TCreateMakeData,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.CREATE_MAKE,
     createMakeData: createMakeData,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -333,10 +354,16 @@ export const getMakesFailed = (errorMessage: string): AppActions => {
 /* ------------------ */
 // Update Make
 /* ------------------ */
-export const updateMake = (updateMakeData: TUpdateMakeData): AppActions => {
+export const updateMake = (
+  updateMakeData: TUpdateMakeData,
+  imageTag: string | null,
+  imageFiles: FileList | null,
+): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKE,
     updateMakeData: updateMakeData,
+    imageTag: imageTag,
+    imageFiles: imageFiles,
   };
 };
 
@@ -524,18 +551,11 @@ export const clearMakeWheelbase = (): AppActions => {
 /* ----------------------------- */
 // Create Make Wheelbase(head)
 /* ----------------------------- */
-export const createMakeWheelbase = (
-  make_id: number,
-  wheelbase_id: number,
-  original: boolean,
-  extension_price: number,
-): AppActions => {
+export const createMakeWheelbase = (make_id: number, wheelbase_id: number): AppActions => {
   return {
     type: actionTypes.CREATE_MAKEWHEELBASE,
     make_id: make_id,
-    original: original,
     wheelbase_id: wheelbase_id,
-    extension_price: extension_price,
   };
 };
 
@@ -594,20 +614,12 @@ export const getMakeWheelbasesFailed = (errorMessage: string): AppActions => {
 /* -------------------------- */
 // Update Make Wheelbase
 /* -------------------------- */
-export const updateMakeWheelbase = (
-  make_wheelbase_id: number,
-  make_id: number,
-  wheelbase_id: number,
-  original: boolean,
-  extension_price: number,
-): AppActions => {
+export const updateMakeWheelbase = (make_wheelbase_id: number, make_id: number, wheelbase_id: number): AppActions => {
   return {
     type: actionTypes.UPDATE_MAKEWHEELBASE,
     make_wheelbase_id: make_wheelbase_id,
     make_id: make_id,
     wheelbase_id: wheelbase_id,
-    original: original,
-    extension_price: extension_price,
   };
 };
 

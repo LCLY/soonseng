@@ -2,7 +2,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import axios from 'axios';
-import { setPromiseError, getAxiosHeaderToken } from 'src/shared/Utils';
+import { setPromiseError, setAxiosHeaderToken } from 'src/shared/Utils';
 
 /* ================================================================== */
 //   Authentication
@@ -18,9 +18,9 @@ export function* signInSaga(action: AppActions) {
 
   let user = {};
 
-  if ('username' in action && 'password' in action) {
+  if ('email' in action && 'password' in action) {
     user = {
-      username: action.username,
+      email: action.email,
       password: action.password,
     };
   }
@@ -29,8 +29,7 @@ export function* signInSaga(action: AppActions) {
     let response = yield axios.post(url, { user });
     yield put(actions.signInSucceed(response.data.auth_token));
     // call get user info
-    localStorage.setItem('Authorization', response.data.auth_token);
-    yield put(actions.getUserInfo());
+    yield put(actions.getUserInfo(response.data.auth_token));
     // clear the catalog array when login succeed, so user will fetch new array according to their status
     yield put(actions.clearCatalogState());
   } catch (error) {
@@ -45,13 +44,16 @@ export function* signInSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get User Info
 /* ------------------------------- */
-export function* getUserInfoSaga(_action: AppActions) {
+export function* getUserInfoSaga(action: AppActions) {
   yield put(actions.getUserInfoStart());
+
+  // Setting Axios header token config
+  let config = setAxiosHeaderToken(action);
 
   let url = process.env.REACT_APP_API + `/get_user_info`;
 
   try {
-    let response = yield axios.get(url, getAxiosHeaderToken());
+    let response = yield axios.get(url, config);
 
     yield put(actions.getUserInfoSucceed(response.data.user));
 

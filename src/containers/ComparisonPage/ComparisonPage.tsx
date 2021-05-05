@@ -27,7 +27,7 @@ interface ComparisonPageProps {}
 
 type Props = ComparisonPageProps & StateProps & RouteComponentProps<{}, any, Location | any>;
 
-const ComparisonPage: React.FC<Props> = ({ location, localOrdersDict }) => {
+const ComparisonPage: React.FC<Props> = ({ location, localOrdersArray }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
@@ -180,12 +180,12 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersDict }) => {
     // e.g. /comparison?order1=blablabla&order2=blablabla
     const orderIdsFromUrl = queryString.parse(location.search);
 
-    if (localOrdersDict !== undefined) {
+    if (localOrdersArray !== undefined) {
       setFilteredLocalOrdersArray(
-        Object.values(localOrdersDict).filter((order) => Object.values(orderIdsFromUrl).includes(order.id)),
+        localOrdersArray.filter((order) => Object.values(orderIdsFromUrl).includes(order.id)),
       );
     }
-  }, [location.search, localOrdersDict]);
+  }, [location.search, localOrdersArray]);
 
   /* ================================================== */
   /* ================================================== */
@@ -466,9 +466,9 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersDict }) => {
                         </th>
                         {filteredLocalOrdersArray.map((order) => (
                           <td key={uuidv4()}>
-                            {Object.values(order.bodyRelatedAccessoriesArray).length +
-                              Object.values(order.generalAccessoriesArray).length +
-                              Object.values(order.dimensionRelatedAccessoriesArray).length}
+                            {order.bodyRelatedAccessoriesArray.length +
+                              order.generalAccessoriesArray.length +
+                              order.dimensionRelatedAccessoriesArray.length}
                             &nbsp;selected
                           </td>
                         ))}
@@ -534,7 +534,7 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersDict }) => {
                         {filteredLocalOrdersArray.map((order) => {
                           let totalAccessoriesPrice = 0;
                           // get total of general accessories
-                          let generalAccessoriesTotalPrice = Object.values(order.generalAccessoriesArray).reduce(
+                          let generalAccessoriesTotalPrice = order.generalAccessoriesArray.reduce(
                             (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
                               return currentTotal + accessoryObj.price;
                             },
@@ -542,17 +542,19 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersDict }) => {
                           );
 
                           // get total of body related accessories
-                          let bodyRelatedAccessoriesTotalPrice = Object.values(
-                            order.bodyRelatedAccessoriesArray,
-                          ).reduce((currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
-                            return currentTotal + accessoryObj.price;
-                          }, 0);
+                          let bodyRelatedAccessoriesTotalPrice = order.bodyRelatedAccessoriesArray.reduce(
+                            (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
+                              return currentTotal + accessoryObj.price;
+                            },
+                            0,
+                          );
                           // get total of dimension related accessories
-                          let dimensionRelatedAccessoriesTotalPrice = Object.values(
-                            order.dimensionRelatedAccessoriesArray,
-                          ).reduce((currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
-                            return currentTotal + dimensionAccessoryObj.price;
-                          }, 0);
+                          let dimensionRelatedAccessoriesTotalPrice = order.dimensionRelatedAccessoriesArray.reduce(
+                            (currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
+                              return currentTotal + dimensionAccessoryObj.price;
+                            },
+                            0,
+                          );
 
                           totalAccessoriesPrice =
                             generalAccessoriesTotalPrice +
@@ -642,11 +644,11 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersDict }) => {
 };
 
 interface StateProps {
-  localOrdersDict?: { [key: string]: TLocalOrderObj };
+  localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
-    localOrdersDict: state.sales.localOrdersDict,
+    localOrdersArray: state.sales.localOrdersArray,
   };
 };
 

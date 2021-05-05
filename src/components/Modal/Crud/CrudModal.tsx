@@ -2,14 +2,8 @@ import React from 'react';
 /* components */
 import MakeFormItems from 'src/components/Modal/Crud/FormItems/MakeFormItems';
 import FeesFormItems from 'src/components/Modal/Crud/FormItems/FeesFormItems';
-import UsersFormItems from 'src/components/Modal/Crud/FormItems/UsersFormItems';
-import BrandFormItems from 'src/components/Modal/Crud/FormItems/BrandFormItems';
-import RolesFormItems from 'src/components/Modal/Crud/FormItems/RolesFormItems';
 import SeriesFormItems from 'src/components/Modal/Crud/FormItems/SeriesFormItems';
 import BodyMakeFormItems from 'src/components/Modal/Crud/FormItems/BodyMakeFormItems';
-import IntakeStatusFormItems from 'src/components/Modal/Crud/FormItems/IntakeStatusFormItems';
-import TaskTitleFormItems from 'src/components/Modal/Crud/FormItems/TaskTitleFormItems';
-import ServiceTypesFormItems from 'src/components/Modal/Crud/FormItems/ServiceTypesFormItems';
 import AccessoryMakeFormItems from 'src/components/Modal/Crud/FormItems/AccessoryMakeFormItems';
 import BodyAccessoryFormItems from 'src/components/Modal/Crud/FormItems/BodyAccessoryFormItems';
 import MakeWheelbaseFormItems from 'src/components/Modal/Crud/FormItems/MakeWheelbaseFormItems';
@@ -69,20 +63,13 @@ export interface ICategory {
     | 'fees'
     | 'series'
     | 'make'
-    | 'roles'
-    | 'brand'
     | 'body'
     | 'make_wheelbase'
     | 'body_make'
-    | 'users'
     | 'accessory'
     | 'body_accessory'
     | 'body_make_accessory'
-    | 'wheelbase'
-    | 'task'
-    | 'task_title'
-    | 'intake_status'
-    | 'service_type';
+    | 'wheelbase';
 }
 
 const CrudModal: React.FC<Props> = ({
@@ -175,9 +162,22 @@ const CrudModal: React.FC<Props> = ({
           {category === 'series' && antdForm !== undefined && onFinish !== undefined && (
             <SeriesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
-          {category === 'make' && antdForm !== undefined && onFinish !== undefined && (
-            <MakeFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} isDashboard={isDashboard} />
-          )}
+          {category === 'make' &&
+            antdForm !== undefined &&
+            onFinish !== undefined &&
+            imagesPreviewUrls !== undefined &&
+            setImagesPreviewUrls !== undefined &&
+            setUploadSelectedFiles !== undefined && (
+              <MakeFormItems
+                crud={crud}
+                antdForm={antdForm}
+                onFinish={onFinish}
+                isDashboard={isDashboard}
+                imagesPreviewUrls={imagesPreviewUrls}
+                setImagesPreviewUrls={setImagesPreviewUrls}
+                setUploadSelectedFiles={setUploadSelectedFiles}
+              />
+            )}
           {category === 'make_wheelbase' && antdForm !== undefined && onFinish !== undefined && (
             <MakeWheelbaseFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
@@ -220,25 +220,6 @@ const CrudModal: React.FC<Props> = ({
           )}
           {category === 'body_make_accessory' && antdForm !== undefined && onFinish !== undefined && (
             <BodyMakeAccessoryFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
-          )}
-
-          {category === 'intake_status' && antdForm !== undefined && onFinish !== undefined && (
-            <IntakeStatusFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
-          )}
-          {category === 'service_type' && antdForm !== undefined && onFinish !== undefined && (
-            <ServiceTypesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
-          )}
-          {category === 'task_title' && antdForm !== undefined && onFinish !== undefined && (
-            <TaskTitleFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
-          )}
-          {category === 'users' && antdForm !== undefined && onFinish !== undefined && (
-            <UsersFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
-          )}
-          {category === 'roles' && antdForm !== undefined && onFinish !== undefined && (
-            <RolesFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
-          )}
-          {category === 'brand' && antdForm !== undefined && onFinish !== undefined && (
-            <BrandFormItems crud={crud} antdForm={antdForm} onFinish={onFinish} />
           )}
         </Modal>
       )}

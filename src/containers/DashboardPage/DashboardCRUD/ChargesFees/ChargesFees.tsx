@@ -242,7 +242,6 @@ const ChargesFees: React.FC<Props> = ({
         duration: 2.5,
         description: errorMessage,
       });
-      onClearDashboardState()
     }
   }, [errorMessage, onClearDashboardState]);
 

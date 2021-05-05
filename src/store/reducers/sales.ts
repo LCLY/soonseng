@@ -22,8 +22,8 @@ const initialState: SalesInitialState = {
   // brands/makes
   salesBrandObj: null,
   salesBrandsArray: null,
-  // local orders dict containing multiple objects inside
-  localOrdersDict: {},
+  // local orders array containing multiple objects inside
+  localOrdersArray: [],
   // others
   errorMessage: null,
   successMessage: null,
@@ -56,11 +56,25 @@ const clearSalesState = (state: SalesInitialState, _action: AppActions) => {
 /* ------------------------------- */
 // Store local orders
 /* ------------------------------- */
-
-export const setLocalOrdersDict = (state: SalesInitialState, action: AppActions) => {
-  if ('localOrdersDict' in action) {
+export const storeLocalOrders = (state: SalesInitialState, action: AppActions) => {
+  if ('localOrdersArray' in action) {
     return updateObject(state, {
-      localOrdersDict: action.localOrdersDict,
+      localOrdersArray: action.localOrdersArray,
+    });
+  }
+  return state;
+};
+/* ------------------------------- */
+// Remove a local order
+/* ------------------------------- */
+// Take the index and use that index to remove item from the localOrdersArray
+export const removeAnOrder = (state: SalesInitialState, action: AppActions) => {
+  if ('orderId' in action && 'localOrdersArray' in action) {
+    let deletedLocalOrdersArray = action.localOrdersArray.filter(
+      (localOrderObj) => action.orderId !== localOrderObj.id,
+    );
+    return updateObject(state, {
+      localOrdersArray: deletedLocalOrdersArray,
     });
   }
   return state;
@@ -228,9 +242,11 @@ const reducer: Reducer<SalesInitialState, AppActions> = (state = initialState, a
     // Local Quotation/Orders
     /* =================================== */
     //  Store local orders
-    case actionTypes.SET_LOCAL_ORDERS_DICT:
-      return setLocalOrdersDict(state, action);
-
+    case actionTypes.STORE_LOCAL_ORDERS:
+      return storeLocalOrders(state, action);
+    //  Remove a local order
+    case actionTypes.REMOVE_AN_ORDER:
+      return removeAnOrder(state, action);
     /* =================================== */
     //  Lengths
     /* =================================== */

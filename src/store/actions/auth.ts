@@ -28,10 +28,10 @@ export const assignAccess = (accessObj: TUserAccess): AppActions => {
 /* ------------------------------------------- */
 // Sign in
 /* ------------------------------------------- */
-export const signIn = (username: string, password: string): AppActions => {
+export const signIn = (email: string, password: string): AppActions => {
   return {
     type: actionTypes.SIGN_IN,
-    username: username,
+    email: email,
     password: password,
   };
 };
@@ -67,9 +67,10 @@ export const signOut = (): AppActions => {
 /* ------------------------------------------- */
 // Get User Info
 /* ------------------------------------------- */
-export const getUserInfo = (): AppActions => {
+export const getUserInfo = (auth_token: string | null): AppActions => {
   return {
     type: actionTypes.GET_USER_INFO,
+    auth_token: auth_token,
   };
 };
 

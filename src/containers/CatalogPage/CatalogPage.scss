@@ -16,7 +16,6 @@
   }
   &__outerdiv {
     display: block;
-    min-height: 100vh;
     padding-top: 7.6rem; //height of navbar
     @include respond-to($small-phone) {
       padding-top: 5rem; //height of navbar
@@ -30,18 +29,6 @@
     @include respond-to($small-phone) {
       padding: 2rem 0 2rem 0;
     }
-
-    &-makelist {
-      @include respond-to($small-phone) {
-        display: none;
-      }
-      @include respond-to($phone-only) {
-        display: none;
-      }
-      @include respond-to($tablet-landscape-up) {
-        display: block;
-      }
-    }
   }
 
   // div wrapping the steps and the content
@@ -49,6 +36,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    // padding-bottom: 10%;
   }
 
   /* ======================= */
@@ -69,7 +57,6 @@
         flex-direction: column;
         padding: 0 0 2rem 0;
       }
-
       @include respond-to($phone-only) {
         display: flex;
         flex-direction: column;
@@ -93,7 +80,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
 
         & .ant-empty-description {
@@ -109,23 +96,18 @@
 
         @include respond-to($small-phone) {
           min-height: 70vh;
-          // padding: 0 0.5rem 1rem 0.5rem;
+          padding: 0 0.5rem 1rem 0.5rem;
         }
 
         @include respond-to($phone-only) {
-          min-height: 50rem;
-          // padding: 2rem 2rem 0 2rem;
+          min-height: 80rem;
+          padding: 2rem 2rem 0 2rem;
         }
 
         @include respond-to($tablet-portrait-up) {
           padding: 2rem;
         }
         @include customScrollbar(0.2rem, 0.2rem, 1rem, white, rgba(255, 255, 255, 0.604));
-
-        // center empty icon in the middle
-        &--empty {
-          align-items: center;
-        }
       }
 
       &-outerdiv {
@@ -147,120 +129,65 @@
       }
     }
   }
-  &__row {
-    &-div {
-      display: flex;
-      cursor: pointer;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid white;
-      transition: all 0.5s ease;
-      padding: 0.8rem;
-      color: white;
-      width: 20rem;
-
-      /* ======================== */
-      // Shiny effect
-      /* ======================== */
-
-      text-decoration: none;
-      transition: all 0.2s ease-in-out;
-      position: relative;
-      overflow: hidden;
-
-      &:before {
-        content: '';
-        background-color: rgba(255, 255, 255, 0.5);
-        height: 100%;
-        width: 3em;
-        display: block;
-        position: absolute;
-        top: 0;
-        left: -4.5em;
-        transform: skewX(-45deg) translateX(0);
-        transition: none;
-      }
-      &:hover {
-        background: rgba($primary-color-3, 0.25);
-        color: #fff;
-        &:before {
-          transform: skewX(-45deg) translateX(30rem);
-          transition: all 0.5s ease-in-out;
-        }
-      }
-
-      &-parent {
-        &:first-child {
-          border-top: 1px solid white;
-        }
-        position: relative;
-
-        & .active {
-          background: rgba($primary-color-4, 0.5);
-          pointer-events: none;
-        }
-      }
-    }
-  }
 
   /* ============================== */
   // Every grid within the series section
   /* ============================== */
-  // &__grid {
-  //   width: 100%;
-  //   height: 100%;
-  //   align-items: center;
-  //   justify-content: center;
-  //   justify-items: center;
+  &__grid {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
 
-  //   display: grid;
-  //   // grid-auto-rows: 20rem; //height of each row
-  //   margin-bottom: auto;
+    display: grid;
+    // grid-auto-rows: 20rem; //height of each row
+    margin-bottom: auto;
 
-  //   @include respond-to($phone-only) {
-  //     padding: 0;
-  //     grid-gap: 1rem;
-  //     grid-template-columns: repeat(2, 1fr);
-  //     grid-auto-rows: 30vw; //height of each row
-  //   }
+    @include respond-to($phone-only) {
+      padding: 0;
+      grid-gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 30vw; //height of each row
+    }
 
-  //   @include respond-to($tablet-portrait-up) {
-  //     grid-gap: 2rem;
-  //     grid-template-columns: repeat(2, 1fr);
-  //     grid-auto-rows: 25vw; //height of each row
-  //   }
-  //   @include respond-to($tablet-landscape-up) {
-  //     grid-gap: 2rem;
-  //     grid-auto-rows: 18vw; //height of each row
-  //     grid-template-columns: repeat(3, 1fr);
-  //   }
-  //   @include respond-to($desktop-up) {
-  //     grid-gap: 2rem;
-  //     grid-auto-rows: 14vw; //height of each row
-  //   }
+    @include respond-to($tablet-portrait-up) {
+      grid-gap: 2rem;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 25vw; //height of each row
+    }
+    @include respond-to($tablet-landscape-up) {
+      grid-gap: 2rem;
+      grid-auto-rows: 18vw; //height of each row
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @include respond-to($desktop-up) {
+      grid-gap: 2rem;
+      grid-auto-rows: 14vw; //height of each row
+    }
 
-  //   @include respond-to($small-phone) {
-  //     grid-gap: 1rem;
-  //     padding: 0;
-  //     grid-template-columns: repeat(2, 1fr);
-  //     grid-auto-rows: 30vw; //height of each row
-  //   }
+    @include respond-to($small-phone) {
+      grid-gap: 1rem;
+      padding: 0;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 30vw; //height of each row
+    }
 
-  //   /* ============================================ */
-  //   // number of columns when the array is odd number and last index
-  //   /* ============================================ */
-  //   &--full {
-  //     @include respond-to($phone-only) {
-  //       grid-template-columns: repeat(2, 1fr);
-  //     }
-  //     @include respond-to($tablet-portrait-up) {
-  //       grid-template-columns: repeat(2, 1fr);
-  //     }
-  //     @include respond-to($tablet-landscape-up) {
-  //       grid-template-columns: repeat(4, 1fr);
-  //     }
-  //   }
-  // }
+    /* ============================================ */
+    // number of columns when the array is odd number and last index
+    /* ============================================ */
+    &--full {
+      @include respond-to($phone-only) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @include respond-to($tablet-portrait-up) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @include respond-to($tablet-landscape-up) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  }
 
   &__banner {
     width: 100%;
@@ -283,243 +210,144 @@
     }
   }
 
-  /* =================================== */
-  // the dropdown for series
-  /* =================================== */
-  &__dropdown {
-    &-more {
-      z-index: 2;
-      cursor: pointer;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 1rem;
-      font-size: 1.2rem;
-      background: white;
-      border: 1px solid transparent !important;
-      color: black !important;
-      margin-bottom: 0.3rem;
-      @include shadow-func(0, 0, 0.5rem, 0.2rem, rgba(0, 0, 0, 0.2));
-      @include respond-to($small-phone) {
-        width: 2rem;
-        height: 2rem;
-        font-size: 1rem;
-      }
-
-      &:hover {
-        transition: all 0.5s ease;
-        border: 1px solid white !important;
-        color: white !important;
-        background: $primary-color-4;
-      }
-      &:active {
-        transition: all 0.2s ease;
-        background: white;
-      }
-
-      &--make {
-        top: 50%;
-        right: 1rem;
-        position: absolute;
-        transform: translateY(-50%);
-      }
-
-      /* ----------------------------------------------- */
-      // variation of the dropdown for each make card
-      /* ----------------------------------------------- */
-      // &--make {
-      //   position: absolute;
-      //   top: 1rem;
-      //   right: 1rem;
-      //   z-index: 2;
-      //   background: white;
-      //   color: $primary-color-4;
-      //   border: 2px solid rgba(204, 204, 204, 1);
-
-      //   &:hover {
-      //     transition: all 0.5s ease;
-      //     border: 1px solid white;
-      //     color: white;
-      //     background: darken($primary-color-3, 5%);
-      //   }
-      //   &:active {
-      //     transition: none;
-      //     background: $primary-color-2;
-      //   }
-      // }
-
-      &--image {
-        position: absolute;
-        top: 1rem;
-        right: 5rem;
-        z-index: 2;
-        background: white;
-        color: $primary-color-4;
-        border: 2px solid rgba(204, 204, 204, 1);
-
-        &:hover {
-          transition: all 0.5s ease;
-          border: 1px solid white;
-          color: white;
-          background: darken($primary-color-3, 5%);
-        }
-        &:active {
-          transition: none;
-          background: $primary-color-2;
-        }
-      }
-
-      &--disabled {
-        pointer-events: none;
-        opacity: 0;
-      }
-    }
-  }
-
   /* ====================== */
   // Card
   /* ====================== */
-  // &__card {
-  //   width: 100%;
-  //   height: 100%;
-  //   position: relative;
-  //   z-index: 1;
-  //   border: 1px solid rgba(255, 255, 255, 0.452);
-  //   overflow: hidden;
+  &__card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.452);
+    overflow: hidden;
 
-  //   &-outerdiv {
-  //     width: 100%;
-  //     height: 100%;
-  //     position: relative;
-  //     z-index: 1;
-  //   }
+    &-outerdiv {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
 
-  //   /* =========================== */
-  //   // the image of the card
-  //   /* =========================== */
-  //   &-image {
-  //     left: 50%;
-  //     top: 50%;
-  //     position: absolute;
-  //     object-fit: cover;
-  //     color: white !important;
-  //     border-radius: 50%;
-  //     z-index: 2;
-  //     transform: translate(-50%, -50%);
-  //     @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(255, 255, 255, 0.219));
+    /* =========================== */
+    // the image of the card
+    /* =========================== */
+    &-image {
+      left: 50%;
+      top: 50%;
+      position: absolute;
 
-  //     &--skeleton {
-  //       width: 100% !important;
-  //       height: 100% !important;
-  //       background: darken($primary-color-4, 6%) !important;
-  //     }
+      object-fit: cover;
+      color: white !important;
+      border-radius: 50%;
+      z-index: 2;
+      transform: translate(-50%, -50%);
+      @include shadow-func(0, 0.1rem, 0.5rem, 0.1rem, rgba(255, 255, 255, 0.219));
 
-  //     & .ant-skeleton-image-svg {
-  //       width: 5rem !important;
-  //       height: 5rem !important;
+      &--skeleton {
+        width: 100% !important;
+        height: 100% !important;
+        background: darken($primary-color-4, 6%) !important;
+      }
 
-  //       @include respond-to($small-phone) {
-  //         width: 3rem !important;
-  //         height: 3rem !important;
-  //       }
+      & .ant-skeleton-image-svg {
+        width: 5rem !important;
+        height: 5rem !important;
 
-  //       @include respond-to($desktop-up) {
-  //         width: 7vw !important;
-  //         height: 7vh !important;
-  //       }
-  //     }
+        @include respond-to($small-phone) {
+          width: 3rem !important;
+          height: 3rem !important;
+        }
 
-  //     & .ant-skeleton-image-path {
-  //       fill: rgb(201, 197, 197) !important;
-  //     }
+        @include respond-to($desktop-up) {
+          width: 7vw !important;
+          height: 7vh !important;
+        }
+      }
 
-  //     // the width and height
-  //     @include respond-to($small-phone) {
-  //       width: 25vw !important;
-  //       height: 25vw !important;
-  //     }
-  //     @include respond-to($phone-only) {
-  //       width: 25vw !important;
-  //       height: 25vw !important;
-  //     }
-  //     @include respond-to($tablet-portrait-up) {
-  //       width: 20vw !important;
-  //       height: 20vw !important;
-  //     }
-  //     @include respond-to($tablet-landscape-up) {
-  //       width: 15vw !important;
-  //       height: 15vw !important;
-  //     }
-  //     @include respond-to($desktop-up) {
-  //       width: 12vw !important;
-  //       height: 12vw !important;
-  //     }
-  //     @include respond-to($big-desktop-up) {
-  //       width: 10vw !important;
-  //       height: 10vw !important;
-  //     }
+      & .ant-skeleton-image-path {
+        fill: rgb(201, 197, 197) !important;
+      }
 
-  //     // blur bg for the image
-  //     &-blurbg {
-  //       z-index: 1;
-  //       position: absolute;
-  //       height: 100%;
-  //       width: 100%;
-  //       top: 0;
-  //       left: 0;
-  //       /* Add the blur effect */
-  //       filter: blur(6px);
-  //       -webkit-filter: blur(6px);
+      // the width and height
+      @include respond-to($small-phone) {
+        width: 25vw !important;
+        height: 25vw !important;
+      }
+      @include respond-to($phone-only) {
+        width: 25vw !important;
+        height: 25vw !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        width: 20vw !important;
+        height: 20vw !important;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 15vw !important;
+        height: 15vw !important;
+      }
+      @include respond-to($desktop-up) {
+        width: 12vw !important;
+        height: 12vw !important;
+      }
+      @include respond-to($big-desktop-up) {
+        width: 10vw !important;
+        height: 10vw !important;
+      }
 
-  //       /* Center and scale the image nicely */
-  //       background-position: center;
-  //       background-repeat: no-repeat;
-  //       background-size: cover;
-  //     }
-  //   }
-  //   cursor: pointer;
-  //   &:hover {
-  //     transition: all 0.1s;
-  //     @include shadow-func(0, 0.1rem, 1.5rem, 0.8rem, rgba($primary-color-1, 0.5));
-  //   }
+      // blur bg for the image
+      &-blurbg {
+        z-index: 1;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        /* Add the blur effect */
+        filter: blur(6px);
+        -webkit-filter: blur(6px);
 
-  //   /* ------------------------ */
-  //   // label for make title
-  //   /* ------------------------ */
-  //   // &-label {
-  //   //   position: absolute;
-  //   //   color: white;
-  //   //   bottom: 1rem;
-  //   //   right: -0.8rem;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    }
+    cursor: pointer;
+    &:hover {
+      transition: all 0.1s;
+      @include shadow-func(0, 0.1rem, 1.5rem, 0.8rem, rgba($primary-color-1, 0.5));
+    }
 
-  //   //   border-left: 0.5rem solid white;
-  //   //   border-top-left-radius: 5rem;
-  //   //   z-index: 2;
-  //   //   padding: 0.5rem 2rem 0.5rem 2.5rem;
-  //   //   background: rgba(rgb(181, 21, 21), 0.7);
-  //   //   @include shadow-func(0rem, 0rem, 0.5rem, 0.05rem, rgba(255, 255, 255, 0.583));
+    /* ------------------------ */
+    // label for make title
+    /* ------------------------ */
+    &-label {
+      position: absolute;
+      color: white;
+      bottom: 1rem;
+      right: -0.8rem;
 
-  //   //   @include respond-to($small-phone) {
-  //   //     font-size: 0.8rem;
-  //   //     padding: 0.2rem 0.5rem 0.2rem 1.5rem;
-  //   //     right: -0.3rem;
-  //   //   }
-  //   //   @include respond-to($phone-only) {
-  //   //     font-size: 1.2rem;
-  //   //   }
+      border-left: 0.5rem solid white;
+      border-top-left-radius: 5rem;
+      z-index: 2;
+      padding: 0.5rem 2rem 0.5rem 2.5rem;
+      background: rgba(rgb(181, 21, 21), 0.7);
+      @include shadow-func(0rem, 0rem, 0.5rem, 0.05rem, rgba(255, 255, 255, 0.583));
 
-  //   //   @include respond-to($desktop-up) {
-  //   //     font-size: 1.5rem;
-  //   //   }
-  //   // }
+      @include respond-to($small-phone) {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.5rem 0.2rem 1.5rem;
+        right: -0.3rem;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.2rem;
+      }
 
-  //   & .ant-carousel {
-  //     height: '100%' !important;
-  //   }
-  // }
+      @include respond-to($desktop-up) {
+        font-size: 1.5rem;
+      }
+    }
+  }
 
   /* =================== */
   // The brand title
@@ -590,12 +418,6 @@
   // the series title
   /* ==================== */
   &__series {
-    &-outerdiv {
-      display: flex;
-      width: 100%;
-      height: 100%;
-    }
-
     &-title {
       display: flex;
       align-items: center;
@@ -637,10 +459,6 @@
         align-items: center;
       }
     }
-    &-bgcover {
-      border-radius: 1rem !important;
-      background-image: radial-gradient(rgba(0, 0, 0, 0.193) 30%, rgb(38, 38, 38));
-    }
 
     &-top {
       /* --------------------------------------------------------- */
@@ -661,232 +479,6 @@
         }
         @include respond-to($tablet-landscape-up) {
           margin: 0 2rem;
-        }
-      }
-    }
-
-    &-image {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-      border-radius: 1rem;
-      &--placeholder {
-        height: auto;
-      }
-
-      &-div {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 60rem;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 5px 5px 15px 0.5px rgba(0, 0, 0, 0.6);
-        &--placeholder {
-          padding: 0 5rem;
-        }
-
-        @include respond-to($small-phone) {
-          margin-right: 0;
-        }
-        @include respond-to($phone-only) {
-          margin-right: 0;
-        }
-        @include respond-to($tablet-landscape-up) {
-          margin-right: 2rem;
-        }
-        @include respond-to($desktop-up) {
-          margin-right: 5rem;
-        }
-      }
-    }
-
-    &-overlay {
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      border-radius: 1rem 0 0 1rem;
-
-      @include respond-to($small-phone) {
-        width: 100%;
-
-        background: rgba(0, 0, 0, 0.4);
-      }
-      @include respond-to($phone-only) {
-        width: 40%;
-        min-width: 30rem;
-        background: rgba(0, 0, 0, 0.8);
-      }
-    }
-
-    &-content {
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      border-radius: 1rem;
-      overflow: hidden;
-      padding: 2rem;
-      word-wrap: break-word;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      @include customScrollbar();
-
-      @include respond-to($small-phone) {
-        width: 100%;
-      }
-      @include respond-to($phone-only) {
-        width: 40%;
-        min-width: 30rem;
-      }
-
-      & h2 {
-        color: white;
-        font-weight: bolder;
-        font-size: 2.5rem;
-        margin: 0;
-        font-family: $font-bebasneue;
-
-        @include respond-to($small-phone) {
-          display: none;
-        }
-        @include respond-to($phone-only) {
-          display: none;
-        }
-        @include respond-to($tablet-landscape-up) {
-          display: block;
-        }
-      }
-
-      &-select {
-        color: white !important;
-        font-weight: bolder !important;
-        font-size: 2.5rem !important;
-        margin: 0 !important;
-        font-family: $font-bebasneue !important;
-        width: 100%;
-
-        @include respond-to($small-phone) {
-          display: block !important;
-        }
-        @include respond-to($phone-only) {
-          display: block !important;
-        }
-        @include respond-to($tablet-landscape-up) {
-          display: none !important;
-        }
-
-        & .ant-select-selector {
-          color: white !important;
-          background: $form-items-grey !important;
-          height: 100% !important;
-        }
-        & .ant-select-selection-search-input {
-          height: 100% !important;
-          width: 100% !important;
-        }
-
-        & .ant-select-selection-item {
-          display: flex;
-          align-items: center;
-        }
-        & .ant-select-arrow {
-          color: white !important;
-        }
-
-        &
-          .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
-          .ant-select-selector {
-          border-color: rgba(255, 255, 255, 0.618) !important;
-        }
-
-        /* ---------------------- */
-        // disabled select dropdown styling
-        /* ---------------------- */
-        &--disabled {
-          & .ant-select-selector {
-            color: rgb(138, 138, 138) !important;
-            background: rgb(47, 47, 48) !important;
-            height: 100% !important;
-          }
-        }
-      }
-
-      /* ========================= */
-      // the title div
-      /* ========================= */
-      &-title {
-        display: flex;
-        text-align: center;
-        align-items: center;
-        padding: 0.5rem 0;
-      }
-
-      /* ======================== */
-      // the red line
-      /* ======================== */
-      &-line {
-        border-top: 3px solid $soft-red;
-      }
-
-      /* ======================== */
-      // each row of stats
-      /* ======================== */
-      &-row {
-        display: flex;
-        font-size: 1.5rem;
-        font-family: $font-firesans;
-
-        &-label {
-          padding-left: 1rem;
-          background: $soft-red;
-          width: 13rem;
-          // border-bottom: 1px solid white;
-          // border-right: 1px solid white;
-
-          &--price {
-            background: white;
-            color: $soft-red;
-          }
-        }
-
-        &-info {
-          color: white;
-          border-bottom: 1px solid white;
-          text-align: center;
-          width: calc(100% - 13rem);
-
-          &--price {
-            font-weight: bolder;
-            font-family: $font-opensans;
-          }
-        }
-      }
-
-      /* =============================== */
-      // the go to model button
-      /* =============================== */
-      &-button {
-        cursor: pointer;
-        border: 1px solid white;
-        padding: 0.5rem 2rem;
-        @include sheenEffect(rgba(255, 255, 255, 0.205));
-        // margin-bottom: 1rem;
-        &:hover {
-          background: rgba(255, 255, 255, 0.323);
-        }
-        &:active {
-          background: none;
-        }
-        &-div {
-          display: flex;
-          justify-content: flex-end;
-          padding-bottom: 1rem;
         }
       }
     }
@@ -938,7 +530,6 @@
       white-space: nowrap;
       background: rgba(255, 255, 255, 0.233);
       background: linear-gradient(to right, rgba(153, 153, 153, 0.85), rgba(197, 197, 197, 0.124));
-      @include sheenEffect(rgba(255, 255, 255, 0.205));
 
       &:hover {
         transition: all 0.5s ease;
@@ -962,20 +553,6 @@
         margin-left: 1rem;
         margin-right: 1rem;
       }
-
-      &--addmodel {
-        margin: 0.5rem 0 0 0;
-      }
-
-      &--brand {
-        padding-top: 1.3rem;
-        padding-bottom: 1.3rem;
-        margin: 1rem 0 0 0;
-      }
-    }
-
-    &-sheen {
-      @include sheenEffect(rgba(255, 255, 255, 0.205));
     }
 
     /* --------------------- */
@@ -1004,6 +581,68 @@
       }
       @include respond-to($desktop-up) {
         display: block;
+      }
+    }
+  }
+
+  /* =================================== */
+  // the dropdown for series
+  /* =================================== */
+  &__dropdown {
+    &-series {
+      cursor: pointer;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 1rem;
+      font-size: 1.2rem;
+      background: white;
+      border: 1px solid transparent !important;
+      color: black !important;
+      margin-bottom: 0.3rem;
+      @include shadow-func(0, 0, 0.5rem, 0.2rem, rgba(0, 0, 0, 0.2));
+      @include respond-to($small-phone) {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+      }
+
+      &:hover {
+        transition: all 0.5s ease;
+        border: 1px solid white !important;
+        color: white !important;
+        background: $primary-color-4;
+      }
+      &:active {
+        transition: all 0.2s ease;
+        background: white;
+      }
+
+      /* ----------------------------------------------- */
+      // variation of the dropdown for each make card
+      /* ----------------------------------------------- */
+      &--make {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+        background: white;
+        color: $primary-color-4;
+        border: 2px solid rgba(204, 204, 204, 1);
+
+        &:hover {
+          transition: all 0.5s ease;
+          border: 1px solid white;
+          color: white;
+          background: darken($primary-color-3, 5%);
+        }
+        &:active {
+          transition: none;
+          background: $primary-color-2;
+        }
       }
     }
   }
@@ -1055,19 +694,16 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      width: 100% !important;
-
       @include respond-to($small-phone) {
         font-size: 1.7rem;
       }
     }
     &-outerdiv {
-      padding: 1rem !important;
       & .ant-tabs-nav-wrap {
         color: white;
-        // padding: 0 3rem !important;
+        padding: 0 3rem !important;
         @include respond-to($small-phone) {
-          // padding: 0 1.5rem !important;
+          padding: 0 1.5rem !important;
         }
       }
       & .ant-tabs-tab {
@@ -1134,23 +770,6 @@
             padding: 0.5rem 1.5rem !important;
             min-width: 10rem !important;
           }
-        }
-
-        & > .ant-tabs-nav > .ant-tabs-nav-wrap {
-          @include respond-to($small-phone) {
-            display: flex !important;
-          }
-
-          @include respond-to($phone-only) {
-            display: flex !important;
-          }
-          @include respond-to($tablet-portrait-up) {
-            flex: none !important;
-          }
-        }
-
-        & .ant-tabs-tab-btn {
-          width: 100% !important;
         }
       }
     }

@@ -40,15 +40,19 @@ export const findByTestAttribute = (component: any, attribute: string) => {
 /**
  * Setting token into the header config for axios
  * If user is not authenticated, the bearer token will become Bearer null
+ * @param {AppActions} action
  * @return {*}
  */
 /* ========================================== */
-export const getAxiosHeaderToken = () => {
-  let config = {
-    headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('Authorization'),
-    },
-  };
+export const setAxiosHeaderToken = (action: AppActions) => {
+  let config = {};
+  if ('auth_token' in action) {
+    config = {
+      headers: {
+        Authorization: 'Bearer ' + action.auth_token,
+      },
+    };
+  }
   return config;
 };
 
@@ -290,13 +294,13 @@ export const onTableRowExpand = (
  *
  * This function takes in images array from make object and then populate the current state
  * of setImage
- * @param {TReceivedImageObj[]} imagesArray
+ * @param {TReceivedImageObj[]} recordImagesArray
  * @param {React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>} setGalleryImages
  * @category Helper function
  */
 /* =========================================================== */
 export const onPopulateImagesArray = (
-  imagesArray: TReceivedImageObj[],
+  recordImagesArray: TReceivedImageObj[],
   setGalleryImages: React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>,
 ) => {
   let tempArray: TGalleryImageArrayObj[] = [];
@@ -318,9 +322,28 @@ export const onPopulateImagesArray = (
 
     tempArray.push(imageObject);
   };
-  imagesArray.map(storeValue);
+  recordImagesArray.map(storeValue);
 
   setGalleryImages(tempArray);
+};
+
+/* =========================================================== */
+/**
+ * Create header config that contains token
+ * @param {AppActions} action
+ * @return {*}
+ */
+/* =========================================================== */
+export const configAuthToken = (action: AppActions) => {
+  let config = {};
+  if ('auth_token' in action) {
+    config = {
+      headers: {
+        Authorization: 'Bearer ' + action.auth_token,
+      },
+    };
+  }
+  return config;
 };
 
 /* =========================================================== */
@@ -370,28 +393,6 @@ export const emptyStringWhenUndefinedOrNull = (incomingString: string): string =
     return '';
   }
   return incomingString;
-};
-
-/* =========================================================== */
-/**
- * A helper function that will return desired string or number if
- * the value is undefined or null
- * return the value itself otherwise
- * @param {any} incomingData
- * @return {*}  {string}
- */
-/* =========================================================== */
-export const desiredValueWhenUndefinedOrNull = (incomingData: any, desiredValue: string | number) => {
-  if (incomingData === undefined || incomingData === null) {
-    return desiredValue;
-  }
-  if (
-    (typeof incomingData === 'string' && incomingData === '') ||
-    (typeof incomingData === 'number' && incomingData === 0)
-  ) {
-    return desiredValue;
-  }
-  return incomingData;
 };
 /* =========================================================== */
 /**

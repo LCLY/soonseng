@@ -173,7 +173,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                 price: number;
               };
 
-              let processingFeesArray = Object.values(order.chargesFeesDict).filter(
+              let processingFeesArray = order.chargesFeesArray.filter(
                 (charges) => charges.title !== 'JPJ Registration & E Hak Milik',
               );
 
@@ -232,7 +232,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               let totalAccessoriesPrice = 0;
 
               // get total of general accessories
-              let generalAccessoriesTotalPrice = Object.values(order.generalAccessoriesArray).reduce(
+              let generalAccessoriesTotalPrice = order.generalAccessoriesArray.reduce(
                 (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
                   return currentTotal + accessoryObj.price;
                 },
@@ -240,14 +240,14 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               );
 
               // get total of body related accessories
-              let bodyRelatedAccessoriesTotalPrice = Object.values(order.bodyRelatedAccessoriesArray).reduce(
+              let bodyRelatedAccessoriesTotalPrice = order.bodyRelatedAccessoriesArray.reduce(
                 (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
                   return currentTotal + accessoryObj.price;
                 },
                 0,
               );
               // get total of dimension related accessories
-              let dimensionRelatedAccessoriesTotalPrice = Object.values(order.dimensionRelatedAccessoriesArray).reduce(
+              let dimensionRelatedAccessoriesTotalPrice = order.dimensionRelatedAccessoriesArray.reduce(
                 (currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
                   return currentTotal + dimensionAccessoryObj.price;
                 },
@@ -287,7 +287,7 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
               roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
               roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
 
-              let JPJEHakMilik = Object.values(order.chargesFeesDict).filter(
+              let JPJEHakMilik = order.chargesFeesArray.filter(
                 (charges) => charges.title === 'JPJ Registration & E Hak Milik',
               );
 
@@ -544,13 +544,13 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                             {order.generalAccessoriesArray &&
                               order.bodyRelatedAccessoriesArray &&
                               order.dimensionRelatedAccessoriesArray &&
-                              Object.keys(order.generalAccessoriesArray).length === 0 &&
-                              Object.keys(order.bodyRelatedAccessoriesArray).length === 0 &&
-                              Object.keys(order.dimensionRelatedAccessoriesArray).length === 0 && <span>None</span>}
+                              order.generalAccessoriesArray.length === 0 &&
+                              order.bodyRelatedAccessoriesArray.length === 0 &&
+                              order.dimensionRelatedAccessoriesArray.length === 0 && <span>None</span>}
                             <>
                               {order.generalAccessoriesArray &&
-                                Object.keys(order.generalAccessoriesArray).length > 0 &&
-                                Object.values(order.generalAccessoriesArray).map((accessory) => (
+                                order.generalAccessoriesArray.length > 0 &&
+                                order.generalAccessoriesArray.map((accessory) => (
                                   <li key={uuidv4()}>
                                     <div className="flex space-between">
                                       <span>{accessory.title} </span>
@@ -573,8 +573,8 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                             </>
                             <>
                               {order.bodyRelatedAccessoriesArray &&
-                                Object.keys(order.bodyRelatedAccessoriesArray).length > 0 &&
-                                Object.values(order.bodyRelatedAccessoriesArray).map((accessory) => (
+                                order.bodyRelatedAccessoriesArray.length > 0 &&
+                                order.bodyRelatedAccessoriesArray.map((accessory) => (
                                   <li key={uuidv4()}>
                                     <div className="flex space-between">
                                       <span>{accessory.title} </span>
@@ -597,8 +597,8 @@ const OverviewComponent: React.FC<Props> = ({ history }) => {
                             </>
                             <>
                               {order.dimensionRelatedAccessoriesArray &&
-                                Object.keys(order.dimensionRelatedAccessoriesArray).length > 0 &&
-                                Object.values(order.dimensionRelatedAccessoriesArray).map((dimension) => (
+                                order.dimensionRelatedAccessoriesArray.length > 0 &&
+                                order.dimensionRelatedAccessoriesArray.map((dimension) => (
                                   <li key={uuidv4()}>
                                     <div className="flex space-between">
                                       <span> {dimension.accessory.title} </span>

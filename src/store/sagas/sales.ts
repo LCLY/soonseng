@@ -2,7 +2,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 import * as actions from '../actions/index';
 import { AppActions } from '../types/index';
 import axios from 'axios';
-import { setPromiseError, getAxiosHeaderToken } from 'src/shared/Utils';
+import { setPromiseError, configAuthToken } from 'src/shared/Utils';
 
 /* ================================================================== */
 //   Sales Page
@@ -80,7 +80,7 @@ export function* getSalesBodyMakesSaga(action: AppActions) {
   }
 
   try {
-    let response = yield axios.post(url, { choice }, getAxiosHeaderToken());
+    let response = yield axios.post(url, { choice }, configAuthToken(action));
     yield put(actions.getSalesBodyMakesSucceed(response.data.brands));
   } catch (error) {
     if (error.response) {

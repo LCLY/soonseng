@@ -19,7 +19,7 @@ import SoonSengLogo from 'src/img/soonseng_logo.png';
 import {
   ROUTE_HOME,
   ROUTE_LOGIN,
-  // ROUTE_SALES,
+  ROUTE_SALES,
   ROUTE_LOGOUT,
   ROUTE_TASK,
   // ROUTE_ORDERS,
@@ -34,28 +34,25 @@ import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 
 const { SubMenu } = Menu;
 
-export type TActivePage =
-  | 'catalog'
-  | 'home'
-  | 'sales'
-  | 'body'
-  | 'about'
-  | 'product'
-  | 'contact'
-  | 'bodymake'
-  | 'accessory'
-  | 'fees'
-  | 'users'
-  | 'about'
-  | 'task'
-  | 'orders'
-  | 'make'
-  | 'login'
-  | 'job_monitoring';
-
 interface NavbarComponentProps {
   /** Shows which active page it is currently */
-  activePage?: TActivePage;
+  activePage?:
+    | 'catalog'
+    | 'home'
+    | 'sales'
+    | 'body'
+    | 'about'
+    | 'product'
+    | 'contact'
+    | 'bodymake'
+    | 'accessory'
+    | 'fees'
+    | 'about'
+    | 'task'
+    | 'orders'
+    | 'make'
+    | 'login'
+    | 'job_monitoring';
   defaultOpenKeys?: 'product' | 'dashboard';
 }
 
@@ -67,26 +64,10 @@ type Props = NavbarComponentProps & StateProps & DispatchProps & RouteComponentP
  * @param history history from react-router-dom
  * @category Components
  */
-/**
- *
- *
- * @param {*} {
- *   history,
- *   // auth_token,
- *   accessObj,
- *   userInfoObj,
- *   activePage,
- *   // onGetUserInfo,
- *   authenticated,
- *   projectVersion,
- *   defaultOpenKeys,
- *   localOrdersArray,
- * }
- * @return {*}
- */
+
 const NavbarComponent: React.FC<Props> = ({
   history,
-  auth_token,
+  // auth_token,
   accessObj,
   userInfoObj,
   activePage,
@@ -94,7 +75,7 @@ const NavbarComponent: React.FC<Props> = ({
   authenticated,
   projectVersion,
   defaultOpenKeys,
-  localOrdersDict,
+  localOrdersArray,
 }) => {
   /* ======================================= */
   // state
@@ -117,11 +98,6 @@ const NavbarComponent: React.FC<Props> = ({
   const dashboardMenu = (
     <div>
       <Menu className="navbar__dropdown-menu">
-        <Menu.Item key="user">
-          <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.users}>
-            User Roles
-          </a>
-        </Menu.Item>
         <Menu.Item key="make">
           <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
             Model
@@ -213,11 +189,11 @@ const NavbarComponent: React.FC<Props> = ({
                   </a>
                 </Menu.Item>
               </SubMenu>
-              {/* <Menu.Item key="sales" icon={<i className="fas fa-balance-scale"></i>}>
+              <Menu.Item key="sales" icon={<i className="fas fa-balance-scale"></i>}>
                 <a className="navbar__link" href={ROUTE_SALES}>
                   Sales
                 </a>
-              </Menu.Item> */}
+              </Menu.Item>
               <Menu.Item key="task" icon={<i className="fas fa-tasks"></i>}>
                 <a className="navbar__link" href={ROUTE_TASK}>
                   Task
@@ -231,11 +207,6 @@ const NavbarComponent: React.FC<Props> = ({
                   icon={<i className="fas fa-columns margin_r-1"></i>}
                   title="Dashboard"
                 >
-                  <Menu.Item key="users">
-                    <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.users}>
-                      User Roles
-                    </a>
-                  </Menu.Item>
                   <Menu.Item key="make">
                     <a className="navbar__dropdown-link" href={ROUTE_DASHBOARD.make}>
                       Model
@@ -290,7 +261,7 @@ const NavbarComponent: React.FC<Props> = ({
           <div className="navbar__mobilesidebar-admin">
             <>
               <div className="">
-                {userInfoObj?.roles.title}&nbsp;{auth_token ? projectVersion : ''}
+                {userInfoObj?.roles.title}&nbsp;{accessObj?.showSalesDashboard ? projectVersion : ''}
               </div>
             </>
           </div>
@@ -338,13 +309,8 @@ const NavbarComponent: React.FC<Props> = ({
             />
           </Navbar.Brand>
           <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
-            {localOrdersDict !== undefined && (
-              <Badge
-                count={Object.keys(localOrdersDict).length}
-                showZero
-                size="small"
-                className="navbar__icon-cart--mobile"
-              >
+            {localOrdersArray !== undefined && (
+              <Badge count={localOrdersArray.length} showZero size="small" className="navbar__icon-cart--mobile">
                 <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
               </Badge>
             )}
@@ -380,11 +346,11 @@ const NavbarComponent: React.FC<Props> = ({
                   </span>
                 </Dropdown>
               </div>
-              {/* <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
+              <div className={`navbar__link-div ${activePage === 'sales' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_SALES}>
                   <i className="fas fa-balance-scale"></i>&nbsp;Sales
                 </a>
-              </div> */}
+              </div>
               <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_TASK}>
                   <i className="fas fa-tasks"></i>&nbsp;Task
@@ -413,17 +379,6 @@ const NavbarComponent: React.FC<Props> = ({
                   </Dropdown>
                 </div>
               ) : null}
-
-              {/* ================================================================== */}
-              {/* NEW DASHBOARD */}
-              {/* ================================================================== */}
-              {/* {accessObj?.showSalesDashboard && (
-                <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
-                  <a className="navbar__link" href={ROUTE_DASHBOARD.body}>
-                    <i className="fas fa-columns"></i>&nbsp;Dashboard
-                  </a>
-                </div>
-              )} */}
             </div>
             <div className="navbar__right-div">
               {/* only show if user info exist or not a normal user */}
@@ -449,8 +404,8 @@ const NavbarComponent: React.FC<Props> = ({
               </div>
 
               <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
-                {localOrdersDict !== undefined && (
-                  <Badge count={Object.keys(localOrdersDict).length} showZero size="small">
+                {localOrdersArray !== undefined && (
+                  <Badge count={localOrdersArray.length} showZero size="small">
                     {/* <a className={`navbar__link`} href={ROUTE_ORDERS}> */}
                     <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
                     {/* </a> */}
@@ -472,19 +427,20 @@ const NavbarComponent: React.FC<Props> = ({
 };
 
 interface StateProps {
+  auth_token?: string | null;
   authenticated?: boolean;
   accessObj?: TUserAccess;
   projectVersion?: string;
-  auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
-  localOrdersDict?: { [key: string]: TLocalOrderObj };
+  localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
+    auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
     projectVersion: state.general.projectVersion,
-    localOrdersDict: state.sales.localOrdersDict,
+    localOrdersArray: state.sales.localOrdersArray,
     authenticated: state.auth.auth_token !== null,
   };
 };
@@ -493,7 +449,7 @@ interface DispatchProps {
   onGetUserInfo: typeof actions.getUserInfo;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
-  return { onGetUserInfo: () => dispatch(actions.getUserInfo()) };
+  return { onGetUserInfo: (auth_token) => dispatch(actions.getUserInfo(auth_token)) };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavbarComponent));

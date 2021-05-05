@@ -1,141 +1,127 @@
 import { AppActions } from '../../types/index';
 import * as actionTypes from '../actionTypes';
-import {
-  IServiceTaskFormData,
-  TReceivedServiceTypesObj,
-  TReceivedServiceTaskObj,
-  TReceivedIntakeStatusObj,
-} from '../../types/dashboard';
+import { TReceivedJobStatusObj, TReceivedServiceTypesObj } from '../../types/dashboard';
 
 /* ============================================================================================ */
-// Intake Status
+// JobStatus
 /* ============================================================================================ */
 
 /* ----------------------------- */
-// Get Intake Status
+// Get JobStatus
 /* ---------------------------- */
-export const getIntakeStatus = (): AppActions => {
+export const getJobStatus = (): AppActions => {
   return {
-    type: actionTypes.GET_INTAKESTATUS,
+    type: actionTypes.GET_JOBSTATUS,
   };
 };
 
-export const getIntakeStatusStart = (): AppActions => {
+export const getJobStatusStart = (): AppActions => {
   return {
-    type: actionTypes.GET_INTAKESTATUS_START,
+    type: actionTypes.GET_JOBSTATUS_START,
   };
 };
 
-export const getIntakeStatusSucceed = (intakeStatusArray: TReceivedIntakeStatusObj[]): AppActions => {
+export const getJobStatusSucceed = (jobStatusArray: TReceivedJobStatusObj[]): AppActions => {
   return {
-    type: actionTypes.GET_INTAKESTATUS_SUCCEED,
-    intakeStatusArray: intakeStatusArray,
+    type: actionTypes.GET_JOBSTATUS_SUCCEED,
+    jobStatusArray: jobStatusArray,
   };
 };
-export const getIntakeStatusFailed = (errorMessage: string): AppActions => {
+export const getJobStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.GET_INTAKESTATUS_FAILED,
+    type: actionTypes.GET_JOBSTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };
 
 /* ------------------------------ */
-// Create Intake Status
+// Create Jobstatus
 /* ------------------------------ */
-export const createIntakeStatus = (title: string, description: string): AppActions => {
+export const createJobStatus = (title: string, description: string): AppActions => {
   return {
-    type: actionTypes.CREATE_INTAKESTATUS,
+    type: actionTypes.CREATE_JOBSTATUS,
     title: title,
     description: description,
   };
 };
 
-export const createIntakeStatusStart = (): AppActions => {
+export const createJobStatusStart = (): AppActions => {
   return {
-    type: actionTypes.CREATE_INTAKESTATUS_START,
+    type: actionTypes.CREATE_JOBSTATUS_START,
   };
 };
 
-export const createIntakeStatusSucceed = (
-  intakeStatusArray: TReceivedIntakeStatusObj[],
-  successMessage: string,
-): AppActions => {
+export const createJobStatusSucceed = (jobStatusArray: TReceivedJobStatusObj[], successMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_INTAKESTATUS_SUCCEED,
-    intakeStatusArray: intakeStatusArray,
+    type: actionTypes.CREATE_JOBSTATUS_SUCCEED,
+    jobStatusArray: jobStatusArray,
     successMessage: successMessage,
   };
 };
-export const createIntakeStatusFailed = (errorMessage: string): AppActions => {
+export const createJobStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_INTAKESTATUS_FAILED,
+    type: actionTypes.CREATE_JOBSTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };
 
 /* ------------------------------ */
-// Update Intake Status
+// Update JobStatus
 /* ------------------------------ */
-export const updateIntakeStatus = (intake_status_id: number, title: string, description: string): AppActions => {
+export const updateJobStatus = (job_status_id: number, title: string, description: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_INTAKESTATUS,
-    intake_status_id: intake_status_id,
+    type: actionTypes.UPDATE_JOBSTATUS,
+    job_status_id: job_status_id,
     title: title,
     description: description,
   };
 };
 
-export const updateIntakeStatusStart = (): AppActions => {
+export const updateJobStatusStart = (): AppActions => {
   return {
-    type: actionTypes.UPDATE_INTAKESTATUS_START,
+    type: actionTypes.UPDATE_JOBSTATUS_START,
   };
 };
 
-export const updateIntakeStatusSucceed = (
-  intakeStatusArray: TReceivedIntakeStatusObj[],
-  successMessage: string,
-): AppActions => {
+export const updateJobStatusSucceed = (jobStatusArray: TReceivedJobStatusObj[], successMessage: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_INTAKESTATUS_SUCCEED,
-    intakeStatusArray: intakeStatusArray,
+    type: actionTypes.UPDATE_JOBSTATUS_SUCCEED,
+    jobStatusArray: jobStatusArray,
     successMessage: successMessage,
   };
 };
-export const updateIntakeStatusFailed = (errorMessage: string): AppActions => {
+export const updateJobStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_INTAKESTATUS_FAILED,
+    type: actionTypes.UPDATE_JOBSTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };
 /* ------------------------------ */
-// Delete Intake Status
+// Delete JobStatus
 /* ------------------------------ */
-export const deleteIntakeStatus = (intake_status_id: number): AppActions => {
+export const deleteJobStatus = (job_status_id: number): AppActions => {
   return {
-    type: actionTypes.DELETE_INTAKESTATUS,
-    intake_status_id: intake_status_id,
+    type: actionTypes.DELETE_JOBSTATUS,
+    job_status_id: job_status_id,
   };
 };
 
-export const deleteIntakeStatusStart = (): AppActions => {
+export const deleteJOBSTATUStart = (): AppActions => {
   return {
-    type: actionTypes.DELETE_INTAKESTATUS_START,
+    type: actionTypes.DELETE_JOBSTATUS_START,
   };
 };
 
-export const deleteIntakeStatusSucceed = (
-  intakeStatusArray: TReceivedIntakeStatusObj[],
-  successMessage: string,
-): AppActions => {
+export const deleteJOBSTATUSucceed = (jobStatusArray: TReceivedJobStatusObj[], successMessage: string): AppActions => {
   return {
-    type: actionTypes.DELETE_INTAKESTATUS_SUCCEED,
-    intakeStatusArray: intakeStatusArray,
+    type: actionTypes.DELETE_JOBSTATUS_SUCCEED,
+    jobStatusArray: jobStatusArray,
     successMessage: successMessage,
   };
 };
-export const deleteIntakeStatusFailed = (errorMessage: string): AppActions => {
+export const deleteJobStatusFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.DELETE_INTAKESTATUS_FAILED,
+    type: actionTypes.DELETE_JOBSTATUS_FAILED,
     errorMessage: errorMessage,
   };
 };
@@ -175,33 +161,33 @@ export const getServiceTypesFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Create ServiceTypes
 /* ------------------------------ */
-export const createServiceType = (title: string, description: string): AppActions => {
+export const createServiceTypes = (title: string, description: string): AppActions => {
   return {
-    type: actionTypes.CREATE_SERVICETYPE,
+    type: actionTypes.CREATE_SERVICETYPES,
     title: title,
     description: description,
   };
 };
 
-export const createServiceTypeStart = (): AppActions => {
+export const createServiceTypesStart = (): AppActions => {
   return {
-    type: actionTypes.CREATE_SERVICETYPE_START,
+    type: actionTypes.CREATE_SERVICETYPES_START,
   };
 };
 
-export const createServiceTypeSucceed = (
+export const createServiceTypesSucceed = (
   serviceTypesArray: TReceivedServiceTypesObj[],
   successMessage: string,
 ): AppActions => {
   return {
-    type: actionTypes.CREATE_SERVICETYPE_SUCCEED,
+    type: actionTypes.CREATE_SERVICETYPES_SUCCEED,
     serviceTypesArray: serviceTypesArray,
     successMessage: successMessage,
   };
 };
-export const createServiceTypeFailed = (errorMessage: string): AppActions => {
+export const createServiceTypesFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.CREATE_SERVICETYPE_FAILED,
+    type: actionTypes.CREATE_SERVICETYPES_FAILED,
     errorMessage: errorMessage,
   };
 };
@@ -209,196 +195,66 @@ export const createServiceTypeFailed = (errorMessage: string): AppActions => {
 /* ------------------------------ */
 // Update ServiceTypes
 /* ------------------------------ */
-export const updateServiceType = (service_type_id: number, title: string, description: string): AppActions => {
+export const updateServiceTypes = (service_types_id: number, title: string, description: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_SERVICETYPE,
-    service_type_id: service_type_id,
+    type: actionTypes.UPDATE_SERVICETYPES,
+    service_types_id: service_types_id,
     title: title,
     description: description,
   };
 };
 
-export const updateServiceTypeStart = (): AppActions => {
+export const updateServiceTypesStart = (): AppActions => {
   return {
-    type: actionTypes.UPDATE_SERVICETYPE_START,
+    type: actionTypes.UPDATE_SERVICETYPES_START,
   };
 };
 
-export const updateServiceTypeSucceed = (
+export const updateServiceTypesSucceed = (
   serviceTypesArray: TReceivedServiceTypesObj[],
   successMessage: string,
 ): AppActions => {
   return {
-    type: actionTypes.UPDATE_SERVICETYPE_SUCCEED,
+    type: actionTypes.UPDATE_SERVICETYPES_SUCCEED,
     serviceTypesArray: serviceTypesArray,
     successMessage: successMessage,
   };
 };
-export const updateServiceTypeFailed = (errorMessage: string): AppActions => {
+export const updateServiceTypesFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.UPDATE_SERVICETYPE_FAILED,
+    type: actionTypes.UPDATE_SERVICETYPES_FAILED,
     errorMessage: errorMessage,
   };
 };
 /* ------------------------------ */
 // Delete ServiceTypes
 /* ------------------------------ */
-export const deleteServiceType = (service_type_id: number): AppActions => {
+export const deleteServiceTypes = (service_types_id: number): AppActions => {
   return {
-    type: actionTypes.DELETE_SERVICETYPE,
-    service_type_id: service_type_id,
+    type: actionTypes.DELETE_SERVICETYPES,
+    service_types_id: service_types_id,
   };
 };
 
-export const deleteServiceTypeStart = (): AppActions => {
+export const deleteServiceTypestart = (): AppActions => {
   return {
-    type: actionTypes.DELETE_SERVICETYPE_START,
+    type: actionTypes.DELETE_SERVICETYPES_START,
   };
 };
 
-export const deleteServiceTypeSucceed = (
+export const deleteServiceTypesucceed = (
   serviceTypesArray: TReceivedServiceTypesObj[],
   successMessage: string,
 ): AppActions => {
   return {
-    type: actionTypes.DELETE_SERVICETYPE_SUCCEED,
+    type: actionTypes.DELETE_SERVICETYPES_SUCCEED,
     serviceTypesArray: serviceTypesArray,
     successMessage: successMessage,
   };
 };
-export const deleteServiceTypeFailed = (errorMessage: string): AppActions => {
+export const deleteServiceTypesFailed = (errorMessage: string): AppActions => {
   return {
-    type: actionTypes.DELETE_SERVICETYPE_FAILED,
-    errorMessage: errorMessage,
-  };
-};
-
-/* ============================================================================================ */
-//  Task Title
-/* ============================================================================================ */
-/*  ------------------------- */
-//  Create Service Task
-/*  ------------------------- */
-export const createServiceTask = (serviceTaskFormData: IServiceTaskFormData): AppActions => {
-  return {
-    type: actionTypes.CREATE_SERVICE_TASK,
-    serviceTaskFormData: serviceTaskFormData,
-  };
-};
-
-export const createServiceTaskStart = (): AppActions => {
-  return {
-    type: actionTypes.CREATE_SERVICE_TASK_START,
-  };
-};
-
-export const createServiceTaskSucceed = (
-  serviceTasksArray: TReceivedServiceTaskObj[],
-  successMessage: string,
-): AppActions => {
-  return {
-    type: actionTypes.CREATE_SERVICE_TASK_SUCCEED,
-    serviceTasksArray: serviceTasksArray,
-    successMessage: successMessage,
-  };
-};
-export const createServiceTaskFailed = (errorMessage: string): AppActions => {
-  return {
-    type: actionTypes.CREATE_SERVICE_TASK_FAILED,
-    errorMessage: errorMessage,
-  };
-};
-/*  ------------------------- */
-// Get Service Tasks
-/*  ------------------------- */
-export const getServiceTasks = (service_type_id: number): AppActions => {
-  return {
-    type: actionTypes.GET_SERVICE_TASKS,
-    service_type_id: service_type_id,
-  };
-};
-
-export const getServiceTasksStart = (): AppActions => {
-  return {
-    type: actionTypes.GET_SERVICE_TASKS_START,
-  };
-};
-
-export const getServiceTasksSucceed = (serviceTasksArray: TReceivedServiceTaskObj[]): AppActions => {
-  return {
-    type: actionTypes.GET_SERVICE_TASKS_SUCCEED,
-    serviceTasksArray: serviceTasksArray,
-  };
-};
-export const getServiceTasksFailed = (errorMessage: string): AppActions => {
-  return {
-    type: actionTypes.GET_SERVICE_TASKS_FAILED,
-    errorMessage: errorMessage,
-  };
-};
-/*  ------------------------- */
-//  Update Service Task
-/*  ------------------------- */
-export const updateServiceTask = (service_task_id: number, serviceTaskFormData: IServiceTaskFormData): AppActions => {
-  return {
-    type: actionTypes.UPDATE_SERVICE_TASK,
-    service_task_id: service_task_id,
-    serviceTaskFormData: serviceTaskFormData,
-  };
-};
-
-export const updateServiceTaskStart = (): AppActions => {
-  return {
-    type: actionTypes.UPDATE_SERVICE_TASK_START,
-  };
-};
-
-export const updateServiceTaskSucceed = (
-  serviceTasksArray: TReceivedServiceTaskObj[],
-  successMessage: string,
-): AppActions => {
-  return {
-    type: actionTypes.UPDATE_SERVICE_TASK_SUCCEED,
-    serviceTasksArray: serviceTasksArray,
-    successMessage: successMessage,
-  };
-};
-export const updateServiceTaskFailed = (errorMessage: string): AppActions => {
-  return {
-    type: actionTypes.UPDATE_SERVICE_TASK_FAILED,
-    errorMessage: errorMessage,
-  };
-};
-/*  ------------------------- */
-//  Delete Service Task
-/*  ------------------------- */
-export const deleteServiceTask = (service_task_id: number, service_type_id: number): AppActions => {
-  return {
-    type: actionTypes.DELETE_SERVICE_TASK,
-    service_task_id: service_task_id,
-    service_type_id: service_type_id,
-  };
-};
-
-export const deleteServiceTaskStart = (): AppActions => {
-  return {
-    type: actionTypes.DELETE_SERVICE_TASK_START,
-  };
-};
-
-export const deleteServiceTaskSucceed = (
-  serviceTasksArray: TReceivedServiceTaskObj[],
-  successMessage: string,
-): AppActions => {
-  return {
-    type: actionTypes.DELETE_SERVICE_TASK_SUCCEED,
-    serviceTasksArray: serviceTasksArray,
-    successMessage: successMessage,
-  };
-};
-export const deleteServiceTaskFailed = (errorMessage: string): AppActions => {
-  return {
-    type: actionTypes.DELETE_SERVICE_TASK_FAILED,
+    type: actionTypes.DELETE_SERVICETYPES_FAILED,
     errorMessage: errorMessage,
   };
 };

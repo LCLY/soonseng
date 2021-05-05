@@ -48,10 +48,9 @@ svg {
   white-space: nowrap;
 }
 
-.ant-table-body {
+.ant-table-tbody {
   &::-webkit-scrollbar {
     width: 10px !important;
-    height: 5px !important;
   }
   &::-webkit-scrollbar-thumb {
     background: $secondary-color-2 !important;
@@ -124,37 +123,6 @@ svg {
 .ant-table-cell {
   white-space: normal !important;
 }
-
-.ant-empty-description {
-  color: white !important;
-}
-
-/* ------------------------- */
-// popover
-/* ------------------------- */
-.ant-popover-inner {
-  border: 1px solid white !important;
-  background: #152448 !important;
-  & .ant-popover-title {
-    color: white !important;
-  }
-
-  & .ant-popover-message-title {
-    color: white !important;
-  }
-}
-
-.ant-popconfirm {
-  max-width: 90% !important;
-}
-
-.ant-popover-message {
-  word-wrap: break-word;
-}
-
-/* ========================================================== */
-// React resizable
-/* ========================================================== */
 
 /* For column resizable */
 .react-resizable {
@@ -259,8 +227,4 @@ svg {
   @include respond-to($phone-only) {
     display: block !important;
   }
-}
-
-.all-uppercase {
-  text-transform: uppercase;
 }

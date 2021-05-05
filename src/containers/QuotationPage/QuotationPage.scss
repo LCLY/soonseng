@@ -4,7 +4,6 @@
     width: 95rem;
     padding: 3rem;
     background: white;
-    margin-bottom: 3rem;
 
     @include respond-to($small-phone) {
       width: 95%;
@@ -64,17 +63,6 @@
     }
   }
 
-  /* ================ */
-  // Input
-  /* ================ */
-  &__input {
-    &-salesprogram {
-      padding: 0 0.5rem !important;
-      width: 100% !important;
-      margin-bottom: 0.2rem !important;
-      border: 1px dashed black !important;
-    }
-  }
   /* ================ */
   // Button
   /* ================ */
@@ -245,19 +233,21 @@
   // logo on both sides
   /* ===================== */
   &__logo {
+    height: 100%;
+    width: 12.5rem;
     object-fit: cover;
-    // border: 1px solid $translucent-grey;
+    border: 1px solid $translucent-grey;
 
     @include respond-to($small-phone) {
-      height: 4rem;
-      width: 4.5rem;
+      height: auto;
+      width: 13vw;
     }
     @include respond-to($phone-only) {
-      height: 10rem;
+      height: auto;
       width: 10rem;
     }
     @include respond-to($tablet-portrait-up) {
-      height: 13rem;
+      height: auto;
       width: 12.5rem;
     }
   }
@@ -363,7 +353,6 @@
   &__orderedlist {
     margin-left: 2rem;
     margin-bottom: 0.5rem;
-    cursor: pointer;
 
     @include respond-to($small-phone) {
       margin-left: 1rem;
@@ -548,15 +537,6 @@
         font-size: 0.8rem;
         margin-top: 2rem;
       }
-
-      &--left {
-        width: 55%;
-        margin-right: 2rem;
-      }
-
-      &--right {
-        width: 40%;
-      }
     }
 
     /* ------------------------------ */
@@ -564,7 +544,6 @@
     /* ------------------------------ */
     &-title {
       font-weight: bolder;
-      width: 100%;
       // text-decoration: underline;
       margin-bottom: 0.5rem;
       @include respond-to($small-phone) {
@@ -652,22 +631,6 @@
       margin-top: 1rem;
     }
 
-    &-select {
-      width: 100%;
-      margin-top: 0.5rem !important;
-      & .ant-select-selector {
-        border: 1px dashed black !important;
-      }
-
-      & .ant-select-selection-item {
-        background: rgb(19, 43, 102) !important;
-        color: white;
-        & svg {
-          color: white !important;
-        }
-      }
-    }
-
     /* ---------------- */
     // the title "Standard accessories"
     /* ---------------- */
@@ -704,11 +667,6 @@
       @include respond-to($small-phone) {
         font-size: 0.8rem;
       }
-      &-grid {
-        width: 100%;
-        display: grid;
-        // grid-template-columns: repeat(3, 1fr) !important;
-      }
     }
   }
 
@@ -727,70 +685,6 @@
       margin-top: 0.5rem;
       font-weight: bolder;
       // font-family: $font-firesans;
-    }
-  }
-
-  &__loader {
-    &-div {
-      display: grid;
-      place-items: center;
-      width: 100%;
-      @include respond-to($small-phone) {
-        height: 80vh;
-      }
-      @include respond-to($phone-only) {
-        height: 80vh;
-      }
-      @include respond-to($tablet-portrait-up) {
-        height: 80vh;
-      }
-      @include respond-to($tablet-landscape-up) {
-        height: 100vh;
-      }
-    }
-  }
-
-  /* ============================ */
-  // price edit mode
-  /* ============================ */
-  &__edit {
-    &-top {
-      position: fixed;
-      left: 0;
-      width: 100vw;
-      height: 10vh;
-      background: rgb(6, 24, 60);
-      z-index: 2000;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      // place-items: center;
-      font-family: $font-bebasneue;
-      font-size: 2rem;
-      padding: 0 2rem;
-
-      &-title {
-        transform: translateY(2px);
-      }
-
-      &-btn {
-        font-family: $font-firesans;
-        padding: 0 1rem !important;
-        height: 2.5rem !important;
-        font-size: 1.3rem !important;
-        &--save {
-          padding: 0 1.5rem !important;
-          margin-left: 1rem;
-        }
-      }
-    }
-
-    &-price {
-      width: 11rem;
-      text-align: right;
-      border: 1.5px dashed rgba(94, 94, 94, 0.611);
-      padding: 0 0.5rem;
     }
   }
 }
@@ -1137,15 +1031,10 @@
     }
 
     &-content {
-      font-size: 1.3rem;
       display: flex;
+      font-size: 1.3rem;
       justify-content: space-between;
       align-items: center;
-
-      &-grid {
-        width: 100%;
-        display: grid;
-      }
     }
   }
 

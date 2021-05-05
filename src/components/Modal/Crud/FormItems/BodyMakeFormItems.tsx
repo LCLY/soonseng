@@ -1,6 +1,6 @@
 import React from 'react';
 /* components */
-// import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
 /* 3rd party lib */
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -47,10 +47,10 @@ const BodyMakeFormItems: React.FC<Props> = ({
   makesArray,
   lengthsArray,
   makeWheelbasesArray,
-  // imagesPreviewUrls,
+  imagesPreviewUrls,
   onGetMakeWheelbases,
-  // setImagesPreviewUrls,
-  // setUploadSelectedFiles
+  setImagesPreviewUrls,
+  setUploadSelectedFiles,
 }) => {
   return (
     <>
@@ -260,11 +260,11 @@ const BodyMakeFormItems: React.FC<Props> = ({
         >
           <NumberFormat className="ant-input" placeholder="Type price here" thousandSeparator={true} prefix={'RM '} />
         </Form.Item>
-        {/* <PreviewUploadImage
+        <PreviewUploadImage
           setUploadSelectedFiles={setUploadSelectedFiles}
           imagesPreviewUrls={imagesPreviewUrls}
           setImagesPreviewUrls={setImagesPreviewUrls}
-        /> */}
+        />
         {crud === 'update' && (
           <Form.Item name="bodyMakeId" hidden rules={[{ required: true }]}>
             <Input />

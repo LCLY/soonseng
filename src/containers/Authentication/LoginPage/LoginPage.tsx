@@ -41,8 +41,8 @@ const LoginPage: React.FC<Props> = ({
   /* ================================================== */
 
   // Form finish methods
-  const onSignInFinish = (values: { username: string; password: string }) => {
-    onSignIn(values.username, values.password);
+  const onSignInFinish = (values: { email: string; password: string }) => {
+    onSignIn(values.email, values.password);
   };
 
   /* ================================================== */
@@ -81,11 +81,11 @@ const LoginPage: React.FC<Props> = ({
                 <Form name="basic" initialValues={{ remember: true }} onFinish={onSignInFinish}>
                   <Form.Item
                     className="login__form-items"
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
                   >
-                    <Input type="text" placeholder="Enter username here" />
+                    <Input type="email" placeholder="Enter email here e.g. example@gmail.com" />
                   </Form.Item>
 
                   <Form.Item

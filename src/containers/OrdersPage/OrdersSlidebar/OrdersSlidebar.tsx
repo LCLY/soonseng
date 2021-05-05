@@ -10,15 +10,15 @@ import NumberFormat from 'react-number-format';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { InfoCircleOutlined, CaretRightOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Tooltip, Empty, Menu, Collapse, Checkbox, Modal } from 'antd';
+import { Button, Dropdown, Tooltip, Empty, Form, Menu, Collapse, Checkbox, Modal } from 'antd';
 /* Util */
 import { RootState } from 'src';
 import { TUserAccess } from 'src/store/types/auth';
 import * as actions from 'src/store/actions/index';
 import { TReceivedAccessoryObj } from 'src/store/types/dashboard';
-import { ROUTE_CATALOG, ROUTE_COMPARISON, ROUTE_ORDERS } from 'src/shared/routes';
+import { ROUTE_COMPARISON, ROUTE_ORDERS, ROUTE_SALES } from 'src/shared/routes';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
-import { convertSpaceInStringWithChar } from 'src/shared/Utils';
+import { convertPriceToFloat, convertSpaceInStringWithChar, handleKeyDown } from 'src/shared/Utils';
 const { Panel } = Collapse;
 
 interface OrdersSlidebarProps {
@@ -33,23 +33,22 @@ const OrdersSlidebar: React.FC<Props> = ({
   style,
   history,
   accessObj,
-  localOrdersDict,
-  // onRemoveAnOrder,
+  localOrdersArray,
+  onRemoveAnOrder,
   setShowOrderSlidebar,
-  onSetLocalOrdersDict,
 }) => {
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  // const [discountForm] = Form.useForm();
-  // const [clickedOrder, setClickedOrder] = useState<TLocalOrderObj | null>(null);
-  // const [showDiscountModal, setShowDiscountModal] = useState(false);
-  // const [showDiscountInput, setShowDiscountInput] = useState(false);
-  const [totalChecked, setTotalChecked] = useState(0);
+  const [discountForm] = Form.useForm();
+  const [clickedOrder, setClickedOrder] = useState<TLocalOrderObj | null>(null);
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [compareModalOpen, setCompareModalOpen] = useState(false);
-  const [selectedMoreThanFour, setSelectedMoreThanFour] = useState(false);
   const [expandedModelCollapse, setExpandedModelCollapse] = useState<string | string[]>([]);
   const [expandedInsuranceCollapse, setExpandedInsuranceCollapse] = useState<string[]>([]);
+  const [selectedMoreThanFour, setSelectedMoreThanFour] = useState(false);
+  const [totalChecked, setTotalChecked] = useState(0);
   const [checkedConfigurations, setCheckedConfigurations] = useState<{ [orderId: string]: boolean } | null>(null);
 
   /* ================================================== */
@@ -81,14 +80,14 @@ const OrdersSlidebar: React.FC<Props> = ({
   /* ================================================== */
 
   useEffect(() => {
-    if (localOrdersDict) {
-      Object.keys(localOrdersDict).map((orderId) =>
+    if (localOrdersArray) {
+      localOrdersArray.map((order) =>
         setCheckedConfigurations((prevState) => {
-          return { ...prevState, [orderId]: false };
+          return { ...prevState, [order.id]: false };
         }),
       );
     }
-  }, [localOrdersDict, setCheckedConfigurations]);
+  }, [localOrdersArray, setCheckedConfigurations]);
 
   useEffect(() => {
     if (checkedConfigurations) {
@@ -121,7 +120,7 @@ const OrdersSlidebar: React.FC<Props> = ({
       {/* ========================================================= */}
       {/* Discount modal */}
       {/* ========================================================= */}
-      {/* <Modal
+      <Modal
         title="Setting Discount"
         visible={showDiscountModal}
         onCancel={() => {
@@ -144,12 +143,12 @@ const OrdersSlidebar: React.FC<Props> = ({
                 onClick={() => {
                   if (clickedOrder && clickedOrder.bodyMakeObj) {
                     const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
-                    history.push(
-                      `/quotation/${convertSpaceInStringWithChar(
+                    history.push({
+                      pathname: `/quotation/${convertSpaceInStringWithChar(
                         `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
                         '',
                       )}/${clickedOrder.id}`,
-                    );
+                    });
                   }
                 }}
               >
@@ -184,16 +183,12 @@ const OrdersSlidebar: React.FC<Props> = ({
             onFinish={(values) => {
               if (clickedOrder && clickedOrder.bodyMakeObj) {
                 const { length, make_wheelbase, body } = clickedOrder.bodyMakeObj;
-                history.push(
-                  `/quotation/${convertSpaceInStringWithChar(
+                history.push({
+                  pathname: `/quotation/${convertSpaceInStringWithChar(
                     `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
                     '',
-                  )}/${clickedOrder.id}`,
-                );
-
-                let tempOrder = { ...localOrdersDict };
-                tempOrder[clickedOrder.id]['discount'] = convertPriceToFloat(values.discount);
-                onSetLocalOrdersDict(tempOrder);
+                  )}/${clickedOrder.id}/${convertPriceToFloat(values.discount)}`,
+                });
               }
             }}
           >
@@ -214,7 +209,7 @@ const OrdersSlidebar: React.FC<Props> = ({
         ) : (
           <div>Are you setting discount for this quotation?</div>
         )}
-      </Modal> */}
+      </Modal>
 
       {/* ========================================================= */}
       {/* Comparison modal */}
@@ -253,9 +248,9 @@ const OrdersSlidebar: React.FC<Props> = ({
         }}
         onCancel={() => setCompareModalOpen(false)}
       >
-        {localOrdersDict !== undefined &&
+        {localOrdersArray !== undefined &&
           checkedConfigurations &&
-          Object.values(localOrdersDict).map((order) => {
+          localOrdersArray.map((order) => {
             const { bodyMakeObj } = order;
             return (
               <React.Fragment key={uuidv4()}>
@@ -290,16 +285,15 @@ const OrdersSlidebar: React.FC<Props> = ({
             </a>
           </div>
           <div className="flex-align-center">
-            {localOrdersDict && (
+            {localOrdersArray && (
               <div className="ordersslidebar__total-items">
                 <div>
-                  Total:&nbsp;
-                  <span className="ordersslidebar__total-text">{Object.keys(localOrdersDict).length}&nbsp;items</span>
+                  Total:&nbsp;<span className="ordersslidebar__total-text">{localOrdersArray.length}&nbsp;items</span>
                 </div>
 
                 <div className="ordersslidebar__btn-comparison-div">
                   <Button
-                    disabled={Object.keys(localOrdersDict).length <= 1}
+                    disabled={localOrdersArray.length <= 1}
                     className="ordersslidebar__btn-comparison"
                     type="primary"
                     onClick={() => setCompareModalOpen(true)}
@@ -314,8 +308,8 @@ const OrdersSlidebar: React.FC<Props> = ({
         </div>
 
         <div className="ordersslidebar__bottom-div">
-          {localOrdersDict && Object.keys(localOrdersDict).length > 0 ? (
-            [...Object.values(localOrdersDict)]
+          {localOrdersArray && localOrdersArray.length > 0 ? (
+            [...localOrdersArray]
               .slice(0) //here it would display how many orders based on second param in slice
               .reverse()
               .map((order, index) => {
@@ -324,7 +318,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                   price: number;
                 };
 
-                let processingFeesArray = Object.values(order.chargesFeesDict).filter(
+                let processingFeesArray = order.chargesFeesArray.filter(
                   (charges) => charges.title !== 'JPJ Registration & E Hak Milik',
                 );
 
@@ -383,7 +377,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                 let totalAccessoriesPrice = 0;
 
                 // get total of general accessories
-                let generalAccessoriesTotalPrice = Object.values(order.generalAccessoriesArray).reduce(
+                let generalAccessoriesTotalPrice = order.generalAccessoriesArray.reduce(
                   (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
                     return currentTotal + accessoryObj.price;
                   },
@@ -391,18 +385,19 @@ const OrdersSlidebar: React.FC<Props> = ({
                 );
 
                 // get total of body related accessories
-                let bodyRelatedAccessoriesTotalPrice = Object.values(order.bodyRelatedAccessoriesArray).reduce(
+                let bodyRelatedAccessoriesTotalPrice = order.bodyRelatedAccessoriesArray.reduce(
                   (currentTotal: number, accessoryObj: TReceivedAccessoryObj) => {
                     return currentTotal + accessoryObj.price;
                   },
                   0,
                 );
                 // get total of dimension related accessories
-                let dimensionRelatedAccessoriesTotalPrice = Object.values(
-                  order.dimensionRelatedAccessoriesArray,
-                ).reduce((currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
-                  return currentTotal + dimensionAccessoryObj.price;
-                }, 0);
+                let dimensionRelatedAccessoriesTotalPrice = order.dimensionRelatedAccessoriesArray.reduce(
+                  (currentTotal: number, dimensionAccessoryObj: TReceivedDimensionAccessoryObj) => {
+                    return currentTotal + dimensionAccessoryObj.price;
+                  },
+                  0,
+                );
 
                 totalAccessoriesPrice =
                   generalAccessoriesTotalPrice +
@@ -433,36 +428,35 @@ const OrdersSlidebar: React.FC<Props> = ({
                   price: number;
                 };
 
-                // let tempModelSubtotalPrice = modelSubtotalPrice;
-                // tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
-                // let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
-                // roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
-                // roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
+                let tempModelSubtotalPrice = modelSubtotalPrice;
+                tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
+                let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
+                roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
+                roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
 
-                // let JPJEHakMilik = Object.values(order.chargesFeesDict).filter(
-                //   (charges) => charges.title === 'JPJ Registration & E Hak Milik',
-                // );
+                let JPJEHakMilik = order.chargesFeesArray.filter(
+                  (charges) => charges.title === 'JPJ Registration & E Hak Milik',
+                );
 
-                // let insuranceArray = [
-                //   {
-                //     title: 'Road tax (1year)',
-                //     price: 1015,
-                //   },
-                //   {
-                //     title: JPJEHakMilik[0].title,
-                //     price: JPJEHakMilik[0].price,
-                //   },
-                //   {
-                //     title: 'INSURANCE PREMIUM (windscreen included)',
-                //     price: roundedModelSubtotalPrice,
-                //   },
-                // ];
+                let insuranceArray = [
+                  {
+                    title: 'Road tax (1year)',
+                    price: 1015,
+                  },
+                  {
+                    title: JPJEHakMilik[0].title,
+                    price: JPJEHakMilik[0].price,
+                  },
+                  {
+                    title: 'INSURANCE PREMIUM (windscreen included)',
+                    price: roundedModelSubtotalPrice,
+                  },
+                ];
 
                 /* ======================== */
                 // Insurance subtotal price
                 /* ====================== */
-                if (order.insuranceDict === null) return null;
-                let insuranceSubtotalPrice = Object.values(order.insuranceDict).reduce(
+                let insuranceSubtotalPrice = insuranceArray.reduce(
                   (currentTotal: number, insuranceObj: insuranceType) => {
                     return currentTotal + insuranceObj.price;
                   },
@@ -484,18 +478,8 @@ const OrdersSlidebar: React.FC<Props> = ({
                       <Menu.Item
                         className="catalog__menu-item"
                         onClick={() => {
-                          // setShowDiscountModal(true);
-                          // setClickedOrder(order);
-
-                          if (order && order.bodyMakeObj) {
-                            const { length, make_wheelbase, body } = order.bodyMakeObj;
-                            history.push(
-                              `/quotation/${convertSpaceInStringWithChar(
-                                `${make_wheelbase.make.brand.title}-${make_wheelbase.make.series}-${length.title}ft-${body.title}-${make_wheelbase.make.title}`,
-                                '',
-                              )}/${order.id}`,
-                            );
-                          }
+                          setShowDiscountModal(true);
+                          setClickedOrder(order);
                         }}
                       >
                         Generate quotation
@@ -505,16 +489,10 @@ const OrdersSlidebar: React.FC<Props> = ({
                       danger
                       className="catalog__menu-item--danger"
                       onClick={() => {
-                        // if (onRemoveAnOrder !== undefined) {
-                        //   console.log('hello');
-                        //   onRemoveAnOrder(order.id, localOrdersArray);
-                        // }
-                        if (localOrdersDict === undefined) return;
-                        let copiedLocalOrdersDict = { ...localOrdersDict };
-                        // copy the object first then remove the item from the object, then update the whole thing
-
-                        delete copiedLocalOrdersDict[order.id];
-                        onSetLocalOrdersDict(copiedLocalOrdersDict);
+                        if (onRemoveAnOrder !== undefined) {
+                          console.log('hello');
+                          onRemoveAnOrder(order.id, localOrdersArray);
+                        }
                       }}
                     >
                       Remove from order
@@ -716,13 +694,13 @@ const OrdersSlidebar: React.FC<Props> = ({
                                 {order.generalAccessoriesArray &&
                                   order.bodyRelatedAccessoriesArray &&
                                   order.dimensionRelatedAccessoriesArray &&
-                                  Object.keys(order.generalAccessoriesArray).length === 0 &&
-                                  Object.keys(order.bodyRelatedAccessoriesArray).length === 0 &&
-                                  Object.keys(order.dimensionRelatedAccessoriesArray).length === 0 && <span>None</span>}
+                                  order.generalAccessoriesArray.length === 0 &&
+                                  order.bodyRelatedAccessoriesArray.length === 0 &&
+                                  order.dimensionRelatedAccessoriesArray.length === 0 && <span>None</span>}
                                 <>
                                   {order.generalAccessoriesArray &&
-                                    Object.keys(order.generalAccessoriesArray).length > 0 &&
-                                    Object.values(order.generalAccessoriesArray).map((accessory) => (
+                                    order.generalAccessoriesArray.length > 0 &&
+                                    order.generalAccessoriesArray.map((accessory) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span>{accessory.title} </span>
@@ -745,8 +723,8 @@ const OrdersSlidebar: React.FC<Props> = ({
                                 </>
                                 <>
                                   {order.bodyRelatedAccessoriesArray &&
-                                    Object.keys(order.bodyRelatedAccessoriesArray).length > 0 &&
-                                    Object.values(order.bodyRelatedAccessoriesArray).map((accessory) => (
+                                    order.bodyRelatedAccessoriesArray.length > 0 &&
+                                    order.bodyRelatedAccessoriesArray.map((accessory) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span>{accessory.title} </span>
@@ -769,8 +747,8 @@ const OrdersSlidebar: React.FC<Props> = ({
                                 </>
                                 <>
                                   {order.dimensionRelatedAccessoriesArray &&
-                                    Object.keys(order.dimensionRelatedAccessoriesArray).length > 0 &&
-                                    Object.values(order.dimensionRelatedAccessoriesArray).map((dimension) => (
+                                    order.dimensionRelatedAccessoriesArray.length > 0 &&
+                                    order.dimensionRelatedAccessoriesArray.map((dimension) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span> {dimension.accessory.title} </span>
@@ -863,7 +841,7 @@ const OrdersSlidebar: React.FC<Props> = ({
                                   key={`insurance${index}`}
                                 >
                                   <ul className="ordersslidebar__overview-list">
-                                    {Object.values(order.insuranceDict).map((item) => (
+                                    {insuranceArray.map((item) => (
                                       <li key={uuidv4()}>
                                         <div className="flex space-between">
                                           <span> {item.title}</span>
@@ -927,8 +905,12 @@ const OrdersSlidebar: React.FC<Props> = ({
           ) : (
             <div className="ordersslidebar__overview-empty-div">
               <Empty description={<span>You have no order currently</span>}>
-                <Button className="ordersslidebar__overview-empty-btn" type="primary">
-                  <a className="ordersslidebar__overview-link" href={ROUTE_CATALOG}>
+                <Button
+                  className="ordersslidebar__overview-empty-btn"
+                  type="primary"
+                  // onClick={() => history.push('/sales')}
+                >
+                  <a className="ordersslidebar__overview-link" href={ROUTE_SALES}>
                     Make a new order
                   </a>
                 </Button>
@@ -943,21 +925,21 @@ const OrdersSlidebar: React.FC<Props> = ({
 
 interface StateProps {
   accessObj?: TUserAccess;
-  localOrdersDict?: { [key: string]: TLocalOrderObj };
+  localOrdersArray?: TLocalOrderObj[];
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
-    localOrdersDict: state.sales.localOrdersDict,
+    localOrdersArray: state.sales.localOrdersArray,
   };
 };
 
 interface DispatchProps {
-  onSetLocalOrdersDict: typeof actions.setLocalOrdersDict;
+  onRemoveAnOrder?: typeof actions.removeAnOrder;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
-    onSetLocalOrdersDict: (localOrdersDict) => dispatch(actions.setLocalOrdersDict(localOrdersDict)),
+    onRemoveAnOrder: (orderId, localOrdersArray) => dispatch(actions.removeAnOrder(orderId, localOrdersArray)),
   };
 };
 
