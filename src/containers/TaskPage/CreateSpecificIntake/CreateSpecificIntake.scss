@@ -191,28 +191,10 @@
     border-radius: 1rem;
     text-align: center;
     width: 50%;
+    margin: 2rem 0;
 
-    @include respond-to($small-phone) {
-      margin: 0.5rem 0;
-      height: 4rem;
-      width: 100%;
-      &:not(:first-child) {
-        margin-left: 0;
-      }
-      &:not(:last-child) {
-        margin-right: 0;
-      }
-    }
-    @include respond-to($phone-only) {
-      margin: 0.5rem 0;
-      height: 4rem;
-      width: 100%;
-      &:not(:first-child) {
-        margin-left: 0;
-      }
-      &:not(:last-child) {
-        margin-right: 0;
-      }
+    &:not(:first-child) {
+      margin-left: 1rem;
     }
 
     @include respond-to($tablet-portrait-up) {
@@ -244,20 +226,6 @@
       display: flex;
       justify-content: space-between;
       margin-top: 1rem;
-      /* ===================================== */
-      // push box to stack on each other on smaller screen
-      /* ===================================== */
-      @include respond-to($small-phone) {
-        flex-direction: column;
-        margin-top: 1rem;
-      }
-      @include respond-to($phone-only) {
-        margin-top: 1rem;
-        flex-direction: column;
-      }
-      @include respond-to($tablet-portrait-up) {
-        flex-direction: row;
-      }
     }
 
     &-icon {
@@ -286,24 +254,8 @@
       max-height: 15rem;
       overflow-y: auto;
       @include customScrollbar();
-      @include respond-to($small-phone) {
-        height: 5rem;
-        min-height: 5rem;
-        max-height: 5rem;
-      }
-      @include respond-to($phone-only) {
-        height: 5rem;
-        min-height: 5rem;
-        max-height: 5rem;
-      }
-      @include respond-to($tablet-portrait-up) {
-        min-height: 10rem;
-        max-height: 12.5rem;
-      }
-
       &--users {
         margin: 0.3rem 0.3rem 0.3rem 0;
-        overflow: hidden;
       }
     }
   }
@@ -477,7 +429,6 @@
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
         }
-
         &
           .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
           .ant-select-selector {
@@ -516,39 +467,9 @@
       /* ----------------------------- */
       &--users {
         width: 90% !important;
-        overflow: hidden;
-        // max-width: 20rem !important;
-
-        @include respond-to($small-phone) {
-          max-width: 100% !important;
-          // overflow: auto;
-          overflow: hidden !important;
-          height: 3.4rem;
-          // @include customScrollbar();
-        }
-        @include respond-to($phone-only) {
-          overflow: hidden !important;
-          max-width: 100% !important;
-          // overflow: auto;
-          height: 3.4rem;
-          // @include customScrollbar();
-        }
-        @include respond-to($tablet-portrait-up) {
-          width: 90% !important;
-          height: auto;
-          padding: 1rem 0 !important;
-          max-width: 17rem !important;
-        }
-
+        max-width: 20rem !important;
         & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: white !important;
-          overflow: hidden !important;
-        }
-        & .ant-select-selection-overflow {
-          display: flex !important;
-          overflow-y: hidden !important;
-          flex-wrap: nowrap;
-          width: 1rem !important; //not sure how this is working
         }
         &
           .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)

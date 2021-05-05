@@ -58,7 +58,7 @@
         position: relative;
       }
       &:hover {
-        background: #14295a !important;
+        background: #14295a;
         transition: all 0.5s ease;
       }
     }
@@ -82,20 +82,9 @@
   }
 
   &__title {
-    &-div {
-      display: flex;
-      color: #df7471;
-      font-size: 3rem;
-      font-family: $font-bebasneue !important;
-    }
-
-    &-regNumber {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: calc(100% - 11rem);
-    }
+    color: #df7471;
+    font-size: 3rem;
+    font-family: $font-bebasneue !important;
     &--bay {
       color: white;
     }
@@ -130,4 +119,5 @@
       width: 20rem;
     }
   }
+
 }

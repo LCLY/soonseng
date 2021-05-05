@@ -143,7 +143,7 @@ export interface IIntakeUser {
   id: number;
   user: {
     id: number;
-    username: string;
+    email: string;
     first_name: string;
     last_name: string;
     role: string;

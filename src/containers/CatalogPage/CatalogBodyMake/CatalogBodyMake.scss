@@ -103,17 +103,7 @@
     object-fit: cover;
 
     &-bgcover {
-      @include respond-to($small-phone) {
-        border-radius: 2rem 2rem 0 0;
-      }
-      @include respond-to($phone-only) {
-        border-radius: 2rem 2rem 0 0;
-      }
-      @include respond-to($tablet-landscape-up) {
-        border-radius: 2rem 0 0 2rem;
-      }
-
-      background-image: radial-gradient(rgba(70, 70, 70, 0.4) 10%, rgb(38, 38, 38) 85%);
+      background-image: radial-gradient(rgba(255, 255, 255, 0) 30%, rgb(38, 38, 38));
     }
 
     &--placeholder {
@@ -130,21 +120,13 @@
       display: grid;
       padding: 5rem 5rem 7rem 5rem;
       place-items: center;
-      @include respond-to($small-phone) {
-        border-radius: 2rem 2rem 0 0;
-      }
-      @include respond-to($phone-only) {
-        border-radius: 2rem 2rem 0 0;
-      }
-      @include respond-to($tablet-landscape-up) {
-        border-radius: 2rem 0 0 2rem;
-      }
     }
     /* -------------- */
     // div wrapping the banner
     /* -------------- */
     &-div {
       position: relative;
+
       @include respond-to($tablet-portrait-up) {
         width: 100%;
       }
@@ -339,7 +321,6 @@
       }
 
       @include respond-to($tablet-landscape-up) {
-        border-radius: 0 2rem 2rem 0;
         min-width: 30rem;
         display: flex;
       }
@@ -355,7 +336,6 @@
         padding: 3rem;
         position: relative;
         background: rgba($primary-color-4, 0.5);
-        border-radius: 0 0 2rem 2rem;
 
         @include respond-to($small-phone) {
           display: block;
