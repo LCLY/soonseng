@@ -7,6 +7,10 @@ import 'react-image-lightbox/style.css';
 // 3rd party lib
 import { BrowserRouter } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
+
+import actioncable from 'actioncable';
+
+// import { ActionCableProvider } from 'react-actioncable-provider';
 // redux
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
@@ -28,6 +32,11 @@ import catalogReducer from 'src/store/reducers/catalog';
 import generalReducer from 'src/store/reducers/general';
 import taskReducer from 'src/store/reducers/task';
 
+export const CableApp: any = {};
+CableApp.cable = actioncable.createConsumer(`${process.env.REACT_APP_WS_API}`);
+
+export const ActionCableContext = React.createContext(CableApp);
+
 // use this when testing locally on mobile
 // const composeEnhancers = compose;
 
@@ -38,7 +47,7 @@ const composeEnhancers =
     : null || compose;
 
 // you want to store only a subset of your state of reducer one
-const saveSalesSubsetFilter = createFilter('sales', ['localOrdersArray']);
+const saveSalesSubsetFilter = createFilter('sales', ['localOrdersDict']);
 const saveAuthSubsetFilter = createFilter('auth', ['auth_token', 'accessObj', 'userInfoObj']);
 const saveGeneralSubsetFilter = createFilter('general', ['projectVersion']);
 
@@ -83,7 +92,13 @@ const app = (
     <ParallaxProvider>
       <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
-          <App />
+          {/* <ActionCableProvider url={`${process.env.REACT_APP_API}/cable`}> */}
+
+          <ActionCableContext.Provider value={CableApp}>
+            <App />
+          </ActionCableContext.Provider>
+
+          {/* </ActionCableProvider> */}
         </PersistGate>
       </BrowserRouter>
     </ParallaxProvider>

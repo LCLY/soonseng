@@ -1,0 +1,530 @@
+.task {
+  &__table {
+    min-height: 70rem;
+    max-height: 100vh;
+    background: rgb(2, 15, 41) !important;
+    // margin-right: 1rem;
+    border: none;
+    // hide table on smaller screen
+
+    @include respond-to($small-phone) {
+      display: none;
+    }
+    @include respond-to($phone-only) {
+      display: block;
+    }
+    @include respond-to($tablet-landscape-up) {
+      display: block;
+    }
+
+    & tr {
+      background: $dark-blue-3;
+
+      &:hover {
+        outline: thin dashed rgb(72, 104, 126);
+      }
+
+      &:nth-child(odd) {
+        background: $dark-blue-2;
+      }
+    }
+
+    & .ant-table-body {
+      padding: 0.5rem 0;
+      background: $dark-blue-3;
+    }
+
+    & {
+      .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row) > td,
+      .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row) > td,
+      .ant-table-thead > tr:hover:not(.ant-table-expanded-row) > td,
+      .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+        background: unset !important; //Change the existing color to `unset`
+      }
+    }
+
+    & td.ant-table-column-sort {
+      background: rgb(17, 30, 61);
+    }
+
+    // the background color of the row when hovered
+    // disable hover so that the update flash animation can happen on top of the hover
+    // & .ant-table-tbody > tr.ant-table-row:hover > td {
+    //   background: rgb(17, 30, 61) ;
+    // }
+    & .ant-table.ant-table-bordered > .ant-table-container {
+      border: none !important;
+    }
+
+    & .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td,
+    .ant-table tfoot > tr > th,
+    .ant-table tfoot > tr > td {
+      overflow-wrap: normal;
+    }
+
+    & td {
+      color: white;
+      border: none !important;
+      font-family: $font-firesans !important;
+    }
+
+    /* ------------------------------- */
+    // the right side div
+    /* ------------------------------- */
+    &--pickup {
+      background: $dark-blue-1;
+      border: 1px solid rgba(255, 255, 255, 0.371);
+      width: 30%;
+      // margin-left: 1rem;
+      // border-radius: 1rem;
+      &-title {
+        height: 35px;
+        color: white;
+        font-family: $font-firesans;
+        display: grid;
+        place-items: center;
+        background: $soft-red;
+      }
+
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($phone-only) {
+        display: none;
+      }
+
+      @include respond-to($tablet-landscape-up) {
+        display: block;
+      }
+    }
+    & .ant-table-thead tr th {
+      background: $soft-red !important;
+      font-family: $font-firesans !important;
+      height: 10px !important;
+      // padding: 0 !important;
+    }
+
+    &-col {
+      &--datetime {
+        font-family: $font-firesans !important;
+      }
+    }
+
+    &-wrapper {
+      display: flex;
+      min-height: 70rem;
+      max-height: 100vh;
+    }
+
+    &-div {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    &-parent {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* -------------------------------------------- */
+    // outerdiv
+    /* -------------------------------------------- */
+    &-outerdiv {
+      overflow: hidden;
+      position: relative;
+      background: #020f29 !important;
+      border: 1px solid white;
+
+      @include respond-to($small-phone) {
+        width: 100%;
+      }
+      @include respond-to($phone-only) {
+        width: 100%;
+      }
+      @include respond-to($tablet-landscape-up) {
+        width: 70%;
+      }
+    }
+
+    &-assignees {
+      font-size: 1.2rem;
+      font-family: $font-pragati;
+      margin-left: 1rem;
+    }
+  }
+
+  // the specific intake component
+  &__specific {
+    &-div {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      &--update {
+        left: 100%;
+      }
+
+      &--create {
+        left: -100%;
+      }
+    }
+  }
+
+  &__header {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+  }
+
+  /* ============================================== */
+  // button
+  /* ============================================== */
+  &__button {
+    &-text {
+      @include respond-to($small-phone) {
+        display: none !important;
+      }
+      @include respond-to($phone-only) {
+        display: none !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        display: inline-block !important;
+      }
+    }
+  }
+  /* ============================================== */
+  // glass background
+  /* ============================================== */
+  &__glass {
+    margin-bottom: 2rem;
+    @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
+    background: rgba(158, 158, 158, 0.344);
+    border-radius: 1rem;
+
+    @include respond-to($small-phone) {
+      padding: 2rem 1rem;
+    }
+    @include respond-to($phone-only) {
+      padding: 2rem 1rem;
+    }
+    @include respond-to($tablet-portrait-up) {
+      padding: 2rem 3rem;
+    }
+  }
+
+  &__link {
+    cursor: pointer;
+    // color: $primary-color-4;
+    color: #df7471;
+    font-size: 1.6rem;
+    font-family: $font-bebasneue !important;
+    text-underline-offset: 0.3rem;
+    // background: red;
+    text-decoration: underline !important;
+    &:hover {
+      text-decoration: underline !important;
+      text-underline-offset: 0.3rem;
+      color: rgb(245, 172, 170);
+    }
+  }
+
+  &__form {
+    &-input {
+      &-left {
+        width: 60rem;
+        & label {
+          width: 13rem;
+        }
+      }
+      &--checkbox {
+        margin-left: 2rem !important;
+      }
+    }
+
+    &-user {
+      &-div {
+        display: flex;
+        cursor: default;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid $translucent-grey;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background: $primary-color-4;
+        &:not(:last-child) {
+          margin-right: 0.5rem;
+        }
+      }
+      &-text {
+        color: white;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  &__loading {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30rem;
+      background: rgba(147, 155, 187, 0.179);
+    }
+
+    & div {
+      position: absolute;
+      top: 33px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: $primary-color-3;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    & div:nth-child(1) {
+      left: 8px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+    & div:nth-child(2) {
+      left: 8px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    & div:nth-child(3) {
+      left: 32px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    & div:nth-child(4) {
+      left: 56px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0);
+      }
+    }
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(24px, 0);
+      }
+    }
+  }
+
+  &__collapse {
+    border: none !important;
+
+    /* ====================================== */
+    // Header of the panel
+    /* ====================================== */
+    & .ant-collapse-header {
+      color: white !important;
+      font-family: $font-pragati;
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      & .anticon {
+        font-size: 1rem !important;
+      }
+    }
+
+    // the content of the expanded panels/dropdown
+    & .ant-collapse-item {
+      border-top: 1px solid grey;
+      border-left: none;
+      border-right: none;
+      font-size: 1.4rem;
+
+      &:not(:last-child) {
+        border-bottom: none;
+      }
+      &:last-child {
+        border-bottom: 1px solid grey;
+      }
+    }
+    & .ant-collapse-item:nth-child(odd) {
+      background: $dark-blue-2;
+    }
+    & .ant-collapse-item:nth-child(even) {
+      background: $dark-blue-3;
+    }
+
+    & .ant-collapse-content-box {
+      color: white;
+      font-family: $font-pragati;
+      background: #203052;
+      padding: 1rem 0.5rem 0.5rem 0.5rem !important;
+    }
+    &-div {
+      overflow: auto;
+      // since height of title is 35px, needa minus its height with 35px
+      height: calc(100% - 35px);
+      @include customScrollbar(0.2rem, 0.1rem, 1rem, white, rgba(255, 255, 255, 0.337));
+    }
+
+    /* ================================ */
+    // the title/header of each panel
+    /* ================================ */
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      // the title on the left
+      &-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: calc(100% - 6rem);
+      }
+
+      // the time on the right
+      &-time {
+        display: flex;
+        align-items: center;
+        & .fa-clock {
+          margin-right: 0.5rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    /* ================================ */
+    // the content of within the expanded panel
+    /* ================================ */
+    &-content {
+      background: $form-items-grey;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px dashed rgba(255, 255, 255, 0.392);
+    }
+
+    /* ================================ */
+    // row of note, description and user
+    /* ================================ */
+    &-row {
+      display: flex;
+      // align-items: center;
+      line-height: normal;
+      &-label {
+        width: 6.5rem;
+      }
+      &-description {
+        // display: flex;
+        width: calc(100% - 6.5rem);
+        word-wrap: break-word;
+        max-height: 10rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        @include customScrollbar(0.3rem, 0.3rem, 1rem, $soft-red, white);
+      }
+      &--user {
+        & .fa-user {
+          font-size: 0.8rem;
+          margin-right: 0.5rem;
+        }
+        justify-content: flex-end;
+      }
+    }
+
+    &-spin {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+.lds-spinner div {
+  // transform-origin: 40px 40px;
+  animation: lds-spinner 1.2s linear infinite;
+}
+.lds-spinner div:after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  top: 20px;
+  left: 5px;
+  width: 3px;
+  height: 10px;
+  border-radius: 20%;
+  background: white;
+}
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.lds-spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.lds-spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.lds-spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.lds-spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.lds-spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.lds-spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.lds-spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes lds-spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

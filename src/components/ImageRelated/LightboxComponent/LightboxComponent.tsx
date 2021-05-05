@@ -30,6 +30,7 @@ const LightboxComponent: React.FC<Props> = ({ images, photoIndex, isOpen, setPho
     <>
       {isOpen && (
         <Lightbox
+          toolbarButtons={[<div style={{ marginRight: '1.5rem' }}>{`${photoIndex + 1}/${images.length}`}</div>]}
           mainSrc={imageUrlsArray[photoIndex]}
           nextSrc={imageUrlsArray[(photoIndex + 1) % imageUrlsArray.length]}
           prevSrc={imageUrlsArray[(photoIndex + imageUrlsArray.length - 1) % imageUrlsArray.length]}

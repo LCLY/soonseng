@@ -8,8 +8,8 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
-import TableImageViewer from 'src/components/ImageRelated/TableImageViewer/TableImageViewer';
 import PreviewUploadImage from 'src/components/ImageRelated/PreviewUploadImage/PreviewUploadImage';
+import FullImageGalleryModal from 'src/components/ImageRelated/FullImageGalleryModal/FullImageGalleryModal';
 
 /*3rd party lib*/
 import {
@@ -44,6 +44,7 @@ import {
   TReceivedSeriesObj,
   TReceivedMakeWheelbaseObj,
 } from 'src/store/types/dashboard';
+
 import {
   setFilterReference,
   convertHeader,
@@ -52,10 +53,10 @@ import {
   onClearAllSelectedImages,
   emptyStringWhenUndefinedOrNull,
 } from 'src/shared/Utils';
-
 import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
+import { UPLOAD_TO_BRAND, UPLOAD_TO_SERIES } from 'src/shared/constants';
 import { TGalleryImageArrayObj } from 'src/components/ImageRelated/ImageGallery/ImageGallery';
 
 const { Option } = Select;
@@ -108,10 +109,11 @@ type TMakeTableState = {
 };
 
 type TDeleteModalContent = {
-  make_wheelbase: { make_wheelbase_id: number; make_wheelbase_title: string; make_title: string };
+  make: { make_id: number; make_title: string };
   brand: { brand_id: number; brand_title: string };
   wheelbase: { wheelbase_id: number; wheelbase_title: string };
-  make: { make_id: number; make_title: string };
+  series: { series_title: string; brand_id: number; series_id: number };
+  make_wheelbase: { make_wheelbase_id: number; make_wheelbase_title: string; make_title: string };
 };
 
 // Type for values from onCreateMakeFinish / onUpdateMakeFinish thats from the form
@@ -182,11 +184,12 @@ const Make: React.FC<Props> = ({
   onGetSeries,
   onCreateSeries,
   onUpdateSeries,
+  onDeleteSeries,
   // make wheelbase
   makeWheelbasesArray,
   onGetMakeWheelbases,
-  onCreateMakeWheelbase,
-  onUpdateMakeWheelbase,
+  // onCreateMakeWheelbase,
+  // onUpdateMakeWheelbase,
   onDeleteMakeWheelbase,
   // image
   imagesUploaded,
@@ -197,14 +200,14 @@ const Make: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
   // ref for forms
-  const [createBrandForm] = Form.useForm();
-  const [updateBrandForm] = Form.useForm();
-  const [createWheelbaseForm] = Form.useForm();
-  const [updateWheelbaseForm] = Form.useForm();
   const [createMakeForm] = Form.useForm();
   const [updateMakeForm] = Form.useForm();
+  const [createBrandForm] = Form.useForm();
+  const [updateBrandForm] = Form.useForm();
   const [createSeriesForm] = Form.useForm();
   const [updateSeriesForm] = Form.useForm();
+  const [createWheelbaseForm] = Form.useForm();
+  const [updateWheelbaseForm] = Form.useForm();
   const [createMakeWheelbaseForm] = Form.useForm();
   const [updateMakeWheelbaseForm] = Form.useForm();
 
@@ -244,6 +247,21 @@ const Make: React.FC<Props> = ({
     make_wheelbase: false,
   });
 
+  // use this to refill the images in the image gallery based on which category and the ids
+  interface IRefillImageGallery {
+    currentOpened: string | 'brand' | 'series';
+    brand?: { brand_id: number };
+    series?: { brand_id: number; series_id: number };
+  }
+  // here im using currentOpened to track which category's image gallery im opening
+  // then use the brand id or series id or other info necessary to filter the global array
+  // and get the latest updated image to make it appear to look like its being updated
+  const [refillImageGallery, setRefillImageGallery] = useState<IRefillImageGallery>({
+    currentOpened: '',
+    brand: { brand_id: -1 },
+    series: { brand_id: -1, series_id: -1 },
+  });
+
   // state to track which brand we are using
   const [selectedBrand, setSelectedBrand] = useState<{ brandId: number; brandTitle: string } | null>(null);
   const [selectedMake, setSelectedMake] = useState<{
@@ -254,10 +272,11 @@ const Make: React.FC<Props> = ({
 
   // this state to keep track of what to show on delete modal and what useful info to pass
   const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
-    make_wheelbase: { make_title: '', make_wheelbase_id: -1, make_wheelbase_title: '' },
+    series: { series_title: '', brand_id: -1, series_id: -1 },
+    make: { make_title: '', make_id: -1 },
     brand: { brand_title: '', brand_id: -1 },
     wheelbase: { wheelbase_id: -1, wheelbase_title: '' },
-    make: { make_title: '', make_id: -1 },
+    make_wheelbase: { make_title: '', make_wheelbase_id: -1, make_wheelbase_title: '' },
   });
 
   /* ======================== */
@@ -267,6 +286,12 @@ const Make: React.FC<Props> = ({
   const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
+  // state to store temporary images before user uploads
+  const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
+  const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
+  const [brandFullImageGalleryVisible, setBrandFullImageGalleryVisible] = useState(false);
+  const [seriesFullImageGalleryVisible, setSeriesFullImageGalleryVisible] = useState(false);
+  const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
 
   // edit image gallery
 
@@ -275,7 +300,7 @@ const Make: React.FC<Props> = ({
    * The boolean is to determine whether to show each individual image gallery
    * e.g. make1: false
    */
-  const [showEditImageGallery, setShowEditImageGallery] = useState<{ [key: string]: boolean }>({});
+  // const [showEditImageGallery, setShowEditImageGallery] = useState<{ [key: string]: boolean }>({});
   // To handle one row only expand at a time
   const [expandedRowKeys, setExpandedRowKeys] = useState<ReactText[]>([]);
   // this is to determine if all of the images are selected
@@ -324,7 +349,7 @@ const Make: React.FC<Props> = ({
               <Button
                 type="link"
                 title="Edit Brand"
-                className="make__brand-btn--edit"
+                className="make__brand-btn--closer make__brand-btn--edit"
                 onClick={() => {
                   onPopulateUpdateBrandModal(record);
 
@@ -336,7 +361,8 @@ const Make: React.FC<Props> = ({
               </Button>
               <Button
                 type="link"
-                className="make__brand-btn--edit"
+                title="Disable brand"
+                className="make__brand-btn--closer make__brand-btn--edit"
                 onClick={() => {
                   alert('disable - supposed to set available to false');
                 }}
@@ -345,11 +371,25 @@ const Make: React.FC<Props> = ({
               </Button>
               <Button
                 type="link"
+                title="Edit Images"
+                className="make__brand-btn--closer make__brand-btn--edit"
+                onClick={() => {
+                  setBrandFullImageGalleryVisible(true);
+                  setImageGalleryTargetModelId(record.brandId);
+                  setFullImageGalleryImagesArray(record.brandImages);
+                  setRefillImageGallery({ currentOpened: 'brand', brand: { brand_id: record.brandId } });
+                }}
+              >
+                <i className="fas fa-file-image"></i>
+              </Button>
+              <Button
+                type="link"
+                className="make__brand-btn--closer"
                 title="Delete Brand"
                 danger
                 onClick={() => {
                   // delete modal
-                  setShowDeleteModal({ ...showDeleteModal, make_wheelbase: true });
+                  setShowDeleteModal({ ...showDeleteModal, brand: true });
                   setDeleteModalContent({
                     ...deleteModalContent,
                     brand: { brand_id: record.brandId, brand_title: record.brandTitle },
@@ -609,30 +649,30 @@ const Make: React.FC<Props> = ({
    * @param {TReceivedImageObj[]} recordImagesArray
    * @category Helper function
    */
-  const onPopulateImagesArray = (recordImagesArray: TReceivedImageObj[]) => {
-    let tempArray: TGalleryImageArrayObj[] = [];
+  // const onPopulateImagesArray = (recordImagesArray: TReceivedImageObj[]) => {
+  //   let tempArray: TGalleryImageArrayObj[] = [];
 
-    // Populate the array state with every image and later pass to Image Gallery
-    const storeValue = (image: TReceivedImageObj) => {
-      let imageObject = {
-        id: image.id,
-        src: image.url,
-        thumbnail: image.url,
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        alt: image.filename,
-        nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
-        isSelected: false,
-        tags: [{ value: image.tag ? image.tag : ' - ', title: image.tag ? image.tag : ' - ' }],
-        caption: image.filename,
-      };
+  //   // Populate the array state with every image and later pass to Image Gallery
+  //   const storeValue = (image: TReceivedImageObj) => {
+  //     let imageObject = {
+  //       id: image.id,
+  //       src: image.url,
+  //       thumbnail: image.url,
+  //       thumbnailWidth: 320,
+  //       thumbnailHeight: 212,
+  //       alt: image.filename,
+  //       nano: 'https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif', //spinner gif
+  //       isSelected: false,
+  //       tags: [{ value: image.tag ? image.tag : ' - ', title: image.tag ? image.tag : ' - ' }],
+  //       caption: image.filename,
+  //     };
 
-      tempArray.push(imageObject);
-    };
-    recordImagesArray.map(storeValue);
+  //     tempArray.push(imageObject);
+  //   };
+  //   recordImagesArray.map(storeValue);
 
-    setGalleryImages(tempArray);
-  };
+  //   setGalleryImages(tempArray);
+  // };
 
   /**
    * This function takes in the record of the current row of the table
@@ -698,28 +738,11 @@ const Make: React.FC<Props> = ({
   /* ===================================== */
   // Brand
   /* ===================================== */
-  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string; imageTag: string }) => {
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onCreateBrand(values.brandTitle, values.brandDescription, values.imageTag, uploadSelectedFiles);
-    } else {
-      onCreateBrand(values.brandTitle, values.brandDescription, null, null);
-    }
+  const onCreateBrandFinish = (values: { brandTitle: string; brandDescription: string }) => {
+    onCreateBrand(values.brandTitle, values.brandDescription);
   };
-  const onEditBrandFinish = (values: {
-    brandId: number;
-    brandTitle: string;
-    brandDescription: string;
-    imageTag: string;
-  }) => {
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription, values.imageTag, uploadSelectedFiles);
-    } else {
-      onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription, null, null);
-    }
+  const onEditBrandFinish = (values: { brandId: number; brandTitle: string; brandDescription: string }) => {
+    onUpdateBrand(values.brandId, values.brandTitle, values.brandDescription);
   };
 
   /* ===================================== */
@@ -739,6 +762,7 @@ const Make: React.FC<Props> = ({
   const onCreateWheelbaseFinish = (values: { wheelbaseTitle: string; wheelbaseDescription: string }) => {
     onCreateWheelbase(values.wheelbaseTitle, values.wheelbaseDescription);
   };
+
   const onEditWheelbaseFinish = (values: {
     wheelbaseId: number;
     wheelBaseTitle: string;
@@ -746,12 +770,17 @@ const Make: React.FC<Props> = ({
   }) => {
     onUpdateWheelbase(values.wheelbaseId, values.wheelBaseTitle, values.wheelbaseDescription);
   };
+
   const onDeleteWheelbaseFinish = () => {
     onDeleteWheelbase(deleteModalContent.wheelbase.wheelbase_id);
   };
 
   const onDeleteMakeFinish = () => {
     onDeleteMake(deleteModalContent.make.make_id);
+  };
+
+  const onDeleteSeriesFinish = () => {
+    onDeleteSeries(deleteModalContent.series.brand_id, deleteModalContent.series.series_id);
   };
 
   /* ===================================== */
@@ -778,13 +807,14 @@ const Make: React.FC<Props> = ({
       price: convertPriceToFloat(values.price),
     };
 
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onCreateMake(createMakeData, values.imageTag, uploadSelectedFiles);
-    } else {
-      onCreateMake(createMakeData, null, null); //call create make api
-    }
+    onCreateMake(createMakeData);
+    // if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+    //   // if there are files being selected to be uploaded
+    //   // then send the tag and image files to the api call
+    //   onCreateMake(createMakeData, values.imageTag, uploadSelectedFiles);
+    // } else {
+    //   onCreateMake(createMakeData, null, null); //call create make api
+    // }
   };
 
   // Edit Make
@@ -807,25 +837,26 @@ const Make: React.FC<Props> = ({
       emission: emptyStringWhenUndefinedOrNull(values.emission),
       price: convertPriceToFloat(values.price),
     };
-
-    if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
-      // if there are files being selected to be uploaded
-      // then send the tag and image files to the api call
-      onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
-    } else {
-      onUpdateMake(updateMakeData, null, null);
-    }
+    onUpdateMake(updateMakeData);
+    // if (uploadSelectedFiles && uploadSelectedFiles.length > 0) {
+    //   // if there are files being selected to be uploaded
+    //   // then send the tag and image files to the api call
+    //   onUpdateMake(updateMakeData, values.imageTag, uploadSelectedFiles);
+    // } else {
+    //   onUpdateMake(updateMakeData, null, null);
+    // }
   };
 
   /* ===================================== */
   // Make Wheelbase
   /* ===================================== */
-  const onCreateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number }) => {
-    onCreateMakeWheelbase(values.makeId, values.wheelbaseId);
+  const onCreateMakeWheelbaseFinish = (_values: { wheelbaseId: number; makeId: number }) => {
+    alert('DISABLED CREATE MAKE WHEELBASE');
+    // onCreateMakeWheelbase(values.makeId, values.wheelbaseId);
   };
-  const onUpdateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number; makeWheelbaseId: number }) => {
-    onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId);
-  };
+  // const onUpdateMakeWheelbaseFinish = (values: { wheelbaseId: number; makeId: number; makeWheelbaseId: number }) => {
+  //   onUpdateMakeWheelbase(values.makeWheelbaseId, values.makeId, values.wheelbaseId);
+  // };
 
   /**
    * For user to be able to press enter and submit the form
@@ -883,12 +914,12 @@ const Make: React.FC<Props> = ({
             onTableRowExpand(expanded, record);
             // this closes all the edit image gallery when user expand other row
             // clearing out all the booleans
-            setShowEditImageGallery({});
+            // setShowEditImageGallery({});
             // this function is passed to imageGallery
             //  it will simply uncheck everything
-            onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
+            // onClearAllSelectedImages(selectAllChecked, setSelectAllChecked, galleryImages, setGalleryImages);
             // populate image array state and pass to ImageGallery component
-            onPopulateImagesArray(record.makeImages);
+            // onPopulateImagesArray(record.makeImages);
           }}
         />
       );
@@ -916,53 +947,80 @@ const Make: React.FC<Props> = ({
     );
   };
 
-  const onExpandedRowRender = (record: TMakeTableState | TBrandTableState) => {
-    let tableName: string = ''; //the names have to come from TShowModal
-    let tableSpecificId: number = -1;
-    let recordImageArray: TReceivedImageObj[] = [];
+  const onExpandedRowRender = (_record: TMakeTableState | TBrandTableState) => {
+    // let tableName: string = ''; //the names have to come from TShowModal
+    // let tableSpecificId: number = -1;
+    // let recordImageArray: TReceivedImageObj[] = [];
 
-    if ('makeImages' in record && 'makeId' in record) {
-      tableName = 'make';
-      recordImageArray = record.makeImages;
-      tableSpecificId = record.makeId;
-    } else if ('brandImages' in record && 'brandId' in record) {
-      tableName = 'brand';
-      recordImageArray = record.brandImages;
-      tableSpecificId = record.brandId;
-    }
+    // if ('makeImages' in record && 'makeId' in record) {
+    //   tableName = 'make';
+    //   recordImageArray = record.makeImages;
+    //   tableSpecificId = record.makeId;
+    // } else if ('brandImages' in record && 'brandId' in record) {
+    //   tableName = 'brand';
+    //   recordImageArray = record.brandImages;
+    //   tableSpecificId = record.brandId;
+    // }
 
     return (
       <>
-        {seriesArray &&
-          seriesArray.map((series) => (
-            <div>
-              {series.title}{' '}
-              <Button
-                className="make__brand-btn--edit"
-                type="link"
-                title="Edit Series"
-                onClick={() => {
-                  // delete modal
-                  setShowUpdateModal({ ...showUpdateModal, series: true });
-                }}
-              >
-                <i className="far fa-edit"></i>
-              </Button>
-              <Button
-                type="link"
-                danger
-                title="Delete Series"
-                onClick={() => {
-                  // delete modal
-                  setShowDeleteModal({ ...showDeleteModal, series: true });
-                }}
-              >
-                <i className="far fa-trash-alt"></i>
-              </Button>
-            </div>
-          ))}
+        {seriesArray ? (
+          <>
+            {seriesArray.length > 0
+              ? seriesArray.map((series) => (
+                  <div key={uuidv4()}>
+                    {series.title}
+                    <Button
+                      className="make__brand-btn--edit"
+                      type="link"
+                      title="Edit Series"
+                      onClick={() => {
+                        // delete modal
+                        setShowUpdateModal({ ...showUpdateModal, series: true });
+                      }}
+                    >
+                      <i className="far fa-edit"></i>
+                    </Button>
+                    <Button
+                      type="link"
+                      title="Edit Images"
+                      className="make__brand-btn--closer make__brand-btn--edit"
+                      onClick={() => {
+                        setSeriesFullImageGalleryVisible(true);
+                        setImageGalleryTargetModelId(series.id);
+                        setFullImageGalleryImagesArray(series.images);
+                        setRefillImageGallery({
+                          currentOpened: 'series',
+                          series: { brand_id: series.brand, series_id: series.id },
+                        });
+                      }}
+                    >
+                      <i className="fas fa-file-image"></i>
+                    </Button>
+                    <Button
+                      type="link"
+                      danger
+                      title="Delete Series"
+                      onClick={() => {
+                        // delete modal
+                        setShowDeleteModal({ ...showDeleteModal, series: true });
+                        setDeleteModalContent({
+                          ...deleteModalContent,
+                          series: { brand_id: series.brand, series_title: series.title, series_id: series.id },
+                        });
+                      }}
+                    >
+                      <i className="far fa-trash-alt"></i>
+                    </Button>
+                  </div>
+                ))
+              : 'No series yet'}
+          </>
+        ) : (
+          'Loading...'
+        )}
 
-        <TableImageViewer
+        {/* <TableImageViewer
           record={record}
           loading={loading}
           tableName={tableName}
@@ -985,7 +1043,7 @@ const Make: React.FC<Props> = ({
               onPopulateUpdateBrandModal(record);
             }
           }}
-        />
+        /> */}
       </>
     );
   };
@@ -1675,57 +1733,57 @@ const Make: React.FC<Props> = ({
   );
 
   /* Update MakeWheelbase Form */
-  let updateMakeWheelbaseFormComponent = (
-    <>
-      <Form
-        form={updateMakeWheelbaseForm}
-        // name="updateMakeWheelbase"
-        onKeyDown={(e) => handleKeyDown(e, updateMakeWheelbaseForm)}
-        onFinish={onUpdateMakeWheelbaseFinish}
-      >
-        {/* The rest of the form items */}
-        {makeWheelbaseFormItems}
-        {/* Id for update */}
-        <Form.Item
-          hidden
-          label="makeWheelbaseId"
-          name="makeWheelbaseId"
-          rules={[{ required: true, message: 'Assign makewheelbase id!' }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
-    </>
-  );
+  // let updateMakeWheelbaseFormComponent = (
+  //   <>
+  //     <Form
+  //       form={updateMakeWheelbaseForm}
+  //       // name="updateMakeWheelbase"
+  //       onKeyDown={(e) => handleKeyDown(e, updateMakeWheelbaseForm)}
+  //       onFinish={onUpdateMakeWheelbaseFinish}
+  //     >
+  //       {/* The rest of the form items */}
+  //       {makeWheelbaseFormItems}
+  //       {/* Id for update */}
+  //       <Form.Item
+  //         hidden
+  //         label="makeWheelbaseId"
+  //         name="makeWheelbaseId"
+  //         rules={[{ required: true, message: 'Assign makewheelbase id!' }]}
+  //       >
+  //         <Input />
+  //       </Form.Item>
+  //     </Form>
+  //   </>
+  // );
 
   /* Edit MakeWheelbase Modal */
-  let updateMakeWheelbaseModal = (
-    <Modal
-      centered
-      title={
-        <>
-          Edit Configuration
-          {selectedMake ? (
-            <>
-              &nbsp;for
-              <span className="make__modal-title--card">{` ${selectedMake.makeBrandTitle} - ${selectedMake.makeTitle}`}</span>
-            </>
-          ) : (
-            ''
-          )}
-        </>
-      }
-      visible={showUpdateModal.make_wheelbase}
-      onOk={updateMakeWheelbaseForm.submit}
-      confirmLoading={loading}
-      onCancel={() => {
-        setShowUpdateModal({ ...showUpdateModal, make_wheelbase: false });
-      }}
-    >
-      {/* the content within the modal */}
-      {updateMakeWheelbaseFormComponent}
-    </Modal>
-  );
+  // let updateMakeWheelbaseModal = (
+  //   <Modal
+  //     centered
+  //     title={
+  //       <>
+  //         Edit Configuration
+  //         {selectedMake ? (
+  //           <>
+  //             &nbsp;for
+  //             <span className="make__modal-title--card">{` ${selectedMake.makeBrandTitle} - ${selectedMake.makeTitle}`}</span>
+  //           </>
+  //         ) : (
+  //           ''
+  //         )}
+  //       </>
+  //     }
+  //     visible={showUpdateModal.make_wheelbase}
+  //     onOk={updateMakeWheelbaseForm.submit}
+  //     confirmLoading={loading}
+  //     onCancel={() => {
+  //       setShowUpdateModal({ ...showUpdateModal, make_wheelbase: false });
+  //     }}
+  //   >
+  //     {/* the content within the modal */}
+  //     {updateMakeWheelbaseFormComponent}
+  //   </Modal>
+  // );
   /* =================================== */
   /* Make wheelbase expanded component*/
   /* =================================== */
@@ -1842,6 +1900,44 @@ const Make: React.FC<Props> = ({
   };
 
   /* ================================ */
+  // Image Gallery Modal
+  /* ================================ */
+  let brandFullImageGalleryModal = (
+    <FullImageGalleryModal
+      indexKey={'brand'}
+      modelName={UPLOAD_TO_BRAND}
+      modelId={imageGalleryTargetModelId}
+      uploadSelectedFiles={uploadSelectedFiles}
+      setUploadSelectedFiles={setUploadSelectedFiles}
+      imagesPreviewUrls={fullGalleryImagesPreviewUrls}
+      setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
+      visible={brandFullImageGalleryVisible}
+      setVisible={setBrandFullImageGalleryVisible}
+      loading={loading !== undefined && loading}
+      imagesArray={fullImageGalleryImagesArray}
+      onDeleteUploadImage={onDeleteUploadImage}
+      onClearAllSelectedImages={onClearAllSelectedImages}
+    />
+  );
+  let seriesFullImageGalleryModal = (
+    <FullImageGalleryModal
+      indexKey={'series'}
+      modelName={UPLOAD_TO_SERIES}
+      modelId={imageGalleryTargetModelId}
+      uploadSelectedFiles={uploadSelectedFiles}
+      setUploadSelectedFiles={setUploadSelectedFiles}
+      imagesPreviewUrls={fullGalleryImagesPreviewUrls}
+      setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
+      visible={seriesFullImageGalleryVisible}
+      setVisible={setSeriesFullImageGalleryVisible}
+      loading={loading !== undefined && loading}
+      imagesArray={fullImageGalleryImagesArray}
+      onDeleteUploadImage={onDeleteUploadImage}
+      onClearAllSelectedImages={onClearAllSelectedImages}
+    />
+  );
+
+  /* ================================ */
   // Delete Modals
   /* ================================ */
   //  Delete Make Wheelbase Modal
@@ -1939,6 +2035,22 @@ const Make: React.FC<Props> = ({
       setShowModal={setShowDeleteModal}
       warningText={deleteModalContent.make.make_title}
       backupWarningText={'this wheelbase'}
+      loading={loading !== undefined && loading}
+    />
+  );
+  //  Delete Series  Modal
+  let deleteSeriesModal = (
+    <CrudModal
+      crud={'delete'}
+      indexKey={'series'}
+      category={'series'}
+      modalTitle={`Delete Series`}
+      showModal={showDeleteModal}
+      visible={showDeleteModal.series}
+      onDelete={onDeleteSeriesFinish}
+      setShowModal={setShowDeleteModal}
+      warningText={deleteModalContent.series.series_title}
+      backupWarningText={'this series'}
       loading={loading !== undefined && loading}
     />
   );
@@ -2119,16 +2231,78 @@ const Make: React.FC<Props> = ({
     setMakeTableState(tempArray);
   }, [makesArray]);
 
+  // useEffect(() => {
+  //   if (makesArray) {
+  //     // for every make in makesArray, set image gallery with that make id and initialize all as false
+  //     makesArray.forEach((make) => {
+  //       setShowEditImageGallery((prevState: any) => {
+  //         return { ...prevState, ['make' + make.id]: false };
+  //       });
+  //     });
+  //   }
+  // }, [makesArray]);
+
+  // useEffect(() => {
+  //   if (fullImageGalleryVisible && imageGalleryTargetModelId !== -1 && brandsArray) {
+  //     //  check if image gallery is opened
+  //     // then use the target model id to filter out the brands array
+  //     let targetBrand = brandsArray.filter((brand) => brand.id === imageGalleryTargetModelId);
+  //     if (targetBrand.length > 0) {
+  //       setFullImageGalleryImagesArray(targetBrand[0].images);
+  //     }
+  //   }
+  // }, [brandsArray, fullImageGalleryVisible, imageGalleryTargetModelId]);
+
   useEffect(() => {
-    if (makesArray) {
-      // for every make in makesArray, set image gallery with that make id and initialize all as false
-      makesArray.forEach((make) => {
-        setShowEditImageGallery((prevState: any) => {
-          return { ...prevState, ['make' + make.id]: false };
-        });
-      });
+    // here im using currentOpened to track which category's image gallery im opening
+    // then use the brand id or series id or other info necessary to filter the global array
+    // and get the latest updated image to make it appear to look like its being updated
+
+    if (brandFullImageGalleryVisible || seriesFullImageGalleryVisible) {
+      switch (refillImageGallery.currentOpened) {
+        case 'brand':
+          if (brandsArray) {
+            let targetBrand = brandsArray.filter((brand) => brand.id === refillImageGallery.brand?.brand_id);
+            if (targetBrand.length > 0) {
+              setFullImageGalleryImagesArray(targetBrand[0].images);
+            }
+          }
+          break;
+        case 'series':
+          if (seriesArray) {
+            let targetSeries = seriesArray.filter((series) => series.id === refillImageGallery.series?.series_id);
+            if (targetSeries.length > 0) {
+              setFullImageGalleryImagesArray(targetSeries[0].images);
+            }
+          }
+          break;
+        default:
+      }
     }
-  }, [makesArray]);
+  }, [brandsArray, seriesArray, refillImageGallery, brandFullImageGalleryVisible, seriesFullImageGalleryVisible]);
+
+  // if upload is successful, then do a get request just to refresh the images
+  useEffect(() => {
+    if (
+      successMessage &&
+      (successMessage.toLowerCase() === 'Upload successful!'.toLowerCase() ||
+        successMessage.toLowerCase() === 'Delete successful'.toLowerCase())
+    ) {
+      if (brandFullImageGalleryVisible) {
+        onGetBrands();
+      } else if (seriesFullImageGalleryVisible) {
+        if (refillImageGallery.series === undefined) return;
+        onGetSeries(refillImageGallery.series.brand_id);
+      }
+    }
+  }, [
+    successMessage,
+    onGetBrands,
+    onGetSeries,
+    refillImageGallery,
+    seriesFullImageGalleryVisible,
+    brandFullImageGalleryVisible,
+  ]);
 
   /* -------------------- */
   // success notification
@@ -2136,43 +2310,45 @@ const Make: React.FC<Props> = ({
   useEffect(() => {
     if (successMessage) {
       // show success notification
-      notification['success']({
-        message: 'Success',
-        description: successMessage,
-      });
-      // clear the successMessage object, set to null
-      onClearDashboardState();
-      // clear the form inputs using the form reference
-      createBrandForm.resetFields();
-      createWheelbaseForm.resetFields();
-      createMakeForm.resetFields();
-      createSeriesForm.resetFields();
-      createMakeWheelbaseForm.resetFields();
-      // close all the modals if successful
-      setShowCreateModal({
-        ...showCreateModal,
-        brand: false,
-        wheelbase: false,
-        make: false,
-        series: false,
-        make_wheelbase: false,
-      });
-      setShowUpdateModal({
-        ...showUpdateModal,
-        brand: false,
-        wheelbase: false,
-        make: false,
-        series: false,
-        make_wheelbase: false,
-      });
-      setShowDeleteModal({
-        ...showDeleteModal,
-        brand: false,
-        wheelbase: false,
-        make: false,
-        series: false,
-        make_wheelbase: false,
-      });
+      setTimeout(() => {
+        notification['success']({
+          message: 'Success',
+          description: successMessage,
+        });
+        // clear the successMessage object, set to null
+        onClearDashboardState();
+        // clear the form inputs using the form reference
+        createBrandForm.resetFields();
+        createWheelbaseForm.resetFields();
+        createMakeForm.resetFields();
+        createSeriesForm.resetFields();
+        createMakeWheelbaseForm.resetFields();
+        // close all the modals if successful
+        setShowCreateModal({
+          ...showCreateModal,
+          brand: false,
+          wheelbase: false,
+          make: false,
+          series: false,
+          make_wheelbase: false,
+        });
+        setShowUpdateModal({
+          ...showUpdateModal,
+          brand: false,
+          wheelbase: false,
+          make: false,
+          series: false,
+          make_wheelbase: false,
+        });
+        setShowDeleteModal({
+          ...showDeleteModal,
+          brand: false,
+          wheelbase: false,
+          make: false,
+          series: false,
+          make_wheelbase: false,
+        });
+      }, 1000);
     }
   }, [
     successMessage,
@@ -2227,11 +2403,14 @@ const Make: React.FC<Props> = ({
       {createSeriesModal}
       {updateSeriesModal}
       {createMakeWheelbaseModal}
-      {updateMakeWheelbaseModal}
+      {/* {updateMakeWheelbaseModal} */}
       {deleteMakeWheelbaseModal}
       {deleteWheelbaseModal}
       {deleteBrandModal}
       {deleteMakeModal}
+      {deleteSeriesModal}
+      {brandFullImageGalleryModal}
+      {seriesFullImageGalleryModal}
 
       <NavbarComponent activePage="make" defaultOpenKeys="dashboard" />
       <Layout>
@@ -2425,6 +2604,7 @@ interface DispatchProps {
   onGetSeries: typeof actions.getSeries;
   onCreateSeries: typeof actions.createSeries;
   onUpdateSeries: typeof actions.updateSeries;
+  onDeleteSeries: typeof actions.deleteSeries;
   // Make Wheelbase
   onGetMakeWheelbases: typeof actions.getMakeWheelbases;
   onCreateMakeWheelbase: typeof actions.createMakeWheelbase;
@@ -2439,10 +2619,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
     // Brand
     onGetBrands: () => dispatch(actions.getBrands()),
-    onCreateBrand: (title, description, tag, imageFiles) =>
-      dispatch(actions.createBrand(title, description, tag, imageFiles)),
-    onUpdateBrand: (brand_id, title, description, imageTag, imageFiles) =>
-      dispatch(actions.updateBrand(brand_id, title, description, imageTag, imageFiles)),
+    onCreateBrand: (title, description) => dispatch(actions.createBrand(title, description)),
+    onUpdateBrand: (brand_id, title, description) => dispatch(actions.updateBrand(brand_id, title, description)),
     onDeleteBrand: (brand_id) => dispatch(actions.deleteBrand(brand_id)),
     // Wheelbase
     onGetWheelbases: () => dispatch(actions.getWheelbases()),
@@ -2452,20 +2630,20 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onDeleteWheelbase: (wheelbase_id) => dispatch(actions.deleteWheelbase(wheelbase_id)),
     // Make
     onGetMakes: () => dispatch(actions.getMakes()),
-    onCreateMake: (createMakeData, imageTag, uploadSelectedFiles) =>
-      dispatch(actions.createMake(createMakeData, imageTag, uploadSelectedFiles)),
-    onUpdateMake: (updateMakeData, imageTag, imageFiles) =>
-      dispatch(actions.updateMake(updateMakeData, imageTag, imageFiles)),
+    onCreateMake: (createMakeData) => dispatch(actions.createMake(createMakeData)),
+    onUpdateMake: (updateMakeData) => dispatch(actions.updateMake(updateMakeData)),
     onDeleteMake: (make_id) => dispatch(actions.deleteMake(make_id)),
     //  Series
     onGetSeries: (brand_id) => dispatch(actions.getSeries(brand_id)),
     onCreateSeries: (brand_id, title) => dispatch(actions.createSeries(brand_id, title)),
     onUpdateSeries: (brand_id, series_id, title) => dispatch(actions.updateSeries(brand_id, series_id, title)),
+    onDeleteSeries: (brand_id, series_id) => dispatch(actions.deleteSeries(brand_id, series_id)),
     // Make wheelbase
     onGetMakeWheelbases: (make_id) => dispatch(actions.getMakeWheelbases(make_id)),
-    onCreateMakeWheelbase: (make_id, wheelbase_id) => dispatch(actions.createMakeWheelbase(make_id, wheelbase_id)),
-    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id) =>
-      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id)),
+    onCreateMakeWheelbase: (make_id, wheelbase_id, original, extension_price) =>
+      dispatch(actions.createMakeWheelbase(make_id, wheelbase_id, original, extension_price)),
+    onUpdateMakeWheelbase: (make_wheelbase_id, make_id, wheelbase_id, original, extension_price) =>
+      dispatch(actions.updateMakeWheelbase(make_wheelbase_id, make_id, wheelbase_id, original, extension_price)),
     onDeleteMakeWheelbase: (make_id, make_wheelbase_id) =>
       dispatch(actions.deleteMakeWheelbase(make_id, make_wheelbase_id)),
     // Image

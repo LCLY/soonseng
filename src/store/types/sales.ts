@@ -30,7 +30,7 @@ export interface SalesInitialState {
   readonly salesBrandObj?: TReceivedSalesMakesObj | null;
   readonly salesBrandsArray?: TReceivedSalesMakesObj[] | null;
   // local orders array / quotation objects array
-  readonly localOrdersArray?: TLocalOrderObj[];
+  readonly localOrdersDict?: { [key: string]: TLocalOrderObj };
   // boolean to know whether fetch successful
   readonly getSalesLengthsSucceed?: boolean | null;
   readonly getSalesBodiesSucceed?: boolean | null;
@@ -56,26 +56,35 @@ export interface ClearSalesStateAction {
 export type TLocalOrderObj = {
   id: string;
   tireCount: number;
+  discount: number | null;
+  standardAccessories: string[];
+  afterSalesStrings: IAfterSales;
   bodyObj: TReceivedBodyObj | null;
-  lengthObj: TReceivedSalesLengthObj | null;
-  generalAccessoriesArray: TReceivedAccessoryObj[];
-  dimensionRelatedAccessoriesArray: TReceivedDimensionAccessoryObj[];
-  bodyRelatedAccessoriesArray: TReceivedAccessoryObj[];
+  insuranceDict: TInsuranceDict | null;
   bodyMakeObj: TReceivedBodyMakeObj | null;
-  chargesFeesArray: TReceivedChargesFeesObj[];
+  lengthObj: TReceivedSalesLengthObj | null;
+  chargesFeesDict: { [id: string]: TReceivedChargesFeesObj };
+  generalAccessoriesArray: { [id: string]: TReceivedAccessoryObj };
+  bodyRelatedAccessoriesArray: { [id: string]: TReceivedAccessoryObj };
+  dimensionRelatedAccessoriesArray: { [id: string]: TReceivedDimensionAccessoryObj };
 };
 
-export interface StoreLocalOrdersAction {
-  type: typeof actionTypes.STORE_LOCAL_ORDERS;
-  localOrdersArray: TLocalOrderObj[];
+export interface IAfterSales {
+  line_1: string;
+  line_2: string;
+  line_3: string;
 }
 
-/* Remove one quotation / order using order unique ID  */
-export interface RemoveAnOrderAction {
-  type: typeof actionTypes.REMOVE_AN_ORDER;
-  orderId: string;
-  localOrdersArray: TLocalOrderObj[];
+export interface IInsurance {
+  id: string;
+  title: string;
+  price: number;
 }
+export type TInsuranceDict = {
+  insurance_roadtax: IInsurance;
+  insurance_jpj: IInsurance;
+  insurance_premium: IInsurance;
+};
 
 /* ------------------ */
 // Get Lengths
@@ -148,7 +157,6 @@ export interface GetSalesBodyMakesAction {
   length_id: number;
   tire: number;
   body_id: number;
-  auth_token: string | null;
 }
 export interface GetSalesBodyMakesStartAction {
   type: typeof actionTypes.GET_SALES_BODYMAKES_START;
@@ -224,6 +232,14 @@ export interface GetSalesMakesFailedAction {
   errorMessage: string;
 }
 
+/* ============================================ */
+// Set Local Orders Dictionary
+/* ============================================ */
+export interface SetLocalOrdersDictAction {
+  type: typeof actionTypes.SET_LOCAL_ORDERS_DICT;
+  localOrdersDict: { [key: string]: TLocalOrderObj };
+}
+
 /* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
@@ -236,9 +252,7 @@ export type SalesActionTypes =
   // Local quotation/ orders
   /* -------------------------- */
   // Store Local Orders
-  | StoreLocalOrdersAction
-  // remove a local Order
-  | RemoveAnOrderAction
+  | SetLocalOrdersDictAction
   /* ------------------------ */
   // Lengths
   /* ------------------------ */

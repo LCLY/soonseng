@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ImageGallery.scss';
 /*components*/
 /*3rd party lib*/
 import Gallery from 'react-grid-gallery';
 import { Button, Modal } from 'antd';
 import { CheckCircleOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { RootState } from 'src';
+import { connect } from 'react-redux';
 
 interface ImageGalleryProps {
   loading?: boolean; //loading for button
@@ -29,12 +31,13 @@ export type TGalleryImageArrayObj = {
   nano: string; //the substitute image when ori image is still loading
 };
 
-type Props = ImageGalleryProps;
+type Props = ImageGalleryProps & StateProps;
 
 const ImageGallery: React.FC<Props> = ({
   loading,
   inEditMode,
   galleryImages,
+  successMessage,
   setGalleryImages,
   customClassName,
   selectAllChecked,
@@ -147,6 +150,15 @@ const ImageGallery: React.FC<Props> = ({
   };
 
   /* ================================================== */
+  /* useEffect */
+  /* ================================================== */
+  useEffect(() => {
+    if (successMessage && successMessage.toLowerCase() === 'Delete successful'.toLowerCase()) {
+      setShowDeleteModal(false);
+    }
+  }, [successMessage]);
+
+  /* ================================================== */
   /* ================================================== */
   return (
     <>
@@ -243,4 +255,11 @@ const ImageGallery: React.FC<Props> = ({
   );
 };
 
-export default ImageGallery;
+interface StateProps {
+  successMessage?: string | null;
+}
+const mapStateToProps = (state: RootState): StateProps => {
+  return { successMessage: state.dashboard.successMessage };
+};
+
+export default connect(mapStateToProps, null)(ImageGallery);

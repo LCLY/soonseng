@@ -34,10 +34,11 @@ export const uploadImageStart = (): AppActions => {
   };
 };
 
-export const uploadImageSucceed = (imagesArray: TReceivedImageObj[]): AppActions => {
+export const uploadImageSucceed = (imagesArray: TReceivedImageObj[], successMessage: string): AppActions => {
   return {
     type: actionTypes.UPLOAD_IMAGE_SUCCEED,
     imagesArray: imagesArray,
+    successMessage: successMessage,
   };
 };
 export const uploadImageFailed = (errorMessage: string): AppActions => {
@@ -79,6 +80,47 @@ export const deleteUploadImageFailed = (errorMessage: string): AppActions => {
 /* ============================================================================================ */
 // Dashboard
 /* ============================================================================================ */
+
+export {
+  /* ---------------- */
+  // Users
+  /* ---------------- */
+  getUsers,
+  getUsersStart,
+  getUsersFailed,
+  getUsersSucceed,
+  createUser,
+  createUserFailed,
+  createUserStart,
+  createUserSucceed,
+  updateUser,
+  updateUserFailed,
+  updateUserStart,
+  updateUserSucceed,
+  deleteUser,
+  deleteUserFailed,
+  deleteUserStart,
+  deleteUserSucceed,
+  /* ---------------- */
+  // Role
+  /* ---------------- */
+  getRoles,
+  getRolesStart,
+  getRolesFailed,
+  getRolesSucceed,
+  createRole,
+  createRoleFailed,
+  createRoleStart,
+  createRoleSucceed,
+  updateRole,
+  updateRoleFailed,
+  updateRoleStart,
+  updateRoleSucceed,
+  deleteRole,
+  deleteRoleFailed,
+  deleteRoleStart,
+  deleteRoleSucceed,
+} from './users';
 
 export {
   /* ---------------- */
@@ -321,3 +363,57 @@ export {
   getDimensionAssociatedAccessoriesSucceed,
   getDimensionAssociatedAccessoriesFailed,
 } from './accessory';
+
+export {
+  // Intake Status
+  getIntakeStatus,
+  getIntakeStatusFailed,
+  getIntakeStatusStart,
+  getIntakeStatusSucceed,
+  createIntakeStatus,
+  createIntakeStatusFailed,
+  createIntakeStatusStart,
+  createIntakeStatusSucceed,
+  updateIntakeStatus,
+  updateIntakeStatusFailed,
+  updateIntakeStatusStart,
+  updateIntakeStatusSucceed,
+  deleteIntakeStatus,
+  deleteIntakeStatusFailed,
+  deleteIntakeStatusStart,
+  deleteIntakeStatusSucceed,
+  // Service/job Types
+  getServiceTypes,
+  getServiceTypesFailed,
+  getServiceTypesStart,
+  getServiceTypesSucceed,
+  createServiceType,
+  createServiceTypeFailed,
+  createServiceTypeStart,
+  createServiceTypeSucceed,
+  deleteServiceType,
+  deleteServiceTypeFailed,
+  deleteServiceTypeStart,
+  deleteServiceTypeSucceed,
+  updateServiceType,
+  updateServiceTypeFailed,
+  updateServiceTypeStart,
+  updateServiceTypeSucceed,
+  // Service Tasks
+  getServiceTasks,
+  getServiceTasksFailed,
+  getServiceTasksStart,
+  getServiceTasksSucceed,
+  createServiceTask,
+  createServiceTaskFailed,
+  createServiceTaskStart,
+  createServiceTaskSucceed,
+  deleteServiceTask,
+  deleteServiceTaskFailed,
+  deleteServiceTaskStart,
+  deleteServiceTaskSucceed,
+  updateServiceTask,
+  updateServiceTaskFailed,
+  updateServiceTaskStart,
+  updateServiceTaskSucceed,
+} from './jobmonitoring';

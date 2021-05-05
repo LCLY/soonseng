@@ -1,0 +1,745 @@
+.createspecificintake {
+  &__outerdiv {
+    background: rgb(1, 12, 36) !important;
+    height: 100%;
+    // border: 1px solid white;
+    color: white;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__section {
+    &-top {
+      padding: 0 2rem;
+    }
+
+    /* ============================ */
+    // bottom part that contains the task table
+    /* ============================ */
+    &-bottom {
+      position: relative;
+      padding: 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      &-title {
+        font-family: $font-bebasneue;
+        font-size: 2rem;
+
+        &-div {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+      & th {
+        white-space: nowrap !important;
+        padding: 0 0.5rem 0 1.5rem !important;
+      }
+
+      // place holder text
+      & .ant-empty-description {
+        color: white !important;
+      }
+
+      // placeholder when hovered
+      & .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+        background: rgba(5, 18, 49, 0.575) !important;
+      }
+
+      & .ant-table-column-sorters {
+        padding: 0.3rem !important;
+      }
+      & .ant-table-body {
+        overflow: auto !important;
+        max-height: 23.5rem !important;
+        border-bottom: 1px solid white;
+      }
+
+      & tr {
+        background: rgb(1, 12, 36) !important;
+
+        &:nth-child(odd) {
+          background: rgb(5, 18, 49) !important;
+        }
+      }
+
+      & td.ant-table-column-sort {
+        background: rgb(17, 30, 61) !important;
+      }
+
+      // the background color of the row when hovered
+      & .ant-table-tbody > tr.ant-table-row:hover > td {
+        background: rgb(17, 30, 61) !important;
+      }
+
+      & .ant-table-thead > tr > th,
+      .ant-table-tbody > tr > td,
+      .ant-table tfoot > tr > th,
+      .ant-table tfoot > tr > td {
+        overflow-wrap: normal;
+      }
+
+      & td {
+        color: white;
+        border: none !important;
+        font-family: $font-firesans !important;
+      }
+
+      & .ant-table-cell {
+        padding: 0.5rem 1rem 0.5rem 1.5rem !important;
+      }
+
+      & .ant-table-thead tr th {
+        background: rgb(197, 71, 71) !important;
+        font-family: $font-firesans !important;
+        height: 10px !important;
+        // padding: 0 !important;
+      }
+
+      // @ATTENTION - update specific intake doesnt have to do this dont know why this one need
+      & .ant-select-selection-placeholder {
+        line-height: 24px !important;
+      }
+    }
+
+    &-description {
+      margin-top: 1rem;
+      &-outerdiv {
+        display: flex;
+        align-items: center;
+      }
+      &-text {
+        margin-right: 1rem;
+        font-family: $font-pragati;
+        font-size: 2rem;
+      }
+      &-div {
+        border: 1px solid white;
+        border-radius: 1rem;
+        padding: 0.5rem;
+        background: rgba(94, 96, 100, 0.575);
+        width: 100%;
+      }
+    }
+  }
+
+  &__row {
+    &--registration {
+      display: flex;
+      justify-content: space-between;
+
+      // set bay dropdown to height 100%
+      & .ant-form-item-control-input {
+        height: 100%;
+      }
+      & .ant-form-item-control-input-content {
+        height: 100%;
+      }
+    }
+  }
+
+  &__table {
+    &-header {
+      padding-left: 1rem !important;
+    }
+  }
+  &__box {
+    display: flex;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 1rem;
+    text-align: center;
+    width: 50%;
+    margin: 2rem 0;
+
+    &:not(:first-child) {
+      margin-left: 1rem;
+    }
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
+
+    &--dock {
+      background: rgb(17, 30, 61) !important;
+    }
+
+    &--status {
+      background: rgb(17, 30, 61) !important;
+    }
+
+    &--users {
+      background: rgb(17, 30, 61) !important;
+    }
+
+    &-outerdiv {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    &-icon {
+      font-size: 2rem;
+      color: rgb(17, 30, 61) !important;
+    }
+
+    &-left {
+      border-right: 1px solid white;
+      height: 100%;
+      background: white;
+      border-radius: 0.9rem 0 0 0.9rem;
+      width: 10rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: $font-firesans;
+      width: 100%;
+      min-height: 10rem;
+      max-height: 15rem;
+      overflow-y: auto;
+      @include customScrollbar();
+      &--users {
+        margin: 0.3rem 0.3rem 0.3rem 0;
+      }
+    }
+  }
+
+  &__button {
+    &-task {
+      color: white;
+      border: 1px solid white;
+      border-radius: 0.5rem !important;
+      padding: 0.5rem 1.1rem !important;
+      cursor: pointer;
+      font-size: 1.5rem !important;
+      &--delete {
+        background: $primary-color-3;
+        margin-right: 1rem;
+        &:hover {
+          background: $primary-color-2;
+        }
+        &:active {
+          background: $primary-color-3;
+        }
+      }
+
+      &--cancel {
+        margin-right: 1rem;
+        font-family: $font-firesans;
+        &:hover {
+          background: rgb(61, 62, 70);
+        }
+      }
+
+      &--save {
+        padding: 0rem 1.5rem !important;
+        height: 3.5rem !important;
+        color: white !important;
+        font-family: $font-firesans;
+        background: rgb(31, 92, 157) !important;
+        &:hover {
+          border-color: white !important;
+          background: rgb(39, 108, 182) !important;
+        }
+        &:not(:hover) {
+          border-color: white !important;
+        }
+        &:active {
+          background: rgb(31, 92, 157) !important;
+        }
+      }
+
+      &--edit {
+        padding: 0.5rem 0.9rem;
+        font-family: $font-firesans;
+        background: rgb(31, 92, 157);
+        &:hover {
+          background: rgb(39, 108, 182);
+        }
+        &:active {
+          background: rgb(31, 92, 157);
+        }
+      }
+    }
+  }
+
+  /* ============================= */
+  // form related css
+  /* ============================= */
+  &__form {
+    height: 100%;
+
+    // the description
+    &-input {
+      height: 2.5rem !important;
+      font-size: 1.2rem !important;
+      color: white !important;
+      background: rgb(61, 62, 70) !important;
+
+      // description but for intake
+      &--intakedesc {
+        font-size: 1.5rem !important;
+        padding: 1rem !important;
+        height: 4rem !important;
+        font-family: $font-firesans;
+        width: 100% !important;
+      }
+    }
+    &-checkbox {
+      margin: 0 !important;
+      font-family: $font-firesans;
+      & label {
+        color: white !important;
+      }
+    }
+
+    &-item {
+      /* ----------------------------- */
+      // registration form item
+      /* ----------------------------- */
+      &--registration {
+        margin: 0 !important;
+        font-family: $font-dmsans !important;
+        color: rgb(1, 12, 36);
+        // width: 15rem;
+
+        &-input {
+          font-size: 2rem !important;
+          padding: 0.5rem 1rem;
+          font-weight: bolder !important;
+          text-transform: uppercase;
+
+          &::placeholder {
+            font-family: $font-firesans;
+            font-size: 2rem;
+            font-weight: normal;
+            text-transform: none;
+          }
+        }
+        & .ant-input:hover {
+          border: 1px solid white !important;
+        }
+      }
+
+      &--bay {
+        margin: 0 !important;
+        height: 100% !important;
+      }
+      /* ----------------------------- */
+      // intake form item
+      /* ----------------------------- */
+      &--intake {
+        width: 90% !important;
+        max-width: 20rem !important;
+        & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+          border-color: white !important;
+        }
+        &
+          .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+          .ant-select-selector {
+          border-color: rgba(255, 255, 255, 0.618) !important;
+        }
+      }
+
+      &--task {
+        & .ant-form-item-explain.ant-form-item-explain-error {
+          font-size: 1rem !important;
+        }
+
+        // padding-left: 1rem !important;
+        & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+          border-color: white !important;
+        }
+        &
+          .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+          .ant-select-selector {
+          border-color: rgba(255, 255, 255, 0.618) !important;
+        }
+
+        & .ant-input:hover {
+          border-color: white !important;
+        }
+        & .ant-input:focus {
+          border-color: rgba(255, 255, 255, 0.534) !important;
+        }
+        & .ant-input:not(:hover) {
+          border-color: white !important;
+        }
+      }
+
+      /* ----------------------------- */
+      // users form item
+      /* ----------------------------- */
+      &--users {
+        width: 90% !important;
+        max-width: 20rem !important;
+        & .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+          border-color: white !important;
+        }
+        &
+          .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+          .ant-select-selector {
+          border-color: rgba(255, 255, 255, 0.618) !important;
+        }
+      }
+    }
+  }
+
+  /* ============================== */
+  // select dropdown for bay
+  /* ============================== */
+  &__select {
+    // general styling for select dropdown
+    & .ant-select-selector {
+      color: white !important;
+      background: rgb(61, 62, 70) !important;
+      height: 100% !important;
+    }
+    & .ant-select-selection-search-input {
+      height: 100% !important;
+    }
+
+    & .ant-select-selection-item {
+      display: flex;
+      align-items: center;
+    }
+    & .ant-select-arrow {
+      color: white !important;
+    }
+
+    & .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      border-color: rgba(255, 255, 255, 0.618) !important;
+    }
+
+    /* ---------------------- */
+    // disabled select dropdown styling
+    /* ---------------------- */
+    &--disabled {
+      & .ant-select-selector {
+        color: rgb(138, 138, 138) !important;
+        background: rgb(47, 47, 48) !important;
+        height: 100% !important;
+      }
+    }
+
+    /* ============================= */
+    // dropdown for bay
+    /* ============================= */
+    &--bay {
+      width: 5rem;
+      height: 100% !important;
+      & .ant-select-selector {
+        color: white !important;
+        background: rgb(197, 71, 71) !important;
+        height: 100% !important;
+      }
+      & .ant-select-selection-search-input {
+        height: 100% !important;
+      }
+
+      & .ant-select-selection-item {
+        display: flex;
+        align-items: center;
+      }
+      & .ant-select-arrow {
+        color: white !important;
+      }
+    }
+
+    &--task {
+      height: 2.5rem;
+      font-size: 1.2rem !important;
+    }
+  }
+
+  &__bay {
+    &-div {
+      background: rgb(197, 71, 71) !important;
+      border: 1px solid rgba(255, 255, 255, 0.583);
+      padding: 1rem;
+      min-width: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  &__registration {
+    &-div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      background: white;
+      font-family: $font-dmsans;
+      font-weight: bolder;
+      color: rgb(1, 12, 36);
+      font-size: 2rem;
+      padding: 0.5rem 3rem;
+
+      // &--normaluser {
+      //   background: none;
+      //   padding: 0;
+      //   color: white;
+      // }
+    }
+
+    &-outerdiv {
+      &--normaluser {
+        display: flex;
+        // align-items: center;
+        // justify-content: center;
+        // flex-direction: column;
+        width: 100%;
+      }
+    }
+  }
+
+  &__nav {
+    &-outerdiv {
+      display: flex;
+      padding: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  &__lastupdated {
+    &-div {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      font-family: $font-roboto;
+    }
+  }
+
+  //   green or red circle
+  &__pickup {
+    &-div {
+      display: flex;
+      align-items: center;
+      font-family: $font-firesans;
+    }
+    &-circle {
+      height: 1.2rem;
+      width: 1.2rem;
+      border-radius: 50%;
+      margin-left: 1rem;
+      //   border: 1px solid white;
+      &--red {
+        background: rgb(255, 78, 78);
+      }
+
+      &--green {
+        background: rgb(65, 237, 65);
+      }
+    }
+  }
+
+  &__title {
+    font-family: $font-bebasneue;
+    font-size: 2.3rem;
+    padding-left: 1rem;
+  }
+
+  &__back {
+    &-outerdiv {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 1rem;
+    }
+    cursor: pointer;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    font-family: $font-bebasneue;
+    &:hover {
+      color: rgb(233, 158, 158);
+    }
+
+    &-text {
+      font-size: 2.1rem;
+      margin-top: 3px;
+      margin-right: 0.5rem;
+    }
+
+    & i {
+      font-size: 1.6rem;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__loading {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30rem;
+      height: 100%;
+      background: rgb(1, 12, 36) !important;
+    }
+
+    & div {
+      position: absolute;
+      top: 33px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: $primary-color-3;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    & div:nth-child(1) {
+      left: 8px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+    & div:nth-child(2) {
+      left: 8px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    & div:nth-child(3) {
+      left: 32px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    & div:nth-child(4) {
+      left: 56px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0);
+      }
+    }
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(24px, 0);
+      }
+    }
+  }
+  &__loading {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+
+    &-outerdiv {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30rem;
+      background: rgba(147, 155, 187, 0.179);
+    }
+
+    & div {
+      position: absolute;
+      top: 33px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: rgb(197, 71, 71) !important;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    & div:nth-child(1) {
+      left: 8px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+    & div:nth-child(2) {
+      left: 8px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    & div:nth-child(3) {
+      left: 32px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    & div:nth-child(4) {
+      left: 56px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0);
+      }
+    }
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(24px, 0);
+      }
+    }
+  }
+
+  &__add {
+    &-div {
+      // position: fixed;
+      display: flex;
+      margin-bottom: 0.5rem;
+      justify-content: flex-end;
+      // left: 50px;
+      // bottom: 0;
+    }
+
+    &-button {
+      cursor: pointer;
+      user-select: none;
+      font-size: 1.2rem !important;
+      // height: 2.5rem !important;
+      // padding-top: 0 !important;
+      padding: 0.3rem 1rem 0.3rem 1rem !important;
+      // padding-bottom: 0 !important;
+      border: 1px solid white !important;
+      // background: $secondary-color-1 !important;
+
+      &:hover {
+        background: rgb(61, 62, 70);
+      }
+
+      &:active {
+        background: none;
+      }
+    }
+  }
+}
+
+.ant-select-item {
+  font-size: 1.2rem !important;
+}

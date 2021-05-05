@@ -44,7 +44,7 @@ export interface AssignAccessAction {
 /* Api call */
 export interface SignInAction {
   type: typeof actionTypes.SIGN_IN;
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -73,25 +73,28 @@ export interface SignOutAction {
 // Get User Info
 /* ============================================================== */
 // Type
+
+export interface IUserRoles {
+  id: number;
+  title: string;
+  priceSalesPage: boolean;
+  fullSalesPage: boolean;
+  viewSalesDashboard: boolean;
+  editSalesDashboard: boolean;
+  salesmenDashboard: boolean;
+  adminDashboard: boolean;
+}
+
 export type TReceivedUserInfoObj = {
-  email: string;
+  id: number;
+  username: string;
   first_name: string;
   last_name: string;
-  roles: {
-    id: number;
-    title: string;
-    priceSalesPage: boolean;
-    fullSalesPage: boolean;
-    viewSalesDashboard: boolean;
-    editSalesDashboard: boolean;
-    salesmenDashboard: boolean;
-    adminDashboard: boolean;
-  };
+  roles: IUserRoles;
 };
 /* Api call */
 export interface GetUserInfoAction {
   type: typeof actionTypes.GET_USER_INFO;
-  auth_token: string | null;
 }
 
 export interface GetUserInfoStartAction {

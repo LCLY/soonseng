@@ -18,10 +18,9 @@ export const clearCatalogState = (): AppActions => {
 /* ------------------------------------------- */
 // Make
 /* ------------------------------------------- */
-export const getCatalogMakes = (auth_token: string | null): AppActions => {
+export const getCatalogMakes = (): AppActions => {
   return {
     type: actionTypes.GET_CATALOG_MAKES,
-    auth_token: auth_token,
   };
 };
 

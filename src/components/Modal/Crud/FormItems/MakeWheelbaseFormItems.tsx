@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 /* components */
 /* 3rd party lib */
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { Form, Input, Select } from 'antd';
+import NumberFormat from 'react-number-format';
+import { Form, Checkbox, Input, Select } from 'antd';
 import { FormInstance } from 'antd/lib/form/hooks/useForm';
 /* Util */
 import { RootState } from 'src';
@@ -26,6 +27,7 @@ const MakeWheelbaseFormItems: React.FC<Props> = ({ crud, antdForm, onFinish, whe
   /* ================================================== */
   /*  state */
   /* ================================================== */
+  const [isOriginal, setIsOriginal] = useState(false);
   /* ================================================== */
   /*  method */
   /* ================================================== */
@@ -43,6 +45,7 @@ const MakeWheelbaseFormItems: React.FC<Props> = ({ crud, antdForm, onFinish, whe
         onKeyDown={(e) => {
           if (antdForm !== undefined) handleKeyDown(e, antdForm);
         }}
+        onValuesChange={(e) => console.log(e)}
         onFinish={(values) => {
           if (onFinish !== undefined) onFinish(values);
         }}
@@ -71,11 +74,22 @@ const MakeWheelbaseFormItems: React.FC<Props> = ({ crud, antdForm, onFinish, whe
               })}
           </Select>
         </Form.Item>
-
+        {isOriginal && (
+          <Form.Item
+            className="make__form-item"
+            label="Price"
+            name="extensionPrice"
+            rules={[{ required: true, message: 'Input price here!' }]}
+          >
+            <NumberFormat className="ant-input" placeholder="Type price here" thousandSeparator={true} prefix={'RM '} />
+          </Form.Item>
+        )}
+        <Form.Item valuePropName="checked" className="make__form-item" name="original">
+          <Checkbox onChange={(e) => setIsOriginal(e.target.checked)}>Original</Checkbox>
+        </Form.Item>
         <Form.Item hidden name="makeId" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-
         {crud === 'update' && (
           <Form.Item hidden name="makeWheelbaseId" rules={[{ required: true }]}>
             <Input />

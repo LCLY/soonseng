@@ -25,20 +25,14 @@ export const clearSalesState = (): AppActions => {
 /* ------------------------------- */
 // Store local orders
 /* ------------------------------- */
-export const storeLocalOrders = (localOrdersArray: TLocalOrderObj[]): AppActions => {
-  return {
-    type: actionTypes.STORE_LOCAL_ORDERS,
-    localOrdersArray: localOrdersArray,
-  };
-};
+
 /* ------------------------------- */
-// Remove a local order
+// set local orders dictionary
 /* ------------------------------- */
-export const removeAnOrder = (orderId: string, localOrdersArray: TLocalOrderObj[]): AppActions => {
+export const setLocalOrdersDict = (localOrdersDict: { [key: string]: TLocalOrderObj }): AppActions => {
   return {
-    type: actionTypes.REMOVE_AN_ORDER,
-    orderId: orderId,
-    localOrdersArray: localOrdersArray,
+    type: actionTypes.SET_LOCAL_ORDERS_DICT,
+    localOrdersDict: localOrdersDict,
   };
 };
 
@@ -103,18 +97,12 @@ export const getSalesBodiesFailed = (errorMessage: string): AppActions => {
 /* ----------------------------- */
 // Get Body Makes
 /* ---------------------------- */
-export const getSalesBodyMakes = (
-  length_id: number,
-  tire: number,
-  body_id: number,
-  auth_token: string | null,
-): AppActions => {
+export const getSalesBodyMakes = (length_id: number, tire: number, body_id: number): AppActions => {
   return {
     type: actionTypes.GET_SALES_BODYMAKES,
     length_id: length_id,
     tire: tire,
     body_id: body_id,
-    auth_token: auth_token,
   };
 };
 

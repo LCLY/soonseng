@@ -10,12 +10,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Button, Checkbox, Divider, Modal } from 'antd';
-import { Dispatch, AnyAction } from 'redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 // Util
 import { RootState } from 'src';
-import * as actions from 'src/store/actions/index';
 import holy5truck from 'src/img/5trucks.jpg';
 import { ROUTE_COMPARISON } from 'src/shared/routes';
 import { TUserAccess } from 'src/store/types/auth';
@@ -26,23 +24,26 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox';
 
 interface OrdersPageProps {}
 
-type Props = OrdersPageProps & StateProps & DispatchProps & RouteComponentProps;
+type Props = OrdersPageProps & StateProps & RouteComponentProps;
 
-const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onRemoveAnOrder }) => {
+const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersDict }) => {
   /* ============================= */
   /* useState */
   /* ============================= */
   // show the whole array
-  let displayOrdersAmount = localOrdersArray?.length;
+  // if (localOrdersDict === undefined) return null;
+  let displayOrdersAmount = 0;
+  if (localOrdersDict !== undefined) {
+    displayOrdersAmount = Object.values(localOrdersDict).length;
+  }
 
   const value = useMemo(
     () => ({
       accessObj,
-      localOrdersArray,
+      localOrdersDict,
       displayOrdersAmount,
-      onRemoveAnOrder,
     }),
-    [accessObj, localOrdersArray, displayOrdersAmount, onRemoveAnOrder],
+    [accessObj, localOrdersDict, displayOrdersAmount],
   );
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -65,14 +66,14 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
   }, []);
 
   useEffect(() => {
-    if (localOrdersArray) {
-      localOrdersArray.map((order) =>
+    if (localOrdersDict) {
+      Object.values(localOrdersDict).map((order) =>
         setCheckedConfigurations((prevState) => {
           return { ...prevState, [order.id]: false };
         }),
       );
     }
-  }, [localOrdersArray, setCheckedConfigurations]);
+  }, [localOrdersDict, setCheckedConfigurations]);
 
   useEffect(() => {
     if (checkedConfigurations) {
@@ -147,9 +148,9 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
         }}
         onCancel={() => setModalOpen(false)}
       >
-        {localOrdersArray !== undefined &&
+        {localOrdersDict !== undefined &&
           checkedConfigurations &&
-          localOrdersArray.map((order) => {
+          Object.values(localOrdersDict).map((order) => {
             const { bodyMakeObj } = order;
             return (
               <React.Fragment key={uuidv4()}>
@@ -186,15 +187,16 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
                 </Divider>
 
                 <div>
-                  {localOrdersArray && (
+                  {localOrdersDict && (
                     <div className="orders__total-items">
                       <div>
-                        Total:&nbsp;<span className="orders__total-text">{localOrdersArray.length}&nbsp;items</span>
+                        Total:&nbsp;
+                        <span className="orders__total-text">{Object.keys(localOrdersDict).length}&nbsp;items</span>
                       </div>
 
                       <div className="orders__btn-comparison-div">
                         <Button
-                          disabled={localOrdersArray.length <= 1}
+                          disabled={Object.keys(localOrdersDict).length <= 1}
                           className="orders__btn-comparison"
                           type="primary"
                           onClick={() => setModalOpen(true)}
@@ -228,20 +230,13 @@ const OrdersPage: React.FC<Props> = ({ accessObj, history, localOrdersArray, onR
 interface StateProps {
   // array for local orders
   accessObj?: TUserAccess;
-  localOrdersArray?: TLocalOrderObj[];
+  localOrdersDict?: { [key: string]: TLocalOrderObj };
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
-    localOrdersArray: state.sales.localOrdersArray,
+    localOrdersDict: state.sales.localOrdersDict,
   };
 };
 
-interface DispatchProps {
-  onRemoveAnOrder: typeof actions.removeAnOrder;
-}
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
-  return { onRemoveAnOrder: (index, localOrdersArray) => dispatch(actions.removeAnOrder(index, localOrdersArray)) };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(OrdersPage));
+export default connect(mapStateToProps, null)(withRouter(OrdersPage));

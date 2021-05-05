@@ -6,6 +6,9 @@ import { Reducer } from 'redux';
 
 const initialState: DashboardInitialState = {
   loading: false,
+  // others
+  errorMessage: null,
+  successMessage: null,
   // fees
   chargesFeesObj: null,
   chargesFeesArray: null,
@@ -47,12 +50,14 @@ const initialState: DashboardInitialState = {
   imagesArray: null,
   imagesUploaded: false, //boolean to keep track of whether the image has uploaded successful
   // job status array
-  jobStatusArray: null,
+  intakeStatusArray: null,
   // service types array
   serviceTypesArray: null,
-  // others
-  errorMessage: null,
-  successMessage: null,
+  // task title array
+  serviceTasksArray: null,
+  // users roles related
+  usersArray: null,
+  userRolesArray: null,
 };
 
 /* ============================================================================================ */
@@ -75,12 +80,13 @@ const uploadImageStart = (state: DashboardInitialState, _action: AppActions) => 
   return updateObject(state, { errorMessage: null, loading: true, imagesUploaded: false });
 };
 const uploadImageSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('imagesArray' in action) {
+  if ('imagesArray' in action && 'successMessage' in action) {
     return updateObject(state, {
       loading: false,
       errorMessage: null,
-      imagesArray: action.imagesArray,
       imagesUploaded: true,
+      imagesArray: action.imagesArray,
+      successMessage: action.successMessage,
     });
   }
   return state;
@@ -115,6 +121,190 @@ const deleteUploadImageFailed = (state: DashboardInitialState, action: AppAction
   return state;
 };
 
+/* ============================================================================================ */
+/* Users Related 
+/* ============================================================================================ */
+/* -------------------------- */
+/* Create user */
+/* -------------------------- */
+const createUserStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createUserSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'usersArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      usersArray: action.usersArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const createUserFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get all users  */
+/* -------------------------- */
+const getUsersStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getUsersSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('usersArray' in action) {
+    return updateObject(state, { errorMessage: null, loading: false, usersArray: action.usersArray });
+  }
+  return state;
+};
+const getUsersFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update user  */
+/* -------------------------- */
+const updateUserStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateUserSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('usersArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      usersArray: action.usersArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const updateUserFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* -------------------------- */
+/* Delete user  */
+/* -------------------------- */
+const deleteUserStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteUserSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('usersArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      usersArray: action.usersArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteUserFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* ============================================================================================ */
+/* Roles Related 
+/* ============================================================================================ */
+/* -------------------------- */
+/* Create role */
+/* -------------------------- */
+const createRoleStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const createRoleSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'userRolesArray' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      userRolesArray: action.userRolesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const createRoleFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get all roles  */
+/* -------------------------- */
+const getRolesStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const getRolesSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('userRolesArray' in action) {
+    return updateObject(state, { errorMessage: null, loading: false, userRolesArray: action.userRolesArray });
+  }
+  return state;
+};
+const getRolesFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update role  */
+/* -------------------------- */
+const updateRoleStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const updateRoleSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('userRolesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      userRolesArray: action.userRolesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const updateRoleFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
+/* -------------------------- */
+/* Delete role  */
+/* -------------------------- */
+const deleteRoleStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, { errorMessage: null, loading: true });
+};
+const deleteRoleSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('userRolesArray' in action && 'successMessage' in action) {
+    return updateObject(state, {
+      errorMessage: null,
+      loading: false,
+      userRolesArray: action.userRolesArray,
+      successMessage: action.successMessage,
+    });
+  }
+  return state;
+};
+const deleteRoleFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { errorMessage: action.errorMessage, loading: false });
+  }
+  return state;
+};
 /* ============================================================================================ */
 /* Fees 
 /* ============================================================================================ */
@@ -505,7 +695,7 @@ const deleteMakeFailed = (state: DashboardInitialState, action: AppActions) => {
 /* Get Series  */
 /* -------------------------- */
 const getSeriesStart = (state: DashboardInitialState, _action: AppActions) => {
-  return updateObject(state, { seriesArray: null, errorMessage: null });
+  return updateObject(state, { errorMessage: null });
 };
 const getSeriesSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('seriesArray' in action) {
@@ -1333,24 +1523,24 @@ const getDimensionAssociatedAccessoriesFailed = (state: DashboardInitialState, a
 };
 
 /* ============================================================================================ */
-/* Job Status
+/* Intake Status
 /* ============================================================================================ */
 
 /* -------------------------- */
-/* Create Job Status  */
+/* Create Intake Status  */
 /* -------------------------- */
-const createJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+const createIntakeStatusStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
     loading: true,
     errorMessage: null,
   });
 };
 
-const createJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'jobStatusArray' in action) {
+const createIntakeStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'intakeStatusArray' in action) {
     return updateObject(state, {
       loading: false,
-      jobStatusArray: action.jobStatusArray,
+      intakeStatusArray: action.intakeStatusArray,
       successMessage: action.successMessage,
       errorMessage: null,
     });
@@ -1358,7 +1548,7 @@ const createJobStatusSucceed = (state: DashboardInitialState, action: AppActions
   return state;
 };
 
-const createJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+const createIntakeStatusFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
       loading: false,
@@ -1371,29 +1561,28 @@ const createJobStatusFailed = (state: DashboardInitialState, action: AppActions)
 /* -------------------------- */
 /* Get Job Status  */
 /* -------------------------- */
-const getJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+const getIntakeStatusStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
     loading: true,
     errorMessage: null,
   });
 };
 
-const getJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('jobStatusArray' in action && 'successMessage' in action) {
+const getIntakeStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('intakeStatusArray' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: null,
-      jobStatusArray: action.jobStatusArray,
-      successMessage: action.successMessage,
+      intakeStatusArray: action.intakeStatusArray,
     });
   }
   return state;
 };
 
-const getJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+const getIntakeStatusFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: action.errorMessage,
     });
   }
@@ -1403,29 +1592,29 @@ const getJobStatusFailed = (state: DashboardInitialState, action: AppActions) =>
 /* -------------------------- */
 /* Update Job Status  */
 /* -------------------------- */
-const updateJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+const updateIntakeStatusStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
     loading: true,
     errorMessage: null,
   });
 };
 
-const updateJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('jobStatusArray' in action && 'successMessage' in action) {
+const updateIntakeStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('intakeStatusArray' in action && 'successMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: null,
-      jobStatusArray: action.jobStatusArray,
+      intakeStatusArray: action.intakeStatusArray,
       successMessage: action.successMessage,
     });
   }
   return state;
 };
 
-const updateJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+const updateIntakeStatusFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: action.errorMessage,
     });
   }
@@ -1433,31 +1622,31 @@ const updateJobStatusFailed = (state: DashboardInitialState, action: AppActions)
 };
 
 /* -------------------------- */
-/* Delete Job Status  */
+/* Delete In take Status  */
 /* -------------------------- */
-const deleteJobStatusStart = (state: DashboardInitialState, _action: AppActions) => {
+const deleteIntakeStatusStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
     loading: true,
     errorMessage: null,
   });
 };
 
-const deleteJobStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('jobStatusArray' in action && 'successMessage' in action) {
+const deleteIntakeStatusSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('intakeStatusArray' in action && 'successMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: null,
-      jobStatusArray: action.jobStatusArray,
+      intakeStatusArray: action.intakeStatusArray,
       successMessage: action.successMessage,
     });
   }
   return state;
 };
 
-const deleteJobStatusFailed = (state: DashboardInitialState, action: AppActions) => {
+const deleteIntakeStatusFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
-      loading: true,
+      loading: false,
       errorMessage: action.errorMessage,
     });
   }
@@ -1471,14 +1660,14 @@ const deleteJobStatusFailed = (state: DashboardInitialState, action: AppActions)
 /* -------------------------- */
 /* Create Service Types  */
 /* -------------------------- */
-const createServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
+const createServiceTypeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };
 
-const createServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
+const createServiceTypeSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'serviceTypesArray' in action) {
     return updateObject(state, {
       loading: false,
@@ -1490,7 +1679,7 @@ const createServiceTypesSucceed = (state: DashboardInitialState, action: AppActi
   return state;
 };
 
-const createServiceTypesFailed = (state: DashboardInitialState, action: AppActions) => {
+const createServiceTypeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
       loading: false,
@@ -1505,17 +1694,16 @@ const createServiceTypesFailed = (state: DashboardInitialState, action: AppActio
 /* -------------------------- */
 const getServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };
 
 const getServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
-  if ('successMessage' in action && 'serviceTypesArray' in action) {
+  if ('serviceTypesArray' in action) {
     return updateObject(state, {
       loading: false,
       errorMessage: null,
-      successMessage: action.successMessage,
       serviceTypesArray: action.serviceTypesArray,
     });
   }
@@ -1535,14 +1723,14 @@ const getServiceTypesFailed = (state: DashboardInitialState, action: AppActions)
 /* -------------------------- */
 /* Update Service Types  */
 /* -------------------------- */
-const updateServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
+const updateServiceTypeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };
 
-const updateServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
+const updateServiceTypeSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'serviceTypesArray' in action) {
     return updateObject(state, {
       loading: false,
@@ -1554,7 +1742,7 @@ const updateServiceTypesSucceed = (state: DashboardInitialState, action: AppActi
   return state;
 };
 
-const updateServiceTypesFailed = (state: DashboardInitialState, action: AppActions) => {
+const updateServiceTypeFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
       loading: false,
@@ -1567,14 +1755,14 @@ const updateServiceTypesFailed = (state: DashboardInitialState, action: AppActio
 /* -------------------------- */
 /* delete Service Types  */
 /* -------------------------- */
-const deleteServiceTypesStart = (state: DashboardInitialState, _action: AppActions) => {
+const deleteServiceTypeStart = (state: DashboardInitialState, _action: AppActions) => {
   return updateObject(state, {
-    loading: false,
+    loading: true,
     errorMessage: null,
   });
 };
 
-const deleteServiceTypesSucceed = (state: DashboardInitialState, action: AppActions) => {
+const deleteServiceTypeSucceed = (state: DashboardInitialState, action: AppActions) => {
   if ('successMessage' in action && 'serviceTypesArray' in action) {
     return updateObject(state, {
       loading: false,
@@ -1586,7 +1774,138 @@ const deleteServiceTypesSucceed = (state: DashboardInitialState, action: AppActi
   return state;
 };
 
-const deleteServiceTypesFailed = (state: DashboardInitialState, action: AppActions) => {
+const deleteServiceTypeFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Service Task Titles  */
+/* -------------------------- */
+/* -------------------------- */
+/* Create Service Task  */
+/* -------------------------- */
+const createServiceTaskStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const createServiceTaskSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const createServiceTaskFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Get Service Titles  */
+/* -------------------------- */
+const getServiceTasksStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+    serviceTasksArray: null,
+  });
+};
+
+const getServiceTasksSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const getServiceTasksFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* Update Service Task  */
+/* -------------------------- */
+const updateServiceTaskStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const updateServiceTaskSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const updateServiceTaskFailed = (state: DashboardInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: action.errorMessage,
+    });
+  }
+  return state;
+};
+
+/* -------------------------- */
+/* delete Service Task  */
+/* -------------------------- */
+const deleteServiceTaskStart = (state: DashboardInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+    errorMessage: null,
+  });
+};
+
+const deleteServiceTaskSucceed = (state: DashboardInitialState, action: AppActions) => {
+  if ('successMessage' in action && 'serviceTasksArray' in action) {
+    return updateObject(state, {
+      loading: false,
+      errorMessage: null,
+      successMessage: action.successMessage,
+      serviceTasksArray: action.serviceTasksArray,
+    });
+  }
+  return state;
+};
+
+const deleteServiceTaskFailed = (state: DashboardInitialState, action: AppActions) => {
   if ('errorMessage' in action) {
     return updateObject(state, {
       loading: false,
@@ -1623,6 +1942,68 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
     case actionTypes.DELETE_UPLOAD_IMAGE_FAILED:
       return deleteUploadImageFailed(state, action);
 
+    /* =================================== */
+    // Users Related
+    /* =================================== */
+    // Get all users
+    case actionTypes.GET_USERS_START:
+      return getUsersStart(state, action);
+    case actionTypes.GET_USERS_SUCCEED:
+      return getUsersSucceed(state, action);
+    case actionTypes.GET_USERS_FAILED:
+      return getUsersFailed(state, action);
+    // Create user
+    case actionTypes.CREATE_USER_START:
+      return createUserStart(state, action);
+    case actionTypes.CREATE_USER_SUCCEED:
+      return createUserSucceed(state, action);
+    case actionTypes.CREATE_USER_FAILED:
+      return createUserFailed(state, action);
+    // Update user
+    case actionTypes.UPDATE_USER_START:
+      return updateUserStart(state, action);
+    case actionTypes.UPDATE_USER_SUCCEED:
+      return updateUserSucceed(state, action);
+    case actionTypes.UPDATE_USER_FAILED:
+      return updateUserFailed(state, action);
+    // Delete user
+    case actionTypes.DELETE_USER_START:
+      return deleteUserStart(state, action);
+    case actionTypes.DELETE_USER_SUCCEED:
+      return deleteUserSucceed(state, action);
+    case actionTypes.DELETE_USER_FAILED:
+      return deleteUserFailed(state, action);
+    /* =================================== */
+    // Roles Related
+    /* =================================== */
+    // Get all roles
+    case actionTypes.GET_ROLES_START:
+      return getRolesStart(state, action);
+    case actionTypes.GET_ROLES_SUCCEED:
+      return getRolesSucceed(state, action);
+    case actionTypes.GET_ROLES_FAILED:
+      return getRolesFailed(state, action);
+    // Create role
+    case actionTypes.CREATE_ROLE_START:
+      return createRoleStart(state, action);
+    case actionTypes.CREATE_ROLE_SUCCEED:
+      return createRoleSucceed(state, action);
+    case actionTypes.CREATE_ROLE_FAILED:
+      return createRoleFailed(state, action);
+    // Update role
+    case actionTypes.UPDATE_ROLE_START:
+      return updateRoleStart(state, action);
+    case actionTypes.UPDATE_ROLE_SUCCEED:
+      return updateRoleSucceed(state, action);
+    case actionTypes.UPDATE_ROLE_FAILED:
+      return updateRoleFailed(state, action);
+    // Delete role
+    case actionTypes.DELETE_ROLE_START:
+      return deleteRoleStart(state, action);
+    case actionTypes.DELETE_ROLE_SUCCEED:
+      return deleteRoleSucceed(state, action);
+    case actionTypes.DELETE_ROLE_FAILED:
+      return deleteRoleFailed(state, action);
     /* =================================== */
     // Standard charges and fees
     /* =================================== */
@@ -2028,36 +2409,36 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
       return deleteAccessoryFailed(state, action);
 
     /* =================================== */
-    //  Job Status
+    //  Intake Status
     /* =================================== */
-    // Get all Job Status 
-    case actionTypes.GET_JOBSTATUS_START:
-      return getJobStatusStart(state, action);
-    case actionTypes.GET_JOBSTATUS_SUCCEED:
-      return getJobStatusSucceed(state, action);
-    case actionTypes.GET_JOBSTATUS_FAILED:
-      return getJobStatusFailed(state, action);
-    // Create Job Status 
-    case actionTypes.CREATE_JOBSTATUS_START:
-      return createJobStatusStart(state, action);
-    case actionTypes.CREATE_JOBSTATUS_SUCCEED:
-      return createJobStatusSucceed(state, action);
-    case actionTypes.CREATE_JOBSTATUS_FAILED:
-      return createJobStatusFailed(state, action);
-    // Update JobStatus 
-    case actionTypes.UPDATE_JOBSTATUS_START:
-      return updateJobStatusStart(state, action);
-    case actionTypes.UPDATE_JOBSTATUS_SUCCEED:
-      return updateJobStatusSucceed(state, action);
-    case actionTypes.UPDATE_JOBSTATUS_FAILED:
-      return updateJobStatusFailed(state, action);
-    // Delete JobStatus 
-    case actionTypes.DELETE_JOBSTATUS_START:
-      return deleteJobStatusStart(state, action);
-    case actionTypes.DELETE_JOBSTATUS_SUCCEED:
-      return deleteJobStatusSucceed(state, action);
-    case actionTypes.DELETE_JOBSTATUS_FAILED:
-      return deleteJobStatusFailed(state, action);
+    // Get all Intake Status
+    case actionTypes.GET_INTAKESTATUS_START:
+      return getIntakeStatusStart(state, action);
+    case actionTypes.GET_INTAKESTATUS_SUCCEED:
+      return getIntakeStatusSucceed(state, action);
+    case actionTypes.GET_INTAKESTATUS_FAILED:
+      return getIntakeStatusFailed(state, action);
+    // Create Intake Status
+    case actionTypes.CREATE_INTAKESTATUS_START:
+      return createIntakeStatusStart(state, action);
+    case actionTypes.CREATE_INTAKESTATUS_SUCCEED:
+      return createIntakeStatusSucceed(state, action);
+    case actionTypes.CREATE_INTAKESTATUS_FAILED:
+      return createIntakeStatusFailed(state, action);
+    // Update Intake Status
+    case actionTypes.UPDATE_INTAKESTATUS_START:
+      return updateIntakeStatusStart(state, action);
+    case actionTypes.UPDATE_INTAKESTATUS_SUCCEED:
+      return updateIntakeStatusSucceed(state, action);
+    case actionTypes.UPDATE_INTAKESTATUS_FAILED:
+      return updateIntakeStatusFailed(state, action);
+    // Delete Intake Status
+    case actionTypes.DELETE_INTAKESTATUS_START:
+      return deleteIntakeStatusStart(state, action);
+    case actionTypes.DELETE_INTAKESTATUS_SUCCEED:
+      return deleteIntakeStatusSucceed(state, action);
+    case actionTypes.DELETE_INTAKESTATUS_FAILED:
+      return deleteIntakeStatusFailed(state, action);
 
     /* =================================== */
     //  Service types
@@ -2070,26 +2451,58 @@ const reducer: Reducer<DashboardInitialState, AppActions> = (state = initialStat
     case actionTypes.GET_SERVICETYPES_FAILED:
       return getServiceTypesFailed(state, action);
     // Create ServiceTypes
-    case actionTypes.CREATE_SERVICETYPES_START:
-      return createServiceTypesStart(state, action);
-    case actionTypes.CREATE_SERVICETYPES_SUCCEED:
-      return createServiceTypesSucceed(state, action);
-    case actionTypes.CREATE_SERVICETYPES_FAILED:
-      return createServiceTypesFailed(state, action);
+    case actionTypes.CREATE_SERVICETYPE_START:
+      return createServiceTypeStart(state, action);
+    case actionTypes.CREATE_SERVICETYPE_SUCCEED:
+      return createServiceTypeSucceed(state, action);
+    case actionTypes.CREATE_SERVICETYPE_FAILED:
+      return createServiceTypeFailed(state, action);
     // Update ServiceTypes
-    case actionTypes.UPDATE_SERVICETYPES_START:
-      return updateServiceTypesStart(state, action);
-    case actionTypes.UPDATE_SERVICETYPES_SUCCEED:
-      return updateServiceTypesSucceed(state, action);
-    case actionTypes.UPDATE_SERVICETYPES_FAILED:
-      return updateServiceTypesFailed(state, action);
+    case actionTypes.UPDATE_SERVICETYPE_START:
+      return updateServiceTypeStart(state, action);
+    case actionTypes.UPDATE_SERVICETYPE_SUCCEED:
+      return updateServiceTypeSucceed(state, action);
+    case actionTypes.UPDATE_SERVICETYPE_FAILED:
+      return updateServiceTypeFailed(state, action);
     // Delete ServiceTypes
-    case actionTypes.DELETE_SERVICETYPES_START:
-      return deleteServiceTypesStart(state, action);
-    case actionTypes.DELETE_SERVICETYPES_SUCCEED:
-      return deleteServiceTypesSucceed(state, action);
-    case actionTypes.DELETE_SERVICETYPES_FAILED:
-      return deleteServiceTypesFailed(state, action);
+    case actionTypes.DELETE_SERVICETYPE_START:
+      return deleteServiceTypeStart(state, action);
+    case actionTypes.DELETE_SERVICETYPE_SUCCEED:
+      return deleteServiceTypeSucceed(state, action);
+    case actionTypes.DELETE_SERVICETYPE_FAILED:
+      return deleteServiceTypeFailed(state, action);
+
+    /* =================================== */
+    //  Task Title
+    /* =================================== */
+    // Get all task title
+    case actionTypes.GET_SERVICE_TASKS_START:
+      return getServiceTasksStart(state, action);
+    case actionTypes.GET_SERVICE_TASKS_SUCCEED:
+      return getServiceTasksSucceed(state, action);
+    case actionTypes.GET_SERVICE_TASKS_FAILED:
+      return getServiceTasksFailed(state, action);
+    // Create task title
+    case actionTypes.CREATE_SERVICE_TASK_START:
+      return createServiceTaskStart(state, action);
+    case actionTypes.CREATE_SERVICE_TASK_SUCCEED:
+      return createServiceTaskSucceed(state, action);
+    case actionTypes.CREATE_SERVICE_TASK_FAILED:
+      return createServiceTaskFailed(state, action);
+    // Update task title
+    case actionTypes.UPDATE_SERVICE_TASK_START:
+      return updateServiceTaskStart(state, action);
+    case actionTypes.UPDATE_SERVICE_TASK_SUCCEED:
+      return updateServiceTaskSucceed(state, action);
+    case actionTypes.UPDATE_SERVICE_TASK_FAILED:
+      return updateServiceTaskFailed(state, action);
+    // Delete task title
+    case actionTypes.DELETE_SERVICE_TASK_START:
+      return deleteServiceTaskStart(state, action);
+    case actionTypes.DELETE_SERVICE_TASK_SUCCEED:
+      return deleteServiceTaskSucceed(state, action);
+    case actionTypes.DELETE_SERVICE_TASK_FAILED:
+      return deleteServiceTaskFailed(state, action);
     default:
       return state;
   }
