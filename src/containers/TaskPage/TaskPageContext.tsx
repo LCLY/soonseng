@@ -10,7 +10,7 @@ interface IIncomingData {
 interface MobileTaskTableProps {
   intakeDict: IIntakeDict | null;
   updateIntakeJobsForm: any;
-  checkItemsHeight: () => void;
+  // checkItemsHeight: () => void;
   goToUpdateSpecificIntake: () => void;
   onGetSpecificIntakeJobs: (key: number) => void;
   incomingData: IIncomingData | null;

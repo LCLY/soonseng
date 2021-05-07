@@ -290,6 +290,7 @@ export type IReceivedIntakeJobsObj = {
   status: string;
   service_task: TReceivedServiceTaskObj;
   assigned_to: IAssignedUsersObj[];
+  duration: number;
 };
 
 /* --------------------------------------------- */

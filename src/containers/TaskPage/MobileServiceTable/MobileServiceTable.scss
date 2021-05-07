@@ -1,10 +1,13 @@
 .mobileservice {
   &__table {
     &-div {
-      overflow: auto;
-      padding-right: 1.5rem;
-      padding-left: 1rem;
-      padding-top: 1rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+      &--empty {
+        padding-right: 1.5rem;
+        padding-left: 1rem;
+        padding-top: 1rem;
+      }
     }
   }
   &__row {
@@ -56,6 +59,26 @@
   }
 
   &__button {
+    &-add {
+      cursor: pointer;
+      user-select: none;
+      font-size: 1.2rem !important;
+      // height: 2.5rem !important;
+      // padding-top: 0 !important;
+      padding: 0.3rem 1rem 0.3rem 1rem !important;
+      // padding-bottom: 0 !important;
+      border: 1px solid white !important;
+      // background: $secondary-color-1 !important;
+
+      &:hover {
+        background: rgb(61, 62, 70);
+      }
+
+      &:active {
+        background: none;
+      }
+    }
+
     &-delete {
       position: absolute;
       background: $soft-red;
@@ -80,6 +103,93 @@
 
     & .ant-select-selector {
       width: 100% !important;
+    }
+
+    & .ant-select-selection-placeholder {
+      line-height: 23px !important;
+    }
+  }
+
+  &__modal {
+    &-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 2rem 0 2rem;
+    }
+    & .ant-modal-content {
+      @include shadow-func(1px, 1px, 8px, 5px, rgba(255, 255, 255, 0.493));
+    }
+    & .ant-modal-close-x {
+      color: white;
+    }
+    & .ant-modal-header {
+      background: $soft-red;
+      & .ant-modal-title {
+        color: white !important;
+      }
+    }
+
+    & .ant-modal-body {
+      position: relative !important;
+      background: $dark-blue-2;
+      color: white;
+      padding: 0;
+    }
+
+    &-body {
+      overflow-x: hidden;
+      overflow-y: auto;
+      min-height: 17rem;
+      max-height: 100vh;
+      padding: 2rem;
+    }
+
+    & .ant-modal-footer {
+      background: $dark-blue-2;
+      & .ant-btn {
+        background: none;
+        color: white;
+      }
+      & .ant-btn-primary {
+        background: $soft-red;
+      }
+    }
+  }
+
+  /* ==================== */
+  // the bottom part showing how many tasks going on
+  /* ==================== */
+
+  &__task {
+    &-icon {
+      font-size: 4rem;
+      margin-right: 1rem;
+    }
+    &-innerdiv {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &-text {
+      font-size: 2.5rem;
+      margin-left: 0.5rem;
+    }
+
+    &-button {
+      background: rgb(26, 42, 73);
+      display: grid;
+      place-items: center;
+      height: 12rem;
+      margin-bottom: 1rem;
+      border: 1px solid white;
+      border-radius: 1rem;
+      margin-top: 1rem;
+
+      &:active {
+        background: rgb(35, 54, 92);
+      }
     }
   }
 }

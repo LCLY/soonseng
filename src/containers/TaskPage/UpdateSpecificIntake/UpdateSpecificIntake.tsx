@@ -23,7 +23,6 @@ import {
   TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
-import { emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 
 const { Option } = Select;
 interface UpdateSpecificIntakeProps {
@@ -158,13 +157,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         assigned_to_ids: values.assign,
       },
       jobs: resultJobs,
-      logs: {
-        title: `Intake updated at ${moment().format('DD/MM/YYYY HH:mm')} by ${
-          userInfoObj.first_name
-        } ${emptyStringWhenUndefinedOrNull(userInfoObj.last_name)}`,
-        description: values.intakeUpdateDescription,
-        user_id: userInfoObj.id,
-      },
+      logs: { title: '', description: '', user_id: userInfoObj.id },
     };
     onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
   };
@@ -318,7 +311,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                   dropdownArray !== null &&
                   dropdownArray.map((task) => {
                     return (
-                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={parseInt(task.id)}>
+                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={task.id}>
                         {`${task.title}${
                           task.description !== '' && task.description !== null ? ` - ${task.description}` : ''
                         }`}

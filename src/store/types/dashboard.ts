@@ -744,6 +744,7 @@ export type TReceivedServiceTypesObj = {
 export type TReceivedServiceTaskObj = {
   id: number;
   title: string;
+  duration: number;
   description: string | null;
   service_type: TReceivedServiceTypesObj;
 };

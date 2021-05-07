@@ -659,9 +659,12 @@
     /* ---------------------- */
     &--disabled {
       & .ant-select-selector {
-        color: rgb(138, 138, 138) !important;
-        background: rgb(47, 47, 48) !important;
+        background: rgb(31, 31, 31) !important;
         height: 100% !important;
+
+        & .ant-select-selection-placeholder {
+          color: rgb(107, 107, 107) !important;
+        }
       }
     }
 

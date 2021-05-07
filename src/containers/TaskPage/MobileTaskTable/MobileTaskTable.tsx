@@ -136,7 +136,7 @@ const MobileTaskTable: React.FC<Props> = () => {
 
   useEffect(() => {
     if (taskPageContext === null) return;
-    const { intakeDict, checkItemsHeight, filterText } = taskPageContext;
+    const { intakeDict, filterText } = taskPageContext;
 
     if (intakeDict && filterText !== '' && Object.values(intakeDict).filter(checkFilterString).length === 0) {
       // the text no result shaking/wiggling
@@ -151,7 +151,6 @@ const MobileTaskTable: React.FC<Props> = () => {
       tl.play();
     } else {
       // set over flow back to auto
-      checkItemsHeight();
       gsap.to('.mobiletasktable__div', { overflow: 'auto' });
     }
   }, [checkFilterString, taskPageContext]);

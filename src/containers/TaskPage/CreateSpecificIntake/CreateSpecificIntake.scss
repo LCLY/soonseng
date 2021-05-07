@@ -28,7 +28,7 @@
 
   &__section {
     &-top {
-      padding: 0 2rem;
+      padding: 1rem 2rem 0 2rem;
     }
 
     /* ============================ */
@@ -399,6 +399,14 @@
           height: 4rem !important;
         }
       }
+
+      &--disabled {
+        &::placeholder {
+          color: rgb(107, 107, 107) !important;
+        }
+        color: rgb(107, 107, 107) !important;
+        background: rgb(31, 31, 31) !important;
+      }
     }
     &-checkbox {
       margin: 0 !important;
@@ -520,7 +528,8 @@
         // max-width: 20rem !important;
 
         @include respond-to($small-phone) {
-          max-width: 100% !important;
+          // max-width: 100% !important;
+          max-width: 20rem !important;
           // overflow: auto;
           overflow: hidden !important;
           height: 3.4rem;
@@ -590,9 +599,12 @@
     /* ---------------------- */
     &--disabled {
       & .ant-select-selector {
-        color: rgb(138, 138, 138) !important;
-        background: rgb(47, 47, 48) !important;
+        background: rgb(31, 31, 31) !important;
         height: 100% !important;
+
+        & .ant-select-selection-placeholder {
+          color: rgb(107, 107, 107) !important;
+        }
       }
     }
 
@@ -900,6 +912,16 @@
 
       &:active {
         background: none;
+      }
+
+      @include respond-to($small-phone) {
+        display: none;
+      }
+      @include respond-to($phone-only) {
+        display: none;
+      }
+      @include respond-to($tablet-portrait-up) {
+        display: block;
       }
     }
   }

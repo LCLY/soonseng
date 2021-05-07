@@ -1369,8 +1369,19 @@ const CatalogBodyMake: React.FC<Props> = ({
       } else {
         setShowAllEmpty(false);
       }
+
+      if (!accessObj?.showAdminDashboard) {
+        if (bodyMakeWithWheelbaseArray.length > 0) {
+          for (var i = 0; i < bodyMakeWithWheelbaseArray.length; i++) {
+            if (bodyMakeWithWheelbaseArray[i].body_makes.length > 0) {
+              setActiveConfigurationTab(`wheelbase${i + 1}`);
+              break;
+            }
+          }
+        }
+      }
     }
-  }, [bodyMakeWithWheelbaseArray]);
+  }, [accessObj, bodyMakeWithWheelbaseArray]);
 
   useEffect(() => {
     if (makeFromCatalogBodyMake) {

@@ -17,7 +17,7 @@
       display: block;
     }
 
-    @include respond-to($tablet-landscape-up) {
+    @include respond-to($tablet-portrait-up) {
       display: none;
     }
 

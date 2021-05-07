@@ -1,7 +1,7 @@
 .task {
   &__table {
-    min-height: 70rem;
-    max-height: 100vh;
+    // min-height: 70rem;
+    // max-height: 100vh;
     background: rgb(2, 15, 41) !important;
     // margin-right: 1rem;
     border: none;
@@ -114,6 +114,7 @@
     &-wrapper {
       display: flex;
       @include respond-to($small-phone) {
+        min-height: 55rem;
       }
       @include respond-to($phone-only) {
       }
