@@ -37,8 +37,6 @@ const MobileServiceTable: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
 
-  console.log(createTaskTableState);
-
   const [showAddService, setShowAddService] = useState(false);
 
   const disappearAnimation = (
