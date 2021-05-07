@@ -1136,18 +1136,18 @@
           }
         }
 
-        & > .ant-tabs-nav > .ant-tabs-nav-wrap {
-          @include respond-to($small-phone) {
-            display: flex !important;
-          }
+        // & > .ant-tabs-nav > .ant-tabs-nav-wrap {
+        //   @include respond-to($small-phone) {
+        //     display: flex !important;
+        //   }
 
-          @include respond-to($phone-only) {
-            display: flex !important;
-          }
-          @include respond-to($tablet-portrait-up) {
-            flex: none !important;
-          }
-        }
+        //   @include respond-to($phone-only) {
+        //     display: flex !important;
+        //   }
+        //   @include respond-to($tablet-portrait-up) {
+        //     flex: none !important;
+        //   }
+        // }
 
         & .ant-tabs-tab-btn {
           width: 100% !important;

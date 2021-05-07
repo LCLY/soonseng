@@ -763,6 +763,7 @@ const CatalogPage: React.FC<Props> = ({
         // clear the form inputs using the form reference
         createSeriesForm.resetFields();
         createMakeForm.resetFields();
+        createBrandForm.resetFields();
 
         // close all the modals if successful
         setShowCreateModal({
@@ -798,6 +799,7 @@ const CatalogPage: React.FC<Props> = ({
     showUpdateModal,
     showCreateModal,
     createMakeForm,
+    createBrandForm,
     createSeriesForm,
     onClearDashboardState,
   ]);
@@ -980,7 +982,11 @@ const CatalogPage: React.FC<Props> = ({
 
                         let index = parseInt(activeKey.replace('brand', '')) - 1;
                         let seriesLength = catalogMakesArray[index].series.length;
-                        let makesLength = catalogMakesArray[index].series[0].makes.length;
+                        let makesLength =
+                          catalogMakesArray[index].series.length > 0 &&
+                          catalogMakesArray[index].series[0].makes.length > 0
+                            ? catalogMakesArray[index].series[0].makes.length
+                            : 0;
                         // when brand changes tab
                         // if series and makes both have 1 item, automatically sets to the first make
                         if (seriesLength > 0 && makesLength > 0) {
@@ -1007,7 +1013,6 @@ const CatalogPage: React.FC<Props> = ({
                       }}
                     >
                       {catalogMakesArray.map((catalog, brandIndex) => {
-                        console.log(catalog);
                         return (
                           // div wrapping brand along with its series
                           <TabPane
