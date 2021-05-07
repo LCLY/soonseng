@@ -24,7 +24,10 @@
     &-servicetype {
       font-family: $font-courgette;
       color: rgb(255, 218, 211);
-      margin-right: 3rem;
+      width: calc(100% - 5rem);
+      padding: 0 0.5rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.419);
     }
 
     &-description {
@@ -81,10 +84,10 @@
       }
 
       &-bay {
-        margin-top: 1rem;
         font-size: 1.5rem;
-        background: rgb(48, 77, 116);
-        font-family: $font-firesans;
+        background: rgb(255, 255, 255);
+        font-family: $font-pragati;
+        font-weight: bolder;
         padding: 0 0.5rem;
         border-radius: 0.5rem;
       }
@@ -128,9 +131,21 @@
   &__title {
     &-div {
       display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       color: #df7471;
       font-size: 3rem;
       margin-bottom: 0.3rem;
+    }
+
+    &-innerdiv {
+      display: flex;
+      min-width: calc(100% - 5rem);
+      max-width: calc(100% - 5rem);
+      padding-left: 2.5rem;
+      border-left: 5px solid white;
+      border-radius: 5rem 1rem 0rem 0rem;
+      background-image: linear-gradient(to right, rgb(35, 51, 85) 60%, rgb(64, 89, 126));
     }
 
     &-regNumber {
@@ -138,29 +153,39 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      min-width: calc(100% - 5rem);
-      max-width: calc(100% - 5rem);
-      border-left: 5px solid white;
+
       // background: rgb(35, 51, 85);
-      background-image: linear-gradient(to right, rgb(35, 51, 85) 60%, rgb(64, 89, 126));
       font-family: $font-bebasneue !important;
       padding: 0 2rem;
+      border-radius: 0.5rem;
+    }
+
+    &-status {
+      margin-top: 0.7rem;
+      font-family: $font-pragati;
+      font-size: 1.2rem;
+      border: 1px solid grey;
+      padding: 0rem 0.5rem;
       border-radius: 0.5rem;
     }
 
     &-company {
       display: inline-block;
       // margin-bottom: 0.5rem;
-      font-family: $font-firesans;
+      font-size: 1.2rem;
+      font-family: $font-pragati;
       // max-width: calc(100% - 5rem);
       overflow: hidden;
+      min-width: 10rem;
+      text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
-      background-image: linear-gradient(to left bottom, $form-items-grey 50%, rgba(255, 255, 255, 0.501));
+      background-image: linear-gradient(to bottom, $form-items-grey, rgba(255, 255, 255, 0.4));
       padding: 0 1rem;
       text-transform: capitalize;
-      border-radius: 0.5rem;
+      // border-radius: 0.5rem;
 
+      border-radius: 0rem 0rem 5rem 5rem;
       &-outerdiv {
         display: flex;
         justify-content: flex-end;

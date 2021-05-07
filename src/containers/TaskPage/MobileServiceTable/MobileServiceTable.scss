@@ -192,4 +192,82 @@
       }
     }
   }
+
+  &__service {
+    &-div {
+      position: relative;
+      border: 1px solid white;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: rgb(32, 49, 92);
+    }
+
+    &-task {
+      display: flex;
+      align-items: center;
+    }
+
+    &-index {
+      position: absolute;
+      background: rgb(63, 131, 184);
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      left: -8px;
+      top: -10px;
+      border-radius: 50%;
+      font-size: 1rem;
+      border: 1px solid white;
+    }
+
+    &-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &-label {
+      display: inline-block;
+      font-family: $font-bebasneue;
+      width: 7rem;
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    &-content {
+      font-family: $font-firesans;
+      font-size: 1.2rem;
+
+      &--desc {
+        // margin-left: 2rem;
+        word-break: break-all;
+        flex-wrap: wrap;
+        width: calc(100% - 7rem);
+        max-height: 4rem;
+        padding-right: 0.2rem;
+        overflow-y: auto;
+        @include customScrollbar(0.3rem, 0.3rem, 1rem, white);
+      }
+    }
+
+    &-clock {
+      display: flex;
+      align-items: center;
+      & .fa-user-clock {
+        margin-right: 0.5rem;
+      }
+
+      &-hours {
+        font-size: 1.2rem;
+        font-family: $font-bebasneue;
+      }
+    }
+
+    &-description {
+      display: flex;
+      align-items: flex-start;
+    }
+  }
 }

@@ -4,33 +4,39 @@ import './MobileServiceTable.scss';
 /* 3rd party lib */
 import gsap from 'gsap';
 import { v4 as uuidv4 } from 'uuid';
+import { connect } from 'react-redux';
 import { ScheduleOutlined } from '@ant-design/icons';
 import { Form, message, Select, Input, Modal, Empty } from 'antd';
 /* Util */
-import { TServiceTypeTaskDict } from 'src/store/types/task';
-import { ICreateTaskTableChildState, TCreateTaskTableState } from '../CreateSpecificIntake/CreateSpecificIntake';
+import { RootState } from 'src';
 import { IServiceTaskDropdown } from '../TaskPage';
+import { TServiceTypeTaskDict } from 'src/store/types/task';
+import { TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import { IServiceTableChildState, TServiceTableState } from '../CreateSpecificIntake/CreateSpecificIntake';
 
 const { Option } = Select;
 interface MobileServiceTableProps {
   handleAdd: () => void;
-  createIntakeJobsForm: any;
-  createTaskTableState: TCreateTaskTableState;
+  intakeJobsForm: any;
+  auth_token?: string | null;
+  serviceTableState: TServiceTableState;
   serviceTaskDropdown: IServiceTaskDropdown;
   serviceTypeTaskDict: TServiceTypeTaskDict | null;
   setServiceTaskDropdown: React.Dispatch<React.SetStateAction<IServiceTaskDropdown>>;
-  setCreateTaskTableState: React.Dispatch<React.SetStateAction<TCreateTaskTableState>>;
+  setServiceTableState: React.Dispatch<React.SetStateAction<TServiceTableState>>;
 }
 
-type Props = MobileServiceTableProps;
+type Props = MobileServiceTableProps & StateProps;
 
 const MobileServiceTable: React.FC<Props> = ({
   handleAdd,
-  createIntakeJobsForm,
-  createTaskTableState,
+  auth_token,
+  intakeJobsForm,
+  serviceTableState,
+  serviceTypesArray,
   serviceTaskDropdown,
   serviceTypeTaskDict,
-  setCreateTaskTableState,
+  setServiceTableState,
   setServiceTaskDropdown,
 }) => {
   /* ================================================== */
@@ -39,11 +45,7 @@ const MobileServiceTable: React.FC<Props> = ({
 
   const [showAddService, setShowAddService] = useState(false);
 
-  const disappearAnimation = (
-    index: number,
-    taskChild: ICreateTaskTableChildState,
-    dataSource: TCreateTaskTableState,
-  ) => {
+  const disappearAnimation = (index: number, taskChild: IServiceTableChildState, dataSource: TServiceTableState) => {
     gsap.to(`.mobileservice__row-${index}`, {
       x: '150%',
       duration: 0.25,
@@ -55,7 +57,7 @@ const MobileServiceTable: React.FC<Props> = ({
 
         let copiedObj = { ...dataSource };
         delete copiedObj[taskChild.key];
-        setCreateTaskTableState(copiedObj);
+        setServiceTableState(copiedObj);
       },
     });
   };
@@ -64,7 +66,7 @@ const MobileServiceTable: React.FC<Props> = ({
   /*  component */
   /* ================================================== */
 
-  const ServiceTaskFormItem = ({ record }: { record: ICreateTaskTableChildState }) => {
+  const ServiceTaskFormItem = ({ record }: { record: IServiceTableChildState }) => {
     if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
       let dropdownArrayExist = Object.keys(serviceTaskDropdown[record.key]).length > 0;
       let dropdownArray = serviceTaskDropdown[record.key].serviceTaskDropdownArray;
@@ -127,7 +129,7 @@ const MobileServiceTable: React.FC<Props> = ({
     }
   };
 
-  const TaskTimeFormItem = ({ record }: { record: ICreateTaskTableChildState }) => {
+  const TaskTimeFormItem = ({ record }: { record: IServiceTableChildState }) => {
     let serviceTypeTitle = '';
     // first check if the serviceTaskDropdown object has this key
     if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
@@ -186,10 +188,10 @@ const MobileServiceTable: React.FC<Props> = ({
         onCancel={() => setShowAddService(false)}
         onOk={() => {
           let showError = false;
-          for (var i = 0; i < Object.values(createTaskTableState).length; i++) {
-            let arrayItemKey = Object.values(createTaskTableState)[i].key;
+          for (var i = 0; i < Object.values(serviceTableState).length; i++) {
+            let arrayItemKey = Object.values(serviceTableState)[i].key;
 
-            let object = createTaskTableState[arrayItemKey] as any;
+            let object = serviceTableState[arrayItemKey] as any;
             if (
               object[`taskType${arrayItemKey}`] === '' ||
               object[`taskTitle${arrayItemKey}`] === '' ||
@@ -209,136 +211,196 @@ const MobileServiceTable: React.FC<Props> = ({
         cancelButtonProps={{ style: { display: 'none' } }}
       >
         <div className="mobileservice__modal-top">
-          <div>Total jobs: {createTaskTableState.length}</div>
-          <span className="mobileservice__button-add" onClick={() => handleAdd()}>
-            <i className="fas fa-plus-square"></i>&nbsp;&nbsp;Add service
-          </span>
+          <div>Total jobs: {Object.values(serviceTableState).length}</div>
+          {auth_token && (
+            <span className="mobileservice__button-add" onClick={() => handleAdd()}>
+              <i className="fas fa-plus-square"></i>&nbsp;&nbsp;Add service
+            </span>
+          )}
         </div>
 
         <div className="mobileservice__modal-body">
-          {Object.values(createTaskTableState).length === 0 ? (
+          {Object.values(serviceTableState).length === 0 ? (
             <Empty />
           ) : (
-            Object.values(createTaskTableState).map((taskChild, index) => (
-              <div
-                className={`mobileservice__row-div-parent mobileservice__row-${index}`}
-                key={`mobiletask${taskChild.key}`}
-              >
-                <div className="mobileservice__row-number">{index + 1}</div>
-                <div className="mobileservice__row-div">
-                  {/* ============================================================ */}
-                  {/* Service Type */}
-                  {/* ============================================================ */}
-                  <div className="mobileservice__form-row">
-                    <div className="mobileservice__form-row-label">Type:</div>
-                    <Form.Item
-                      // label="Service Type"
-                      name={`taskType${taskChild.key}`}
-                      className="createspecificintake__form-item--task mobileservice__form-item"
-                      style={{ margin: 0 }}
-                      rules={[
-                        {
-                          required: true,
-                          message: `Please choose a service type!`,
-                        },
-                      ]}
-                    >
-                      <Select
-                        placeholder="Select a Job Type"
-                        className="createspecificintake__select createspecificintake__select--task mobileservice__input"
+            Object.values(serviceTableState).map((taskChild, index) => (
+              <React.Fragment key={`mobiletask${taskChild.key}`}>
+                {auth_token ? (
+                  <div className={`mobileservice__row-div-parent mobileservice__row-${index}`}>
+                    <div className="mobileservice__row-number">{index + 1}</div>
+                    <div className="mobileservice__row-div">
+                      {/* ============================================================ */}
+                      {/* Service Type */}
+                      {/* ============================================================ */}
+                      <div className="mobileservice__form-row">
+                        <div className="mobileservice__form-row-label">Type:</div>
+                        {auth_token ? (
+                          <Form.Item
+                            // label="Service Type"
+                            name={`taskType${taskChild.key}`}
+                            className="createspecificintake__form-item--task mobileservice__form-item"
+                            style={{ margin: 0 }}
+                            rules={[
+                              {
+                                required: true,
+                                message: `Please choose a service type!`,
+                              },
+                            ]}
+                          >
+                            <Select
+                              placeholder="Select a Job Type"
+                              className="createspecificintake__select createspecificintake__select--task mobileservice__input"
+                            >
+                              <Option value="">Select a Job Type</Option>
+                              {serviceTypeTaskDict &&
+                                Object.keys(serviceTypeTaskDict).map((serviceTypeId) => {
+                                  let serviceTypeObj = serviceTypeTaskDict[parseInt(serviceTypeId)];
+                                  return (
+                                    <Option
+                                      style={{ textTransform: 'capitalize' }}
+                                      key={parseInt(serviceTypeId)}
+                                      value={parseInt(serviceTypeId)}
+                                    >
+                                      {`${serviceTypeObj.title}${
+                                        serviceTypeObj.description !== '' && serviceTypeObj.description !== null
+                                          ? ` - ${serviceTypeObj.description}`
+                                          : ''
+                                      }`}
+                                    </Option>
+                                  );
+                                })}
+                            </Select>
+                          </Form.Item>
+                        ) : (
+                          <div>
+                            {serviceTypesArray !== null &&
+                              serviceTypesArray !== undefined &&
+                              serviceTypesArray?.filter(
+                                (child) => child.id === (taskChild as any)[`taskType${taskChild.key}`],
+                              )[0].title}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ============================================================ */}
+                      {/* Service Task */}
+                      {/* ============================================================ */}
+                      <div className="mobileservice__form-row">
+                        <div className="mobileservice__form-row-label">Task:</div>
+                        <ServiceTaskFormItem record={taskChild} />
+                      </div>
+
+                      {/* ============================================================ */}
+                      {/* Task Time */}
+                      {/* ============================================================ */}
+                      <div className="mobileservice__form-row">
+                        <div className="mobileservice__form-row-label">Time:</div>
+                        <TaskTimeFormItem record={taskChild} />
+                      </div>
+                      {/* ============================================================ */}
+                      {/* Description */}
+                      {/* ============================================================ */}
+                      <div className="mobileservice__form-row">
+                        <div className="mobileservice__form-row-label">Desc:</div>
+                        <Form.Item
+                          // label="Description"
+                          className="createspecificintake__form-item--task mobileservice__form-item"
+                          name={`taskDescription${taskChild.key}`}
+                          style={{ margin: 0 }}
+                          rules={[
+                            {
+                              required: false,
+                            },
+                          ]}
+                        >
+                          <Input
+                            className="createspecificintake__form-input mobileservice__input"
+                            placeholder="Type description here"
+                          />
+                        </Form.Item>
+                      </div>
+                    </div>
+                    {/* only show if login */}
+                    {auth_token && (
+                      <div
+                        className="mobileservice__button-delete"
+                        onClick={() => {
+                          if (serviceTableState === null) return;
+                          const dataSource = { ...serviceTableState };
+                          // reset all the values whenever delete occurs
+                          intakeJobsForm.setFieldsValue({
+                            [`taskTitle${taskChild.key}`]: '',
+                            [`taskType${taskChild.key}`]: '',
+                            [`taskDescription${taskChild.key}`]: '',
+                            [`taskTime${taskChild.key}`]: '',
+                          });
+                          disappearAnimation(index, taskChild, dataSource);
+                        }}
                       >
-                        <Option value="">Select a Job Type</Option>
-                        {serviceTypeTaskDict &&
-                          Object.keys(serviceTypeTaskDict).map((serviceTypeId) => {
-                            let serviceTypeObj = serviceTypeTaskDict[parseInt(serviceTypeId)];
-                            return (
-                              <Option
-                                style={{ textTransform: 'capitalize' }}
-                                key={parseInt(serviceTypeId)}
-                                value={parseInt(serviceTypeId)}
-                              >
-                                {`${serviceTypeObj.title}${
-                                  serviceTypeObj.description !== '' && serviceTypeObj.description !== null
-                                    ? ` - ${serviceTypeObj.description}`
-                                    : ''
-                                }`}
-                              </Option>
-                            );
-                          })}
-                      </Select>
-                    </Form.Item>
+                        <i className="far fa-trash-alt"></i>
+                      </div>
+                    )}
                   </div>
+                ) : (
+                  <div className="mobileservice__service-div">
+                    {/* div for service when user is not logged in */}
+                    <div className="mobileservice__service-index">{index + 1}</div>
+                    <div className="mobileservice__service-top">
+                      <div className="mobileservice__service-type">
+                        <span className="mobileservice__service-label">Service Type:</span>
+                        <span className="mobileservice__service-content">
+                          {serviceTypesArray !== null &&
+                            serviceTypesArray !== undefined &&
+                            serviceTypesArray?.filter(
+                              (child) => child.id === (taskChild as any)[`taskType${taskChild.key}`],
+                            )[0].title}
+                        </span>
+                      </div>
+                      <div className="mobileservice__service-clock">
+                        <i className="fas fa-user-clock"></i>
+                        <div className="mobileservice__service-clock-hours">
+                          {(taskChild as any)[`taskTime${taskChild.key}`]} hrs
+                        </div>
+                      </div>
+                    </div>
 
-                  {/* ============================================================ */}
-                  {/* Service Task */}
-                  {/* ============================================================ */}
-                  <div className="mobileservice__form-row">
-                    <div className="mobileservice__form-row-label">Task:</div>
-                    <ServiceTaskFormItem record={taskChild} />
+                    <div className="mobileservice__service-task">
+                      <span className="mobileservice__service-label">Service Task:</span>
+                      <span className="mobileservice__service-content">
+                        {serviceTaskDropdown &&
+                          serviceTaskDropdown[taskChild.key].serviceTaskDropdownArray &&
+                          (serviceTaskDropdown as any)[taskChild.key].serviceTaskDropdownArray.filter(
+                            (child: any) => child.id === (taskChild as any)[`taskTitle${taskChild.key}`],
+                          )[0].title}
+                      </span>
+                    </div>
+                    <div className="mobileservice__service-description">
+                      <span className="mobileservice__service-label">Description:</span>
+                      <div className="mobileservice__service-content mobileservice__service-content--desc">
+                        {(taskChild as any)[`taskDescription${taskChild.key}`] === ''
+                          ? '-'
+                          : (taskChild as any)[`taskDescription${taskChild.key}`]}
+                      </div>
+                    </div>
                   </div>
-
-                  {/* ============================================================ */}
-                  {/* Task Time */}
-                  {/* ============================================================ */}
-                  <div className="mobileservice__form-row">
-                    <div className="mobileservice__form-row-label">Time:</div>
-                    <TaskTimeFormItem record={taskChild} />
-                  </div>
-                  {/* ============================================================ */}
-                  {/* Description */}
-                  {/* ============================================================ */}
-                  <div className="mobileservice__form-row">
-                    <div className="mobileservice__form-row-label">Desc:</div>
-                    <Form.Item
-                      // label="Description"
-                      className="createspecificintake__form-item--task mobileservice__form-item"
-                      name={`taskDescription${taskChild.key}`}
-                      style={{ margin: 0 }}
-                      rules={[
-                        {
-                          required: false,
-                        },
-                      ]}
-                    >
-                      <Input
-                        className="createspecificintake__form-input mobileservice__input"
-                        placeholder="Type description here"
-                      />
-                    </Form.Item>
-                  </div>
-                </div>
-
-                <div
-                  className="mobileservice__button-delete"
-                  onClick={() => {
-                    if (createTaskTableState === null) return;
-                    const dataSource = { ...createTaskTableState };
-                    // reset all the values whenever delete occurs
-                    createIntakeJobsForm.setFieldsValue({
-                      [`taskTitle${taskChild.key}`]: '',
-                      [`taskType${taskChild.key}`]: '',
-                      [`taskDescription${taskChild.key}`]: '',
-                      [`taskTime${taskChild.key}`]: '',
-                    });
-                    disappearAnimation(index, taskChild, dataSource);
-                  }}
-                >
-                  <i className="far fa-trash-alt"></i>
-                </div>
-              </div>
+                )}
+              </React.Fragment>
             ))
           )}
         </div>
       </Modal>
-      {Object.values(createTaskTableState).length > 0 ? (
+      {Object.values(serviceTableState).length > 0 ? (
         <div className="mobileservice__table-div">
           <div onClick={() => setShowAddService(true)} className="mobileservice__task-button">
             <section>
               <div className="mobileservice__task-innerdiv">
                 <ScheduleOutlined className="mobileservice__task-icon" /> x
-                <span className="mobileservice__task-text">{Object.values(createTaskTableState).length}</span>
+                <span className="mobileservice__task-text">{Object.values(serviceTableState).length}</span>
               </div>
-              <div>{Object.values(createTaskTableState).length} task added, click to edit</div>
+              <div style={{ marginTop: '0.5rem' }}>
+                {Object.values(serviceTableState).length} task added,
+                <span>{auth_token ? ' click to edit' : ' click to view more'}</span>
+              </div>
             </section>
           </div>
         </div>
@@ -357,4 +419,14 @@ const MobileServiceTable: React.FC<Props> = ({
   );
 };
 
-export default MobileServiceTable;
+interface StateProps {
+  serviceTypesArray?: TReceivedServiceTypesObj[] | null;
+}
+
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    serviceTypesArray: state.dashboard.serviceTypesArray,
+  };
+};
+
+export default connect(mapStateToProps, null)(MobileServiceTable);

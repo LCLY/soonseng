@@ -117,7 +117,6 @@
         min-height: 55rem;
       }
       @include respond-to($phone-only) {
-        min-height: 55rem;
       }
       @include respond-to($tablet-portrait-up) {
         min-height: 70rem;

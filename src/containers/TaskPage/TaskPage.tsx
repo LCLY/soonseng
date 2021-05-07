@@ -10,7 +10,7 @@ import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import CreateSpecificIntake, {
-  TCreateTaskTableState,
+  TServiceTableState,
 } from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
 import UpdateSpecificIntake, {
   TUpdateTaskTableState,
@@ -111,7 +111,6 @@ const TaskPage: React.FC<Props> = ({
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
 
-  const [count, setCount] = useState(0);
   const [currentPage, setCurrentPage] = useState<'main' | 'update' | 'create'>('main');
 
   const [inEditMode, setInEditMode] = useState(true);
@@ -130,8 +129,8 @@ const TaskPage: React.FC<Props> = ({
   // Incoming websocket data
   const [incomingData, setIncomingData] = useState<{ data: TReceivedIntakeSummaryObj; action: string } | null>(null);
   // Table states
-  const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
-  const [createTaskTableState, setCreateTaskTableState] = useState<TCreateTaskTableState>({});
+  // const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
+  const [createServiceTableState, setCreateServiceTableState] = useState<TServiceTableState>({});
   // const [intakeTableState, setIntakeTableState] = useState<TIntakeTableState[]>([]);
   const [serviceTypeTaskDict, setServiceTypeTaskDict] = useState<TServiceTypeTaskDict | null>(null);
 
@@ -556,7 +555,7 @@ const TaskPage: React.FC<Props> = ({
 
   const goBackToIntakes = useCallback(() => {
     createIntakeJobsForm.resetFields();
-    setCreateTaskTableState({});
+    setCreateServiceTableState({});
     setCurrentPage('main');
     gsap.to('.task__table-div', {
       duration: 1,
@@ -652,7 +651,6 @@ const TaskPage: React.FC<Props> = ({
         <LayoutComponent>
           <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
-              {/* <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button> */}
               <div className="make__tab-outerdiv">
                 <section>
                   <>
@@ -672,26 +670,25 @@ const TaskPage: React.FC<Props> = ({
                               </>
                             )}
                           </div>
-                          {auth_token && (
+                          {auth_token && currentPage !== 'create' && (
                             <Button
                               type="primary"
                               className="make__brand-btn"
                               onClick={() => {
                                 goToCreateSpecificIntake();
                                 // setShowCreateModal({ ...showCreateModal, intake_job: true });
-                                if (taskTableState === null) return;
-                                const newData: any = {
-                                  key: count.toString(),
-                                  [`assign${count}`]: [],
-                                  [`taskType${count}`]: '',
-                                  [`taskTitle${count}`]: '',
-                                  [`taskStatus${count}`]: '',
-                                  [`taskDescription${count}`]: '',
-                                };
-                                let tempArray = [...taskTableState];
-                                tempArray.push(newData);
-                                setCount(1);
-                                setTaskTableState(tempArray);
+                                // if (taskTableState === null) return;
+                                // const newData: any = {
+                                //   key: count.toString(),
+                                //   [`assign${count}`]: [],
+                                //   [`taskType${count}`]: '',
+                                //   [`taskTitle${count}`]: '',
+                                //   [`taskStatus${count}`]: '',
+                                //   [`taskDescription${count}`]: '',
+                                // };
+                                // let tempArray = [...taskTableState];
+                                // tempArray.push(newData);
+                                // setTaskTableState(tempArray);
                               }}
                             >
                               Create <span className="task__button-text">&nbsp;New Intake</span>
@@ -714,8 +711,8 @@ const TaskPage: React.FC<Props> = ({
                                 <div className="task__specific-div task__specific-div--create">
                                   <CreateSpecificIntake
                                     goBackToIntakes={goBackToIntakes}
-                                    createTaskTableState={createTaskTableState}
-                                    setCreateTaskTableState={setCreateTaskTableState}
+                                    createServiceTableState={createServiceTableState}
+                                    setCreateServiceTableState={setCreateServiceTableState}
                                     createIntakeJobsForm={createIntakeJobsForm}
                                     serviceTypeTaskDict={serviceTypeTaskDict}
                                     setServiceTypeTaskDict={setServiceTypeTaskDict}
@@ -753,8 +750,6 @@ const TaskPage: React.FC<Props> = ({
                                 </div>
                                 <div className="task__specific-div task__specific-div--update">
                                   <UpdateSpecificIntake
-                                    count={count}
-                                    setCount={setCount}
                                     inEditMode={inEditMode}
                                     setInEditMode={setInEditMode}
                                     setCurrentPage={setCurrentPage}

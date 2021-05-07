@@ -223,12 +223,19 @@ const MobileTaskTable: React.FC<Props> = () => {
                               {/* Company Name & intake reg number */}
                               {/* ========================================= */}
                               <div className="mobiletasktable__title-div">
-                                <span
-                                  className="mobiletasktable__title-regNumber"
-                                  style={{ color: child.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
-                                >
-                                  {child.regNumber.split('-')[0]}
-                                </span>
+                                <div className="mobiletasktable__title-innerdiv">
+                                  <span
+                                    className="mobiletasktable__title-regNumber"
+                                    style={{ color: child.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
+                                  >
+                                    {child.regNumber.split('-')[0]}
+                                  </span>
+                                </div>
+                                {child.bay !== '-' ? (
+                                  <span className="mobiletasktable__div-bottom-bay">Bay {child.bay}</span>
+                                ) : (
+                                  ''
+                                )}
                               </div>
                             </div>
                             <div className="mobiletasktable__title-company-outerdiv">
@@ -259,11 +266,8 @@ const MobileTaskTable: React.FC<Props> = () => {
                             {/* The bay and the created at date/time */}
                             {/* ======================================== */}
                             <div className="mobiletasktable__div-bottom-div">
-                              {child.bay !== '-' ? (
-                                <span className="mobiletasktable__div-bottom-bay">Bay {child.bay}</span>
-                              ) : (
-                                ''
-                              )}
+                              <span className="mobiletasktable__title-status">{child.status}</span>
+
                               <div className="mobiletasktable__div-createdat">
                                 Created at&nbsp;
                                 {child.dateTimeIn.format('DD-MM-YYYY')}
