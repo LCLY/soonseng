@@ -1,0 +1,52 @@
+.mobilemodal {
+  &__div {
+    position: fixed;
+    z-index: 1000;
+
+    background: $dark-blue-2;
+    left: 50%;
+    border-radius: 1rem;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid white;
+    @include shadow-func(1px, 3px, 15px, 0.5px, rgba(255, 255, 255, 0.433));
+
+    @include respond-to($small-phone) {
+      width: 90vw;
+      height: 90vh;
+    }
+    @include respond-to($phone-only) {
+      width: 80vw;
+      height: 90vh;
+    }
+  }
+  &__title {
+    background: $soft-red;
+    color: white;
+    padding: 1rem;
+    font-family: $font-firesans;
+    font-size: 1.8rem;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__icon {
+    cursor: pointer;
+    &:hover {
+      & .fa-times-circle {
+        transition: all 0.5s ease;
+        color: rgb(186, 186, 186);
+      }
+    }
+
+    & .active {
+      & .fa-times-circle {
+        transition: none;
+        color: white;
+      }
+    }
+  }
+}

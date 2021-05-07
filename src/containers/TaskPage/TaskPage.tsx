@@ -10,7 +10,7 @@ import LayoutComponent from 'src/components/LayoutComponent/LayoutComponent';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
 import CreateSpecificIntake, {
-  TCreateTaskTableState,
+  TServiceTableState,
 } from 'src/containers/TaskPage/CreateSpecificIntake/CreateSpecificIntake';
 import UpdateSpecificIntake, {
   TUpdateTaskTableState,
@@ -46,8 +46,7 @@ import {
 } from 'src/shared/Utils';
 
 import { TUserAccess } from 'src/store/types/auth';
-import { useWindowDimensions } from 'src/shared/HandleWindowResize';
-import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import { TReceivedIntakeStatusObj, TReceivedServiceTaskObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -81,8 +80,9 @@ export interface IIntakeDict {
 
 export interface IServiceTaskDropdown {
   [key: string]: {
-    serviceTask: string;
-    serviceTaskDropdownArray: any[] | null;
+    serviceTaskId: string;
+    serviceType: TReceivedServiceTypesObj;
+    serviceTaskDropdownArray: TReceivedServiceTaskObj[] | null;
   };
 }
 
@@ -108,11 +108,9 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  const { width } = useWindowDimensions();
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
 
-  const [count, setCount] = useState(0);
   const [currentPage, setCurrentPage] = useState<'main' | 'update' | 'create'>('main');
 
   const [inEditMode, setInEditMode] = useState(true);
@@ -131,8 +129,8 @@ const TaskPage: React.FC<Props> = ({
   // Incoming websocket data
   const [incomingData, setIncomingData] = useState<{ data: TReceivedIntakeSummaryObj; action: string } | null>(null);
   // Table states
-  const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
-  const [createTaskTableState, setCreateTaskTableState] = useState<TCreateTaskTableState[]>([]);
+  // const [taskTableState, setTaskTableState] = useState<TTaskTableState[] | null>(null);
+  const [createServiceTableState, setCreateServiceTableState] = useState<TServiceTableState>({});
   // const [intakeTableState, setIntakeTableState] = useState<TIntakeTableState[]>([]);
   const [serviceTypeTaskDict, setServiceTypeTaskDict] = useState<TServiceTypeTaskDict | null>(null);
 
@@ -251,6 +249,14 @@ const TaskPage: React.FC<Props> = ({
       },
     },
     {
+      key: 'status',
+      title: 'Status',
+      dataIndex: 'status',
+      width: '10rem',
+      ellipsis: true,
+      align: 'center',
+    },
+    {
       key: 'bay',
       title: 'Bay',
       dataIndex: 'bay',
@@ -289,46 +295,13 @@ const TaskPage: React.FC<Props> = ({
     return moment(b.createdAt).diff(moment(a.createdAt));
   };
 
-  const checkItemsHeight = useCallback(() => {
-    // IN MOBILE VIEW
-    if (currentPage === 'main') {
-      // In main view
-      if (intakeDict && Object.keys(intakeDict).length > 0) {
-        // contains item
-        if (Object.keys(intakeDict).length > 4) {
-          gsap.to('.task__table-wrapper', { maxHeight: '80rem', minHeight: '80rem' });
-        } else {
-          gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
-        }
-      } else {
-        // empty array
-        gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 20rem)', maxHeight: 'calc(100vh - 20rem)' });
-      }
-    } else {
-      // In update/create intake view
-      if (currentPage === 'create') {
-        if (createTaskTableState.length > 0) {
-          if (Object.keys(createTaskTableState).length > 2) {
-            gsap.to('.task__table-wrapper', { maxHeight: '80rem', minHeight: '80rem' });
-          } else {
-            gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 12rem)', maxHeight: 'calc(100vh - 12rem)' });
-          }
-        } else {
-          gsap.to('.task__table-wrapper', { minHeight: 'calc(100vh - 12rem)', maxHeight: 'calc(100vh - 12rem)' });
-        }
-      } else {
-        gsap.to('.task__table-wrapper', { minHeight: '80rem', height: '80rem', maxHeight: '80rem' });
-      }
-    }
-  }, [currentPage, intakeDict, createTaskTableState]);
-
   const contextValue = useMemo(
     () => ({
       intakeDict,
       filterText,
       setFilterText,
       incomingData,
-      checkItemsHeight,
+      // checkItemsHeight,
       setIncomingData,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
@@ -338,7 +311,7 @@ const TaskPage: React.FC<Props> = ({
       intakeDict,
       filterText,
       incomingData,
-      checkItemsHeight,
+      // checkItemsHeight,
       setFilterText,
       setIncomingData,
       updateIntakeJobsForm,
@@ -580,14 +553,16 @@ const TaskPage: React.FC<Props> = ({
     }
   }, [currentPage, onSetSpecificIntakeLogs]);
 
-  useEffect(() => {
-    if (width <= 576) {
-      checkItemsHeight();
-    } else {
-      // IN DESKTOP VIEW
-      gsap.to('.task__table-wrapper', { minHeight: '70rem', maxHeight: '100vh' });
-    }
-  }, [width, checkItemsHeight]);
+  const goBackToIntakes = useCallback(() => {
+    createIntakeJobsForm.resetFields();
+    setCreateServiceTableState({});
+    setCurrentPage('main');
+    gsap.to('.task__table-div', {
+      duration: 1,
+      ease: 'ease',
+      x: '0',
+    });
+  }, [createIntakeJobsForm]);
 
   useEffect(() => {
     if (successMessage) {
@@ -595,22 +570,16 @@ const TaskPage: React.FC<Props> = ({
 
       // setInEditMode(false);
       setBeforeDeleteState(null); //make sure that before delete state is null after successfully updated
-      createIntakeJobsForm.resetFields();
+
+      goBackToIntakes();
       setShowCreateModal({
         ...showCreateModal,
         intake_job: false,
       });
 
-      setCurrentPage('main');
-      gsap.to('.task__table-div', {
-        duration: 1,
-        ease: 'ease',
-        x: '0',
-      });
-
       onClearTaskState();
     }
-  }, [successMessage, createIntakeJobsForm, onClearTaskState, showCreateModal]);
+  }, [successMessage, createIntakeJobsForm, goBackToIntakes, onClearTaskState, showCreateModal]);
 
   useEffect(() => {
     // If there is incoming data, update the table or add a new row to the table
@@ -682,7 +651,6 @@ const TaskPage: React.FC<Props> = ({
         <LayoutComponent>
           <ParallaxContainer bgImageUrl={holy5truck} overlayColor="rgba(0, 0, 0, 0.3)">
             <CustomContainer>
-              {/* <button onClick={() => cableRef.current.unsubscribe()}>UNSUBSCRIBE2</button> */}
               <div className="make__tab-outerdiv">
                 <section>
                   <>
@@ -702,26 +670,25 @@ const TaskPage: React.FC<Props> = ({
                               </>
                             )}
                           </div>
-                          {auth_token && (
+                          {auth_token && currentPage !== 'create' && (
                             <Button
                               type="primary"
                               className="make__brand-btn"
                               onClick={() => {
                                 goToCreateSpecificIntake();
                                 // setShowCreateModal({ ...showCreateModal, intake_job: true });
-                                if (taskTableState === null) return;
-                                const newData: any = {
-                                  key: count.toString(),
-                                  [`assign${count}`]: [],
-                                  [`taskType${count}`]: '',
-                                  [`taskTitle${count}`]: '',
-                                  [`taskStatus${count}`]: '',
-                                  [`taskDescription${count}`]: '',
-                                };
-                                let tempArray = [...taskTableState];
-                                tempArray.push(newData);
-                                setCount(1);
-                                setTaskTableState(tempArray);
+                                // if (taskTableState === null) return;
+                                // const newData: any = {
+                                //   key: count.toString(),
+                                //   [`assign${count}`]: [],
+                                //   [`taskType${count}`]: '',
+                                //   [`taskTitle${count}`]: '',
+                                //   [`taskStatus${count}`]: '',
+                                //   [`taskDescription${count}`]: '',
+                                // };
+                                // let tempArray = [...taskTableState];
+                                // tempArray.push(newData);
+                                // setTaskTableState(tempArray);
                               }}
                             >
                               Create <span className="task__button-text">&nbsp;New Intake</span>
@@ -743,11 +710,9 @@ const TaskPage: React.FC<Props> = ({
                               <div className="task__table-div">
                                 <div className="task__specific-div task__specific-div--create">
                                   <CreateSpecificIntake
-                                    count={count}
-                                    setCount={setCount}
-                                    setCurrentPage={setCurrentPage}
-                                    createTaskTableState={createTaskTableState}
-                                    setCreateTaskTableState={setCreateTaskTableState}
+                                    goBackToIntakes={goBackToIntakes}
+                                    createServiceTableState={createServiceTableState}
+                                    setCreateServiceTableState={setCreateServiceTableState}
                                     createIntakeJobsForm={createIntakeJobsForm}
                                     serviceTypeTaskDict={serviceTypeTaskDict}
                                     setServiceTypeTaskDict={setServiceTypeTaskDict}
@@ -785,8 +750,6 @@ const TaskPage: React.FC<Props> = ({
                                 </div>
                                 <div className="task__specific-div task__specific-div--update">
                                   <UpdateSpecificIntake
-                                    count={count}
-                                    setCount={setCount}
                                     inEditMode={inEditMode}
                                     setInEditMode={setInEditMode}
                                     setCurrentPage={setCurrentPage}

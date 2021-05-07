@@ -70,7 +70,7 @@ const TaskFormItems: React.FC<Props> = ({
   // onGetServiceTasks,
   intakeStatusArray,
   // serviceTasksArray,
-  // serviceTypesArray,
+  serviceTypesArray,
   usersByRolesArray,
   serviceTaskDropdown,
   serviceTypeTaskDict,
@@ -145,11 +145,16 @@ const TaskFormItems: React.FC<Props> = ({
                 optionFilterProp="children"
                 filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={(value: number) => {
+                  if (serviceTypesArray === null || serviceTypesArray === undefined) return;
+                  let serviceTypeId = value;
+                  let serviceTypeObj = serviceTypesArray.filter((st) => st.id === serviceTypeId)[0];
+
                   if (serviceTypeTaskDict && typeof value === 'number') {
                     setServiceTaskDropdown({
                       ...serviceTaskDropdown,
                       [record.key]: {
-                        serviceTask: '',
+                        serviceTaskId: '',
+                        serviceType: serviceTypeObj,
                         serviceTaskDropdownArray: serviceTypeTaskDict[value].serviceTasksArray,
                       },
                     });
@@ -220,7 +225,7 @@ const TaskFormItems: React.FC<Props> = ({
                 onChange={(e) =>
                   setServiceTaskDropdown({
                     ...serviceTaskDropdown,
-                    [record.key]: { ...serviceTaskDropdown[record.key], serviceTask: e.toString() },
+                    [record.key]: { ...serviceTaskDropdown[record.key], serviceTaskId: e.toString() },
                   })
                 }
               >
@@ -229,7 +234,7 @@ const TaskFormItems: React.FC<Props> = ({
                   dropdownArray !== null &&
                   dropdownArray.map((task) => {
                     return (
-                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={parseInt(task.id)}>
+                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={task.id}>
                         {`${task.title}${
                           task.description !== '' && task.description !== null ? ` - ${task.description}` : ''
                         }`}

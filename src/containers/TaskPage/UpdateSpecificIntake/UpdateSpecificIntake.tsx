@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef, useContext, MutableRef
 import { RootState } from 'src';
 import './UpdateSpecificIntake.scss';
 /* components */
+import MobileServiceTable from '../MobileServiceTable/MobileServiceTable';
 /* 3rd party lib */
 import gsap from 'gsap';
 import moment from 'moment';
@@ -14,6 +15,7 @@ import { IServiceTaskDropdown } from '../TaskPage';
 import { ActionCableContext } from 'src/index';
 import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj } from 'src/store/types/auth';
+import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedIntakeStatusObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 import {
   IIntakeJobsFormData,
@@ -23,12 +25,10 @@ import {
   TReceivedSpecificIntakeJobsObj,
   TServiceTypeTaskDict,
 } from 'src/store/types/task';
-import { emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
+import { IServiceTableChildState, TServiceTableState } from '../CreateSpecificIntake/CreateSpecificIntake';
 
 const { Option } = Select;
 interface UpdateSpecificIntakeProps {
-  count: number;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
   serviceTypeTaskDict: TServiceTypeTaskDict | null;
   setServiceTypeTaskDict: React.Dispatch<React.SetStateAction<TServiceTypeTaskDict | null>>;
   serviceTaskDropdown: IServiceTaskDropdown;
@@ -42,6 +42,15 @@ interface UpdateSpecificIntakeProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<'main' | 'update' | 'create'>>;
 }
 
+export type IUpdateTaskTableChildState = {
+  key: string;
+  taskId: string;
+  taskTime: number;
+  taskType: string;
+  taskTitle: string;
+  taskDescription: string;
+};
+
 export type TUpdateTaskTableState = {
   key: number;
   taskId: string;
@@ -54,8 +63,6 @@ export type TUpdateTaskTableState = {
 type Props = UpdateSpecificIntakeProps & StateProps & DispatchProps;
 
 const UpdateSpecificIntake: React.FC<Props> = ({
-  count,
-  setCount,
   loading,
   auth_token,
   inEditMode,
@@ -82,9 +89,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
 
+  const { width } = useWindowDimensions();
+
   const [updateIntakeJobsForm] = Form.useForm();
   const [clickedUpdate, setClickedUpdate] = useState(false); //boolean to keep track if user has clicked update
-  const [updateTaskTableState, setUpdateTaskTableState] = useState<TUpdateTaskTableState[] | null>(null);
+  const [updateServiceTableState, setUpdateServiceTableState] = useState<TServiceTableState>({});
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
     null,
   );
@@ -112,18 +121,18 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   }, [setCurrentPage]);
 
   const handleAdd = () => {
-    if (updateTaskTableState === null) return;
+    if (updateServiceTableState === null) return;
+    let uniqueKey = uuidv4();
     const newData: any = {
-      key: count,
-      [`taskType${count}`]: '',
-      [`taskTitle${count}`]: '',
-      [`taskTitleString${count}`]: '',
-      [`taskDescription${count}`]: '',
+      key: uniqueKey,
+      [`taskType${uniqueKey}`]: '',
+      [`taskTime${uniqueKey}`]: '',
+      [`taskTitle${uniqueKey}`]: '',
+      [`taskDescription${uniqueKey}`]: '',
     };
-    let tempArray = [...updateTaskTableState];
-    tempArray.push(newData);
-    setUpdateTaskTableState(tempArray);
-    setCount(count + 1);
+    let tempState = { ...updateServiceTableState };
+    tempState[uniqueKey] = newData;
+    setUpdateServiceTableState(tempState);
   };
 
   const onUpdateIntakeAndJobsFinish = (values: {
@@ -139,11 +148,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     if (userInfoObj === null || userInfoObj === undefined) return;
     let resultJobs: IJobFormData[] = [];
 
-    (updateTaskTableState as any).forEach((task: any, index: number) => {
+    Object.values(updateServiceTableState).forEach((task: IServiceTableChildState) => {
       let taskObj = {
-        id: task[`taskId${index}`],
-        service_task_id: values[`taskTitle${index}`],
-        description: values[`taskDescription${index}`],
+        id: (task as any)[`taskId${task.key}`],
+        service_task_id: values[`taskTitle${task.key}`],
+        description: values[`taskDescription${task.key}`],
       };
       resultJobs.push(taskObj);
     });
@@ -158,13 +167,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         assigned_to_ids: values.assign,
       },
       jobs: resultJobs,
-      logs: {
-        title: `Intake updated at ${moment().format('DD/MM/YYYY HH:mm')} by ${
-          userInfoObj.first_name
-        } ${emptyStringWhenUndefinedOrNull(userInfoObj.last_name)}`,
-        description: values.intakeUpdateDescription,
-        user_id: userInfoObj.id,
-      },
+      logs: { title: '', description: '', user_id: userInfoObj.id },
     };
     onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
   };
@@ -285,9 +288,13 @@ const UpdateSpecificIntake: React.FC<Props> = ({
       ellipsis: true,
       editable: true,
       render: (_text: any, record: TUpdateTaskTableState) => {
-        let serviceTaskTitle = (record as any)[`taskTitleString${record.key}`];
+        let serviceTaskId = (record as any)[`taskTitle${record.key}`];
 
-        if (!inEditMode) {
+        if (!inEditMode && serviceTypeTaskDict) {
+          let taskTypeId = (record as any)[`taskType${record.key}`];
+          let serviceTaskTitle = serviceTypeTaskDict[taskTypeId].serviceTasksArray.filter(
+            (child) => child.id === serviceTaskId,
+          )[0].title;
           return <div className="updatespecificintake__table-column">{serviceTaskTitle}</div>;
         }
         if (record.key !== undefined && Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
@@ -307,18 +314,15 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               ]}
             >
               <Select
-                showSearch
                 placeholder="Select a Task title"
-                optionFilterProp="children"
                 className="updatespecificintake__select updatespecificintake__select--task"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
                 {dropdownArrayExist &&
                   dropdownArray !== null &&
                   dropdownArray.map((task) => {
                     return (
-                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={parseInt(task.id)}>
+                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={task.id}>
                         {`${task.title}${
                           task.description !== '' && task.description !== null ? ` - ${task.description}` : ''
                         }`}
@@ -344,17 +348,71 @@ const UpdateSpecificIntake: React.FC<Props> = ({
             >
               <Select
                 disabled={true}
-                showSearch
                 placeholder="Select a Task title"
-                optionFilterProp="children"
                 className="updatespecificintake__select updatespecificintake__select--task updatespecificintake__select--disabled"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
+                {' '}
                 <Option value="">Select a Task</Option>
               </Select>
             </Form.Item>
           );
         }
+      },
+    },
+    {
+      key: 'taskTime',
+      title: 'Time',
+      className: 'createspecificintake__table-header',
+      dataIndex: 'taskTime',
+      width: 'auto',
+      ellipsis: true,
+      editable: true,
+      // sorter: (a: TserviceTableState, b: TserviceTableState) => a.taskDescription.localeCompare(b.taskDescription),
+      render: (_text: any, record: IServiceTableChildState) => {
+        let serviceTypeTitle = '';
+        // first check if the serviceTaskDropdown object has this key
+        if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
+          // then check whether the service type obj exist
+          if (
+            serviceTaskDropdown[record.key].serviceType !== null ||
+            serviceTaskDropdown[record.key].serviceType !== undefined
+          ) {
+            // if exist, get the title of the serviceType
+            serviceTypeTitle = serviceTaskDropdown[record.key].serviceType.title;
+          }
+        }
+
+        let serviceTypeIsNotRepair = serviceTypeTitle.toLowerCase() !== 'Repair'.toLowerCase();
+
+        return (
+          <>
+            {inEditMode ? (
+              <Form.Item
+                // label="Description"
+                className="createspecificintake__form-item--task"
+                name={`taskTime${record.key}`}
+                style={{ margin: 0 }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Estimated time required, default is 0',
+                  },
+                ]}
+              >
+                <Input
+                  disabled={serviceTypeIsNotRepair}
+                  type="number"
+                  className={`createspecificintake__form-input ${
+                    serviceTypeIsNotRepair ? 'createspecificintake__form-input--disabled' : ''
+                  }`}
+                  placeholder="Estimate time here"
+                />
+              </Form.Item>
+            ) : (
+              <div>{(record as any)[`taskTime${record.key}`]} hr (s)</div>
+            )}
+          </>
+        );
       },
     },
     {
@@ -403,7 +461,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         // const editable = isEditing(record);
         return (
           <>
-            {updateTaskTableState && updateTaskTableState.length >= 1 ? (
+            {updateServiceTableState && Object.values(updateServiceTableState).length >= 1 ? (
               <>
                 {/* {(record as any)[`taskId${record.key}`] === undefined ? ( */}
                 {/* // this is for normal delete */}
@@ -412,10 +470,14 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                   danger
                   title="Delete"
                   onClick={() => {
-                    if (updateTaskTableState === null) return;
-                    const dataSource = [...updateTaskTableState];
-                    // setCount(count - 1);
-                    setUpdateTaskTableState(dataSource.filter((item) => item.key !== record.key));
+                    if (updateServiceTableState === null) return;
+                    // const dataSource = [...updateServiceTableState];
+                    // // setCount(count - 1);
+                    // setUpdateServiceTableState(dataSource.filter((item) => item.key !== record.key));
+
+                    const dataSource = { ...updateServiceTableState };
+                    delete dataSource[record.key];
+                    setUpdateServiceTableState(dataSource);
                   }}
                 >
                   <i className="far fa-trash-alt"></i>
@@ -467,33 +529,35 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   }, [currentSpecificIntakeJobsObj, specificIntakeJobsObj, updateIntakeJobsForm]);
 
   useEffect(() => {
-    if (updateTaskTableState === null || updateTaskTableState.length < 1) return;
-    updateTaskTableState.forEach((row: any) => {
+    if (updateServiceTableState === null || Object.values(updateServiceTableState).length < 1) return;
+    Object.values(updateServiceTableState).forEach((row: any) => {
       // updating the form thats not related to the task table
       updateIntakeJobsForm.setFieldsValue({
         [`assign${row.key}`]: row[`assign${row.key}`],
         [`taskId${row.key}`]: row[`taskId${row.key}`],
         [`taskType${row.key}`]: row[`taskType${row.key}`],
+        [`taskTime${row.key}`]: row[`taskTime${row.key}`],
         [`taskTitle${row.key}`]: row[`taskTitle${row.key}`],
         [`taskStatus${row.key}`]: row[`taskStatus${row.key}`],
         [`taskDescription${row.key}`]: row[`taskDescription${row.key}`],
       });
     });
-  }, [updateIntakeJobsForm, updateTaskTableState]);
+  }, [updateIntakeJobsForm, updateServiceTableState]);
 
   useEffect(() => {
-    let tempArray: any[] = [];
+    let tempTableState: TServiceTableState = {};
     let tempDict: any = {};
     /** A function that stores desired keys and values into a tempArray */
-    const storeValue = (task: IReceivedIntakeJobsObj, index: number) => {
-      tempArray.push({
-        key: index,
-        [`taskId${index}`]: task.id,
-        [`taskTitle${index}`]: task.service_task.id,
-        [`taskTitleString${index}`]: task.service_task.title,
-        [`taskDescription${index}`]: task.description,
-        [`taskType${index}`]: task.service_task.service_type.id,
-      });
+    const storeValue = (task: IReceivedIntakeJobsObj) => {
+      let uniqueKey = uuidv4();
+      (tempTableState as any)[uniqueKey] = {
+        key: uniqueKey,
+        [`taskId${uniqueKey}`]: task.id,
+        [`taskTitle${uniqueKey}`]: task.service_task.id,
+        [`taskTime${uniqueKey}`]: task.service_task.duration,
+        [`taskDescription${uniqueKey}`]: task.description,
+        [`taskType${uniqueKey}`]: task.service_task.service_type.id,
+      };
 
       // prefill the service type task dict to keep track of the service task dropdowns
       if (
@@ -502,8 +566,13 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         Object.keys(serviceTypeTaskDict).includes(task.service_task.service_type.id.toString()) &&
         'serviceTasksArray' in serviceTypeTaskDict[task.service_task.service_type.id]
       ) {
-        tempDict[index] = {};
-        tempDict[index]['serviceTaskDropdownArray'] =
+        if (serviceTypesArray === null || serviceTypesArray === undefined) return;
+        let serviceTypeObj = serviceTypesArray.filter((st) => st.id === task.service_task.service_type.id)[0];
+
+        tempDict[uniqueKey] = {};
+        tempDict[uniqueKey]['serviceType'] = serviceTypeObj;
+        tempDict[uniqueKey]['serviceTaskId'] = task.service_task.id;
+        tempDict[uniqueKey]['serviceTaskDropdownArray'] =
           serviceTypeTaskDict[task.service_task.service_type.id].serviceTasksArray;
       }
     };
@@ -511,20 +580,19 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     if (currentSpecificIntakeJobsObj && specificIntakeJobsObj) {
       // Execute function "storeValue" for every array index
       currentSpecificIntakeJobsObj.jobs.map(storeValue);
-      setCount(currentSpecificIntakeJobsObj.jobs.length);
     }
 
     // update the state with tempArray
-    setUpdateTaskTableState(tempArray);
+    setUpdateServiceTableState(tempTableState);
     setServiceTaskDropdown(tempDict);
   }, [
-    setCount,
     intakeStatusArray,
-    setUpdateTaskTableState,
+    serviceTypesArray,
     specificIntakeJobsObj,
     serviceTypeTaskDict,
-    currentSpecificIntakeJobsObj,
     setServiceTaskDropdown,
+    setUpdateServiceTableState,
+    currentSpecificIntakeJobsObj,
   ]);
 
   useEffect(() => {
@@ -571,47 +639,83 @@ const UpdateSpecificIntake: React.FC<Props> = ({
           className="updatespecificintake__form"
           form={updateIntakeJobsForm}
           onFieldsChange={(e) => {
-            if (updateTaskTableState === null) return;
-            let tempTaskTableState = [...updateTaskTableState];
+            if (updateServiceTableState === null) return;
+            let tempTaskTableState = { ...updateServiceTableState };
 
             let labelName = e[0].name.toString();
             let currentValue = e[0].value;
-            let rowIndex = -1;
-            // basically getting the row index
-            if (
-              labelName.includes('taskType') ||
-              labelName.includes('taskTitle') ||
-              labelName.includes('taskDescription')
-            ) {
-              // get the number string (row index) after the last string index
-              rowIndex = parseInt(labelName.substring(labelName.length - 1));
+            let indexKey = '';
+            // basically getting the index Key
+            let taskType = 'taskType';
+            let taskTime = 'taskTime';
+            let taskTitle = 'taskTitle';
+            let taskDescription = 'taskDescription';
+
+            const updateTaskTableState = (labelName: string, indexKey: string, changedCurrentValue: any) => {
+              let formItemsObject = tempTaskTableState[indexKey];
+              let result = { ...formItemsObject, [labelName]: changedCurrentValue };
+              (tempTaskTableState as any)[indexKey] = result;
+              setUpdateServiceTableState(tempTaskTableState);
+            };
+
+            if (labelName.includes(taskType)) {
+              indexKey = labelName.substring(taskType.length);
+              updateTaskTableState(labelName, indexKey, currentValue);
+            } else if (labelName.includes(taskTitle)) {
+              indexKey = labelName.substring(taskTitle.length);
+              updateTaskTableState(labelName, indexKey, currentValue);
+            } else if (labelName.includes(taskDescription)) {
+              indexKey = labelName.substring(taskDescription.length);
+              updateTaskTableState(labelName, indexKey, currentValue);
+            } else if (labelName.includes(taskTime)) {
+              indexKey = labelName.substring(taskTime.length);
+              updateTaskTableState(labelName, indexKey, currentValue);
             }
 
-            let formItemsObject = (tempTaskTableState as any)[rowIndex];
-
-            let result = { ...formItemsObject, [labelName]: currentValue };
-            (tempTaskTableState as any)[rowIndex] = result;
-            // normally update the table state
-            setUpdateTaskTableState(tempTaskTableState);
-
             if (labelName.includes('taskType') && currentValue !== '') {
+              let serviceTypeId = currentValue;
+              if (serviceTypesArray === null || serviceTypesArray === undefined) return;
+              let serviceTypeObj = serviceTypesArray.filter((st) => st.id === serviceTypeId)[0];
+
               if (serviceTypeTaskDict) {
                 setServiceTaskDropdown({
                   ...serviceTaskDropdown,
-                  [rowIndex]: {
-                    serviceTask: '',
+                  [indexKey]: {
+                    serviceTaskId: '', //when a new service type is chosen, the service task shouold be reset
+                    serviceType: serviceTypeObj,
                     serviceTaskDropdownArray: serviceTypeTaskDict[currentValue].serviceTasksArray,
                   },
                 });
               }
-              updateIntakeJobsForm.setFieldsValue({ [`taskTitle${rowIndex}`]: '' });
+
+              // this is because when user change the type, the service task and time should be reset back to empty value
+              updateIntakeJobsForm.setFieldsValue({
+                [`taskTitle${indexKey}`]: '',
+                [`taskTime${indexKey}`]: '',
+                [`taskDescription${indexKey}`]: '',
+              });
             }
 
             if (labelName.includes('taskTitle')) {
               setServiceTaskDropdown({
                 ...serviceTaskDropdown,
-                [rowIndex]: { ...serviceTaskDropdown[rowIndex], serviceTask: currentValue },
+                [indexKey]: { ...serviceTaskDropdown[indexKey], serviceTaskId: currentValue },
               });
+
+              // get the taskdropdown from the object/dict
+              let taskDropdown = serviceTaskDropdown[indexKey].serviceTaskDropdownArray;
+              if (taskDropdown) {
+                // filter using service task id and get the service task object
+                let filteredServiceTask = taskDropdown.filter((child) => child.id === currentValue);
+                // set the duration to the form item for taskTime
+                updateIntakeJobsForm.setFieldsValue({ [`taskTime${indexKey}`]: filteredServiceTask[0].duration });
+
+                let formItemsObject = tempTaskTableState[indexKey];
+
+                let result = { ...formItemsObject, [`taskTime${indexKey}`]: filteredServiceTask[0].duration };
+                (tempTaskTableState as any)[indexKey] = result;
+                setUpdateServiceTableState(tempTaskTableState);
+              }
             }
           }}
           onFinish={(values) => {
@@ -772,24 +876,26 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                 </div>
 
                 {/* ==================================================== */}
-                {/* Intake Time */}
+                {/* Intake Time - only show if user is not in mobile mode or user is in mobile mode but not sign in*/}
                 {/* ==================================================== */}
-                <div className="updatespecificintake__box updatespecificintake__box--dock">
-                  <Tooltip title="Docked Date & Time">
-                    <div className="updatespecificintake__box-left">
-                      <i className="fas fa-clock updatespecificintake__box-icon"></i>
-                    </div>
-                  </Tooltip>
-
-                  <div className="updatespecificintake__box-right">
-                    <div className="updatespecificintake__box-right--time">
-                      <div className="updatespecificintake__box-right--time-left">
-                        {moment(currentSpecificIntakeJobsObj.created_at).format('YYYY-MM-DD')}
+                {width >= 576 || (!inEditMode && width <= 576) ? (
+                  <div className="updatespecificintake__box updatespecificintake__box--dock">
+                    <Tooltip title="Docked Date & Time">
+                      <div className="updatespecificintake__box-left">
+                        <i className="fas fa-clock updatespecificintake__box-icon"></i>
                       </div>
-                      <div>{moment(currentSpecificIntakeJobsObj.created_at).format('HH:mm')}</div>
+                    </Tooltip>
+
+                    <div className="updatespecificintake__box-right">
+                      <div className="updatespecificintake__box-right--time">
+                        <div className="updatespecificintake__box-right--time-left">
+                          {moment(currentSpecificIntakeJobsObj.created_at).format('YYYY-MM-DD')}
+                        </div>
+                        <div>{moment(currentSpecificIntakeJobsObj.created_at).format('HH:mm')}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : null}
 
                 {/* ==================================================== */}
                 {/* Intake Users */}
@@ -905,12 +1011,13 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     {currentSpecificIntakeJobsObj && (
                       <>
                         {currentSpecificIntakeJobsObj.description !== null &&
-                          currentSpecificIntakeJobsObj.description !== undefined &&
-                          currentSpecificIntakeJobsObj.description !== '' && (
+                          currentSpecificIntakeJobsObj.description !== undefined && (
                             <div className="updatespecificintake__section-description-outerdiv">
                               <span className="updatespecificintake__section-description-text">Description:</span>
                               <div className="updatespecificintake__section-description-div">
-                                {currentSpecificIntakeJobsObj.description}
+                                {currentSpecificIntakeJobsObj.description === ''
+                                  ? '-'
+                                  : currentSpecificIntakeJobsObj.description}
                               </div>
                             </div>
                           )}
@@ -919,10 +1026,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                   </>
                 )}
               </section>
-
-              <div className="updatespecificintake__lastupdated-div">
-                Last Updated: {moment(currentSpecificIntakeJobsObj.updated_at).format('YYYY-MM-DD  HH:mm')}
-              </div>
             </section>
 
             <section className="updatespecificintake__section-bottom">
@@ -937,32 +1040,42 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     </div>
                   )}
                 </div>
-                {updateTaskTableState && (
-                  <Table
-                    bordered
-                    // components={{
-                    //   body: {
-                    //     cell: EditableCell,
-                    //   },
-                    // }}
-                    className="updatespecificintake__table"
-                    scroll={{ y: 300 }}
-                    dataSource={updateTaskTableState}
-                    columns={
-                      inEditMode
-                        ? (taskColumnsSettings as any)
-                        : (taskColumnsSettings.filter((child) => child.title !== 'Actions') as any)
-                    } //remove actions when its in edit mode
-                    // columns={mergedColumns}
-                    // rowClassName="editable-row"
-                    // columns={convertHeader(taskColumns, setTaskColumns)}
-                    pagination={false}
-                  />
+                {updateServiceTableState && (
+                  <>
+                    {width >= 576 ? (
+                      <Table
+                        bordered
+                        className="updatespecificintake__table"
+                        scroll={{ y: 300 }}
+                        dataSource={Object.values(updateServiceTableState)}
+                        columns={
+                          inEditMode
+                            ? (taskColumnsSettings as any)
+                            : (taskColumnsSettings.filter((child) => child.title !== 'Actions') as any)
+                        } //remove actions when its in edit mode
+                        pagination={false}
+                      />
+                    ) : (
+                      <MobileServiceTable
+                        handleAdd={handleAdd}
+                        auth_token={auth_token}
+                        intakeJobsForm={updateIntakeJobsForm}
+                        serviceTaskDropdown={serviceTaskDropdown}
+                        setServiceTaskDropdown={setServiceTaskDropdown}
+                        serviceTypeTaskDict={serviceTypeTaskDict}
+                        serviceTableState={updateServiceTableState}
+                        setServiceTableState={setUpdateServiceTableState}
+                      />
+                    )}
+                  </>
                 )}
               </div>
               {inEditMode && (
                 <>
                   <div className="updatespecificintake__button-div-bottom">
+                    <div className="updatespecificintake__lastupdated-div">
+                      Last Updated: {moment(currentSpecificIntakeJobsObj.updated_at).format('YYYY-MM-DD  HH:mm')}
+                    </div>
                     <Popconfirm
                       placement="topRight"
                       title={

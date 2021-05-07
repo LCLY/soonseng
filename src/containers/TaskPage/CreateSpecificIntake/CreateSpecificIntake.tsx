@@ -4,8 +4,6 @@ import './CreateSpecificIntake.scss';
 /* components */
 import MobileServiceTable from '../MobileServiceTable/MobileServiceTable';
 /* 3rd party lib */
-import moment from 'moment';
-import gsap from 'gsap';
 import { Table, Tooltip, Form, Button, Input, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
@@ -21,35 +19,36 @@ import { IJobFormData, IIntakeJobsFormData, TServiceTypeTaskDict } from 'src/sto
 const { Option } = Select;
 
 interface CreateSpecificIntakeProps {
-  count: number;
   createIntakeJobsForm: any;
+  goBackToIntakes: () => void;
   serviceTaskDropdown: IServiceTaskDropdown;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
   serviceTypeTaskDict: TServiceTypeTaskDict | null;
   setServiceTypeTaskDict: React.Dispatch<React.SetStateAction<TServiceTypeTaskDict | null>>;
   setServiceTaskDropdown: React.Dispatch<React.SetStateAction<IServiceTaskDropdown>>;
-  setCurrentPage: React.Dispatch<React.SetStateAction<'main' | 'update' | 'create'>>;
-  createTaskTableState: TCreateTaskTableState[];
-  setCreateTaskTableState: React.Dispatch<React.SetStateAction<TCreateTaskTableState[]>>;
+  createServiceTableState: TServiceTableState;
+  setCreateServiceTableState: React.Dispatch<React.SetStateAction<TServiceTableState>>;
 }
 
-export type TCreateTaskTableState = {
-  key: number;
+export type IServiceTableChildState = {
+  key: string;
   taskId: string;
+  taskTime: number;
   taskType: string;
   taskTitle: string;
-  taskTitleString?: string;
   taskDescription: string;
+};
+
+export type TServiceTableState = {
+  [key: string]: IServiceTableChildState;
 };
 
 type Props = CreateSpecificIntakeProps & StateProps & DispatchProps;
 
 const CreateSpecificIntake: React.FC<Props> = ({
-  count,
-  setCount,
   loading,
+  auth_token,
   userInfoObj,
-  setCurrentPage,
+  goBackToIntakes,
   onGetServiceTypes,
   usersByRolesArray,
   intakeStatusArray,
@@ -57,8 +56,8 @@ const CreateSpecificIntake: React.FC<Props> = ({
   serviceTypeTaskDict,
   serviceTaskDropdown,
   createIntakeJobsForm,
-  createTaskTableState,
-  setCreateTaskTableState,
+  createServiceTableState,
+  setCreateServiceTableState,
   // beforeDeleteState,
   setServiceTaskDropdown,
   onCreateIntakeSummary,
@@ -74,29 +73,19 @@ const CreateSpecificIntake: React.FC<Props> = ({
   /*  method */
   /* ================================================== */
 
-  const goBackToIntakes = () => {
-    createIntakeJobsForm.resetFields();
-    setCurrentPage('main');
-    gsap.to('.task__table-div', {
-      duration: 1,
-      ease: 'ease',
-      x: '0',
-    });
-  };
-
   const handleAdd = () => {
-    if (createTaskTableState === null) return;
+    if (createServiceTableState === null) return;
+    let uniqueKey = uuidv4();
     const newData: any = {
-      key: count,
-      [`taskType${count}`]: '',
-      [`taskTitle${count}`]: '',
-      [`taskTitleString${count}`]: '',
-      [`taskDescription${count}`]: '',
+      key: uniqueKey,
+      [`taskType${uniqueKey}`]: '',
+      [`taskTitle${uniqueKey}`]: '',
+      [`taskDescription${uniqueKey}`]: '',
+      [`taskTime${uniqueKey}`]: '',
     };
-    let tempArray = [...createTaskTableState];
-    tempArray.push(newData);
-    setCreateTaskTableState(tempArray);
-    setCount(count + 1);
+    let tempState = { ...createServiceTableState };
+    tempState[uniqueKey] = newData;
+    setCreateServiceTableState(tempState);
   };
 
   const onCreateIntakeAndJobsFinish = (values: {
@@ -110,11 +99,11 @@ const CreateSpecificIntake: React.FC<Props> = ({
     if (userInfoObj === null || userInfoObj === undefined) return;
     let resultJobs: IJobFormData[] = [];
 
-    (createTaskTableState as any).forEach((task: any, index: number) => {
+    Object.values(createServiceTableState).forEach((task: IServiceTableChildState) => {
       let taskObj = {
-        id: task[`taskId${index}`],
-        service_task_id: values[`taskTitle${index}`],
-        description: values[`taskDescription${index}`],
+        id: '',
+        service_task_id: values[`taskTitle${task.key}`],
+        description: values[`taskDescription${task.key}`],
       };
       resultJobs.push(taskObj);
     });
@@ -129,11 +118,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
         assigned_to_ids: values.assign === undefined ? [] : values.assign,
       },
       jobs: resultJobs,
-      logs: {
-        title: `Intake created at ${moment().format('DD/MM/YYYY HH:mm')} by ${userInfoObj.username}`,
-        description: 'TEST',
-        user_id: userInfoObj.id,
-      },
+      logs: { title: '', description: '', user_id: userInfoObj.id },
     };
 
     onCreateIntakeSummary(intakeJobsFormData);
@@ -186,7 +171,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
       editable: true,
       // sorter: (a: TTaskTableState, b: TTaskTableState) => a.taskType.localeCompare(b.taskType),
 
-      render: (_text: any, record: TCreateTaskTableState) => {
+      render: (_text: any, record: IServiceTableChildState) => {
         if (serviceTypesArray === null || serviceTypesArray === undefined) return;
 
         return (
@@ -205,11 +190,8 @@ const CreateSpecificIntake: React.FC<Props> = ({
                 ]}
               >
                 <Select
-                  showSearch
                   placeholder="Select a Job Type"
-                  optionFilterProp="children"
                   className="createspecificintake__select createspecificintake__select--task"
-                  filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   <Option value="">Select a Job Type</Option>
                   {serviceTypeTaskDict &&
@@ -244,7 +226,8 @@ const CreateSpecificIntake: React.FC<Props> = ({
       width: 'auto',
       ellipsis: true,
       editable: true,
-      render: (_text: any, record: TCreateTaskTableState) => {
+      render: (_text: any, record: IServiceTableChildState) => {
+        // if the serviceTaskDropdown object has this key, then check whether the dropdown array exist
         if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
           let dropdownArrayExist = Object.keys(serviceTaskDropdown[record.key]).length > 0;
           let dropdownArray = serviceTaskDropdown[record.key].serviceTaskDropdownArray;
@@ -262,18 +245,15 @@ const CreateSpecificIntake: React.FC<Props> = ({
               ]}
             >
               <Select
-                showSearch
                 placeholder="Select a Task title"
-                optionFilterProp="children"
                 className="createspecificintake__select createspecificintake__select--task"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
                 {dropdownArrayExist &&
                   dropdownArray !== null &&
                   dropdownArray.map((task) => {
                     return (
-                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={parseInt(task.id)}>
+                      <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={task.id}>
                         {`${task.title}${
                           task.description !== '' && task.description !== null ? ` - ${task.description}` : ''
                         }`}
@@ -313,6 +293,58 @@ const CreateSpecificIntake: React.FC<Props> = ({
       },
     },
     {
+      key: 'taskTime',
+      title: 'Time',
+      className: 'createspecificintake__table-header',
+      dataIndex: 'taskTime',
+      width: 'auto',
+      ellipsis: true,
+      editable: true,
+      // sorter: (a: TserviceTableState, b: TserviceTableState) => a.taskDescription.localeCompare(b.taskDescription),
+      render: (_text: any, record: IServiceTableChildState) => {
+        let serviceTypeTitle = '';
+        // first check if the serviceTaskDropdown object has this key
+        if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
+          // then check whether the service type obj exist
+          if (
+            serviceTaskDropdown[record.key].serviceType !== null ||
+            serviceTaskDropdown[record.key].serviceType !== undefined
+          ) {
+            // if exist, get the title of the serviceType
+            serviceTypeTitle = serviceTaskDropdown[record.key].serviceType.title;
+          }
+        }
+
+        let serviceTypeIsNotRepair = serviceTypeTitle.toLowerCase() !== 'Repair'.toLowerCase();
+
+        return (
+          <>
+            <Form.Item
+              // label="Description"
+              className="createspecificintake__form-item--task"
+              name={`taskTime${record.key}`}
+              style={{ margin: 0 }}
+              rules={[
+                {
+                  required: true,
+                  message: 'Estimated time required, default is 0',
+                },
+              ]}
+            >
+              <Input
+                disabled={serviceTypeIsNotRepair}
+                type="number"
+                className={`createspecificintake__form-input ${
+                  serviceTypeIsNotRepair ? 'createspecificintake__form-input--disabled' : ''
+                }`}
+                placeholder="Estimate time here"
+              />
+            </Form.Item>
+          </>
+        );
+      },
+    },
+    {
       key: 'taskDescription',
       title: 'Description',
       className: 'createspecificintake__table-header',
@@ -320,8 +352,8 @@ const CreateSpecificIntake: React.FC<Props> = ({
       width: 'auto',
       ellipsis: true,
       editable: true,
-      // sorter: (a: TCreateTaskTableState, b: TCreateTaskTableState) => a.taskDescription.localeCompare(b.taskDescription),
-      render: (_text: any, record: TCreateTaskTableState) => {
+      // sorter: (a: TserviceTableState, b: TserviceTableState) => a.taskDescription.localeCompare(b.taskDescription),
+      render: (_text: any, record: IServiceTableChildState) => {
         return (
           <Form.Item
             // label="Description"
@@ -343,41 +375,37 @@ const CreateSpecificIntake: React.FC<Props> = ({
       title: 'Actions',
       dataIndex: 'operation',
       width: '8rem',
-      render: (_: any, record: TCreateTaskTableState) => {
+      render: (_: any, record: IServiceTableChildState) => {
         // const editable = isEditing(record);
         return (
           <>
-            {createTaskTableState && createTaskTableState.length >= 1 ? (
+            {createServiceTableState && Object.values(createServiceTableState).length >= 1 ? (
               <>
-                {/* {(record as any)[`taskId${record.key}`] === undefined ? ( */}
-                {/* // this is for normal delete */}
                 <Button
                   type="link"
                   danger
                   title="Delete"
                   onClick={() => {
-                    if (createTaskTableState === null) return;
-                    const dataSource = [...createTaskTableState];
-                    // setCount(count - 1);
-                    setCreateTaskTableState(dataSource.filter((item) => item.key !== record.key));
+                    if (createServiceTableState === null) return;
+                    let tempServiceTaskDropdown = { ...serviceTaskDropdown };
+                    delete tempServiceTaskDropdown[record.key];
+                    setServiceTaskDropdown(tempServiceTaskDropdown);
+
+                    // remove the object with the id/key
+                    const dataSource = { ...createServiceTableState };
+                    delete dataSource[record.key];
+                    setCreateServiceTableState(dataSource);
+
+                    createIntakeJobsForm.setFieldsValue({
+                      [`taskTitle${record.key}`]: '',
+                      [`taskType${record.key}`]: '',
+                      [`taskDescription${record.key}`]: '',
+                      [`taskTime${record.key}`]: '',
+                    });
                   }}
                 >
                   <i className="far fa-trash-alt"></i>
                 </Button>
-                {/* ) : (
-                  // this is for api delete
-                  <Popconfirm
-                    title="Sure to delete?"
-                    onConfirm={() => {
-                      if (specificIntakeJobsObj === null || specificIntakeJobsObj === undefined) return;
-                      handleDelete(specificIntakeJobsObj.id, parseInt((record as any)[`taskId${record.key}`]));
-                    }}
-                  >
-                    <Button type="link" danger title="Delete">
-                      <i className="far fa-trash-alt"></i>
-                    </Button>
-                  </Popconfirm>
-                )} */}
               </>
             ) : null}
           </>
@@ -403,47 +431,85 @@ const CreateSpecificIntake: React.FC<Props> = ({
         className="createspecificintake__form"
         form={createIntakeJobsForm}
         onFieldsChange={(e) => {
-          if (createTaskTableState === null) return;
-          let tempTaskTableState = [...createTaskTableState];
+          if (createServiceTableState === null) return;
+          let tempTaskTableState = { ...createServiceTableState };
 
           let labelName = e[0].name.toString();
           let currentValue = e[0].value;
-          let rowIndex = -1;
-          // basically getting the row index
-          if (
-            labelName.includes('taskType') ||
-            labelName.includes('taskTitle') ||
-            labelName.includes('taskDescription')
-          ) {
-            // get the number string (row index) after the last string index
-            rowIndex = parseInt(labelName.substring(labelName.length - 1));
+          let indexKey = '';
+          // basically getting the index Key
+          let taskType = 'taskType';
+          let taskTime = 'taskTime';
+          let taskTitle = 'taskTitle';
+          let taskDescription = 'taskDescription';
+
+          const updateTaskTableState = (labelName: string, indexKey: string, changedCurrentValue: any) => {
+            let formItemsObject = tempTaskTableState[indexKey];
+            let result = { ...formItemsObject, [labelName]: changedCurrentValue };
+            (tempTaskTableState as any)[indexKey] = result;
+            setCreateServiceTableState(tempTaskTableState);
+          };
+
+          if (labelName.includes(taskType)) {
+            indexKey = labelName.substring(taskType.length);
+            updateTaskTableState(labelName, indexKey, currentValue);
+          } else if (labelName.includes(taskTitle)) {
+            indexKey = labelName.substring(taskTitle.length);
+            updateTaskTableState(labelName, indexKey, currentValue);
+          } else if (labelName.includes(taskDescription)) {
+            indexKey = labelName.substring(taskDescription.length);
+            updateTaskTableState(labelName, indexKey, currentValue);
+          } else if (labelName.includes(taskTime)) {
+            indexKey = labelName.substring(taskTime.length);
+            updateTaskTableState(labelName, indexKey, currentValue);
           }
 
-          let formItemsObject = (tempTaskTableState as any)[rowIndex];
-
-          let result = { ...formItemsObject, [labelName]: currentValue };
-          (tempTaskTableState as any)[rowIndex] = result;
-          // normally update the state
-          setCreateTaskTableState(tempTaskTableState);
+          // else{
 
           if (labelName.includes('taskType') && currentValue !== '') {
+            let serviceTypeId = currentValue;
+            if (serviceTypesArray === null || serviceTypesArray === undefined) return;
+            let serviceTypeObj = serviceTypesArray.filter((st) => st.id === serviceTypeId)[0];
+
             if (serviceTypeTaskDict) {
               setServiceTaskDropdown({
                 ...serviceTaskDropdown,
-                [rowIndex]: {
-                  serviceTask: '',
+                [indexKey]: {
+                  serviceTaskId: '', //when a new service type is chosen, the service task shouold be reset
+                  serviceType: serviceTypeObj,
                   serviceTaskDropdownArray: serviceTypeTaskDict[currentValue].serviceTasksArray,
                 },
               });
             }
-            createIntakeJobsForm.setFieldsValue({ [`taskTitle${rowIndex}`]: '' });
+
+            // this is because when user change the type, the service task and time should be reset back to empty value
+            createIntakeJobsForm.setFieldsValue({
+              [`taskTitle${indexKey}`]: '',
+              [`taskTime${indexKey}`]: '',
+              [`taskDescription${indexKey}`]: '',
+            });
           }
 
           if (labelName.includes('taskTitle')) {
             setServiceTaskDropdown({
               ...serviceTaskDropdown,
-              [rowIndex]: { ...serviceTaskDropdown[rowIndex], serviceTask: currentValue },
+              [indexKey]: { ...serviceTaskDropdown[indexKey], serviceTaskId: currentValue },
             });
+
+            // get the taskdropdown from the object/dict
+            let taskDropdown = serviceTaskDropdown[indexKey].serviceTaskDropdownArray;
+            if (taskDropdown) {
+              // filter using service task id and get the service task object
+              let filteredServiceTask = taskDropdown.filter((child) => child.id === currentValue);
+              // set the duration to the form item for taskTime
+              createIntakeJobsForm.setFieldsValue({ [`taskTime${indexKey}`]: filteredServiceTask[0].duration });
+
+              let formItemsObject = tempTaskTableState[indexKey];
+
+              let result = { ...formItemsObject, [`taskTime${indexKey}`]: filteredServiceTask[0].duration };
+              (tempTaskTableState as any)[indexKey] = result;
+              setCreateServiceTableState(tempTaskTableState);
+            }
           }
         }}
         onFinish={(values) => {
@@ -525,15 +591,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                         },
                       ]}
                     >
-                      <Select
-                        showSearch
-                        placeholder="Select an intake status"
-                        optionFilterProp="children"
-                        className="createspecificintake__select"
-                        filterOption={(input, option) =>
-                          option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
+                      <Select placeholder="Select an intake status" className="createspecificintake__select">
                         <Option value="">Select a status</Option>
                         {intakeStatusArray &&
                           intakeStatusArray.map((intakeStatus) => {
@@ -628,16 +686,20 @@ const CreateSpecificIntake: React.FC<Props> = ({
                   bordered
                   className="createspecificintake__table"
                   scroll={{ y: 300 }}
-                  dataSource={createTaskTableState}
+                  dataSource={Object.values(createServiceTableState)}
                   columns={taskColumnsSettings} //remove actions when its in edit mode
                   pagination={false}
                 />
               ) : (
                 <MobileServiceTable
+                  auth_token={auth_token}
+                  handleAdd={handleAdd}
+                  intakeJobsForm={createIntakeJobsForm}
                   serviceTaskDropdown={serviceTaskDropdown}
+                  setServiceTaskDropdown={setServiceTaskDropdown}
                   serviceTypeTaskDict={serviceTypeTaskDict}
-                  createTaskTableState={createTaskTableState}
-                  setCreateTaskTableState={setCreateTaskTableState}
+                  serviceTableState={createServiceTableState}
+                  setServiceTableState={setCreateServiceTableState}
                 />
               )}
             </div>
@@ -661,6 +723,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
 
 interface StateProps {
   loading?: boolean;
+  auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   usersByRolesArray?: TReceivedUserInfoObj[] | null;
@@ -669,6 +732,7 @@ interface StateProps {
 const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     loading: state.task.loading,
+    auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
     intakeStatusArray: state.dashboard.intakeStatusArray,
     usersByRolesArray: state.task.usersByRolesArray,
