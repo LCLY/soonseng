@@ -1917,6 +1917,7 @@ const Make: React.FC<Props> = ({
       imagesArray={fullImageGalleryImagesArray}
       onDeleteUploadImage={onDeleteUploadImage}
       onClearAllSelectedImages={onClearAllSelectedImages}
+      setImagesArray={setFullImageGalleryImagesArray}
     />
   );
   let seriesFullImageGalleryModal = (
@@ -1934,6 +1935,7 @@ const Make: React.FC<Props> = ({
       imagesArray={fullImageGalleryImagesArray}
       onDeleteUploadImage={onDeleteUploadImage}
       onClearAllSelectedImages={onClearAllSelectedImages}
+      setImagesArray={setFullImageGalleryImagesArray}
     />
   );
 

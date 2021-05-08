@@ -101,6 +101,15 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    @include respond-to($small-phone) {
+      border-radius: 2rem 2rem 0 0;
+    }
+    @include respond-to($phone-only) {
+      border-radius: 2rem 2rem 0 0;
+    }
+    @include respond-to($tablet-landscape-up) {
+      border-radius: 2rem 0 0 2rem;
+    }
 
     &-bgcover {
       @include respond-to($small-phone) {

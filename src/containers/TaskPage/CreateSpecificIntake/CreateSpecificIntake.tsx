@@ -597,11 +597,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                           intakeStatusArray.map((intakeStatus) => {
                             return (
                               <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={intakeStatus.id}>
-                                {`${intakeStatus.title}${
-                                  intakeStatus.description !== '' && intakeStatus.description !== null
-                                    ? ` - ${intakeStatus.description}`
-                                    : ''
-                                }`}
+                                {intakeStatus.title}
                               </Option>
                             );
                           })}

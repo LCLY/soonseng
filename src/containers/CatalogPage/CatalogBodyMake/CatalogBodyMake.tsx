@@ -56,7 +56,7 @@ import {
   TUpdateBodyMakeData,
   TUpdateMakeData,
 } from 'src/store/types/dashboard';
-import { UPLOAD_TO_BODY_MAKE } from 'src/shared/constants';
+import { UPLOAD_TO_BODY_MAKE, UPLOAD_TO_MAKE } from 'src/shared/constants';
 import { afterSalesStrings, standardAccessories } from 'src/containers/QuotationPage/QuotationPage';
 import { TLocalOrderObj, TReceivedDimensionAccessoryObj } from 'src/store/types/sales';
 import { TUpdateMakeFinishValues } from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
@@ -151,7 +151,8 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImagesArray, setLightboxImagesArray] = useState<TReceivedImageObj[]>([]);
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
-  const [fullImageGalleryVisible, setFullImageGalleryVisible] = useState(false);
+  const [makeFullImageGalleryVisible, setMakeFullImageGalleryVisible] = useState(false);
+  const [bodyMakeFullImageGalleryVisible, setBodyMakeFullImageGalleryVisible] = useState(false);
   const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
   const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
   const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
@@ -159,6 +160,7 @@ const CatalogBodyMake: React.FC<Props> = ({
     body_make_id: number;
     make_wheelbase_id: number;
   } | null>(null);
+  const [keepTrackMakeImage, setKeepTrackMakeImage] = useState<{ make_id: number } | null>(null);
 
   const [updateMakeForm] = Form.useForm();
   const [createBodyMakeForm] = Form.useForm();
@@ -534,6 +536,64 @@ const CatalogBodyMake: React.FC<Props> = ({
   /*  component */
   /* ================================================== */
 
+  const MakeMenu = (props: { makeObj: TReceivedMakeObj }) => (
+    <div className="catalog__menu-outerdiv">
+      <Menu className="catalog__menu">
+        <Menu.Item
+          className="catalog__menu-item"
+          onClick={() => {
+            let price: number | null = null;
+            if (props.makeObj.price === 0) {
+              price = null;
+            } else {
+              price = props.makeObj.price;
+            }
+            updateMakeForm.setFieldsValue({
+              makeId: props.makeObj.id,
+              gvw: props.makeObj.gvw,
+              price: price,
+              title: props.makeObj.title,
+              makeAbs: props.makeObj.abs,
+              makeTire: props.makeObj.tire,
+              makeTorque: props.makeObj.torque,
+              makeConfig: props.makeObj.config,
+              makeSeriesId: match.params.series_id,
+              makeBrandId: props.makeObj.brand.id,
+              horsepower: props.makeObj.horsepower,
+              engine_cap: props.makeObj.engine_cap,
+              makeEmission: props.makeObj.emission,
+              transmission: props.makeObj.transmission,
+              year: props.makeObj.year ? moment(props.makeObj.year) : null,
+            });
+            // let makeModalContent = { ...modalContent };
+            // makeModalContent.make.makeTitle = props.makeObj.title;
+
+            setModalContent({
+              ...modalContent,
+              make: { seriesTitle: props.makeObj.series, makeTitle: props.makeObj.title },
+            });
+            // setModalContent(makeModalContent);
+            setShowUpdateModal({ ...showUpdateModal, make: true });
+          }}
+        >
+          <i className="fas fa-edit" />
+          &nbsp;&nbsp;Edit Model
+        </Menu.Item>
+        <Menu.Item
+          className="catalog__menu-item"
+          onClick={() => {
+            setMakeFullImageGalleryVisible(true);
+            setFullImageGalleryImagesArray(props.makeObj.images);
+            setImageGalleryTargetModelId(props.makeObj.id);
+            setKeepTrackMakeImage({ make_id: props.makeObj.id });
+          }}
+        >
+          <i className="fas fa-images" /> &nbsp;Edit images
+        </Menu.Item>
+      </Menu>
+    </div>
+  );
+
   let MakeDetailsComponent = (props: { catalogMake: TReceivedMakeObj }) => {
     const { catalogMake } = props;
     return (
@@ -571,44 +631,14 @@ const CatalogBodyMake: React.FC<Props> = ({
           </div>
           {accessObj?.showAdminDashboard && (
             <Tooltip title="Edit Model">
-              <div
+              <Dropdown
                 className="catalogbodymake__button-make"
-                onClick={() => {
-                  setModalContent({
-                    ...modalContent,
-                    make: { seriesTitle: catalogMake.series, makeTitle: catalogMake.title },
-                  });
-                  let price: number | null = null;
-
-                  if (catalogMake.price === 0) {
-                    price = null;
-                  } else {
-                    price = catalogMake.price;
-                  }
-
-                  updateMakeForm.setFieldsValue({
-                    makeId: catalogMake.id,
-                    gvw: catalogMake.gvw,
-                    price: price,
-                    title: catalogMake.title,
-                    makeAbs: catalogMake.abs,
-                    makeTire: catalogMake.tire,
-                    makeTorque: catalogMake.torque,
-                    makeConfig: catalogMake.config,
-                    makeSeriesId: match.params.series_id,
-                    makeBrandId: catalogMake.brand.id,
-                    horsepower: catalogMake.horsepower,
-                    engine_cap: catalogMake.engine_cap,
-                    makeEmission: catalogMake.emission,
-                    transmission: catalogMake.transmission,
-                    year: catalogMake.year ? moment(catalogMake.year) : '',
-                  });
-                  // show the modal
-                  setShowUpdateModal({ ...showUpdateModal, make: true });
-                }}
+                overlay={<MakeMenu makeObj={catalogMake} />}
+                trigger={['click']}
               >
-                <i className="fas fa-pen" />
-              </div>
+                <i className="fas fa-cogs" />
+              </Dropdown>
+              {/* </div> */}
             </Tooltip>
           )}
         </div>
@@ -1099,7 +1129,7 @@ const CatalogBodyMake: React.FC<Props> = ({
       <Menu className="catalog__menu">
         <Menu.Item
           onClick={() => {
-            setFullImageGalleryVisible(true);
+            setBodyMakeFullImageGalleryVisible(true);
             setFullImageGalleryImagesArray(bodyMakeObj.images);
             setKeepTrackBodyMake({
               ...keepTrackBodyMake,
@@ -1382,6 +1412,12 @@ const CatalogBodyMake: React.FC<Props> = ({
       }
     }
   }, [accessObj, bodyMakeWithWheelbaseArray]);
+
+  useEffect(() => {
+    if (catalogMake && keepTrackMakeImage) {
+      setFullImageGalleryImagesArray(catalogMake.images);
+    }
+  }, [catalogMake, keepTrackMakeImage]);
 
   useEffect(() => {
     if (makeFromCatalogBodyMake) {
@@ -1681,12 +1717,30 @@ const CatalogBodyMake: React.FC<Props> = ({
         setUploadSelectedFiles={setUploadSelectedFiles}
         imagesPreviewUrls={fullGalleryImagesPreviewUrls}
         setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
-        visible={fullImageGalleryVisible}
-        setVisible={setFullImageGalleryVisible}
+        visible={bodyMakeFullImageGalleryVisible}
+        setVisible={setBodyMakeFullImageGalleryVisible}
         loading={dashboardLoading !== undefined && dashboardLoading}
         imagesArray={fullImageGalleryImagesArray}
         onDeleteUploadImage={onDeleteUploadImage}
         onClearAllSelectedImages={onClearAllSelectedImages}
+        setImagesArray={setFullImageGalleryImagesArray}
+      />
+
+      <FullImageGalleryModal
+        indexKey={'make'}
+        modelName={UPLOAD_TO_MAKE}
+        modelId={imageGalleryTargetModelId}
+        uploadSelectedFiles={uploadSelectedFiles}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={fullGalleryImagesPreviewUrls}
+        setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
+        visible={makeFullImageGalleryVisible}
+        setVisible={setMakeFullImageGalleryVisible}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        imagesArray={fullImageGalleryImagesArray}
+        onDeleteUploadImage={onDeleteUploadImage}
+        onClearAllSelectedImages={onClearAllSelectedImages}
+        setImagesArray={setFullImageGalleryImagesArray}
       />
 
       {/* -------------------------------- */}

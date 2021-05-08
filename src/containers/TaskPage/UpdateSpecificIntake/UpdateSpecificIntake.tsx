@@ -97,6 +97,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
     null,
   );
+  const [showSubmitPopconfirm, setShowSubmitPopconfirm] = useState(false);
 
   const [
     currentSpecificIntakeJobsObj,
@@ -167,7 +168,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         assigned_to_ids: values.assign,
       },
       jobs: resultJobs,
-      logs: { title: '', description: '', user_id: userInfoObj.id },
+      logs: { title: '', description: values.intakeUpdateDescription, user_id: userInfoObj.id },
     };
     onUpdateIntakeSummary(parseInt(values.intakeId), intakeJobsFormData);
   };
@@ -428,7 +429,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         return (
           <>
             {!inEditMode ? (
-              <div className="updatespecificintake__table-column">
+              <div className="updatespecificintake__table-column updatespecificintake__table-column--desc">
                 {(record as any)[`taskDescription${record.key}`] === '' ||
                 (record as any)[`taskDescription${record.key}`] === null
                   ? '-'
@@ -628,6 +629,20 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
     cableRef.current = channel;
   }, [cableRef, updateIntakeJobsForm, goBackToIntakes, specificIntakeJobsObj, cableApp.cable.subscriptions]);
+
+  useEffect(() => {
+    const executeSubmit = (event: any) => {
+      // check if pop confirm is opened, then only detect key down
+      if (event.key === 'Enter' && showSubmitPopconfirm) {
+        //Do whatever when esc is pressed
+        updateIntakeJobsForm.submit();
+      }
+    };
+    document.addEventListener('keydown', executeSubmit, false);
+    return () => {
+      document.removeEventListener('keydown', executeSubmit, false);
+    };
+  }, [updateIntakeJobsForm, showSubmitPopconfirm]);
 
   /* ================================================== */
   /* ================================================== */
@@ -1073,6 +1088,8 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                       Last Updated: {moment(currentSpecificIntakeJobsObj.updated_at).format('YYYY-MM-DD  HH:mm')}
                     </div>
                     <Popconfirm
+                      visible={showSubmitPopconfirm}
+                      onVisibleChange={(e) => setShowSubmitPopconfirm(e)}
                       placement="topRight"
                       title={
                         <>
@@ -1090,11 +1107,13 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                         updateIntakeJobsForm.submit();
                         setClickedUpdate(true);
                       }}
+                      onCancel={() => setShowSubmitPopconfirm(false)}
                       okText="Continue"
                       okButtonProps={{ htmlType: 'submit' }}
                       cancelText="Cancel"
                     >
                       <Button
+                        onClick={() => setShowSubmitPopconfirm(true)}
                         loading={loading !== undefined && loading}
                         className="updatespecificintake__button-task updatespecificintake__button-task--save"
                       >

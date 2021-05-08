@@ -191,7 +191,11 @@
       word-break: break-all;
       max-height: 5rem;
       overflow-y: auto;
-      @include customScrollbar(0.5rem, 0.5rem, 0.5rem, white);
+      @include customScrollbar(0.3rem, 0.3rem, 0.3rem, white);
+
+      &--desc {
+        font-size: 1.2rem;
+      }
     }
   }
   &__box {
