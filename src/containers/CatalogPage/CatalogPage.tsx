@@ -8,6 +8,8 @@ import CustomContainer from 'src/components/CustomContainer/CustomContainer';
 import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 // import CatalogFilter from 'src/containers/CatalogPage/CatalogFilter/CatalogFilter';
 import ParallaxContainer from 'src/components/ParallaxContainer/ParallaxContainer';
+import FullImageGalleryModal from 'src/components/ImageRelated/FullImageGalleryModal/FullImageGalleryModal';
+
 /*3rd party lib*/
 import gsap from 'gsap';
 import moment from 'moment';
@@ -26,13 +28,21 @@ import holy5trucks from 'src/img/5trucks.jpg';
 import { ROUTE_CATALOG } from 'src/shared/routes';
 import * as actions from 'src/store/actions/index';
 import { TUserAccess } from 'src/store/types/auth';
+import { onClearAllSelectedImages } from 'src/shared/Utils';
 import soonseng_placeholder from 'src/img/soonseng_logo_red.png';
 import { desiredValueWhenUndefinedOrNull } from 'src/shared/Utils';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TCatalogSeries, TReceivedCatalogMakeObj } from 'src/store/types/catalog';
 import { TCreateMakeFinishValues, TUpdateMakeFinishValues } from '../DashboardPage/DashboardCRUD/Make/Make';
-import { TCreateMakeData, TReceivedMakeObj, TReceivedSeriesObj, TUpdateMakeData } from 'src/store/types/dashboard';
+import {
+  TCreateMakeData,
+  TReceivedImageObj,
+  TReceivedMakeObj,
+  TReceivedSeriesObj,
+  TUpdateMakeData,
+} from 'src/store/types/dashboard';
 import { convertPriceToFloat, convertSpaceInStringWithChar, emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
+import { UPLOAD_TO_SERIES } from 'src/shared/constants';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -46,6 +56,7 @@ const CatalogPage: React.FC<Props> = ({
   accessObj,
   successMessage,
   errorMessage,
+  dashboardLoading,
   catalogMakesArray,
   onCreateBrand,
   onUpdateBrand,
@@ -57,6 +68,7 @@ const CatalogPage: React.FC<Props> = ({
   onDeleteMake,
   onUpdateMake,
   onGetCatalogMakes,
+  onDeleteUploadImage,
   onClearDashboardState,
 }) => {
   /* ================================================== */
@@ -104,6 +116,7 @@ const CatalogPage: React.FC<Props> = ({
   const [updateSeriesForm] = Form.useForm();
   const [createBrandForm] = Form.useForm();
   const [updateBrandForm] = Form.useForm();
+
   // const [makeFilter, setMakeFilter] = useState('');
   // const [showSearch, setShowSearch] = useState(false);
 
@@ -113,10 +126,14 @@ const CatalogPage: React.FC<Props> = ({
   /*   Image related states   */
   /* ======================== */
   // Upload states
-  // const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
   // state to store temporary images before user uploads
   const [imagesPreviewUrls, setImagesPreviewUrls] = useState<string[]>([]); //this is for preview image purposes only
-
+  const [uploadSelectedFiles, setUploadSelectedFiles] = useState<FileList | null | undefined>(null);
+  const [fullImageGalleryVisible, setFullImageGalleryVisible] = useState(false);
+  const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
+  const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
+  const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
+  const [keepTrackImage, setKeepTrackImage] = useState<{ brand_id: number; series_id: number } | null>(null);
   /* ================================================== */
   /*  methods  */
   /* ================================================== */
@@ -284,7 +301,12 @@ const CatalogPage: React.FC<Props> = ({
       </Menu.Item>
     </Menu>
   );
-  const SeriesMenu = (props: { seriesTitle: string; brandId: number; seriesId: number }) => (
+  const SeriesMenu = (props: {
+    seriesTitle: string;
+    brandId: number;
+    seriesId: number;
+    seriesImages: TReceivedImageObj[];
+  }) => (
     <Menu className="catalog__menu">
       <Menu.Item
         className="catalog__menu-item"
@@ -302,6 +324,18 @@ const CatalogPage: React.FC<Props> = ({
       >
         <i className="fas fa-edit" />
         &nbsp;&nbsp;Edit Series
+      </Menu.Item>
+      <Menu.Item
+        className="catalog__menu-item"
+        onClick={() => {
+          setFullImageGalleryVisible(true);
+          setFullImageGalleryImagesArray(props.seriesImages);
+          setImageGalleryTargetModelId(props.seriesId);
+          setKeepTrackImage({ brand_id: props.brandId, series_id: props.seriesId });
+        }}
+      >
+        <i className="fas fa-images" />
+        &nbsp;&nbsp;Edit Images
       </Menu.Item>
       <Menu.Item
         className="catalog__menu-item--danger"
@@ -728,6 +762,26 @@ const CatalogPage: React.FC<Props> = ({
   }, [onGetCatalogMakes]);
 
   useEffect(() => {
+    // this is mainly for when user has deleted image, we need to get that info from the obj
+    // and update it
+    if (catalogMakesArray && keepTrackImage) {
+      let filteredCatalogMakesArrayWithBrandId = catalogMakesArray.filter(
+        (child) => child.brand.id === keepTrackImage.brand_id,
+      );
+      if (filteredCatalogMakesArrayWithBrandId.length > 0) {
+        // after getting the filtered array with brand id, filter series next
+        let filteredSeriesThroughBrandId = filteredCatalogMakesArrayWithBrandId[0].series.filter(
+          (child) => child.id === keepTrackImage.series_id,
+        );
+        // after series is filtered, get the images out
+        if (filteredSeriesThroughBrandId.length > 0) {
+          setFullImageGalleryImagesArray(filteredSeriesThroughBrandId[0].images);
+        }
+      }
+    }
+  }, [catalogMakesArray, keepTrackImage]);
+
+  useEffect(() => {
     //  after successful data retrieve, select the first series from first brand
     if (catalogMakesArray && !mounted) {
       // first make sure that there is >= 1 catalog makes
@@ -963,6 +1017,23 @@ const CatalogPage: React.FC<Props> = ({
         loading={localLoading}
       />
 
+      <FullImageGalleryModal
+        indexKey={'series'}
+        modelName={UPLOAD_TO_SERIES}
+        modelId={imageGalleryTargetModelId}
+        uploadSelectedFiles={uploadSelectedFiles}
+        setUploadSelectedFiles={setUploadSelectedFiles}
+        imagesPreviewUrls={fullGalleryImagesPreviewUrls}
+        setImagesPreviewUrls={setFullGalleryImagesPreviewUrls}
+        visible={fullImageGalleryVisible}
+        setVisible={setFullImageGalleryVisible}
+        loading={dashboardLoading !== undefined && dashboardLoading}
+        imagesArray={fullImageGalleryImagesArray}
+        onDeleteUploadImage={onDeleteUploadImage}
+        onClearAllSelectedImages={onClearAllSelectedImages}
+        setImagesArray={setFullImageGalleryImagesArray}
+      />
+
       <NavbarComponent activePage="catalog" defaultOpenKeys="product" />
       {/* background image in outerdiv */}
       <ParallaxContainer bgImageUrl={holy5trucks} overlayColor="rgba(0, 0, 0, 0.3)">
@@ -1113,6 +1184,7 @@ const CatalogPage: React.FC<Props> = ({
                                                               seriesTitle={series.title}
                                                               brandId={catalog.brand.id}
                                                               seriesId={series.id}
+                                                              seriesImages={series.images}
                                                             />
                                                           }
                                                           trigger={['click']}

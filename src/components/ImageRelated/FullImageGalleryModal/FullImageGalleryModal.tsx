@@ -56,6 +56,7 @@ interface FullImageGalleryModalProps {
     galleryImages: TGalleryImageArrayObj[],
     setGalleryImages: React.Dispatch<React.SetStateAction<TGalleryImageArrayObj[]>>,
   ) => void;
+  setImagesArray: React.Dispatch<React.SetStateAction<TReceivedImageObj[] | null>>;
   imagesPreviewUrls: { url: string; name: string }[];
   setImagesPreviewUrls: React.Dispatch<React.SetStateAction<{ url: string; name: string }[]>>;
   uploadSelectedFiles: FileList | null | undefined;
@@ -78,6 +79,7 @@ const FullImageGalleryModal: React.FC<Props> = ({
   imagesArray,
   onUploadImage,
   successMessage,
+  setImagesArray,
   onDeleteUploadImage,
   imagesPreviewUrls,
   uploadSelectedFiles,
@@ -172,8 +174,12 @@ const FullImageGalleryModal: React.FC<Props> = ({
         onCancel={() => {
           // clear everything
           setVisible(false);
+          if (setImagesArray !== undefined) {
+            setImagesArray(null);
+          }
           uploadForm.resetFields();
           setImagesPreviewUrls([]);
+
           setInUploadMode(false);
           setUploadSelectedFiles(null);
           setShowEditImageGallery(false);
