@@ -353,7 +353,8 @@ const TaskPage: React.FC<Props> = ({
       date.toLowerCase().match(regex) ||
       listOfUsers.toLowerCase().match(regex) ||
       time.toLowerCase().match(regex) ||
-      intakeChild.regNumber.toLowerCase().match(regex);
+      intakeChild.regNumber.toLowerCase().match(regex) ||
+      intakeChild.status.toLowerCase().match(regex);
 
     // if not return the filtered result
     // if includes doesnt return result, it will fallback to regex to get better tweaked result
@@ -363,6 +364,7 @@ const TaskPage: React.FC<Props> = ({
       intakeChild.description.toLowerCase().includes(searchedText) ||
       intakeChild.assign.length.toString().includes(searchedText) ||
       intakeChild.serviceType.toLowerCase().includes(searchedText) ||
+      intakeChild.status.toLowerCase().includes(searchedText) ||
       date.toLowerCase().includes(searchedText) ||
       listOfUsers.toLowerCase().includes(searchedText) ||
       time.toLowerCase().includes(searchedText) ||
