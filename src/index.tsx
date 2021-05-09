@@ -50,13 +50,14 @@ const composeEnhancers =
 const saveSalesSubsetFilter = createFilter('sales', ['localOrdersDict']);
 const saveAuthSubsetFilter = createFilter('auth', ['auth_token', 'accessObj', 'userInfoObj']);
 const saveGeneralSubsetFilter = createFilter('general', ['projectVersion']);
+const saveCatalogSubsetFilter = createFilter('catalog', ['viewMode']);
 
 // redux persist config
 const persistConfig = {
   key: 'root',
   storage: storage,
-  whitelist: ['sales', 'auth', 'general'], // which reducer want to store - name of reducer
-  transforms: [saveSalesSubsetFilter, saveAuthSubsetFilter, saveGeneralSubsetFilter],
+  whitelist: ['sales', 'auth', 'general', 'catalog'], // which reducer want to store - name of reducer
+  transforms: [saveSalesSubsetFilter, saveAuthSubsetFilter, saveGeneralSubsetFilter, saveCatalogSubsetFilter],
   stateReconciler: autoMergeLevel2,
 };
 

@@ -52,6 +52,8 @@ export const GET_CATALOG_BODYMAKES_FAILED = 'GET_CATALOG_BODYMAKES_FAILED';
 // Set Accessory Type for the accessory form, general,body and dimension
 export const SET_ACCESSORY_TYPE = 'SET_ACCESSORY_TYPE';
 
+export const SET_VIEW_MODE = 'SET_VIEW_MODE';
+
 /* ================================================================================== */
 /*                                       Sales                                        */
 /* ================================================================================== */

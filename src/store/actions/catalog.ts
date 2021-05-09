@@ -1,7 +1,7 @@
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
 import { TReceivedMakeObj } from '../types/dashboard';
-import { TReceivedCatalogBodyMake, TReceivedCatalogMakeObj } from '../types/catalog';
+import { TReceivedCatalogBodyMake, TReceivedCatalogMakeObj, TViewMode } from '../types/catalog';
 
 /* ============================================================================================ */
 //  Catalog
@@ -83,5 +83,15 @@ export const setAccessoryType = (accessoryType: string): AppActions => {
   return {
     type: actionTypes.SET_ACCESSORY_TYPE,
     accessoryType: accessoryType,
+  };
+};
+
+/* ------------------------------------------- */
+// Set Catalog Body Make View Mode
+/* ------------------------------------------- */
+export const setViewMode = (viewMode: TViewMode): AppActions => {
+  return {
+    type: actionTypes.SET_VIEW_MODE,
+    viewMode: viewMode,
   };
 };

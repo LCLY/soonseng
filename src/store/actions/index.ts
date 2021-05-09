@@ -35,6 +35,7 @@ export {
   getCatalogBodyMakesSucceed,
   // set Accessory type
   setAccessoryType,
+  setViewMode,
 } from './catalog';
 
 export {

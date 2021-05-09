@@ -6,6 +6,7 @@ import { Reducer } from 'redux';
 
 const initialState: CatalogInitialState = {
   loading: false,
+  viewMode: 'grid',
   errorMessage: null,
   successMessage: null,
   // catalogMake
@@ -85,6 +86,15 @@ const setAccessoryType = (state: CatalogInitialState, action: AppActions) => {
   }
   return state;
 };
+/* ============================================================================================ */
+/*  Set Catalog Body Make View Mode
+/* ============================================================================================ */
+const setViewMode = (state: CatalogInitialState, action: AppActions) => {
+  if ('viewMode' in action) {
+    return updateObject(state, { viewMode: action.viewMode });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 /* ============================================================================================ */
@@ -118,6 +128,11 @@ const reducer: Reducer<CatalogInitialState, AppActions> = (state = initialState,
     /* ---------------------- */
     case actionTypes.SET_ACCESSORY_TYPE:
       return setAccessoryType(state, action);
+    /* ---------------------- */
+    //  Set Catalog Body Make View Mode
+    /* ---------------------- */
+    case actionTypes.SET_VIEW_MODE:
+      return setViewMode(state, action);
 
     default:
       return state;
