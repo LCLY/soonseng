@@ -225,7 +225,13 @@ $big-desktop-up: big-desktop-up;
   }
 }
 
-@mixin sheenEffect($hoverBg: rgba($primary-color-4, 0.5)) {
+@mixin sheenEffect(
+  $hoverBg: rgba($primary-color-4, 0.5),
+  $width: 3em,
+  $left: -4.5em,
+  $translateX: 30rem,
+  $skew: -45deg
+) {
   text-decoration: none;
   transition: all 0.2s ease-in-out;
   position: relative;
@@ -235,19 +241,19 @@ $big-desktop-up: big-desktop-up;
     content: '';
     background-color: rgba(255, 255, 255, 0.5);
     height: 100%;
-    width: 3em;
+    width: $width;
     display: block;
     position: absolute;
     top: 0;
-    left: -4.5em;
-    transform: skewX(-45deg) translateX(0);
+    left: $left;
+    transform: skewX($skew) translateX(0);
     transition: none;
   }
   &:hover {
     background: $hoverBg;
     color: #fff;
     &:before {
-      transform: skewX(-45deg) translateX(30rem);
+      transform: skewX($skew) translateX($translateX);
       transition: all 0.5s ease-in-out;
     }
   }

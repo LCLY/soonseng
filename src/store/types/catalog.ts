@@ -10,6 +10,7 @@ import {
 // initialState for reducers
 export interface CatalogInitialState {
   readonly loading?: boolean;
+  readonly viewMode?: TViewMode;
   readonly errorMessage?: string | null;
   readonly successMessage?: string | null;
   // accessory type for the create accessory part
@@ -95,6 +96,15 @@ export interface SetAccessoryTypeAction {
   accessoryType: string;
 }
 
+/* ------------------------------------------- */
+// Set Catalog Body Make View Mode
+/* ------------------------------------------- */
+export type TViewMode = 'list' | 'grid';
+export interface SetViewModeAction {
+  type: typeof actionTypes.SET_VIEW_MODE;
+  viewMode: TViewMode;
+}
+
 /* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
@@ -120,4 +130,8 @@ export type CatalogActionTypes =
   /* -------------------------- */
   // Set accessory type
   /* -------------------------- */
-  | SetAccessoryTypeAction;
+  | SetAccessoryTypeAction
+  /* ----------------------------- */
+  // Set Catalog Body Make View Mode
+  /* ----------------------------- */
+  | SetViewModeAction;
