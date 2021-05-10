@@ -228,7 +228,7 @@ const MobileTaskTable: React.FC<Props> = () => {
                                 <div className="mobiletasktable__title-innerdiv">
                                   <span
                                     className="mobiletasktable__title-regNumber"
-                                    style={{ color: child.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
+                                    style={{ color: child.status === 'Ready for Pick-up' ? '#808080' : '#df7471' }}
                                   >
                                     {child.regNumber.split('-')[0]}
                                   </span>
