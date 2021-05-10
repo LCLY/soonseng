@@ -49,7 +49,7 @@ import HiddenQuotationComponent from './HiddenQuotationComponent';
 // };
 
 export const standardAccessories = [
-  'Air-Container',
+  'Air Conditioner',
   'Radio CD Player',
   'Cab Floor Mat',
   'Mudguards',
@@ -64,7 +64,7 @@ export const standardAccessories = [
   'Kangaroo Bar',
 ];
 export const standardAccessoriesSelectOptions = [
-  { label: 'Air-Container', value: 'Air-Container' },
+  { label: 'Air Conditioner', value: 'Air Conditioner' },
   { label: 'Radio CD Player', value: 'Radio CD Player' },
   { label: 'Cab Floor Mat', value: 'Cab Floor Mat' },
   { label: 'Mudguards', value: 'Mudguards' },
