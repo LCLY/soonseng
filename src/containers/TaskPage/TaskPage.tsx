@@ -189,7 +189,7 @@ const TaskPage: React.FC<Props> = ({
             >
               <span
                 className="task__link"
-                style={{ color: record.status === 'Ready for Pick-up' ? '#63a777' : '#df7471' }}
+                style={{ color: record.status === 'Ready for Pick-up' ? '#808080' : '#df7471' }}
                 onClick={() => {
                   onGetSpecificIntakeJobs(parseInt(record.key));
                   updateIntakeJobsForm.setFieldsValue({
