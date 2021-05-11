@@ -173,6 +173,28 @@ const TaskPage: React.FC<Props> = ({
       sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.regNumber.localeCompare(b.regNumber),
       ...getColumnSearchProps(intakeJobsSearchInput, 'regNumber', 'Registration Number'),
       render: (_text: any, record: TIntakeTableState) => {
+        let defaultColor = '#b2d8e9';
+        let grey = '#808080';
+        let readyToPickUp = '#63a777';
+        let onHold = '#e98923';
+        let inProgress = '#edd864';
+        let statusColor = '';
+        switch (record.status) {
+          case 'Ready for Pick-up':
+            statusColor = readyToPickUp;
+            break;
+          case 'Done':
+            statusColor = grey;
+            break;
+          case 'In Progress':
+            statusColor = inProgress;
+            break;
+          case 'On Hold':
+            statusColor = onHold;
+            break;
+          default:
+            statusColor = defaultColor;
+        }
         return (
           <>
             <Tooltip
@@ -189,7 +211,7 @@ const TaskPage: React.FC<Props> = ({
             >
               <span
                 className="task__link"
-                style={{ color: record.status === 'Ready for Pick-up' ? '#808080' : '#df7471' }}
+                style={{ color: statusColor }}
                 onClick={() => {
                   onGetSpecificIntakeJobs(parseInt(record.key));
                   updateIntakeJobsForm.setFieldsValue({
@@ -255,6 +277,31 @@ const TaskPage: React.FC<Props> = ({
       width: '10rem',
       ellipsis: true,
       align: 'center',
+      render: (_text: any, record: TIntakeTableState) => {
+        let defaultColor = '#b2d8e9';
+        let grey = '#808080';
+        let readyToPickUp = '#63a777';
+        let onHold = '#e98923';
+        let inProgress = '#edd864';
+        let statusColor = '';
+        switch (record.status) {
+          case 'Ready for Pick-up':
+            statusColor = readyToPickUp;
+            break;
+          case 'Done':
+            statusColor = grey;
+            break;
+          case 'In Progress':
+            statusColor = inProgress;
+            break;
+          case 'On Hold':
+            statusColor = onHold;
+            break;
+          default:
+            statusColor = defaultColor;
+        }
+        return <span style={{ color: statusColor }}>{record.status}</span>;
+      },
     },
     {
       key: 'bay',

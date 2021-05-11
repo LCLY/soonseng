@@ -800,7 +800,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                     body_make.make_wheelbase.wheelbase.title
                       .toString()
                       .toLowerCase()
-                      .includes(bodyMakeFilter.toLowerCase()),
+                      .includes(bodyMakeFilter.toLowerCase())
                 )
                 .map((bodyMake) => {
                   if (viewMode === 'grid') {

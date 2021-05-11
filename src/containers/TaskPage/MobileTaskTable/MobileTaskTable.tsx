@@ -204,6 +204,28 @@ const MobileTaskTable: React.FC<Props> = () => {
                     .sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))
                     .map((child: TIntakeTableState) => {
                       let companyName = child.regNumber.split('-')[1];
+                      let defaultColor = '#b2d8e9';
+                      let grey = '#808080';
+                      let readyToPickUp = '#63a777';
+                      let onHold = '#e98923';
+                      let inProgress = '#edd864';
+                      let statusColor = '';
+                      switch (child.status) {
+                        case 'Ready for Pick-up':
+                          statusColor = readyToPickUp;
+                          break;
+                        case 'Done':
+                          statusColor = grey;
+                          break;
+                        case 'In Progress':
+                          statusColor = inProgress;
+                          break;
+                        case 'On Hold':
+                          statusColor = onHold;
+                          break;
+                        default:
+                          statusColor = defaultColor;
+                      }
                       return (
                         <div className="mobiletasktable__intake-row-parent" key={`mobileintake${child.key}`}>
                           <div
@@ -226,10 +248,7 @@ const MobileTaskTable: React.FC<Props> = () => {
                               {/* ========================================= */}
                               <div className="mobiletasktable__title-div">
                                 <div className="mobiletasktable__title-innerdiv">
-                                  <span
-                                    className="mobiletasktable__title-regNumber"
-                                    style={{ color: child.status === 'Ready for Pick-up' ? '#808080' : '#df7471' }}
-                                  >
+                                  <span className="mobiletasktable__title-regNumber" style={{ color: statusColor }}>
                                     {child.regNumber.split('-')[0]}
                                   </span>
                                 </div>
@@ -268,7 +287,9 @@ const MobileTaskTable: React.FC<Props> = () => {
                             {/* The bay and the created at date/time */}
                             {/* ======================================== */}
                             <div className="mobiletasktable__div-bottom-div">
-                              <span className="mobiletasktable__title-status">{child.status}</span>
+                              <span className="mobiletasktable__title-status" style={{ color: statusColor }}>
+                                {child.status}
+                              </span>
 
                               <div className="mobiletasktable__div-createdat">
                                 Created at&nbsp;
