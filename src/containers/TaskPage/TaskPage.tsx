@@ -179,17 +179,17 @@ const TaskPage: React.FC<Props> = ({
         let onHold = '#e98923';
         let inProgress = '#edd864';
         let statusColor = '';
-        switch (record.status) {
-          case 'Ready for Pick-up':
+        switch (record.status.toLowerCase()) {
+          case 'Ready for Pick-up'.toLowerCase():
             statusColor = readyToPickUp;
             break;
-          case 'Done':
+          case 'Done'.toLowerCase():
             statusColor = grey;
             break;
-          case 'In Progress':
+          case 'In Progress'.toLowerCase():
             statusColor = inProgress;
             break;
-          case 'On Hold':
+          case 'On Hold'.toLowerCase():
             statusColor = onHold;
             break;
           default:
@@ -284,7 +284,7 @@ const TaskPage: React.FC<Props> = ({
         let onHold = '#e98923';
         let inProgress = '#edd864';
         let statusColor = '';
-        switch (record.status) {
+        switch (record.status.toLowerCase()) {
           case 'Ready for Pick-up'.toLowerCase():
             statusColor = readyToPickUp;
             break;
