@@ -158,10 +158,11 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
   const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
   const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
-  const [keepTrackBodyMake, setKeepTrackBodyMake] = useState<{
-    body_make_id: number;
-    make_wheelbase_id: number;
-  } | null>(null);
+  const [keepTrackBodyMake, setKeepTrackBodyMake] =
+    useState<{
+      body_make_id: number;
+      make_wheelbase_id: number;
+    } | null>(null);
   const [keepTrackMakeImage, setKeepTrackMakeImage] = useState<{ make_id: number } | null>(null);
 
   const [updateMakeForm] = Form.useForm();
@@ -232,14 +233,11 @@ const CatalogBodyMake: React.FC<Props> = ({
     dimension: -1,
   });
 
-  const [currentCheckedGeneralAccessories, setCurrentCheckedGeneralAccessories] = useState<ICheckedAccessories | null>(
-    null,
-  );
+  const [currentCheckedGeneralAccessories, setCurrentCheckedGeneralAccessories] =
+    useState<ICheckedAccessories | null>(null);
   const [currentCheckedBodyAccessories, setCurrentCheckedBodyAccessories] = useState<ICheckedAccessories | null>(null);
-  const [
-    currentCheckedDimensionAccessories,
-    setCurrentCheckedDimensionAccessories,
-  ] = useState<ICheckedDimensionAccessories | null>(null);
+  const [currentCheckedDimensionAccessories, setCurrentCheckedDimensionAccessories] =
+    useState<ICheckedDimensionAccessories | null>(null);
 
   let bodyMakeDetailRowArray: { title: string; data: string }[] = [];
   if (catalogMake) {
@@ -421,11 +419,11 @@ const CatalogBodyMake: React.FC<Props> = ({
       series_id: values.makeSeriesId,
       price: convertPriceToFloat(values.price),
       gvw: emptyStringWhenUndefinedOrNull(values.gvw),
-      abs: emptyStringWhenUndefinedOrNull(values.abs),
-      torque: emptyStringWhenUndefinedOrNull(values.torque),
+      abs: emptyStringWhenUndefinedOrNull(values.makeAbs),
+      torque: emptyStringWhenUndefinedOrNull(values.makeTorque),
       tire: emptyStringWhenUndefinedOrNull(values.makeTire),
-      config: emptyStringWhenUndefinedOrNull(values.config),
-      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      config: emptyStringWhenUndefinedOrNull(values.makeConfig),
+      emission: emptyStringWhenUndefinedOrNull(values.makeEmission),
       horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
       transmission: emptyStringWhenUndefinedOrNull(values.transmission),
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
@@ -800,7 +798,7 @@ const CatalogBodyMake: React.FC<Props> = ({
                     body_make.make_wheelbase.wheelbase.title
                       .toString()
                       .toLowerCase()
-                      .includes(bodyMakeFilter.toLowerCase())
+                      .includes(bodyMakeFilter.toLowerCase()),
                 )
                 .map((bodyMake) => {
                   if (viewMode === 'grid') {

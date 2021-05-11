@@ -698,7 +698,7 @@ export function* updateMakeSaga(action: AppActions) {
 
   try {
     let response = yield axios.put(url, { make });
-    yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
+    yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.updateMakeFailed, error.response.data.error);

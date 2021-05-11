@@ -195,10 +195,10 @@ const CatalogPage: React.FC<Props> = ({
       transmission: emptyStringWhenUndefinedOrNull(values.transmission),
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
       gvw: emptyStringWhenUndefinedOrNull(values.gvw),
-      abs: emptyStringWhenUndefinedOrNull(values.abs),
-      torque: emptyStringWhenUndefinedOrNull(values.torque),
-      config: emptyStringWhenUndefinedOrNull(values.config),
-      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      abs: emptyStringWhenUndefinedOrNull(values.makeAbs),
+      torque: emptyStringWhenUndefinedOrNull(values.makeTorque),
+      config: emptyStringWhenUndefinedOrNull(values.makeConfig),
+      emission: emptyStringWhenUndefinedOrNull(values.makeEmission),
       price: convertPriceToFloat(values.price),
     };
 
@@ -223,11 +223,11 @@ const CatalogPage: React.FC<Props> = ({
       series_id: values.makeSeriesId,
       price: convertPriceToFloat(values.price),
       gvw: emptyStringWhenUndefinedOrNull(values.gvw),
-      abs: emptyStringWhenUndefinedOrNull(values.abs),
-      torque: emptyStringWhenUndefinedOrNull(values.torque),
+      abs: emptyStringWhenUndefinedOrNull(values.makeAbs),
+      torque: emptyStringWhenUndefinedOrNull(values.makeTorque),
       tire: emptyStringWhenUndefinedOrNull(values.makeTire),
-      config: emptyStringWhenUndefinedOrNull(values.config),
-      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      config: emptyStringWhenUndefinedOrNull(values.makeConfig),
+      emission: emptyStringWhenUndefinedOrNull(values.makeEmission),
       horsepower: emptyStringWhenUndefinedOrNull(values.horsepower),
       transmission: emptyStringWhenUndefinedOrNull(values.transmission),
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
@@ -477,6 +477,16 @@ const CatalogPage: React.FC<Props> = ({
                               );
                             })}
                           </Select>
+
+                          {accessObj?.showAdminDashboard && (
+                            <Dropdown
+                              className="catalog__dropdown-more catalog__dropdown-more--make"
+                              overlay={<MakeMenu makeObj={selectedMake} seriesObj={series} />}
+                              trigger={['click']}
+                            >
+                              <i className="fas fa-ellipsis-h"></i>
+                            </Dropdown>
+                          )}
                         </div>
                       </div>
                       <div
@@ -631,22 +641,10 @@ const CatalogPage: React.FC<Props> = ({
                               if (selectedMake) {
                                 animateStatsAppear(brandIndex, seriesIndex);
                               }
-                              // history.push(`${ROUTE_CATALOG}/${series.id}/${model_detail}/${make.id}`);
                             }}
                           >
                             <div>{make.title}</div>
                           </div>
-                          {accessObj?.showAdminDashboard && (
-                            <Tooltip title={`Edit / Delete ${make.title}`}>
-                              <Dropdown
-                                className="catalog__dropdown-more catalog__dropdown-more--make"
-                                overlay={<MakeMenu makeObj={make} seriesObj={series} />}
-                                trigger={['click']}
-                              >
-                                <i className="fas fa-ellipsis-h"></i>
-                              </Dropdown>
-                            </Tooltip>
-                          )}
                         </div>
                       );
                     })}

@@ -45,7 +45,7 @@ import {
   setFilterReference,
 } from 'src/shared/Utils';
 
-import { TUserAccess } from 'src/store/types/auth';
+import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 import { TReceivedIntakeStatusObj, TReceivedServiceTaskObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 
 const { Panel } = Collapse;
@@ -93,6 +93,7 @@ type Props = TaskPageProps & StateProps & DispatchProps;
 const TaskPage: React.FC<Props> = ({
   // accessObj,
   auth_token,
+  userInfoObj,
   successMessage,
   specificIntakeLogs,
   serviceTypesArray,
@@ -162,6 +163,39 @@ const TaskPage: React.FC<Props> = ({
             {record.dateTimeIn.format('HH:mm A')}
           </span>
         );
+      },
+    },
+    {
+      key: 'status',
+      title: 'Status',
+      dataIndex: 'status',
+      width: '10rem',
+      ellipsis: true,
+      align: 'center',
+      render: (_text: any, record: TIntakeTableState) => {
+        let defaultColor = '#b2d8e9';
+        let grey = '#808080';
+        let readyToPickUp = '#63a777';
+        let onHold = '#e98923';
+        let inProgress = '#edd864';
+        let statusColor = '';
+        switch (record.status.toLowerCase()) {
+          case 'Ready for Pick-up'.toLowerCase():
+            statusColor = readyToPickUp;
+            break;
+          case 'Done'.toLowerCase():
+            statusColor = grey;
+            break;
+          case 'In Progress'.toLowerCase():
+            statusColor = inProgress;
+            break;
+          case 'On Hold'.toLowerCase():
+            statusColor = onHold;
+            break;
+          default:
+            statusColor = defaultColor;
+        }
+        return <span style={{ color: statusColor }}>{record.status}</span>;
       },
     },
     {
@@ -270,39 +304,7 @@ const TaskPage: React.FC<Props> = ({
         );
       },
     },
-    {
-      key: 'status',
-      title: 'Status',
-      dataIndex: 'status',
-      width: '10rem',
-      ellipsis: true,
-      align: 'center',
-      render: (_text: any, record: TIntakeTableState) => {
-        let defaultColor = '#b2d8e9';
-        let grey = '#808080';
-        let readyToPickUp = '#63a777';
-        let onHold = '#e98923';
-        let inProgress = '#edd864';
-        let statusColor = '';
-        switch (record.status.toLowerCase()) {
-          case 'Ready for Pick-up'.toLowerCase():
-            statusColor = readyToPickUp;
-            break;
-          case 'Done'.toLowerCase():
-            statusColor = grey;
-            break;
-          case 'In Progress'.toLowerCase():
-            statusColor = inProgress;
-            break;
-          case 'On Hold'.toLowerCase():
-            statusColor = onHold;
-            break;
-          default:
-            statusColor = defaultColor;
-        }
-        return <span style={{ color: statusColor }}>{record.status}</span>;
-      },
-    },
+
     {
       key: 'bay',
       title: 'Bay',
@@ -719,30 +721,34 @@ const TaskPage: React.FC<Props> = ({
                               </>
                             )}
                           </div>
-                          {auth_token && currentPage !== 'create' && (
-                            <Button
-                              type="primary"
-                              className="make__brand-btn"
-                              onClick={() => {
-                                goToCreateSpecificIntake();
-                                // setShowCreateModal({ ...showCreateModal, intake_job: true });
-                                // if (taskTableState === null) return;
-                                // const newData: any = {
-                                //   key: count.toString(),
-                                //   [`assign${count}`]: [],
-                                //   [`taskType${count}`]: '',
-                                //   [`taskTitle${count}`]: '',
-                                //   [`taskStatus${count}`]: '',
-                                //   [`taskDescription${count}`]: '',
-                                // };
-                                // let tempArray = [...taskTableState];
-                                // tempArray.push(newData);
-                                // setTaskTableState(tempArray);
-                              }}
-                            >
-                              Create <span className="task__button-text">&nbsp;New Intake</span>
-                            </Button>
-                          )}
+                          {auth_token &&
+                            userInfoObj &&
+                            userInfoObj !== undefined &&
+                            userInfoObj.roles.title.toLowerCase() !== 'Mechanic' &&
+                            currentPage !== 'create' && (
+                              <Button
+                                type="primary"
+                                className="make__brand-btn"
+                                onClick={() => {
+                                  goToCreateSpecificIntake();
+                                  // setShowCreateModal({ ...showCreateModal, intake_job: true });
+                                  // if (taskTableState === null) return;
+                                  // const newData: any = {
+                                  //   key: count.toString(),
+                                  //   [`assign${count}`]: [],
+                                  //   [`taskType${count}`]: '',
+                                  //   [`taskTitle${count}`]: '',
+                                  //   [`taskStatus${count}`]: '',
+                                  //   [`taskDescription${count}`]: '',
+                                  // };
+                                  // let tempArray = [...taskTableState];
+                                  // tempArray.push(newData);
+                                  // setTaskTableState(tempArray);
+                                }}
+                              >
+                                Create <span className="task__button-text">&nbsp;New Intake</span>
+                              </Button>
+                            )}
                         </div>
 
                         {/* -------------------- */}
@@ -919,6 +925,7 @@ interface StateProps {
   errorMessage?: string | null;
   successMessage?: string | null;
   auth_token?: string | null;
+  userInfoObj?: TReceivedUserInfoObj | null;
   specificIntakeLogs?: IIntakeLogs[] | null;
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
@@ -930,6 +937,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     loading: state.task.loading,
     accessObj: state.auth.accessObj,
     auth_token: state.auth.auth_token,
+    userInfoObj: state.auth.userInfoObj,
     errorMessage: state.task.errorMessage,
     successMessage: state.task.successMessage,
     specificIntakeLogs: state.task.specificIntakeLogs,
