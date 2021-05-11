@@ -145,7 +145,11 @@
       padding-left: 2.5rem;
       border-left: 5px solid white;
       border-radius: 5rem 1rem 0rem 0rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.796);
+      border-right: 1px solid rgba(255, 255, 255, 0.796);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.796);
       background-image: linear-gradient(to right, rgb(35, 51, 85) 60%, rgb(64, 89, 126));
+      @include shadow-func(0.1rem, 0.2rem, 1.5rem, 0.1rem, rgba(255, 255, 255, 0.796));
     }
 
     &-regNumber {
@@ -167,6 +171,10 @@
       border: 1px solid grey;
       padding: 0rem 0.5rem;
       border-radius: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 0.5rem;
     }
 
     &-company {
@@ -183,7 +191,8 @@
       background-image: linear-gradient(to bottom, $form-items-grey, rgba(255, 255, 255, 0.4));
       padding: 0 1rem;
       text-transform: capitalize;
-      // border-radius: 0.5rem;
+      border: 1px solid rgb(255, 255, 255);
+      @include shadow-func(0.1rem, 0.2rem, 1.5rem, 0.05rem, rgba(255, 255, 255, 0.857));
 
       border-radius: 0rem 0rem 5rem 5rem;
       &-outerdiv {

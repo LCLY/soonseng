@@ -127,10 +127,10 @@ export type TCreateMakeFinishValues = {
   transmission: string;
   engine_cap: string;
   gvw: string;
-  abs: string;
-  torque: string;
-  config: string;
-  emission: string;
+  makeAbs: string;
+  makeTorque: string;
+  makeConfig: string;
+  makeEmission: string;
   price: string;
   imageTag: string;
 };
@@ -145,10 +145,10 @@ export type TUpdateMakeFinishValues = {
   transmission: string;
   engine_cap: string;
   gvw: string;
-  abs: string;
-  torque: string;
-  config: string;
-  emission: string;
+  makeAbs: string;
+  makeTorque: string;
+  makeConfig: string;
+  makeEmission: string;
   price: string;
   imageTag: string;
 };
@@ -264,11 +264,12 @@ const Make: React.FC<Props> = ({
 
   // state to track which brand we are using
   const [selectedBrand, setSelectedBrand] = useState<{ brandId: number; brandTitle: string } | null>(null);
-  const [selectedMake, setSelectedMake] = useState<{
-    makeId: number;
-    makeTitle: string;
-    makeBrandTitle: string;
-  } | null>(null);
+  const [selectedMake, setSelectedMake] =
+    useState<{
+      makeId: number;
+      makeTitle: string;
+      makeBrandTitle: string;
+    } | null>(null);
 
   // this state to keep track of what to show on delete modal and what useful info to pass
   const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
@@ -800,10 +801,10 @@ const Make: React.FC<Props> = ({
       transmission: emptyStringWhenUndefinedOrNull(values.transmission),
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
       gvw: emptyStringWhenUndefinedOrNull(values.gvw),
-      abs: emptyStringWhenUndefinedOrNull(values.abs),
-      torque: emptyStringWhenUndefinedOrNull(values.torque),
-      config: emptyStringWhenUndefinedOrNull(values.config),
-      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      abs: emptyStringWhenUndefinedOrNull(values.makeAbs),
+      torque: emptyStringWhenUndefinedOrNull(values.makeTorque),
+      config: emptyStringWhenUndefinedOrNull(values.makeConfig),
+      emission: emptyStringWhenUndefinedOrNull(values.makeEmission),
       price: convertPriceToFloat(values.price),
     };
 
@@ -831,10 +832,10 @@ const Make: React.FC<Props> = ({
       transmission: emptyStringWhenUndefinedOrNull(values.transmission),
       engine_cap: emptyStringWhenUndefinedOrNull(values.engine_cap),
       gvw: emptyStringWhenUndefinedOrNull(values.gvw),
-      abs: emptyStringWhenUndefinedOrNull(values.abs),
-      torque: emptyStringWhenUndefinedOrNull(values.torque),
-      config: emptyStringWhenUndefinedOrNull(values.config),
-      emission: emptyStringWhenUndefinedOrNull(values.emission),
+      abs: emptyStringWhenUndefinedOrNull(values.makeAbs),
+      torque: emptyStringWhenUndefinedOrNull(values.makeTorque),
+      config: emptyStringWhenUndefinedOrNull(values.makeConfig),
+      emission: emptyStringWhenUndefinedOrNull(values.makeEmission),
       price: convertPriceToFloat(values.price),
     };
     onUpdateMake(updateMakeData);
