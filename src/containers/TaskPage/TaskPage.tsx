@@ -173,6 +173,20 @@ const TaskPage: React.FC<Props> = ({
       sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.regNumber.localeCompare(b.regNumber),
       ...getColumnSearchProps(intakeJobsSearchInput, 'regNumber', 'Registration Number'),
       render: (_text: any, record: TIntakeTableState) => {
+        let softRed = '#df7471';
+        let grey = '#808080';
+        let readyToPickUp = '#63a777';
+        let statusColor = '';
+        switch (record.status) {
+          case 'Ready for Pick-up':
+            statusColor = readyToPickUp;
+            break;
+          case 'Done':
+            statusColor = grey;
+            break;
+          default:
+            statusColor = softRed;
+        }
         return (
           <>
             <Tooltip
@@ -189,7 +203,7 @@ const TaskPage: React.FC<Props> = ({
             >
               <span
                 className="task__link"
-                style={{ color: record.status === 'Ready for Pick-up' ? '#808080' : '#df7471' }}
+                style={{ color: statusColor }}
                 onClick={() => {
                   onGetSpecificIntakeJobs(parseInt(record.key));
                   updateIntakeJobsForm.setFieldsValue({
