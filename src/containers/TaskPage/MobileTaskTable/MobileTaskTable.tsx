@@ -210,7 +210,7 @@ const MobileTaskTable: React.FC<Props> = () => {
                       let onHold = '#e98923';
                       let inProgress = '#edd864';
                       let statusColor = '';
-                      switch (child.status) {
+                      switch (child.status.toLowerCase()) {
                         case 'Ready for Pick-up'.toLowerCase():
                           statusColor = readyToPickUp;
                           break;
