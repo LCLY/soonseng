@@ -475,7 +475,7 @@ const CatalogPage: React.FC<Props> = ({
                                   {make.title}
                                 </Option>
                               );
-                            })}
+                            })} 
                           </Select>
 
                           {accessObj?.showAdminDashboard && (

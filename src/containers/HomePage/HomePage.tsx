@@ -14,7 +14,7 @@ import { Button, Carousel } from 'antd';
 import ScrollAnimation from 'react-animate-on-scroll';
 
 /* Util */
-import { ROUTE_SALES } from 'src/shared/routes';
+import { ROUTE_CATALOG, ROUTE_TASK } from 'src/shared/routes';
 import homepageImage from 'src/img/hino_homepage.jpg';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 /**
@@ -64,11 +64,11 @@ function HomePage() {
   };
 
   let homepageButtons = [
-    { title: 'Sales', desc: 'We don’t just sell vehicles. We solve problems.', redirectUrl: ROUTE_SALES },
+    { title: 'Sales', desc: 'We don’t just sell vehicles. We solve problems.', redirectUrl: ROUTE_CATALOG },
     {
       title: 'Service',
       desc: 'Treat your tools to a spa, and they will serve you well',
-      redirectUrl: '',
+      redirectUrl: ROUTE_TASK,
     },
     {
       title: 'Sparepart',
