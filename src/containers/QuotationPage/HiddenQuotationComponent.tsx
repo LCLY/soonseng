@@ -104,6 +104,7 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
   let grandTotalPrice = modelSubtotalPrice + insuranceSubtotalPrice;
 
   const {
+    hpNumber,
     discount,
     lengthObj,
     bodyMakeObj,
@@ -142,7 +143,7 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
                 <div className="margin_r-1">Tel: 09-741 8836</div>
                 <div className="margin_r-1">Fax: 09-747 9836</div>
                 <div>
-                  H/P: <span className={`hiddenquotation__top-contacts-highlight`}>012-900 8765 Jason</span>
+                  H/P: <span className={`hiddenquotation__top-contacts-highlight`}>{hpNumber}</span>
                 </div>
               </div>
             </div>

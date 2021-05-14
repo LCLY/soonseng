@@ -174,7 +174,15 @@ const QuotationComponent: React.FC<Props> = ({
   return (
     <>
       {currentOrderObj && currentOrderObj.bodyMakeObj && (
-        <section className={`quotation__section`}>
+        <section
+          className={`quotation__section`}
+          onDoubleClick={() => {
+            if (accessObj === undefined || setInEditPriceMode === undefined) return;
+            if (accessObj.showPriceSalesPage) {
+              setInEditPriceMode(true);
+            }
+          }}
+        >
           <div className={`quotation__section-innerdiv`}>
             {/* Top div */}
             <div className={`quotation__top-div`}>
@@ -195,8 +203,18 @@ const QuotationComponent: React.FC<Props> = ({
                 <div className={`quotation__top-contacts`}>
                   <div className="margin_r-1">Tel: 09-741 8836</div>
                   <div className="margin_r-1">Fax: 09-747 9836</div>
-                  <div>
-                    H/P: <span className={`quotation__top-contacts-highlight`}>012-900 8765 Jason</span>
+                  <div className="flex-align-center">
+                    H/P:
+                    {inEditPriceMode ? (
+                      <QuotationStringInput
+                        className="quotation__input-hpnumber"
+                        indexKey="hpNumber"
+                        tempEditChanges={tempEditChanges}
+                        onSetEditChanges={onSetEditChanges}
+                      />
+                    ) : (
+                      <span className={`quotation__top-contacts-highlight`}>&nbsp;{currentOrderObj.hpNumber}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -215,15 +233,7 @@ const QuotationComponent: React.FC<Props> = ({
             </div>
 
             <section className={`quotation__content-div`}>
-              <div
-                className={`quotation__content-innerdiv`}
-                onDoubleClick={() => {
-                  if (accessObj === undefined || setInEditPriceMode === undefined) return;
-                  if (accessObj.showPriceSalesPage) {
-                    setInEditPriceMode(true);
-                  }
-                }}
-              >
+              <div className={`quotation__content-innerdiv`}>
                 <div className={`quotation__makedetail-div`}>
                   <div className={`quotation__makedetail-div-left`}>
                     <div>Make / Model :&nbsp;{currentOrderObj.bodyMakeObj.make_wheelbase.make.title}</div>
@@ -656,6 +666,7 @@ const QuotationComponent: React.FC<Props> = ({
                     <div>
                       {inEditPriceMode ? (
                         <QuotationStringInput
+                          className="quotation__input-salesprogram"
                           indexKey="afterSalesStrings.line_1"
                           tempEditChanges={tempEditChanges}
                           onSetEditChanges={onSetEditChanges}
@@ -667,6 +678,7 @@ const QuotationComponent: React.FC<Props> = ({
                     <div>
                       {inEditPriceMode ? (
                         <QuotationStringInput
+                          className="quotation__input-salesprogram"
                           indexKey="afterSalesStrings.line_2"
                           tempEditChanges={tempEditChanges}
                           onSetEditChanges={onSetEditChanges}
@@ -678,6 +690,7 @@ const QuotationComponent: React.FC<Props> = ({
                     <div className={`quotation__salesprogram-contract`}>
                       {inEditPriceMode ? (
                         <QuotationStringInput
+                          className="quotation__input-salesprogram"
                           indexKey="afterSalesStrings.line_3"
                           tempEditChanges={tempEditChanges}
                           onSetEditChanges={onSetEditChanges}

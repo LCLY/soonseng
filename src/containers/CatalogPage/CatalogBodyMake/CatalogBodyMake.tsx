@@ -224,6 +224,7 @@ const CatalogBodyMake: React.FC<Props> = ({
     generalAccessoriesArray: {},
     bodyRelatedAccessoriesArray: {},
     dimensionRelatedAccessoriesArray: {},
+    hpNumber:"012-900 8765 Jason",
     afterSalesStrings: afterSalesStrings,
     currentDate:moment().format('YYYY-MM-DD'),
     standardAccessories: standardAccessories,

@@ -114,6 +114,7 @@ const SalesPage: React.FC<Props> = ({
   /** Current order object to track what user has added to the current order  */
   const [currentOrderObj, setCurrentOrderObj] = useState<TLocalOrderObj>({
     id: '',
+    hpNumber: '',
     tireCount: -1,
     bodyObj: null,
     discount: null,
