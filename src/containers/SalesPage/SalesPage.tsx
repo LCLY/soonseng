@@ -13,6 +13,7 @@ import TyreSection from 'src/containers/SalesPage/StepSections/TyreSection';
 import LengthSection from 'src/containers/SalesPage/StepSections/LengthSection';
 import BodySection from 'src/containers/SalesPage/StepSections/BodySection';
 // 3rd party lib
+import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -103,10 +104,11 @@ const SalesPage: React.FC<Props> = ({
   const [currentTyre, setCurrentTyre] = useState<number | null>(null);
   const [currentLength, setCurrentLength] = useState<TReceivedSalesLengthObj | null>(null);
   const [currentBody, setCurrentBody] = useState<TReceivedBodyObj | null>(null);
-  const [currentAccessory, setCurrentAccessory] = useState<{
-    accessoryObj: TReceivedAccessoryObj;
-    price: number;
-  } | null>(null);
+  const [currentAccessory, setCurrentAccessory] =
+    useState<{
+      accessoryObj: TReceivedAccessoryObj;
+      price: number;
+    } | null>(null);
   const [currentBodyMake, setCurrentBodyMake] = useState<TReceivedBodyMakeObj | null>(null);
 
   /** Current order object to track what user has added to the current order  */
@@ -116,14 +118,15 @@ const SalesPage: React.FC<Props> = ({
     bodyObj: null,
     discount: null,
     lengthObj: null,
-    generalAccessoriesArray: {},
-    dimensionRelatedAccessoriesArray: {},
-    bodyRelatedAccessoriesArray: {},
     bodyMakeObj: null,
     insuranceDict: null,
     chargesFeesDict: {},
+    generalAccessoriesArray: {},
+    bodyRelatedAccessoriesArray: {},
+    dimensionRelatedAccessoriesArray: {},
     afterSalesStrings: afterSalesStrings,
     standardAccessories: standardAccessories,
+    currentDate: moment().format('YYYY-MM-DD'),
   });
 
   let totalAccessoriesArrayLength =

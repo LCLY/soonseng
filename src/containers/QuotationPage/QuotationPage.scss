@@ -724,10 +724,18 @@
     }
 
     &-date {
+      display: flex;
+      align-items: center;
       margin-top: 0.5rem;
       font-weight: bolder;
       // font-family: $font-firesans;
     }
+  }
+
+  &__datepicker {
+    width: 12rem !important;
+    flex-wrap: nowrap;
+    display: inline-block !important;
   }
 
   &__loader {
@@ -1148,7 +1156,6 @@
       }
     }
   }
-
   &__note {
     font-size: 1.3rem;
     font-style: italic;

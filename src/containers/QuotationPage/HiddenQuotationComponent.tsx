@@ -110,6 +110,7 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
     insuranceDict,
     chargesFeesDict,
     afterSalesStrings,
+    currentDate,
     standardAccessories,
     generalAccessoriesArray,
     bodyRelatedAccessoriesArray,
@@ -558,11 +559,14 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
               <div className={`hiddenquotation__note`}>
                 NOTE:&nbsp;PRICE&nbsp;&&nbsp;SPECIFICATIONS&nbsp;ARE&nbsp;SUBJECTED&nbsp;TO&nbsp;CHANGE&nbsp;WITHOUT&nbsp;PRIOR&nbsp;NOTICE
                 <div className={`hiddenquotation__note-date`}>
-                  **Price&nbsp;effective&nbsp;-&nbsp;Starts&nbsp;1st&nbsp;Sept&nbsp;2020
+                  **Price&nbsp;effective&nbsp;-&nbsp;Starts&nbsp;1st&nbsp;May&nbsp;2021
                 </div>
                 <div className={`hiddenquotation__note-date`}>
-                  **This&nbsp;quotation&nbsp;is&nbsp;only&nbsp;valid&nbsp;until&nbsp;
-                  <span style={{ color: 'rgb(131, 14, 14)' }}>{moment().add(1, 'M').format('YYYY-MM-DD')}</span>
+                  **This&nbsp;quotation&nbsp;is&nbsp;provided&nbsp;on&nbsp;
+                  <span style={{ color: 'rgb(131, 14, 14)' }}>{currentDate}</span>,&nbsp;valid&nbsp;until&nbsp;
+                  <span style={{ color: 'rgb(131, 14, 14)' }}>
+                    {moment(currentDate).add(1, 'M').format('YYYY-MM-DD')}
+                  </span>
                 </div>
               </div>
             </div>

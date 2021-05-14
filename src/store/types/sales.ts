@@ -55,6 +55,7 @@ export interface ClearSalesStateAction {
 // Quotation object should contain as much info as possible about a product
 export type TLocalOrderObj = {
   id: string;
+  currentDate: string;
   tireCount: number;
   discount: number | null;
   standardAccessories: string[];

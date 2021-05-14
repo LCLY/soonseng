@@ -6,7 +6,7 @@ import QuotationStringInput from './QuotationStringInput';
 /* 3rd party lib */
 import _ from 'lodash';
 import moment from 'moment';
-import { Select } from 'antd';
+import { Select, DatePicker } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import NumberFormat from 'react-number-format';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -768,11 +768,37 @@ const QuotationComponent: React.FC<Props> = ({
                 <div className={`quotation__note`}>
                   NOTE:&nbsp;PRICE&nbsp;&&nbsp;SPECIFICATIONS&nbsp;ARE&nbsp;SUBJECTED&nbsp;TO&nbsp;CHANGE&nbsp;WITHOUT&nbsp;PRIOR&nbsp;NOTICE
                   <div className={`quotation__note-date`}>
-                    **Price&nbsp;effective&nbsp;-&nbsp;Starts&nbsp;1st&nbsp;Sept&nbsp;2020
+                    **Price&nbsp;effective&nbsp;-&nbsp;Starts&nbsp;1st&nbsp;May&nbsp;2021
                   </div>
                   <div className={`quotation__note-date`}>
-                    **This&nbsp;quotation&nbsp;is&nbsp;only&nbsp;valid&nbsp;until&nbsp;
-                    <span style={{ color: 'rgb(131, 14, 14)' }}>{moment().add(1, 'M').format('YYYY-MM-DD')}</span>
+                    **This&nbsp;quotation&nbsp;is&nbsp;provided&nbsp;on&nbsp;
+                    {inEditPriceMode ? (
+                      <>
+                        {tempEditChanges !== null && tempEditChanges !== undefined && (
+                          <DatePicker
+                            className="quotation__datepicker"
+                            onChange={(e) => {
+                              if (onSetEditChanges === undefined) return;
+                              let tempChanges = _.cloneDeep(tempEditChanges);
+
+                              if (tempChanges.bodyMakeObj) {
+                                //_.set will change the object value using the path (indexKey in this case)
+                                _.set(tempChanges, 'currentDate', e?.format('YYYY-MM-DD'));
+                              }
+                              onSetEditChanges(tempChanges);
+                            }}
+                            value={moment(tempEditChanges.currentDate)}
+                            style={{ width: '12rem' }}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <span style={{ color: 'rgb(131, 14, 14)' }}>{currentOrderObj.currentDate}</span>
+                    )}
+                    ,&nbsp;valid&nbsp;until&nbsp;
+                    <span style={{ color: 'rgb(131, 14, 14)' }}>
+                      {moment(currentOrderObj.currentDate).add(1, 'M').format('YYYY-MM-DD')}
+                    </span>
                   </div>
                 </div>
               </div>

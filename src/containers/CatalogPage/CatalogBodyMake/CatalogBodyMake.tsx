@@ -225,6 +225,7 @@ const CatalogBodyMake: React.FC<Props> = ({
     bodyRelatedAccessoriesArray: {},
     dimensionRelatedAccessoriesArray: {},
     afterSalesStrings: afterSalesStrings,
+    currentDate:moment().format('YYYY-MM-DD'),
     standardAccessories: standardAccessories,
   });
   const [accessoriesLength, setAccessoriesLength] = useState<{ general: number; body: number; dimension: number }>({
