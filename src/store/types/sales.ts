@@ -57,6 +57,7 @@ export type TLocalOrderObj = {
   id: string;
   currentDate: string;
   tireCount: number;
+  hpNumber: string;
   discount: number | null;
   standardAccessories: string[];
   afterSalesStrings: IAfterSales;
