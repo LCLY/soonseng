@@ -301,6 +301,7 @@
 
       @include customScrollbar();
       overflow-y: auto;
+
       @include respond-to($small-phone) {
         height: 5rem;
         min-height: 5rem;
@@ -312,8 +313,7 @@
         max-height: 5rem;
       }
       @include respond-to($tablet-portrait-up) {
-        min-height: 10rem;
-        max-height: 12.5rem;
+        padding: 0.5rem 1rem;
       }
       &--users {
         padding: 0.3rem 0.3rem 0.3rem 0;

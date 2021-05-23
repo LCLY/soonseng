@@ -102,6 +102,7 @@ const QuotationComponent: React.FC<Props> = ({
           setModelSubtotalPrice(
             tempEditChanges.bodyMakeObj.make_wheelbase.make.price +
               tempEditChanges.bodyMakeObj.price +
+              tempEditChanges.bodyMakeObj.make_wheelbase.price +
               totalAccessoriesPrice +
               processingFees,
           );
@@ -109,6 +110,7 @@ const QuotationComponent: React.FC<Props> = ({
           setModelSubtotalPrice(
             quotationOrder.bodyMakeObj.make_wheelbase.make.price +
               quotationOrder.bodyMakeObj.price +
+              quotationOrder.bodyMakeObj.make_wheelbase.price +
               totalAccessoriesPrice +
               processingFees,
           );
@@ -406,7 +408,8 @@ const QuotationComponent: React.FC<Props> = ({
                                     />
                                   ) : (
                                     <>
-                                      {currentOrderObj.bodyMakeObj.price && currentOrderObj.bodyMakeObj.price !== 0 ? (
+                                      {currentOrderObj.bodyMakeObj.make_wheelbase.price &&
+                                      currentOrderObj.bodyMakeObj.make_wheelbase.price !== 0 ? (
                                         <NumberFormat
                                           displayType={'text'}
                                           thousandSeparator={true}

@@ -6,7 +6,7 @@ import MobileServiceTable from '../MobileServiceTable/MobileServiceTable';
 /* 3rd party lib */
 import gsap from 'gsap';
 import moment from 'moment';
-import { Popconfirm, Table, Tooltip, Form, Button, Input, Select } from 'antd';
+import { Popconfirm, Table, Radio, Tooltip, Form, Button, Input, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 /* Util */
@@ -94,15 +94,12 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   const [updateIntakeJobsForm] = Form.useForm();
   const [clickedUpdate, setClickedUpdate] = useState(false); //boolean to keep track if user has clicked update
   const [updateServiceTableState, setUpdateServiceTableState] = useState<TServiceTableState>({});
-  const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
-    null,
-  );
+  const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] =
+    useState<TReceivedSpecificIntakeJobsObj | null>(null);
   const [showSubmitPopconfirm, setShowSubmitPopconfirm] = useState(false);
 
-  const [
-    currentSpecificIntakeJobsObj,
-    setCurrentSpecificIntakeJobsObj,
-  ] = useState<TReceivedSpecificIntakeJobsObj | null>(null);
+  const [currentSpecificIntakeJobsObj, setCurrentSpecificIntakeJobsObj] =
+    useState<TReceivedSpecificIntakeJobsObj | null>(null);
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
 
@@ -134,6 +131,27 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     let tempState = { ...updateServiceTableState };
     tempState[uniqueKey] = newData;
     setUpdateServiceTableState(tempState);
+  };
+
+  const roleFilter = (arrayChild: TReceivedIntakeStatusObj) => {
+    let role = userInfoObj?.roles.title.toLowerCase();
+    let filterResult = null;
+    switch (role) {
+      case 'Mechanic'.toLowerCase():
+        filterResult =
+          arrayChild.title.toLowerCase().includes('In Progress'.toLowerCase()) ||
+          arrayChild.title.toLowerCase().includes('On Hold'.toLowerCase());
+        break;
+      default:
+    }
+    return filterResult;
+  };
+
+  const uniqueFilter = (parentArray: TReceivedIntakeStatusObj, i: number) => {
+    if (intakeStatusArray === null || intakeStatusArray === undefined) return;
+
+    let roleFiltered = intakeStatusArray.filter(roleFilter);
+    return roleFiltered.findIndex((child: TReceivedIntakeStatusObj) => child['title'] === parentArray['title']) === i;
   };
 
   const onUpdateIntakeAndJobsFinish = (values: {
@@ -852,7 +870,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     </div>
                   </Tooltip>
                   <div className="updatespecificintake__box-right">
-                    {inEditMode ? (
+                    {/* {inEditMode ? (
                       <Form.Item
                         name="intakeStatus"
                         style={{ margin: 0 }}
@@ -867,7 +885,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                         <Select placeholder="Select an intake status" className="updatespecificintake__select">
                           <Option value="">Select a status</Option>
                           {intakeStatusArray &&
-                            intakeStatusArray.map((intakeStatus) => {
+                            intakeStatusArray.filter(uniqueFilter).map((intakeStatus) => {
                               return (
                                 <Option style={{ textTransform: 'capitalize' }} key={uuidv4()} value={intakeStatus.id}>
                                   {intakeStatus.title}
@@ -882,7 +900,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                           ? currentSpecificIntakeJobsObj.intake_status.title
                           : ''}
                       </>
-                    )}
+                    )} */}
+
+                    {typeof currentSpecificIntakeJobsObj === 'object'
+                      ? currentSpecificIntakeJobsObj.intake_status.title
+                      : ''}
                   </div>
                 </div>
 
@@ -933,7 +955,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     </div>
                   </Tooltip>
                   <div className="updatespecificintake__box-right updatespecificintake__box-right--users">
-                    {inEditMode ? (
+                    {inEditMode && !userInfoObj?.roles.title.toLowerCase().includes('Mechanic'.toLowerCase()) ? (
                       <Form.Item name="assign" className="updatespecificintake__form-item--users" style={{ margin: 0 }}>
                         <Select
                           mode="multiple"
@@ -960,41 +982,61 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                         </Select>
                       </Form.Item>
                     ) : (
-                      <div>
-                        {/* {currentSpecificIntakeJobsObj.intake_users.length > 0
+                      <>
+                        {/* show this either in mechanic or normal user view */}
+
+                        <div>
+                          {/* {currentSpecificIntakeJobsObj.intake_users.length > 0
                           ? currentSpecificIntakeJobsObj.intake_users.map((child) => (
                               <div key={uuidv4()}>
                                 {child.user.first_name} {child.user.last_name}
                               </div>
                             ))
                           : '-'} */}
-                        {currentSpecificIntakeJobsObj.intake_users.length > 0 ? (
-                          <Tooltip
-                            title={
-                              currentSpecificIntakeJobsObj.intake_users.length > 0 ? (
-                                <ol>
-                                  {currentSpecificIntakeJobsObj.intake_users.map((child) => (
-                                    <li key={`assignees${child.id}`} className="task__table-assignees">
-                                      {child.user.first_name}&nbsp;
-                                      {child.user.last_name ? child.user.last_name : ''}
-                                    </li>
-                                  ))}
-                                </ol>
-                              ) : (
-                                'Task Assignees'
-                              )
-                            }
-                          >
-                            <i className="fas fa-user"></i> x {currentSpecificIntakeJobsObj.intake_users.length}
-                          </Tooltip>
-                        ) : (
-                          '-'
-                        )}
-                      </div>
+                          {currentSpecificIntakeJobsObj.intake_users.length > 0 ? (
+                            <Tooltip
+                              title={
+                                currentSpecificIntakeJobsObj.intake_users.length > 0 ? (
+                                  <ol>
+                                    {currentSpecificIntakeJobsObj.intake_users.map((child) => (
+                                      <li key={`assignees${child.id}`} className="task__table-assignees">
+                                        {child.user.first_name}&nbsp;
+                                        {child.user.last_name ? child.user.last_name : ''}
+                                      </li>
+                                    ))}
+                                  </ol>
+                                ) : (
+                                  'Task Assignees'
+                                )
+                              }
+                            >
+                              <i className="fas fa-user"></i> x {currentSpecificIntakeJobsObj.intake_users.length}
+                            </Tooltip>
+                          ) : (
+                            '-'
+                          )}
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
               </div>
+
+              <section className="updatespecificintake__section-statusbutton">
+                <Radio.Group defaultValue="a" buttonStyle="solid">
+                  {intakeStatusArray &&
+                    intakeStatusArray
+                      .filter(roleFilter)
+                      .filter(uniqueFilter)
+                      .map((intakeStatus) => {
+                        return (
+                          <>
+                            <Radio.Button value={intakeStatus.id}>{intakeStatus.title}</Radio.Button>
+                          </>
+                        );
+                      })}
+                </Radio.Group>
+              </section>
 
               <section className="updatespecificintake__section-description">
                 {inEditMode ? (

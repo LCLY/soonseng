@@ -666,6 +666,31 @@ const OrdersSlidebar: React.FC<Props> = ({
                                     )}
                                   </div>
                                 </li>
+                                {/* Extension */}
+                                {order.bodyMakeObj &&
+                                  !order.bodyMakeObj.make_wheelbase.original &&
+                                  order.bodyMakeObj.make_wheelbase.price !== 0 && (
+                                    <li>
+                                      <div className={`quotation__orderedlist-row`}>
+                                        <div>UBS Extension Price</div>
+                                        <div>
+                                          <>
+                                            {order.bodyMakeObj.make_wheelbase.price &&
+                                            order.bodyMakeObj.make_wheelbase.price !== 0 ? (
+                                              <NumberFormat
+                                                displayType={'text'}
+                                                thousandSeparator={true}
+                                                value={order.bodyMakeObj.make_wheelbase.price.toFixed(2)}
+                                              />
+                                            ) : (
+                                              <span className="sales__overview-dash">-</span>
+                                            )}
+                                          </>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  )}
+
                                 {/* more info for model */}
                                 <Collapse ghost className="ordersslidebar__overview-panel--modeldetails">
                                   <Panel
