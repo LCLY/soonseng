@@ -178,6 +178,7 @@ export function* updateIntakeSummarySaga(action: AppActions) {
       logs: action.intakeJobsFormData.logs,
     };
   }
+  console.log(intake_and_jobs);
 
   try {
     let response = yield axios.put(url, { intake_and_jobs }, getAxiosHeaderToken());

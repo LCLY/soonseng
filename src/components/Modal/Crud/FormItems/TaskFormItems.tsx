@@ -154,6 +154,7 @@ const TaskFormItems: React.FC<Props> = ({
                       ...serviceTaskDropdown,
                       [record.key]: {
                         serviceTaskId: '',
+                        serviceTaskTitle: '',
                         serviceType: serviceTypeObj,
                         serviceTaskDropdownArray: serviceTypeTaskDict[value].serviceTasksArray,
                       },

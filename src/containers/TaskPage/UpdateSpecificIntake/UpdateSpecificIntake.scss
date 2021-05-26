@@ -165,6 +165,20 @@
         }
       }
     }
+
+    &-statusbutton {
+      & .ant-radio-button-wrapper {
+        background: $dark-blue-2 !important;
+        color: white !important;
+      }
+      & .ant-radio-button-checked {
+        background: $soft-red !important;
+      }
+
+      & .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+        border-color: white !important;
+      }
+    }
   }
 
   &__row {

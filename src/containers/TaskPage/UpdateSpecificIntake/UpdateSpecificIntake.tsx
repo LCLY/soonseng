@@ -97,6 +97,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] =
     useState<TReceivedSpecificIntakeJobsObj | null>(null);
   const [showSubmitPopconfirm, setShowSubmitPopconfirm] = useState(false);
+  const [currentIntakeStatus, setCurrentIntakeStatus] = useState(0);
 
   const [currentSpecificIntakeJobsObj, setCurrentSpecificIntakeJobsObj] =
     useState<TReceivedSpecificIntakeJobsObj | null>(null);
@@ -142,6 +143,15 @@ const UpdateSpecificIntake: React.FC<Props> = ({
           arrayChild.title.toLowerCase().includes('In Progress'.toLowerCase()) ||
           arrayChild.title.toLowerCase().includes('On Hold'.toLowerCase());
         break;
+      case 'Service Advisor'.toLowerCase():
+        filterResult = !arrayChild.title.toLowerCase().includes('Ordering Spareparts'.toLowerCase());
+        break;
+      case 'Superadmin'.toLowerCase():
+        filterResult = arrayChild;
+        break;
+      case 'Sparepart Specialist'.toLowerCase():
+        filterResult = arrayChild.title.toLowerCase().includes('Ordering Spareparts'.toLowerCase());
+        break;
       default:
     }
     return filterResult;
@@ -172,6 +182,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         id: (task as any)[`taskId${task.key}`],
         service_task_id: values[`taskTitle${task.key}`],
         description: values[`taskDescription${task.key}`],
+        duration: values[`taskTime${task.key}`],
       };
       resultJobs.push(taskObj);
     });
@@ -333,8 +344,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               ]}
             >
               <Select
+                showSearch
+                optionFilterProp="children"
                 placeholder="Select a Task title"
                 className="updatespecificintake__select updatespecificintake__select--task"
+                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
                 {dropdownArrayExist &&
@@ -370,7 +384,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                 placeholder="Select a Task title"
                 className="updatespecificintake__select updatespecificintake__select--task updatespecificintake__select--disabled"
               >
-                {' '}
                 <Option value="">Select a Task</Option>
               </Select>
             </Form.Item>
@@ -402,7 +415,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         }
 
         let serviceTypeIsNotRepair = serviceTypeTitle.toLowerCase() !== 'Repair'.toLowerCase();
-
+        let serviceTask = serviceTaskDropdown[record.key].serviceTaskTitle;
+        // @TODO undefined
+        console.log('SERVICE TASK', serviceTask);
         return (
           <>
             {inEditMode ? (
@@ -419,7 +434,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                 ]}
               >
                 <Input
-                  disabled={serviceTypeIsNotRepair}
+                  disabled={serviceTypeIsNotRepair || serviceTask.toLowerCase() === 'Others'.toLowerCase()}
                   type="number"
                   className={`createspecificintake__form-input ${
                     serviceTypeIsNotRepair ? 'createspecificintake__form-input--disabled' : ''
@@ -526,6 +541,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
 
   useEffect(() => {
     if (specificIntakeJobsObj === undefined || specificIntakeJobsObj === null) return;
+    setCurrentIntakeStatus(specificIntakeJobsObj.intake_status.id);
     setCurrentSpecificIntakeJobsObj(specificIntakeJobsObj);
     onSetSpecificIntakeLogs(specificIntakeJobsObj.intake_logs);
   }, [specificIntakeJobsObj, onSetSpecificIntakeLogs]);
@@ -591,6 +607,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         tempDict[uniqueKey] = {};
         tempDict[uniqueKey]['serviceType'] = serviceTypeObj;
         tempDict[uniqueKey]['serviceTaskId'] = task.service_task.id;
+        tempDict[uniqueKey]['serviceTaskTitle'] = task.service_task.title;
         tempDict[uniqueKey]['serviceTaskDropdownArray'] =
           serviceTypeTaskDict[task.service_task.service_type.id].serviceTasksArray;
       }
@@ -716,6 +733,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                   [indexKey]: {
                     serviceTaskId: '', //when a new service type is chosen, the service task shouold be reset
                     serviceType: serviceTypeObj,
+                    serviceTaskTitle: '',
                     serviceTaskDropdownArray: serviceTypeTaskDict[currentValue].serviceTasksArray,
                   },
                 });
@@ -730,9 +748,21 @@ const UpdateSpecificIntake: React.FC<Props> = ({
             }
 
             if (labelName.includes('taskTitle')) {
+              let taskTitleString = '';
+              // get title string through task Id
+              if (serviceTypeTaskDict) {
+                taskTitleString = serviceTypeTaskDict[currentValue].serviceTasksArray.filter(
+                  (child) => child.id === currentValue,
+                )[0].title;
+              }
+
               setServiceTaskDropdown({
                 ...serviceTaskDropdown,
-                [indexKey]: { ...serviceTaskDropdown[indexKey], serviceTaskId: currentValue },
+                [indexKey]: {
+                  ...serviceTaskDropdown[indexKey],
+                  serviceTaskId: currentValue,
+                  serviceTaskTitle: taskTitleString,
+                },
               });
 
               // get the taskdropdown from the object/dict
@@ -807,7 +837,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               </div>
             </div>
             <section className="updatespecificintake__section-top">
+              {/* =============================================== */}
               {/* REGISTRATION */}
+              {/* =============================================== */}
               <div className="updatespecificintake__row--registration">
                 {inEditMode ? (
                   <div className="updatespecificintake__div-registration">
@@ -1023,16 +1055,21 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               </div>
 
               <section className="updatespecificintake__section-statusbutton">
-                <Radio.Group defaultValue="a" buttonStyle="solid">
+                <Radio.Group defaultValue={currentIntakeStatus} buttonStyle="solid">
                   {intakeStatusArray &&
                     intakeStatusArray
                       .filter(roleFilter)
                       .filter(uniqueFilter)
                       .map((intakeStatus) => {
                         return (
-                          <>
-                            <Radio.Button value={intakeStatus.id}>{intakeStatus.title}</Radio.Button>
-                          </>
+                          <React.Fragment key={uuidv4()}>
+                            <Radio.Button
+                              onClick={(e: any) => setCurrentIntakeStatus(e.target.value)}
+                              value={intakeStatus.id}
+                            >
+                              {intakeStatus.title}
+                            </Radio.Button>
+                          </React.Fragment>
                         );
                       })}
                 </Radio.Group>
