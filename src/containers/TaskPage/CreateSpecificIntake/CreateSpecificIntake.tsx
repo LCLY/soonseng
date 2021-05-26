@@ -316,7 +316,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
         }
 
         let serviceTypeIsNotRepair = serviceTypeTitle.toLowerCase() !== 'Repair'.toLowerCase();
-
+        let serviceTask = serviceTaskDropdown[record.key].serviceTaskTitle;
         return (
           <>
             <Form.Item
@@ -332,7 +332,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
               ]}
             >
               <Input
-                disabled={serviceTypeIsNotRepair}
+                disabled={serviceTypeIsNotRepair || serviceTask.toLowerCase() === 'Others'.toLowerCase()}
                 type="number"
                 className={`createspecificintake__form-input ${
                   serviceTypeIsNotRepair ? 'createspecificintake__form-input--disabled' : ''
@@ -476,6 +476,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                 ...serviceTaskDropdown,
                 [indexKey]: {
                   serviceTaskId: '', //when a new service type is chosen, the service task shouold be reset
+                  serviceTaskTitle: '',
                   serviceType: serviceTypeObj,
                   serviceTaskDropdownArray: serviceTypeTaskDict[currentValue].serviceTasksArray,
                 },
@@ -491,9 +492,21 @@ const CreateSpecificIntake: React.FC<Props> = ({
           }
 
           if (labelName.includes('taskTitle')) {
+            let taskTitleString = '';
+            // get title string through task Id
+            if (serviceTypeTaskDict) {
+              taskTitleString = serviceTypeTaskDict[currentValue].serviceTasksArray.filter(
+                (child) => child.id === currentValue,
+              )[0].title;
+            }
+
             setServiceTaskDropdown({
               ...serviceTaskDropdown,
-              [indexKey]: { ...serviceTaskDropdown[indexKey], serviceTaskId: currentValue },
+              [indexKey]: {
+                ...serviceTaskDropdown[indexKey],
+                serviceTaskId: currentValue,
+                serviceTaskTitle: taskTitleString,
+              },
             });
 
             // get the taskdropdown from the object/dict
