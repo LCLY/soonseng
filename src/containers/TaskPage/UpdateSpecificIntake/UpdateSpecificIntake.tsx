@@ -89,7 +89,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-
+  console.log('test');
   const { width } = useWindowDimensions();
 
   const [updateIntakeJobsForm] = Form.useForm();
