@@ -84,6 +84,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   setBeforeDeleteState,
   onSetSpecificIntakeLogs,
   setShowMobileHistoryLogs,
+  onSetToggleIntakeStatus,
 }) => {
   /* ================================================== */
   /*  state */
@@ -401,7 +402,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
       editable: true,
       // sorter: (a: TserviceTableState, b: TserviceTableState) => a.taskDescription.localeCompare(b.taskDescription),
       render: (_text: any, record: IServiceTableChildState) => {
-        let serviceTypeTitle = '';
+        // let serviceTypeTitle = '';
         // first check if the serviceTaskDropdown object has this key
         if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
           // then check whether the service type obj exist
@@ -410,14 +411,24 @@ const UpdateSpecificIntake: React.FC<Props> = ({
             serviceTaskDropdown[record.key].serviceType !== undefined
           ) {
             // if exist, get the title of the serviceType
-            serviceTypeTitle = serviceTaskDropdown[record.key].serviceType.title;
+            // serviceTypeTitle = serviceTaskDropdown[record.key].serviceType.title;
           }
         }
 
-        let serviceTypeIsNotRepair = serviceTypeTitle.toLowerCase() !== 'Repair'.toLowerCase();
-        let serviceTask = serviceTaskDropdown[record.key].serviceTaskTitle;
-        // @TODO undefined
-        console.log('SERVICE TASK', serviceTask);
+        // let serviceTypeIsNotRepair = serviceTypeTitle.toLowerCase() !== 'Repair'.toLowerCase();
+        // let serviceTask = serviceTaskDropdown[record.key].serviceTaskTitle;
+        // let   indexKey = labelName.substring(taskType.length);
+        //   let taskDropdownArray = serviceTaskDropdown[indexKey].serviceTaskDropdownArray;
+        //   if (taskDropdownArray) {
+        //     taskTitleString = taskDropdownArray.filter((child) => child.id === currentValue)[0].title;
+        //   }
+
+        let serviceTask = '';
+
+        if (serviceTaskDropdown[`${record.key}`] !== undefined) {
+          serviceTask = serviceTaskDropdown[`${record.key}`].serviceTaskTitle;
+        }
+
         return (
           <>
             {inEditMode ? (
@@ -434,10 +445,12 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                 ]}
               >
                 <Input
-                  disabled={serviceTypeIsNotRepair || serviceTask.toLowerCase() === 'Others'.toLowerCase()}
+                  disabled={!(serviceTask.toLowerCase() === 'Others'.toLowerCase())}
                   type="number"
                   className={`createspecificintake__form-input ${
-                    serviceTypeIsNotRepair ? 'createspecificintake__form-input--disabled' : ''
+                    !(serviceTask.toLowerCase() === 'Others'.toLowerCase())
+                      ? 'createspecificintake__form-input--disabled'
+                      : ''
                   }`}
                   placeholder="Estimate time here"
                 />
@@ -603,7 +616,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
       ) {
         if (serviceTypesArray === null || serviceTypesArray === undefined) return;
         let serviceTypeObj = serviceTypesArray.filter((st) => st.id === task.service_task.service_type.id)[0];
-
         tempDict[uniqueKey] = {};
         tempDict[uniqueKey]['serviceType'] = serviceTypeObj;
         tempDict[uniqueKey]['serviceTaskId'] = task.service_task.id;
@@ -751,9 +763,12 @@ const UpdateSpecificIntake: React.FC<Props> = ({
               let taskTitleString = '';
               // get title string through task Id
               if (serviceTypeTaskDict) {
-                taskTitleString = serviceTypeTaskDict[currentValue].serviceTasksArray.filter(
-                  (child) => child.id === currentValue,
-                )[0].title;
+                let indexKey = labelName.substring(taskTitle.length);
+
+                let taskDropdownArray = serviceTaskDropdown[indexKey].serviceTaskDropdownArray;
+                if (taskDropdownArray) {
+                  taskTitleString = taskDropdownArray.filter((child) => child.id === currentValue)[0].title;
+                }
               }
 
               setServiceTaskDropdown({
@@ -902,7 +917,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     </div>
                   </Tooltip>
                   <div className="updatespecificintake__box-right">
-                    {/* {inEditMode ? (
+                    {inEditMode ? (
                       <Form.Item
                         name="intakeStatus"
                         style={{ margin: 0 }}
@@ -932,11 +947,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                           ? currentSpecificIntakeJobsObj.intake_status.title
                           : ''}
                       </>
-                    )} */}
+                    )}
 
-                    {typeof currentSpecificIntakeJobsObj === 'object'
+                    {/* {typeof currentSpecificIntakeJobsObj === 'object'
                       ? currentSpecificIntakeJobsObj.intake_status.title
-                      : ''}
+                      : ''} */}
                   </div>
                 </div>
 
@@ -1064,7 +1079,12 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                         return (
                           <React.Fragment key={uuidv4()}>
                             <Radio.Button
-                              onClick={(e: any) => setCurrentIntakeStatus(e.target.value)}
+                              onClick={(e: any) => {
+                                setCurrentIntakeStatus(e.target.value);
+                                if (userInfoObj !== undefined && userInfoObj !== null) {
+                                  onSetToggleIntakeStatus(currentSpecificIntakeJobsObj.id, e.target.value, '');
+                                }
+                              }}
                               value={intakeStatus.id}
                             >
                               {intakeStatus.title}
@@ -1248,6 +1268,7 @@ interface DispatchProps {
   onDeleteIntakeSummary: typeof actions.deleteIntakeSummary;
   onUpdateIntakeSummary: typeof actions.updateIntakeSummary;
   onSetSpecificIntakeLogs: typeof actions.setSpecificIntakeLogs;
+  onSetToggleIntakeStatus: typeof actions.setToggleIntakeStatus;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
@@ -1258,6 +1279,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onUpdateIntakeSummary: (intake_id, intakeJobsFormData) =>
       dispatch(actions.updateIntakeSummary(intake_id, intakeJobsFormData)),
     onSetSpecificIntakeLogs: (specificIntakeLogs) => dispatch(actions.setSpecificIntakeLogs(specificIntakeLogs)),
+    onSetToggleIntakeStatus: (intake_id, intake_status_id, description) =>
+      dispatch(actions.setToggleIntakeStatus(intake_id, intake_status_id, description)),
   };
 };
 

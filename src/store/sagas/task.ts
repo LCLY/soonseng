@@ -296,3 +296,26 @@ export function* getUsersByRolesSaga(action: AppActions) {
     }
   }
 }
+
+/* ============================================================================================== */
+// Set Toggle Intake Status
+/* ============================================================================================== */
+
+export function* setToggleIntakeStatusSaga(action: AppActions) {
+  if (!('intake_status_id' in action) || !('intake_id' in action) || !('description' in action)) return;
+  let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes/${action.intake_id}/toggle_status`;
+
+  let toggle_status = {
+    intake_status_id: action.intake_status_id,
+    description: action.description,
+  };
+
+  console.log(toggle_status);
+
+  try {
+    let response = yield axios.post(url, { toggle_status }, getAxiosHeaderToken());
+    console.log('RESPONSE', response);
+  } catch (error) {
+    yield console.log(error);
+  }
+}
