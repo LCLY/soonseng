@@ -81,6 +81,7 @@ export interface IIntakeDict {
 export interface IServiceTaskDropdown {
   [key: string]: {
     serviceTaskId: string;
+    serviceTaskTitle: string;
     serviceType: TReceivedServiceTypesObj;
     serviceTaskDropdownArray: TReceivedServiceTaskObj[] | null;
   };
@@ -172,6 +173,8 @@ const TaskPage: React.FC<Props> = ({
       width: '10rem',
       ellipsis: true,
       align: 'center',
+      ...getColumnSearchProps(intakeJobsSearchInput, 'status', 'Status'),
+      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.status.localeCompare(b.status),
       render: (_text: any, record: TIntakeTableState) => {
         let defaultColor = '#b2d8e9';
         let grey = '#808080';
@@ -724,7 +727,7 @@ const TaskPage: React.FC<Props> = ({
                           {auth_token &&
                             userInfoObj &&
                             userInfoObj !== undefined &&
-                            userInfoObj.roles.title.toLowerCase() !== 'Mechanic' &&
+                            userInfoObj.roles.title.toLowerCase() !== 'Mechanic'.toLowerCase() &&
                             currentPage !== 'create' && (
                               <Button
                                 type="primary"

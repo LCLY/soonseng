@@ -90,7 +90,11 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
   if (quotationOrder.bodyMakeObj) {
     const { bodyMakeObj } = quotationOrder;
     modelSubtotalPrice =
-      bodyMakeObj.make_wheelbase.make.price + bodyMakeObj.price + totalAccessoriesPrice + processingFees;
+      bodyMakeObj.make_wheelbase.make.price +
+      bodyMakeObj.price +
+      bodyMakeObj.make_wheelbase.price +
+      totalAccessoriesPrice +
+      processingFees;
   }
 
   if (quotationOrder.insuranceDict === null) return null;

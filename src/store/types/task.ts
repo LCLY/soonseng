@@ -376,6 +376,16 @@ export type TServiceTypeTaskDict = {
 };
 
 /* ============================================================== */
+// Set Toggle Intake Status
+/* ============================================================== */
+export interface SetToggleIntakeStatusAction {
+  type: typeof actionTypes.SET_TOGGLE_INTAKE_STATUS;
+  intake_id: number;
+  description: string;
+  intake_status_id: number;
+}
+
+/* ============================================================== */
 // Combine and export all action types
 /* ============================================================== */
 export type TaskActionTypes =
@@ -431,6 +441,7 @@ export type TaskActionTypes =
   | UpdateSpecificIntakeJobsSucceedAction
   | UpdateSpecificIntakeJobsFailedAction
   | SetSpecificIntakeLogsAction
+  | SetToggleIntakeStatusAction
   /* -------------------- */
   // Get users by roles
   /* -------------------- */

@@ -165,6 +165,20 @@
         }
       }
     }
+
+    &-statusbutton {
+      & .ant-radio-button-wrapper {
+        background: $dark-blue-2 !important;
+        color: white !important;
+      }
+      & .ant-radio-button-checked {
+        background: $soft-red !important;
+      }
+
+      & .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+        border-color: white !important;
+      }
+    }
   }
 
   &__row {
@@ -301,6 +315,7 @@
 
       @include customScrollbar();
       overflow-y: auto;
+
       @include respond-to($small-phone) {
         height: 5rem;
         min-height: 5rem;
@@ -312,8 +327,7 @@
         max-height: 5rem;
       }
       @include respond-to($tablet-portrait-up) {
-        min-height: 10rem;
-        max-height: 12.5rem;
+        padding: 0.5rem 1rem;
       }
       &--users {
         padding: 0.3rem 0.3rem 0.3rem 0;

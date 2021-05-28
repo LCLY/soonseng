@@ -373,3 +373,15 @@ export const setSpecificIntakeLogs = (specificIntakeLogs: IIntakeLogs[] | null):
     specificIntakeLogs: specificIntakeLogs,
   };
 };
+
+/* ============================================================================================ */
+//  Set Task Page toggle intake status
+/* ============================================================================================ */
+export const setToggleIntakeStatus = (intake_id: number, intake_status_id: number, description: string): AppActions => {
+  return {
+    type: actionTypes.SET_TOGGLE_INTAKE_STATUS,
+    intake_id: intake_id,
+    description: description,
+    intake_status_id: intake_status_id,
+  };
+};
