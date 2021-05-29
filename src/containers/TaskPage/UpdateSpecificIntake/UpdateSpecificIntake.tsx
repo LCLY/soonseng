@@ -89,11 +89,12 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   /* ================================================== */
   /*  state */
   /* ================================================== */
-  console.log('test');
+
   const { width } = useWindowDimensions();
 
   const [updateIntakeJobsForm] = Form.useForm();
   const [clickedUpdate, setClickedUpdate] = useState(false); //boolean to keep track if user has clicked update
+  const [statusUpdate, setStatusUpdate] = useState(false); //boolean to keep track if user has clicked update
   const [updateServiceTableState, setUpdateServiceTableState] = useState<TServiceTableState>({});
   const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] =
     useState<TReceivedSpecificIntakeJobsObj | null>(null);
@@ -648,6 +649,12 @@ const UpdateSpecificIntake: React.FC<Props> = ({
       setCurrentSpecificIntakeJobsObj(incomingSpecificIntakeData);
       onSetSpecificIntakeLogs(incomingSpecificIntakeData.intake_logs);
 
+      // if user is an admin that has updated status, then swap the screen back
+      if (statusUpdate) {
+        setStatusUpdate(false); //reset
+        goBackToIntakes(); //animate back to homescreen
+      }
+
       // if user is an admin that has clicked update, then swap the screen back
       if (clickedUpdate) {
         setClickedUpdate(false); //reset
@@ -655,7 +662,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
       }
       setIncomingSpecificIntakeData(null);
     }
-  }, [goBackToIntakes, onSetSpecificIntakeLogs, clickedUpdate, incomingSpecificIntakeData]);
+  }, [goBackToIntakes, onSetSpecificIntakeLogs, statusUpdate, clickedUpdate, incomingSpecificIntakeData]);
 
   useEffect(() => {
     if (specificIntakeJobsObj === undefined || specificIntakeJobsObj === null) return;
@@ -1082,6 +1089,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                               onClick={(e: any) => {
                                 setCurrentIntakeStatus(e.target.value);
                                 if (userInfoObj !== undefined && userInfoObj !== null) {
+                                  setStatusUpdate(true);
                                   onSetToggleIntakeStatus(currentSpecificIntakeJobsObj.id, e.target.value, '');
                                 }
                               }}
