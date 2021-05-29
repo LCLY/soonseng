@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef, useContext, MutableRef
 import { RootState } from 'src';
 import './UpdateSpecificIntake.scss';
 /* components */
+import IntakeStatusToggle from './IntakeStatusToggle';
 import MobileServiceTable from '../MobileServiceTable/MobileServiceTable';
 /* 3rd party lib */
 import gsap from 'gsap';
@@ -100,9 +101,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     useState<TReceivedSpecificIntakeJobsObj | null>(null);
   const [showSubmitPopconfirm, setShowSubmitPopconfirm] = useState(false);
   const [currentIntakeStatus, setCurrentIntakeStatus] = useState(0);
-
   const [currentSpecificIntakeJobsObj, setCurrentSpecificIntakeJobsObj] =
     useState<TReceivedSpecificIntakeJobsObj | null>(null);
+  const [showPopConfirm, setShowPopConfirm] = useState(false);
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
 
@@ -152,7 +153,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         filterResult = arrayChild;
         break;
       case 'Sparepart Specialist'.toLowerCase():
-        filterResult = arrayChild.title.toLowerCase().includes('Ordering Spareparts'.toLowerCase());
+        filterResult =
+          arrayChild.title.toLowerCase().includes('Ordering Spareparts'.toLowerCase()) ||
+          arrayChild.title.toLowerCase().includes('In Progress'.toLowerCase());
         break;
       default:
     }
@@ -924,7 +927,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     </div>
                   </Tooltip>
                   <div className="updatespecificintake__box-right">
-                    {inEditMode ? (
+                    {/* {inEditMode ? (
                       <Form.Item
                         name="intakeStatus"
                         style={{ margin: 0 }}
@@ -954,11 +957,11 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                           ? currentSpecificIntakeJobsObj.intake_status.title
                           : ''}
                       </>
-                    )}
+                    )} */}
 
-                    {/* {typeof currentSpecificIntakeJobsObj === 'object'
+                    {typeof currentSpecificIntakeJobsObj === 'object'
                       ? currentSpecificIntakeJobsObj.intake_status.title
-                      : ''} */}
+                      : ''}
                   </div>
                 </div>
 
@@ -1085,18 +1088,19 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                       .map((intakeStatus) => {
                         return (
                           <React.Fragment key={uuidv4()}>
-                            <Radio.Button
-                              onClick={(e: any) => {
-                                setCurrentIntakeStatus(e.target.value);
-                                if (userInfoObj !== undefined && userInfoObj !== null) {
-                                  setStatusUpdate(true);
-                                  onSetToggleIntakeStatus(currentSpecificIntakeJobsObj.id, e.target.value, '');
-                                }
-                              }}
-                              value={intakeStatus.id}
-                            >
-                              {intakeStatus.title}
-                            </Radio.Button>
+                            <IntakeStatusToggle
+                              userInfoObj={userInfoObj}
+                              intakeStatus={intakeStatus}
+                              showPopConfirm={showPopConfirm}
+                              setStatusUpdate={setStatusUpdate}
+                              setShowPopConfirm={setShowPopConfirm}
+                              currentIntakeStatus={currentIntakeStatus}
+                              setCurrentIntakeStatus={setCurrentIntakeStatus}
+                              onSetToggleIntakeStatus={onSetToggleIntakeStatus}
+                              // intakeStatusDescription={intakeStatusDescription}
+                              // setIntakeStatusDescription={setIntakeStatusDescription}
+                              currentSpecificIntakeJobsObj={currentSpecificIntakeJobsObj}
+                            />
                           </React.Fragment>
                         );
                       })}

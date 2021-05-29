@@ -310,11 +310,8 @@ export function* setToggleIntakeStatusSaga(action: AppActions) {
     description: action.description,
   };
 
-  console.log(toggle_status);
-
   try {
-    let response = yield axios.post(url, { toggle_status }, getAxiosHeaderToken());
-    console.log('RESPONSE', response);
+    yield axios.post(url, { toggle_status }, getAxiosHeaderToken());
   } catch (error) {
     yield console.log(error);
   }
