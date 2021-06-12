@@ -302,8 +302,6 @@ const CreateSpecificIntake: React.FC<Props> = ({
       editable: true,
       // sorter: (a: TserviceTableState, b: TserviceTableState) => a.taskDescription.localeCompare(b.taskDescription),
       render: (_text: any, record: IServiceTableChildState) => {
-        let serviceTypeTitle = '';
-        // first check if the serviceTaskDropdown object has this key
         if (Object.keys(serviceTaskDropdown).includes(record.key.toString())) {
           // then check whether the service type obj exist
           if (
@@ -311,12 +309,16 @@ const CreateSpecificIntake: React.FC<Props> = ({
             serviceTaskDropdown[record.key].serviceType !== undefined
           ) {
             // if exist, get the title of the serviceType
-            serviceTypeTitle = serviceTaskDropdown[record.key].serviceType.title;
+            // serviceTypeTitle = serviceTaskDropdown[record.key].serviceType.title;
           }
         }
 
-        let serviceTypeIsNotRepair = serviceTypeTitle.toLowerCase() !== 'Repair'.toLowerCase();
-        let serviceTask = serviceTaskDropdown[record.key].serviceTaskTitle;
+        let serviceTask = '';
+
+        if (serviceTaskDropdown[`${record.key}`] !== undefined) {
+          serviceTask = serviceTaskDropdown[`${record.key}`].serviceTaskTitle;
+        }
+
         return (
           <>
             <Form.Item
@@ -332,10 +334,12 @@ const CreateSpecificIntake: React.FC<Props> = ({
               ]}
             >
               <Input
-                disabled={serviceTypeIsNotRepair || serviceTask.toLowerCase() === 'Others'.toLowerCase()}
+                disabled={!(serviceTask.toLowerCase() === 'Others'.toLowerCase())}
                 type="number"
                 className={`createspecificintake__form-input ${
-                  serviceTypeIsNotRepair ? 'createspecificintake__form-input--disabled' : ''
+                  !(serviceTask.toLowerCase() === 'Others'.toLowerCase())
+                    ? 'createspecificintake__form-input--disabled'
+                    : ''
                 }`}
                 placeholder="Estimate time here"
               />

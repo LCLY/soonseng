@@ -73,6 +73,7 @@ export type TIntakeTableState = {
   assign: IIntakeUser[];
   description: string;
   bay: string;
+  is_assigned?: boolean;
 };
 export interface IIntakeDict {
   [intakeId: number]: TIntakeTableState;
@@ -106,6 +107,7 @@ const TaskPage: React.FC<Props> = ({
   onGetServiceTypes,
   onGetSpecificIntakeJobs,
   onSetSpecificIntakeLogs,
+  onSetToggleUserAssign,
 }) => {
   /* ================================================== */
   /*  state */
@@ -286,24 +288,36 @@ const TaskPage: React.FC<Props> = ({
       align: 'center',
       render: (_text: any, record: TIntakeTableState) => {
         return (
-          <Tooltip
-            title={
-              <>
-                <ol>
-                  {record.assign.length > 0
-                    ? record.assign.map((child) => (
-                        <li key={`assignees${child.id}`} className="task__table-assignees">
-                          {child.user.first_name}&nbsp;
-                          {child.user.last_name ? child.user.last_name : ''}
-                        </li>
-                      ))
-                    : '-'}
-                </ol>
-              </>
-            }
-          >
-            <i className="fas fa-user"></i> x {record.assign.length}
-          </Tooltip>
+          <>
+            {auth_token ? (
+              <Button
+                type="primary"
+                className="make__brand-btn"
+                onClick={() => onSetToggleUserAssign(parseInt(record.key))}
+              >
+                {!record.is_assigned ? 'Assign' : 'Unassign'}
+              </Button>
+            ) : (
+              <Tooltip
+                title={
+                  <>
+                    <ol>
+                      {record.assign.length > 0
+                        ? record.assign.map((child) => (
+                            <li key={`assignees${child.id}`} className="task__table-assignees">
+                              {child.user.first_name}&nbsp;
+                              {child.user.last_name ? child.user.last_name : ''}
+                            </li>
+                          ))
+                        : '-'}
+                    </ol>
+                  </>
+                }
+              >
+                <i className="fas fa-user"></i> x {record.assign.length}
+              </Tooltip>
+            )}
+          </>
         );
       },
     },
@@ -587,6 +601,7 @@ const TaskPage: React.FC<Props> = ({
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
         status: intake.intake_status.title,
         bay: intake.bay === '' ? '-' : intake.bay,
+        is_assigned: intake.is_assigned,
       };
     };
 
@@ -957,6 +972,7 @@ interface DispatchProps {
   onGetUsersByRoles: typeof actions.getUsersByRoles;
   onGetServiceTypes: typeof actions.getServiceTypes;
   onGetIntakeSummary: typeof actions.getIntakeSummary;
+  onSetToggleUserAssign: typeof actions.setToggleUserAssign;
   onCreateIntakeSummary: typeof actions.createIntakeSummary;
   onUpdateIntakeSummary: typeof actions.updateIntakeSummary;
   onGetSpecificIntakeJobs: typeof actions.getSpecificIntakeJobs;
@@ -968,6 +984,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onGetIntakeStatus: () => dispatch(actions.getIntakeStatus()),
     onGetServiceTypes: () => dispatch(actions.getServiceTypes()),
     onGetIntakeSummary: () => dispatch(actions.getIntakeSummary()),
+    onSetToggleUserAssign: (intake_id) => dispatch(actions.setToggleUserAssign(intake_id)),
     onGetUsersByRoles: (role_id, title) => dispatch(actions.getUsersByRoles(role_id, title)),
     onGetSpecificIntakeJobs: (intake_id) => dispatch(actions.getSpecificIntakeJobs(intake_id)),
     onSetSpecificIntakeLogs: (specificIntakeLogs) => dispatch(actions.setSpecificIntakeLogs(specificIntakeLogs)),

@@ -1,5 +1,5 @@
 export const ROUTE_HOME = '/';
-export const ROUTE_TASK = '/task';
+export const ROUTE_TASK = '/service_and_repairs';
 export const ROUTE_ABOUT = '/about';
 export const ROUTE_SALES = '/sales';
 export const ROUTE_LOGIN = '/login';
