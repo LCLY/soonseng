@@ -141,7 +141,7 @@ function HomePage() {
       <Helmet>
         <meta
           charSet="utf-8"
-          name="Home Page"
+          name="Soon Seng Motors Enterprise 1988 - HINO 4S Dealer in Kelantan. 2nd Hand Truck dealer. Sales, Service Spareparts, Insurance."
           content="Soon Seng Motors Enterprice (1988) - Variety of vehicle selections that strive to perform on every situations possible."
         />
         <title>Home | Soon Seng Motors Enterprise (1988)</title>
