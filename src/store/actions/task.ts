@@ -385,3 +385,12 @@ export const setToggleIntakeStatus = (intake_id: number, intake_status_id: numbe
     intake_status_id: intake_status_id,
   };
 };
+/* ============================================================================================ */
+//  Set Task Page toggle user assign
+/* ============================================================================================ */
+export const setToggleUserAssign = (intake_id: number): AppActions => {
+  return {
+    type: actionTypes.SET_TOGGLE_USER_ASSIGN,
+    intake_id: intake_id,
+  };
+};

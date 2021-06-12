@@ -475,6 +475,7 @@ export {
   updateSpecificIntakeJobsSucceed,
   setSpecificIntakeLogs,
   setToggleIntakeStatus,
+  setToggleUserAssign,
   /* ==================== */
   // Get users by roles
   /* ==================== */

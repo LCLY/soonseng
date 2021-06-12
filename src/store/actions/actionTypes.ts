@@ -635,6 +635,7 @@ export const UPDATE_SPECIFIC_INTAKE_JOBS_FAILED = 'UPDATE_SPECIFIC_INTAKE_JOBS_F
 export const SET_SPECIFIC_INTAKE_LOGS = 'SET_SPECIFIC_INTAKE_LOGS';
 
 export const SET_TOGGLE_INTAKE_STATUS = 'SET_TOGGLE_INTAKE_STATUS';
+export const SET_TOGGLE_USER_ASSIGN = 'SET_TOGGLE_USER_ASSIGN';
 /* -------------------------------------------------- */
 // Users
 /* -------------------------------------------------- */

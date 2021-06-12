@@ -148,7 +148,7 @@ export function* getIntakeSummarySaga(_action: AppActions) {
   let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes`;
 
   try {
-    let response = yield axios.get(url);
+    let response = yield axios.get(url, getAxiosHeaderToken());
     yield put(actions.getIntakeSummarySucceed(response.data.intakes));
   } catch (error) {
     if (error.response) {
@@ -178,7 +178,6 @@ export function* updateIntakeSummarySaga(action: AppActions) {
       logs: action.intakeJobsFormData.logs,
     };
   }
-  console.log(intake_and_jobs);
 
   try {
     let response = yield axios.put(url, { intake_and_jobs }, getAxiosHeaderToken());
@@ -312,6 +311,20 @@ export function* setToggleIntakeStatusSaga(action: AppActions) {
 
   try {
     yield axios.post(url, { toggle_status }, getAxiosHeaderToken());
+  } catch (error) {
+    yield console.log(error);
+  }
+}
+/* ============================================================================================== */
+// Toggle User Assign
+/* ============================================================================================== */
+
+export function* setToggleUserAssignSaga(action: AppActions) {
+  if (!('intake_id' in action)) return;
+  let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes/${action.intake_id}/toggle_mechanic_assigned`;
+
+  try {
+    yield axios.post(url, getAxiosHeaderToken());
   } catch (error) {
     yield console.log(error);
   }

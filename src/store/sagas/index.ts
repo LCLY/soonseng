@@ -128,6 +128,7 @@ import {
   getSpecificIntakeJobsSaga,
   updateSpecificIntakeJobsSaga,
   setToggleIntakeStatusSaga,
+  setToggleUserAssignSaga,
 } from './task';
 import { TaskActionTypes } from '../types/task';
 
@@ -264,4 +265,5 @@ export function* watchTask() {
   yield all([takeEvery<TaskActionTypes>(actionTypes.UPDATE_SPECIFIC_INTAKE_JOBS, updateSpecificIntakeJobsSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.GET_USERS_BY_ROLES, getUsersByRolesSaga)]);
   yield all([takeEvery<TaskActionTypes>(actionTypes.SET_TOGGLE_INTAKE_STATUS, setToggleIntakeStatusSaga)]);
+  yield all([takeEvery<TaskActionTypes>(actionTypes.SET_TOGGLE_USER_ASSIGN, setToggleUserAssignSaga)]);
 }

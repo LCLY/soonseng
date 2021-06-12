@@ -168,6 +168,7 @@ export type TReceivedIntakeSummaryObj = {
   bay: string;
   jobs: { service_type: string; job_status: string }[];
   intake_users: IIntakeUser[];
+  is_assigned?: boolean;
 };
 
 /* ----------------------------------- */
@@ -384,6 +385,13 @@ export interface SetToggleIntakeStatusAction {
   description: string;
   intake_status_id: number;
 }
+/* ============================================================== */
+// Set Toggle User Assign
+/* ============================================================== */
+export interface SetToggleUserAssignAction {
+  type: typeof actionTypes.SET_TOGGLE_USER_ASSIGN;
+  intake_id: number;
+}
 
 /* ============================================================== */
 // Combine and export all action types
@@ -442,6 +450,7 @@ export type TaskActionTypes =
   | UpdateSpecificIntakeJobsFailedAction
   | SetSpecificIntakeLogsAction
   | SetToggleIntakeStatusAction
+  | SetToggleUserAssignAction
   /* -------------------- */
   // Get users by roles
   /* -------------------- */
