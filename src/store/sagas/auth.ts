@@ -59,12 +59,12 @@ export function* getUserInfoSaga(_action: AppActions) {
       const { roles } = response.data.user; //extract the roles out
       // only assign access if there's a role
       let accessObj = {
-        showAdminDashboard: roles.priceSalesPage,
-        allowEditSalesDashboard: roles.fullSalesPage,
-        showFullSalesPage: roles.viewSalesDashboard,
-        showPriceSalesPage: roles.editSalesDashboard,
+        showAdminDashboard: roles.adminDashboard,
+        allowEditSalesDashboard: roles.editSalesDashboard,
+        showFullSalesPage: roles.fullSalesPage,
+        showPriceSalesPage: roles.priceSalesPage,
         showSalesmenDashboard: roles.salesmenDashboard,
-        showSalesDashboard: roles.adminDashboard,
+        showSalesDashboard: roles.viewSalesDashboard,
       };
       // assign the access booleans
       yield put(actions.assignAccess(accessObj));

@@ -324,7 +324,7 @@ export function* setToggleUserAssignSaga(action: AppActions) {
   let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes/${action.intake_id}/toggle_mechanic_assigned`;
 
   try {
-    yield axios.post(url, getAxiosHeaderToken());
+    yield axios.post(url, {}, getAxiosHeaderToken());
   } catch (error) {
     yield console.log(error);
   }
