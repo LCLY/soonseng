@@ -751,6 +751,7 @@ export type TReceivedServiceTaskObj = {
 
 export interface IServiceTaskFormData {
   title: string;
+  duration: number;
   description: string;
   service_type_id: number;
 }

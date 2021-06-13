@@ -39,6 +39,14 @@ const TaskTitleFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
         </Form.Item>
         <Form.Item
           className="make__form-item"
+          label="Duration"
+          name="duration"
+          rules={[{ required: true, message: 'Input duration here!' }]}
+        >
+          <Input type="number" placeholder="Type duration here" />
+        </Form.Item>
+        <Form.Item
+          className="make__form-item"
           label="Description"
           name="description"
           rules={[{ required: false, message: 'Input description here!' }]}
