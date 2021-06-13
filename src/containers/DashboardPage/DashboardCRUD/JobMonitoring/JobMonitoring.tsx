@@ -298,10 +298,16 @@ const JobMonitoring: React.FC<Props> = ({
   };
 
   /* Task Title */
-  const onCreateServiceTaskFinish = (values: { title: string; description: string; service_type_id: number }) => {
+  const onCreateServiceTaskFinish = (values: {
+    title: string;
+    duration: string;
+    description: string;
+    service_type_id: number;
+  }) => {
     let taskTitleFormData: IServiceTaskFormData = {
       title: values.title,
       description: values.description,
+      duration: parseInt(values.duration),
       service_type_id: values.service_type_id,
     };
     onCreateServiceTask(taskTitleFormData);
@@ -309,12 +315,14 @@ const JobMonitoring: React.FC<Props> = ({
   const onUpdateServiceTaskFinish = (values: {
     title: string;
     description: string;
+    duration: string;
     task_title_id: number;
     service_type_id: number;
   }) => {
     let taskTitleFormData: IServiceTaskFormData = {
       title: values.title,
       description: values.description,
+      duration: parseInt(values.duration),
       service_type_id: values.service_type_id,
     };
     onUpdateServiceTask(values.task_title_id, taskTitleFormData);
@@ -367,7 +375,9 @@ const JobMonitoring: React.FC<Props> = ({
             {serviceTasksArray.length > 0 ? (
               serviceTasksArray.map((task) => (
                 <div key={uuidv4()}>
-                  {`${task.title}${task.description && task.description !== '' ? ` - ${task.description}` : ''} `}
+                  {`${task.title}${
+                    task.description && task.description !== '' ? ` - ${task.description}` : ''
+                  } (Duration: ${task.duration})`}
                   <Button
                     className="make__brand-btn--edit"
                     type="link"
@@ -378,6 +388,7 @@ const JobMonitoring: React.FC<Props> = ({
                       updateServiceTaskForm.setFieldsValue({
                         task_title_id: task.id,
                         title: task.title,
+                        duration: task.duration,
                         service_type_id: record.id,
                         description: task.description,
                       });

@@ -1884,6 +1884,7 @@ export function* createServiceTaskSaga(action: AppActions) {
   if ('serviceTaskFormData' in action) {
     service_task = {
       title: action.serviceTaskFormData.title,
+      duration: action.serviceTaskFormData.duration,
       description: action.serviceTaskFormData.description,
     };
   }
@@ -1915,6 +1916,7 @@ export function* updateServiceTaskSaga(action: AppActions) {
   if ('serviceTaskFormData' in action) {
     service_task = {
       title: action.serviceTaskFormData.title,
+      duration: action.serviceTaskFormData.duration,
       description: action.serviceTaskFormData.description,
     };
   }
