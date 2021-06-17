@@ -224,9 +224,9 @@ const CatalogBodyMake: React.FC<Props> = ({
     generalAccessoriesArray: {},
     bodyRelatedAccessoriesArray: {},
     dimensionRelatedAccessoriesArray: {},
-    hpNumber:"012-900 8765 Jason",
+    hpNumber: '012-900 8765 Jason',
     afterSalesStrings: afterSalesStrings,
-    currentDate:moment().format('YYYY-MM-DD'),
+    currentDate: moment().format('YYYY-MM-DD'),
     standardAccessories: standardAccessories,
   });
   const [accessoriesLength, setAccessoriesLength] = useState<{ general: number; body: number; dimension: number }>({
@@ -2093,10 +2093,10 @@ const CatalogBodyMake: React.FC<Props> = ({
                                     </div>
                                   </Tooltip>
                                   <div>
-                                    {currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== 0 &&
-                                    currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price !== null ? (
+                                    {currentCheckedDimensionAccessories[uniqueId].accessory.price !== 0 &&
+                                    currentCheckedDimensionAccessories[uniqueId].accessory.price !== null ? (
                                       <Tag color="volcano" className="margin_l-1">
-                                        RM&nbsp;{currentCheckedDimensionAccessories[uniqueId].accessory.accessory.price}
+                                        RM&nbsp;{currentCheckedDimensionAccessories[uniqueId].accessory.price}
                                       </Tag>
                                     ) : (
                                       <Tag color="red" className="margin_l-1">
