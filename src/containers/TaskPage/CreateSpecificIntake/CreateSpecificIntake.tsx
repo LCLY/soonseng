@@ -190,8 +190,11 @@ const CreateSpecificIntake: React.FC<Props> = ({
                 ]}
               >
                 <Select
+                  showSearch
                   placeholder="Select a Job Type"
+                  optionFilterProp="children"
                   className="createspecificintake__select createspecificintake__select--task"
+                  filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   <Option value="">Select a Job Type</Option>
                   {serviceTypeTaskDict &&
@@ -245,8 +248,11 @@ const CreateSpecificIntake: React.FC<Props> = ({
               ]}
             >
               <Select
+                showSearch
+                optionFilterProp="children"
                 placeholder="Select a Task title"
                 className="createspecificintake__select createspecificintake__select--task"
+                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
                 {dropdownArrayExist &&
@@ -499,9 +505,12 @@ const CreateSpecificIntake: React.FC<Props> = ({
             let taskTitleString = '';
             // get title string through task Id
             if (serviceTypeTaskDict) {
-              taskTitleString = serviceTypeTaskDict[currentValue].serviceTasksArray.filter(
-                (child) => child.id === currentValue,
-              )[0].title;
+              let indexKey = labelName.substring(taskTitle.length);
+
+              let taskDropdownArray = serviceTaskDropdown[indexKey].serviceTaskDropdownArray;
+              if (taskDropdownArray) {
+                taskTitleString = taskDropdownArray.filter((child) => child.id === currentValue)[0].title;
+              }
             }
 
             setServiceTaskDropdown({
