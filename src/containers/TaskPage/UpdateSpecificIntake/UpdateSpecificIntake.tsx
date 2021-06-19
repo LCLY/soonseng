@@ -176,7 +176,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     description: string;
     assign: number[];
     intakeId: string;
-    intakeStatus: number;
     intakeUpdateDescription: string;
   }) => {
     if (userInfoObj === null || userInfoObj === undefined) return;
@@ -198,7 +197,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         pick_up: values.pickup !== undefined ? values.pickup : false,
         description: values.description !== undefined ? values.description : '',
         registration: values.registrationNumber,
-        intake_status_id: values.intakeStatus,
+        intake_status_id: currentIntakeStatus,
         assigned_to_ids: values.assign,
       },
       jobs: resultJobs,
@@ -570,8 +569,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         currentSpecificIntakeJobsObj.intake_users.forEach((child) => usersId.push(child.user.id));
       }
 
-      console.log('TEST', currentSpecificIntakeJobsObj);
-
       updateIntakeJobsForm.setFieldsValue({
         assign: usersId,
         bay: currentSpecificIntakeJobsObj.bay,
@@ -681,7 +678,6 @@ const UpdateSpecificIntake: React.FC<Props> = ({
           if (res.action === 'destroy') {
             goBackToIntakes();
           } else {
-            console.log('respond', res);
             updateIntakeJobsForm.setFieldsValue({ intakeUpdateDescription: '' });
             setIncomingSpecificIntakeData(res.data);
           }
