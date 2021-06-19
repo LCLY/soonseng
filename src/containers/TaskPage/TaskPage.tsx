@@ -283,7 +283,7 @@ const TaskPage: React.FC<Props> = ({
       key: 'assignees',
       title: 'Assignees',
       dataIndex: 'assignees',
-      width: '10rem',
+      // width: '10rem',
       ellipsis: true,
       align: 'center',
       render: (_text: any, record: TIntakeTableState) => {
@@ -526,9 +526,7 @@ const TaskPage: React.FC<Props> = ({
       {
         connected: () => console.log('Intakes connected'),
         received: (res: any) => {
-
-
-          console.log(res)
+          console.log(res);
 
           if (res.action === 'destroy') {
             // if action is delete/destroy
@@ -693,6 +691,7 @@ const TaskPage: React.FC<Props> = ({
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
         status: incomingData.data.intake_status.title,
         bay: incomingData.data.bay === '' ? '-' : incomingData.data.bay,
+        is_assigned: incomingData.data.is_assigned,
       };
 
       intakeDict[incomingData.data.id] = intakeTableObj;

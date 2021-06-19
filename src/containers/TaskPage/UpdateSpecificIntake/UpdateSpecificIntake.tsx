@@ -566,7 +566,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   useEffect(() => {
     if (currentSpecificIntakeJobsObj && specificIntakeJobsObj) {
       let usersId: number[] = [];
-      currentSpecificIntakeJobsObj.intake_users.forEach((child) => usersId.push(child.user.id));
+      if (currentSpecificIntakeJobsObj.intake_users !== undefined) {
+        currentSpecificIntakeJobsObj.intake_users.forEach((child) => usersId.push(child.user.id));
+      }
 
       updateIntakeJobsForm.setFieldsValue({
         assign: usersId,
