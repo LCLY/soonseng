@@ -570,6 +570,8 @@ const UpdateSpecificIntake: React.FC<Props> = ({
         currentSpecificIntakeJobsObj.intake_users.forEach((child) => usersId.push(child.user.id));
       }
 
+      console.log('TEST', currentSpecificIntakeJobsObj);
+
       updateIntakeJobsForm.setFieldsValue({
         assign: usersId,
         bay: currentSpecificIntakeJobsObj.bay,
@@ -679,6 +681,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
           if (res.action === 'destroy') {
             goBackToIntakes();
           } else {
+            console.log('respond', res);
             updateIntakeJobsForm.setFieldsValue({ intakeUpdateDescription: '' });
             setIncomingSpecificIntakeData(res.data);
           }
