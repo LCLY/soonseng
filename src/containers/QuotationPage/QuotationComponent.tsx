@@ -171,6 +171,26 @@ const QuotationComponent: React.FC<Props> = ({
     }
   }, [tempEditChanges]);
 
+  useEffect(() => {
+    let tempModelSubtotalPrice = modelSubtotalPrice;
+    tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
+    let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
+    roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
+    roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
+
+    if (onSetEditChanges !== undefined) {
+      onSetEditChanges((prevState) => {
+        let tempChanges = _.cloneDeep(prevState);
+
+        if (tempChanges) {
+          //_.set will change the object value using the path (indexKey in this case)
+          _.set(tempChanges, 'insuranceDict.insurance_premium.price', roundedModelSubtotalPrice);
+        }
+        return tempChanges;
+      });
+    }
+  }, [modelSubtotalPrice, onSetEditChanges]);
+
   /* ================================================== */
   /* ================================================== */
   return (
