@@ -526,8 +526,6 @@ const TaskPage: React.FC<Props> = ({
       {
         connected: () => console.log('Intakes connected'),
         received: (res: any) => {
-          console.log(res);
-
           if (res.action === 'destroy') {
             // if action is delete/destroy
             let tempIntakeDict = { ...intakeDict }; //copy object first

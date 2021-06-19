@@ -177,6 +177,8 @@ export function* updateIntakeSummarySaga(action: AppActions) {
       jobs: action.intakeJobsFormData.jobs,
       logs: action.intakeJobsFormData.logs,
     };
+
+    console.log(intake_and_jobs);
   }
 
   try {
