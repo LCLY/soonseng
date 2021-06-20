@@ -584,7 +584,7 @@ const QuotationComponent: React.FC<Props> = ({
                         {/* Road tax and insurance */}
                         {/* ============================ */}
                         {currentOrderObj.insuranceDict &&
-                          Object.values(currentOrderObj.insuranceDict).map((insurance) => (
+                          Object.values(currentOrderObj.insuranceDict).map((insurance, index) => (
                             <li key={`insurance${insurance.id}`}>
                               <div className="flex space-between">
                                 <span>
@@ -597,7 +597,13 @@ const QuotationComponent: React.FC<Props> = ({
                                 </span>
                                 {/* <span> {insurance.title}</span> */}
                                 <span>
-                                  {inEditPriceMode ? (
+                                  {/* only enable edit price mode when its not the last one (insurance premium) */}
+                                  {/* the condition here is to check the last position of the array then do not render edit price */}
+                                  {inEditPriceMode &&
+                                  !(
+                                    currentOrderObj.insuranceDict &&
+                                    Object.values(currentOrderObj.insuranceDict).length - 1 === index
+                                  ) ? (
                                     <QuotationPriceInput
                                       tempEditChanges={tempEditChanges}
                                       onSetEditChanges={onSetEditChanges}
