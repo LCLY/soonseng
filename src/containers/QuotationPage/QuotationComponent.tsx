@@ -46,6 +46,7 @@ const QuotationComponent: React.FC<Props> = ({
   /*  state */
   /* ================================================== */
   const [grandTotalPrice, setGrandTotalPrice] = useState(0);
+  const [insurancePremium, setInsurancePremium] = useState(0);
   const [modelSubtotalPrice, setModelSubtotalPrice] = useState(0);
 
   const [selectValues, setSelectValues] = useState<string[]>([]);
@@ -189,6 +190,8 @@ const QuotationComponent: React.FC<Props> = ({
         return tempChanges;
       });
     }
+
+    setInsurancePremium(roundedModelSubtotalPrice);
   }, [modelSubtotalPrice, onSetEditChanges]);
 
   /* ================================================== */
@@ -387,9 +390,17 @@ const QuotationComponent: React.FC<Props> = ({
                           <div className={`quotation__orderedlist-row`}>
                             <div>
                               Body Price :&nbsp;
-                              <span>{`${currentOrderObj.lengthObj && currentOrderObj.lengthObj?.title}ft ${
-                                currentOrderObj.bodyMakeObj.body.title
-                              }`}</span>
+                              {`${currentOrderObj.lengthObj && currentOrderObj.lengthObj?.title}ft `}
+                              {inEditPriceMode ? (
+                                <QuotationStringInput
+                                  className="quotation__input-body"
+                                  indexKey="bodyMakeObj.body.title"
+                                  tempEditChanges={tempEditChanges}
+                                  onSetEditChanges={onSetEditChanges}
+                                />
+                              ) : (
+                                <span>{`${currentOrderObj.bodyMakeObj.body.title}`}</span>
+                              )}
                             </div>
                             <div>
                               {inEditPriceMode ? (
@@ -584,48 +595,69 @@ const QuotationComponent: React.FC<Props> = ({
                         {/* Road tax and insurance */}
                         {/* ============================ */}
                         {currentOrderObj.insuranceDict &&
-                          Object.values(currentOrderObj.insuranceDict).map((insurance, index) => (
-                            <li key={`insurance${insurance.id}`}>
-                              <div className="flex space-between">
-                                <span>
-                                  {insurance.title.split(' ').map((word) => (
-                                    <React.Fragment key={uuidv4()}>
-                                      {/* only apply this on the hidden quotation */}
-                                      <>{word}&nbsp;</>
-                                    </React.Fragment>
-                                  ))}
-                                </span>
-                                {/* <span> {insurance.title}</span> */}
-                                <span>
-                                  {/* only enable edit price mode when its not the last one (insurance premium) */}
-                                  {/* the condition here is to check the last position of the array then do not render edit price */}
-                                  {inEditPriceMode &&
-                                  !(
-                                    currentOrderObj.insuranceDict &&
-                                    Object.values(currentOrderObj.insuranceDict).length - 1 === index
-                                  ) ? (
-                                    <QuotationPriceInput
-                                      tempEditChanges={tempEditChanges}
-                                      onSetEditChanges={onSetEditChanges}
-                                      indexKey={`insuranceDict.${insurance.id}.price`}
-                                    />
-                                  ) : (
-                                    <>
-                                      {insurance.price && insurance.price !== 0 ? (
-                                        <NumberFormat
-                                          displayType={'text'}
-                                          thousandSeparator={true}
-                                          value={insurance.price.toFixed(2)}
-                                        />
-                                      ) : (
-                                        <span className="sales__overview-dash">-</span>
-                                      )}
-                                    </>
-                                  )}
-                                </span>
-                              </div>
-                            </li>
-                          ))}
+                          Object.values(currentOrderObj.insuranceDict)
+                            .slice(0, Object.values(currentOrderObj.insuranceDict).length - 1)
+                            .map((insurance, index) => (
+                              <li key={`insurance${insurance.id}`}>
+                                <div className="flex space-between">
+                                  <span>
+                                    {insurance.title.split(' ').map((word) => (
+                                      <React.Fragment key={uuidv4()}>
+                                        {/* only apply this on the hidden quotation */}
+                                        <>{word}&nbsp;</>
+                                      </React.Fragment>
+                                    ))}
+                                  </span>
+                                  {/* <span> {insurance.title}</span> */}
+                                  <span>
+                                    {/* only enable edit price mode when its not the last one (insurance premium) */}
+                                    {/* the condition here is to check the last position of the array then do not render edit price */}
+                                    {inEditPriceMode &&
+                                    !(
+                                      currentOrderObj.insuranceDict &&
+                                      Object.values(currentOrderObj.insuranceDict).length - 1 === index
+                                    ) ? (
+                                      <QuotationPriceInput
+                                        tempEditChanges={tempEditChanges}
+                                        onSetEditChanges={onSetEditChanges}
+                                        indexKey={`insuranceDict.${insurance.id}.price`}
+                                      />
+                                    ) : (
+                                      <>
+                                        {insurance.price && insurance.price !== 0 ? (
+                                          <NumberFormat
+                                            displayType={'text'}
+                                            thousandSeparator={true}
+                                            value={insurance.price.toFixed(2)}
+                                          />
+                                        ) : (
+                                          <span className="sales__overview-dash">-</span>
+                                        )}
+                                      </>
+                                    )}
+                                  </span>
+                                </div>
+                              </li>
+                            ))}
+                        <li>
+                          <div className="flex space-between">
+                            <span>INSURANCE PREMIUM (windscreen included)</span>
+
+                            <span>
+                              <>
+                                {insurancePremium !== 0 ? (
+                                  <NumberFormat
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    value={insurancePremium.toFixed(2)}
+                                  />
+                                ) : (
+                                  <span className="sales__overview-dash">-</span>
+                                )}
+                              </>
+                            </span>
+                          </div>
+                        </li>
                       </ol>
                     </div>
                     {currentOrderObj.discount ? (
