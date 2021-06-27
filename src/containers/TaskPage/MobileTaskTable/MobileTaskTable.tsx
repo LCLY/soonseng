@@ -163,10 +163,12 @@ const MobileTaskTable: React.FC<Props> = () => {
   const {
     intakeDict,
     filterText,
+    userInfoObj,
     setFilterText,
     updateIntakeJobsForm,
     goToUpdateSpecificIntake,
     onGetSpecificIntakeJobs,
+    onSetToggleUserAssign,
   } = taskPageContext;
 
   /* ================================================== */
@@ -299,29 +301,60 @@ const MobileTaskTable: React.FC<Props> = () => {
                             </div>
                           </div>
 
-                          {/* Assignees red circle */}
-                          <Tooltip
-                            title={
-                              <>
-                                <ol>
-                                  {child.assign.length > 0
-                                    ? child.assign.map((child) => (
-                                        <li key={`assignees${child.id}`} className="task__table-assignees">
-                                          {child.user.first_name}&nbsp;
-                                          {child.user.last_name ? child.user.last_name : ''}
-                                        </li>
-                                      ))
-                                    : '-'}
-                                </ol>
-                              </>
-                            }
-                          >
-                            <span className="mobiletasktable__assignees">
-                              <div className="flex-align-center">
-                                <i className="fas fa-user"></i>&nbsp;x&nbsp;{child.assign.length}
-                              </div>
-                            </span>
-                          </Tooltip>
+                          {userInfoObj?.roles.title === 'Mechanic' ? (
+                            <>
+                              {child.assign.filter((el) => el.user.id === userInfoObj.id).length > 0 ? (
+                                <Tooltip title={'Unassign'}>
+                                  <span
+                                    className="mobiletasktable__assignees"
+                                    onClick={() => onSetToggleUserAssign(parseInt(child.key))}
+                                    style={{ background: '#49b149' }}
+                                  >
+                                    <div className="flex-align-center">
+                                      <i className="fas fa-user"></i>
+                                    </div>
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                <Tooltip title={'Assign'}>
+                                  <span
+                                    className="mobiletasktable__assignees"
+                                    onClick={() => onSetToggleUserAssign(parseInt(child.key))}
+                                  >
+                                    <div className="flex-align-center">
+                                      <i className="far fa-user"></i>
+                                    </div>
+                                  </span>
+                                </Tooltip>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {/* Assignees red circle */}
+                              <Tooltip
+                                title={
+                                  <>
+                                    <ol>
+                                      {child.assign.length > 0
+                                        ? child.assign.map((child) => (
+                                            <li key={`assignees${child.id}`} className="task__table-assignees">
+                                              {child.user.first_name}&nbsp;
+                                              {child.user.last_name ? child.user.last_name : ''}
+                                            </li>
+                                          ))
+                                        : '-'}
+                                    </ol>
+                                  </>
+                                }
+                              >
+                                <span className="mobiletasktable__assignees">
+                                  <div className="flex-align-center">
+                                    <i className="fas fa-user"></i>&nbsp;x&nbsp;{child.assign.length}
+                                  </div>
+                                </span>
+                              </Tooltip>
+                            </>
+                          )}
                         </div>
                       );
                     })
