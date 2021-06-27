@@ -114,7 +114,7 @@
     &-wrapper {
       display: flex;
       @include respond-to($small-phone) {
-        min-height: 55rem;
+        min-height: 100vh;
       }
       @include respond-to($phone-only) {
       }
@@ -139,7 +139,7 @@
     // outerdiv
     /* -------------------------------------------- */
     &-outerdiv {
-      overflow: hidden;
+      overflow-x: hidden;
       position: relative;
       background: #020f29 !important;
       border: 1px solid white;

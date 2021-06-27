@@ -288,7 +288,7 @@ const TaskPage: React.FC<Props> = ({
       render: (_text: any, record: TIntakeTableState) => {
         return (
           <>
-            {auth_token ? (
+            {userInfoObj?.roles.title === 'Mechanic' ? (
               <Button
                 type="primary"
                 className="make__brand-btn"
@@ -366,20 +366,24 @@ const TaskPage: React.FC<Props> = ({
       filterText,
       setFilterText,
       incomingData,
+      userInfoObj,
       // checkItemsHeight,
       setIncomingData,
       updateIntakeJobsForm,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
+      onSetToggleUserAssign,
     }),
     [
       intakeDict,
       filterText,
+      userInfoObj,
       incomingData,
       // checkItemsHeight,
       setFilterText,
       setIncomingData,
       updateIntakeJobsForm,
+      onSetToggleUserAssign,
       goToUpdateSpecificIntake,
       onGetSpecificIntakeJobs,
     ],
