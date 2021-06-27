@@ -73,7 +73,6 @@ export type TIntakeTableState = {
   assign: IIntakeUser[];
   description: string;
   bay: string;
-  is_assigned?: boolean;
 };
 export interface IIntakeDict {
   [intakeId: number]: TIntakeTableState;
@@ -295,7 +294,7 @@ const TaskPage: React.FC<Props> = ({
                 className="make__brand-btn"
                 onClick={() => onSetToggleUserAssign(parseInt(record.key))}
               >
-                {!record.is_assigned ? 'Assign' : 'Unassign'}
+                {record.assign.filter((child) => child.user.id === userInfoObj?.id).length > 0 ? 'Unassign' : 'Assign'}
               </Button>
             ) : (
               <Tooltip
@@ -526,6 +525,8 @@ const TaskPage: React.FC<Props> = ({
       {
         connected: () => console.log('Intakes connected'),
         received: (res: any) => {
+          // console.log(res);
+
           if (res.action === 'destroy') {
             // if action is delete/destroy
             let tempIntakeDict = { ...intakeDict }; //copy object first
@@ -601,7 +602,6 @@ const TaskPage: React.FC<Props> = ({
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
         status: intake.intake_status.title,
         bay: intake.bay === '' ? '-' : intake.bay,
-        is_assigned: intake.is_assigned,
       };
     };
 
@@ -678,6 +678,7 @@ const TaskPage: React.FC<Props> = ({
       let uniqueService = [...new Set(serviceTypeOnlyArray)];
 
       if (intakeDict === null) return;
+
       let intakeTableObj: TIntakeTableState = {
         key: incomingData.data.id.toString(),
         dateTimeIn: moment(incomingData.data.created_at), //formatted timestamp
@@ -689,7 +690,6 @@ const TaskPage: React.FC<Props> = ({
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
         status: incomingData.data.intake_status.title,
         bay: incomingData.data.bay === '' ? '-' : incomingData.data.bay,
-        is_assigned: incomingData.data.is_assigned,
       };
 
       intakeDict[incomingData.data.id] = intakeTableObj;
