@@ -10,6 +10,7 @@ export const ROUTE_CONTACT = '/contact';
 export const ROUTE_CATALOG = '/catalog';
 export const ROUTE_QUOTATION = '/quotation';
 export const ROUTE_COMPARISON = '/comparison';
+export const ROUTE_PERFORMANCE = '/performance';
 export const ROUTE_DASHBOARD = {
   fees: '/dashboard/fees',
   users: '/dashboard/users',

@@ -15,7 +15,7 @@ import actioncable from 'actioncable';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { watchDashboard, watchSales, watchAuth, watchCatalog, watchTask } from './store/sagas/index';
+import { watchDashboard, watchSales, watchAuth, watchCatalog, watchTask, watchPerformance } from './store/sagas/index';
 
 // redux-persist
 import storage from 'redux-persist/lib/storage';
@@ -31,6 +31,7 @@ import dashboardReducer from 'src/store/reducers/dashboard';
 import catalogReducer from 'src/store/reducers/catalog';
 import generalReducer from 'src/store/reducers/general';
 import taskReducer from 'src/store/reducers/task';
+import performanceReducer from 'src/store/reducers/performance';
 
 export const CableApp: any = {};
 CableApp.cable = actioncable.createConsumer(`${process.env.REACT_APP_WS_API}`);
@@ -69,6 +70,7 @@ const rootReducer = combineReducers({
   catalog: catalogReducer,
   general: generalReducer,
   task: taskReducer,
+  performance: performanceReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -87,6 +89,7 @@ sagaMiddleware.run(watchSales);
 sagaMiddleware.run(watchAuth);
 sagaMiddleware.run(watchCatalog);
 sagaMiddleware.run(watchTask);
+sagaMiddleware.run(watchPerformance);
 
 const app = (
   <Provider store={store}>

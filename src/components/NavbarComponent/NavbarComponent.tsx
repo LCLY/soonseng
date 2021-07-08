@@ -25,6 +25,7 @@ import {
   // ROUTE_ORDERS,
   ROUTE_CATALOG,
   ROUTE_DASHBOARD,
+  ROUTE_PERFORMANCE,
 } from 'src/shared/routes';
 import { RootState } from 'src';
 import * as actions from 'src/store/actions/index';
@@ -51,6 +52,7 @@ export type TActivePage =
   | 'orders'
   | 'make'
   | 'login'
+  | 'performance'
   | 'job_monitoring';
 
 interface NavbarComponentProps {
@@ -223,6 +225,13 @@ const NavbarComponent: React.FC<Props> = ({
                   Task
                 </a>
               </Menu.Item>
+              {accessObj?.showAdminDashboard && (
+                <Menu.Item key="performance" icon={<i className="fas fa-chart-line"></i>}>
+                  <a className="navbar__link" href={ROUTE_PERFORMANCE}>
+                    Performance
+                  </a>
+                </Menu.Item>
+              )}
 
               {accessObj?.showSalesDashboard && (
                 <SubMenu
@@ -390,6 +399,14 @@ const NavbarComponent: React.FC<Props> = ({
                   <i className="fas fa-tasks"></i>&nbsp;Task
                 </a>
               </div>
+
+              {accessObj?.showAdminDashboard && (
+                <div className={`navbar__link-div ${activePage === 'performance' ? 'active' : ''}`}>
+                  <a className="navbar__link" href={ROUTE_PERFORMANCE}>
+                    <i className="fas fa-chart-line"></i>&nbsp;Performance
+                  </a>
+                </div>
+              )}
               {/* ABOUT US */}
               {/* <div className={`navbar__link-div ${activePage === 'about' ? 'active' : ''}`}>
           <span className="navbar__link" onClick={() => history.push('/about')}>

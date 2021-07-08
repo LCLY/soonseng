@@ -13,8 +13,10 @@ import ContactPage from 'src/containers/ContactPage/ContactPage';
 import PageNotFound from 'src/components/PageNotFound/PageNotFound';
 import QuotationPage from 'src/containers/QuotationPage/QuotationPage';
 import ComparisonPage from 'src/containers/ComparisonPage/ComparisonPage';
+import PerformancePage from './containers/PerformancePage/PerformancePage';
 import LoginPage from 'src/containers/Authentication/LoginPage/LoginPage';
 import CatalogBodyMake from 'src/containers/CatalogPage/CatalogBodyMake/CatalogBodyMake';
+import SpecificMechanic from './containers/PerformancePage/SpecificMechanic/SpecificMechanic';
 // Dashboard
 import DashboardPage from 'src/containers/DashboardPage/DashboardPage';
 import Make from 'src/containers/DashboardPage/DashboardCRUD/Make/Make';
@@ -49,6 +51,7 @@ import {
   ROUTE_QUOTATION,
   ROUTE_COMPARISON,
   ROUTE_TASK,
+  ROUTE_PERFORMANCE,
 } from 'src/shared/routes';
 import { persistor } from 'src';
 
@@ -96,6 +99,8 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
         <Route exact path={`${ROUTE_CATALOG}/:series_id/:make_detail/:make_id`} component={CatalogBodyMake} />
         <Route exact path={`${ROUTE_QUOTATION}/:model_details/:order_id`} component={QuotationPage} />
         <Route exact path={ROUTE_COMPARISON} component={ComparisonPage} />
+        <Route exact path={ROUTE_PERFORMANCE} component={PerformancePage} />
+        <Route exact path={`${ROUTE_PERFORMANCE}/:mechanic_id`} component={SpecificMechanic} />
         {/* Dashboard */}
         <Route exact path={ROUTE_DASHBOARD.users} component={UserRoles} />
         <Route exact path={ROUTE_DASHBOARD.make} component={Make} />
