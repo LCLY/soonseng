@@ -820,6 +820,7 @@ const TaskPage: React.FC<Props> = ({
                                     // components={components}
                                     rowClassName={(record) => `intakesummary__row-${record.key}`}
                                     dataSource={Object.values(intakeDict)
+                                      .filter((child) => child.status !== 'Done')
                                       .filter(checkFilterString)
                                       .sort((a: TIntakeTableState, b: TIntakeTableState) => sortByCreatedAt(a, b))}
                                     columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}

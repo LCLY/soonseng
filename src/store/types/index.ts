@@ -4,6 +4,7 @@ import { SalesActionTypes } from './sales';
 import { CatalogActionTypes } from './catalog';
 import { GeneralActionTypes } from './general';
 import { DashboardActionTypes } from './dashboard';
+import { PerformanceActionTypes } from './performance';
 
 // Export all action types under one AppActions type var
 export type AppActions =
@@ -12,4 +13,5 @@ export type AppActions =
   | SalesActionTypes
   | AuthActionTypes
   | CatalogActionTypes
+  | PerformanceActionTypes
   | TaskActionTypes;

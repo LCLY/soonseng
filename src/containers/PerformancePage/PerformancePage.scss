@@ -1,0 +1,61 @@
+.performance {
+  &__bg {
+    background: $dark-blue-3;
+    min-width: 100vw;
+    min-height: 100vh;
+    color: white;
+  }
+
+  &__section {
+    &-content {
+      padding-top: $navbar-height;
+
+      @include respond-to($small-phone) {
+        padding-top: 8rem;
+      }
+    }
+
+    &-top {
+      display: flex;
+      justify-content: space-between;
+
+      &-left {
+        display: flex;
+      }
+
+      &-info {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      &-intakes {
+        background: $dark-blue-4;
+        padding: 1rem;
+        border: 1px solid white;
+        border-radius: 1rem;
+        &:not(:last-child) {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+
+    &-bottom {
+      background: $dark-blue-4;
+      padding: 1rem;
+      border: 1px solid white;
+      border-radius: 1rem;
+    }
+  }
+
+  &__card {
+    &-mechanic {
+      background: $dark-blue-4;
+      padding: 2rem;
+      border: 1px solid white;
+      border-radius: 1rem;
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
+  }
+}

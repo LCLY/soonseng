@@ -5,7 +5,7 @@ import { DashboardActionTypes } from '../types/dashboard';
 import { SalesActionTypes } from '../types/sales';
 import { AuthActionTypes } from '../types/auth';
 import { CatalogActionTypes } from '../types/catalog';
-
+import { PerformanceActionTypes } from '../types/performance';
 import {
   // Upload/Delete Image(s)
   uploadImageSaga,
@@ -131,10 +131,16 @@ import {
   setToggleUserAssignSaga,
 } from './task';
 import { TaskActionTypes } from '../types/task';
+import { getAllPerformanceSaga, getAllMechanicsSaga } from './performance';
 
 export function* watchAuth() {
   yield all([takeEvery<AuthActionTypes>(actionTypes.SIGN_IN, signInSaga)]);
   yield all([takeEvery<AuthActionTypes>(actionTypes.GET_USER_INFO, getUserInfoSaga)]);
+}
+
+export function* watchPerformance() {
+  yield all([takeEvery<PerformanceActionTypes>(actionTypes.GET_ALL_PERFORMANCE, getAllPerformanceSaga)]);
+  yield all([takeEvery<PerformanceActionTypes>(actionTypes.GET_ALL_MECHANICS, getAllMechanicsSaga)]);
 }
 
 export function* watchCatalog() {
