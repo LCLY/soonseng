@@ -166,7 +166,7 @@ const TaskPage: React.FC<Props> = ({
       ellipsis: true,
       align: 'center',
       sorter: (a: TIntakeTableState, b: TIntakeTableState) =>
-        a.dateTimeIn.format('DD-MM-YYYY HH:mm A').localeCompare(b.dateTimeIn.format('DD-MM-YYYY HH:mm A')),
+        (moment as any)(a.dateTimeIn).format('YYYYMMDD') - (moment as any)(b.dateTimeIn).format('YYYYMMDD'),
       render: (_: any, record: TIntakeTableState) => {
         return (
           <span className="task__table-col--datetime">
