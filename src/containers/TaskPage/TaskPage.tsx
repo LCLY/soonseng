@@ -21,7 +21,8 @@ import axios from 'axios';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import { Button, Layout, Collapse, Form, Table, message, Tooltip, Input } from 'antd';
+import ReactSvgPieChart from 'react-svg-piechart';
+import { Button, Layout, Collapse, Form, Table, message, Input, Tooltip } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -40,13 +41,14 @@ import {
 } from 'src/store/types/task';
 import {
   convertHeader,
-  emptyStringWhenUndefinedOrNull,
+  // emptyStringWhenUndefinedOrNull,
   getColumnSearchProps,
   setFilterReference,
 } from 'src/shared/Utils';
 
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 import { TReceivedIntakeStatusObj, TReceivedServiceTaskObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
+import { TReceivedPerformanceIntakeObj } from 'src/store/types/performance';
 
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -87,6 +89,12 @@ export interface IServiceTaskDropdown {
   };
 }
 
+export interface IPieChart {
+  label: string;
+  value: number;
+  color: string;
+}
+
 interface TaskPageProps {}
 
 type Props = TaskPageProps & StateProps & DispatchProps;
@@ -99,6 +107,7 @@ const TaskPage: React.FC<Props> = ({
   specificIntakeLogs,
   serviceTypesArray,
   intakeSummaryArray,
+  performanceIntakeData,
   onGetIntakeStatus,
   onGetIntakeSummary,
   onClearTaskState,
@@ -107,6 +116,7 @@ const TaskPage: React.FC<Props> = ({
   onGetSpecificIntakeJobs,
   onSetSpecificIntakeLogs,
   onSetToggleUserAssign,
+  onGetPerformanceIntakeData,
 }) => {
   /* ================================================== */
   /*  state */
@@ -115,7 +125,7 @@ const TaskPage: React.FC<Props> = ({
   const cableRef = useRef() as MutableRefObject<any>;
 
   const [currentPage, setCurrentPage] = useState<'main' | 'update' | 'create'>('main');
-
+  // const [pieChartData, setPieChartData] = useState();
   const [inEditMode, setInEditMode] = useState(true);
   const [intakeDict, setIntakeDict] = useState<IIntakeDict | null>(null);
   const [showMobileHistoryLogs, setShowMobileHistoryLogs] = useState(false);
@@ -277,6 +287,8 @@ const TaskPage: React.FC<Props> = ({
       dataIndex: 'serviceType',
       width: 'auto',
       ellipsis: true,
+      ...getColumnSearchProps(intakeJobsSearchInput, 'serviceType', 'Job Type'),
+      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.serviceType.localeCompare(b.serviceType),
     },
     {
       key: 'assignees',
@@ -390,15 +402,15 @@ const TaskPage: React.FC<Props> = ({
   );
 
   const checkFilterString = (intakeChild: TIntakeTableState) => {
-    let date = moment(intakeChild.createdAt).format('DD-MM-YYYY');
-    let time = moment(intakeChild.createdAt).format('HH:mm A');
-    let listOfUsers = intakeChild.assign.reduce(
-      (finalString, assignChild) =>
-        (finalString += `${assignChild.user.first_name} ${emptyStringWhenUndefinedOrNull(assignChild.user.last_name)} ${
-          assignChild.user.username
-        } ${assignChild.user.role} `),
-      '',
-    );
+    // let date = moment(intakeChild.createdAt).format('DD-MM-YYYY');
+    // let time = moment(intakeChild.createdAt).format('HH:mm A');
+    // let listOfUsers = intakeChild.assign.reduce(
+    //   (finalString, assignChild) =>
+    //     (finalString += `${assignChild.user.first_name} ${emptyStringWhenUndefinedOrNull(assignChild.user.last_name)} ${
+    //       assignChild.user.username
+    //     } ${assignChild.user.role} `),
+    //   '',
+    // );
 
     // if filtertext has nothing straight return the whole array
     if (filterText === '') return intakeChild;
@@ -415,28 +427,28 @@ const TaskPage: React.FC<Props> = ({
 
     // basically if there's a result, it will return array instead of null
     let regexBoolean =
-      intakeChild.bay.toLowerCase().match(regex) ||
-      intakeChild.description.toLowerCase().match(regex) ||
-      intakeChild.assign.length.toString().match(regex) ||
-      intakeChild.serviceType.toLowerCase().match(regex) ||
-      date.toLowerCase().match(regex) ||
-      listOfUsers.toLowerCase().match(regex) ||
-      time.toLowerCase().match(regex) ||
-      intakeChild.regNumber.toLowerCase().match(regex) ||
-      intakeChild.status.toLowerCase().match(regex);
+      // intakeChild.bay.toLowerCase().match(regex) ||
+      // intakeChild.description.toLowerCase().match(regex) ||
+      // intakeChild.assign.length.toString().match(regex) ||
+      // intakeChild.serviceType.toLowerCase().match(regex) ||
+      // date.toLowerCase().match(regex) ||
+      // listOfUsers.toLowerCase().match(regex) ||
+      // time.toLowerCase().match(regex) ||
+      intakeChild.regNumber.toLowerCase().match(regex);
+    // intakeChild.status.toLowerCase().match(regex);
 
     // if not return the filtered result
     // if includes doesnt return result, it will fallback to regex to get better tweaked result
     return (
       regexBoolean ||
-      intakeChild.bay.toLowerCase().includes(searchedText) ||
-      intakeChild.description.toLowerCase().includes(searchedText) ||
-      intakeChild.assign.length.toString().includes(searchedText) ||
-      intakeChild.serviceType.toLowerCase().includes(searchedText) ||
-      intakeChild.status.toLowerCase().includes(searchedText) ||
-      date.toLowerCase().includes(searchedText) ||
-      listOfUsers.toLowerCase().includes(searchedText) ||
-      time.toLowerCase().includes(searchedText) ||
+      // intakeChild.bay.toLowerCase().includes(searchedText) ||
+      // intakeChild.description.toLowerCase().includes(searchedText) ||
+      // intakeChild.assign.length.toString().includes(searchedText) ||
+      // intakeChild.serviceType.toLowerCase().includes(searchedText) ||
+      // intakeChild.status.toLowerCase().includes(searchedText) ||
+      // date.toLowerCase().includes(searchedText) ||
+      // listOfUsers.toLowerCase().includes(searchedText) ||
+      // time.toLowerCase().includes(searchedText) ||
       intakeChild.regNumber.toLowerCase().includes(searchedText)
     );
   };
@@ -574,9 +586,13 @@ const TaskPage: React.FC<Props> = ({
     // onGetTasks();
     onGetIntakeStatus();
     onGetServiceTypes();
-    onGetUsersByRoles(undefined, '');
     onGetIntakeSummary();
-  }, [onGetIntakeStatus, onGetIntakeSummary, onGetUsersByRoles, onGetServiceTypes]);
+    let startOfMonth = moment().startOf('month').format('DD/MM/YYYY');
+    // let startOfMonth = moment('01/05/2021').format('DD/MM/YYYY');
+    let endOfMonth = moment().endOf('month').format('DD/MM/YYYY');
+    onGetPerformanceIntakeData(startOfMonth, endOfMonth);
+    onGetUsersByRoles(undefined, '');
+  }, [onGetIntakeStatus, onGetIntakeSummary, onGetUsersByRoles, onGetServiceTypes, onGetPerformanceIntakeData]);
 
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for Tasks
@@ -717,6 +733,65 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   /* ================================================== */
 
+  const [expandedSector, setExpandedSector] = useState<any>(null);
+  const [expandedServiceTypeSector, setExpandedServiceTypeSector] = useState<any>(null);
+  const [statusPieChartData, setStatusPieChartData] = useState<IPieChart[] | null>(null);
+  const [serviceTypePieChartData, setServiceTypePieChartData] = useState<IPieChart[] | null>(null);
+
+  // const data = [
+  //   { label: 'Facebook', value: 0, color: '#3b5998' },
+  //   { label: 'Twitter', value: 100, color: '#00aced' },
+  //   { label: 'Google Plus', value: 0, color: '#dd4b39' },
+  //   { label: 'Pinterest', value: 0, color: '#cb2027' },
+  //   { label: 'Linked In', value: 0, color: '#007bb6' },
+  // ];
+
+  useEffect(() => {
+    if (performanceIntakeData) {
+      let statuses = performanceIntakeData.status;
+      let service_types = performanceIntakeData.service_type;
+      let data = [
+        {
+          label: 'Docked',
+          value: statuses.Docked,
+          color: '#2fc5ac',
+        },
+        { label: 'Quotation', value: statuses['Pending Quotation'], color: '#138c78' },
+        { label: 'In Progress', value: statuses['In Progress'], color: '#2362b5' },
+        { label: 'Spareparts', value: statuses['Ordering Spareparts'], color: '#4b92d5' },
+        { label: 'Pick-up', value: statuses['Ready for Pick-up'], color: '#3b5998' },
+        { label: 'Done', value: statuses['Done'], color: '#4bd57e' },
+        { label: 'On Hold', value: statuses['On hold'], color: '#149094' },
+        { label: 'In Queue', value: statuses['In Queue'], color: '#3b7c7e' },
+      ];
+
+      let serviceTypeData = [
+        { label: 'Puspakom Test', value: service_types['Puspakom Test'], color: '#4bd57e' },
+
+        { label: 'Repair', value: service_types['Repair'], color: '#3b7c7e' },
+        { label: 'Bodywork', value: service_types['Bodywork'], color: '#149094' },
+        { label: 'Service', value: service_types['Service'], color: '#138c78' },
+      ];
+
+      // let data = [
+      //   {
+      //     label: 'Docked',
+      //     value: 1,
+      //     color: '#2fc5ac',
+      //   },
+      //   { label: 'Quotation', value: 1, color: '#138c78' },
+      //   { label: 'In Progress', value: 2, color: '#2362b5' },
+      //   { label: 'Ordering Spareparts', value: 5, color: '#4b92d5' },
+      //   { label: 'Ready for Pick-up', value: 3, color: '#3b5998' },
+      //   { label: 'Done', value: 1, color: '#4bd57e' },
+      //   { label: 'On Hold', value: 2, color: '#149094' },
+      //   { label: 'In Queue', value: 8, color: '#3b7c7e' },
+      // ];
+      setStatusPieChartData(data);
+      setServiceTypePieChartData(serviceTypeData);
+    }
+  }, [performanceIntakeData]);
+
   return (
     <>
       {showMobileHistoryLogs && mobileSpecificIntakeLogsComponent}
@@ -799,12 +874,12 @@ const TaskPage: React.FC<Props> = ({
                                   />
                                 </div>
 
-                                <div>
+                                <section>
                                   <div className="task__searchbar-div">
                                     <Search
                                       value={filterText}
                                       suffix={<i className="fas fa-times-circle" onClick={() => setFilterText('')}></i>}
-                                      placeholder="Type here to filter"
+                                      placeholder="Type registration number here to filter"
                                       onChange={(e) => setFilterText(e.target.value)}
                                       onSearch={(value) => setFilterText(value)}
                                       enterButton={<i className="fas fa-filter"></i>}
@@ -826,7 +901,7 @@ const TaskPage: React.FC<Props> = ({
                                     columns={convertHeader(intakeJobsColumns, setIntakeJobsColumns)}
                                     pagination={false}
                                   />
-                                </div>
+                                </section>
                                 <div className="task__specific-div task__specific-div--update">
                                   <UpdateSpecificIntake
                                     inEditMode={inEditMode}
@@ -845,6 +920,99 @@ const TaskPage: React.FC<Props> = ({
                               </div>
                             </div>
                           </div>
+                          {currentPage === 'main' && (
+                            <div className="task__table-stats">
+                              <div className="task__stats-title">
+                                <h2 style={{ color: 'white' }}>
+                                  Total Intakes for {moment().format('MMMM')}:&nbsp;
+                                  {performanceIntakeData ? performanceIntakeData.total_intakes : 'loading...'}
+                                </h2>
+                              </div>
+                              <div className="task__stats-content">
+                                <div className="task__stats-subtitle">
+                                  <h3>
+                                    Active Intakes:&nbsp;
+                                    {performanceIntakeData ? performanceIntakeData.active_intakes : 'loading...'}
+                                  </h3>
+                                  <h3>
+                                    Done Intakes:&nbsp;
+                                    {performanceIntakeData ? performanceIntakeData.completed_intakes : 'loading...'}
+                                  </h3>
+                                </div>
+
+                                <section className="task__stats-chart">
+                                  <div>
+                                    Status:
+                                    <section className="task__section-chart">
+                                      <div className="task__chart-div">
+                                        <ReactSvgPieChart
+                                          data={statusPieChartData}
+                                          expandOnHover
+                                          onSectorHover={(d: any, i: number, _e: any) => {
+                                            if (d) {
+                                              setExpandedSector(i);
+                                            } else {
+                                              setExpandedSector(null);
+                                            }
+                                          }}
+                                        />
+                                      </div>
+
+                                      <div className="task__chart-legends-div">
+                                        {statusPieChartData &&
+                                          statusPieChartData.map((d, i) => (
+                                            <div className="task__chart-legends-innerdiv" key={`status${i}`}>
+                                              <div className="task__chart-legends" style={{ background: d.color }} />
+                                              <span
+                                                style={{
+                                                  fontWeight: expandedSector === i ? 'bold' : 'normal',
+                                                }}
+                                              >
+                                                {d.label} : {d.value}
+                                              </span>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    </section>
+                                  </div>
+                                  <div>
+                                    Job Type:
+                                    <section className="task__section-chart">
+                                      <div className="task__chart-div">
+                                        <ReactSvgPieChart
+                                          data={serviceTypePieChartData}
+                                          expandOnHover
+                                          onSectorHover={(d: any, i: number, _e: any) => {
+                                            if (d) {
+                                              setExpandedServiceTypeSector(i);
+                                            } else {
+                                              setExpandedServiceTypeSector(null);
+                                            }
+                                          }}
+                                        />
+                                      </div>
+
+                                      <div className="task__chart-legends-div">
+                                        {serviceTypePieChartData &&
+                                          serviceTypePieChartData.map((d, i) => (
+                                            <div className="task__chart-legends-innerdiv" key={`jobType${i}`}>
+                                              <div className="task__chart-legends" style={{ background: d.color }} />
+                                              <span
+                                                style={{
+                                                  fontWeight: expandedServiceTypeSector === i ? 'bold' : 'normal',
+                                                }}
+                                              >
+                                                {d.label} : {d.value}
+                                              </span>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    </section>
+                                  </div>
+                                </section>
+                              </div>
+                            </div>
+                          )}
                           {currentPage === 'update' && (
                             <div className="task__table--pickup">
                               {/* {currentPage === 'main' || currentPage === 'create' ? (
@@ -954,6 +1122,7 @@ interface StateProps {
   intakeStatusArray?: TReceivedIntakeStatusObj[] | null;
   intakeSummaryArray?: TReceivedIntakeSummaryObj[] | null;
   serviceTypesArray?: TReceivedServiceTypesObj[] | null;
+  performanceIntakeData?: TReceivedPerformanceIntakeObj | null;
   specificIntakeJobsObj?: TReceivedSpecificIntakeJobsObj | null;
 }
 const mapStateToProps = (state: RootState): StateProps | void => {
@@ -968,6 +1137,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     intakeStatusArray: state.dashboard.intakeStatusArray,
     intakeSummaryArray: state.task.intakeSummaryArray,
     serviceTypesArray: state.dashboard.serviceTypesArray,
+    performanceIntakeData: state.performance.performanceIntakeData,
     specificIntakeJobsObj: state.task.specificIntakeJobsObj,
   };
 };
@@ -983,6 +1153,7 @@ interface DispatchProps {
   onUpdateIntakeSummary: typeof actions.updateIntakeSummary;
   onGetSpecificIntakeJobs: typeof actions.getSpecificIntakeJobs;
   onSetSpecificIntakeLogs: typeof actions.setSpecificIntakeLogs;
+  onGetPerformanceIntakeData: typeof actions.getPerformanceIntakeData;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
@@ -997,6 +1168,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
     onCreateIntakeSummary: (intakeJobsFormData) => dispatch(actions.createIntakeSummary(intakeJobsFormData)),
     onUpdateIntakeSummary: (intake_id, intakeJobsFormData) =>
       dispatch(actions.updateIntakeSummary(intake_id, intakeJobsFormData)),
+    onGetPerformanceIntakeData: (date_from, date_to) => dispatch(actions.getPerformanceIntakeData(date_from, date_to)),
   };
 };
 

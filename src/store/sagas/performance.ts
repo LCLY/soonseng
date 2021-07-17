@@ -71,14 +71,37 @@ export function* getSpecificMechanicPerformanceSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { generate_data }, getAxiosHeaderToken());
-
-    console.log(response);
     yield put(actions.getSpecificMechanicPerformanceSucceed(response.data.data));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.getSpecificMechanicPerformanceFailed, error.response.data.messages);
     } else {
       yield setPromiseError(error, actions.getSpecificMechanicPerformanceFailed, 'Error');
+    }
+  }
+}
+/* ================================================================== */
+//   Performance Intake Data
+/* ================================================================== */
+export function* getPerformanceIntakeDataSaga(action: AppActions) {
+  if (!('date_from' in action) || !('date_to' in action)) return;
+  yield put(actions.getPerformanceIntakeDataStart());
+
+  let url = process.env.REACT_APP_API + `/pages/job_monitoring/generate_data_intake_summary`;
+
+  let generate_data = {
+    date_from: action.date_from,
+    date_to: action.date_to,
+  };
+
+  try {
+    let response = yield axios.post(url, { generate_data }, getAxiosHeaderToken());
+    yield put(actions.getPerformanceIntakeDataSucceed(response.data.data));
+  } catch (error) {
+    if (error.response) {
+    yield setPromiseError(error, actions.getPerformanceIntakeDataFailed, error.response.data.messages);
+    } else {
+      yield setPromiseError(error, actions.getPerformanceIntakeDataFailed, 'Error');
     }
   }
 }

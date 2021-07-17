@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import { TReceivedUserInfoObj } from './auth';
 
 // initialState for reducers
 export interface PerformanceInitialState {
@@ -7,13 +8,16 @@ export interface PerformanceInitialState {
   readonly errorMessage?: string | null;
   readonly performanceStats?: TReceivedPerformanceStatsObj | null;
   readonly mechanicsData?: TReceivedMechanicObj[] | null;
-  readonly specificMechanicsPerformanceData?: TReceivedMechanicObj[] | null;
+  readonly performanceIntakeData?: TReceivedPerformanceIntakeObj | null;
+  readonly specificMechanicsPerformanceData?: TReceivedSpecificMechanicPerformanceObj[] | null;
 }
 
 export interface TReceivedPerformanceStatsObj {
   current_intake_count: number;
+  claimed_intake_count: number;
   unclaimed_intake_count: number;
-  unclaimed_intakes: string[];
+  unclaimed_intakes: { id: number; intake_status: string; registration: string }[];
+  active_claimed_intakes: { id: number; intake_status: string; registration: string }[];
 }
 
 export interface GetAllPerformanceAction {
@@ -40,9 +44,10 @@ export interface GetAllPerformanceFailedAction {
 export type TInterval = 'daily' | 'monthly';
 
 export interface TReceivedMechanicObj {
-  date: string;
-  average: number;
-  individual: number;
+  user: TReceivedUserInfoObj;
+  intake_count: number;
+  intake_jobs: number;
+  intake_jobs_data: { [key: string]: number }[];
 }
 
 export interface GetAllMechanicsAction {
@@ -91,6 +96,48 @@ export interface GetSpecificMechanicPerformanceFailedAction {
   type: typeof actionTypes.GET_SPECIFIC_MECHANIC_PERFORMANCE_FAILED;
   errorMessage: string;
 }
+/* ========================================================= */
+// Get Performance Intake Data
+/* ========================================================= */
+
+export type TReceivedPerformanceIntakeObj = {
+  total_intakes: number;
+  active_intakes: number;
+  completed_intakes: number;
+  status: {
+    Docked: number;
+    'Pending Quotation': number;
+    'In Progress': number;
+    'Ordering Spareparts': number;
+    'Ready for Pick-up': number;
+    Done: number;
+    'On hold': number;
+    'In Queue': number;
+  };
+  service_type: {
+    'Puspakom Test': number;
+    Repair: number;
+    Bodywork: number;
+    Service: number;
+  };
+};
+
+export interface GetPerformanceIntakeDataAction {
+  type: typeof actionTypes.GET_PERFORMANCE_INTAKE_DATA;
+  date_from: string;
+  date_to: string;
+}
+export interface GetPerformanceIntakeDataStartAction {
+  type: typeof actionTypes.GET_PERFORMANCE_INTAKE_DATA_START;
+}
+export interface GetPerformanceIntakeDataSucceedAction {
+  type: typeof actionTypes.GET_PERFORMANCE_INTAKE_DATA_SUCCEED;
+  performanceIntakeData: TReceivedPerformanceIntakeObj;
+}
+export interface GetPerformanceIntakeDataFailedAction {
+  type: typeof actionTypes.GET_PERFORMANCE_INTAKE_DATA_FAILED;
+  errorMessage: string;
+}
 
 export type PerformanceActionTypes =
   | GetAllPerformanceAction
@@ -104,4 +151,8 @@ export type PerformanceActionTypes =
   | GetSpecificMechanicPerformanceAction
   | GetSpecificMechanicPerformanceStartAction
   | GetSpecificMechanicPerformanceSucceedAction
-  | GetSpecificMechanicPerformanceFailedAction;
+  | GetSpecificMechanicPerformanceFailedAction
+  | GetPerformanceIntakeDataAction
+  | GetPerformanceIntakeDataStartAction
+  | GetPerformanceIntakeDataSucceedAction
+  | GetPerformanceIntakeDataFailedAction;

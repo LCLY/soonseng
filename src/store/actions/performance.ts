@@ -3,6 +3,7 @@ import * as actionTypes from './actionTypes';
 import {
   TInterval,
   TReceivedMechanicObj,
+  TReceivedPerformanceIntakeObj,
   TReceivedPerformanceStatsObj,
   TReceivedSpecificMechanicPerformanceObj,
 } from '../types/performance';
@@ -95,6 +96,34 @@ export const getSpecificMechanicPerformanceSucceed = (
 export const getSpecificMechanicPerformanceFailed = (errorMessage: string): AppActions => {
   return {
     type: actionTypes.GET_SPECIFIC_MECHANIC_PERFORMANCE_FAILED,
+    errorMessage: errorMessage,
+  };
+};
+
+/* ========================================= */
+// Performance intake  Data
+/* ========================================= */
+export const getPerformanceIntakeData = (date_from: string, date_to: string): AppActions => {
+  return {
+    type: actionTypes.GET_PERFORMANCE_INTAKE_DATA,
+    date_from: date_from,
+    date_to: date_to,
+  };
+};
+export const getPerformanceIntakeDataStart = (): AppActions => {
+  return {
+    type: actionTypes.GET_PERFORMANCE_INTAKE_DATA_START,
+  };
+};
+export const getPerformanceIntakeDataSucceed = (performanceIntakeData: TReceivedPerformanceIntakeObj): AppActions => {
+  return {
+    type: actionTypes.GET_PERFORMANCE_INTAKE_DATA_SUCCEED,
+    performanceIntakeData: performanceIntakeData,
+  };
+};
+export const getPerformanceIntakeDataFailed = (errorMessage: string): AppActions => {
+  return {
+    type: actionTypes.GET_PERFORMANCE_INTAKE_DATA_FAILED,
     errorMessage: errorMessage,
   };
 };
