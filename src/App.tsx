@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useState, useEffect } from 'react';
+import React, { Suspense, useRef, useContext, useState, useEffect } from 'react';
 /* containers */
 // Authentication
 import Logout from 'src/containers/Authentication/Logout/Logout';
@@ -28,6 +28,7 @@ import ChargesFees from './containers/DashboardPage/DashboardCRUD/ChargesFees/Ch
 import JobMonitoring from './containers/DashboardPage/DashboardCRUD/JobMonitoring/JobMonitoring';
 // 3rd party lib
 import moment from 'moment';
+import { notification } from 'antd';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
@@ -65,12 +66,13 @@ type Props = AppProps & StateProps & DispatchProps;
 const App: React.FC<Props> = ({
   accessObj,
   projectVersion,
-  notification,
+  notificationObj,
   onSetNotification,
   onSaveProjectVersion,
   onClearLocalStorage,
 }) => {
   let route = null;
+  const notificationRef = useRef<any>(null);
   const cableApp = useContext(ActionCableContext);
   const [versionChecked, setVersionChecked] = useState(false);
 
@@ -96,7 +98,13 @@ const App: React.FC<Props> = ({
   }, [projectVersion, onClearLocalStorage]);
 
   useEffect(() => {
-    if (notification !== undefined) {
+    if (notificationObj) {
+      notificationRef.current = notificationObj;
+    }
+  }, [notificationObj]);
+
+  useEffect(() => {
+    if (notificationRef.current) {
       cableApp.cable.subscriptions.create(
         {
           channel: 'NotificationChannel',
@@ -108,20 +116,31 @@ const App: React.FC<Props> = ({
           connected: () => console.log('Notification cable connected'),
           received: (res: any) => {
             console.log(res);
-            let message = `${res.data.title} by ${res.data.updated_by.username} - ${moment(res.data.updated_at).format(
-              'YYYY/MM/DD HH:mm',
-            )}`;
-            let tempNotification = {
-              ...notification,
-              notificationNumber: notification.notificationNumber + 1,
-              notificationArray: [...notification.notificationArray, message],
+            let message = {
+              title: res.data.title,
+              username: res.data.updated_by.username,
+              date: moment(res.data.updated_at).format('YYYY/MM/DD HH:mm'),
             };
+
+            let tempNotification = {
+              ...notificationRef.current,
+              notificationNumber: notificationRef.current.notificationNumber + 1,
+              notificationArray: [message, ...notificationRef.current.notificationArray],
+            };
+
+            const args = {
+              message: 'Update',
+              description: res.data.title,
+              // duration: 0,
+            };
+            notification.open(args);
+
             onSetNotification(tempNotification);
           },
         },
       );
     }
-  }, [cableApp.cable.subscriptions, notification, onSetNotification]);
+  }, [cableApp.cable.subscriptions, onSetNotification]);
 
   if (accessObj?.showSalesDashboard) {
     // if user has access to dashboard
@@ -187,13 +206,13 @@ const App: React.FC<Props> = ({
 interface StateProps {
   accessObj?: TUserAccess;
   projectVersion?: string;
-  notification?: INotification;
+  notificationObj?: INotification;
 }
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {
     accessObj: state.auth.accessObj,
-    notification: state.general.notification,
+    notificationObj: state.general.notification,
     projectVersion: state.general.projectVersion,
   };
 };

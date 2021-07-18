@@ -35,7 +35,7 @@ export interface SetQuotationDiscountAction {
 
 export interface INotification {
   notificationNumber: number;
-  notificationArray: any[];
+  notificationArray: { title: string; username: string; date: string }[];
 }
 
 export interface SetNotificationAction {
