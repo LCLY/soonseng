@@ -10,6 +10,7 @@ const initialState: PerformanceInitialState = {
   successMessage: null,
   performanceStats: null,
   mechanicsData: null,
+  performanceIntakeData: null,
   specificMechanicsPerformanceData: null,
 };
 
@@ -76,6 +77,29 @@ const getSpecificMechanicPerformanceFailed = (state: PerformanceInitialState, ac
   }
   return state;
 };
+/* ============================================================================================ */
+// Get Performance Intake Data
+/* ============================================================================================ */
+const getPerformanceIntakeDataStart = (state: PerformanceInitialState, _action: AppActions) => {
+  return updateObject(state, {
+    loading: true,
+  });
+};
+const getPerformanceIntakeDataSucceed = (state: PerformanceInitialState, action: AppActions) => {
+  if ('performanceIntakeData' in action) {
+    return updateObject(state, {
+      loading: false,
+      performanceIntakeData: action.performanceIntakeData,
+    });
+  }
+  return state;
+};
+const getPerformanceIntakeDataFailed = (state: PerformanceInitialState, action: AppActions) => {
+  if ('errorMessage' in action) {
+    return updateObject(state, { loading: false, errorMessage: action.errorMessage });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 /* ============================================================================================ */
@@ -108,6 +132,15 @@ const reducer: Reducer<PerformanceInitialState, AppActions> = (state = initialSt
       return getSpecificMechanicPerformanceSucceed(state, action);
     case actionTypes.GET_SPECIFIC_MECHANIC_PERFORMANCE_FAILED:
       return getSpecificMechanicPerformanceFailed(state, action);
+    /* ---------------------- */
+    //  Performance Intake Data
+    /* ---------------------- */
+    case actionTypes.GET_PERFORMANCE_INTAKE_DATA_START:
+      return getPerformanceIntakeDataStart(state, action);
+    case actionTypes.GET_PERFORMANCE_INTAKE_DATA_SUCCEED:
+      return getPerformanceIntakeDataSucceed(state, action);
+    case actionTypes.GET_PERFORMANCE_INTAKE_DATA_FAILED:
+      return getPerformanceIntakeDataFailed(state, action);
 
     default:
       return state;

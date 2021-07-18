@@ -1,7 +1,6 @@
 .performance {
   &__bg {
     background: $dark-blue-3;
-    min-width: 100vw;
     min-height: 100vh;
     color: white;
   }
@@ -15,17 +14,36 @@
       }
     }
 
+    &-loading {
+      background: $dark-blue-4;
+      // width: 100%;/
+      height: calc(100% - 10rem);
+      border: 1px solid white;
+    }
+
     &-top {
       display: flex;
       justify-content: space-between;
 
       &-left {
         display: flex;
+
+        // background: yellow;
+        overflow-x: auto;
+        @include customScrollbar();
+        padding-bottom: 1rem;
+
+        & > .ant-carousel {
+          width: 100% !important;
+        }
       }
 
       &-info {
         display: flex;
         justify-content: space-between;
+        font-family: $font-firesans;
+        font-size: 2rem;
+        margin-bottom: 1rem;
       }
 
       &-intakes {
@@ -33,26 +51,69 @@
         padding: 1rem;
         border: 1px solid white;
         border-radius: 1rem;
-        &:not(:last-child) {
-          margin-bottom: 1rem;
-        }
+        margin-bottom: 1rem;
       }
     }
 
     &-bottom {
       background: $dark-blue-4;
-      padding: 1rem;
+      padding: 1rem 0;
       border: 1px solid white;
       border-radius: 1rem;
+
+      &-intakes {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: calc(100vh - 25rem);
+
+        &-innerdiv {
+          overflow-x: auto;
+          width: 25rem;
+          background: $dark-blue-4;
+          padding: 1rem;
+          border: 1px solid white;
+          border-radius: 1rem;
+          height: 50%;
+          @include customScrollbar();
+          &-title {
+            text-decoration: underline;
+          }
+          &:not(:last-child) {
+            margin-bottom: 1rem;
+          }
+        }
+      }
     }
   }
 
   &__card {
+    &-outerdiv {
+      display: flex !important;
+      justify-content: space-between;
+      padding: 0 3rem 0 1rem;
+      height: calc(100vh - 17rem);
+    }
     &-mechanic {
-      background: $dark-blue-4;
-      padding: 2rem;
-      border: 1px solid white;
-      border-radius: 1rem;
+      color: white;
+      // background: $dark-blue-4;
+      // border: 1px solid white;
+
+      height: 100%;
+      width: 100%;
+      &-innerdiv {
+        cursor: pointer;
+        background: $dark-blue-4;
+        border: 1px solid white;
+        padding: 2rem;
+        height: 100%;
+        width: 100%;
+        border-radius: 1rem;
+        &:hover {
+          transition: all 0.5s ease;
+          background: #25395f;
+        }
+      }
       &:not(:last-child) {
         margin-right: 1rem;
       }

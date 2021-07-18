@@ -97,8 +97,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
   const [clickedUpdate, setClickedUpdate] = useState(false); //boolean to keep track if user has clicked update
   const [statusUpdate, setStatusUpdate] = useState(false); //boolean to keep track if user has clicked update
   const [updateServiceTableState, setUpdateServiceTableState] = useState<TServiceTableState>({});
-  const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] =
-    useState<TReceivedSpecificIntakeJobsObj | null>(null);
+  const [incomingSpecificIntakeData, setIncomingSpecificIntakeData] = useState<TReceivedSpecificIntakeJobsObj | null>(
+    null,
+  );
   const [showSubmitPopconfirm, setShowSubmitPopconfirm] = useState(false);
   const [currentIntakeStatus, setCurrentIntakeStatus] = useState(0);
   const [currentSpecificIntakeJobsObj, setCurrentSpecificIntakeJobsObj] =
@@ -162,12 +163,12 @@ const UpdateSpecificIntake: React.FC<Props> = ({
     return filterResult;
   };
 
-  const uniqueFilter = (parentArray: TReceivedIntakeStatusObj, i: number) => {
-    if (intakeStatusArray === null || intakeStatusArray === undefined) return;
+  // const uniqueFilter = (parentArray: TReceivedIntakeStatusObj, i: number) => {
+  //   if (intakeStatusArray === null || intakeStatusArray === undefined) return;
 
-    let roleFiltered = intakeStatusArray.filter(roleFilter);
-    return roleFiltered.findIndex((child: TReceivedIntakeStatusObj) => child['title'] === parentArray['title']) === i;
-  };
+  //   let roleFiltered = intakeStatusArray.filter(roleFilter);
+  //   return roleFiltered.findIndex((child: TReceivedIntakeStatusObj) => child['title'] === parentArray['title']) === i;
+  // };
 
   const onUpdateIntakeAndJobsFinish = (values: {
     [key: string]: any;
@@ -1085,7 +1086,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                   {intakeStatusArray &&
                     intakeStatusArray
                       .filter(roleFilter)
-                      .filter(uniqueFilter)
+                      // .filter(uniqueFilter)
                       .map((intakeStatus) => {
                         return (
                           <React.Fragment key={uuidv4()}>

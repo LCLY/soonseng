@@ -130,8 +130,13 @@ import {
   setToggleIntakeStatusSaga,
   setToggleUserAssignSaga,
 } from './task';
+import {
+  getAllPerformanceSaga,
+  getAllMechanicsSaga,
+  getPerformanceIntakeDataSaga,
+  getSpecificMechanicPerformanceSaga,
+} from './performance';
 import { TaskActionTypes } from '../types/task';
-import { getAllPerformanceSaga, getAllMechanicsSaga } from './performance';
 
 export function* watchAuth() {
   yield all([takeEvery<AuthActionTypes>(actionTypes.SIGN_IN, signInSaga)]);
@@ -141,6 +146,13 @@ export function* watchAuth() {
 export function* watchPerformance() {
   yield all([takeEvery<PerformanceActionTypes>(actionTypes.GET_ALL_PERFORMANCE, getAllPerformanceSaga)]);
   yield all([takeEvery<PerformanceActionTypes>(actionTypes.GET_ALL_MECHANICS, getAllMechanicsSaga)]);
+  yield all([takeEvery<PerformanceActionTypes>(actionTypes.GET_PERFORMANCE_INTAKE_DATA, getPerformanceIntakeDataSaga)]);
+  yield all([
+    takeEvery<PerformanceActionTypes>(
+      actionTypes.GET_SPECIFIC_MECHANIC_PERFORMANCE,
+      getSpecificMechanicPerformanceSaga,
+    ),
+  ]);
 }
 
 export function* watchCatalog() {
