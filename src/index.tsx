@@ -97,11 +97,9 @@ const app = (
       <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
           {/* <ActionCableProvider url={`${process.env.REACT_APP_API}/cable`}> */}
-
           <ActionCableContext.Provider value={CableApp}>
             <App />
           </ActionCableContext.Provider>
-
           {/* </ActionCableProvider> */}
         </PersistGate>
       </BrowserRouter>

@@ -1,3 +1,4 @@
+import { INotification } from '../types/general';
 import { AppActions } from '../types/index';
 import * as actionTypes from './actionTypes';
 
@@ -30,5 +31,14 @@ export const setQuotationDiscount = (quotationDiscount: number): AppActions => {
   return {
     type: actionTypes.SET_QUOTATION_DISCOUNT,
     quotationDiscount: quotationDiscount,
+  };
+};
+/* ------------------- */
+// set Notification
+/* ------------------- */
+export const setNotification = (notification: INotification): AppActions => {
+  return {
+    type: actionTypes.SET_NOTIFICATION,
+    notification: notification,
   };
 };

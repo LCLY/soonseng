@@ -16,6 +16,7 @@ export interface TReceivedPerformanceStatsObj {
   current_intake_count: number;
   claimed_intake_count: number;
   unclaimed_intake_count: number;
+
   unclaimed_intakes: { id: number; intake_status: string; registration: string }[];
   active_claimed_intakes: { id: number; intake_status: string; registration: string }[];
 }
@@ -99,11 +100,12 @@ export interface GetSpecificMechanicPerformanceFailedAction {
 /* ========================================================= */
 // Get Performance Intake Data
 /* ========================================================= */
-
 export type TReceivedPerformanceIntakeObj = {
-  total_intakes: number;
-  active_intakes: number;
-  completed_intakes: number;
+  total_done_intakes: number;
+  total_active_intakes: number;
+  done_intakes_within_range: number;
+  active_intakes_within_range: number;
+  total_intakes_within_range: number;
   status: {
     Docked: number;
     'Pending Quotation': number;

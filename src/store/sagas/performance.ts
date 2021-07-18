@@ -96,10 +96,11 @@ export function* getPerformanceIntakeDataSaga(action: AppActions) {
 
   try {
     let response = yield axios.post(url, { generate_data }, getAxiosHeaderToken());
+
     yield put(actions.getPerformanceIntakeDataSucceed(response.data.data));
   } catch (error) {
     if (error.response) {
-    yield setPromiseError(error, actions.getPerformanceIntakeDataFailed, error.response.data.messages);
+      yield setPromiseError(error, actions.getPerformanceIntakeDataFailed, error.response.data.messages);
     } else {
       yield setPromiseError(error, actions.getPerformanceIntakeDataFailed, 'Error');
     }

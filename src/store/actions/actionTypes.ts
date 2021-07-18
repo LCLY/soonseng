@@ -6,6 +6,7 @@
 export const SAVE_PROJECT_VERSION = 'SAVE_PROJECT_VERSION';
 export const CLEAR_LOCALSTORAGE = 'CLEAR_LOCALSTORAGE';
 export const SET_QUOTATION_DISCOUNT = 'SET_QUOTATION_DISCOUNT';
+export const SET_NOTIFICATION = 'SET_NOTIFICATION';
 
 /* ================================================================================== */
 /*                                  Authentication                                    */

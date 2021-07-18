@@ -7,7 +7,7 @@ import OrdersSlidebar from 'src/containers/OrdersPage/OrdersSlidebar/OrdersSlide
 import { connect } from 'react-redux';
 import Sider from 'antd/lib/layout/Sider';
 import { AnyAction, Dispatch } from 'redux';
-import { Badge, Dropdown, Menu } from 'antd';
+import { Badge, Dropdown, Menu, Popover } from 'antd';
 import { Navbar, Nav } from 'react-bootstrap';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -32,6 +32,7 @@ import * as actions from 'src/store/actions/index';
 import { TLocalOrderObj } from 'src/store/types/sales';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
+import { INotification } from 'src/store/types/general';
 
 const { SubMenu } = Menu;
 
@@ -92,6 +93,7 @@ const NavbarComponent: React.FC<Props> = ({
   accessObj,
   userInfoObj,
   activePage,
+  notification,
   // onGetUserInfo,
   authenticated,
   projectVersion,
@@ -464,10 +466,17 @@ const NavbarComponent: React.FC<Props> = ({
                   )}
                 </div>
               </div>
+              <div className="navbar__bell-div">
+                <Popover placement="topLeft" title="Notifications" content={<div>test</div>} trigger="click">
+                  <Badge color={'red'} count={notification?.notificationNumber} showZero size="small">
+                    <i className="far fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                  </Badge>
+                </Popover>
+              </div>
 
               <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
                 {localOrdersDict !== undefined && (
-                  <Badge count={Object.keys(localOrdersDict).length} showZero size="small">
+                  <Badge color={'geekblue'} count={Object.keys(localOrdersDict).length} showZero size="small">
                     {/* <a className={`navbar__link`} href={ROUTE_ORDERS}> */}
                     <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
                     {/* </a> */}
@@ -478,7 +487,6 @@ const NavbarComponent: React.FC<Props> = ({
           </Nav>
         </Navbar>
       </div>
-
       <OrdersSlidebar
         showOrderSlidebar={showOrderSlidebar}
         setShowOrderSlidebar={setShowOrderSlidebar}
@@ -492,6 +500,7 @@ interface StateProps {
   authenticated?: boolean;
   accessObj?: TUserAccess;
   projectVersion?: string;
+  notification?: INotification;
   auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
   localOrdersDict?: { [key: string]: TLocalOrderObj };
@@ -500,6 +509,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
     userInfoObj: state.auth.userInfoObj,
+    notification: state.general.notification,
     projectVersion: state.general.projectVersion,
     localOrdersDict: state.sales.localOrdersDict,
     authenticated: state.auth.auth_token !== null,

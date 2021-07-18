@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useContext, useState, useEffect } from 'react';
 /* containers */
 // Authentication
 import Logout from 'src/containers/Authentication/Logout/Logout';
@@ -27,12 +27,14 @@ import Accessory from 'src/containers/DashboardPage/DashboardCRUD/Accessory/Acce
 import ChargesFees from './containers/DashboardPage/DashboardCRUD/ChargesFees/ChargesFees';
 import JobMonitoring from './containers/DashboardPage/DashboardCRUD/JobMonitoring/JobMonitoring';
 // 3rd party lib
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
 // Util
 import './App.less';
 import { RootState } from 'src';
+import { ActionCableContext } from 'src/index';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datetime/css/react-datetime.css';
 import { TUserAccess } from 'src/store/types/auth';
@@ -54,20 +56,29 @@ import {
   ROUTE_PERFORMANCE,
 } from 'src/shared/routes';
 import { persistor } from 'src';
+import { INotification } from './store/types/general';
 
 interface AppProps {}
 
 type Props = AppProps & StateProps & DispatchProps;
 
-const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion, onClearLocalStorage }) => {
+const App: React.FC<Props> = ({
+  accessObj,
+  projectVersion,
+  notification,
+  onSetNotification,
+  onSaveProjectVersion,
+  onClearLocalStorage,
+}) => {
   let route = null;
+  const cableApp = useContext(ActionCableContext);
   const [versionChecked, setVersionChecked] = useState(false);
 
   useEffect(() => {
     // set the version of the project so we can know which version we at and what should we do at which point
     // in this point of time, at version 1, we are clearing up all the localstorage
     if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
-      onSaveProjectVersion('v1.17');
+      onSaveProjectVersion('v1.18');
     }
   }, [projectVersion, onSaveProjectVersion]);
 
@@ -75,14 +86,42 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
     if (projectVersion === undefined) return;
 
     let projectVersionInt = projectVersion.substring(1);
-    if (parseFloat(projectVersionInt) < 1.17) {
+    if (parseFloat(projectVersionInt) < 1.18) {
       //if the project is v1.0 then clear out the localstorage, update the version to v1.02
-      onClearLocalStorage('v1.17');
+      onClearLocalStorage('v1.18');
       persistor.purge();
       window.location.href = ROUTE_LOGOUT; //force user to logout
     }
     setVersionChecked(true);
   }, [projectVersion, onClearLocalStorage]);
+
+  useEffect(() => {
+    if (notification !== undefined) {
+      cableApp.cable.subscriptions.create(
+        {
+          channel: 'NotificationChannel',
+          notification_controller: 'JobMonitoringController',
+          notification_type: 'intake_update',
+        },
+        {
+          rejected: () => console.log('rejected'),
+          connected: () => console.log('Notification cable connected'),
+          received: (res: any) => {
+            console.log(res);
+            let message = `${res.data.title} by ${res.data.updated_by.username} - ${moment(res.data.updated_at).format(
+              'YYYY/MM/DD HH:mm',
+            )}`;
+            let tempNotification = {
+              ...notification,
+              notificationNumber: notification.notificationNumber + 1,
+              notificationArray: [...notification.notificationArray, message],
+            };
+            onSetNotification(tempNotification);
+          },
+        },
+      );
+    }
+  }, [cableApp.cable.subscriptions, notification, onSetNotification]);
 
   if (accessObj?.showSalesDashboard) {
     // if user has access to dashboard
@@ -148,21 +187,25 @@ const App: React.FC<Props> = ({ accessObj, projectVersion, onSaveProjectVersion,
 interface StateProps {
   accessObj?: TUserAccess;
   projectVersion?: string;
+  notification?: INotification;
 }
 
 const mapStateToProps = (state: RootState): StateProps => {
   return {
     accessObj: state.auth.accessObj,
+    notification: state.general.notification,
     projectVersion: state.general.projectVersion,
   };
 };
 
 interface DispatchProps {
-  onSaveProjectVersion: typeof actions.saveProjectVersion;
+  onSetNotification: typeof actions.setNotification;
   onClearLocalStorage: typeof actions.clearLocalStorage;
+  onSaveProjectVersion: typeof actions.saveProjectVersion;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
   return {
+    onSetNotification: (notification) => dispatch(actions.setNotification(notification)),
     onSaveProjectVersion: (projectVersion) => dispatch(actions.saveProjectVersion(projectVersion)),
     onClearLocalStorage: (projectVersion) => dispatch(actions.clearLocalStorage(projectVersion)),
   };
