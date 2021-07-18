@@ -19,9 +19,11 @@ import UpdateSpecificIntake, {
 import gsap from 'gsap';
 import axios from 'axios';
 import moment from 'moment';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import ReactSvgPieChart from 'react-svg-piechart';
+// import { ActionCableConsumer } from 'react-actioncable-provider';
 import { Button, Layout, Collapse, Form, Table, message, Input, Tooltip } from 'antd';
 
 /* Util */
@@ -49,6 +51,7 @@ import {
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
 import { TReceivedIntakeStatusObj, TReceivedServiceTaskObj, TReceivedServiceTypesObj } from 'src/store/types/dashboard';
 import { TReceivedPerformanceIntakeObj } from 'src/store/types/performance';
+import { INotification } from 'src/store/types/general';
 
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -103,6 +106,7 @@ const TaskPage: React.FC<Props> = ({
   // accessObj,
   auth_token,
   userInfoObj,
+  notification,
   successMessage,
   specificIntakeLogs,
   serviceTypesArray,
@@ -534,7 +538,6 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   /*  useEffect */
   /* ================================================== */
-
   useEffect(() => {
     const channel = cableApp.cable.subscriptions.create(
       { channel: 'JobMonitoringChannel' },
@@ -590,9 +593,18 @@ const TaskPage: React.FC<Props> = ({
     let startOfMonth = moment().startOf('month').format('DD/MM/YYYY');
     // let startOfMonth = moment('01/05/2021').format('DD/MM/YYYY');
     let endOfMonth = moment().endOf('month').format('DD/MM/YYYY');
-    onGetPerformanceIntakeData(startOfMonth, endOfMonth);
+    if (auth_token) {
+      onGetPerformanceIntakeData(startOfMonth, endOfMonth);
+    }
     onGetUsersByRoles(undefined, '');
-  }, [onGetIntakeStatus, onGetIntakeSummary, onGetUsersByRoles, onGetServiceTypes, onGetPerformanceIntakeData]);
+  }, [
+    auth_token,
+    onGetIntakeStatus,
+    onGetIntakeSummary,
+    onGetUsersByRoles,
+    onGetServiceTypes,
+    onGetPerformanceIntakeData,
+  ]);
 
   /* ----------------------------------------------------- */
   // initialize/populate the state of data array for Tasks
@@ -750,12 +762,7 @@ const TaskPage: React.FC<Props> = ({
     if (performanceIntakeData) {
       let statuses = performanceIntakeData.status;
       let service_types = performanceIntakeData.service_type;
-      let data = [
-        {
-          label: 'Docked',
-          value: statuses.Docked,
-          color: '#2fc5ac',
-        },
+      let data: any = [
         { label: 'Quotation', value: statuses['Pending Quotation'], color: '#138c78' },
         { label: 'In Progress', value: statuses['In Progress'], color: '#2362b5' },
         { label: 'Spareparts', value: statuses['Ordering Spareparts'], color: '#4b92d5' },
@@ -764,14 +771,31 @@ const TaskPage: React.FC<Props> = ({
         { label: 'On Hold', value: statuses['On hold'], color: '#149094' },
         { label: 'In Queue', value: statuses['In Queue'], color: '#3b7c7e' },
       ];
+      let totalNumberOfStatuses = Object.values(performanceIntakeData.status).reduce((accumulator, currentValue) => {
+        return accumulator + currentValue;
+      }, 0);
 
-      let serviceTypeData = [
+      let serviceTypeData: any = [
         { label: 'Puspakom Test', value: service_types['Puspakom Test'], color: '#4bd57e' },
 
         { label: 'Repair', value: service_types['Repair'], color: '#3b7c7e' },
         { label: 'Bodywork', value: service_types['Bodywork'], color: '#149094' },
         { label: 'Service', value: service_types['Service'], color: '#138c78' },
       ];
+
+      let totalNumberOfJobTypes = Object.values(performanceIntakeData.service_type).reduce(
+        (accumulator, currentValue) => {
+          return accumulator + currentValue;
+        },
+        0,
+      );
+
+      if (totalNumberOfStatuses === 0) {
+        data = null;
+      }
+      if (totalNumberOfJobTypes === 0) {
+        serviceTypeData = null;
+      }
 
       // let data = [
       //   {
@@ -794,6 +818,14 @@ const TaskPage: React.FC<Props> = ({
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" name="Task" content="Task for intakes." />
+        {notification !== undefined && (
+          <title>
+            {notification.notificationNumber > 0 ? `(${notification.notificationNumber})` : ''} Service & Repair
+          </title>
+        )}
+      </Helmet>
       {showMobileHistoryLogs && mobileSpecificIntakeLogsComponent}
       <NavbarComponent activePage="task" defaultOpenKeys="dashboard" />
       <Layout>
@@ -920,94 +952,122 @@ const TaskPage: React.FC<Props> = ({
                               </div>
                             </div>
                           </div>
-                          {currentPage === 'main' && (
+                          {currentPage === 'main' && auth_token !== undefined && auth_token !== null && (
                             <div className="task__table-stats">
                               <div className="task__stats-title">
                                 <h2 style={{ color: 'white' }}>
-                                  Total Intakes for {moment().format('MMMM')}:&nbsp;
-                                  {performanceIntakeData ? performanceIntakeData.total_intakes : 'loading...'}
+                                  Current Active Intakes:&nbsp;
+                                  {performanceIntakeData ? performanceIntakeData.total_active_intakes : 'loading...'}
                                 </h2>
                               </div>
                               <div className="task__stats-content">
                                 <div className="task__stats-subtitle">
                                   <h3>
-                                    Active Intakes:&nbsp;
-                                    {performanceIntakeData ? performanceIntakeData.active_intakes : 'loading...'}
+                                    {moment().format('MMMM')} Total Intakes:&nbsp;
+                                    {performanceIntakeData
+                                      ? performanceIntakeData.total_intakes_within_range
+                                      : 'loading...'}
                                   </h3>
                                   <h3>
-                                    Done Intakes:&nbsp;
-                                    {performanceIntakeData ? performanceIntakeData.completed_intakes : 'loading...'}
+                                    {moment().format('MMMM')} Active Intakes:&nbsp;
+                                    {performanceIntakeData
+                                      ? performanceIntakeData.active_intakes_within_range
+                                      : 'loading...'}
+                                  </h3>
+                                  <h3>
+                                    {moment().format('MMMM')} Done Intakes:&nbsp;
+                                    {performanceIntakeData
+                                      ? performanceIntakeData.done_intakes_within_range
+                                      : 'loading...'}
                                   </h3>
                                 </div>
 
                                 <section className="task__stats-chart">
                                   <div>
                                     Status:
-                                    <section className="task__section-chart">
-                                      <div className="task__chart-div">
-                                        <ReactSvgPieChart
-                                          data={statusPieChartData}
-                                          expandOnHover
-                                          onSectorHover={(d: any, i: number, _e: any) => {
-                                            if (d) {
-                                              setExpandedSector(i);
-                                            } else {
-                                              setExpandedSector(null);
-                                            }
-                                          }}
-                                        />
-                                      </div>
+                                    {statusPieChartData ? (
+                                      <section className="task__section-chart">
+                                        <div className="task__chart-div">
+                                          <ReactSvgPieChart
+                                            data={statusPieChartData}
+                                            expandOnHover
+                                            onSectorHover={(d: any, i: number, _e: any) => {
+                                              if (d) {
+                                                setExpandedSector(i);
+                                              } else {
+                                                setExpandedSector(null);
+                                              }
+                                            }}
+                                          />
+                                        </div>
 
-                                      <div className="task__chart-legends-div">
-                                        {statusPieChartData &&
-                                          statusPieChartData.map((d, i) => (
-                                            <div className="task__chart-legends-innerdiv" key={`status${i}`}>
-                                              <div className="task__chart-legends" style={{ background: d.color }} />
-                                              <span
-                                                style={{
-                                                  fontWeight: expandedSector === i ? 'bold' : 'normal',
-                                                }}
-                                              >
-                                                {d.label} : {d.value}
-                                              </span>
-                                            </div>
-                                          ))}
+                                        <div className="task__chart-legends-div">
+                                          {statusPieChartData &&
+                                            statusPieChartData.map((d, i) => (
+                                              <div className="task__chart-legends-innerdiv" key={`status${i}`}>
+                                                <div className="task__chart-legends" style={{ background: d.color }} />
+                                                <span
+                                                  style={{
+                                                    fontWeight: expandedSector === i ? 'bold' : 'normal',
+                                                  }}
+                                                >
+                                                  {d.label} : {d.value}
+                                                </span>
+                                              </div>
+                                            ))}
+                                        </div>
+                                      </section>
+                                    ) : (
+                                      <div className="task__chart-nodata">
+                                        <div className="task__chart-nodata-innerdiv">
+                                          <i className="fas fa-chart-pie"></i>
+                                          No status at the moment
+                                        </div>
                                       </div>
-                                    </section>
+                                    )}
                                   </div>
                                   <div>
                                     Job Type:
-                                    <section className="task__section-chart">
-                                      <div className="task__chart-div">
-                                        <ReactSvgPieChart
-                                          data={serviceTypePieChartData}
-                                          expandOnHover
-                                          onSectorHover={(d: any, i: number, _e: any) => {
-                                            if (d) {
-                                              setExpandedServiceTypeSector(i);
-                                            } else {
-                                              setExpandedServiceTypeSector(null);
-                                            }
-                                          }}
-                                        />
-                                      </div>
+                                    {serviceTypePieChartData ? (
+                                      <section className="task__section-chart">
+                                        <div className="task__chart-div">
+                                          <ReactSvgPieChart
+                                            data={serviceTypePieChartData}
+                                            expandOnHover
+                                            onSectorHover={(d: any, i: number, _e: any) => {
+                                              if (d) {
+                                                setExpandedServiceTypeSector(i);
+                                              } else {
+                                                setExpandedServiceTypeSector(null);
+                                              }
+                                            }}
+                                          />
+                                        </div>
 
-                                      <div className="task__chart-legends-div">
-                                        {serviceTypePieChartData &&
-                                          serviceTypePieChartData.map((d, i) => (
-                                            <div className="task__chart-legends-innerdiv" key={`jobType${i}`}>
-                                              <div className="task__chart-legends" style={{ background: d.color }} />
-                                              <span
-                                                style={{
-                                                  fontWeight: expandedServiceTypeSector === i ? 'bold' : 'normal',
-                                                }}
-                                              >
-                                                {d.label} : {d.value}
-                                              </span>
-                                            </div>
-                                          ))}
+                                        <div className="task__chart-legends-div">
+                                          {serviceTypePieChartData &&
+                                            serviceTypePieChartData.map((d, i) => (
+                                              <div className="task__chart-legends-innerdiv" key={`jobType${i}`}>
+                                                <div className="task__chart-legends" style={{ background: d.color }} />
+                                                <span
+                                                  style={{
+                                                    fontWeight: expandedServiceTypeSector === i ? 'bold' : 'normal',
+                                                  }}
+                                                >
+                                                  {d.label} : {d.value}
+                                                </span>
+                                              </div>
+                                            ))}
+                                        </div>
+                                      </section>
+                                    ) : (
+                                      <div className="task__chart-nodata">
+                                        <div className="task__chart-nodata-innerdiv">
+                                          <i className="fas fa-chart-pie"></i>
+                                          No job at the moment
+                                        </div>
                                       </div>
-                                    </section>
+                                    )}
                                   </div>
                                 </section>
                               </div>
@@ -1101,10 +1161,14 @@ const TaskPage: React.FC<Props> = ({
 
       {/* Websocket */}
       {/* <ActionCableConsumer
-        channel={{ channel: 'JobMonitoringChannel' }}
-        onConnected={() => console.log('Table Connected')}
-        onRejected={() => console.log('Table Rejected')}
-        onDisconnected={() => console.log('Table Disconnected')}
+        channel={{
+          channel: 'NotificationChannel',
+          notification_controller: 'JobMonitoringController',
+          notification_type: 'intake_update',
+        }}
+        onConnected={() => console.log('Notification Connected')}
+        onRejected={() => console.log('Notification Rejected')}
+        onDisconnected={() => console.log('Notification Disconnected')}
         onReceived={(res: any) => setIncomingData(res.data)}
       /> */}
     </>
@@ -1114,6 +1178,7 @@ const TaskPage: React.FC<Props> = ({
 interface StateProps {
   loading?: boolean;
   accessObj?: TUserAccess;
+  notification?: INotification;
   errorMessage?: string | null;
   successMessage?: string | null;
   auth_token?: string | null;
@@ -1132,6 +1197,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
     errorMessage: state.task.errorMessage,
+    notification: state.general.notification,
     successMessage: state.task.successMessage,
     specificIntakeLogs: state.task.specificIntakeLogs,
     intakeStatusArray: state.dashboard.intakeStatusArray,

@@ -546,6 +546,27 @@
     &-div {
       width: 100%;
     }
+
+    &-nodata {
+      display: grid;
+      place-items: center;
+      &-innerdiv {
+        display: flex;
+        align-items: center;
+        background: rgb(15, 37, 90);
+        justify-content: center;
+        border: 1px solid white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-size: 1.6rem;
+        width: 100%;
+        margin-top: 1rem;
+
+        & > .fa-chart-pie {
+          margin-right: 1rem;
+        }
+      }
+    }
   }
 
   &__stats {

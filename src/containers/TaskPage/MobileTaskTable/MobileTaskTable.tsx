@@ -8,7 +8,7 @@ import moment from 'moment';
 import { Empty, Tooltip, Button } from 'antd';
 /* Util */
 import { TIntakeTableState } from '../TaskPage';
-import { emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
+// import { emptyStringWhenUndefinedOrNull } from 'src/shared/Utils';
 import { TaskPageContext } from 'src/containers/TaskPage/TaskPageContext';
 
 export interface MobileTaskTableProps {}
@@ -33,15 +33,15 @@ const MobileTaskTable: React.FC<Props> = () => {
     (intakeChild: TIntakeTableState) => {
       if (taskPageContext === null) return;
       const { filterText } = taskPageContext;
-      let date = moment(intakeChild.createdAt).format('DD-MM-YYYY');
-      let time = moment(intakeChild.createdAt).format('HH:mm A');
-      let listOfUsers = intakeChild.assign.reduce(
-        (finalString, assignChild) =>
-          (finalString += `${assignChild.user.first_name} ${emptyStringWhenUndefinedOrNull(
-            assignChild.user.last_name,
-          )} ${assignChild.user.username} ${assignChild.user.role} `),
-        '',
-      );
+      // let date = moment(intakeChild.createdAt).format('DD-MM-YYYY');
+      // let time = moment(intakeChild.createdAt).format('HH:mm A');
+      // let listOfUsers = intakeChild.assign.reduce(
+      //   (finalString, assignChild) =>
+      //     (finalString += `${assignChild.user.first_name} ${emptyStringWhenUndefinedOrNull(
+      //       assignChild.user.last_name,
+      //     )} ${assignChild.user.username} ${assignChild.user.role} `),
+      //   '',
+      // );
 
       // if filtertext has nothing straight return the whole array
       if (filterText === '') return intakeChild;
@@ -58,28 +58,28 @@ const MobileTaskTable: React.FC<Props> = () => {
 
       // basically if there's a result, it will return array instead of null
       let regexBoolean =
-        intakeChild.bay.toLowerCase().match(regex) ||
-        intakeChild.description.toLowerCase().match(regex) ||
-        intakeChild.assign.length.toString().match(regex) ||
-        intakeChild.serviceType.toLowerCase().match(regex) ||
-        date.toLowerCase().match(regex) ||
-        listOfUsers.toLowerCase().match(regex) ||
-        time.toLowerCase().match(regex) ||
-        intakeChild.regNumber.toLowerCase().match(regex) ||
-        intakeChild.status.toLowerCase().match(regex);
+        // intakeChild.bay.toLowerCase().match(regex) ||
+        // intakeChild.description.toLowerCase().match(regex) ||
+        // intakeChild.assign.length.toString().match(regex) ||
+        // intakeChild.serviceType.toLowerCase().match(regex) ||
+        // date.toLowerCase().match(regex) ||
+        // listOfUsers.toLowerCase().match(regex) ||
+        // time.toLowerCase().match(regex) ||
+        intakeChild.regNumber.toLowerCase().match(regex);
+      // intakeChild.status.toLowerCase().match(regex);
 
       // if not return the filtered result
       // if includes doesnt return result, it will fallback to regex to get better tweaked result
       return (
         regexBoolean ||
-        intakeChild.bay.toLowerCase().includes(searchedText) ||
-        intakeChild.description.toLowerCase().includes(searchedText) ||
-        intakeChild.assign.length.toString().includes(searchedText) ||
-        intakeChild.serviceType.toLowerCase().includes(searchedText) ||
-        intakeChild.status.toLowerCase().includes(searchedText) ||
-        date.toLowerCase().includes(searchedText) ||
-        listOfUsers.toLowerCase().includes(searchedText) ||
-        time.toLowerCase().includes(searchedText) ||
+        // intakeChild.bay.toLowerCase().includes(searchedText) ||
+        // intakeChild.description.toLowerCase().includes(searchedText) ||
+        // intakeChild.assign.length.toString().includes(searchedText) ||
+        // intakeChild.serviceType.toLowerCase().includes(searchedText) ||
+        // intakeChild.status.toLowerCase().includes(searchedText) ||
+        // date.toLowerCase().includes(searchedText) ||
+        // listOfUsers.toLowerCase().includes(searchedText) ||
+        // time.toLowerCase().includes(searchedText) ||
         intakeChild.regNumber.toLowerCase().includes(searchedText)
       );
     },
