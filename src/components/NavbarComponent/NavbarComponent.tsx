@@ -4,10 +4,11 @@ import './NavbarComponent.scss';
 import Backdrop from '../Backdrop/Backdrop';
 import OrdersSlidebar from 'src/containers/OrdersPage/OrdersSlidebar/OrdersSlidebar';
 // 3rd party lib
+import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import Sider from 'antd/lib/layout/Sider';
 import { AnyAction, Dispatch } from 'redux';
-import { Badge, Dropdown, Menu } from 'antd';
+import { Badge, Dropdown, Menu, Popover, Empty } from 'antd';
 import { Navbar, Nav } from 'react-bootstrap';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
@@ -32,6 +33,7 @@ import * as actions from 'src/store/actions/index';
 import { TLocalOrderObj } from 'src/store/types/sales';
 import { useWindowDimensions } from 'src/shared/HandleWindowResize';
 import { TReceivedUserInfoObj, TUserAccess } from 'src/store/types/auth';
+import { INotification } from 'src/store/types/general';
 
 const { SubMenu } = Menu;
 
@@ -92,11 +94,13 @@ const NavbarComponent: React.FC<Props> = ({
   accessObj,
   userInfoObj,
   activePage,
+  notification,
   // onGetUserInfo,
   authenticated,
   projectVersion,
   defaultOpenKeys,
   localOrdersDict,
+  onSetNotification,
 }) => {
   /* ======================================= */
   // state
@@ -331,6 +335,29 @@ const NavbarComponent: React.FC<Props> = ({
   //   onGetUserInfo(auth_token);
   // }, [onGetUserInfo, auth_token]);
 
+  let notificationContent = (
+    <div>
+      {notification?.notificationArray.length === 0 ? (
+        <Empty description="No notifcation at the moment" className="navbar__notification-empty" />
+      ) : (
+        <div className="navbar__notification-list-outerdiv">
+          <ul className="navbar__notification-list">
+            {notification?.notificationArray.map((child) => {
+              return (
+                <li key={uuidv4()} className="navbar__notification-row">
+                  <div>{child.title}</div>
+                  <div className="navbar__notification-date">
+                    {child.username} - {child.date}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
       {mobileSidebar}
@@ -347,6 +374,41 @@ const NavbarComponent: React.FC<Props> = ({
             />
           </Navbar.Brand>
           <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
+            <div className="navbar__bell-div navbar__bell--mobile" style={{ marginRight: '2rem' }}>
+              <Popover
+                placement="topLeft"
+                title={
+                  <>
+                    <i className="fas fa-bell navbar__bell-icon-title"></i>
+                    <span>Notifications</span>
+                  </>
+                }
+                content={notificationContent}
+                trigger="click"
+                onVisibleChange={(e) => {
+                  if (e) {
+                    // reset the number back to 0 when user open the bell
+                    if (notification === undefined) return;
+                    onSetNotification({
+                      ...notification,
+                      notificationNumber: 0,
+                      notificationArray: notification?.notificationArray,
+                    });
+                  }
+                }}
+              >
+                {notification !== undefined && (
+                  <Badge count={notification?.notificationNumber} size="small">
+                    {notification?.notificationNumber > 0 ? (
+                      <i className="fas fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                    ) : (
+                      <i className="far fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                    )}
+                  </Badge>
+                )}
+              </Popover>
+            </div>
+
             {localOrdersDict !== undefined && (
               <Badge
                 count={Object.keys(localOrdersDict).length}
@@ -464,10 +526,44 @@ const NavbarComponent: React.FC<Props> = ({
                   )}
                 </div>
               </div>
+              <div className="navbar__bell-div">
+                <Popover
+                  placement="topLeft"
+                  title={
+                    <>
+                      <i className="fas fa-bell navbar__bell-icon-title"></i>
+                      <span>Notifications</span>
+                    </>
+                  }
+                  content={notificationContent}
+                  trigger="click"
+                  onVisibleChange={(e) => {
+                    if (e) {
+                      // reset the number back to 0 when user open the bell
+                      if (notification === undefined) return;
+                      onSetNotification({
+                        ...notification,
+                        notificationNumber: 0,
+                        notificationArray: notification?.notificationArray,
+                      });
+                    }
+                  }}
+                >
+                  {notification !== undefined && (
+                    <Badge count={notification?.notificationNumber} size="small">
+                      {notification?.notificationNumber > 0 ? (
+                        <i className="fas fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                      ) : (
+                        <i className="far fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                      )}
+                    </Badge>
+                  )}
+                </Popover>
+              </div>
 
               <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
                 {localOrdersDict !== undefined && (
-                  <Badge count={Object.keys(localOrdersDict).length} showZero size="small">
+                  <Badge count={Object.keys(localOrdersDict).length} size="small">
                     {/* <a className={`navbar__link`} href={ROUTE_ORDERS}> */}
                     <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
                     {/* </a> */}
@@ -478,7 +574,6 @@ const NavbarComponent: React.FC<Props> = ({
           </Nav>
         </Navbar>
       </div>
-
       <OrdersSlidebar
         showOrderSlidebar={showOrderSlidebar}
         setShowOrderSlidebar={setShowOrderSlidebar}
@@ -492,6 +587,7 @@ interface StateProps {
   authenticated?: boolean;
   accessObj?: TUserAccess;
   projectVersion?: string;
+  notification?: INotification;
   auth_token?: string | null;
   userInfoObj?: TReceivedUserInfoObj | null;
   localOrdersDict?: { [key: string]: TLocalOrderObj };
@@ -500,6 +596,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
   return {
     accessObj: state.auth.accessObj,
     userInfoObj: state.auth.userInfoObj,
+    notification: state.general.notification,
     projectVersion: state.general.projectVersion,
     localOrdersDict: state.sales.localOrdersDict,
     authenticated: state.auth.auth_token !== null,
@@ -508,9 +605,13 @@ const mapStateToProps = (state: RootState): StateProps | void => {
 
 interface DispatchProps {
   onGetUserInfo: typeof actions.getUserInfo;
+  onSetNotification: typeof actions.setNotification;
 }
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): DispatchProps => {
-  return { onGetUserInfo: () => dispatch(actions.getUserInfo()) };
+  return {
+    onGetUserInfo: () => dispatch(actions.getUserInfo()),
+    onSetNotification: (notification) => dispatch(actions.setNotification(notification)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavbarComponent));

@@ -7,6 +7,7 @@ import { Reducer } from 'redux';
 const initialState: GeneralInitialState = {
   projectVersion: '',
   quotationDiscount: 0,
+  notification: { notificationArray: [], notificationNumber: 0 },
 };
 
 /* ============================================================================================================ */
@@ -49,6 +50,17 @@ const setQuotationDiscount = (state: GeneralInitialState, action: AppActions) =>
   }
   return state;
 };
+/* ============================================================================================ */
+// Set notification
+/* ============================================================================================ */
+const setNotification = (state: GeneralInitialState, action: AppActions) => {
+  if ('notification' in action) {
+    return updateObject(state, {
+      notification: action.notification,
+    });
+  }
+  return state;
+};
 
 /* ============================================================================================ */
 /* ============================================================================================ */
@@ -69,6 +81,11 @@ const reducer: Reducer<GeneralInitialState, AppActions> = (state = initialState,
     /* ---------------------- */
     case actionTypes.SET_QUOTATION_DISCOUNT:
       return setQuotationDiscount(state, action);
+    /* ---------------------- */
+    //  Set notification
+    /* ---------------------- */
+    case actionTypes.SET_NOTIFICATION:
+      return setNotification(state, action);
 
     default:
       return state;

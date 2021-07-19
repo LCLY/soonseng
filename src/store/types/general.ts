@@ -4,6 +4,7 @@ import * as actionTypes from '../actions/actionTypes';
 export interface GeneralInitialState {
   readonly projectVersion?: string;
   readonly quotationDiscount?: number;
+  readonly notification?: INotification;
 }
 
 /* ============================================================== */
@@ -28,6 +29,19 @@ export interface SetQuotationDiscountAction {
   type: typeof actionTypes.SET_QUOTATION_DISCOUNT;
   quotationDiscount: number;
 }
+/* ============================================================== */
+// Set notifications
+/* ============================================================== */
+
+export interface INotification {
+  notificationNumber: number;
+  notificationArray: { title: string; username: string; date: string }[];
+}
+
+export interface SetNotificationAction {
+  type: typeof actionTypes.SET_NOTIFICATION;
+  notification: INotification;
+}
 
 /* ============================================================== */
 // Combine and export all action types
@@ -44,4 +58,5 @@ export type GeneralActionTypes =
   /* -------------------- */
   // Set quotation discount
   /* -------------------- */
-  | SetQuotationDiscountAction;
+  | SetQuotationDiscountAction
+  | SetNotificationAction;

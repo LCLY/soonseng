@@ -50,7 +50,7 @@ const composeEnhancers =
 // you want to store only a subset of your state of reducer one
 const saveSalesSubsetFilter = createFilter('sales', ['localOrdersDict']);
 const saveAuthSubsetFilter = createFilter('auth', ['auth_token', 'accessObj', 'userInfoObj']);
-const saveGeneralSubsetFilter = createFilter('general', ['projectVersion']);
+const saveGeneralSubsetFilter = createFilter('general', ['projectVersion', 'notification']);
 const saveCatalogSubsetFilter = createFilter('catalog', ['viewMode']);
 
 // redux persist config
@@ -97,11 +97,9 @@ const app = (
       <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
           {/* <ActionCableProvider url={`${process.env.REACT_APP_API}/cable`}> */}
-
           <ActionCableContext.Provider value={CableApp}>
             <App />
           </ActionCableContext.Provider>
-
           {/* </ActionCableProvider> */}
         </PersistGate>
       </BrowserRouter>
