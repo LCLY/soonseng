@@ -24,7 +24,7 @@ import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import ReactSvgPieChart from 'react-svg-piechart';
 // import { ActionCableConsumer } from 'react-actioncable-provider';
-import { Button, Layout, Collapse, Form, Table, message, Input, Tooltip } from 'antd';
+import { Button, Layout, Collapse, notification, Form, Table, message, Input, Tooltip } from 'antd';
 
 /* Util */
 import { RootState } from 'src';
@@ -106,7 +106,7 @@ const TaskPage: React.FC<Props> = ({
   // accessObj,
   auth_token,
   userInfoObj,
-  notification,
+  notificationObj,
   successMessage,
   specificIntakeLogs,
   serviceTypesArray,
@@ -127,6 +127,7 @@ const TaskPage: React.FC<Props> = ({
   /* ================================================== */
   const cableApp = useContext(ActionCableContext);
   const cableRef = useRef() as MutableRefObject<any>;
+  const notificationRef = useRef<any>(null);
 
   const [currentPage, setCurrentPage] = useState<'main' | 'update' | 'create'>('main');
   // const [pieChartData, setPieChartData] = useState();
@@ -759,6 +760,36 @@ const TaskPage: React.FC<Props> = ({
   // ];
 
   useEffect(() => {
+    if (notificationObj) {
+      notificationRef.current = notificationObj;
+    }
+  }, [notificationObj]);
+
+  useEffect(() => {
+    if (notificationRef.current) {
+      cableApp.cable.subscriptions.create(
+        {
+          channel: 'NotificationChannel',
+          notification_controller: 'JobMonitoringController',
+          notification_type: 'intake_update',
+        },
+        {
+          rejected: () => console.log('rejected'),
+          connected: () => console.log('Notification cable connected'),
+          received: (res: any) => {
+            const args = {
+              message: 'Update',
+              description: res.data.title,
+              // duration: 0,
+            };
+            notification.open(args);
+          },
+        },
+      );
+    }
+  }, [cableApp.cable.subscriptions]);
+
+  useEffect(() => {
     if (performanceIntakeData) {
       let statuses = performanceIntakeData.status;
       let service_types = performanceIntakeData.service_type;
@@ -816,13 +847,89 @@ const TaskPage: React.FC<Props> = ({
     }
   }, [performanceIntakeData]);
 
+  useEffect(() => {
+    var browserPrefixes = ['moz', 'ms', 'o', 'webkit'],
+      // isVisible = true,
+      isVisible = true;
+
+    // get the correct attribute name
+    function getHiddenPropertyName(prefix: any) {
+      return prefix ? prefix + 'Hidden' : 'hidden';
+    }
+
+    // get the correct event name
+    function getVisibilityEvent(prefix: any) {
+      return (prefix ? prefix : '') + 'visibilitychange';
+    }
+
+    // get current browser vendor prefix
+    function getBrowserPrefix() {
+      for (var i = 0; i < browserPrefixes.length; i++) {
+        if (getHiddenPropertyName(browserPrefixes[i]) in document) {
+          // return vendor prefix
+          return browserPrefixes[i];
+        }
+      }
+
+      // no vendor prefix needed
+      return null;
+    }
+
+    // bind and handle events
+    var browserPrefix = getBrowserPrefix(),
+      hiddenPropertyName = getHiddenPropertyName(browserPrefix),
+      visibilityEventName = getVisibilityEvent(browserPrefix);
+
+    function onVisible() {
+      // prevent double execution
+      if (isVisible) {
+        return;
+      }
+
+      // change flag value
+      isVisible = true;
+      console.log('visible');
+    }
+
+    function onHidden() {
+      // prevent double execution
+      if (!isVisible) {
+        return;
+      }
+
+      // change flag value
+      isVisible = false;
+      console.log('hidden');
+    }
+
+    function handleVisibilityChange(forcedFlag: any) {
+      // forcedFlag is a boolean when this event handler is triggered by a
+      // focus or blur eventotherwise it's an Event object
+      if (typeof forcedFlag === 'boolean') {
+        if (forcedFlag) {
+          return onVisible();
+        }
+
+        return onHidden();
+      }
+
+      if ((document as any)[hiddenPropertyName]) {
+        return onHidden();
+      }
+
+      return onVisible();
+    }
+
+    document.addEventListener(visibilityEventName, handleVisibilityChange, false);
+  }, []);
+
   return (
     <>
       <Helmet>
         <meta charSet="utf-8" name="Task" content="Task for intakes." />
-        {notification !== undefined && (
+        {notificationObj !== undefined && (
           <title>
-            {notification.notificationNumber > 0 ? `(${notification.notificationNumber})` : ''} Service & Repair
+            {notificationObj.notificationNumber > 0 ? `(${notificationObj.notificationNumber})` : ''} Service & Repair
           </title>
         )}
       </Helmet>
@@ -1178,7 +1285,7 @@ const TaskPage: React.FC<Props> = ({
 interface StateProps {
   loading?: boolean;
   accessObj?: TUserAccess;
-  notification?: INotification;
+  notificationObj?: INotification;
   errorMessage?: string | null;
   successMessage?: string | null;
   auth_token?: string | null;
@@ -1197,7 +1304,7 @@ const mapStateToProps = (state: RootState): StateProps | void => {
     auth_token: state.auth.auth_token,
     userInfoObj: state.auth.userInfoObj,
     errorMessage: state.task.errorMessage,
-    notification: state.general.notification,
+    notificationObj: state.general.notification,
     successMessage: state.task.successMessage,
     specificIntakeLogs: state.task.specificIntakeLogs,
     intakeStatusArray: state.dashboard.intakeStatusArray,

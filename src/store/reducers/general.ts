@@ -53,6 +53,7 @@ const setQuotationDiscount = (state: GeneralInitialState, action: AppActions) =>
 /* ============================================================================================ */
 // Set notification
 /* ============================================================================================ */
+
 const setNotification = (state: GeneralInitialState, action: AppActions) => {
   if ('notification' in action) {
     return updateObject(state, {

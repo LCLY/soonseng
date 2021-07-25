@@ -4,6 +4,7 @@ import './NavbarComponent.scss';
 import Backdrop from '../Backdrop/Backdrop';
 import OrdersSlidebar from 'src/containers/OrdersPage/OrdersSlidebar/OrdersSlidebar';
 // 3rd party lib
+import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import Sider from 'antd/lib/layout/Sider';
@@ -341,18 +342,29 @@ const NavbarComponent: React.FC<Props> = ({
         <Empty description="No notifcation at the moment" className="navbar__notification-empty" />
       ) : (
         <div className="navbar__notification-list-outerdiv">
-          <ul className="navbar__notification-list">
-            {notification?.notificationArray.map((child) => {
-              return (
-                <li key={uuidv4()} className="navbar__notification-row">
-                  <div>{child.title}</div>
+          {notification?.notificationArray.slice(0, 20).map((child) => {
+            let logId = localStorage.getItem('logId');
+            return (
+              <div key={uuidv4()} className="navbar__notification-row">
+                <div className="navbar__notification-left">
+                  <span className="navbar__notification-title">{child.intake}</span>
+                  <div className="navbar__notification-content">{child.title}</div>
                   <div className="navbar__notification-date">
-                    {child.username} - {child.date}
+                    {child.created_by} - {moment(child.created_at).format('DD/MM/YYYY HH:mm')}
                   </div>
-                </li>
-              );
-            })}
-          </ul>
+                </div>
+                <div className="navbar__notification-dot-outerdiv">
+                  {/* only show the dot if the log id is newer than the one stored in localstorage */}
+                  <div
+                    className="navbar__notification-dot"
+                    style={{
+                      background: logId !== null && child.id > parseInt(logId) ? '#588ed' : 'transparent',
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -386,14 +398,16 @@ const NavbarComponent: React.FC<Props> = ({
                 content={notificationContent}
                 trigger="click"
                 onVisibleChange={(e) => {
+                  if (notification === undefined) return;
                   if (e) {
                     // reset the number back to 0 when user open the bell
-                    if (notification === undefined) return;
                     onSetNotification({
                       ...notification,
                       notificationNumber: 0,
                       notificationArray: notification?.notificationArray,
                     });
+                  } else {
+                    localStorage.setItem('logId', notification.notificationArray[0].id.toString());
                   }
                 }}
               >

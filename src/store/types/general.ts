@@ -33,9 +33,19 @@ export interface SetQuotationDiscountAction {
 // Set notifications
 /* ============================================================== */
 
+export interface INotificatonArray {
+  created_at: string;
+  created_by: string;
+  curr_status: string;
+  description: string;
+  id: number;
+  intake: string;
+  title: string;
+}
+
 export interface INotification {
   notificationNumber: number;
-  notificationArray: { title: string; username: string; date: string }[];
+  notificationArray: INotificatonArray[];
 }
 
 export interface SetNotificationAction {
