@@ -68,7 +68,6 @@ const IntakeStatusToggle: React.FC<Props> = ({
           </>
         }
         onConfirm={() => {
-          console.log(intakeStatus.title);
           if (userInfoObj !== undefined && userInfoObj !== null) {
             setStatusUpdate(true);
             setCurrentIntakeStatus(intakeStatus.id);

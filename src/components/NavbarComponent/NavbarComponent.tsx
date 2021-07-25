@@ -342,25 +342,42 @@ const NavbarComponent: React.FC<Props> = ({
         <Empty description="No notifcation at the moment" className="navbar__notification-empty" />
       ) : (
         <div className="navbar__notification-list-outerdiv">
-          {notification?.notificationArray.slice(0, 20).map((child) => {
+          {notification?.notificationArray.slice(0, 30).map((child) => {
             let logId = localStorage.getItem('logId');
+            let backgroundColor = 'transparent';
+            if (logId !== null) {
+              if (child.id > parseInt(logId)) {
+                backgroundColor = 'rgb(88, 160, 214)';
+              } else {
+                backgroundColor = 'transparent';
+              }
+            } else {
+              backgroundColor = 'rgb(88, 160, 214)';
+            }
+
             return (
               <div key={uuidv4()} className="navbar__notification-row">
-                <div className="navbar__notification-left">
-                  <span className="navbar__notification-title">{child.intake}</span>
-                  <div className="navbar__notification-content">{child.title}</div>
-                  <div className="navbar__notification-date">
-                    {child.created_by} - {moment(child.created_at).format('DD/MM/YYYY HH:mm')}
-                  </div>
-                </div>
                 <div className="navbar__notification-dot-outerdiv">
                   {/* only show the dot if the log id is newer than the one stored in localstorage */}
                   <div
                     className="navbar__notification-dot"
                     style={{
-                      background: logId !== null && child.id > parseInt(logId) ? '#588ed' : 'transparent',
+                      width: '1rem',
+                      height: '1rem',
+                      borderRadius: ' 50%',
+                      background: backgroundColor,
                     }}
                   />
+                </div>
+                <div className="navbar__notification-left">
+                  <span className="navbar__notification-title">{child.intake}</span>
+                  <div className="navbar__notification-content">{child.title}</div>
+                  <div className="navbar__notification-date">
+                    <div className="navbar__notification-ago">{moment(child.created_at).fromNow()}</div>
+                    <div>
+                      {child.created_by} - {moment(child.created_at).format('DD/MM/YYYY HH:mm')}
+                    </div>
+                  </div>
                 </div>
               </div>
             );
@@ -412,7 +429,7 @@ const NavbarComponent: React.FC<Props> = ({
                 }}
               >
                 {notification !== undefined && (
-                  <Badge count={notification?.notificationNumber} size="small">
+                  <Badge count={notification?.notificationNumber} size="small" overflowCount={20}>
                     {notification?.notificationNumber > 0 ? (
                       <i className="fas fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
                     ) : (
@@ -429,6 +446,7 @@ const NavbarComponent: React.FC<Props> = ({
                 showZero
                 size="small"
                 className="navbar__icon-cart--mobile"
+                overflowCount={20}
               >
                 <ShoppingCartOutlined className="navbar__icon-cart" onClick={() => setShowOrderSlidebar(true)} />
               </Badge>
