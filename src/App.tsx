@@ -104,7 +104,7 @@ const App: React.FC<Props> = ({
   }, [notificationObj]);
 
   useEffect(() => {
-    let url = 'https://ss-sales.herokuapp.com/api/v1/pages/job_monitoring/notification_logs';
+    let url = `${process.env.REACT_APP_API}/pages/job_monitoring/notification_logs`;
     axios
       .get(url, getAxiosHeaderToken())
       .then((res) => {
