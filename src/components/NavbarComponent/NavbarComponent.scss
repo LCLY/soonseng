@@ -429,16 +429,47 @@
       padding: 1rem 1rem 0 1rem;
 
       &-outerdiv {
-        max-height: 30rem;
+        max-height: calc(100vh - 15rem);
+        min-width: 40rem;
         overflow-y: auto;
-        padding: 1.5rem;
         @include customScrollbar(0.3rem, 0.3rem, 1rem, rgba(255, 255, 255, 0.529), white);
       }
     }
 
+    &-title {
+      display: block;
+      background: $soft-red;
+      padding: 0.2rem 3rem 0.2rem 1rem;
+      margin-bottom: 0.5rem;
+      border-right: 8px solid white;
+      border-radius: 0 10rem 0 0;
+    }
+
+    &-content {
+      margin-top: 1rem;
+      padding-left: 1.5rem;
+    }
+    &-left {
+      width: 100%;
+      padding-right: 1.5rem;
+    }
+
+    &-dot {
+      &-outerdiv {
+        padding: 0 1rem 0 0;
+        display: grid;
+        place-items: center;
+      }
+      background: rgb(88, 160, 214);
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+    }
+
     &-row {
+      display: flex;
       color: white;
-      max-width: 35rem;
+      // max-width: 35rem;
       padding-bottom: 1rem;
       margin-bottom: 1rem;
       &:not(:last-child) {
@@ -452,7 +483,7 @@
       display: flex;
       color: rgba(255, 255, 255, 0.686);
       font-size: 1.2rem;
-      justify-content: flex-end;
+      justify-content: space-between;
     }
   }
 
@@ -502,6 +533,10 @@
     &-div {
       margin-right: 1rem;
       cursor: pointer;
+
+      & .ant-popover-inner-content {
+        padding: 0 !important;
+      }
     }
 
     &-icon {

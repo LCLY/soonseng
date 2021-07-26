@@ -27,8 +27,7 @@ import Accessory from 'src/containers/DashboardPage/DashboardCRUD/Accessory/Acce
 import ChargesFees from './containers/DashboardPage/DashboardCRUD/ChargesFees/ChargesFees';
 import JobMonitoring from './containers/DashboardPage/DashboardCRUD/JobMonitoring/JobMonitoring';
 // 3rd party lib
-import moment from 'moment';
-import { notification } from 'antd';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
@@ -58,6 +57,7 @@ import {
 } from 'src/shared/routes';
 import { persistor } from 'src';
 import { INotification } from './store/types/general';
+import { getAxiosHeaderToken } from './shared/Utils';
 
 interface AppProps {}
 
@@ -80,7 +80,7 @@ const App: React.FC<Props> = ({
     // set the version of the project so we can know which version we at and what should we do at which point
     // in this point of time, at version 1, we are clearing up all the localstorage
     if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
-      onSaveProjectVersion('v1.18');
+      onSaveProjectVersion('v1.19');
     }
   }, [projectVersion, onSaveProjectVersion]);
 
@@ -88,9 +88,9 @@ const App: React.FC<Props> = ({
     if (projectVersion === undefined) return;
 
     let projectVersionInt = projectVersion.substring(1);
-    if (parseFloat(projectVersionInt) < 1.18) {
+    if (parseFloat(projectVersionInt) < 1.19) {
       //if the project is v1.0 then clear out the localstorage, update the version to v1.02
-      onClearLocalStorage('v1.18');
+      onClearLocalStorage('v1.19');
       persistor.purge();
       window.location.href = ROUTE_LOGOUT; //force user to logout
     }
@@ -104,6 +104,28 @@ const App: React.FC<Props> = ({
   }, [notificationObj]);
 
   useEffect(() => {
+    let url = 'https://ss-sales.herokuapp.com/api/v1/pages/job_monitoring/notification_logs';
+    axios
+      .get(url, getAxiosHeaderToken())
+      .then((res) => {
+        let logId = localStorage.getItem('logId');
+        if (logId === null) {
+          // if logId doesnt exist then set the max notification number
+          if (res.data.data.length > 0) {
+            let tempNotification = {
+              ...notificationRef.current,
+              notificationNumber: res.data.data.length,
+              notificationArray: res.data.data,
+            };
+
+            onSetNotification(tempNotification);
+          }
+        }
+      })
+      .catch((err) => console.log(err));
+  }, [onSetNotification]);
+
+  useEffect(() => {
     if (notificationRef.current) {
       cableApp.cable.subscriptions.create(
         {
@@ -115,25 +137,11 @@ const App: React.FC<Props> = ({
           rejected: () => console.log('rejected'),
           connected: () => console.log('Notification cable connected'),
           received: (res: any) => {
-            console.log(res);
-            let message = {
-              title: res.data.title,
-              username: res.data.updated_by.username,
-              date: moment(res.data.updated_at).format('YYYY/MM/DD HH:mm'),
-            };
-
             let tempNotification = {
               ...notificationRef.current,
               notificationNumber: notificationRef.current.notificationNumber + 1,
-              notificationArray: [message, ...notificationRef.current.notificationArray],
+              notificationArray: [res.data, ...notificationRef.current.notificationArray],
             };
-
-            const args = {
-              message: 'Update',
-              description: res.data.title,
-              // duration: 0,
-            };
-            notification.open(args);
 
             onSetNotification(tempNotification);
           },
