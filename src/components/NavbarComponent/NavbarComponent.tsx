@@ -570,14 +570,17 @@ const NavbarComponent: React.FC<Props> = ({
                   content={notificationContent}
                   trigger="click"
                   onVisibleChange={(e) => {
+                    if (notification === undefined) return;
                     if (e) {
                       // reset the number back to 0 when user open the bell
-                      if (notification === undefined) return;
                       onSetNotification({
                         ...notification,
                         notificationNumber: 0,
                         notificationArray: notification?.notificationArray,
                       });
+                    } else {
+                      console.log(e);
+                      localStorage.setItem('logId', notification.notificationArray[0].id.toString());
                     }
                   }}
                 >
