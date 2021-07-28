@@ -391,7 +391,6 @@ const NavbarComponent: React.FC<Props> = ({
     <>
       {mobileSidebar}
       <Backdrop backdropZIndex={100} show={showOrderSlidebar} clicked={() => setShowOrderSlidebar(false)} />
-
       <div className="navbar__outerdiv">
         <Navbar className="navbar__div" bg="primary" variant="dark" expand="md">
           <Navbar.Brand className="navbar__logo" href="#home">
@@ -403,42 +402,44 @@ const NavbarComponent: React.FC<Props> = ({
             />
           </Navbar.Brand>
           <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
-            <div className="navbar__bell-div navbar__bell--mobile" style={{ marginRight: '2rem' }}>
-              <Popover
-                placement="topLeft"
-                title={
-                  <>
-                    <i className="fas fa-bell navbar__bell-icon-title"></i>
-                    <span>Notifications</span>
-                  </>
-                }
-                content={notificationContent}
-                trigger="click"
-                onVisibleChange={(e) => {
-                  if (notification === undefined) return;
-                  if (e) {
-                    // reset the number back to 0 when user open the bell
-                    onSetNotification({
-                      ...notification,
-                      notificationNumber: 0,
-                      notificationArray: notification?.notificationArray,
-                    });
-                  } else {
-                    localStorage.setItem('logId', notification.notificationArray[0].id.toString());
+            {authenticated && (
+              <div className="navbar__bell-div navbar__bell--mobile" style={{ marginRight: '2rem' }}>
+                <Popover
+                  placement="topLeft"
+                  title={
+                    <>
+                      <i className="fas fa-bell navbar__bell-icon-title"></i>
+                      <span>Notifications</span>
+                    </>
                   }
-                }}
-              >
-                {notification !== undefined && (
-                  <Badge count={notification?.notificationNumber} size="small" overflowCount={20}>
-                    {notification?.notificationNumber > 0 ? (
-                      <i className="fas fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
-                    ) : (
-                      <i className="far fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
-                    )}
-                  </Badge>
-                )}
-              </Popover>
-            </div>
+                  content={notificationContent}
+                  trigger="click"
+                  onVisibleChange={(e) => {
+                    if (notification === undefined) return;
+                    if (e) {
+                      // reset the number back to 0 when user open the bell
+                      onSetNotification({
+                        ...notification,
+                        notificationNumber: 0,
+                        notificationArray: notification?.notificationArray,
+                      });
+                    } else {
+                      localStorage.setItem('logId', notification.notificationArray[0].id.toString());
+                    }
+                  }}
+                >
+                  {notification !== undefined && (
+                    <Badge count={notification?.notificationNumber} size="small" overflowCount={20}>
+                      {notification?.notificationNumber > 0 ? (
+                        <i className="fas fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                      ) : (
+                        <i className="far fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                      )}
+                    </Badge>
+                  )}
+                </Popover>
+              </div>
+            )}
 
             {localOrdersDict !== undefined && (
               <Badge
@@ -540,7 +541,6 @@ const NavbarComponent: React.FC<Props> = ({
               {/* only show if user info exist or not a normal user */}
               {/* {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>} */}
               {accessObj?.showSalesDashboard && <div className="navbar__version-div">{projectVersion}</div>}
-
               <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
                 <div className={`navbar__link`}>
                   {authenticated && userInfoObj ? (
@@ -558,44 +558,45 @@ const NavbarComponent: React.FC<Props> = ({
                   )}
                 </div>
               </div>
-              <div className="navbar__bell-div">
-                <Popover
-                  placement="topLeft"
-                  title={
-                    <>
-                      <i className="fas fa-bell navbar__bell-icon-title"></i>
-                      <span>Notifications</span>
-                    </>
-                  }
-                  content={notificationContent}
-                  trigger="click"
-                  onVisibleChange={(e) => {
-                    if (notification === undefined) return;
-                    if (e) {
-                      // reset the number back to 0 when user open the bell
-                      onSetNotification({
-                        ...notification,
-                        notificationNumber: 0,
-                        notificationArray: notification?.notificationArray,
-                      });
-                    } else {
-                      console.log(e);
-                      localStorage.setItem('logId', notification.notificationArray[0].id.toString());
+              {authenticated && (
+                <div className="navbar__bell-div">
+                  <Popover
+                    placement="topLeft"
+                    title={
+                      <>
+                        <i className="fas fa-bell navbar__bell-icon-title"></i>
+                        <span>Notifications</span>
+                      </>
                     }
-                  }}
-                >
-                  {notification !== undefined && (
-                    <Badge count={notification?.notificationNumber} size="small">
-                      {notification?.notificationNumber > 0 ? (
-                        <i className="fas fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
-                      ) : (
-                        <i className="far fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
-                      )}
-                    </Badge>
-                  )}
-                </Popover>
-              </div>
-
+                    content={notificationContent}
+                    trigger="click"
+                    onVisibleChange={(e) => {
+                      if (notification === undefined) return;
+                      if (e) {
+                        // reset the number back to 0 when user open the bell
+                        onSetNotification({
+                          ...notification,
+                          notificationNumber: 0,
+                          notificationArray: notification?.notificationArray,
+                        });
+                      } else {
+                        console.log(e);
+                        localStorage.setItem('logId', notification.notificationArray[0].id.toString());
+                      }
+                    }}
+                  >
+                    {notification !== undefined && (
+                      <Badge count={notification?.notificationNumber} size="small">
+                        {notification?.notificationNumber > 0 ? (
+                          <i className="fas fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                        ) : (
+                          <i className="far fa-bell navbar__icon-cart navbar__icon-cart--bell"></i>
+                        )}
+                      </Badge>
+                    )}
+                  </Popover>
+                </div>
+              )}
               <div className={`navbar__link-div  ${activePage === 'orders' ? 'active' : ''}`}>
                 {localOrdersDict !== undefined && (
                   <Badge count={Object.keys(localOrdersDict).length} size="small">
