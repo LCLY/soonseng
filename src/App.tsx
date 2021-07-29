@@ -64,6 +64,7 @@ interface AppProps {}
 type Props = AppProps & StateProps & DispatchProps;
 
 const App: React.FC<Props> = ({
+  authenticated,
   accessObj,
   projectVersion,
   notificationObj,
@@ -80,7 +81,7 @@ const App: React.FC<Props> = ({
     // set the version of the project so we can know which version we at and what should we do at which point
     // in this point of time, at version 1, we are clearing up all the localstorage
     if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
-      onSaveProjectVersion('v1.19');
+      onSaveProjectVersion('v1.19lepas thread sipa');
     }
   }, [projectVersion, onSaveProjectVersion]);
 
@@ -104,6 +105,8 @@ const App: React.FC<Props> = ({
   }, [notificationObj]);
 
   useEffect(() => {
+    if (!authenticated) return;
+
     let url = `${process.env.REACT_APP_API}/pages/job_monitoring/notification_logs`;
     axios
       .get(url, getAxiosHeaderToken())
@@ -215,6 +218,7 @@ interface StateProps {
   accessObj?: TUserAccess;
   projectVersion?: string;
   notificationObj?: INotification;
+  authenticated?: boolean;
 }
 
 const mapStateToProps = (state: RootState): StateProps => {
@@ -222,6 +226,7 @@ const mapStateToProps = (state: RootState): StateProps => {
     accessObj: state.auth.accessObj,
     notificationObj: state.general.notification,
     projectVersion: state.general.projectVersion,
+    authenticated: state.auth.auth_token !== null,
   };
 };
 
