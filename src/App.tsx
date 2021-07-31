@@ -126,7 +126,7 @@ const App: React.FC<Props> = ({
         }
       })
       .catch((err) => console.log(err));
-  }, [onSetNotification]);
+  }, [authenticated, onSetNotification]);
 
   useEffect(() => {
     if (notificationRef.current) {

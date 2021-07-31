@@ -1,9 +1,13 @@
 import React from 'react';
 /* components */
 /* 3rd party lib */
-import { Form, Input } from 'antd';
+import { Form, Input, Select } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { handleKeyDown } from 'src/shared/Utils';
+import { TReceivedUserRolesObj } from 'src/store/types/dashboard';
+import { connect } from 'react-redux';
+import { RootState } from 'src';
+
 interface FeesFormItemsProps {
   crud: 'create' | 'update' | 'delete';
   /** The form instance from antd  */
@@ -12,9 +16,11 @@ interface FeesFormItemsProps {
   onFinish: (values: any) => void;
 }
 
-type Props = FeesFormItemsProps;
+const { Option } = Select;
 
-const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
+type Props = FeesFormItemsProps & StateProps;
+
+const FeesFormItems: React.FC<Props> = ({ crud, antdForm, userRolesArray, onFinish }) => {
   return (
     <>
       <Form
@@ -28,6 +34,32 @@ const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
         }}
       >
         {/* The rest of the form items */}
+        <Form.Item
+          className="make__form-item"
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: 'Input username here!' }]}
+        >
+          <Input placeholder="Type Username Here" />
+        </Form.Item>
+        <Form.Item
+          className="make__form-item"
+          label="Role"
+          name="role_id"
+          rules={[{ required: true, message: 'Select a role!' }]}
+        >
+          {/* only render if brandsArray is not null */}
+          <Select placeholder="Select a brand">
+            {userRolesArray &&
+              userRolesArray.map((role) => {
+                return (
+                  <Option style={{ textTransform: 'capitalize' }} key={role.id} value={role.id}>
+                    {role.title}
+                  </Option>
+                );
+              })}
+          </Select>
+        </Form.Item>
         <Form.Item
           className="make__form-item"
           label="First Name"
@@ -44,13 +76,22 @@ const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
         >
           <Input placeholder="Type Last Name Here" />
         </Form.Item>
+
         <Form.Item
           className="make__form-item"
-          label="Email"
-          name="email"
-          rules={[{ required: false, message: 'Input Email here!' }]}
+          label="Password"
+          name="password"
+          rules={[{ required: false, message: 'Input Password here!' }]}
         >
-          <Input type="email" placeholder="Type First Name Here" />
+          <Input type="password" placeholder="Type Password Here" />
+        </Form.Item>
+        <Form.Item
+          className="make__form-item"
+          label="Confirm Password"
+          name="password_confirmation"
+          rules={[{ required: false, message: 'Input Password Again here!' }]}
+        >
+          <Input type="password" placeholder="Type Password Again Here" />
         </Form.Item>
 
         {/* Add this part for update modal form only */}
@@ -66,4 +107,14 @@ const FeesFormItems: React.FC<Props> = ({ crud, antdForm, onFinish }) => {
   );
 };
 
-export default FeesFormItems;
+interface StateProps {
+  userRolesArray?: TReceivedUserRolesObj[] | null;
+}
+
+const mapStateToProps = (state: RootState): StateProps | void => {
+  return {
+    userRolesArray: state.dashboard.userRolesArray,
+  };
+};
+
+export default connect(mapStateToProps, null)(FeesFormItems);

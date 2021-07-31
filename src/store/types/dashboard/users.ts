@@ -9,8 +9,10 @@ import { TReceivedUserRolesObj } from '../dashboard';
 export interface IUserFormData {
   first_name: string;
   last_name: string;
-  email: string;
-  encrypted_password: string;
+  username: string;
+  password: string;
+  password_confirmation: string;
+  role_id: number;
 }
 
 /* --------------------------- */
