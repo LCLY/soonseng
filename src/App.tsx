@@ -81,7 +81,7 @@ const App: React.FC<Props> = ({
     // set the version of the project so we can know which version we at and what should we do at which point
     // in this point of time, at version 1, we are clearing up all the localstorage
     if (localStorage.getItem('projectVersion') === null || projectVersion === '') {
-      onSaveProjectVersion('v1.19lepas thread sipa');
+      onSaveProjectVersion('v1.19');
     }
   }, [projectVersion, onSaveProjectVersion]);
 
