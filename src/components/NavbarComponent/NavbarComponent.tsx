@@ -473,12 +473,6 @@ const NavbarComponent: React.FC<Props> = ({
 
           <Nav className="navbar__wrapper">
             <div className="navbar__left-div">
-              <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
-                <a className="navbar__link" href={ROUTE_HOME}>
-                  {/* <i className="fas fa-home"></i>&nbsp; */}
-                  Home
-                </a>
-              </div>
               <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
                 <Dropdown overlay={salesMenu} trigger={['click']} overlayStyle={{ fill: 'blue' }}>
                   <span className="navbar__link">
@@ -495,7 +489,7 @@ const NavbarComponent: React.FC<Props> = ({
               <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_TASK}>
                   {/* <i className="fas fa-tasks"></i>&nbsp; */}
-                  Task
+                  SERVICE & REPAIR
                 </a>
               </div>
 
