@@ -15,7 +15,7 @@ import { ShoppingCartOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 // image
-import SoonSengLogo from 'src/img/soonseng_logo.png';
+import SoonSengLogo from 'src/img/soonseng_logo_slick_cropped.png';
 
 // Util
 import {
