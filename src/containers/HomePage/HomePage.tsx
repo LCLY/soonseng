@@ -187,9 +187,64 @@ function HomePage() {
             <span className="homepage__team-h2-span">Our Team</span>
           </h2>
         </div>
+        {/* ================================ */}
+        {/* Technician */}
+        {/* ================================ */}
         <div className="homepage__team-content">
           <div>
             <h3>Hino Certified Service Technician</h3>
+            <div className="homepage__parallelogram"></div>
+
+            <div className="homepage__team-paragraph-outerdiv">
+              <div className="homepage__team-paragraph">
+                Our Service Technicians do not stop until your vehicle is back on the road. We take our quality of
+                service seriously and continuously attend workshop training to ensure we are keeping up with the latest
+                trends of the automotive industry.
+              </div>
+              <div className="homepage__team-paragraph">
+                We help you preemptively detect potential problems regarding your vehicle through our detailed 30-Point
+                inspection and routine checks and services. Our goal is to reduce uncertainty and allow our customers to
+                have smooth business operations.
+              </div>
+              <div className="homepage__team-paragraph">
+                We value customers reaching out to us whenever there is an issue, no matter the day nor the time.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="homepage__team-bgimg-parent">
+          <div className="homepage__team-bgimg-parent-innerdiv">
+            <img
+              className="homepage__team-bgimg"
+              src={'https://www.cashcarsbuyer.com/wp-content/uploads/2020/04/Ask-A-Mechanic-1200x900.jpg'}
+              alt="technician"
+            />
+            <div className="homepage__team-bgimg-desc">
+              "Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we
+              listen, discuss, and solve them together."
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* ================================ */}
+      {/* SERVICE ADVISOR */}
+      {/* ================================ */}
+      <section className="homepage__section-advisor">
+        <div className="homepage__advisor-bgimg-parent">
+          <div className="homepage__advisor-bgimg-parent-innerdiv">
+            <img
+              className="homepage__advisor-bgimg"
+              src={'https://www.autotrainingcentre.com/wp-content/uploads/2015/11/image15.jpeg'}
+              alt="technician"
+            />
+            <div className="homepage__advisor-bgimg-desc">
+              "Let our service advisors represent you in conveying your concerns to our skilled mechanics."
+            </div>
+          </div>
+        </div>
+        <div className="homepage__advisor-content">
+          <div>
+            <h3>Service Advisor</h3>
             <div className="homepage__parallelogram"></div>
 
             <div className="homepage__team-paragraph-outerdiv">
@@ -208,16 +263,85 @@ function HomePage() {
             </div>
           </div>
         </div>
-        <div className="homepage__team-bgimg-parent">
-          <div className="homepage__team-bgimg-parent-innerdiv">
+      </section>
+
+      {/* ================================ */}
+      {/* SALES ADVISOR */}
+      {/* ================================ */}
+      <section className="homepage__section-salesadvisor">
+        <div className="homepage__sales-content">
+          <div>
+            <h3>Sales Advisor</h3>
+            <div className="homepage__parallelogram"></div>
+
+            <div className="homepage__team-paragraph-outerdiv">
+              <div className="homepage__team-paragraph">
+                Our customer’s satisfaction has always been our top priority. Share your problems with us and let us
+                embark on our journey into solving them.{' '}
+              </div>
+              <div className="homepage__team-paragraph">
+                Being under budget is every businesses' concern. Providing the cheapest options are always easy, however
+                the challenge lies within recommending the most suitable and effective solution. We aim to get your
+                problems solved under budget for we care for our customers.
+              </div>
+              <div className="homepage__team-paragraph">
+                Leave it up to us in providing you solutions for rest assured, your concerns are in good hands.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="homepage__sales-bgimg-parent">
+          <div className="homepage__sales-bgimg-parent-innerdiv">
             <img
-              className="homepage__team-bgimg"
-              src={'https://www.cashcarsbuyer.com/wp-content/uploads/2020/04/Ask-A-Mechanic-1200x900.jpg'}
-              alt="technician"
+              className="homepage__sales-bgimg"
+              src={'https://www.salesman.org/wp-content/uploads/2015/05/suit-hacks-for-salesmen.jpg'}
+              alt="salesadvisor"
             />
-            <div className="homepage__team-bgimg-desc">
+            <div className="homepage__sales-bgimg-desc">
               "Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we
               listen, discuss, and solve them together."
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================ */}
+      {/* Customer support */}
+      {/* ================================ */}
+      <section className="homepage__section-support">
+        <div className="homepage__support-bgimg-parent">
+          <div className="homepage__support-bgimg-parent-innerdiv">
+            <img
+              className="homepage__support-bgimg"
+              src={
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd5aAff7FNXBxgHHpFNsezNMV4fwsMqhyETg&usqp=CAU'
+              }
+              alt="customersupport"
+            />
+            <div className="homepage__support-bgimg-desc">"Your satisfaction, we guarantee."</div>
+          </div>
+        </div>
+        <div className="homepage__support-content">
+          <div>
+            <h3>Customer Support</h3>
+            <div className="homepage__parallelogram"></div>
+
+            <div className="homepage__team-paragraph-outerdiv">
+              <div className="homepage__team-paragraph">
+                Our customer support extends way beyond our products. One of our proudest steps to emphasize on our
+                commitment on customers’ satisfactory, we invested in having Procare units to provide customers’ with
+                onsite services, and standby units for customers. We provide 24/7 breakdown assistance so that we know
+                that our customers’ needs will always be met.
+              </div>
+              <div className="homepage__team-paragraph">
+                Being part of the automotive industry, we support our customers’ through providing their drivers with
+                training that are focuses on road safety, vehicle maintenance, fuel efficiency driving and many more.
+                Together with HINO’s support through HTSCC (HINO Total Support Customer Center), we hope to get the idea
+                across that we are always around to support our customers.
+              </div>
+              <div className="homepage__team-paragraph">
+                With the resources we have at hand, we strive to make sure that no customer is left behind.
+              </div>
             </div>
           </div>
         </div>

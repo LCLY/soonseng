@@ -103,9 +103,25 @@
 
     &-team {
       position: relative;
-      min-height: 100vh;
+      min-height: 80vh;
       padding-top: 8rem;
       padding-bottom: 25rem;
+    }
+
+    &-advisor {
+      position: relative;
+      min-height: 80vh;
+      padding-bottom: 20rem;
+    }
+    &-salesadvisor {
+      min-height: 80vh;
+      padding: 0 10rem 10rem 15rem;
+      display: flex;
+    }
+    &-support {
+      display: flex;
+      min-height: 80vh;
+      padding: 0 15rem 5rem 10rem;
     }
   }
 
@@ -420,7 +436,7 @@
       width: 100%;
       object-fit: cover;
       &-parent {
-        width: 50%;
+        width: 55%;
         // height: 5%;
         position: absolute;
         right: 0;
@@ -445,6 +461,156 @@
         width: 100%;
         // height: 15rem;
         padding: 2rem 10rem;
+        z-index: 10;
+        text-align: center;
+        font-family: $font-poppins;
+        font-style: italic;
+      }
+    }
+  }
+
+  /* ================================== */
+  // Service advisor
+  /* ================================== */
+  &__advisor {
+    &-content {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 15rem;
+      padding-top: 5rem;
+      & h3 {
+        font-size: 2.3rem;
+        font-weight: bolder;
+        font-family: $font-poppins;
+      }
+    }
+    &-bgimg {
+      height: 80%;
+      width: 100%;
+      object-fit: cover;
+      &-parent {
+        width: 50%;
+        // height: 5%;
+        position: absolute;
+        left: 0;
+        // top: 58%;
+        // width: 55%;
+        z-index: -1;
+        // margin-top: 50rem;
+        // transform: translateY(-50%);
+        &-innerdiv {
+          position: relative;
+          clip-path: polygon(100% 0, 100% 76%, 82% 100%, 0 100%, 0 0);
+        }
+      }
+
+      &-desc {
+        position: absolute;
+        background: black;
+        color: white;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        // height: 15rem;
+        padding: 2rem 10rem 2rem 0rem;
+        z-index: 10;
+        text-align: center;
+        font-family: $font-poppins;
+        font-style: italic;
+      }
+    }
+  }
+
+  &__sales {
+    &-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      & h3 {
+        font-size: 2.3rem;
+        font-weight: bolder;
+        font-family: $font-poppins;
+      }
+    }
+    &-bgimg {
+      width: 100%;
+      height: 450px;
+      object-fit: cover;
+      &-parent {
+        width: 100%;
+        height: 100%;
+        // height: 5%;
+        // position: absolute;
+        z-index: -1;
+
+        &-innerdiv {
+          position: relative;
+          clip-path: polygon(100% 0, 100% 100%, 8% 100%, 0 83%, 0 0);
+        }
+      }
+
+      &-desc {
+        position: absolute;
+        background: black;
+        color: white;
+        bottom: 0;
+        right: 0;
+        margin-bottom: 0%;
+        width: 100%;
+        // height: 15rem;
+        padding: 2rem 5rem 2rem 10rem;
+        z-index: 10;
+        text-align: center;
+        font-family: $font-poppins;
+        font-style: italic;
+      }
+    }
+  }
+
+  &__support {
+    &-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      & h3 {
+        font-size: 2.3rem;
+        font-weight: bolder;
+        font-family: $font-poppins;
+      }
+    }
+    &-bgimg {
+      width: 100%;
+      height: 450px;
+      object-fit: cover;
+      &-parent {
+        width: 100%;
+        height: 100%;
+        // height: 5%;
+        // position: absolute;
+        z-index: -1;
+
+        &-innerdiv {
+          position: relative;
+          clip-path: polygon(100% 0, 100% 79%, 85% 100%, 0 100%, 0 0);
+        }
+      }
+
+      &-desc {
+        position: absolute;
+        background: black;
+        color: white;
+        bottom: 0;
+        right: 0;
+        margin-bottom: 0%;
+        width: 100%;
+        // height: 15rem;
+        padding: 2rem 10rem 2rem 5rem;
         z-index: 10;
         text-align: center;
         font-family: $font-poppins;
