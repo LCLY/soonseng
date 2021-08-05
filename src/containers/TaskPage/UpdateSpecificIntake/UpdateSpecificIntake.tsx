@@ -1093,6 +1093,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                             <IntakeStatusToggle
                               userInfoObj={userInfoObj}
                               intakeStatus={intakeStatus}
+                              goBackToIntakes={goBackToIntakes}
                               showPopConfirm={showPopConfirm}
                               setStatusUpdate={setStatusUpdate}
                               setShowPopConfirm={setShowPopConfirm}

@@ -162,6 +162,10 @@
         padding: 0 1rem;
       }
     }
+
+    &-outerdiv {
+      display: flex;
+    }
   }
 
   &__dropdown {
@@ -505,11 +509,12 @@
       }
 
       &--mobile {
-        margin-right: 3rem !important;
         @include respond-to($small-phone) {
+          margin-right: 2rem !important;
           display: block !important;
         }
         @include respond-to($phone-only) {
+          margin-right: 2rem !important;
           display: block !important;
         }
         @include respond-to($desktop-up) {
