@@ -15,7 +15,7 @@ import { ShoppingCartOutlined } from '@ant-design/icons';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 // image
-import SoonSengLogo from 'src/img/soonseng_logo.png';
+import SoonSengLogo from 'src/img/soonseng_logo_slick_cropped.png';
 
 // Util
 import {
@@ -401,11 +401,12 @@ const NavbarComponent: React.FC<Props> = ({
               src={SoonSengLogo}
             />
           </Navbar.Brand>
-          <div className="flex-align-center" style={{ marginLeft: 'auto' }}>
+          <div className="navbar__link-outerdiv">
+            {/* Mobile Icons */}
             {authenticated && (
               <div className="navbar__bell-div navbar__bell--mobile" style={{ marginRight: '2rem' }}>
                 <Popover
-                  placement="topLeft"
+                  placement="bottomLeft"
                   title={
                     <>
                       <i className="fas fa-bell navbar__bell-icon-title"></i>
@@ -472,15 +473,11 @@ const NavbarComponent: React.FC<Props> = ({
 
           <Nav className="navbar__wrapper">
             <div className="navbar__left-div">
-              <div className={`navbar__link-div ${activePage === 'home' ? 'active' : ''}`}>
-                <a className="navbar__link" href={ROUTE_HOME}>
-                  <i className="fas fa-home"></i>&nbsp;Home
-                </a>
-              </div>
               <div className={`navbar__link-div ${activePage === 'product' ? 'active' : ''}`}>
                 <Dropdown overlay={salesMenu} trigger={['click']} overlayStyle={{ fill: 'blue' }}>
                   <span className="navbar__link">
-                    <i className="fas fa-book"></i>&nbsp;Product
+                    {/* <i className="fas fa-book"></i>&nbsp; */}
+                    Product
                   </span>
                 </Dropdown>
               </div>
@@ -491,14 +488,16 @@ const NavbarComponent: React.FC<Props> = ({
               </div> */}
               <div className={`navbar__link-div ${activePage === 'task' ? 'active' : ''}`}>
                 <a className="navbar__link" href={ROUTE_TASK}>
-                  <i className="fas fa-tasks"></i>&nbsp;Task
+                  {/* <i className="fas fa-tasks"></i>&nbsp; */}
+                  SERVICE & REPAIR
                 </a>
               </div>
 
               {accessObj?.showAdminDashboard && (
                 <div className={`navbar__link-div ${activePage === 'performance' ? 'active' : ''}`}>
                   <a className="navbar__link" href={ROUTE_PERFORMANCE}>
-                    <i className="fas fa-chart-line"></i>&nbsp;Performance
+                    {/* <i className="fas fa-chart-line"></i>&nbsp; */}
+                    Performance
                   </a>
                 </div>
               )}
@@ -520,7 +519,8 @@ const NavbarComponent: React.FC<Props> = ({
                 <div className={`navbar__link-div`}>
                   <Dropdown overlay={dashboardMenu} trigger={['click']}>
                     <span className="navbar__link">
-                      <i className="fas fa-columns"></i>&nbsp;Dashboard
+                      {/* <i className="fas fa-columns"></i>&nbsp; */}
+                      Dashboard
                     </span>
                   </Dropdown>
                 </div>
@@ -541,23 +541,6 @@ const NavbarComponent: React.FC<Props> = ({
               {/* only show if user info exist or not a normal user */}
               {/* {userInfoObj && <div className="navbar__link-div navbar__role-title">{userInfoObj?.roles.title}</div>} */}
               {accessObj?.showSalesDashboard && <div className="navbar__version-div">{projectVersion}</div>}
-              <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
-                <div className={`navbar__link`}>
-                  {authenticated && userInfoObj ? (
-                    <>
-                      <a className={`navbar__link`} href={ROUTE_LOGOUT}>
-                        <i className="fas fa-sign-out-alt"></i>&nbsp;Sign Out
-                      </a>
-                    </>
-                  ) : (
-                    <>
-                      <a className={`navbar__link`} href={ROUTE_LOGIN}>
-                        <i className="fas fa-sign-in-alt"></i>&nbsp;Sign In
-                      </a>
-                    </>
-                  )}
-                </div>
-              </div>
               {authenticated && (
                 <div className="navbar__bell-div">
                   <Popover
@@ -605,6 +588,25 @@ const NavbarComponent: React.FC<Props> = ({
                     {/* </a> */}
                   </Badge>
                 )}
+              </div>
+              <div className={`navbar__link-div  ${activePage === 'login' ? 'active' : ''}`}>
+                <div>
+                  {authenticated && userInfoObj ? (
+                    <>
+                      <a className={`navbar__button-login`} href={ROUTE_LOGOUT}>
+                        {/* <i className="fas fa-sign-out-alt"></i>&nbsp; */}
+                        Sign Out
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <a className={`navbar__button-login`} href={ROUTE_LOGIN}>
+                        {/* <i className="fas fa-sign-in-alt"></i>&nbsp; */}
+                        Sign In
+                      </a>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </Nav>

@@ -289,12 +289,21 @@ const UserRoles: React.FC<Props> = ({
   /*  method */
   /* ================================================== */
 
-  const onCreateUserFinish = (values: { firstName: string; lastName: string; email: string; password: string }) => {
+  const onCreateUserFinish = (values: {
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    password_confirmation: string;
+    role_id: number;
+  }) => {
     onCreateUser({
-      email: values.email,
+      username: values.username,
       first_name: values.firstName,
       last_name: values.lastName,
-      encrypted_password: values.password,
+      password: values.password,
+      password_confirmation: values.password_confirmation,
+      role_id: values.role_id,
     });
   };
   const onUpdateUserFinish = () => {};

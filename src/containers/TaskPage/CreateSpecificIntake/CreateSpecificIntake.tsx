@@ -113,7 +113,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
         bay: values.bay !== undefined ? values.bay : '',
         pick_up: values.pickup !== undefined ? values.pickup : false,
         description: values.description !== undefined ? values.description : '',
-        registration: values.registrationNumber,
+        registration: values.registrationNumber.toUpperCase(),
         intake_status_id: values.intakeStatus,
         assigned_to_ids: values.assign === undefined ? [] : values.assign,
       },

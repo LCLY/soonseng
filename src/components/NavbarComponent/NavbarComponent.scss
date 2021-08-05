@@ -5,9 +5,11 @@
     transition: all 0.5s ease;
     width: 100%;
     z-index: $navbar;
-
+    border-bottom: 1px solid $translucent-grey;
+    @include shadow-func(0, 0.1rem, 1rem, 0.05rem, rgba(0, 0, 0, 0.15));
     & .bg-primary {
-      @include glassMorph(rgba($primary-color-4, 0.342), 10px, rgba(255, 3, 3, 0.137), 0);
+      background: white !important;
+      // @include glassMorph(rgba($primary-color-4, 0.342), 10px, rgba(255, 3, 3, 0.137), 0);
       // @include glassMorph(
       //   $frontLayerColor: rgb(213, 213, 213),
       //   $blur: 20px,
@@ -85,14 +87,15 @@
 
   &__wrapper {
     width: 100%;
-    justify-content: space-between;
+    height: 100% !important;
+    // background: red;
 
     & .active {
       // the background when the nav items is active
       // background: $secondary-color-1;
       border-radius: 0.5rem;
       & .navbar__link {
-        color: white;
+        color: $soft-red;
       }
     }
 
@@ -104,16 +107,20 @@
     }
     @include respond-to($desktop-up) {
       display: flex !important;
+      justify-content: flex-end;
     }
   }
 
   &__link {
     // the link itself
+    text-transform: uppercase;
     text-decoration: none !important;
-    color: rgba(white, 0.5);
+    font-family: $font-poppins;
+    // font-weight: bolder;
+    color: rgba(black, 0.5);
     cursor: pointer;
     &:hover {
-      color: white;
+      color: black;
     }
 
     @include respond-to($small-phone) {
@@ -126,7 +133,7 @@
       font-size: 1.5rem !important;
     }
     @include respond-to($desktop-up) {
-      font-size: 1.8rem !important;
+      font-size: 1.5rem !important;
     }
     // div of the nav links
     &-div {
@@ -154,6 +161,10 @@
         margin: 0.3rem 0;
         padding: 0 1rem;
       }
+    }
+
+    &-outerdiv {
+      display: flex;
     }
   }
 
@@ -197,6 +208,7 @@
       }
       @include respond-to($desktop-up) {
         display: flex;
+        margin-right: 2rem;
       }
     }
   }
@@ -207,7 +219,6 @@
 
   &__right {
     &-div {
-      margin-left: auto;
       display: flex;
       align-items: center;
       @include respond-to($small-phone) {
@@ -491,18 +502,19 @@
     &-cart {
       font-size: 2.5rem;
       // color: white !important;
-      color: rgba(white, 0.5) !important;
+      color: rgba(black, 0.5) !important;
 
       &:hover {
-        color: white !important;
+        color: $soft-red !important;
       }
 
       &--mobile {
-        margin-right: 3rem !important;
         @include respond-to($small-phone) {
+          margin-right: 2rem !important;
           display: block !important;
         }
         @include respond-to($phone-only) {
+          margin-right: 2rem !important;
           display: block !important;
         }
         @include respond-to($desktop-up) {
@@ -548,8 +560,40 @@
 
   &__version {
     &-div {
-      color: white;
+      font-family: $font-poppins;
+      // color: white;
       margin-right: 1rem;
+    }
+  }
+
+  &__button {
+    &-login {
+      background: $soft-red;
+      padding: 0.5rem 2rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      &:hover {
+        transition: all 0.5s ease;
+        background: #a03030;
+      }
+      &:active {
+        transition: none;
+        background: $soft-red;
+      }
+
+      color: white !important;
+      @include respond-to($small-phone) {
+        font-size: 1.3rem !important;
+      }
+      @include respond-to($phone-only) {
+        font-size: 1.3rem !important;
+      }
+      @include respond-to($tablet-portrait-up) {
+        font-size: 1.5rem !important;
+      }
+      @include respond-to($desktop-up) {
+        font-size: 1.8rem !important;
+      }
     }
   }
 }

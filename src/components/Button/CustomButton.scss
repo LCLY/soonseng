@@ -1,0 +1,30 @@
+.custombutton {
+  &__div {
+    background: $soft-red;
+    padding: 0.5rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    &:hover {
+      transition: all 0.5s ease;
+      background: #a03030;
+    }
+    &:active {
+      transition: none;
+      background: $soft-red;
+    }
+
+    color: white !important;
+    @include respond-to($small-phone) {
+      font-size: 1.3rem !important;
+    }
+    @include respond-to($phone-only) {
+      font-size: 1.3rem !important;
+    }
+    @include respond-to($tablet-portrait-up) {
+      font-size: 1.5rem !important;
+    }
+    @include respond-to($desktop-up) {
+      font-size: 1.8rem !important;
+    }
+  }
+}

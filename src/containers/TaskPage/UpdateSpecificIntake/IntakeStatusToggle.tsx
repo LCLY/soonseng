@@ -10,6 +10,7 @@ import { TReceivedSpecificIntakeJobsObj } from 'src/store/types/task';
 
 interface IntakeStatusToggleProps {
   showPopConfirm: boolean;
+  goBackToIntakes: () => any;
   //   intakeStatusDescription: string;
   currentIntakeStatus: number;
   intakeStatus: TReceivedIntakeStatusObj;
@@ -27,6 +28,7 @@ type Props = IntakeStatusToggleProps;
 const IntakeStatusToggle: React.FC<Props> = ({
   userInfoObj,
   intakeStatus,
+  goBackToIntakes,
   //   showPopConfirm,
   setStatusUpdate,
   //   setShowPopConfirm,
@@ -70,6 +72,7 @@ const IntakeStatusToggle: React.FC<Props> = ({
         onConfirm={() => {
           if (userInfoObj !== undefined && userInfoObj !== null) {
             setStatusUpdate(true);
+            goBackToIntakes();
             setCurrentIntakeStatus(intakeStatus.id);
             onSetToggleIntakeStatus(currentSpecificIntakeJobsObj.id, intakeStatus.id, intakeStatusDescription);
           }

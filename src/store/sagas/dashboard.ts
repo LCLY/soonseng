@@ -111,18 +111,20 @@ export function* createUserSaga(action: AppActions) {
   if (!('userFormData' in action)) return;
   yield put(actions.createUserStart());
 
-  let url = process.env.REACT_APP_API + `/user/users`;
+  let url = process.env.REACT_APP_API + `/sign_up`;
 
   let user = {
+    username: action.userFormData.username,
     first_name: action.userFormData.first_name,
     last_name: action.userFormData.last_name,
-    email: action.userFormData.email,
-    encrypted_password: action.userFormData.encrypted_password,
+    password: action.userFormData.password,
+    password_confirmation: action.userFormData.password_confirmation,
+    role_id: action.userFormData.role_id,
   };
 
   try {
     let response = yield axios.post(url, { user });
-    yield put(actions.createUserSucceed(response.data.user, response.data.success));
+    yield put(actions.createUserSucceed(response.data.updated, response.data.success));
   } catch (error) {
     if (error.response) {
       yield setPromiseError(error, actions.createUserFailed, error.response.data.error);
@@ -142,10 +144,12 @@ export function* updateUserSaga(action: AppActions) {
   let url = process.env.REACT_APP_API + `/user/users/${action.user_id}`;
 
   let user = {
+    username: action.userFormData.username,
     first_name: action.userFormData.first_name,
     last_name: action.userFormData.last_name,
-    email: action.userFormData.email,
-    encrypted_password: action.userFormData.encrypted_password,
+    password: action.userFormData.password,
+    password_confirmation: action.userFormData.password_confirmation,
+    role_id: action.userFormData.role_id,
   };
 
   try {
