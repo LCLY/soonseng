@@ -8,9 +8,9 @@ import NavbarComponent from 'src/components/NavbarComponent/NavbarComponent';
 
 // 3rd party lib
 import gsap from 'gsap';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { Helmet } from 'react-helmet';
-import { Carousel, Button } from 'antd';
+import { /* Carousel */ Button } from 'antd';
 // import ScrollAnimation from 'react-animate-on-scroll';
 
 /* Util */
@@ -82,59 +82,59 @@ function HomePage() {
   //   },
   // ];
 
-  let carouselContents = [
-    {
-      title: 'Service Advisor',
-      italicText: 'Let our service advisors represent you in conveying your concerns to our skilled mechanics.',
-      paragraph: [
-        'Our service advisor liaises between service technicians and you, whilst assisting you in determining problems with your vehicles. Pin-pointing problems and providing accurate descriptions to our technicians ensures the process of the job runs smoothly.',
-        'We put our customers on our HINO preventive maintenance schedule. By helping our customers think ahead of time on vehicle services, our schedule reduces downtime for vehicles which results in providing our customers a more consistent logistic performance.',
-        'Share your problems and requests while we greet you with utmost sincerity. Skip the queue by scheduling a service appointment with us.',
-      ],
-      imgUrl: 'https://www.autotrainingcentre.com/wp-content/uploads/2015/11/image15.jpeg',
-    },
-    {
-      title: 'HINO Certified Service Technician',
-      italicText:
-        'Your vehicle’s masseuse, responsible in making sure your vehicles have a great time. Rest assured, they are in good hands.',
-      paragraph: [
-        'Our Service Technicians do not stop until your vehicle is back on the road. We take our quality of service seriously and continuously attend workshop training to ensure we are keeping up with the latest trends of the automotive industry.',
-        'We help you preemptively detect potential problems regarding your vehicle through our detailed 30-Point inspection and routine checks and services. Our goal is to reduce uncertainty and allow our customers to have smooth business operations.',
-        '  We value customers reaching out to us whenever there is an issue, no matter the day nor the time.',
-      ],
-      imgUrl: 'https://www.cashcarsbuyer.com/wp-content/uploads/2020/04/Ask-A-Mechanic-1200x900.jpg',
-    },
-    {
-      title: 'Sales Advisor',
-      italicText:
-        'Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we listen, discuss, and solve them together.',
-      paragraph: [
-        'Our customer’s satisfaction has always been our top priority. Share your problems with us and let us embark on our journey into solving them.',
-        'Being under budget is every businesses’ concern. Providing the cheapest options are always easy, however the challenge lies within recommending the most suitable and effective solution. We aim to get your problems solved under budget for we care for our customers.',
-        'Leave it up to us in providing you solutions for rest assured, your concerns are in good hands.',
-      ],
-      imgUrl: 'https://www.salesman.org/wp-content/uploads/2015/05/suit-hacks-for-salesmen.jpg',
-    },
-    {
-      title: 'Customer Support',
-      italicText: 'Your satisfaction, we guarantee.',
-      paragraph: [
-        'Our customer support extends way beyond our products. One of our proudest steps to emphasize on our commitment on customers’ satisfactory, we invested in having Procare units to provide customers’ with onsite services, and standby units for customers. We provide 24/7 breakdown assistance so that we know that our customers’ needs will always be met.',
-        'Being part of the automotive industry, we support our customers’ through providing their drivers with training that are focuses on road safety, vehicle maintenance, fuel efficiency driving and many more. Together with HINO’s support through HTSCC (HINO Total Support Customer Center), we hope to get the idea across that we are always around to support our customers.',
-        'With the resources we have at hand, we strive to make sure that no customer is left behind.',
-      ],
-      imgUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd5aAff7FNXBxgHHpFNsezNMV4fwsMqhyETg&usqp=CAU',
-    },
-    {
-      title: ' Parts Advisor',
-      italicText: 'Good parts are the main components to a vehicle, as healthy organs are to humans.',
-      paragraph: [
-        'Good parts are the main components to a vehicle, as healthy organs are to humans. With HINO being our manufacturer, we are proud to offer our customers’ and business partners with HINO genuine parts. With HINO’s genuine parts program, we strive to provide our customers with good quality parts, within their constraints of budget in mind.',
-        'Aligned to our core values where we look heavily upon growth, we often send our Parts Advisor to specially designed training sessions from HINO, to make sure that they are not left behind by the ever-changing technology of spare parts.',
-      ],
-      imgUrl: 'https://sc02.alicdn.com/kf/HTB1n5Z8KpXXXXaYXFXXq6xXFXXXK.jpg',
-    },
-  ];
+  // let carouselContents = [
+  //   {
+  //     title: 'Service Advisor',
+  //     italicText: 'Let our service advisors represent you in conveying your concerns to our skilled mechanics.',
+  //     paragraph: [
+  //       'Our service advisor liaises between service technicians and you, whilst assisting you in determining problems with your vehicles. Pin-pointing problems and providing accurate descriptions to our technicians ensures the process of the job runs smoothly.',
+  //       'We put our customers on our HINO preventive maintenance schedule. By helping our customers think ahead of time on vehicle services, our schedule reduces downtime for vehicles which results in providing our customers a more consistent logistic performance.',
+  //       'Share your problems and requests while we greet you with utmost sincerity. Skip the queue by scheduling a service appointment with us.',
+  //     ],
+  //     imgUrl: 'https://www.autotrainingcentre.com/wp-content/uploads/2015/11/image15.jpeg',
+  //   },
+  //   {
+  //     title: 'HINO Certified Service Technician',
+  //     italicText:
+  //       'Your vehicle’s masseuse, responsible in making sure your vehicles have a great time. Rest assured, they are in good hands.',
+  //     paragraph: [
+  //       'Our Service Technicians do not stop until your vehicle is back on the road. We take our quality of service seriously and continuously attend workshop training to ensure we are keeping up with the latest trends of the automotive industry.',
+  //       'We help you preemptively detect potential problems regarding your vehicle through our detailed 30-Point inspection and routine checks and services. Our goal is to reduce uncertainty and allow our customers to have smooth business operations.',
+  //       '  We value customers reaching out to us whenever there is an issue, no matter the day nor the time.',
+  //     ],
+  //     imgUrl: 'https://www.cashcarsbuyer.com/wp-content/uploads/2020/04/Ask-A-Mechanic-1200x900.jpg',
+  //   },
+  //   {
+  //     title: 'Sales Advisor',
+  //     italicText:
+  //       'Resolute your frustrations into individually tailored solutions. We don’t just hear your problems, we listen, discuss, and solve them together.',
+  //     paragraph: [
+  //       'Our customer’s satisfaction has always been our top priority. Share your problems with us and let us embark on our journey into solving them.',
+  //       'Being under budget is every businesses’ concern. Providing the cheapest options are always easy, however the challenge lies within recommending the most suitable and effective solution. We aim to get your problems solved under budget for we care for our customers.',
+  //       'Leave it up to us in providing you solutions for rest assured, your concerns are in good hands.',
+  //     ],
+  //     imgUrl: 'https://www.salesman.org/wp-content/uploads/2015/05/suit-hacks-for-salesmen.jpg',
+  //   },
+  //   {
+  //     title: 'Customer Support',
+  //     italicText: 'Your satisfaction, we guarantee.',
+  //     paragraph: [
+  //       'Our customer support extends way beyond our products. One of our proudest steps to emphasize on our commitment on customers’ satisfactory, we invested in having Procare units to provide customers’ with onsite services, and standby units for customers. We provide 24/7 breakdown assistance so that we know that our customers’ needs will always be met.',
+  //       'Being part of the automotive industry, we support our customers’ through providing their drivers with training that are focuses on road safety, vehicle maintenance, fuel efficiency driving and many more. Together with HINO’s support through HTSCC (HINO Total Support Customer Center), we hope to get the idea across that we are always around to support our customers.',
+  //       'With the resources we have at hand, we strive to make sure that no customer is left behind.',
+  //     ],
+  //     imgUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd5aAff7FNXBxgHHpFNsezNMV4fwsMqhyETg&usqp=CAU',
+  //   },
+  //   {
+  //     title: ' Parts Advisor',
+  //     italicText: 'Good parts are the main components to a vehicle, as healthy organs are to humans.',
+  //     paragraph: [
+  //       'Good parts are the main components to a vehicle, as healthy organs are to humans. With HINO being our manufacturer, we are proud to offer our customers’ and business partners with HINO genuine parts. With HINO’s genuine parts program, we strive to provide our customers with good quality parts, within their constraints of budget in mind.',
+  //       'Aligned to our core values where we look heavily upon growth, we often send our Parts Advisor to specially designed training sessions from HINO, to make sure that they are not left behind by the ever-changing technology of spare parts.',
+  //     ],
+  //     imgUrl: 'https://sc02.alicdn.com/kf/HTB1n5Z8KpXXXXaYXFXXq6xXFXXXK.jpg',
+  //   },
+  // ];
 
   return (
     <>
@@ -277,7 +277,7 @@ function HomePage() {
             <div className="homepage__team-paragraph-outerdiv">
               <div className="homepage__team-paragraph">
                 Our customer’s satisfaction has always been our top priority. Share your problems with us and let us
-                embark on our journey into solving them.{' '}
+                embark on our journey into solving them.
               </div>
               <div className="homepage__team-paragraph">
                 Being under budget is every businesses' concern. Providing the cheapest options are always easy, however
@@ -347,6 +347,44 @@ function HomePage() {
         </div>
       </section>
 
+      <section className="homepage__section-partadvisor">
+        <div className="homepage__partadvisor-outerdiv">
+          <div className="homepage__sales-content homepage__sales-content--parts">
+            <div>
+              <h3>Parts Advisor</h3>
+              <div className="homepage__parallelogram"></div>
+
+              <div className="homepage__team-paragraph-outerdiv">
+                <div className="homepage__team-paragraph">
+                  Good parts are the main components to a vehicle, as healthy organs are to humans. With HINO being our
+                  manufacturer, we are proud to offer our customers’ and business partners with HINO genuine parts. With
+                  HINO’s genuine parts program, we strive to provide our customers with good quality parts, within their
+                  constraints of budget in mind.
+                </div>
+                <div className="homepage__team-paragraph">
+                  Aligned to our core values where we look heavily upon growth, we often send our Parts Advisor to
+                  specially designed training sessions from HINO, to make sure that they are not left behind by the
+                  ever-changing technology of spare parts.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ width: '100%' }}></div>
+        </div>
+        <div className="homepage__partadvisor-bgimg-parent">
+          <div className="homepage__partadvisor-bgimg-parent-innerdiv">
+            <img
+              className="homepage__partadvisor-bgimg"
+              src={'https://sc02.alicdn.com/kf/HTB1n5Z8KpXXXXaYXFXXq6xXFXXXK.jpg'}
+              alt="partsadvisor"
+            />
+            <div className="homepage__partadvisor-bgimg-desc">
+              "Good parts are the main components to a vehicle, as healthy organs are to humans."
+            </div>
+          </div>
+        </div>
+      </section>
       <Container>
         {/* <section className="homepage__section-values">
           <div className="homepage__section-values-title">Our values</div>
@@ -437,7 +475,7 @@ function HomePage() {
         </section> */}
       </Container>
       {/* Play carousel if user mouse point outside */}
-      <div className="homepage__carousel-outerdiv">
+      {/* <div className="homepage__carousel-outerdiv">
         <Container>
           <div className="homepage__carousel-ourteam">Our Team</div>
           <Carousel autoplay autoplaySpeed={4000} pauseOnHover={true}>
@@ -470,7 +508,7 @@ function HomePage() {
             })}
           </Carousel>
         </Container>
-      </div>
+      </div> */}
 
       <Footer />
     </>
