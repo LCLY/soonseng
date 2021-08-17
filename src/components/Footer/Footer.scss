@@ -137,7 +137,7 @@
       font-family: $font-poppins;
       text-transform: uppercase;
       @include respond-to($tablet-landscape-up) {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         display: block;
       }
       @include respond-to($tablet-portrait-up) {
@@ -175,10 +175,10 @@
         margin-bottom: 1rem;
       }
       @include respond-to(phone-only) {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
       }
       @include respond-to(tablet-portrait-up) {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
       }
       @include respond-to($small-phone) {
         font-size: 1.5rem;
@@ -298,7 +298,7 @@
         text-align: left;
       }
       & a {
-        font-size: 1.8rem;
+        font-size: 1.5rem !important;
         color: rgb(223, 223, 223);
         font-family: $font-poppins;
         text-transform: uppercase;

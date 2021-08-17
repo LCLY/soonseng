@@ -18,6 +18,7 @@ import { RootState } from 'src';
 import holy5truck from 'src/img/5trucks.jpg';
 import * as actions from 'src/store/actions/index';
 import { TReceivedUserInfoObj } from 'src/store/types/auth';
+import { ROUTE_TASK } from 'src/shared/routes';
 
 interface LoginPageProps {}
 
@@ -68,7 +69,7 @@ const LoginPage: React.FC<Props> = ({
         <link href="http://www.soonsenghino.com/login" />
       </Helmet>
 
-      {authenticated && userInfoObj && <Redirect to="/" />}
+      {authenticated && userInfoObj && <Redirect to={ROUTE_TASK} />}
       <NavbarComponent activePage="login" />
 
       <ParallaxContainer overlayColor="rgba(0, 0, 0, 0.3)" bgImageUrl={holy5truck}>
