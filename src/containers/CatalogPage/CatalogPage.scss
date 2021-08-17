@@ -900,10 +900,6 @@
       justify-content: center;
       width: 100%;
 
-      background: white;
-      @include glassMorph(rgba(255, 255, 255, 0), 10px, rgba(0, 0, 0, 0), 2rem);
-      @include shadow-func(0rem, 0rem, 0.7rem, 0.01rem, rgba(255, 255, 255, 0.789));
-
       @include respond-to($small-phone) {
         height: 80vh;
       }

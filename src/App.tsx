@@ -4,6 +4,7 @@ import React, { Suspense, useRef, useContext, useState, useEffect } from 'react'
 import Logout from 'src/containers/Authentication/Logout/Logout';
 // General pages
 import TaskPage from 'src/containers/TaskPage/TaskPage';
+// import TaskPage from 'src/containers/TaskPage/TaskPage2';
 import Homepage from 'src/containers/HomePage/HomePage';
 import AboutPage from 'src/containers/AboutPage/AboutPage';
 import SalesPage from 'src/containers/SalesPage/SalesPage';
