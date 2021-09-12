@@ -310,7 +310,7 @@ const HiddenQuotationComponent: React.FC<Props> = ({ width, currentBrandObj, quo
                             <div>UBS Extension Price</div>
                             <div>
                               <>
-                                {bodyMakeObj.price && bodyMakeObj.price !== 0 ? (
+                                {bodyMakeObj.make_wheelbase.price && bodyMakeObj.make_wheelbase.price !== 0 ? (
                                   <>
                                     <NumberFormat
                                       displayType={'text'}
