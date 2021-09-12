@@ -160,7 +160,6 @@
     &-outerdiv {
       overflow-x: hidden;
       position: relative;
-      border: 1px solid white;
 
       @include respond-to($small-phone) {
         width: 100%;
@@ -356,10 +355,16 @@
     padding: 0.2rem 1.5rem;
     border: none;
     cursor: pointer;
-    @include shadow-func(0.1rem, 0.1rem, 0.2rem, 0.03rem, rgba(0, 0, 0, 0.5));
+    border-radius: 0.5rem;
+    @include shadow-func(0.1rem, 0.1rem, 0.3rem, 0.05rem, rgba(0, 0, 0, 0.3));
     transition: all 0.5s ease;
     &:hover {
-      @include shadow-func(0.2rem, 0.2rem, 0.5rem, 0.05rem, rgba(0, 0, 0, 0.5));
+      @include shadow-func(0.5rem, 0.5rem, 1rem, 0.05rem, rgba(0, 0, 0, 0.5));
+    }
+
+    &:active {
+      transition: none;
+      @include shadow-func(0.1rem, 0.1rem, 0.3rem, 0.05rem, rgba(0, 0, 0, 0.3));
     }
     &-text {
       @include respond-to($small-phone) {

@@ -94,7 +94,7 @@ svg {
 // when background of search icon is unfocused
 .ant-table-thead th.ant-table-column-has-sorters:hover .ant-table-filter-trigger-container {
   color: white !important;
-  background: $primary-color-4 !important;
+  background: none !important;
 }
 
 // background of search icon when hover on column
@@ -102,7 +102,8 @@ svg {
 .ant-table-filter-trigger-container:hover,
 .ant-table-thead th.ant-table-column-has-sorters:hover .ant-table-filter-trigger-container:hover {
   color: white !important;
-  background: darken($primary-color-4, 5%) !important;
+  // background: darken($primary-color-4, 5%) !important;
+  background: rgb(182, 182, 182) !important;
   // border: 1px solid $tertiary-color-2 !important;
 }
 
@@ -175,8 +176,8 @@ svg {
 .ant-table-filter-trigger-container {
   right: 1rem !important;
   border-radius: 50% !important;
-  height: 3rem !important;
-  width: 3rem !important;
+  height: 2rem !important;
+  width: 2rem !important;
   margin: auto 0 !important;
 }
 
