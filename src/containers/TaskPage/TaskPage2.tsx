@@ -201,28 +201,6 @@ const TaskPage2: React.FC<Props> = ({
       sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.regNumber.localeCompare(b.regNumber),
       // ...getColumnSearchProps(intakeJobsSearchInput, 'regNumber', 'Registration Number'),
       render: (_text: any, record: TIntakeTableState) => {
-        let defaultColor = '#b2d8e9';
-        let grey = '#808080';
-        let readyToPickUp = '#63a777';
-        let onHold = '#e98923';
-        let inProgress = '#edd864';
-        let statusColor = '';
-        switch (record.status.toLowerCase()) {
-          case 'Ready for Pick-up'.toLowerCase():
-            statusColor = readyToPickUp;
-            break;
-          case 'Done'.toLowerCase():
-            statusColor = grey;
-            break;
-          case 'In Progress'.toLowerCase():
-            statusColor = inProgress;
-            break;
-          case 'On Hold'.toLowerCase():
-            statusColor = onHold;
-            break;
-          default:
-            statusColor = defaultColor;
-        }
         return (
           <>
             <Tooltip
@@ -239,7 +217,6 @@ const TaskPage2: React.FC<Props> = ({
             >
               <span
                 className="task__link"
-                style={{ color: statusColor }}
                 onClick={() => {
                   onGetSpecificIntakeJobs(parseInt(record.key));
                   updateIntakeJobsForm.setFieldsValue({
@@ -266,35 +243,41 @@ const TaskPage2: React.FC<Props> = ({
       title: 'Company',
       dataIndex: 'company',
       width: 'auto',
-      allipsis: true,
+      ellipsis: true,
       ...getColumnSearchProps(intakeJobsSearchInput, 'company', 'Company'),
       sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.company.localeCompare(b.company),
     },
     {
-      key: 'serviceType',
-      title: 'Job Type',
-      dataIndex: 'serviceType',
-      width: 'auto',
-      ellipsis: true,
-      ...getColumnSearchProps(intakeJobsSearchInput, 'serviceType', 'Job Type'),
-      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.serviceType.localeCompare(b.serviceType),
+      key: 'bay',
+      title: 'Bay',
+      dataIndex: 'bay',
+      width: '10rem',
+      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.bay.localeCompare(b.bay),
     },
+    // {
+    //   key: 'serviceType',
+    //   title: 'Job Type',
+    //   dataIndex: 'serviceType',
+    //   width: 'auto',
+    //   ellipsis: true,
+    //   ...getColumnSearchProps(intakeJobsSearchInput, 'serviceType', 'Job Type'),
+    //   sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.serviceType.localeCompare(b.serviceType),
+    // },
 
     {
       key: 'status',
       title: 'Status',
       dataIndex: 'status',
-      width: '10rem',
+      width: '12rem',
       ellipsis: true,
       align: 'center',
-      ...getColumnSearchProps(intakeJobsSearchInput, 'status', 'Status'),
-      sorter: (a: TIntakeTableState, b: TIntakeTableState) => a.status.localeCompare(b.status),
       render: (_text: any, record: TIntakeTableState) => {
-        let defaultColor = '#b2d8e9';
+        let defaultColor = '#7c7c82';
         let grey = '#808080';
-        let readyToPickUp = '#63a777';
+        let readyToPickUp = '#2b9d2b';
         let onHold = '#e98923';
-        let inProgress = '#edd864';
+        let inQueue = '#d5c129';
+        let inProgress = '#277ded';
         let statusColor = '';
         switch (record.status.toLowerCase()) {
           case 'Ready for Pick-up'.toLowerCase():
@@ -309,10 +292,13 @@ const TaskPage2: React.FC<Props> = ({
           case 'On Hold'.toLowerCase():
             statusColor = onHold;
             break;
+          case 'In Queue'.toLowerCase():
+            statusColor = inQueue;
+            break;
           default:
             statusColor = defaultColor;
         }
-        return <span style={{ color: statusColor }}>{record.status}</span>;
+        return <span style={{ color: statusColor, fontWeight: 'bolder' }}>{record.status}</span>;
       },
     },
 
@@ -661,11 +647,13 @@ const TaskPage2: React.FC<Props> = ({
         description: intake.description,
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
         status: intake.intake_status.title,
-        bay: intake.bay === '' ? '-' : intake.bay,
+        bay: intake.bay === '' || intake.bay === null ? '-' : intake.bay,
       };
     };
 
     if (intakeSummaryArray) {
+      console.log(intakeSummaryArray);
+
       // Execute function "storeValue" for every array index
       intakeSummaryArray.map(storeValue);
     }
@@ -755,7 +743,7 @@ const TaskPage2: React.FC<Props> = ({
         description: incomingData.data.description,
         serviceType: uniqueService.length > 0 ? uniqueService.join() : '-',
         status: incomingData.data.intake_status.title,
-        bay: incomingData.data.bay === '' ? '-' : incomingData.data.bay,
+        bay: incomingData.data.bay === '' || incomingData.data.bay === null ? '-' : incomingData.data.bay,
         company: companyUndefined ? '-' : incomingData.data.registration.split('-')[1],
       };
 
@@ -1301,138 +1289,6 @@ const TaskPage2: React.FC<Props> = ({
                             </div>
                             <div className="task__component-bottom-content-right"></div>
                           </div>
-                        </div>
-
-                        <div className="task__header-div ">
-                          <div className="make__header-title">
-                            {auth_token === null ? (
-                              'Intakes'
-                            ) : (
-                              <>
-                                {currentPage === 'main'
-                                  ? 'Intakes'
-                                  : currentPage === 'update'
-                                  ? 'Update Intake'
-                                  : 'Create Intake'}
-                              </>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* -------------------- */}
-                        {/*     Intake Table      */}
-                        {/* -------------------- */}
-
-                        <div className="task__table-wrapper">
-                          {/* -------------------- */}
-                          {/*     Search bar      */}
-                          {/* -------------------- */}
-
-                          <div className="task__table-outerdiv">
-                            <div className="task__table-parent">
-                              <div className="task__table-div">
-                                <div className="task__specific-div task__specific-div--create">
-                                  <CreateSpecificIntake
-                                    goBackToIntakes={goBackToIntakes}
-                                    createServiceTableState={createServiceTableState}
-                                    setCreateServiceTableState={setCreateServiceTableState}
-                                    createIntakeJobsForm={createIntakeJobsForm}
-                                    serviceTypeTaskDict={serviceTypeTaskDict}
-                                    setServiceTypeTaskDict={setServiceTypeTaskDict}
-                                    serviceTaskDropdown={serviceTaskDropdown}
-                                    setServiceTaskDropdown={setServiceTaskDropdown}
-                                  />
-                                </div>
-
-                                <div className="task__specific-div task__specific-div--update">
-                                  <UpdateSpecificIntake
-                                    inEditMode={inEditMode}
-                                    setInEditMode={setInEditMode}
-                                    setCurrentPage={setCurrentPage}
-                                    beforeDeleteState={beforeDeleteState}
-                                    setBeforeDeleteState={setBeforeDeleteState}
-                                    serviceTypeTaskDict={serviceTypeTaskDict}
-                                    setServiceTypeTaskDict={setServiceTypeTaskDict}
-                                    serviceTaskDropdown={serviceTaskDropdown}
-                                    setServiceTaskDropdown={setServiceTaskDropdown}
-                                    setShowMobileHistoryLogs={setShowMobileHistoryLogs}
-                                    setStartLogsAnimation={setStartLogsAnimation}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          {currentPage === 'update' && (
-                            <div className="task__table--pickup">
-                              {/* {currentPage === 'main' || currentPage === 'create' ? (
-                                <p> Ready for pickup</p>
-                              ) : ( */}
-                              <div style={{ height: '100%' }}>
-                                <div className="task__table--pickup-title">Intake Logs</div>
-                                <div className="task__collapse-div">
-                                  {specificIntakeLogs ? (
-                                    <Collapse accordion className="task__collapse">
-                                      {[...specificIntakeLogs].reverse().map((child, index) => (
-                                        <Panel
-                                          header={
-                                            <div className="task__collapse-header">
-                                              <div className="task__collapse-header-title">
-                                                {child.title === '' ? '-' : child.title}
-                                              </div>
-                                              <div className="task__collapse-header-time">
-                                                <i className="fas fa-clock"></i>
-                                                {moment(child.created_at).format('HH:mm')}
-                                              </div>
-                                            </div>
-                                          }
-                                          key={`log${index}`}
-                                        >
-                                          <section className="task__collapse-content">
-                                            <div className="task__collapse-row">
-                                              <div className="task__collapse-row-label">Note:</div>
-                                              <div className="task__collapse-row-description">
-                                                {child.description === '' ? '-' : child.description}
-                                              </div>
-                                            </div>
-                                            <div className="task__collapse-row">
-                                              <div className="task__collapse-row-label">Updated at:</div>
-                                              <div>{moment(child.created_at).format('DD/MM/YYYY HH:mm')}</div>
-                                            </div>
-                                          </section>
-                                          <div className="task__collapse-row task__collapse-row--user">
-                                            <div>
-                                              <i className="fas fa-user"></i>
-                                            </div>
-                                            &nbsp;
-                                            <div>{child.created_by}</div>
-                                          </div>
-                                        </Panel>
-                                      ))}
-                                    </Collapse>
-                                  ) : (
-                                    <div className="task__collapse-spin">
-                                      <div className="lds-spinner">
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                              {/* )} */}
-                            </div>
-                          )}
                         </div>
                       </section>
                     ) : (

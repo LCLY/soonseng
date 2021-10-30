@@ -158,11 +158,10 @@ const CatalogBodyMake: React.FC<Props> = ({
   const [imageGalleryTargetModelId, setImageGalleryTargetModelId] = useState(-1);
   const [fullGalleryImagesPreviewUrls, setFullGalleryImagesPreviewUrls] = useState<{ url: string; name: string }[]>([]); //this is for preview image purposes only
   const [fullImageGalleryImagesArray, setFullImageGalleryImagesArray] = useState<TReceivedImageObj[] | null>(null);
-  const [keepTrackBodyMake, setKeepTrackBodyMake] =
-    useState<{
-      body_make_id: number;
-      make_wheelbase_id: number;
-    } | null>(null);
+  const [keepTrackBodyMake, setKeepTrackBodyMake] = useState<{
+    body_make_id: number;
+    make_wheelbase_id: number;
+  } | null>(null);
   const [keepTrackMakeImage, setKeepTrackMakeImage] = useState<{ make_id: number } | null>(null);
 
   const [updateMakeForm] = Form.useForm();
@@ -235,8 +234,9 @@ const CatalogBodyMake: React.FC<Props> = ({
     dimension: -1,
   });
 
-  const [currentCheckedGeneralAccessories, setCurrentCheckedGeneralAccessories] =
-    useState<ICheckedAccessories | null>(null);
+  const [currentCheckedGeneralAccessories, setCurrentCheckedGeneralAccessories] = useState<ICheckedAccessories | null>(
+    null,
+  );
   const [currentCheckedBodyAccessories, setCurrentCheckedBodyAccessories] = useState<ICheckedAccessories | null>(null);
   const [currentCheckedDimensionAccessories, setCurrentCheckedDimensionAccessories] =
     useState<ICheckedDimensionAccessories | null>(null);
@@ -360,7 +360,6 @@ const CatalogBodyMake: React.FC<Props> = ({
     }
 
     let tempModelSubtotalPrice = modelSubtotalPrice;
-    tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
     let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
     roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
     roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
