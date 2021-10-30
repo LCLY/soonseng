@@ -576,7 +576,6 @@ const ComparisonPage: React.FC<Props> = ({ location, localOrdersDict }) => {
                           }
 
                           let tempModelSubtotalPrice = modelSubtotalPrice;
-                          tempModelSubtotalPrice = (tempModelSubtotalPrice * 95) / 100;
                           let roundedModelSubtotalPrice = -Math.round(-tempModelSubtotalPrice / 1000) * 1000;
                           roundedModelSubtotalPrice = (roundedModelSubtotalPrice - 1000) * 0.0325 + 441.8;
                           roundedModelSubtotalPrice = roundedModelSubtotalPrice * 1.06 + 235;
