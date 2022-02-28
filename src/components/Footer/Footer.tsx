@@ -13,6 +13,7 @@ type Props = FooterProps;
 const Footer: React.FC<Props> = () => {
   return (
     <>
+      {/* test */}
       <footer className="footer__outerdiv">
         <Container>
           <div className="footer__top">
