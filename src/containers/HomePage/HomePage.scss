@@ -154,6 +154,11 @@
       }
 
       @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+        padding: 0 2rem;
+      }
+      @include respond-to($desktop-up) {
+        flex-direction: row;
         padding: 0 10rem 10rem 15rem;
       }
     }
@@ -171,6 +176,11 @@
       }
 
       @include respond-to($tablet-portrait-up) {
+        flex-direction: row;
+        padding: 0 2rem;
+      }
+      @include respond-to($desktop-up) {
+        flex-direction: row;
         padding: 0 10rem 10rem 15rem;
       }
     }
@@ -797,6 +807,10 @@
         padding: 1rem;
       }
       @include respond-to($tablet-portrait-up) {
+        padding-right: 2rem;
+      }
+
+      @include respond-to($desktop-up) {
         padding-right: 15rem;
         padding-top: 5rem;
       }
@@ -834,6 +848,7 @@
     }
     &-bgimg {
       width: 100%;
+      object-fit: cover;
 
       @include respond-to($small-phone) {
         height: 200px;
@@ -845,7 +860,6 @@
         height: 450px;
       }
 
-      object-fit: cover;
       &-parent {
         width: 100%;
         height: 100%;
@@ -857,7 +871,7 @@
           position: relative;
 
           @include respond-to($tablet-portrait-up) {
-            clip-path: polygon(38% 0, 100% 0, 100% 90%, 0 90%);
+            clip-path: polygon(100% 0, 100% 100%, 8% 100%, 0 83%, 0 0);
           }
         }
       }
@@ -910,6 +924,9 @@
         padding: 1rem;
       }
       @include respond-to($tablet-portrait-up) {
+        padding-right: 0;
+      }
+      @include respond-to($desktop-up) {
         padding-right: 15rem;
         padding-top: 5rem;
       }
@@ -952,7 +969,7 @@
         &-innerdiv {
           position: relative;
           @include respond-to($tablet-portrait-up) {
-            clip-path: polygon(38% 0, 100% 0, 100% 90%, 0 90%);
+            clip-path: polygon(100% 0, 100% 79%, 85% 100%, 0 100%, 0 0);
           }
         }
       }
