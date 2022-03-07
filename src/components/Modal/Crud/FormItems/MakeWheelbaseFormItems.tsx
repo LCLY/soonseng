@@ -60,9 +60,7 @@ const MakeWheelbaseFormItems: React.FC<Props> = ({ crud, antdForm, onFinish, whe
             showSearch
             placeholder="Select a wheelbase"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {wheelbasesArray &&
               wheelbasesArray.map((wheelbase) => {

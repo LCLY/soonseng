@@ -15,7 +15,7 @@ let imageIsUploaded = false;
 //    Upload Image(s)
 /* ================================================================== */
 
-export function* uploadImageSaga(action: AppActions) {
+export function* uploadImageSaga(action: AppActions): any {
   yield put(actions.uploadImageStart());
 
   let url = process.env.REACT_APP_API + `/uploads`;
@@ -41,7 +41,7 @@ export function* uploadImageSaga(action: AppActions) {
     let response = yield axios.post(url, formData, config);
     yield put(actions.uploadImageSucceed(response.data.images, response.data.success));
     imageIsUploaded = true;
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.uploadImageFailed, error.response.data.error);
     } else {
@@ -54,7 +54,7 @@ export function* uploadImageSaga(action: AppActions) {
 //    Delete Image(s)
 /* ================================================================== */
 
-export function* deleteUploadImageSaga(action: AppActions) {
+export function* deleteUploadImageSaga(action: AppActions): any {
   yield put(actions.deleteUploadImageStart());
 
   let url = process.env.REACT_APP_API + `/uploads`;
@@ -71,7 +71,7 @@ export function* deleteUploadImageSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url, config);
     yield put(actions.deleteUploadImageSucceed(response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteUploadImageFailed, error.response.data.error);
     } else {
@@ -87,7 +87,7 @@ export function* deleteUploadImageSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All users
 /* ------------------------------- */
-export function* getUsersSaga(_action: AppActions) {
+export function* getUsersSaga(_action: AppActions): any {
   yield put(actions.getUsersStart());
 
   let url = process.env.REACT_APP_API + `/user/users`;
@@ -95,7 +95,7 @@ export function* getUsersSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getUsersSucceed(response.data.users));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getUsersFailed, error.response.data.error);
     } else {
@@ -107,7 +107,7 @@ export function* getUsersSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create user
 /* ------------------------------- */
-export function* createUserSaga(action: AppActions) {
+export function* createUserSaga(action: AppActions): any {
   if (!('userFormData' in action)) return;
   yield put(actions.createUserStart());
 
@@ -125,7 +125,7 @@ export function* createUserSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { user });
     yield put(actions.createUserSucceed(response.data.updated, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createUserFailed, error.response.data.error);
     } else {
@@ -137,7 +137,7 @@ export function* createUserSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update User
 /* ------------------------------- */
-export function* updateUserSaga(action: AppActions) {
+export function* updateUserSaga(action: AppActions): any {
   if (!('userFormData' in action) || !('user_id' in action)) return;
   yield put(actions.updateUserStart());
 
@@ -155,7 +155,7 @@ export function* updateUserSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { user });
     yield put(actions.updateUserSucceed(response.data.standard_charges, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateUserFailed, error.response.data.error);
     } else {
@@ -166,7 +166,7 @@ export function* updateUserSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete User
 /* ------------------------------- */
-export function* deleteUserSaga(action: AppActions) {
+export function* deleteUserSaga(action: AppActions): any {
   if (!('user_id' in action)) return;
 
   yield put(actions.deleteUserStart());
@@ -175,7 +175,7 @@ export function* deleteUserSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteUserSucceed(response.data.standard_charges, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteUserFailed, error.response.data.error);
     } else {
@@ -191,7 +191,7 @@ export function* deleteUserSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All roles
 /* ------------------------------- */
-export function* getRolesSaga(_action: AppActions) {
+export function* getRolesSaga(_action: AppActions): any {
   yield put(actions.getRolesStart());
 
   let url = process.env.REACT_APP_API + `/user/roles`;
@@ -199,7 +199,7 @@ export function* getRolesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getRolesSucceed(response.data.roles));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getRolesFailed, error.response.data.error);
     } else {
@@ -211,7 +211,7 @@ export function* getRolesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create role
 /* ------------------------------- */
-export function* createRoleSaga(action: AppActions) {
+export function* createRoleSaga(action: AppActions): any {
   if (!('userRoleFormData' in action)) return;
   yield put(actions.createRoleStart());
 
@@ -231,7 +231,7 @@ export function* createRoleSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { role });
     yield put(actions.createRoleSucceed(response.data.roles, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createRoleFailed, error.response.data.error);
     } else {
@@ -243,7 +243,7 @@ export function* createRoleSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Role
 /* ------------------------------- */
-export function* updateRoleSaga(action: AppActions) {
+export function* updateRoleSaga(action: AppActions): any {
   if (!('userRoleFormData' in action) || !('role_id' in action)) return;
   yield put(actions.updateRoleStart());
 
@@ -263,7 +263,7 @@ export function* updateRoleSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { role });
     yield put(actions.updateRoleSucceed(response.data.roles, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateRoleFailed, error.response.data.error);
     } else {
@@ -274,7 +274,7 @@ export function* updateRoleSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Role
 /* ------------------------------- */
-export function* deleteRoleSaga(action: AppActions) {
+export function* deleteRoleSaga(action: AppActions): any {
   if (!('role_id' in action)) return;
 
   yield put(actions.deleteRoleStart());
@@ -283,7 +283,7 @@ export function* deleteRoleSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteRoleSucceed(response.data.roles, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteRoleFailed, error.response.data.error);
     } else {
@@ -298,7 +298,7 @@ export function* deleteRoleSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All fees
 /* ------------------------------- */
-export function* getChargesFeesSaga(_action: AppActions) {
+export function* getChargesFeesSaga(_action: AppActions): any {
   yield put(actions.getChargesFeesStart());
 
   let url = process.env.REACT_APP_API + `/products/standard_charges`;
@@ -306,7 +306,7 @@ export function* getChargesFeesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getChargesFeesSucceed(response.data.standard_charges));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getChargesFeesFailed, error.response.data.error);
     } else {
@@ -318,7 +318,7 @@ export function* getChargesFeesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create fees
 /* ------------------------------- */
-export function* createChargesFeesSaga(action: AppActions) {
+export function* createChargesFeesSaga(action: AppActions): any {
   yield put(actions.createChargesFeesStart());
 
   let url = process.env.REACT_APP_API + `/products/standard_charges`;
@@ -334,7 +334,7 @@ export function* createChargesFeesSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, formData);
     yield put(actions.createChargesFeesSucceed(response.data.standard_charges, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createChargesFeesFailed, error.response.data.error);
     } else {
@@ -346,7 +346,7 @@ export function* createChargesFeesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update fees
 /* ------------------------------- */
-export function* updateChargesFeesSaga(action: AppActions) {
+export function* updateChargesFeesSaga(action: AppActions): any {
   yield put(actions.updateChargesFeesStart());
 
   let url = '';
@@ -365,7 +365,7 @@ export function* updateChargesFeesSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, formData);
     yield put(actions.updateChargesFeesSucceed(response.data.standard_charges, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateChargesFeesFailed, error.response.data.error);
     } else {
@@ -376,7 +376,7 @@ export function* updateChargesFeesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Fees
 /* ------------------------------- */
-export function* deleteChargesFeesSaga(action: AppActions) {
+export function* deleteChargesFeesSaga(action: AppActions): any {
   yield put(actions.deleteChargesFeesStart());
 
   let url = '';
@@ -387,7 +387,7 @@ export function* deleteChargesFeesSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteChargesFeesSucceed(response.data.standard_charges, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteChargesFeesFailed, error.response.data.error);
     } else {
@@ -403,7 +403,7 @@ export function* deleteChargesFeesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All brands
 /* ------------------------------- */
-export function* getBrandsSaga(_action: AppActions) {
+export function* getBrandsSaga(_action: AppActions): any {
   yield put(actions.getBrandsStart());
 
   let url = process.env.REACT_APP_API + `/head/brands`;
@@ -412,7 +412,7 @@ export function* getBrandsSaga(_action: AppActions) {
     let response = yield axios.get(url);
 
     yield put(actions.getBrandsSucceed(response.data.brands));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getBrandsFailed, error.response.data.error);
     } else {
@@ -424,7 +424,7 @@ export function* getBrandsSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create brand
 /* ------------------------------- */
-export function* createBrandSaga(action: AppActions) {
+export function* createBrandSaga(action: AppActions): any {
   yield put(actions.createBrandStart());
 
   let url = process.env.REACT_APP_API + `/head/brands`;
@@ -440,7 +440,7 @@ export function* createBrandSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { brand });
     yield put(actions.createBrandSucceed(response.data.brands, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createBrandFailed, error.response.data.error);
     } else {
@@ -452,7 +452,7 @@ export function* createBrandSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update brand
 /* ------------------------------- */
-export function* updateBrandSaga(action: AppActions) {
+export function* updateBrandSaga(action: AppActions): any {
   yield put(actions.updateBrandStart());
 
   let url = '';
@@ -471,7 +471,7 @@ export function* updateBrandSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { brand });
     yield put(actions.updateBrandSucceed(response.data.brands, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBrandFailed, error.response.data.error);
     } else {
@@ -482,7 +482,7 @@ export function* updateBrandSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete brand
 /* ------------------------------- */
-export function* deleteBrandSaga(action: AppActions) {
+export function* deleteBrandSaga(action: AppActions): any {
   yield put(actions.deleteBrandStart());
 
   let url = '';
@@ -493,7 +493,7 @@ export function* deleteBrandSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteBrandSucceed(response.data.brands, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteBrandFailed, error.response.data.error);
     } else {
@@ -509,7 +509,7 @@ export function* deleteBrandSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create wheelbase
 /* ------------------------------- */
-export function* createWheelbaseSaga(action: AppActions) {
+export function* createWheelbaseSaga(action: AppActions): any {
   yield put(actions.createWheelbaseStart());
 
   let url = process.env.REACT_APP_API + `/head/wheelbases`;
@@ -526,7 +526,7 @@ export function* createWheelbaseSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { wheelbase });
     yield put(actions.createWheelbaseSucceed(response.data.wheelbases, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createWheelbaseFailed, error.response.data.error);
     } else {
@@ -538,7 +538,7 @@ export function* createWheelbaseSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get wheelbases
 /* ------------------------------- */
-export function* getWheelbasesSaga(_action: AppActions) {
+export function* getWheelbasesSaga(_action: AppActions): any {
   yield put(actions.getWheelbasesStart());
 
   let url = process.env.REACT_APP_API + `/head/wheelbases`;
@@ -546,7 +546,7 @@ export function* getWheelbasesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getWheelbasesSucceed(response.data.wheelbases));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getWheelbasesFailed, error.response.data.error);
     } else {
@@ -557,7 +557,7 @@ export function* getWheelbasesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Update wheelbase (Head)
 /* ------------------------------- */
-export function* updateWheelbaseSaga(action: AppActions) {
+export function* updateWheelbaseSaga(action: AppActions): any {
   yield put(actions.updateWheelbaseStart());
   let url = '';
   if ('wheelbase_id' in action) {
@@ -577,7 +577,7 @@ export function* updateWheelbaseSaga(action: AppActions) {
     let response = yield axios.put(url, { wheelbase });
 
     yield put(actions.updateWheelbaseSucceed(response.data.wheelbases, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateWheelbaseFailed, error.response.data.error);
     } else {
@@ -586,7 +586,7 @@ export function* updateWheelbaseSaga(action: AppActions) {
   }
 }
 
-export function* deleteWheelbaseSaga(action: AppActions) {
+export function* deleteWheelbaseSaga(action: AppActions): any {
   yield put(actions.deleteWheelbaseStart());
 
   let url = '';
@@ -597,7 +597,7 @@ export function* deleteWheelbaseSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteWheelbaseSucceed(response.data.wheelbases, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteWheelbaseFailed, error.response.data.error);
     } else {
@@ -613,7 +613,7 @@ export function* deleteWheelbaseSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create make
 /* ------------------------------- */
-export function* createMakeSaga(action: AppActions) {
+export function* createMakeSaga(action: AppActions): any {
   yield put(actions.createMakeStart());
 
   let url = process.env.REACT_APP_API + `/head/makes`;
@@ -641,7 +641,7 @@ export function* createMakeSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { make });
     yield put(actions.createMakeSucceed(response.data.makes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createMakeFailed, error.response.data.error);
     } else {
@@ -653,7 +653,7 @@ export function* createMakeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get makes
 /* ------------------------------- */
-export function* getMakesSaga(_action: AppActions) {
+export function* getMakesSaga(_action: AppActions): any {
   yield put(actions.getMakesStart());
 
   let url = process.env.REACT_APP_API + `/head/makes`;
@@ -661,7 +661,7 @@ export function* getMakesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getMakesSucceed(response.data.makes));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getMakesFailed, error.response.data.error);
     } else {
@@ -672,7 +672,7 @@ export function* getMakesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Update make
 /* ------------------------------- */
-export function* updateMakeSaga(action: AppActions) {
+export function* updateMakeSaga(action: AppActions): any {
   yield put(actions.updateMakeStart());
 
   let url = '';
@@ -703,7 +703,7 @@ export function* updateMakeSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { make });
     yield put(actions.updateMakeSucceed(response.data.makes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateMakeFailed, error.response.data.error);
     } else {
@@ -715,7 +715,7 @@ export function* updateMakeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete make
 /* ------------------------------- */
-export function* deleteMakeSaga(action: AppActions) {
+export function* deleteMakeSaga(action: AppActions): any {
   yield put(actions.deleteMakeStart());
   let url = '';
   if ('make_id' in action) {
@@ -724,7 +724,7 @@ export function* deleteMakeSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteMakeSucceed(response.data.makes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteMakeFailed, error.response.data.error);
     } else {
@@ -740,7 +740,7 @@ export function* deleteMakeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get series
 /* ------------------------------- */
-export function* getSeriesSaga(action: AppActions) {
+export function* getSeriesSaga(action: AppActions): any {
   yield put(actions.getSeriesStart());
   let url = '';
   if ('brand_id' in action) {
@@ -750,7 +750,7 @@ export function* getSeriesSaga(action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getSeriesSucceed(response.data.series));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSeriesFailed, error.response.data.error);
     } else {
@@ -762,7 +762,7 @@ export function* getSeriesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create Series
 /* ------------------------------- */
-export function* createSeriesSaga(action: AppActions) {
+export function* createSeriesSaga(action: AppActions): any {
   yield put(actions.createSeriesStart());
 
   let url = '';
@@ -782,7 +782,7 @@ export function* createSeriesSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, formData);
     yield put(actions.createSeriesSucceed(response.data.brand.series, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createSeriesFailed, error.response.data.error);
     } else {
@@ -793,7 +793,7 @@ export function* createSeriesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Series
 /* ------------------------------- */
-export function* updateSeriesSaga(action: AppActions) {
+export function* updateSeriesSaga(action: AppActions): any {
   yield put(actions.updateSeriesStart());
 
   let url = '';
@@ -813,7 +813,7 @@ export function* updateSeriesSaga(action: AppActions) {
     let response = yield axios.put(url, formData);
 
     yield put(actions.updateSeriesSucceed(response.data.brand.series, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateSeriesFailed, error.response.data.error);
     } else {
@@ -824,7 +824,7 @@ export function* updateSeriesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Series
 /* ------------------------------- */
-export function* deleteSeriesSaga(action: AppActions) {
+export function* deleteSeriesSaga(action: AppActions): any {
   yield put(actions.deleteSeriesStart());
 
   let url = '';
@@ -838,7 +838,7 @@ export function* deleteSeriesSaga(action: AppActions) {
     let response = yield axios.delete(url);
 
     yield put(actions.deleteSeriesSucceed(response.data.brand.series, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteSeriesFailed, error.response.data.error);
     } else {
@@ -854,7 +854,7 @@ export function* deleteSeriesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create Make Wheelbase
 /* ------------------------------- */
-export function* createMakeWheelbaseSaga(action: AppActions) {
+export function* createMakeWheelbaseSaga(action: AppActions): any {
   yield put(actions.createMakeWheelbaseStart());
 
   let url = '';
@@ -873,7 +873,7 @@ export function* createMakeWheelbaseSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, data);
     yield put(actions.createMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createMakeWheelbaseFailed, error.response.data.error);
     } else {
@@ -884,7 +884,7 @@ export function* createMakeWheelbaseSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Make Wheelbase
 /* ------------------------------- */
-export function* updateMakeWheelbaseSaga(action: AppActions) {
+export function* updateMakeWheelbaseSaga(action: AppActions): any {
   if (
     !('make_id' in action) ||
     !('make_wheelbase_id' in action) ||
@@ -907,7 +907,7 @@ export function* updateMakeWheelbaseSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, data);
     yield put(actions.updateMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateMakeWheelbaseFailed, error.response.data.error);
     } else {
@@ -918,7 +918,7 @@ export function* updateMakeWheelbaseSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Make Wheelbases
 /* ------------------------------- */
-export function* getMakeWheelbasesSaga(action: AppActions) {
+export function* getMakeWheelbasesSaga(action: AppActions): any {
   yield put(actions.getMakeWheelbasesStart());
 
   let url = '';
@@ -931,7 +931,7 @@ export function* getMakeWheelbasesSaga(action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getMakeWheelbasesSucceed(response.data.make_wheelbase));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getMakeWheelbasesFailed, error.response.data.error);
     } else {
@@ -943,7 +943,7 @@ export function* getMakeWheelbasesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Make Wheelbase
 /* ------------------------------- */
-export function* deleteMakeWheelbaseSaga(action: AppActions) {
+export function* deleteMakeWheelbaseSaga(action: AppActions): any {
   yield put(actions.deleteMakeWheelbaseStart());
 
   let url = '';
@@ -957,7 +957,7 @@ export function* deleteMakeWheelbaseSaga(action: AppActions) {
     let response = yield axios.delete(url);
 
     yield put(actions.deleteMakeWheelbaseSucceed(response.data.make_wheelbase, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteMakeWheelbaseFailed, error.response.data.error);
     } else {
@@ -973,7 +973,7 @@ export function* deleteMakeWheelbaseSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create body
 /* ------------------------------- */
-export function* createBodySaga(action: AppActions) {
+export function* createBodySaga(action: AppActions): any {
   yield put(actions.createBodyStart());
 
   let url = process.env.REACT_APP_API + `/tail/bodies`;
@@ -1000,7 +1000,7 @@ export function* createBodySaga(action: AppActions) {
         { imageTag: action.imageTag, imageFiles: action.imageFiles },
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createBodyFailed, error.response.data.error);
     } else {
@@ -1012,7 +1012,7 @@ export function* createBodySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get bodies
 /* ------------------------------- */
-export function* getBodiesSaga(_action: AppActions) {
+export function* getBodiesSaga(_action: AppActions): any {
   yield put(actions.getBodiesStart());
 
   let url = process.env.REACT_APP_API + `/tail/bodies`;
@@ -1020,7 +1020,7 @@ export function* getBodiesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getBodiesSucceed(response.data.bodies));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getBodiesFailed, error.response.data.error);
     } else {
@@ -1032,7 +1032,7 @@ export function* getBodiesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Update body
 /* ------------------------------- */
-export function* updateBodySaga(action: AppActions) {
+export function* updateBodySaga(action: AppActions): any {
   yield put(actions.updateBodyStart());
 
   let url = '';
@@ -1062,7 +1062,7 @@ export function* updateBodySaga(action: AppActions) {
         { imageTag: action.imageTag, imageFiles: action.imageFiles },
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBodyFailed, error.response.data.error);
     } else {
@@ -1074,7 +1074,7 @@ export function* updateBodySaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete body
 /* ------------------------------- */
-export function* deleteBodySaga(action: AppActions) {
+export function* deleteBodySaga(action: AppActions): any {
   yield put(actions.deleteBodyStart());
 
   let url = '';
@@ -1087,7 +1087,7 @@ export function* deleteBodySaga(action: AppActions) {
 
     // if user is not uploading files, then straight give success
     yield put(actions.deleteBodySucceed(response.data.bodies, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBodyFailed, error.response.data.error);
     } else {
@@ -1103,7 +1103,7 @@ export function* deleteBodySaga(action: AppActions) {
 /* ------------------------------- */
 //    Create Body Accessory
 /* ------------------------------- */
-export function* createBodyAccessorySaga(action: AppActions) {
+export function* createBodyAccessorySaga(action: AppActions): any {
   yield put(actions.createBodyAccessoryStart());
 
   let url = '';
@@ -1124,7 +1124,7 @@ export function* createBodyAccessorySaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { body_accessory });
     yield put(actions.createBodyAccessorySucceed(response.data.body_accessories, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createBodyAccessoryFailed, error.response.data.error);
     } else {
@@ -1136,7 +1136,7 @@ export function* createBodyAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Body Accessories
 /* ------------------------------- */
-export function* getBodyAccessoriesSaga(action: AppActions) {
+export function* getBodyAccessoriesSaga(action: AppActions): any {
   yield put(actions.getBodyAccessoriesStart());
 
   let url = '';
@@ -1147,7 +1147,7 @@ export function* getBodyAccessoriesSaga(action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getBodyAccessoriesSucceed(response.data.body_accessories));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getBodyAccessoriesFailed, error.response.data.error);
     } else {
@@ -1159,7 +1159,7 @@ export function* getBodyAccessoriesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Body Accessory
 /* ------------------------------- */
-export function* updateBodyAccessorySaga(action: AppActions) {
+export function* updateBodyAccessorySaga(action: AppActions): any {
   yield put(actions.updateBodyAccessoryStart());
 
   let url = '';
@@ -1175,7 +1175,7 @@ export function* updateBodyAccessorySaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { body_accessory });
     yield put(actions.updateBodyAccessorySucceed(response.data.body_accessories, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBodyAccessoryFailed, error.response.data.error);
     } else {
@@ -1187,7 +1187,7 @@ export function* updateBodyAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Body Accessory
 /* ------------------------------- */
-export function* deleteBodyAccessorySaga(action: AppActions) {
+export function* deleteBodyAccessorySaga(action: AppActions): any {
   yield put(actions.deleteBodyAccessoryStart());
 
   let url = '';
@@ -1198,7 +1198,7 @@ export function* deleteBodyAccessorySaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteBodyAccessorySucceed(response.data.body_accessories, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteBodyAccessoryFailed, error.response.data.error);
     } else {
@@ -1209,7 +1209,7 @@ export function* deleteBodyAccessorySaga(action: AppActions) {
 /* ------------------------------------------ */
 //    Get Body Associated Accessories
 /* ------------------------------------------ */
-export function* getBodyAssociatedAccessoriesSaga(_action: AppActions) {
+export function* getBodyAssociatedAccessoriesSaga(_action: AppActions): any {
   yield put(actions.getBodyAssociatedAccessoriesStart());
 
   let url = process.env.REACT_APP_API + `/pages/dashboard/get_body_associated_accessories`;
@@ -1218,7 +1218,7 @@ export function* getBodyAssociatedAccessoriesSaga(_action: AppActions) {
     let response = yield axios.get(url);
     // if user is not uploading files, then straight give success
     yield put(actions.getBodyAssociatedAccessoriesSucceed(response.data.body_associated));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getBodyAssociatedAccessoriesFailed, error.response.data.error);
     } else {
@@ -1234,7 +1234,7 @@ export function* getBodyAssociatedAccessoriesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create Length
 /* ------------------------------- */
-export function* createLengthSaga(action: AppActions) {
+export function* createLengthSaga(action: AppActions): any {
   yield put(actions.createLengthStart());
 
   let url = process.env.REACT_APP_API + `/tail/lengths`;
@@ -1251,7 +1251,7 @@ export function* createLengthSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { length });
     yield put(actions.createLengthSucceed(response.data.lengths, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createLengthFailed, error.response.data.error);
     } else {
@@ -1263,7 +1263,7 @@ export function* createLengthSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get lengths
 /* ------------------------------- */
-export function* getLengthsSaga(_action: AppActions) {
+export function* getLengthsSaga(_action: AppActions): any {
   yield put(actions.getLengthsStart());
 
   let url = process.env.REACT_APP_API + `/tail/lengths`;
@@ -1271,7 +1271,7 @@ export function* getLengthsSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getLengthsSucceed(response.data.lengths));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getLengthsFailed, error.response.data.error);
     } else {
@@ -1283,7 +1283,7 @@ export function* getLengthsSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Update length
 /* ------------------------------- */
-export function* updateLengthSaga(action: AppActions) {
+export function* updateLengthSaga(action: AppActions): any {
   yield put(actions.updateLengthStart());
 
   let url = '';
@@ -1303,7 +1303,7 @@ export function* updateLengthSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { length });
     yield put(actions.updateLengthSucceed(response.data.lengths, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateLengthFailed, error.response.data.error);
     } else {
@@ -1315,7 +1315,7 @@ export function* updateLengthSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete length
 /* ------------------------------- */
-export function* deleteLengthSaga(action: AppActions) {
+export function* deleteLengthSaga(action: AppActions): any {
   yield put(actions.deleteLengthStart());
 
   let url = '';
@@ -1326,7 +1326,7 @@ export function* deleteLengthSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteLengthSucceed(response.data.lengths, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteLengthFailed, error.response.data.error);
     } else {
@@ -1342,7 +1342,7 @@ export function* deleteLengthSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create Body Make
 /* ------------------------------- */
-export function* createBodyMakeSaga(action: AppActions) {
+export function* createBodyMakeSaga(action: AppActions): any {
   yield put(actions.createBodyMakeStart());
 
   let url = process.env.REACT_APP_API + `/products/body_make`;
@@ -1375,7 +1375,7 @@ export function* createBodyMakeSaga(action: AppActions) {
         { imageTag: action.imageTag, imageFiles: action.imageFiles },
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createBodyMakeFailed, error.response.data.error);
     } else {
@@ -1387,7 +1387,7 @@ export function* createBodyMakeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Body Makes
 /* ------------------------------- */
-export function* getBodyMakesSaga(_action: AppActions) {
+export function* getBodyMakesSaga(_action: AppActions): any {
   yield put(actions.getBodyMakesStart());
 
   let url = process.env.REACT_APP_API + `/products/body_make`;
@@ -1395,7 +1395,7 @@ export function* getBodyMakesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getBodyMakesSucceed(response.data.body_makes));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getBodyMakesFailed, error.response.data.error);
     } else {
@@ -1407,7 +1407,7 @@ export function* getBodyMakesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Update Body Make
 /* ------------------------------- */
-export function* updateBodyMakeSaga(action: AppActions) {
+export function* updateBodyMakeSaga(action: AppActions): any {
   yield put(actions.updateBodyMakeStart());
 
   let url = '';
@@ -1440,7 +1440,7 @@ export function* updateBodyMakeSaga(action: AppActions) {
         { imageTag: action.imageTag, imageFiles: action.imageFiles },
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBodyMakeFailed, error.response.data.error);
     } else {
@@ -1452,7 +1452,7 @@ export function* updateBodyMakeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Body Make
 /* ------------------------------- */
-export function* deleteBodyMakeSaga(action: AppActions) {
+export function* deleteBodyMakeSaga(action: AppActions): any {
   yield put(actions.deleteBodyMakeStart());
 
   let url = '';
@@ -1463,7 +1463,7 @@ export function* deleteBodyMakeSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteBodyMakeSucceed(response.data.body_makes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBodyMakeFailed, error.response.data.error);
     } else {
@@ -1478,7 +1478,7 @@ export function* deleteBodyMakeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create Body Make Accessory
 /* ------------------------------- */
-export function* createBodyMakeAccessorySaga(action: AppActions) {
+export function* createBodyMakeAccessorySaga(action: AppActions): any {
   yield put(actions.createBodyMakeAccessoryStart());
 
   let url = '';
@@ -1499,7 +1499,7 @@ export function* createBodyMakeAccessorySaga(action: AppActions) {
   try {
     let response = yield axios.post(url, formData);
     yield put(actions.createBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createBodyMakeAccessoryFailed, error.response.data.error);
     } else {
@@ -1511,7 +1511,7 @@ export function* createBodyMakeAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Body Make Accessories
 /* ------------------------------- */
-export function* getBodyMakeAccessoriesSaga(action: AppActions) {
+export function* getBodyMakeAccessoriesSaga(action: AppActions): any {
   yield put(actions.getBodyMakeAccessoriesStart());
 
   let url = '';
@@ -1522,7 +1522,7 @@ export function* getBodyMakeAccessoriesSaga(action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getBodyMakeAccessoriesSucceed(response.data.body_make_accessories));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getBodyMakeAccessoriesFailed, error.response.data.error);
     } else {
@@ -1534,7 +1534,7 @@ export function* getBodyMakeAccessoriesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Body Make Accessory
 /* ------------------------------- */
-export function* updateBodyMakeAccessorySaga(action: AppActions) {
+export function* updateBodyMakeAccessorySaga(action: AppActions): any {
   yield put(actions.updateBodyMakeAccessoryStart());
 
   let url = '';
@@ -1556,7 +1556,7 @@ export function* updateBodyMakeAccessorySaga(action: AppActions) {
     let response = yield axios.put(url, formData);
 
     yield put(actions.updateBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateBodyMakeAccessoryFailed, error.response.data.error);
     } else {
@@ -1568,7 +1568,7 @@ export function* updateBodyMakeAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Body Make Accessory
 /* ------------------------------- */
-export function* deleteBodyMakeAccessorySaga(action: AppActions) {
+export function* deleteBodyMakeAccessorySaga(action: AppActions): any {
   yield put(actions.deleteBodyMakeAccessoryStart());
 
   let url = '';
@@ -1581,7 +1581,7 @@ export function* deleteBodyMakeAccessorySaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteBodyMakeAccessorySucceed(response.data.body_make_accessories, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteBodyMakeAccessoryFailed, error.response.data.error);
     } else {
@@ -1593,7 +1593,7 @@ export function* deleteBodyMakeAccessorySaga(action: AppActions) {
 /* ------------------------------------------ */
 //    Get Dimension Associated Accessories
 /* ------------------------------------------ */
-export function* getDimensionAssociatedAccessoriesSaga(_action: AppActions) {
+export function* getDimensionAssociatedAccessoriesSaga(_action: AppActions): any {
   yield put(actions.getDimensionAssociatedAccessoriesStart());
 
   let url = process.env.REACT_APP_API + `/pages/dashboard/get_dimension_associated_accessories`;
@@ -1601,7 +1601,7 @@ export function* getDimensionAssociatedAccessoriesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getDimensionAssociatedAccessoriesSucceed(response.data.dimension_associated));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getDimensionAssociatedAccessoriesFailed, error.response.data.error);
     } else {
@@ -1617,7 +1617,7 @@ export function* getDimensionAssociatedAccessoriesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create Accessory
 /* ------------------------------- */
-export function* createAccessorySaga(action: AppActions) {
+export function* createAccessorySaga(action: AppActions): any {
   yield put(actions.createAccessoryStart());
 
   let url = process.env.REACT_APP_API + `/tail/accessories`;
@@ -1652,7 +1652,7 @@ export function* createAccessorySaga(action: AppActions) {
         { imageTag: action.createAccessoryData.imageTag, imageFiles: action.createAccessoryData.imageFiles },
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createAccessoryFailed, error.response.data.error);
     } else {
@@ -1664,7 +1664,7 @@ export function* createAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Accessories
 /* ------------------------------- */
-export function* getAccessoriesSaga(_action: AppActions) {
+export function* getAccessoriesSaga(_action: AppActions): any {
   yield put(actions.getAccessoriesStart());
 
   let url = process.env.REACT_APP_API + `/tail/accessories`;
@@ -1672,7 +1672,7 @@ export function* getAccessoriesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getAccessoriesSucceed(response.data.accessories));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getAccessoriesFailed, error.response.data.error);
     } else {
@@ -1684,7 +1684,7 @@ export function* getAccessoriesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Update Accessory
 /* ------------------------------- */
-export function* updateAccessorySaga(action: AppActions) {
+export function* updateAccessorySaga(action: AppActions): any {
   yield put(actions.updateAccessoryStart());
 
   let url = '';
@@ -1717,7 +1717,7 @@ export function* updateAccessorySaga(action: AppActions) {
         { imageTag: action.updateAccessoryData.imageTag, imageFiles: action.updateAccessoryData.imageFiles },
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateAccessoryFailed, error.response.data.error);
     } else {
@@ -1728,7 +1728,7 @@ export function* updateAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Accessory
 /* ------------------------------- */
-export function* deleteAccessorySaga(action: AppActions) {
+export function* deleteAccessorySaga(action: AppActions): any {
   yield put(actions.deleteAccessoryStart());
 
   let url = '';
@@ -1739,7 +1739,7 @@ export function* deleteAccessorySaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteAccessorySucceed(response.data.accessories, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteAccessoryFailed, error.response.data.error);
     } else {
@@ -1754,7 +1754,7 @@ export function* deleteAccessorySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Service Types
 /* ------------------------------- */
-export function* getServiceTypesSaga(_action: AppActions) {
+export function* getServiceTypesSaga(_action: AppActions): any {
   yield put(actions.getServiceTypesStart());
 
   let url = process.env.REACT_APP_API + `/job_monitoring/service_types`;
@@ -1762,7 +1762,7 @@ export function* getServiceTypesSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getServiceTypesSucceed(response.data.service_types));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getServiceTypesFailed, error.response.data.error);
     } else {
@@ -1773,7 +1773,7 @@ export function* getServiceTypesSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create Service Types
 /* ------------------------------- */
-export function* createServiceTypeSaga(action: AppActions) {
+export function* createServiceTypeSaga(action: AppActions): any {
   yield put(actions.createServiceTypeStart());
 
   let url = process.env.REACT_APP_API + `/job_monitoring/service_types`;
@@ -1789,7 +1789,7 @@ export function* createServiceTypeSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { service_type });
     yield put(actions.createServiceTypeSucceed(response.data.service_types, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createServiceTypeFailed, error.response.data.error);
     } else {
@@ -1800,7 +1800,7 @@ export function* createServiceTypeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Service Types
 /* ------------------------------- */
-export function* updateServiceTypeSaga(action: AppActions) {
+export function* updateServiceTypeSaga(action: AppActions): any {
   yield put(actions.updateServiceTypeStart());
   let url = '';
   if ('service_type_id' in action) {
@@ -1818,7 +1818,7 @@ export function* updateServiceTypeSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { service_type });
     yield put(actions.updateServiceTypeSucceed(response.data.service_types, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateServiceTypeFailed, error.response.data.error);
     } else {
@@ -1829,7 +1829,7 @@ export function* updateServiceTypeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Service Type
 /* ------------------------------- */
-export function* deleteServiceTypeSaga(action: AppActions) {
+export function* deleteServiceTypeSaga(action: AppActions): any {
   yield put(actions.deleteServiceTypeStart());
   let url = '';
   if ('service_type_id' in action) {
@@ -1839,7 +1839,7 @@ export function* deleteServiceTypeSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteServiceTypeSucceed(response.data.service_types, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteServiceTypeFailed, error.response.data.error);
     } else {
@@ -1850,7 +1850,7 @@ export function* deleteServiceTypeSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Service Tasks
 /* ------------------------------- */
-export function* getServiceTasksSaga(action: AppActions) {
+export function* getServiceTasksSaga(action: AppActions): any {
   yield put(actions.getServiceTasksStart());
 
   let url = '';
@@ -1862,7 +1862,7 @@ export function* getServiceTasksSaga(action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getServiceTasksSucceed(response.data.service_tasks));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getServiceTasksFailed, error.response.data.error);
     } else {
@@ -1873,7 +1873,7 @@ export function* getServiceTasksSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create Service Task
 /* ------------------------------- */
-export function* createServiceTaskSaga(action: AppActions) {
+export function* createServiceTaskSaga(action: AppActions): any {
   yield put(actions.createServiceTaskStart());
 
   let url = '';
@@ -1896,7 +1896,7 @@ export function* createServiceTaskSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { service_task }, getAxiosHeaderToken());
     yield put(actions.createServiceTaskSucceed(response.data.service_tasks, 'Service Task Created'));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createServiceTaskFailed, error.response.data.error);
     } else {
@@ -1907,7 +1907,7 @@ export function* createServiceTaskSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Service Task
 /* ------------------------------- */
-export function* updateServiceTaskSaga(action: AppActions) {
+export function* updateServiceTaskSaga(action: AppActions): any {
   yield put(actions.updateServiceTaskStart());
   let url = '';
   if ('serviceTaskFormData' in action && 'service_task_id' in action) {
@@ -1928,7 +1928,7 @@ export function* updateServiceTaskSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { service_task }, getAxiosHeaderToken());
     yield put(actions.updateServiceTaskSucceed(response.data.service_tasks, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateServiceTaskFailed, error.response.data.error);
     } else {
@@ -1939,7 +1939,7 @@ export function* updateServiceTaskSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Service Task
 /* ------------------------------- */
-export function* deleteServiceTaskSaga(action: AppActions) {
+export function* deleteServiceTaskSaga(action: AppActions): any {
   yield put(actions.deleteServiceTaskStart());
   let url = '';
   if ('service_type_id' in action && 'service_task_id' in action) {
@@ -1951,7 +1951,7 @@ export function* deleteServiceTaskSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url, getAxiosHeaderToken());
     yield put(actions.deleteServiceTaskSucceed(response.data.service_tasks, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteServiceTaskFailed, error.response.data.error);
     } else {
@@ -1963,7 +1963,7 @@ export function* deleteServiceTaskSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Intake Status
 /* ------------------------------- */
-export function* getIntakeStatusSaga(_action: AppActions) {
+export function* getIntakeStatusSaga(_action: AppActions): any {
   yield put(actions.getIntakeStatusStart());
 
   let url = process.env.REACT_APP_API + `/job_monitoring/intake_status`;
@@ -1971,7 +1971,7 @@ export function* getIntakeStatusSaga(_action: AppActions) {
   try {
     let response = yield axios.get(url);
     yield put(actions.getIntakeStatusSucceed(response.data.intake_status));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getIntakeStatusFailed, error.response.data.error);
     } else {
@@ -1982,7 +1982,7 @@ export function* getIntakeStatusSaga(_action: AppActions) {
 /* ------------------------------- */
 //    Create Intake Status
 /* ------------------------------- */
-export function* createIntakeStatusSaga(action: AppActions) {
+export function* createIntakeStatusSaga(action: AppActions): any {
   yield put(actions.createIntakeStatusStart());
 
   let url = process.env.REACT_APP_API + `/job_monitoring/intake_status`;
@@ -1998,7 +1998,7 @@ export function* createIntakeStatusSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { intake_status });
     yield put(actions.createIntakeStatusSucceed(response.data.intake_status, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createIntakeStatusFailed, error.response.data.error);
     } else {
@@ -2009,7 +2009,7 @@ export function* createIntakeStatusSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Intake Status
 /* ------------------------------- */
-export function* updateIntakeStatusSaga(action: AppActions) {
+export function* updateIntakeStatusSaga(action: AppActions): any {
   yield put(actions.updateIntakeStatusStart());
   let url = '';
   if ('intake_status_id' in action) {
@@ -2027,7 +2027,7 @@ export function* updateIntakeStatusSaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { intake_status });
     yield put(actions.updateIntakeStatusSucceed(response.data.intake_status, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateIntakeStatusFailed, error.response.data.error);
     } else {
@@ -2038,7 +2038,7 @@ export function* updateIntakeStatusSaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Intake Status
 /* ------------------------------- */
-export function* deleteIntakeStatusSaga(action: AppActions) {
+export function* deleteIntakeStatusSaga(action: AppActions): any {
   yield put(actions.deleteIntakeStatusStart());
   let url = '';
   if ('intake_status_id' in action) {
@@ -2048,7 +2048,7 @@ export function* deleteIntakeStatusSaga(action: AppActions) {
   try {
     let response = yield axios.delete(url);
     yield put(actions.deleteIntakeStatusSucceed(response.data.intake_status, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteIntakeStatusFailed, error.response.data.error);
     } else {

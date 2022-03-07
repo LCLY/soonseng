@@ -88,7 +88,9 @@ const MakeFormItems: React.FC<Props> = ({
                     showSearch
                     placeholder="Select a brand"
                     optionFilterProp="children"
-                    filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    filterOption={(input, option: any) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {brandsArray &&
                       brandsArray.map((brand) => {
@@ -123,7 +125,7 @@ const MakeFormItems: React.FC<Props> = ({
                   showSearch
                   placeholder="Select a series"
                   optionFilterProp="children"
-                  filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {seriesArray &&
                     seriesArray.map((seriesObj) => {

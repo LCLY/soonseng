@@ -20,14 +20,7 @@ module.exports = {
       plugin: sassResourcesLoader,
       options: {
         //load variable.scss, custom.scss and animation.scss before any scss/sass file
-        resources: [
-          './src/scss/variables.scss',
-          './src/scss/custom.scss',
-          './src/scss/mixin.scss',
-          './src/index.scss',
-          './src/App.scss',
-          './src/scss/reactbootstrap.scss',
-        ],
+        resources: ['./src/scss/variables.scss', './src/scss/custom.scss', './src/scss/mixin.scss', './src/index.scss'],
       },
     },
   ],

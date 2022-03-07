@@ -11,7 +11,7 @@ import { setPromiseError, getAxiosHeaderToken } from 'src/shared/Utils';
 /* ------------------------------- */
 //    Get All Lengths
 /* ------------------------------- */
-export function* getSalesLengthsSaga(action: AppActions) {
+export function* getSalesLengthsSaga(action: AppActions): any {
   yield put(actions.getSalesLengthsStart());
 
   let url = process.env.REACT_APP_API + `/pages/sales/get_length_through_tire`;
@@ -27,7 +27,7 @@ export function* getSalesLengthsSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { choice });
     yield put(actions.getSalesLengthsSucceed(response.data.length_categories));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSalesLengthsFailed, error.response.data.error);
     } else {
@@ -39,7 +39,7 @@ export function* getSalesLengthsSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All Bodies
 /* ------------------------------- */
-export function* getSalesBodiesSaga(action: AppActions) {
+export function* getSalesBodiesSaga(action: AppActions): any {
   yield put(actions.getSalesBodiesStart());
   let url = process.env.REACT_APP_API + `/pages/sales/get_body_through_length_and_tire`;
 
@@ -54,7 +54,7 @@ export function* getSalesBodiesSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { choice });
     yield put(actions.getSalesBodiesSucceed(response.data.bodies));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSalesBodiesFailed, error.response.data.error);
     } else {
@@ -66,7 +66,7 @@ export function* getSalesBodiesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All Body Makes
 /* ------------------------------- */
-export function* getSalesBodyMakesSaga(action: AppActions) {
+export function* getSalesBodyMakesSaga(action: AppActions): any {
   yield put(actions.getSalesBodyMakesStart());
   let url = process.env.REACT_APP_API + `/pages/sales/get_bodymake_through_length_and_tire_and_body`;
 
@@ -82,7 +82,7 @@ export function* getSalesBodyMakesSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { choice }, getAxiosHeaderToken());
     yield put(actions.getSalesBodyMakesSucceed(response.data.brands));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSalesBodyMakesFailed, error.response.data.error);
     } else {
@@ -93,7 +93,7 @@ export function* getSalesBodyMakesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All Accessories
 /* ------------------------------- */
-export function* getSalesAccessoriesSaga(action: AppActions) {
+export function* getSalesAccessoriesSaga(action: AppActions): any {
   // get accessories through body length
   yield put(actions.getSalesAccessoriesStart());
   let url = process.env.REACT_APP_API + `/pages/sales/get_accessories_through_bodymake`;
@@ -108,7 +108,7 @@ export function* getSalesAccessoriesSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { choice });
     yield put(actions.getSalesAccessoriesSucceed(response.data.general, response.data.dimension, response.data.body));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSalesAccessoriesFailed, error.response.data.error);
     } else {
@@ -120,7 +120,7 @@ export function* getSalesAccessoriesSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get All Makes
 /* ------------------------------- */
-export function* getSalesMakesSaga(action: AppActions) {
+export function* getSalesMakesSaga(action: AppActions): any {
   // get accessories through body length
   yield put(actions.getSalesMakesStart());
   let url = process.env.REACT_APP_API + `/pages/sales/get_makes_for_body`;
@@ -136,7 +136,7 @@ export function* getSalesMakesSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { choice });
     yield put(actions.getSalesMakesSucceed(response.data.brands));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSalesMakesFailed, error.response.data.error);
     } else {

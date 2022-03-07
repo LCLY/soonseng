@@ -7,7 +7,7 @@ import { getAxiosHeaderToken, setPromiseError } from 'src/shared/Utils';
 /* ================================================================== */
 //   All Performance
 /* ================================================================== */
-export function* getAllPerformanceSaga(action: AppActions) {
+export function* getAllPerformanceSaga(action: AppActions): any {
   if (!('date_from' in action) || !('date_to' in action)) return;
   yield put(actions.getAllPerformanceStart());
 
@@ -21,7 +21,7 @@ export function* getAllPerformanceSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { generate_data }, getAxiosHeaderToken());
     yield put(actions.getAllPerformanceSucceed(response.data.data));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getAllPerformanceFailed, error.response.data.messages);
     } else {
@@ -32,7 +32,7 @@ export function* getAllPerformanceSaga(action: AppActions) {
 /* ================================================================== */
 //   Mechanics Data
 /* ================================================================== */
-export function* getAllMechanicsSaga(action: AppActions) {
+export function* getAllMechanicsSaga(action: AppActions): any {
   if (!('date_from' in action) || !('date_to' in action) || !('interval' in action)) return;
   yield put(actions.getAllMechanicsStart());
 
@@ -46,7 +46,7 @@ export function* getAllMechanicsSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { generate_data }, getAxiosHeaderToken());
     yield put(actions.getAllMechanicsSucceed(response.data.data));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getAllMechanicsFailed, error.response.data.messages);
     } else {
@@ -57,7 +57,7 @@ export function* getAllMechanicsSaga(action: AppActions) {
 /* ================================================================== */
 //   Specfici Mechanic Performance
 /* ================================================================== */
-export function* getSpecificMechanicPerformanceSaga(action: AppActions) {
+export function* getSpecificMechanicPerformanceSaga(action: AppActions): any {
   if (!('date_from' in action) || !('date_to' in action) || !('interval' in action) || !('mechanic_id' in action))
     return;
   yield put(actions.getSpecificMechanicPerformanceStart());
@@ -72,7 +72,7 @@ export function* getSpecificMechanicPerformanceSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { generate_data }, getAxiosHeaderToken());
     yield put(actions.getSpecificMechanicPerformanceSucceed(response.data.data));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSpecificMechanicPerformanceFailed, error.response.data.messages);
     } else {
@@ -83,7 +83,7 @@ export function* getSpecificMechanicPerformanceSaga(action: AppActions) {
 /* ================================================================== */
 //   Performance Intake Data
 /* ================================================================== */
-export function* getPerformanceIntakeDataSaga(action: AppActions) {
+export function* getPerformanceIntakeDataSaga(action: AppActions): any {
   if (!('date_from' in action) || !('date_to' in action)) return;
   yield put(actions.getPerformanceIntakeDataStart());
 
@@ -98,7 +98,7 @@ export function* getPerformanceIntakeDataSaga(action: AppActions) {
     let response = yield axios.post(url, { generate_data }, getAxiosHeaderToken());
 
     yield put(actions.getPerformanceIntakeDataSucceed(response.data.data));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getPerformanceIntakeDataFailed, error.response.data.messages);
     } else {

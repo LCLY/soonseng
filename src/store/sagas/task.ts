@@ -10,7 +10,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 /* ------------------------------- */
 //    Create Task
 /* ------------------------------- */
-// export function* createTaskSaga(action: AppActions) {
+// export function* createTaskSaga(action: AppActions):any {
 //   yield put(actions.createTaskStart());
 
 //   let url = process.env.REACT_APP_API + `/job_monitoring/jobs`;
@@ -30,7 +30,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 //   try {
 //     let response = yield axios.post(url, { job }, getAxiosHeaderToken());
 //     yield put(actions.createTaskSucceed(response.data.jobs, response.data.success));
-//   } catch (error) {
+//   } catch (error:any) {
 //     if (error.response) {
 //       yield setPromiseError(error, actions.createTaskFailed, error.response.data.error);
 //     } else {
@@ -41,14 +41,14 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 // /* ------------------------------- */
 // //    Get Tasks
 // /* ------------------------------- */
-// export function* getTasksSaga(_action: AppActions) {
+// export function* getTasksSaga(_action: AppActions):any {
 //   yield put(actions.getTasksStart());
 //   let url = process.env.REACT_APP_API + `/job_monitoring/intakes`;
 
 //   try {
 //     let response = yield axios.get(url);
 //     yield put(actions.getTasksSucceed(response.data.intakes));
-//   } catch (error) {
+//   } catch (error:any) {
 //     if (error.response) {
 //       yield setPromiseError(error, actions.getTasksFailed, error.response.data.error);
 //     } else {
@@ -59,7 +59,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 // /* ------------------------------- */
 // //    Update Task
 // /* ------------------------------- */
-// export function* updateTaskSaga(action: AppActions) {
+// export function* updateTaskSaga(action: AppActions):any {
 //   yield put(actions.updateTaskStart());
 //   let url = '';
 
@@ -81,7 +81,7 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 //   try {
 //     let response = yield axios.post(url, { job });
 //     yield put(actions.updateTaskSucceed(response.data.jobs, response.data.success));
-//   } catch (error) {
+//   } catch (error:any) {
 //     if (error.response) {
 //       yield setPromiseError(error, actions.updateTaskFailed, error.response.data.error);
 //     } else {
@@ -92,14 +92,14 @@ import { put /*, delay */ /* call */ } from 'redux-saga/effects';
 /* ------------------------------- */
 //    Delete Task
 /* ------------------------------- */
-export function* deleteTaskSaga(action: AppActions) {
+export function* deleteTaskSaga(action: AppActions): any {
   yield put(actions.deleteTaskStart());
   if (!('task_id' in action) || !('intake_id' in action)) return;
   let url = process.env.REACT_APP_API + `/job_monitoring/intakes/${action.intake_id}/jobs/${action.task_id}`;
   try {
     let response = yield axios.delete(url, getAxiosHeaderToken());
     yield put(actions.deleteTaskSucceed(response.data.jobs, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteTaskFailed, error.response.data.error);
     } else {
@@ -114,7 +114,7 @@ export function* deleteTaskSaga(action: AppActions) {
 /* ------------------------------- */
 //    Create Intake Summary
 /* ------------------------------- */
-export function* createIntakeSummarySaga(action: AppActions) {
+export function* createIntakeSummarySaga(action: AppActions): any {
   yield put(actions.createIntakeSummaryStart());
 
   let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes`;
@@ -132,7 +132,7 @@ export function* createIntakeSummarySaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { intake_and_jobs }, getAxiosHeaderToken());
     yield put(actions.createIntakeSummarySucceed(response.data.intakes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.createIntakeSummaryFailed, error.response.data.error);
     } else {
@@ -143,14 +143,14 @@ export function* createIntakeSummarySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Intake Summary
 /* ------------------------------- */
-export function* getIntakeSummarySaga(_action: AppActions) {
+export function* getIntakeSummarySaga(_action: AppActions): any {
   yield put(actions.getIntakeSummaryStart());
   let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes`;
 
   try {
     let response = yield axios.get(url, getAxiosHeaderToken());
     yield put(actions.getIntakeSummarySucceed(response.data.intakes));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getIntakeSummaryFailed, error.response.data.error);
     } else {
@@ -161,7 +161,7 @@ export function* getIntakeSummarySaga(_action: AppActions) {
 /* ------------------------------- */
 //    Update Intake & Jobs
 /* ------------------------------- */
-export function* updateIntakeSummarySaga(action: AppActions) {
+export function* updateIntakeSummarySaga(action: AppActions): any {
   yield put(actions.updateIntakeSummaryStart());
   let url = '';
 
@@ -184,7 +184,7 @@ export function* updateIntakeSummarySaga(action: AppActions) {
   try {
     let response = yield axios.put(url, { intake_and_jobs }, getAxiosHeaderToken());
     yield put(actions.updateIntakeSummarySucceed(response.data.intakes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateIntakeSummaryFailed, error.response.data.error);
     } else {
@@ -195,7 +195,7 @@ export function* updateIntakeSummarySaga(action: AppActions) {
 /* ------------------------------- */
 //    Delete Intake Summary
 /* ------------------------------- */
-export function* deleteIntakeSummarySaga(action: AppActions) {
+export function* deleteIntakeSummarySaga(action: AppActions): any {
   yield put(actions.deleteIntakeSummaryStart());
   let url = '';
 
@@ -206,7 +206,7 @@ export function* deleteIntakeSummarySaga(action: AppActions) {
   try {
     let response = yield axios.delete(url, getAxiosHeaderToken());
     yield put(actions.deleteIntakeSummarySucceed(response.data.intakes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.deleteIntakeSummaryFailed, error.response.data.error);
     } else {
@@ -218,7 +218,7 @@ export function* deleteIntakeSummarySaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Specific Intake Jobs
 /* ------------------------------- */
-export function* getSpecificIntakeJobsSaga(action: AppActions) {
+export function* getSpecificIntakeJobsSaga(action: AppActions): any {
   yield put(actions.getSpecificIntakeJobsStart());
   let url = '';
   if ('intake_id' in action) {
@@ -228,7 +228,7 @@ export function* getSpecificIntakeJobsSaga(action: AppActions) {
   try {
     let response = yield axios.get(url, getAxiosHeaderToken());
     yield put(actions.getSpecificIntakeJobsSucceed(response.data.intake));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getSpecificIntakeJobsFailed, error.response.data.error);
     } else {
@@ -239,7 +239,7 @@ export function* getSpecificIntakeJobsSaga(action: AppActions) {
 /* ------------------------------- */
 //    Update Specific Intake & Jobs
 /* ------------------------------- */
-export function* updateSpecificIntakeJobsSaga(action: AppActions) {
+export function* updateSpecificIntakeJobsSaga(action: AppActions): any {
   yield put(actions.updateSpecificIntakeJobsStart());
   let url = '';
 
@@ -258,7 +258,7 @@ export function* updateSpecificIntakeJobsSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { intake_and_jobs }, getAxiosHeaderToken());
     yield put(actions.updateSpecificIntakeJobsSucceed(response.data.intakes, response.data.success));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.updateSpecificIntakeJobsFailed, error.response.data.error);
     } else {
@@ -273,7 +273,7 @@ export function* updateSpecificIntakeJobsSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get Users By Roles
 /* ------------------------------- */
-export function* getUsersByRolesSaga(action: AppActions) {
+export function* getUsersByRolesSaga(action: AppActions): any {
   yield put(actions.getUsersByRolesStart());
   let url = process.env.REACT_APP_API + `/user/users/by_role`;
 
@@ -289,7 +289,7 @@ export function* getUsersByRolesSaga(action: AppActions) {
   try {
     let response = yield axios.post(url, { role });
     yield put(actions.getUsersByRolesSucceed(response.data.users));
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getUsersByRolesFailed, error.response.data.error);
     } else {
@@ -302,7 +302,7 @@ export function* getUsersByRolesSaga(action: AppActions) {
 // Set Toggle Intake Status
 /* ============================================================================================== */
 
-export function* setToggleIntakeStatusSaga(action: AppActions) {
+export function* setToggleIntakeStatusSaga(action: AppActions): any {
   if (!('intake_status_id' in action) || !('intake_id' in action) || !('description' in action)) return;
   let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes/${action.intake_id}/toggle_status`;
 
@@ -313,7 +313,7 @@ export function* setToggleIntakeStatusSaga(action: AppActions) {
 
   try {
     yield axios.post(url, { toggle_status }, getAxiosHeaderToken());
-  } catch (error) {
+  } catch (error: any) {
     yield console.log(error);
   }
 }
@@ -321,13 +321,13 @@ export function* setToggleIntakeStatusSaga(action: AppActions) {
 // Toggle User Assign
 /* ============================================================================================== */
 
-export function* setToggleUserAssignSaga(action: AppActions) {
+export function* setToggleUserAssignSaga(action: AppActions): any {
   if (!('intake_id' in action)) return;
   let url = process.env.REACT_APP_API + `/pages/job_monitoring/intakes/${action.intake_id}/toggle_mechanic_assigned`;
 
   try {
     yield axios.post(url, {}, getAxiosHeaderToken());
-  } catch (error) {
+  } catch (error: any) {
     yield console.log(error);
   }
 }

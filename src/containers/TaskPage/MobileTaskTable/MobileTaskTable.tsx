@@ -100,7 +100,7 @@ const MobileTaskTable: React.FC<Props> = () => {
     // If there is incoming data, update the table or add a new row to the table
     if (incomingData && incomingData !== undefined && typeof incomingData === 'object') {
       if (intakeDict) {
-        gsap.to(`.mobileintakesummary__row-${incomingData.data.id}`, {
+        (gsap as any).to(`.mobileintakesummary__row-${incomingData.data.id}`, {
           duration: 0.2,
           background: '#245676',
           onComplete: () =>

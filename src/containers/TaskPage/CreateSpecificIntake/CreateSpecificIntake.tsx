@@ -194,7 +194,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                   placeholder="Select a Job Type"
                   optionFilterProp="children"
                   className="createspecificintake__select createspecificintake__select--task"
-                  filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   <Option value="">Select a Job Type</Option>
                   {serviceTypeTaskDict &&
@@ -252,7 +252,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                 optionFilterProp="children"
                 placeholder="Select a Task title"
                 className="createspecificintake__select createspecificintake__select--task"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
                 {dropdownArrayExist &&
@@ -289,7 +289,7 @@ const CreateSpecificIntake: React.FC<Props> = ({
                 placeholder="Select a Task title"
                 optionFilterProp="children"
                 className="createspecificintake__select createspecificintake__select--task createspecificintake__select--disabled"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
               </Select>
@@ -650,7 +650,9 @@ const CreateSpecificIntake: React.FC<Props> = ({
                       optionFilterProp="children"
                       className="createspecificintake__select"
                       tagRender={(props) => tagRender(props)}
-                      filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      filterOption={(input, option: any) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {usersByRolesArray &&
                         usersByRolesArray.map((user) => {

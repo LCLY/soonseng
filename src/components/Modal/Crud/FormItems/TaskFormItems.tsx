@@ -143,7 +143,7 @@ const TaskFormItems: React.FC<Props> = ({
                 showSearch
                 placeholder="Select a Job Type"
                 optionFilterProp="children"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={(value: number) => {
                   if (serviceTypesArray === null || serviceTypesArray === undefined) return;
                   let serviceTypeId = value;
@@ -222,7 +222,7 @@ const TaskFormItems: React.FC<Props> = ({
                 showSearch
                 placeholder="Select a Task title"
                 optionFilterProp="children"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={(e) =>
                   setServiceTaskDropdown({
                     ...serviceTaskDropdown,
@@ -263,7 +263,7 @@ const TaskFormItems: React.FC<Props> = ({
                 showSearch
                 placeholder="Select a Task title"
                 optionFilterProp="children"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
               </Select>
@@ -325,7 +325,7 @@ const TaskFormItems: React.FC<Props> = ({
     //           placeholder="Please select mechanics"
     //           optionFilterProp="children"
     //           tagRender={(props) => tagRender(props, record)}
-    //           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+    //           filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
     //         >
     //           {usersByRolesArray &&
     //             usersByRolesArray.map((user) => {
@@ -366,7 +366,7 @@ const TaskFormItems: React.FC<Props> = ({
     //           showSearch
     //           placeholder="Select a job status"
     //           optionFilterProp="children"
-    //           filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+    //           filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
     //         >
     //           <Option value="">Select a status</Option>
     //           {intakeStatusArray &&
@@ -720,7 +720,7 @@ const TaskFormItems: React.FC<Props> = ({
                 showSearch
                 placeholder="Select an intake status"
                 optionFilterProp="children"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a status</Option>
                 {intakeStatusArray &&
@@ -757,7 +757,7 @@ const TaskFormItems: React.FC<Props> = ({
                 placeholder="Please select mechanics"
                 optionFilterProp="children"
                 tagRender={(props) => tagRender(props)}
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {usersByRolesArray &&
                   usersByRolesArray.map((user) => {

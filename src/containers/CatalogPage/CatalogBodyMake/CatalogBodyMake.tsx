@@ -1413,9 +1413,7 @@ const CatalogBodyMake: React.FC<Props> = ({
             showSearch
             placeholder="Select a wheelbase"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {filteredWheelbasesArray &&
               filteredWheelbasesArray.map((wheelbase) => {

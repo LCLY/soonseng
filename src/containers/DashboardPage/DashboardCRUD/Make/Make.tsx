@@ -264,12 +264,11 @@ const Make: React.FC<Props> = ({
 
   // state to track which brand we are using
   const [selectedBrand, setSelectedBrand] = useState<{ brandId: number; brandTitle: string } | null>(null);
-  const [selectedMake, setSelectedMake] =
-    useState<{
-      makeId: number;
-      makeTitle: string;
-      makeBrandTitle: string;
-    } | null>(null);
+  const [selectedMake, setSelectedMake] = useState<{
+    makeId: number;
+    makeTitle: string;
+    makeBrandTitle: string;
+  } | null>(null);
 
   // this state to keep track of what to show on delete modal and what useful info to pass
   const [deleteModalContent, setDeleteModalContent] = useState<TDeleteModalContent>({
@@ -1410,7 +1409,7 @@ const Make: React.FC<Props> = ({
               showSearch
               placeholder="Select a brand"
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {brandsArray &&
                 brandsArray.map((brand) => {
@@ -1434,7 +1433,7 @@ const Make: React.FC<Props> = ({
               showSearch
               placeholder="Select a series"
               optionFilterProp="children"
-              filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {seriesArray &&
                 seriesArray.map((seriesObj) => {
@@ -1658,9 +1657,7 @@ const Make: React.FC<Props> = ({
           showSearch
           placeholder="Select a wheelbase"
           optionFilterProp="children"
-          filterOption={(input, option) =>
-            option !== undefined && option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+          filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {wheelbasesArray &&
             wheelbasesArray.map((wheelbase) => {

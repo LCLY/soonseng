@@ -708,7 +708,7 @@ const TaskPage2: React.FC<Props> = ({
 
         let rowIndexInTable = sortedIntakeArray.findIndex((child) => parseInt(child.key) === incomingData.data.id);
 
-        gsap.to(`.intakesummary__row-${incomingData.data.id}`, {
+        (gsap as any).to(`.intakesummary__row-${incomingData.data.id}`, {
           duration: 0.2,
           background: '#245676',
           onComplete: () =>

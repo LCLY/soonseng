@@ -11,7 +11,7 @@ import { setPromiseError, getAxiosHeaderToken } from 'src/shared/Utils';
 /* ------------------------------- */
 //    Sign In
 /* ------------------------------- */
-export function* signInSaga(action: AppActions) {
+export function* signInSaga(action: AppActions): any {
   yield put(actions.signInStart());
 
   let url = process.env.REACT_APP_API + `/sign_in`;
@@ -33,7 +33,7 @@ export function* signInSaga(action: AppActions) {
     yield put(actions.getUserInfo());
     // clear the catalog array when login succeed, so user will fetch new array according to their status
     yield put(actions.clearCatalogState());
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.signInFailed, error.response.data.messages);
     } else {
@@ -45,7 +45,7 @@ export function* signInSaga(action: AppActions) {
 /* ------------------------------- */
 //    Get User Info
 /* ------------------------------- */
-export function* getUserInfoSaga(_action: AppActions) {
+export function* getUserInfoSaga(_action: AppActions): any {
   yield put(actions.getUserInfoStart());
 
   let url = process.env.REACT_APP_API + `/get_user_info`;
@@ -69,7 +69,7 @@ export function* getUserInfoSaga(_action: AppActions) {
       // assign the access booleans
       yield put(actions.assignAccess(accessObj));
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.response) {
       yield setPromiseError(error, actions.getUserInfoFailed, error.response.data.messages);
     } else {

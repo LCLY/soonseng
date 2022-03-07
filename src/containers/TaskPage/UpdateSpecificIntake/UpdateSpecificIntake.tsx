@@ -279,7 +279,9 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                     placeholder="Select a Job Type"
                     optionFilterProp="children"
                     className="updatespecificintake__select updatespecificintake__select--task"
-                    filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    filterOption={(input, option: any) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     <Option value="">Select a Job Type</Option>
                     {serviceTypeTaskDict &&
@@ -353,7 +355,7 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                 optionFilterProp="children"
                 placeholder="Select a Task title"
                 className="updatespecificintake__select updatespecificintake__select--task"
-                filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 <Option value="">Select a Task</Option>
                 {dropdownArrayExist &&
@@ -1022,8 +1024,8 @@ const UpdateSpecificIntake: React.FC<Props> = ({
                           optionFilterProp="children"
                           className="updatespecificintake__select"
                           tagRender={(props) => tagRender(props)}
-                          filterOption={(input, option) =>
-                            option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          filterOption={(input, option: any) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                           }
                         >
                           {usersByRolesArray &&

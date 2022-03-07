@@ -619,7 +619,7 @@ const BodyMake: React.FC<Props> = ({
             updateBodyMakeForm.setFieldsValue({ makeWheelbaseId: null });
             onGetMakeWheelbases(value);
           }}
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {makesArray &&
             makesArray.map((make) => {
@@ -666,7 +666,7 @@ const BodyMake: React.FC<Props> = ({
           placeholder="Select a Body"
           optionFilterProp="children"
           className="bodymake__select"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {bodiesArray &&
             bodiesArray
@@ -692,7 +692,7 @@ const BodyMake: React.FC<Props> = ({
           showSearch
           placeholder="Select a length"
           optionFilterProp="children"
-          filterOption={(input, option) => option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {lengthsArray &&
             lengthsArray.map((length) => {

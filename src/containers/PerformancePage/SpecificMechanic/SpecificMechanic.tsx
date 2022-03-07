@@ -107,7 +107,7 @@ const SpecificMechanic: React.FC<Props> = () => {
         })
         .catch((err) => console.log(err));
     });
-  }, []);
+  }, [mechanics]);
 
   useEffect(() => {
     let startOfMonth = moment('6/1/2021').format('DD/MM/YYYY');
@@ -145,7 +145,7 @@ const SpecificMechanic: React.FC<Props> = () => {
           .catch((err) => console.log(err));
       });
     }
-  }, []);
+  }, [mechanics]);
 
   /* ================================================== */
   /* ================================================== */
