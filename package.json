@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "16.x",
-    "npm": "8.x"
+    "node": "14.x",
+    "npm": "6.x"
   },
   "dependencies": {
     "@ant-design/icons": "^4.4.0",
@@ -82,7 +82,7 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "^5.7.0",
+    "@craco/craco": "^5.9.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
